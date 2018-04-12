@@ -1423,8 +1423,8 @@ templates['publishDetails'] = template({"1":function(depth0,helpers,partials,dat
     + "</h3>\n                </div>\n                <div class=\"accordion__content accordion__content--padded disable-animation js-accordion__content\">\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pageType : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                    <button class=\"btn btn--primary margin-top--1 margin-bottom--0 btn-collection-unlock\">Unlock collection</button>\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.if_any || (depth0 && depth0.if_any) || alias1).call(depth0,(depth0 != null ? depth0.pageDetails : depth0),(depth0 != null ? depth0.datasets : depth0),(depth0 != null ? depth0.datasetVersions : depth0),{"name":"if_any","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"if","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                </div>\n            </div>\n";
 },"2":function(depth0,helpers,partials,data) {
     return "                        <button class=\"btn btn--positive margin-top--1 margin-bottom--0 btn-collection-publish\">Publish collection</button>\n";
@@ -1432,38 +1432,50 @@ templates['publishDetails'] = template({"1":function(depth0,helpers,partials,dat
     var stack1;
 
   return "                        <h4>Approved pages in this collection</h4>\n                        <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"each","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"each","hash":{},"fn":this.program(8, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasetVersions : depth0),{"name":"each","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"if","hash":{},"fn":this.program(9, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.datasetVersions : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                        </ul>\n";
 },"5":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pageDetails : depth0),{"name":"each","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"6":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "                                <li class=\"page-list__item\"><span class=\"page__item page__item--"
+  return "                                    <li class=\"page-list__item\"><span class=\"page__item page__item--"
     + alias3(((helper = (helper = helpers.type || (depth0 != null ? depth0.type : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"type","hash":{},"data":data}) : helper)))
-    + "\"\n                                          data-path=\""
+    + "\"\n                                              data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.title : stack1), depth0))
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "</span>\n                                    <div class=\"page__buttons page__buttons--list\">\n                                        <button class=\"btn btn--warning btn-page-delete\">Remove from this publish</button>\n                                    </div>\n                                </li>\n";
-},"6":function(depth0,helpers,partials,data) {
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(7, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "</span>\n                                        <div class=\"page__buttons page__buttons--list\">\n                                            <button class=\"btn btn--warning btn-page-delete\">Remove from this publish</button>\n                                        </div>\n                                    </li>\n";
+},"7":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return "\n                                    : "
+  return "\n                                        : "
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.edition : stack1), depth0));
-},"8":function(depth0,helpers,partials,data) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+},"9":function(depth0,helpers,partials,data) {
+    var stack1;
 
-  return "                                <li class=\"page-list__item\"><span class=\"page__item page__item--dataset\"\n                                                                  data-path=\""
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">"
-    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "</span>\n                                    <div class=\"page__buttons page__buttons--list\">\n                                        <button class=\"btn btn--warning btn--disabled btn-page-delete\">Remove from this publish</button>\n                                    </div>\n                                </li>\n";
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"each","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
 },"10":function(depth0,helpers,partials,data) {
     var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
-  return "                                <li class=\"page-list__item\"><span class=\"page__item page__item--dataset_version\"\n                                                                  data-path=\""
+  return "                                    <li class=\"page-list__item\"><span class=\"page__item page__item--dataset\"\n                                                                      data-path=\""
+    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">"
+    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "</span>\n                                        <div class=\"page__buttons page__buttons--list\">\n                                            <button class=\"btn btn--warning btn--disabled btn-page-delete\">Remove from this publish</button>\n                                        </div>\n                                    </li>\n";
+},"12":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasetVersions : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"13":function(depth0,helpers,partials,data) {
+    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+
+  return "                                    <li class=\"page-list__item\"><span class=\"page__item page__item--dataset_version\"\n                                                                      data-path=\""
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "\">"
     + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
@@ -1471,32 +1483,32 @@ templates['publishDetails'] = template({"1":function(depth0,helpers,partials,dat
     + alias3(((helper = (helper = helpers.edition || (depth0 != null ? depth0.edition : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"edition","hash":{},"data":data}) : helper)))
     + " (version "
     + alias3(((helper = (helper = helpers.version || (depth0 != null ? depth0.version : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"version","hash":{},"data":data}) : helper)))
-    + ")</span>\n                                    <div class=\"page__buttons page__buttons--list\">\n                                        <button class=\"btn btn--warning btn--disabled btn-page-delete\">Remove from this publish</button>\n                                    </div>\n                                </li>\n";
-},"12":function(depth0,helpers,partials,data) {
+    + ")</span>\n                                        <div class=\"page__buttons page__buttons--list\">\n                                            <button class=\"btn btn--warning btn--disabled btn-page-delete\">Remove from this publish</button>\n                                        </div>\n                                    </li>\n";
+},"15":function(depth0,helpers,partials,data) {
     var stack1;
 
   return "                        <h4>Deleted pages in this collection</h4>\n                        <ul class=\"page-list\">\n"
-    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"each","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.pendingDeletes : depth0),{"name":"each","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                        </ul>\n";
-},"13":function(depth0,helpers,partials,data) {
+},"16":function(depth0,helpers,partials,data) {
     var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
   return "                                <li class=\"page-list__item\">\n                                    <span class=\"page__item page__item--"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.type : stack1), depth0))
     + "\">\n                                        "
     + alias2(alias1(((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.title : stack1), depth0))
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(14, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1),{"name":"if","hash":{},"fn":this.program(17, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "<br/>\n                                        "
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.uri : stack1), depth0))
     + "\n                                    </span>\n                                    "
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.children : stack1),{"name":"if","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.children : stack1),{"name":"if","hash":{},"fn":this.program(19, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                                </li>\n";
-},"14":function(depth0,helpers,partials,data) {
+},"17":function(depth0,helpers,partials,data) {
     var stack1;
 
   return ": "
     + this.escapeExpression(this.lambda(((stack1 = ((stack1 = (depth0 != null ? depth0.root : depth0)) != null ? stack1.description : stack1)) != null ? stack1.edition : stack1), depth0));
-},"16":function(depth0,helpers,partials,data) {
+},"19":function(depth0,helpers,partials,data) {
     var stack1;
 
   return " \n                                        <div class=\"page__children\">\n                                            <h4>This delete contains</h4>\n                                            "
