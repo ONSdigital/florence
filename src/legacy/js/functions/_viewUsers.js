@@ -30,7 +30,7 @@ function viewUsers(view) {
 
         $('.js-selectable-table tbody tr').click(function () {
             var userId = $(this).attr('data-id');
-            viewUserDetails(userId, $(this));
+            viewUserDetails(userId, $(this), loggedUser);
         });
 
         $('.radioBtnDiv').change(function () {
@@ -61,7 +61,7 @@ function viewUsers(view) {
 
             var username = $('#create-user-username').val();
             var email = $('#create-user-email').val();
-            var password = $('#create-user-password').val();
+            var ownerEmail = $('#create-user-email-owner').val();
 
             if (username.length < 1) {
                 sweetAlert("Please enter a user name.");
@@ -77,7 +77,7 @@ function viewUsers(view) {
                 sweetAlert("Please enter a password.");
                 return;
             }
-            postUser(username, email, password, isAdmin, isEditor, isDataVisPublisher);
+            postUser(username, email, ownerEmail, password, isAdmin, isEditor, isDataVisPublisher);
             viewUsers();
         });
     }

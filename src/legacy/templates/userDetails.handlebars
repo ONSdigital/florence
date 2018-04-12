@@ -1,16 +1,18 @@
 <div class="slider">
     <div class="slider__head">
-        <h2>{{name}}</h2>
+        <h2>{{user.name}}</h2>
     </div>
 
-    <div class="slider__options">
-        <button class="btn btn--primary btn-user-change-password">Change password</button>
-    </div>
+    {{#if_eq user.email loggedUser}}
+        <div class="slider__options">
+            <button class="btn btn--primary btn-user-change-password">Change password</button>
+        </div>
+    {{/if_eq}}
 
     <div class="slider__content">
-        <p>{{name}} is a{{#if_eq permission 'admin'}}n{{/if_eq}} <strong>{{permission}}</strong>.</p>
+        <p>{{user.name}} is a{{#if_eq user.permission 'admin'}}n{{/if_eq}} <strong>{{user.permission}}</strong>.</p>
 
-        {{#if temporaryPassword}}
+        {{#if user.temporaryPassword}}
             <p id="temp-password">This user has not updated their temporary password.</p>
         {{/if}}
     </div>

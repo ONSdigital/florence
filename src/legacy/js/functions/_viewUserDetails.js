@@ -4,11 +4,11 @@
  * @param email
  * @param $this = jQuery object of selected table item
  */
-function viewUserDetails(email, $this) {
+function viewUserDetails(email, $this, loggedUser) {
 
     getUsers(
         success = function (user) {
-            populateUserDetails(user, email, $this);
+            populateUserDetails(user, email, $this, loggedUser);
         },
         error = function (response) {
             handleApiError(response);
@@ -17,7 +17,7 @@ function viewUserDetails(email, $this) {
     );
 
     var isAdmin, isEditor;
-    function populateUserDetails(user, email, $this) {
+    function populateUserDetails(user, email, $this, loggedUser) {
         getUserPermission(
             function (permission) {
                 isAdmin = permission.admin;
@@ -26,7 +26,7 @@ function viewUserDetails(email, $this) {
                 addPermissionToJSON(user);
 
                 var showPanelOptions = {
-                    html: window.templates.userDetails(user)
+                    html: window.templates.userDetails({user: user, loggedUser: loggedUser})
                 };
                 showPanel($this, showPanelOptions);
 
