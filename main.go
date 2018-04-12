@@ -102,6 +102,13 @@ func main() {
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
+	downloadServiceURL, err := url.Parse(cfg.DownloadServiceURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	downloadServiceProxy := reverseProxy.Create(downloadServiceURL, director)
+
 	router := pat.New()
 
 	var vc upload.VaultClient
@@ -130,6 +137,7 @@ func main() {
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	router.Handle("/downloads/{uri:.*}", downloadServiceProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -139,7 +147,7 @@ func main() {
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
+	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{"config": cfg})

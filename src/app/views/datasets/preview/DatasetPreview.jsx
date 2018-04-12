@@ -26,6 +26,29 @@ const propTypes = {
 class DatasetPreview extends Component {
     constructor(props) {
         super(props);
+
+        this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
+    }
+
+    handlePreviewLoad() {
+        // The downloads need to be sent through the florence domain so the florence
+        // token can be sent to the download service to authenticate the private
+        // download links
+
+        var iframe = document.getElementById('iframe');
+        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+
+        var csvDownload = innerDoc.getElementById('csv-download');
+        if (csvDownload != null) {
+            var csvHref = csvDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+            csvDownload.setAttribute("href", csvHref);
+        }
+
+        var xlsDownload = innerDoc.getElementById('xls-download');
+        if (xlsDownload != null) {
+            var xlsHref = xlsDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+            xlsDownload.setAttribute("href", xlsHref);
+        }
     }
 
     renderReviewActions() {
