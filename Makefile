@@ -1,6 +1,5 @@
 BIND_ADDR ?= :8081
 BINPATH ?= build
-ENABLE_NEW_APP ?= 1
 
 VERSION=`git describe --tags`
 LDFLAGS=-ldflags "-w -s -X main.Version=${VERSION}"
@@ -19,7 +18,7 @@ build: generate
 
 debug: generate
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
-	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} ENABLE_NEW_APP=${ENABLE_NEW_APP} $(BINPATH)/florence
+	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 generate: ${GOPATH}/bin/go-bindata
 	# build the production version
