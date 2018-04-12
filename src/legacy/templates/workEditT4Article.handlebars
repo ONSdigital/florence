@@ -1,5 +1,5 @@
 <section class="panel workspace-edit">
-    <form class="edit-form">
+    <div class="edit-form">
         <div class="edit-accordion">
             <div class="edit-section">
                 <div class="edit-section__head">
@@ -72,9 +72,29 @@
                                           id="metaDescription">{{this.description.metaDescription}}</textarea>
                             </label>
                         </div>
-                        <div id="articleType">
-                            <label for="articleType-checkbox">Neutral article</label>
-                            <input id="articleType-checkbox" type="checkbox" name="articleType" {{#if this.isPrototypeArticle}}checked{{/if}}/>
+
+                        <div style="background-color: #343B59; padding: 21px 0; margin: 0 21px;">
+                            <div id="articleType">
+                                <label for="articleType-checkbox">Neutral article</label>
+                                <input id="articleType-checkbox" type="checkbox" name="articleType" {{#if this.isPrototypeArticle}}checked{{/if}}/>
+                            </div>
+
+                            {{#if this.isPrototypeArticle}}
+                                {{#unless imageUri}}
+                                <label for="neutral-article-image-upload">Upload article image
+                                    <input style="color: #323232" type="file" id="neutral-article-image-upload" accept=".png, .jpg, .jpeg">
+                                </label>
+
+                                <button id="neutral-article-image-upload-submit" class="btn btn--primary margin-top--0" type="submit" value="Upload image">Upload image</button>
+
+                                {{else}}
+                                <div class="margin-left--1 margin-top--1">
+                                    <p class="margin-left--0">Image preview (not actual size)</p>
+                                    <img src="/resource?uri={{imageUri}}&width=250" />
+                                </div>
+                                    <button id="neutral-article-image-upload-delete" class="btn btn--warning margin-top--0" type="submit" value="Upload image">Delete image</button>
+                                {{/unless}}
+                            {{/if}}
                         </div>
                     </div>
                 </div>
@@ -115,5 +135,5 @@
         <nav class="edit-nav">
             {{> editNav}}
         </nav>
-    </form>
+    </div>
 </section>

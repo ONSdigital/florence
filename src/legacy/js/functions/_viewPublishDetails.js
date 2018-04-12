@@ -20,6 +20,8 @@ function viewPublishDetails(collections) {
                             id: response.id,
                             name: response.name,
                             pageDetails: response.reviewed,
+                            datasets: response.datasets,
+                            datasetVersions: response.datasetVersions,
                             pageType: 'manual',
                             pendingDeletes: response.pendingDeletes
                         });
@@ -27,7 +29,9 @@ function viewPublishDetails(collections) {
                         result.collectionDetails.push({
                             id: response.id,
                             name: response.name,
-                            pageDetails: response.reviewed
+                            pageDetails: response.reviewed,
+                            datasets: response.datasets,
+                            datasetVersions: response.datasetVersions,
                         });
                     }
                 },
