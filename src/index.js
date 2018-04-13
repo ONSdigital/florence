@@ -17,6 +17,7 @@ import VerifyController from './app/views/verify/VerifyController';
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
+import VerifySuccess from './app/views/verify/VerifySuccess';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -71,6 +72,7 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/verify`} component={ VerifyController } />
+                            <Route path={`${rootPath}/verify/complete`} component={ VerifySuccess } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />

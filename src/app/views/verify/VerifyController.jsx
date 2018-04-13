@@ -8,6 +8,8 @@ import notifications from '../../utilities/notifications'
 import ChangePasswordController from '../../components/change-password/ChangePasswordController'
 import Modal from '../../components/Modal';
 import log, {eventTypes} from '../../utilities/log'
+import cookies from '../../utilities/cookies'
+import redirectToMainScreen from '../../utilities/redirectToMainScreen'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -48,15 +50,11 @@ export class VerifyController extends Component {
         await user.checkEmailVerification(this.props.email, this.props.verifyCode).catch(error => {
             this.setState({isCheckingEmail: false});
             switch (error.status) {
-                case(401): {
-                    // Do nothing, handle by request utility
-                    break;
-                }
                 case(403): {
                     const notification = {
                         type: "neutral",
                         message: `You don't have permission to verify this email address`,
-                        autoDismiss: 5000,
+                        autoDismiss: 10000,
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -66,7 +64,7 @@ export class VerifyController extends Component {
                     const notification = {
                         type: "neutral",
                         message: `Email address ${this.props.email} was not recognised. Check the link in your email and try again.`,
-                        autoDismiss: 6000,
+                        autoDismiss: 10000,
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -80,20 +78,22 @@ export class VerifyController extends Component {
                     const notification = {
                         type: "warning",
                         message: `An unexpected error occurred. Please try the link included in the email sent to ${this.props.email}`,
-                        isDismissable: true,
-                        autoDismiss: 6000
+                        autoDismiss: 10000,
+                        isDismissable: true
                     };
                     notifications.add(notification);
                     break;
                 }
             }
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error logging in with email verify code. Error: ${JSON.stringify(error)}`});
         });
+
         this.setState({isCheckingEmail: false});
     }
 
     async handleSuccess(newPassword) {
         this.setState({isLoggingUserIn: true});
-        await user.login(this.props.email, newPassword).catch(error => {
+        const accessToken = await user.login(this.props.email, newPassword).catch(error => {
             this.setState({isLoggingUserIn: false});
             switch (error.status) {
                 case(401): {
@@ -144,16 +144,23 @@ export class VerifyController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error logging in with new password. User's email: ${this.props.email}. Error: ${JSON.stringify(error)}`});
         });
 
-        this.props.dispatch(push(`${this.props.rootPath}/collections`));
-        console.log("New password: ", newPassword);
+        cookies.add("access_token", accessToken);
+        user.getPermissions(this.props.email).then(userType => {
+            user.setUserState(userType);
+            if (user.getOldUserType(userType) == "VIEWER") {
+                this.props.dispatch(push(`${this.props.rootPath}/verify/complete`));
+                return;
+            }
+            redirectToMainScreen(`${this.props.rootPath}/collections`);
+        });
     }
 
     render() {
         if (this.state.noEmail || this.state.noVerifyCode) {
             return (
-                <div className="grid">
+                <div className="grid grid--justify-center">
                     <h1 className="grid__col-8">Error verifying email</h1>
-                    <p className="grid__col-8">
+                    <p className="grid__col-8 font-size--16">
                         Unable to verifying email address. Please check the link in the email that brought you to this page and try again.
                     </p>
                 </div>
