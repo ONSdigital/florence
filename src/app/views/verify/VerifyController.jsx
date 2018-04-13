@@ -23,8 +23,7 @@ export class VerifyController extends Component {
         super(props);
 
         this.state = {
-            noEmail: false,
-            noVerifyCode: false,
+            errorVerifyingEmail: false,
             isCheckingEmail: false,
             isLoggingUserIn: false,
             showChangePassword: false
@@ -35,10 +34,7 @@ export class VerifyController extends Component {
 
     componentWillMount() {
         if (!this.props.email || !this.props.verifyCode) {
-            this.setState({
-                noEmail: Boolean(this.props.email),
-                noVerifyCode: Boolean(this.props.verifyCode)
-            });
+            this.setState({errorVerifyingEmail: true});
             return;
         }
         this.checkEmailVerification();
@@ -77,7 +73,7 @@ export class VerifyController extends Component {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: `An unexpected error occurred. Please try the link included in the email sent to ${this.props.email}`,
+                        message: `An unexpected error occurred. Please retry the link included in the email sent to '${this.props.email}'`,
                         autoDismiss: 10000,
                         isDismissable: true
                     };
@@ -85,6 +81,7 @@ export class VerifyController extends Component {
                     break;
                 }
             }
+            this.setState({errorVerifyingEmail: true});
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error logging in with email verify code. Error: ${JSON.stringify(error)}`});
         });
 
@@ -156,7 +153,7 @@ export class VerifyController extends Component {
     }
 
     render() {
-        if (this.state.noEmail || this.state.noVerifyCode) {
+        if (this.state.errorVerifyingEmail) {
             return (
                 <div className="grid grid--justify-center">
                     <h1 className="grid__col-8">Error verifying email</h1>
