@@ -59,15 +59,33 @@ export default class user {
         localStorage.setItem("userType", this.getOldUserType(user));
     }
 
+    static login(email, password) {
+        const body = {
+            email,
+            password
+        }
+        return http.post('/zebedee/login', body, true, true);
+    }
+
     static logOut() {
         store.dispatch(userLoggedOut());
     }
 
-    static updatePassword(body) {
-        return http.post('/zebedee/password', body)
-            .then(response => {
-                return response;
-            })
+    static updatePassword(email, newPassword, previousPassword) {
+        const body = {
+            email,
+            password: newPassword,
+            oldPassword: previousPassword
+        };
+        return http.post('/zebedee/password', body, true, true);
+    }
+
+    static checkEmailVerification(email, code) {
+        const body = {
+            email: `<verify>:${email}`,
+            password: code
+        };
+        return http.post('/zebedee/login', body, true, true);
     }
 
 }

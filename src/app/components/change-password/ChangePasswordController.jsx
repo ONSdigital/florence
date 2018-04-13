@@ -11,7 +11,8 @@ const propTypes = {
     email: PropTypes.string.isRequired,
     currentPassword: PropTypes.string.isRequired,
     handleSuccess: PropTypes.func.isRequired,
-    handleCancel: PropTypes.func.isRequired
+    handleCancel: PropTypes.func,
+    hideCancel: PropTypes.bool
 };
 
 export default class ChangePasswordController extends Component {
@@ -69,28 +70,27 @@ export default class ChangePasswordController extends Component {
             return;
         }
 
-        const postBody = {
-            password: this.state.newPassword.value,
-            email: this.props.email,
-            oldPassword: this.props.currentPassword
-        };
+        const password = this.state.newPassword.value;
+        const previousPassword = this.props.currentPassword;
+        const email = this.props.email;
 
         this.setState({isSubmitting: true});
 
-        user.updatePassword(postBody).then(() => {
-            this.props.handleSuccess(this.state.newPassword.value);
+        user.updatePassword(email, password, previousPassword).then(() => {
+            this.props.handleSuccess(password);
             const eventPayload = {
                 email: this.props.email
             };
             log.add(eventTypes.passwordChangeSuccess, eventPayload);
             const notification = {
-                type: 'neutral',
+                type: 'positive',
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: "Password changed successfully."
+                message: "Password successfully changed"
             };
             notifications.add(notification);
         }).catch(error => {
+            this.setState({isSubmitting: false});
             const notification = {
                 type: 'warning',
                 isDismissable: true,
@@ -99,38 +99,34 @@ export default class ChangePasswordController extends Component {
             switch (error.status) {
                 case (404): {
                     notification.message = "The user you are changing the password for was not recognised";
-                    notifications.add(notification);
                     this.setState({ isSubmitting: false });
                     break;
                 }
                 case (401): {
                     notification.message = "You are not authorised to update this password";
-                    notifications.add(notification);
                     this.setState({ isSubmitting: false });
                     break;
                 }
                 case ('UNEXPECTED_ERR'): {
                     console.error(errCodes.UNEXPECTED_ERR);
                     notification.message = errCodes.UNEXPECTED_ERR;
-                    notifications.add(notification);
                     this.setState({ isSubmitting: false });
                     break;
                 }
                 case ('RESPONSE_ERR'): {
                     console.error(errCodes.RESPONSE_ERR);
                     notification.message = errCodes.RESPONSE_ERR;
-                    notifications.add(notification);
                     this.setState({ isSubmitting: false });
                     break;
                 }
                 case ('FETCH_ERR'): {
                     console.error(errCodes.FETCH_ERR);
                     notification.message = errCodes.FETCH_ERR;
-                    notifications.add(notification);
                     this.setState({ isSubmitting: false });
                     break;
                 }
             }
+            notifications.add(notification);
         });
     }
 
@@ -146,8 +142,9 @@ export default class ChangePasswordController extends Component {
                 }
             ],
             onSubmit: this.handleSubmit,
-            onCancel: this.props.handleCancel,
-            isSubmitting: this.state.isSubmitting
+            onCancel: this.props.handleCancel || function() {console.log("No 'change password' cancel function provided")},
+            isSubmitting: this.state.isSubmitting,
+            hideCancel: this.props.hideCancel || false
         };
         return (
             <ChangePasswordForm formData={formData} />

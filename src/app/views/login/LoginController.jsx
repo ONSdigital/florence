@@ -51,12 +51,8 @@ export class LoginController extends Component {
         }
     }
 
-    postLoginCredentials(body) {
-        return http.post('/zebedee/login', body, true, true);
-    }
-
     handleLogin(credentials) {
-        this.postLoginCredentials(credentials).then(accessToken => {
+        user.login(credentials.email, credentials.password).then(accessToken => {
             cookies.add("access_token", accessToken);
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);

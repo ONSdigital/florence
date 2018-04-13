@@ -13,7 +13,7 @@
         margin-top: $magicnumber2;
         -webkit-transform: translateY(103%);
         transform: translateY(103%);
-        transition: all 100ms ease-out;
+        transition: transform 100ms ease-out;
 
         &--warning {
             background-color: $night-shadz;

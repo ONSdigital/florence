@@ -12,6 +12,7 @@ import TeamsController from './app/views/teams/TeamsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import Logs from './app/views/logs/Logs';
+import VerifyController from './app/views/verify/VerifyController';
 
 import './scss/main.scss';
 
@@ -69,6 +70,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/logs`} component={ Logs } />
+                            <Route path={`${rootPath}/verify`} component={ VerifyController } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />

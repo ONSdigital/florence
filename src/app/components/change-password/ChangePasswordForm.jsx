@@ -14,7 +14,8 @@ const propTypes = {
         })),
         onSubmit: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired,
-        isSubmitting: PropTypes.bool
+        isSubmitting: PropTypes.bool,
+        hideCancel: PropTypes.bool
     }).isRequired
 };
 
@@ -22,7 +23,6 @@ export default class ChangePasswordForm extends Component {
 
     constructor(props) {
         super(props);
-
     }
 
     render() {
@@ -44,7 +44,9 @@ export default class ChangePasswordForm extends Component {
                     </div>
                     <div className="modal__footer">
                         <button className="btn btn--positive" onClick={this.props.formData.onSubmit} disabled={isSubmitting}>Update password</button>
-                        <button className="btn" onClick={this.props.formData.onCancel} disabled={isSubmitting}>Cancel</button>
+                        {!this.props.formData.hideCancel &&
+                            <button className="btn margin-left--1" onClick={this.props.formData.onCancel} disabled={isSubmitting}>Cancel</button>
+                        }
 
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </div>
