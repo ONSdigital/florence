@@ -54,6 +54,7 @@ export class VerifyController extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
+                    this.setState({errorVerifyingEmail: true});
                     break;
                 }
                 case(404): {
@@ -64,6 +65,7 @@ export class VerifyController extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
+                    this.setState({errorVerifyingEmail: true});
                     break;
                 }
                 case(417): {
@@ -78,10 +80,10 @@ export class VerifyController extends Component {
                         isDismissable: true
                     };
                     notifications.add(notification);
+                    this.setState({errorVerifyingEmail: true});
                     break;
                 }
             }
-            this.setState({errorVerifyingEmail: true});
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error logging in with email verify code. Error: ${JSON.stringify(error)}`});
         });
 
