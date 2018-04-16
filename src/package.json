@@ -43,8 +43,8 @@
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "test": "export NODE_ENV=testing && jest --no-cache",
-    "test-watch": "export NODE_ENV=testing && jest --watch --no-cache",
+    "test": "export NODE_ENV=testing && ./node_modules/jest/bin/jest.js --no-cache",
+    "test-watch": "export NODE_ENV=testing && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored"
   },
   "dependencies": {
