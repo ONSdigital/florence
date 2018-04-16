@@ -28,6 +28,7 @@ var enableNewApp = false
 var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
+var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
 
 // Version is set by the make target
@@ -137,14 +138,24 @@ func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
+	assetPath := "../dist/" + path
 
-	b, err := getAsset("../dist/" + path)
+	etag, err := getAssetETag(assetPath)
+
+	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	b, err := getAsset(assetPath)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
 		return
 	}
 
+	w.Header().Set(`ETag`, etag)
+	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
 	w.Write(b)
