@@ -22,7 +22,8 @@ function loadEmbedIframe(onSave) {
             return;
         }
 
-        var parsedEmbedUrl = new URL(embedUrl);
+        // pass in window.location.origin as a base url to handle relative urls
+        var parsedEmbedUrl = new URL(embedUrl, window.location.origin);
         if (parsedEmbedUrl.host === window.location.host) {
             embedUrl = parsedEmbedUrl.pathname;
         }
