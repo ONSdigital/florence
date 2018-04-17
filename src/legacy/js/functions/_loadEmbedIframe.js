@@ -23,7 +23,9 @@ function loadEmbedIframe(onSave) {
         }
 
         var parsedEmbedUrl = new URL(embedUrl);
-        if (parsedEmbedUrl.hostname === window.location.hostname) {
+        console.log(parsedEmbedUrl);
+        console.log(window.location);
+        if (parsedEmbedUrl.host === window.location.host) {
             embedUrl = parsedEmbedUrl.pathname;
         }
 
