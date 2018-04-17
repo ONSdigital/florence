@@ -37,6 +37,9 @@ export class VerifyController extends Component {
             this.setState({errorVerifyingEmail: true});
             return;
         }
+        if (cookies.get("access_token")) {
+            cookies.remove("access_token");
+        }
         this.checkEmailVerification();
     }
 
@@ -142,6 +145,10 @@ export class VerifyController extends Component {
             console.error(`Error logging in with new password. User's email: ${this.props.email}`, error);
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error logging in with new password. User's email: ${this.props.email}. Error: ${JSON.stringify(error)}`});
         });
+
+        if (!accessToken) {
+            return;
+        }
 
         cookies.add("access_token", accessToken);
         user.getPermissions(this.props.email).then(userType => {
