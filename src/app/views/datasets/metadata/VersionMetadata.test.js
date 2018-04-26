@@ -7,6 +7,7 @@ import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 
 console.error = jest.fn();
+console.warn = jest.fn();
 
 jest.mock('uuid/v4', () => () => {
     return "12345";
