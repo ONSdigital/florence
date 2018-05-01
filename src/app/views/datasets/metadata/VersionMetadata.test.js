@@ -22,6 +22,14 @@ jest.mock('../../../utilities/url', () => {
     }
 });
 
+jest.mock('../../../utilities/date', () => {
+    return {
+        format: function() {
+            return "a formatted date"
+        }
+    }
+});
+
 jest.mock('../../../utilities/notifications', () => {
     return {
         add: jest.fn(() => {
@@ -376,7 +384,7 @@ test("Alert items map to card element correctly", async () => {
     const cardProps = component.instance().mapTypeContentsToCard(component.state("alerts"),"alerts");
     component.state("alerts").forEach((alert, index) => {
         expect(cardProps[index]).toMatchObject({
-            title: alert.date,
+            title: "a formatted date",
             id: alert.key
         });
     })
