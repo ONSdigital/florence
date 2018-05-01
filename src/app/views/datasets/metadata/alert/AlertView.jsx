@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import Modal from '../../../../components/Modal'
 import Input from '../../../../components/Input'
+import Checkbox from '../../../../components/Checkbox'
 
 const propTypes = {
     date: PropTypes.shape({
@@ -13,6 +14,10 @@ const propTypes = {
         onChange: PropTypes.func.isRequired,
         value: PropTypes.string,
         errorMsg: PropTypes.string
+    }).isRequired,
+    isCorrection: PropTypes.shape({
+        onChange: PropTypes.func.isRequired,
+        value: PropTypes.bool
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
@@ -34,7 +39,7 @@ class AlertView extends Component {
                     <div className="modal__body">
                         <div className="grid grid__col-4">
                             <Input 
-                                id="correction-date" 
+                                id="alert-date" 
                                 type="datetime-local"
                                 value={this.props.date.value}
                                 error={this.props.date.errorMsg}
@@ -44,11 +49,17 @@ class AlertView extends Component {
                         </div>
                         <Input
                             type="textarea"
-                            id="correction-description"
+                            id="alert-description"
                             value={this.props.description.value}
                             error={this.props.description.errorMsg}
                             label="Description"
                             onChange={this.props.description.onChange}
+                        />
+                        <Checkbox 
+                            id="alert-is-correction"
+                            onChange={this.props.isCorrection.onChange}
+                            isChecked={this.props.isCorrection.value}
+                            label="Correction"
                         />
                     </div>
                     <div className="modal__footer">
