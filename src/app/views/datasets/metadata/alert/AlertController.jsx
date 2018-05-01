@@ -7,6 +7,7 @@ import uuid from 'uuid/v4';
 const propTypes = {
     date: PropTypes.string,
     description: PropTypes.string,
+    isCorrection: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
     id: PropTypes.string
@@ -26,13 +27,15 @@ class AlertController extends Component {
                 value: "",
                 errorMsg: ""
             },
-            newID: ""
+            newID: "",
+            newIsCorrectionBoolean: null,
         };
 
         this.maximumAlertDate = date.format(date.addYear(10), "yyyy-mm-dd");
 
         this.handleDateChange = this.handleDateChange.bind(this);
         this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
+        this.handleIsCorrectionChange = this.handleIsCorrectionChange.bind(this);
         this.handleSave = this.handleSave.bind(this);
     }
 
@@ -76,6 +79,11 @@ class AlertController extends Component {
         });
     }
     
+    handleIsCorrectionChange(isCorrection) {
+        console.log(isCorrection);
+        this.setState({newIsCorrectionBoolean: isCorrection});
+    }
+    
     handleSave(event) {
         event.preventDefault();
         let hasError = false;
@@ -108,9 +116,16 @@ class AlertController extends Component {
             return;
         }
 
+        let isCorrection = this.props.isCorrection || false;
+
+        if (this.state.newIsCorrectionBoolean !== null) {
+            isCorrection = this.state.newIsCorrectionBoolean
+        }
+
         const alert = {
-            description: this.state.newDescription.value,
+            description: this.state.newDescription.value || this.props.description || "",
             date: new Date(this.state.newDate.value || this.state.currentDate).toISOString(),
+            isCorrection,
             id: this.props.id || this.state.newID
         }
         this.props.onSave(alert);
@@ -128,6 +143,10 @@ class AlertController extends Component {
                     value: this.state.newDescription.value || this.props.description,
                     errorMsg: this.state.newDescription.errorMsg,
                     onChange: this.handleDescriptionChange
+                }}
+                isCorrection={{
+                    value: this.state.newIsCorrectionBoolean || this.props.isCorrection,
+                    onChange: this.handleIsCorrectionChange
                 }}
                 onSave={this.handleSave}
                 onCancel={this.props.onCancel}
