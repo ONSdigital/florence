@@ -253,12 +253,16 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
+	vaultKey := "key"
+	vaultPath := u.vaultPath + "/" +resum.Identifier
+
 	if len(uploadID) == 0 {
 		acl := "public-read"
 
 		if u.vaultClient != nil {
 			psk := createPSK()
-			if err := u.vaultClient.WriteKey(u.vaultPath, resum.Identifier, hex.EncodeToString(psk)); err != nil {
+
+			if err := u.vaultClient.WriteKey(vaultPath, vaultKey, hex.EncodeToString(psk)); err != nil {
 				log.ErrorR(req, err, nil)
 				w.WriteHeader(http.StatusInternalServerError)
 				return
@@ -295,7 +299,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if u.vaultClient != nil {
-		pskStr, err := u.vaultClient.ReadKey(u.vaultPath, resum.Identifier)
+		pskStr, err := u.vaultClient.ReadKey(vaultPath, vaultKey)
 		if err != nil {
 			log.ErrorR(req, err, nil)
 			w.WriteHeader(http.StatusInternalServerError)
