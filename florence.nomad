@@ -4,8 +4,11 @@ job "florence" {
   type        = "service"
 
   update {
-    stagger      = "90s"
-    max_parallel = 1
+    stagger          = "60s"
+    min_healthy_time = "30s"
+    healthy_deadline = "2m"
+    max_parallel     = 1
+    auto_revert      = true
   }
 
   group "publishing" {
@@ -13,7 +16,8 @@ job "florence" {
 
     constraint {
       attribute = "${node.class}"
-      value     = "publishing"
+      operator  = "regexp"
+      value     = "publishing.*"
     }
 
     task "florence" {

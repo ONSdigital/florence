@@ -151,8 +151,30 @@ function setupFlorence() {
             return 'You have unsaved changes.';
         }
     };
-    viewController();
 
+    var path = (location.pathname).replace('/florence/', '');
+    function mapPathToViewID(path) {
+        if (!path || path === '/florence') {
+            return "collections";
+        }
+        return {
+            "collections": "collections",
+            "publishing-queue": "publish",
+            "reports": "reports",
+            "users-and-access": "users",
+            "workspace": "workspace"
+        }[path];
+    };
+    $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
+    viewController(mapPathToViewID(path));
+    
+    window.onpopstate = function() {
+        var newPath = (document.location.pathname).replace('/florence/', '');
+        $('.js-nav-item--collection').hide();
+        $('.js-nav-item').removeClass('selected');
+        $('.js-nav-item--' + mapPathToViewID(newPath)).addClass('selected');
+        viewController(mapPathToViewID(newPath));
+    }
 
     function processMenuClick(clicked) {
         Florence.collection = {};
@@ -163,20 +185,25 @@ function setupFlorence() {
 
         menuItem.addClass('selected');
 
-
         if (menuItem.hasClass("js-nav-item--collections")) {
+            window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
             var thisCollection = CookieUtils.getCookieValue("collection");
+            window.history.pushState({}, "", "/florence/collections")
             viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--users")) {
+            window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
         } else if (menuItem.hasClass("js-nav-item--teams")) {
+            window.history.pushState({}, "", "/florence/teams");
             viewController('teams');
         } else if (menuItem.hasClass("js-nav-item--publish")) {
+            window.history.pushState({}, "", "/florence/publishing-queue");
             viewController('publish');
         } else if (menuItem.hasClass("js-nav-item--reports")) {
+            window.history.pushState({}, "", "/florence/reports");
             viewController('reports');
         } else if (menuItem.hasClass("js-nav-item--login")) {
             viewController('login');
@@ -184,6 +211,12 @@ function setupFlorence() {
             logout();
             viewController();
         }
+    }
+
+    // redirect a viewer to not authorised message if they try access old Florence
+    var userType = localStorage.getItem("userType");
+    if (userType == "VIEWER") {
+        window.location.href = '/florence/not-authorised';
     }
 
     // Get ping times to zebedee and surface for user
