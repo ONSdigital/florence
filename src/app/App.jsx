@@ -1,60 +1,80 @@
 import React, { Component } from 'react';
-import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
-import { Provider } from 'react-redux';
-import { Router, Route, browserHistory } from 'react-router';
-import { syncHistoryWithStore, routerReducer, routerActions, routerMiddleware, push } from 'react-router-redux';
-import { UserAuthWrapper } from 'redux-auth-wrapper';
-import thunkMiddleware from 'redux-thunk';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
-import Layout from './global/Layout'
-import Collections from './collections/Collections';
-import Login from './login/Login';
+import { hasValidAuthToken } from './utilities/hasValidAuthToken';
+import user from './utilities/api-clients/user';
+import log from './utilities/log';
+import ping from './utilities/api-clients/ping';
 
-import reducer from './config/reducer';
+import Notifications from './global/notifications/Notifications';
 
-const baseHistory = browserHistory;
-const routingMiddleware = routerMiddleware(baseHistory);
+const propTypes = {
+    children: PropTypes.node,
+    dispatch: PropTypes.func.isRequired,
+    notifications: PropTypes.arrayOf(PropTypes.object)
+};
 
-const enhancer = compose(
-    applyMiddleware(thunkMiddleware, routingMiddleware),
-    window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
-
-const store = createStore(
-    combineReducers({
-        state: reducer,
-        routing: routerReducer
-    }),
-    enhancer
-);
-
-const history = syncHistoryWithStore(baseHistory, store);
-
-const UserIsAuthenticated = UserAuthWrapper({
-    authSelector: state => {
-        return state.state.user.isAuthenticated ? state.state.user : {};
-    },
-    redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsAuthenticated',
-    failureRedirectPath: '/florence/login'
-});
-
-export default class App extends Component {
+class App extends Component {
     constructor(props) {
-        super(props)
+        super(props);
+
+        this.state = {
+            isCheckingAuthentication: false
+        }
+    }
+
+    componentWillMount() {
+
+        log.initialise();
+
+        window.setInterval(() => {
+            ping();
+        }, 10000);
+
+        this.setState({isCheckingAuthentication: true});
+        hasValidAuthToken().then(isValid => {
+            if (isValid) {
+                const email = localStorage.getItem("loggedInAs");
+                if (!email) {
+                    //FIXME This leaves the loading spinner on screen forever - we need to either display a message, retry or do something else more graceful?
+                    console.warn(`Unable to find item 'loggedInAs' from local storage`);
+                    return;
+                }
+
+                user.getPermissions(email).then(userType => {
+                    user.setUserState(userType);
+                    this.setState({isCheckingAuthentication: false});
+                });
+                return;
+            }
+            this.setState({isCheckingAuthentication: false});
+        })
     }
 
     render() {
         return (
-            <Provider store={ store }>
-                <Router history={ history }>
-                    <Route component={ Layout }>
-                        <Route path="/florence" component={ UserIsAuthenticated(Collections) } />
-                        <Route path="/florence/collections" component={ Collections } />
-                        <Route path="/florence/login" component={ Login } />
-                    </Route>
-                </Router>
-            </Provider>
+            <div>
+                {   
+                    this.state.isCheckingAuthentication ?
+                        <div className="grid grid--align-center grid--align-self-center grid--full-height">
+                            <div className="loader loader--large loader--dark"></div>
+                        </div>
+                        :
+                        this.props.children
+                }
+                <Notifications notifications={this.props.notifications} />
+            </div>
         )
     }
 }
+
+App.propTypes = propTypes;
+
+function mapStateToProps(state) {
+    return {
+        notifications: state.state.notifications
+    }
+}
+
+export default connect(mapStateToProps)(App);

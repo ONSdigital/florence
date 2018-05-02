@@ -5,11 +5,12 @@ import (
 	"bytes"
 	"encoding/json"
 	"mime"
+	"net"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
@@ -26,8 +27,10 @@ var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
 var tableRendererURL = "http://localhost:23300"
 var enableNewApp = false
+var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
+var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
 
 // Version is set by the make target
@@ -48,9 +51,6 @@ func main() {
 	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
 		tableRendererURL = v
 	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
-	}
 
 	log.Namespace = "florence"
 
@@ -70,14 +70,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	babbageProxy := reverseProxy.Create(babbageURL, nil)
+	babbageProxy := createBabbageProxy(babbageURL, nil)
 
 	zebedeeURL, err := url.Parse(zebedeeURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
 	tableURL, err := url.Parse(tableRendererURL)
@@ -90,19 +89,19 @@ func main() {
 
 	router := pat.New()
 
-	newAppHandler := refactoredIndexFile
-
-	if !enableNewApp {
-		newAppHandler = legacyIndexFile
-	}
-
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", newAppHandler)
-	router.HandleFunc("/florence/index.html", legacyIndexFile)
+	router.HandleFunc("/florence", legacyIndexFile)
+	router.HandleFunc("/florence/", redirectToFlorence)
+	router.HandleFunc("/florence/index.html", redirectToFlorence)
+	router.HandleFunc("/florence/collections", legacyIndexFile)
+	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
+	router.HandleFunc("/florence/reports", legacyIndexFile)
+	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
+	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:|/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
@@ -136,16 +135,30 @@ func main() {
 	}
 }
 
+func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
+	http.Redirect(w, req, "/florence", 301)
+}
+
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
+	assetPath := "../dist/" + path
 
-	b, err := getAsset("../dist/" + path)
+	etag, err := getAssetETag(assetPath)
+
+	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	b, err := getAsset(assetPath)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
 		return
 	}
 
+	w.Header().Set(`ETag`, etag)
+	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
 	w.Write(b)
@@ -251,6 +264,33 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		// 	break
 		// }
 	}
+}
+
+// FIXME this is to fix go-ns reverse proxy replacing host name so that
+// babbage has correct values when using {{location.hostname}} in handlebars
+func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
+	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+	director := proxy.Director
+	proxy.Transport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+	proxy.Director = func(req *http.Request) {
+		director(req)
+		//req.Host = proxyURL.Host
+		if directorFunc != nil {
+			directorFunc(req)
+		}
+	}
+
+	return proxy
 }
 
 type florenceLogEvent struct {
