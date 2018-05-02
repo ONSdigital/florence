@@ -935,10 +935,11 @@ export class VersionMetadata extends Component {
             formErrors = this.removeErrorFromSummary("You must add a release date", formErrors);
         }
 
+        this.setState({
+            formErrors: formErrors
+        });
+
         if (formErrors.length) {
-            this.setState({
-                formErrors: formErrors
-            });
             window.scrollTo(0, 0);
         }
 
