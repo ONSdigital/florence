@@ -34,21 +34,33 @@ class DatasetPreview extends Component {
         // The downloads need to be sent through the florence domain so the florence
         // token can be sent to the download service to authenticate the private
         // download links
+        function updateDownloadLinks() {
+            var iframe = document.getElementById('iframe');
+            if (iframe != null) {
+                var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+        
+                var csvDownload = innerDoc.getElementById('csv-download');
+                if (csvDownload != null) {
+                    var csvHref = csvDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+                    csvDownload.setAttribute("href", csvHref);
+                }
+        
+                var xlsDownload = innerDoc.getElementById('xls-download');
+                if (xlsDownload != null) {
+                    var xlsHref = xlsDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+                    xlsDownload.setAttribute("href", xlsHref);
+                }
 
-        var iframe = document.getElementById('iframe');
-        var innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-
-        var csvDownload = innerDoc.getElementById('csv-download');
-        if (csvDownload != null) {
-            var csvHref = csvDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
-            csvDownload.setAttribute("href", csvHref);
+                var excelDownload = innerDoc.getElementById('excel-download');
+                if (excelDownload != null) {
+                    var excelHref = excelDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
+                    excelDownload.setAttribute("href", excelHref);
+                }
+            }
         }
+        
+        setInterval(updateDownloadLinks, 1000);
 
-        var xlsDownload = innerDoc.getElementById('xls-download');
-        if (xlsDownload != null) {
-            var xlsHref = xlsDownload.getAttribute("href").replace(/^.*\/\/[^/]+/, '');
-            xlsDownload.setAttribute("href", xlsHref);
-        }
     }
 
     renderReviewActions() {
