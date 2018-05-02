@@ -1,0 +1,11 @@
+.pagination {
+    list-style: none;
+    margin-top: $lineheight;
+
+    &__item {
+        display: inline-block;
+        &:not(:first-of-type) {
+            margin-left: $gutter;
+        }
+    }
+}
