@@ -1,0 +1,33 @@
+{
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "env": {
+        "browser": true,
+        "es6": true,
+        "jest": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 2017,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "rules" : {
+        "no-unused-vars" : 1,
+        "no-undef" : 2,
+        "no-console": 0,
+        "react/no-set-state": 0,
+        "react/prop-types": 1,
+        "react/prefer-stateless-function": 0,
+        "react/jsx-curly-spacing": [0, "always"],
+        "react/require-optimization": 0,
+        "react/jsx-max-props-per-line": 0,
+        "react/jsx-sort-props": 0,
+        "react/jsx-no-literals": 0,
+        "react/sort-comp": 1,
+        "react/no-direct-mutation-state": 2,
+        "react/no-unescaped-entities": 0
+    },
+    "plugins": ["react"]
+}

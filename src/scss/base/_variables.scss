@@ -1,0 +1,101 @@
+/* Spacing */
+$lineheight: 21px;
+$magicnumber1: 7px;
+$magicnumber2: 3px;
+$gutter: 20px;
+
+/* Font families */
+$base-font-family: 'Open Sans', sans-serif;
+$heading-font-family: 'Roboto Slab', serif;
+
+/* Colour palette */
+$black: #000000;
+$white: #FFFFFF;
+$mine-shaft: #323232;
+$grey-chateau: #A1A3A5;
+$porcelain: #F5F6F7;
+$quill-grey: #CCCCCB;
+$pickled-bluewood: #343B59;
+$slate-grey: #6A7290;
+$iron: #E7E8E9;
+$iron-dark: #D1D2D4;
+$cadet-blue: #B2B6C4;
+$astral: #337099;
+$como: #49725D;
+$concrete: #F2F2F2;
+$emperor: #515151;
+$scarpa-flow: #58585B;
+$dusty-grey: #989898;
+$mirage: #1B2232;
+$nevada: #6D6E70;
+$nobel: #B3B3B3;
+$night-shadz: #AA354C;
+$ash: #C5C1B6;
+$ship-grey: #404041;
+$tea: #BBB6AA;
+$gurkha: #9D9684;
+$olive-haze: #8E8575;
+$nappa: #AEA99C;
+$kabul: #574F41;
+$wild-sand: #F5F5F5;
+$tawny-port: #6D272B;
+$silver-sand: #BBBDC0;
+$focus: #ffbf47;
+
+/* Panel heights - TODO probably update with new grid */
+$panel-height-1-top-nav: 916px; // wrapper height minus navbar height
+$panel-height-2-top-nav: 853px; // wrapper height minus (navbar height * 2)
+
+
+// --------------------------------------------------
+// Grid variables
+// --------------------------------------------------
+
+// Prefix
+// -------------------------
+// You can optionally reflex-prefix reflex classes to avoid clashing with other css frameworks
+// e.g. setting $reflex-prefix as "reflex-" here would cause grid__col-sm-6 to become reflex-grid__col-sm-6
+// Example: $reflex-prefix: reflex-;
+// By default this is an empty string
+$reflex-prefix: null !default;
+
+
+// Legacy support
+// -------------------------
+// Reflex adds a lot of css propertie to support older browsers that don't support flexbox layout.
+// If you prefer to use this as a purely flexbox grid without legacy support then set this to false
+$legacy-support: false !default;
+
+// Responsive visibility helpers
+// -------------------------
+// Reflex has some generic visibility classes to hide elements at different breakpoints.
+// If you want to disable these then set this to false
+$visibility-helpers: true !default;
+
+// Grid
+// -------------------------
+$reflex-columns: 12 !default; // number of columns
+$reflex-max-width: 100% !default; // max-width of grid
+
+// Breakpoints
+// -------------------------
+$reflex-xs: 480px !default;
+$reflex-sm: 768px !default;
+$reflex-md: 992px !default;
+$reflex-lg: 1200px !default;
+$reflex-xlg: 1600px !default;
+
+$reflex-xxs-max:    ($reflex-xs - 1);
+$reflex-xs-max:     ($reflex-sm - 1);
+$reflex-sm-max:     ($reflex-md - 1);
+$reflex-md-max:     ($reflex-lg - 1);
+$reflex-lg-max:     ($reflex-xlg - 1);
+
+// Spacing
+// -------------------------
+$reflex-grid-spacing:       0 !default;
+$reflex-cell-spacing:       1em !default;
+
+$reflex-cell-spacing-sm:    ($reflex-cell-spacing / 2);
+$reflex-cell-spacing-md:    $reflex-cell-spacing;
+$reflex-cell-spacing-lg:    ($reflex-cell-spacing * 2);

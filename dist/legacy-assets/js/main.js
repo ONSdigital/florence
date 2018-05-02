@@ -271,7 +271,16 @@ if (typeof module !== 'undefined') {
   module.exports = PathUtils;
 }
 
-
+function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
 
 
 var StringUtils = {
@@ -44996,7 +45005,11 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
             }
             else if (pageType === 'dataset_landing_page' || pageType === 'timeseries_landing_page') {
                 loadT8Creator(collectionId, releaseDate, pageType, parentUrl);
-            } else if (pageType === 'visualisation') {
+            }
+            else if (pageType === 'api_dataset_landing_page') {
+                loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl);
+            }
+            else if (pageType === 'visualisation') {
                 console.log('Visualisation');
 
             } else if (pageType === 'release') {
@@ -45008,9 +45021,6 @@ function loadCreator(parentUrl, collectionId, type, collectionData) {
         });
     }
 }
-
-
-
 /*
 *   Loads datepicker with correct format and moves focus to next form element on selection
  */
@@ -45054,13 +45064,22 @@ function loadEmbedIframe(onSave) {
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
         var fullWidth = $('input#full-width-checkbox').is(':checked');
+
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
-        } else {
-            onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
-            modal.remove();
+            return;
         }
+
+        // pass in window.location.origin as a base url to handle relative urls
+        var parsedEmbedUrl = new URL(embedUrl, window.location.origin);
+        if (parsedEmbedUrl.host === window.location.host) {
+            embedUrl = parsedEmbedUrl.pathname;
+        }
+
+        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
+        modal.remove();
+
     }
 
     // bind events
@@ -47354,6 +47373,142 @@ function pageTypeDataT7(pageType) {
 }/**
  * Creates data JSON
  * @param collectionId
+ * @param releaseDate
+ * @param pageType
+ * @param parentUrl
+ */
+
+function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
+    var releaseDate = null;             //overwrite scheduled collection date
+    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+    var parentUrlData = parentUrl + "/data";
+
+    $.ajax({
+        url: parentUrlData,
+        dataType: 'json',
+        crossDomain: true,
+        success: function (checkData) {
+            if (checkData.type === 'product_page' && !Florence.globalVars.welsh) {
+                submitFormHandler();
+                return true;
+            } else {
+                sweetAlert("This is not a valid place to create this page.");
+                loadCreateScreen(parentUrl, collectionId);
+            }
+        },
+        error: function () {
+            console.log('No page data returned');
+        }
+    });
+
+    function submitFormHandler() {
+        $('.btn-page-create').hide();
+        $('#pagename').remove();
+        $('.edition').append(
+          '<button class="btn btn--positive margin-left--0 btn-get-recipes">Import data</button>'
+        );
+
+        $('.btn-get-recipes').on('click', function(){
+          getRecipes();
+          return false;
+        });
+
+        $('form').off().submit(function (e) {
+            var getPageName = $('#apiDatasetName').val();
+            $('#pagename').val(getPageName);
+            var nameValid = validatePageName();
+            if (!nameValid) {
+                return false;
+            }
+
+            pageData = pageTypeDataT8(pageType);
+            pageTitle = $('#pagename').val();
+            pageData.description.title = pageTitle;
+            apiDatsetID = $('#apiDatasetId span').text();
+            pageData.apiDatasetId = apiDatsetID;
+            uriSection = "datasets";
+            pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
+            newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
+            var safeNewUri = checkPathSlashes(newUri);
+
+            if (pageTitle.length < 5) {
+                sweetAlert("This is not a valid file title");
+                return true;
+            }
+            else {
+                saveContent(collectionId, safeNewUri, pageData);
+            }
+            e.preventDefault();
+        });
+    }
+
+    // Call the recipe API, get data and create elements.
+    function getRecipes() {
+      $.ajax({
+          url: 'http://localhost:8081/recipes',
+          dataType: 'json',
+          crossDomain: true,
+          success: function (recipeData) {
+            var templateData = {};
+            $.each(recipeData.items, function(i, v) {
+              // Get the dataset names and id's
+              var datasetName = v.alias,
+                  datasetId = v.output_instances[0].dataset_id;
+              // Create elements, store data in data attr to be used later
+              templateData  = {
+                  content: '<li><h1>' + datasetName + '</h1><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--inverse margin-left--0 btn-import">Import</button></li>'
+              };
+            });
+            // Load modal and add the data
+            viewRecipeModal(templateData);
+          },
+          error: function () {
+            sweetAlert("There is a problem fetching the data");
+            loadCreateScreen(parentUrl, collectionId);
+          }
+      });
+
+      // Add the data to the details panel
+      // TO DO - A call will need to be made to the dataset API when it's ready
+      // to get the meta data we need to create the page.
+      $('body').on('click', '.btn-import', function(){
+        var getDatasetID = $(this).data('datasetid'),
+            getDatasetName = $(this).data('datasetname');
+        $('.btn-get-recipes, .dataset-list').remove();
+        $('.btn-page-create').show();
+        $('.edition').append(
+          '<div id="apiDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
+          '<label for="apiDatasetName">Dataset name</label>' +
+          '<input id="apiDatasetName" type="text" value="'+getDatasetName+'" />'+
+          // Hidden input for #pagename so it can be validated
+          // Populated with #apiDatasetName value on submit
+          '<input id="pagename" type="hidden" value="" />'
+        );
+        $('#js-modal-recipe').remove();
+        return false;
+      });
+
+    }
+
+    function pageTypeDataT8(pageType) {
+              // Add the data to the page data in Zebedee
+              if (pageType === "api_dataset_landing_page") {
+                  return {
+                      "apiDatasetId": "",
+                      "description": {
+                        "title": ""
+                      },
+                      type: pageType
+                  };
+              }
+              else {
+                  sweetAlert('Unsupported page type. This is not a dataset type');
+              }
+    }
+}
+/**
+ * Creates data JSON
+ * @param collectionId
  * @param data
  * @param pageType
  * @param pageEdition
@@ -47519,43 +47674,43 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
 
     function pageTypeDataT8(pageType) {
 
-        if (pageType === "dataset_landing_page") {
-            return {
-                "description": {
-                    "releaseDate": "",
-                    "nextRelease": "",
-                    "contact": {
-                        "name": "",
-                        "email": "",
-                        "telephone": ""
-                    },
-                    "summary": "",
-                    "datasetId": "",
-                    "keywords": [],
-                    "metaDescription": "",
-                    "nationalStatistic": false,
-                    "title": ""
-                },
-                "timeseries": false,
-                "datasets": [],
-                "section": {},      //notes
-                "corrections": [],
-                "relatedDatasets": [],
-                "relatedDocuments": [],
-                "relatedMethodology": [],
-                "relatedMethodologyArticle": [],
-                "topics": [],
-                "alerts": [],
-                "links": [],
-                type: pageType
-            };
-        }
-        else {
-            sweetAlert('Unsupported page type. This is not a dataset type');
-        }
+              if (pageType === "dataset_landing_page") {
+                  return {
+                      "description": {
+                          "releaseDate": "",
+                          "nextRelease": "",
+                          "contact": {
+                              "name": "",
+                              "email": "",
+                              "telephone": ""
+                          },
+                          "summary": "",
+                          "datasetId": "",
+                          "keywords": [],
+                          "metaDescription": "",
+                          "metaCmd": "",
+                          "nationalStatistic": false,
+                          "title": ""
+                      },
+                      "timeseries": false,
+                      "datasets": [],
+                      "section": {},      //notes
+                      "corrections": [],
+                      "relatedDatasets": [],
+                      "relatedDocuments": [],
+                      "relatedMethodology": [],
+                      "relatedMethodologyArticle": [],
+                      "topics": [],
+                      "alerts": [],
+                      "links": [],
+                      type: pageType
+                  };
+              }
+              else {
+                  sweetAlert('Unsupported page type. This is not a dataset type');
+              }
     }
 }
-
 function loadTableBuilder(pageData, onSave, table) {
   var pageUrl = pageData.uri;
   var html = templates.tableBuilder(table);
@@ -48218,8 +48373,9 @@ function logout() {
   delete_cookie('collection');
   localStorage.setItem("loggedInAs", "");
   localStorage.setItem("userType", "");
-  Florence.refreshAdminMenu();
-  viewController();
+  
+  // Redirect to refactored login page
+  window.location.pathname = "/florence";
 }
 
 function delete_cookie(name) {
@@ -49967,6 +50123,22 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         datasetLandingEditor(collectionId, pageData);
     }
 
+    else if (pageData.type === 'api_dataset_landing_page') {
+        var html = templates.workEditT8LandingPage(templateData);
+        $('.workspace-menu').html(html);
+        editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
+        addDataset(collectionId, pageData, 'datasets', 'edition');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
+        editTopics(collectionId, pageData, templateData, 'topics', 'topics');
+        editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
+        accordion();
+        datasetLandingEditor(collectionId, pageData);
+    }
+
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
@@ -50065,7 +50237,8 @@ function refreshEditNavigation() {
         error = function (response) {
             handleApiError(response);
         })
-}function resetPage() {
+}
+function resetPage() {
     // Prevent default behaviour of all form submits throught Florence
     $(document).on('submit', 'form', function(e) {
         e.preventDefault();
@@ -50328,8 +50501,30 @@ function setShortcuts(field, callback) {
             return 'You have unsaved changes.';
         }
     };
-    viewController();
 
+    var path = (location.pathname).replace('/florence/', '');
+    function mapPathToViewID(path) {
+        if (!path || path === '/florence') {
+            return "collections";
+        }
+        return {
+            "collections": "collections",
+            "publishing-queue": "publish",
+            "reports": "reports",
+            "users-and-access": "users",
+            "workspace": "workspace"
+        }[path];
+    };
+    $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
+    viewController(mapPathToViewID(path));
+    
+    window.onpopstate = function() {
+        var newPath = (document.location.pathname).replace('/florence/', '');
+        $('.js-nav-item--collection').hide();
+        $('.js-nav-item').removeClass('selected');
+        $('.js-nav-item--' + mapPathToViewID(newPath)).addClass('selected');
+        viewController(mapPathToViewID(newPath));
+    }
 
     function processMenuClick(clicked) {
         Florence.collection = {};
@@ -50340,20 +50535,25 @@ function setShortcuts(field, callback) {
 
         menuItem.addClass('selected');
 
-
         if (menuItem.hasClass("js-nav-item--collections")) {
+            window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
             var thisCollection = CookieUtils.getCookieValue("collection");
+            window.history.pushState({}, "", "/florence/collections")
             viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--users")) {
+            window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
         } else if (menuItem.hasClass("js-nav-item--teams")) {
+            window.history.pushState({}, "", "/florence/teams");
             viewController('teams');
         } else if (menuItem.hasClass("js-nav-item--publish")) {
+            window.history.pushState({}, "", "/florence/publishing-queue");
             viewController('publish');
         } else if (menuItem.hasClass("js-nav-item--reports")) {
+            window.history.pushState({}, "", "/florence/reports");
             viewController('reports');
         } else if (menuItem.hasClass("js-nav-item--login")) {
             viewController('login');
@@ -50361,6 +50561,12 @@ function setShortcuts(field, callback) {
             logout();
             viewController();
         }
+    }
+
+    // redirect a viewer to not authorised message if they try access old Florence
+    var userType = localStorage.getItem("userType");
+    if (userType == "VIEWER") {
+        window.location.href = '/florence/not-authorised';
     }
 
     // Get ping times to zebedee and surface for user
@@ -53894,6 +54100,7 @@ function staticPageEditor(collectionId, data) {
 }
 
 function datasetEditor(collectionId, data) {
+  debugger;
 
   var newFiles = [];
   var setActiveTab, getActiveTab;
@@ -54028,7 +54235,10 @@ function datasetEditor(collectionId, data) {
     $(this).textareaAutoSize();
     data.description.metaDescription = $(this).val();
   });
-
+  $("#metaCmd").on('input', function () {
+    $(this).textareaAutoSize();
+    data.description.metaCmd = $(this).val();
+  });
   /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
    is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
   var checkBoxStatus = function () {
@@ -54048,6 +54258,7 @@ function datasetEditor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     save(updateContent);
+    console.log(data);
   });
 
   // completed to review
@@ -54212,7 +54423,6 @@ function addEditionEditButton(collectionId, data, templateData) {
 
   sortableSections();
 }
-
 function transfer(source, destination, uri) {
   var transferRequest = {
     source: source,
@@ -54819,14 +55029,44 @@ function viewCollectionDetails(collectionId, $this) {
         if (view === 'collections') {
             viewCollections();
         }
+        else if (view === 'workspace') {
+            /*
+                Example of a correct URL:
+                '/florence/workspace?collection=:collectionID&uri=:pageURI'
+            */
+
+            const collectionID = getQueryVariable("collection");
+            const pageURI = getQueryVariable("uri");
+            window.history.replaceState({}, "Florence", "/florence/collections");
+            
+            if (!pageURI || !collectionID) {
+                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                viewCollections();
+                return;
+            }
+
+            getCollectionDetails(collectionID, response => {
+                Florence.collection = Object.assign({}, Florence.collection, {
+                    id: collectionID,
+                    name: response.name,
+                    date: response.publishDate,
+                    type: response.type
+                });
+                createWorkspace(pageURI, collectionID, "edit", response);
+            }, error => {
+                console.error("Error getting collection data, redirected to collections screen", error);
+            });
+        }
         else if (view === 'users') {
             viewUsers();
         }
         else if (view === 'teams') {
-            viewTeams();
+            // viewTeams();
+            window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
-            viewLogIn();
+            // viewLogIn();
+            window.location.pathname = "/florence/login";
         }
         else if (view === 'publish') {
             viewPublish();
@@ -54839,7 +55079,8 @@ function viewCollectionDetails(collectionId, $this) {
         }
     }
     else {
-        viewLogIn();
+        // Redirect to refactored login screen
+        window.location.pathname = "/florence/login";
     }
 }
 
@@ -56271,6 +56512,29 @@ function showPanel($this, options) {
         $('.panel--centred').animate({marginLeft: "0"}, 500);
     }
 }/**
+ * Reusable component that renders recipe modal and binds re-usable functionality (ie cancel button)
+ */
+
+
+function viewRecipeModal(templateData) {
+    var modalHtml = templates.recipeModal(templateData);
+    $('body').append(modalHtml);
+    bindrecipeModalEvents();
+
+    function bindrecipeModalEvents() {
+        $(document).keydown(function(event) {
+            if (event.keyCode === 27) {
+                closeModal()
+            }
+        });
+    }
+
+   function closeModal() {
+       $('#js-modal-recipe').remove();
+       $(document).off('keydown');
+   }
+}
+/**
  * Reusable component that renders selector modal and binds re-usable functionality (ie search input and cancel button)
  */
 
