@@ -82,6 +82,7 @@ export class VersionMetadata extends Component {
             isSavingData: false,
             isReadOnly: false,
             isFetchingCollectionData: false,
+            isFetchingDimensionsData: false,
             isInstance: null,
             hasChanges: false,
             edition: null,
@@ -173,7 +174,7 @@ export class VersionMetadata extends Component {
                     dimensions: this.props.instance.dimensions,
                     edition: this.props.instance.edition,
                 });
-                this.populateDimensionInputs(this.props.instance.edition);
+                this.populateDimensionInputs();
             }
 
             if (this.props.params.version) {
@@ -290,20 +291,24 @@ export class VersionMetadata extends Component {
         action();
     }
 
-    populateDimensionInputs(edition) {
-        this.setState({isFetchingData: true});
-        datasets.getLatestVersion(this.props.params.datasetID, edition).then(latestVersion => {
+    populateDimensionInputs() {
+        this.setState({isFetchingDimensionsData: true});
+        datasets.getLatestVersion(this.props.params.datasetID).then(latestVersion => {
+            if (!latestVersion) {
+                this.setState({isFetchingDimensionsData: false});
+                return;
+            }
+
             this.setState({
                 dimensions: latestVersion.dimensions.map(dimension => ({
                     ...dimension,
                     hasChanged: true
                 })),
-                isFetchingData: false
+                isFetchingDimensionsData: false
             });
         }).catch(error => {
             console.error(error);
-            // handle error
-            this.setState({isFetchingData: false});
+            this.setState({isFetchingDimensionsData: false});
         });
     }
 
@@ -628,7 +633,7 @@ export class VersionMetadata extends Component {
                     name="dimension-name"
                     label="Dimension title"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
                 <Input
                     value={dimension.description}                  
@@ -637,7 +642,7 @@ export class VersionMetadata extends Component {
                     name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
             </div>
             )
