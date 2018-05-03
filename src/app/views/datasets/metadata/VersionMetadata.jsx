@@ -475,6 +475,11 @@ export class VersionMetadata extends Component {
     }
 
     updateDimensions(instanceID) {
+        const dimensionsHaveUpdated = this.state.dimensions.some(dimension => dimension.hasChanged);
+        if (!dimensionsHaveUpdated) {
+            return Promise.resolve();
+        }
+
         return datasets.updateInstanceDimensions(instanceID, this.state.dimensions)
             .catch(error => {
                 this.handleRequestError(`save updates to dimensions`, error.status);
