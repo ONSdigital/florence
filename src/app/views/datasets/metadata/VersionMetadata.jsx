@@ -9,6 +9,7 @@ import recipes from '../../../utilities/api-clients/recipes';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
+import FormErrorSummary from '../../../components/form-error-summary/FormErrorSummary';
 import {updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
 import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
@@ -96,7 +97,8 @@ export class VersionMetadata extends Component {
             changes: [],
             editKey: "",
             titleInput: "",
-            descInput: ""
+            descInput: "",
+            formErrors: []
         }
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -844,6 +846,7 @@ export class VersionMetadata extends Component {
         const target = event.target;
         const value = target.value;
         const id = target.id;
+        console.log(id)
         this.setState({
             [id]: value,
             hasChanges: true
@@ -902,23 +905,65 @@ export class VersionMetadata extends Component {
         }
      }
 
+    addErrorToSummary(errorMsg, arr) {
+        const errorAlreadyInSummary = arr.some(error => {
+            return error === errorMsg;
+        })
+
+        if (errorAlreadyInSummary) {
+            return arr;
+        }
+
+        return [...arr, errorMsg];
+    }
+    
+    removeErrorFromSummary(errorMsg, arr) {
+        const errorAlreadyInSummary = arr.some(error => {
+            return error === errorMsg;
+        })
+
+        if (errorAlreadyInSummary) {
+            const filteredArr = arr.filter(error => {
+                return error !== errorMsg;
+            });
+            return filteredArr;
+        }
+
+        return arr;
+    }
+
     handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         event.preventDefault();
         
         let haveError = false;
+        let formErrors = this.state.formErrors;
 
         if (!this.state.edition) {
             this.setState({
                 editionError: "You must select an edition"
             });
+            formErrors = this.addErrorToSummary("You must select an edition", formErrors);
             haveError = true;
+        } else {
+            formErrors = this.removeErrorFromSummary("You must select an edition", formErrors);
         }
 
         if (!this.state.releaseDate) {
             this.setState({
                 releaseDateError: "You must add a release date"
             });
+            formErrors = this.addErrorToSummary("You must add a release date", formErrors);
             haveError = true;
+        } else {
+            formErrors = this.removeErrorFromSummary("You must add a release date", formErrors);
+        }
+
+        this.setState({
+            formErrors: formErrors
+        });
+
+        if (formErrors.length) {
+            window.scrollTo(0, 0);
         }
 
         const alerts = this.state.alerts.filter(alert => {
@@ -999,6 +1044,8 @@ export class VersionMetadata extends Component {
                       :
                       <div className="padding-bottom--2">
                         <h2 className="margin-top--1">{this.state.title || this.props.params.datasetID + " (title not available)"}</h2>
+
+                        <FormErrorSummary errors={this.state.formErrors} />
 
                         <form onSubmit={this.handleSave}>
                           <div className="margin-bottom--2">
