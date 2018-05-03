@@ -9,7 +9,7 @@ import recipes from '../../../utilities/api-clients/recipes';
 import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
-import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
+import {updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
 import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
@@ -173,6 +173,7 @@ export class VersionMetadata extends Component {
                     dimensions: this.props.instance.dimensions,
                     edition: this.props.instance.edition,
                 });
+                this.populateDimensionInputs(this.props.instance.edition);
             }
 
             if (this.props.params.version) {
@@ -287,6 +288,23 @@ export class VersionMetadata extends Component {
             this.props.dispatch(emptyActiveVersion());
         }
         action();
+    }
+
+    populateDimensionInputs(edition) {
+        this.setState({isFetchingData: true});
+        datasets.getLatestVersion(this.props.params.datasetID, edition).then(latestVersion => {
+            this.setState({
+                dimensions: latestVersion.dimensions.map(dimension => ({
+                    ...dimension,
+                    hasChanged: true
+                })),
+                isFetchingData: false
+            });
+        }).catch(error => {
+            console.error(error);
+            // handle error
+            this.setState({isFetchingData: false});
+        });
     }
 
     async updateReviewStateData() {
@@ -452,21 +470,16 @@ export class VersionMetadata extends Component {
     }
 
     updateDimensions(instanceID) {
-        const requests = [];
-        this.state.dimensions.forEach(dimension => {
-            if (dimension.hasChanged) {
-                requests.push(datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description).catch(error => {
-                    this.handleRequestError(`save updates to the '${dimension.name}' dimension`, error.status);
+        return datasets.updateInstanceDimensions(instanceID, this.state.dimensions)
+            .catch(error => {
+                this.handleRequestError(`save updates to dimensions`, error.status);
 
-                    console.error(`Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'`, error);
-                    
-                    log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'. Error: ${JSON.stringify(error)}`});
-                    
-                    return error;
-                }));
-            }
-        });
-        Promise.all(requests).catch(error => error);
+                console.error(`Unable to save version dimension updates for dimensions - '${instanceID}'`, error);
+                
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for dimensions - '${instanceID}'. Error: ${JSON.stringify(error)}`});
+                
+                return error;
+            })
     }
 
     confirmEditionAndCreateVersion(instanceID, selectedEdition, body) {
