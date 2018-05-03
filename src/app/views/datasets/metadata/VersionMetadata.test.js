@@ -419,3 +419,68 @@ test("Changing the dimension title value updates the dimension label in state", 
 });
 
 // TODO test that the saving responses are passed to the error handler in the correct order
+
+// describe("addErrorToSummary returns correct values when"), async () => {
+
+//     const component = await shallow(
+//         <VersionMetadata {...defaultProps} />
+//     );
+//     await component.instance().componentWillMount();
+
+//     it("passed a new error message", () => {
+//         const testArr = ["Error message 1"];
+//         const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+//         expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+//     });
+
+//     it("passed a duplicate error message", ()=> {
+//         const testArr = ["Error message 1", "Error message 2"];
+//         const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+//         expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+//     });
+
+// }
+
+test("addErrorToSummary returns correct values when it is passed a new error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1"];
+    const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
+
+test("addErrorToSummary returns correct values when it is passed a duplicate error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
+
+test("removeErrorFromSummary returns correct values when it is passed an existing error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().removeErrorFromSummary("Error message 1", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 2"]));
+});
+
+test("removeErrorFromSummary returns correct values when it is passed an error that doesn't exist", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().removeErrorFromSummary("Error message 3", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
