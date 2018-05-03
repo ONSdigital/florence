@@ -1,4 +1,5 @@
 import http from '../http';
+import url from '../url'
 
 export default class datasets {
 
@@ -32,17 +33,20 @@ export default class datasets {
              });
     }
 
-    static getLatestVersion(datasetID, editionID) {
-        const editionURL = `/dataset/datasets/${datasetID}/editions/${editionID}`;
+    static getLatestVersion(datasetID) {
+        const datasetURL = `/dataset/datasets/${datasetID}`;
 
         return new Promise(async (resolve, reject) => {
-            const edition = await http.get(editionURL).catch(error => reject(error));
-            if (edition && edition.current && edition.current.links.latest_version) {
-                const latestVersion = await http.get(`${editionURL}/versions/${edition.current.links.latest_version.id}`).catch(error => reject(error));
-                resolve(latestVersion);
+            const dataset = await http.get(datasetURL).catch(error => reject(error));
+            
+            if (!dataset || !dataset.current || !dataset.current.links.latest_version) {
+                resolve();
                 return;
             }
-            return;
+
+            const latestVersionURL = url.resolve(dataset.current.links.latest_version.href);
+            const latestVersion = await http.get(`/dataset${latestVersionURL}`).catch(error => reject(error));
+            resolve(latestVersion);
         });
     }
 
