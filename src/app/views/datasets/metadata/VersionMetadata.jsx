@@ -309,8 +309,10 @@ export class VersionMetadata extends Component {
                 isFetchingDimensionsData: false
             });
         }).catch(error => {
-            console.error(error);
             this.setState({isFetchingDimensionsData: false});
+            this.handleRequestError("auto-populate the dimension metadata", error.status);
+            console.error("Error getting latest published version to auto-populate dimensions inputs", error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`});
         });
     }
 
