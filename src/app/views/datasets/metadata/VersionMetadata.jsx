@@ -114,6 +114,7 @@ export class VersionMetadata extends Component {
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
+        this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
 
     componentWillMount() {
@@ -1033,7 +1034,7 @@ export class VersionMetadata extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
+                <div className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4">
                     <div className="margin-top--2">
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
@@ -1072,7 +1073,10 @@ export class VersionMetadata extends Component {
                                     disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                             </div>
-                            <h2> In this dataset </h2>
+                            <div className="grid grid--justify-space-between">
+                                <h2 className="inline-block"> In this dataset </h2>
+                                <div><button onClick={this.populateDimensionInputs} className="btn btn--primary margin-left--1" type="button">Fill from latest version</button></div>
+                            </div>
                             {this.mapDimensionsToInputs(this.state.dimensions)}
                             <div className="margin-bottom--1">
                                 <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
