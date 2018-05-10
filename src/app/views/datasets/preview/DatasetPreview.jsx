@@ -26,11 +26,7 @@ const propTypes = {
 class DatasetPreview extends Component {
     constructor(props) {
         super(props);
-
-        this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
     }
-
-    handlePreviewLoad() { }
 
     renderReviewActions() {
         if (this.props.isReadOnly || this.props.isFetchingCollectionData) {
@@ -75,7 +71,7 @@ class DatasetPreview extends Component {
                     </div>
                 }
                 {this.props.previewURL &&
-                    <Preview hidden={false} onLoad={this.handlePreviewLoad} path={this.props.previewURL}/>
+                    <Preview hidden={false} path={this.props.previewURL}/>
                 }
             </div>
         )

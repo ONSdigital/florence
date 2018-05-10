@@ -27,10 +27,6 @@ export default class cookies {
             domain = location.hostname;
         }
 
-        if (domain !== "localhost") {
-            domain = `.${domain}"`
-        }
-
         document.cookie = `${name}=${value};path=${path};domain=${domain}`;
     }
 
