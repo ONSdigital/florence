@@ -12,7 +12,6 @@ type Config struct {
 	RecipeAPIURL       string `envconfig:"RECIPE_API_URL"`
 	ImportAPIURL       string `envconfig:"IMPORT_API_URL"`
 	DatasetAPIURL      string `envconfig:"DATASET_API_URL"`
-	DownloadServiceURL string `envconfig:"DOWNLOAD_SERVICE_URL"`
 	UploadBucketName   string `envconfig:"UPLOAD_BUCKET_NAME"`
 	EncryptionDisabled bool   `envconfig:"ENCRYPTION_DISABLED"`
 	VaultAddr          string `envconfig:"VAULT_ADDR"`
@@ -36,7 +35,6 @@ func Get() (*Config, error) {
 		RecipeAPIURL:       "http://localhost:22300",
 		ImportAPIURL:       "http://localhost:21800",
 		DatasetAPIURL:      "http://localhost:22000",
-		DownloadServiceURL: "http://localhost:23600",
 		UploadBucketName:   "dp-frontend-florence-file-uploads",
 		EncryptionDisabled: false,
 		TableRendererURL:   "http://localhost:23300",
