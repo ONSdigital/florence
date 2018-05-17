@@ -120,7 +120,6 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	listMultiOutput, err := u.client.ListMultipartUploads(listMultiInput)
 	if err != nil {
-		log.Debug("listing multipart uploads", nil)
 		log.ErrorR(req, err, nil)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
@@ -147,7 +146,6 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	output, err := u.client.ListParts(input)
 	if err != nil {
-		log.Debug("listing parts ", nil)
 		log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 		w.WriteHeader(http.StatusNotFound)
 		return
