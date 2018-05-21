@@ -42,8 +42,8 @@ test("Request doesn't retry when the fetch resolves", async () => {
 })
 
 test("Request back-off attempts 5 retries when fetches fail", async () => {
-    fetch.mockReject();
     let retries = 0;
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', true, function() {
@@ -58,7 +58,7 @@ test("Request back-off attempts 5 retries when fetches fail", async () => {
 })
 
 test("Request back-off resolves as soon as a fetch is successful", async () => {
-    fetch.mockReject();
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', true, function(retryCount) {
@@ -102,7 +102,7 @@ test("Request returns to caller to handle 401 if callerHandles401 flag is set", 
 })
 
 test("Request back-off won't retry failed fetch if willRetry flag is set to false and reject with an error status", async () => {
-    fetch.mockReject();
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', false, function() {
