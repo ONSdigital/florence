@@ -15,13 +15,22 @@ function loadEmbedIframe(onSave) {
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
         var fullWidth = $('input#full-width-checkbox').is(':checked');
+
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
-        } else {
-            onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
-            modal.remove();
+            return;
         }
+
+        // pass in window.location.origin as a base url to handle relative urls
+        var parsedEmbedUrl = new URL(embedUrl, window.location.origin);
+        if (parsedEmbedUrl.host === window.location.host) {
+            embedUrl = parsedEmbedUrl.pathname;
+        }
+
+        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
+        modal.remove();
+
     }
 
     // bind events
