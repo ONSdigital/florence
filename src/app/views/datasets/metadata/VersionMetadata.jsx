@@ -100,6 +100,7 @@ export class VersionMetadata extends Component {
             editKey: "",
             titleInput: "",
             descInput: "",
+            checkboxInput: false,
             formErrors: []
         }
 
@@ -682,6 +683,7 @@ export class VersionMetadata extends Component {
             showModal: true,
             modalType: type,
             editKey: key,
+            checkboxInput: relatedItem.type === "correction",
             titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
             descInput: relatedItem.description,
             hasChanges: true
@@ -910,7 +912,7 @@ export class VersionMetadata extends Component {
             });
         }
      }
-
+     
     handleAlertSave(newAlert) {
         const newState = {
             showModal: false,
@@ -918,6 +920,7 @@ export class VersionMetadata extends Component {
             editKey: "",
             titleInput: "",
             descInput: "",
+            checkboxInput: false,
             hasChanges: true
         }
 
@@ -929,7 +932,7 @@ export class VersionMetadata extends Component {
                 date: newAlert.date,
                 description: newAlert.description,
                 hasChanged: true,
-                type: "alert"
+                type: newAlert.isCorrection ? "correction" : ""
             }];
             this.setState({
                 ...newState,
@@ -949,7 +952,8 @@ export class VersionMetadata extends Component {
                     ...alert,
                     hasChanged: true,
                     date: newAlert.date,
-                    description: newAlert.description
+                    description: newAlert.description,
+                    type: newAlert.isCorrection ? "correction" : ""
                 }
             });
 
@@ -967,7 +971,7 @@ export class VersionMetadata extends Component {
             date: newAlert.date,
             description: newAlert.description,
             hasChanged: true,
-            type: "alert"
+            type: newAlert.isCorrection ? "correction" : ""
         })
 
         this.setState({
@@ -1229,6 +1233,7 @@ export class VersionMetadata extends Component {
                     <AlertController
                         date={this.state.titleInput}
                         description={this.state.descInput}
+                        isCorrection={this.state.checkboxInput}
                         onSave={this.handleAlertSave}
                         onCancel={this.handleRelatedContentCancel}
                         id={this.state.editKey}
