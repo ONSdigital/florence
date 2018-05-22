@@ -5,7 +5,7 @@ exports[`Dataset version metadata page matches stored snapshot 1`] = `
   className="grid grid--justify-center"
 >
   <div
-    className="grid__col-4"
+    className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4"
   >
     <div
       className="margin-top--2"
