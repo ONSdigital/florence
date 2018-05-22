@@ -19,6 +19,8 @@ import RelatedContentForm from './related-content/RelatedContentForm';
 import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
 import DatasetReviewActions from '../DatasetReviewActions'
+import AlertController from './alert/AlertController'
+import date from '../../../utilities/date'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -113,6 +115,7 @@ export class VersionMetadata extends Component {
         this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
+        this.handleAlertSave = this.handleAlertSave.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
@@ -617,7 +620,7 @@ export class VersionMetadata extends Component {
     mapTypeContentsToCard(items, type){
         return items.map(item => {
             return {
-                title: type === "alerts" ? item.date : item.name,
+                title: type === "alerts" ? date.format(item.date, "dddd, dd/mm/yyyy h:MMTT") : item.name,
                 id: item.key,
             }
         });
@@ -724,7 +727,7 @@ export class VersionMetadata extends Component {
                         ...item,
                         date: this.state.titleInput,
                         description: this.state.descInput,
-                        type: "correction",
+                        type: "alert",
                         hasChanged: true
                     }
                 }
@@ -885,7 +888,7 @@ export class VersionMetadata extends Component {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("alerts", this.state.editKey);
                 } else {
-                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "correction"});
+                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "alert"});
                     this.setState({alerts: alerts});
                 }
             } else if (this.state.modalType === "changes") {
@@ -908,6 +911,71 @@ export class VersionMetadata extends Component {
         }
      }
 
+    handleAlertSave(newAlert) {
+        const newState = {
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            titleInput: "",
+            descInput: "",
+            hasChanges: true
+        }
+
+        // No existing alerts so we just add our new one into state - stops any runtime errors if we set 
+        // 'alerts' to null or undefined anywhere (because `.some()` would fail later)
+        if (!this.state.alerts || this.state.alerts.length === 0) {
+            const alerts = [{
+                key: newAlert.id,
+                date: newAlert.date,
+                description: newAlert.description,
+                hasChanged: true,
+                type: "alert"
+            }];
+            this.setState({
+                ...newState,
+                alerts
+            });
+            return;
+        }
+
+        const isExistingAlert = this.state.alerts.some(alert => alert.key === newAlert.id);
+        
+        if (isExistingAlert) {
+            const alerts = this.state.alerts.map(alert => {
+                if (alert.key !== newAlert.id) {
+                    return alert;
+                }
+                return {
+                    ...alert,
+                    hasChanged: true,
+                    date: newAlert.date,
+                    description: newAlert.description
+                }
+            });
+
+            this.setState({
+                ...newState,
+                alerts,
+            });
+
+            return;
+        }
+
+        const alerts = [...this.state.alerts];
+        alerts.push({
+            key: newAlert.id,
+            date: newAlert.date,
+            description: newAlert.description,
+            hasChanged: true,
+            type: "alert"
+        })
+
+        this.setState({
+            ...newState,
+            alerts
+        });
+    }
+    
     addErrorToSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
             return error === errorMsg;
@@ -1119,17 +1187,16 @@ export class VersionMetadata extends Component {
                       </div>
                     }
                 </div>
-                {this.state.showModal &&
-
+                {(this.state.showModal && this.state.modalType !== "alerts") &&
                 <Modal sizeClass="grid__col-3">
                         {this.state.modalType ?
 
                           <RelatedContentForm
                               name="related-content-modal"
-                              formTitle={this.state.modalType === "alerts" ? "Add an alert" : "Add latest change"}
+                              formTitle={"Add latest change"}
                               titleInput={this.state.titleInput}
                               descInput={this.state.descInput}
-                              titleLabel={this.state.modalType === "alerts" ? "Date (e.g 01 September 2017)" : "Name"}
+                              titleLabel={"Name"}
                               descLabel={"Description"}
                               onCancel={this.handleRelatedContentCancel}
                               onFormInput={this.handleInputChange}
@@ -1157,6 +1224,15 @@ export class VersionMetadata extends Component {
                       }
                       </Modal>
 
+                }
+                {(this.state.showModal && this.state.modalType === "alerts") &&
+                    <AlertController
+                        date={this.state.titleInput}
+                        description={this.state.descInput}
+                        onSave={this.handleAlertSave}
+                        onCancel={this.handleRelatedContentCancel}
+                        id={this.state.editKey}
+                    />
                 }
             </div>
         )
