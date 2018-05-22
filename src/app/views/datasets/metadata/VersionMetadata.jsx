@@ -912,8 +912,7 @@ export class VersionMetadata extends Component {
             });
         }
      }
-
-<<<<<<< HEAD
+     
     handleAlertSave(newAlert) {
         const newState = {
             showModal: false,
@@ -979,7 +978,8 @@ export class VersionMetadata extends Component {
             ...newState,
             alerts
         });
-=======
+    }
+    
     addErrorToSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
             return error === errorMsg;
@@ -1005,7 +1005,6 @@ export class VersionMetadata extends Component {
         }
 
         return arr;
->>>>>>> cmd-develop
     }
 
     handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
