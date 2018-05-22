@@ -17,7 +17,8 @@ import (
 
 var (
 	testBucketName = "test-bucket"
-	testVaultPath  = "secret/path"
+	vaultRootPath  = "secret/path"
+	vaultKey       = "key"
 )
 
 func TestUnitUpload(t *testing.T) {
@@ -35,7 +36,7 @@ func TestUnitUpload(t *testing.T) {
 			client := mocks.NewMockS3Client(mockCtrl)
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
 
-			up := Uploader{client: client, bucketName: testBucketName, vaultPath: testVaultPath}
+			up := Uploader{client: client, bucketName: testBucketName, vaultPath: vaultRootPath}
 
 			up.CheckUploaded(w, req)
 
@@ -109,13 +110,11 @@ func TestUnitUpload(t *testing.T) {
 
 			key := "12345"
 			id := "test-id"
-			acl := "public-read"
 			contentType := "text/plain"
 
 			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
 				Bucket:      &testBucketName,
 				Key:         &key,
-				ACL:         &acl,
 				ContentType: &contentType,
 			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
 
@@ -176,7 +175,6 @@ func TestUnitUpload(t *testing.T) {
 
 			key := "12345"
 			id := "test-id"
-			acl := "public-read"
 			contentType := "text/plain"
 			encodedPSK := "48656C6C6F20576F726C64"
 			psk := []byte("Hello World")
@@ -185,13 +183,14 @@ func TestUnitUpload(t *testing.T) {
 			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
 
 			vault := mocks.NewMockVaultClient(mockCtrl)
-			vault.EXPECT().WriteKey(testVaultPath, key, gomock.Any()).Return(nil)
-			vault.EXPECT().ReadKey(testVaultPath, key).Return(encodedPSK, nil)
+
+			vaultPath := vaultRootPath + "/" + key
+			vault.EXPECT().WriteKey(vaultPath, vaultKey, gomock.Any()).Return(nil)
+			vault.EXPECT().ReadKey(vaultPath, vaultKey).Return(encodedPSK, nil)
 
 			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
 				Bucket:      &testBucketName,
 				Key:         &key,
-				ACL:         &acl,
 				ContentType: &contentType,
 			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
 
@@ -234,7 +233,7 @@ func TestUnitUpload(t *testing.T) {
 				Bucket: &testBucketName,
 			}).Return(nil, nil)
 
-			up := Uploader{client: client, vaultClient: vault, bucketName: testBucketName, vaultPath: testVaultPath}
+			up := Uploader{client: client, vaultClient: vault, bucketName: testBucketName, vaultPath: vaultRootPath}
 
 			up.Upload(w, req)
 
