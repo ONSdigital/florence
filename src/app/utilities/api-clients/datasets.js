@@ -1,4 +1,5 @@
 import http from '../http';
+import url from '../url'
 
 export default class datasets {
 
@@ -32,11 +33,33 @@ export default class datasets {
              });
     }
 
+    static getLatestVersion(datasetID) {
+        const datasetURL = `/dataset/datasets/${datasetID}`;
+
+        return new Promise(async (resolve, reject) => {
+            const dataset = await http.get(datasetURL).catch(error => reject(error));
+            
+            if (!dataset || !dataset.current || !dataset.current.links.latest_version) {
+                resolve();
+                return;
+            }
+
+            const latestVersionURL = url.resolve(dataset.current.links.latest_version.href);
+            const latestVersion = await http.get(`/dataset${latestVersionURL}`).catch(error => reject(error));
+            resolve(latestVersion);
+        });
+    }
+
     static getVersionDimensions(datasetID, edition, version) {
         return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}/dimensions`)
              .then(response => {
                  return response;
              });
+    }
+
+    static updateInstanceDimensions(instanceID, dimensions) {
+        const body = {dimensions};
+        return http.put(`/instances/${instanceID}`, body);
     }
 
     static updateDimensionLabelAndDescription(instanceID, dimension, name, description) {
