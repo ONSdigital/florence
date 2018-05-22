@@ -10,7 +10,7 @@ import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
 import FormErrorSummary from '../../../components/form-error-summary/FormErrorSummary';
-import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
+import {updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
 import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
@@ -83,6 +83,7 @@ export class VersionMetadata extends Component {
             isSavingData: false,
             isReadOnly: false,
             isFetchingCollectionData: false,
+            isFetchingDimensionsData: false,
             isInstance: null,
             hasChanges: false,
             edition: null,
@@ -113,6 +114,7 @@ export class VersionMetadata extends Component {
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
+        this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
 
     componentWillMount() {
@@ -175,6 +177,7 @@ export class VersionMetadata extends Component {
                     dimensions: this.props.instance.dimensions,
                     edition: this.props.instance.edition,
                 });
+                this.populateDimensionInputs();
             }
 
             if (this.props.params.version) {
@@ -289,6 +292,29 @@ export class VersionMetadata extends Component {
             this.props.dispatch(emptyActiveVersion());
         }
         action();
+    }
+
+    populateDimensionInputs() {
+        this.setState({isFetchingDimensionsData: true});
+        datasets.getLatestVersion(this.props.params.datasetID).then(latestVersion => {
+            if (!latestVersion) {
+                this.setState({isFetchingDimensionsData: false});
+                return;
+            }
+
+            this.setState({
+                dimensions: latestVersion.dimensions.map(dimension => ({
+                    ...dimension,
+                    hasChanged: true
+                })),
+                isFetchingDimensionsData: false
+            });
+        }).catch(error => {
+            this.setState({isFetchingDimensionsData: false});
+            this.handleRequestError("auto-populate the dimension metadata", error.status);
+            console.error("Error getting latest published version to auto-populate dimensions inputs", error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`});
+        });
     }
 
     async updateReviewStateData() {
@@ -454,21 +480,21 @@ export class VersionMetadata extends Component {
     }
 
     updateDimensions(instanceID) {
-        const requests = [];
-        this.state.dimensions.forEach(dimension => {
-            if (dimension.hasChanged) {
-                requests.push(datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description).catch(error => {
-                    this.handleRequestError(`save updates to the '${dimension.name}' dimension`, error.status);
+        const dimensionsHaveUpdated = this.state.dimensions.some(dimension => dimension.hasChanged);
+        if (!dimensionsHaveUpdated) {
+            return Promise.resolve();
+        }
 
-                    console.error(`Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'`, error);
-                    
-                    log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'. Error: ${JSON.stringify(error)}`});
-                    
-                    return error;
-                }));
-            }
-        });
-        Promise.all(requests).catch(error => error);
+        return datasets.updateInstanceDimensions(instanceID, this.state.dimensions)
+            .catch(error => {
+                this.handleRequestError(`save updates to dimensions`, error.status);
+
+                console.error(`Unable to save version dimension updates for dimensions - '${instanceID}'`, error);
+                
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for dimensions - '${instanceID}'. Error: ${JSON.stringify(error)}`});
+                
+                return error;
+            })
     }
 
     confirmEditionAndCreateVersion(instanceID, selectedEdition, body) {
@@ -617,7 +643,7 @@ export class VersionMetadata extends Component {
                     name="dimension-name"
                     label="Dimension title"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
                 <Input
                     value={dimension.description}                  
@@ -626,7 +652,7 @@ export class VersionMetadata extends Component {
                     name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
             </div>
             )
@@ -1008,7 +1034,7 @@ export class VersionMetadata extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
+                <div className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4">
                     <div className="margin-top--2">
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
@@ -1047,7 +1073,10 @@ export class VersionMetadata extends Component {
                                     disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                             </div>
-                            <h2> In this dataset </h2>
+                            <div className="grid grid--justify-space-between">
+                                <h2 className="inline-block"> In this dataset </h2>
+                                <div><button onClick={this.populateDimensionInputs} className="btn btn--primary margin-left--1" type="button">Fill from latest version</button></div>
+                            </div>
                             {this.mapDimensionsToInputs(this.state.dimensions)}
                             <div className="margin-bottom--1">
                                 <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
