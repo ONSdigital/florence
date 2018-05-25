@@ -7,15 +7,8 @@ import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
 import log, { eventTypes } from '../../../utilities/log';
 import CollectionCreate from './CollectionCreate';
-import Input from '../../../components/Input';
-import Select from '../../../components/Select';
-import SelectedItemList from '../../../components/selected-items/SelectedItemList'
-import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
-import date from '../../../utilities/date';
-import ScheduleByRelease from '../schedule-by-release/ScheduleByRelease';
-import Modal from '../../../components/Modal';
 
 const propTypes = {
     user: PropTypes.shape({
