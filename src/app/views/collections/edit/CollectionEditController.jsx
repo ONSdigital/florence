@@ -13,6 +13,7 @@ import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addA
 import collectionValidation from '../validation/collectionValidation';
 import collections from '../../../utilities/api-clients/collections';
 import date from '../../../utilities/date';
+import mapCollectionToState from '../mapCollectionToState'
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -28,7 +29,8 @@ const propTypes = {
     })),
     publishType: PropTypes.string.isRequired,
     publishDate: PropTypes.string,
-    activeCollection: PropTypes.object
+    activeCollection: PropTypes.object,
+    collections: PropTypes.array
 };
 
 export class CollectionEditController extends Component {
@@ -281,7 +283,14 @@ export class CollectionEditController extends Component {
                 type: response.type,
                 teams: this.state.teams
             };
+            const allCollections = this.props.collections.map(collection => {
+                if (collection.id !== this.props.id) {
+                    return collection;
+                }
+                return mapCollectionToState(activeCollection);
+            });
             this.props.dispatch(updateActiveCollection(activeCollection));
+            this.props.dispatch(addAllCollections(allCollections));
             this.props.dispatch(push(url.resolve('../')));
         }).catch(error => {
             this.setState({
@@ -441,7 +450,8 @@ export function mapStateToProps(state) {
         teams: state.state.collections.active ? state.state.collections.active.teams : undefined,
         publishType: state.state.collections.active ? state.state.collections.active.type : undefined,
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
-        activeCollection: state.state.collections.active
+        activeCollection: state.state.collections.active,
+        collections: state.state.collections.all
     }
 }
 
