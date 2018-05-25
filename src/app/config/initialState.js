@@ -17,6 +17,7 @@ export const initialState = {
         jobs: []
     },
     collections: {
+        all: [],
         active: null
     },
     notifications: []
