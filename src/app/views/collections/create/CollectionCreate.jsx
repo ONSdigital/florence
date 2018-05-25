@@ -10,7 +10,16 @@ import ScheduleByRelease from '../schedule-by-release/ScheduleByRelease';
 import date from '../../../utilities/date';
 
 const propTypes = {
-    newCollectionDetails: PropTypes.shape.isRequired,
+    newCollectionDetails: PropTypes.shape({
+        name: PropTypes.object.isRequired,
+        type: PropTypes.string.isRequired,
+        publishDate: PropTypes.object.isRequired,
+        publishTime: PropTypes.object.isRequired,
+        pendingDeletes: PropTypes.array.isRequired,
+        teams: PropTypes.array.isRequired,
+        release: PropTypes.object.isRequired,
+        scheduleType: PropTypes.string.isRequired,
+    }).isRequired,
     handleCollectionNameChange: PropTypes.func.isRequired,
     handleTeamSelection: PropTypes.func.isRequired,
     handleRemoveTeam: PropTypes.func.isRequired,
@@ -33,7 +42,7 @@ const propTypes = {
     isSubmitting: PropTypes.bool.isRequired
 }
 
-class CollectionCreateView extends Component {
+class CollectionCreate extends Component {
     constructor(props) {
         super(props);
     }
@@ -161,6 +170,6 @@ class CollectionCreateView extends Component {
     }
 }
 
-//CollectionCreateView.propTypes = propTypes;
+CollectionCreate.propTypes = propTypes;
 
-export default CollectionCreateView;
+export default CollectionCreate;
