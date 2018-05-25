@@ -12,6 +12,7 @@ import log, {eventTypes} from '../../../utilities/log'
 import mapCollectionToState from '../mapCollectionToState'
 import {updateActiveCollection, emptyActiveCollection} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
+import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -61,9 +62,14 @@ export class CollectionDetailsController extends Component {
         this.state = {
             isFetchingCollectionDetails: false,
             isEditingCollection: false,
+            isApprovingCollection: false,
+            isCancellingDelete: {
+                value: false,
+                uri: ""
+            },
+            pendingDeletedPages: [],
             drawerIsAnimatable: false,
             drawerIsVisible: false,
-            pendingDeletedPages: []
         };
 
         this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
@@ -148,52 +154,13 @@ export class CollectionDetailsController extends Component {
             this.updateActiveCollectionGlobally(activeCollection);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
-            switch(error.status) {
-                case(401): {
-                    // do nothing - this is handled by the request function itself
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'neutral',
-                        message: `Collection couldn't be found so you've been redirected to the collections screen`,
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'warning',
-                        message: `You don't have permissions to access this collection so you've been redirect to the collections screen`,
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: 'warning',
-                        message: `There was a network error whilst getting this collection, please check your connection and refresh the page`,
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: 'warning',
-                        message: 'An unexpected error occurred',
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    break;
-                }
+            console.error(`Fetching collection ${collectionID}: `, error);
+            collectionDetailsErrorNotifications.getActiveCollection(error);
+            if (error.status === 404 || error.status === 403) {
+                this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                return;
             }
             this.setState({isFetchingCollectionDetails: false});
-            console.error(`Fetching collection ${collectionID}: `, error);
         });
     }
 
@@ -302,59 +269,8 @@ export class CollectionDetailsController extends Component {
                 })
             }));
         }).catch(error => {
-            switch (error.status) {
-                case(401): {
-                    // do nothing - this is handled by the request function itself
-                    break;
-                }
-                case(400): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't delete collection '${collectionID}'. There may be a file left in progress or awaiting review.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't delete collection '${collectionID}'. It may have already been deleted.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'neutral',
-                        message: `You don't have permission to delete collections`,
-                        autoDismiss: 5000,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't delete collection '${collectionID}' due to a network error, please check your connection and try again.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't delete collection '${collectionID}' due to an unexpected error`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
             console.error(`Error deleting collection '${collectionID}'`, error);
+            collectionDetailsErrorNotifications.deleteCollection(error);
         });
     }
 
@@ -398,50 +314,8 @@ export class CollectionDetailsController extends Component {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }).catch(error => {
             this.setState({isApprovingCollection: false});
-            switch (error.status) {
-                case(401): {
-                    // Handled by request function
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'neutral',
-                        message: `You don't have permission to approve the collection '${activeCollection.name}'`,
-                        autoDismiss: 5000,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't approve the collection '${activeCollection.name}'. It may have already been approved or have been deleted.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't approve the collection '${activeCollection.name}' due to a network error, please check your connection and try again.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't approve the collection '${activeCollection.name}' due to an unexpected error`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
             console.error("Error approving collection", error);
+            collectionDetailsErrorNotifications.approveCollection(error);
         });
     }
 
@@ -485,50 +359,7 @@ export class CollectionDetailsController extends Component {
                 value: false,
                 uri: ""
             }});
-            switch (error.status) {
-                case(401): {
-                    // do nothing - this is handled by the request function itself
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'neutral',
-                        message: `You don't have permission to cancel the delete '${uri}' in the collection '${this.props.activeCollection.name}'`,
-                        autoDismiss: 5000,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't cancel delete of page '${uri}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case('FETCH_ERR'): {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't cancel delete of page '${uri}' from this collection due to a network error, please check your connection and try again.`,
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: 'warning',
-                        message: `Couldn't cancel delete of page '${uri}' from the collection '${this.props.activeCollection.name}' due to an unexpected error`,
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error removing pending delete of page '${uri}' from collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            collectionDetailsErrorNotifications.cancelPageDelete(error, uri, this.props.collectionID);
             console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.collectionID}'`, error);
         });
     }
@@ -602,50 +433,7 @@ export class CollectionDetailsController extends Component {
                 this.props.dispatch(updateActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
-                switch (error.status) {
-                    case(401): {
-                        // do nothing - this is handled by the request function itself
-                        break;
-                    }
-                    case(404): {
-                        const notification = {
-                            type: 'warning',
-                            message: `Couldn't delete the page '${title}' because it doesn't exist in the collection '${this.props.activeCollection.name}'. It may have already been deleted.`,
-                            isDismissable: true
-                        }
-                        notifications.add(notification);
-                        break;
-                    }
-                    case(403): {
-                        const notification = {
-                            type: 'neutral',
-                            message: `You don't have permission to delete the page '${title}' from this collection`,
-                            autoDismiss: 5000,
-                            isDismissable: true
-                        }
-                        notifications.add(notification);
-                        break;
-                    }
-                    case('FETCH_ERR'): {
-                        const notification = {
-                            type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to a network error, please check your connection and try again.`,
-                            isDismissable: true
-                        }
-                        notifications.add(notification);
-                        break;
-                    }
-                    default: {
-                        const notification = {
-                            type: 'warning',
-                            message: `Couldn't delete the page '${title}' from this collection due to an unexpected error`,
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                }
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting page '${title}' from collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+                collectionDetailsErrorNotifications.deletePage(error, title, this.props.collectionID);
                 console.error("Error deleting page from a collection: ", error);
             });
         }
