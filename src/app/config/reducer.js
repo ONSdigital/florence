@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS} from './actions';
 
 
 export default function reducer(state = initialState, action) {
@@ -20,6 +20,15 @@ export default function reducer(state = initialState, action) {
                     isAuthenticated: false
                 })
             })
+        }
+        case (ADD_ALL_COLLECTIONS): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all: action.collections
+                }
+            }
         }
         case (UPDATE_ACTIVE_COLLECTION): {
             return {

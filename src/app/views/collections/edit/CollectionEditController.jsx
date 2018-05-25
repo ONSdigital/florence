@@ -9,7 +9,7 @@ import url from '../../../utilities/url';
 import teams from '../../../utilities/api-clients/teams';
 import log, {eventTypes} from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
-import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection} from '../../../config/actions';
+import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addAllCollections} from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
 import collections from '../../../utilities/api-clients/collections';
 import date from '../../../utilities/date';
