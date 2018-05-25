@@ -174,7 +174,6 @@ export class CollectionsController extends Component {
                         <h1>Create a collection</h1>
                         <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
                         <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
-                        {this.renderDrawer()}
                     </div>
                 </div>
                 {this.state.showRestoreContent &&
