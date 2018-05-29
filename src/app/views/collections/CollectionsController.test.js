@@ -211,90 +211,90 @@ const collection = {
     datasetVersion: []
 }
 
-const differentCollection = {
-    id: 'different-collection-12345',
-    name: 'Different test collection',
-    type: 'manual',
-    teams: ['cpi', 'cpih']
-}
+// const differentCollection = {
+//     id: 'different-collection-12345',
+//     name: 'Different test collection',
+//     type: 'manual',
+//     teams: ['cpi', 'cpih']
+// }
 
-describe("When the active collection parameter changes", () => {
-    const props = {
-        ...defaultProps
-    }
-    const component = shallow(
-        <CollectionsController {...props} />
-    )
+// describe("When the active collection parameter changes", () => {
+//     const props = {
+//         ...defaultProps
+//     }
+//     const component = shallow(
+//         <CollectionsController {...props} />
+//     )
 
-    it("from collections root to a collection ID it sets the collection details to show", () => {
-        component.setProps({
-            params: {collectionID: collection.id}
-        });
-        expect(component.state('drawerIsVisible')).toBe(true);
-        expect(component.state('drawerIsAnimatable')).toBe(true);
-        component.instance().handleDrawerTransitionEnd();
-        expect(component.state('drawerIsAnimatable')).toBe(false);
-    });
+//     it("from collections root to a collection ID it sets the collection details to show", () => {
+//         component.setProps({
+//             params: {collectionID: collection.id}
+//         });
+//         expect(component.state('drawerIsVisible')).toBe(true);
+//         expect(component.state('drawerIsAnimatable')).toBe(true);
+//         component.instance().handleDrawerTransitionEnd();
+//         expect(component.state('drawerIsAnimatable')).toBe(false);
+//     });
     
-    it("from one collection ID to another, it keeps the collection details to showing without animating", () => {
-        component.setProps({
-            params: {collectionID: "different-collection-12345"}
-        });
-        expect(component.state('drawerIsVisible')).toBe(true);
-        expect(component.state('drawerIsAnimatable')).toBe(false);
-    });
+//     it("from one collection ID to another, it keeps the collection details to showing without animating", () => {
+//         component.setProps({
+//             params: {collectionID: "different-collection-12345"}
+//         });
+//         expect(component.state('drawerIsVisible')).toBe(true);
+//         expect(component.state('drawerIsAnimatable')).toBe(false);
+//     });
     
-    it("from one collection ID to collections root, it hides the collection details", () => {
-        component.setProps({
-            params: {collectionID: undefined}
-        });
-        expect(component.state('drawerIsVisible')).toBe(false);
-        expect(component.state('drawerIsAnimatable')).toBe(true);
-        component.instance().handleDrawerTransitionEnd();
-        expect(component.state('drawerIsAnimatable')).toBe(false);
-    });
-});
+//     it("from one collection ID to collections root, it hides the collection details", () => {
+//         component.setProps({
+//             params: {collectionID: undefined}
+//         });
+//         expect(component.state('drawerIsVisible')).toBe(false);
+//         expect(component.state('drawerIsAnimatable')).toBe(true);
+//         component.instance().handleDrawerTransitionEnd();
+//         expect(component.state('drawerIsAnimatable')).toBe(false);
+//     });
+// });
 
-test("Collection details are hidden when 'Cancel' is clicked", () => {
-    const component = shallow(
-        <CollectionsController {...defaultProps} />
-    );
+// test("Collection details are hidden when 'Cancel' is clicked", () => {
+//     const component = shallow(
+//         <CollectionsController {...defaultProps} />
+//     );
 
-    component.instance().handleDrawerCloseClick();
-    expect(component.state('drawerIsVisible')).toBe(false);
-    expect(component.state('drawerIsAnimatable')).toBe(true);
-});
+//     component.instance().handleDrawerCloseClick();
+//     expect(component.state('drawerIsVisible')).toBe(false);
+//     expect(component.state('drawerIsAnimatable')).toBe(true);
+// });
 
-describe("Selecting a page in a collection", () => {
-    const props = {
-        ...defaultProps,
-        params: {
-            collectionID: "test-collection",
-            pageID: undefined
-        }
-    }
-    const component = shallow(
-        <CollectionsController {...props} />
-    )
+// describe("Selecting a page in a collection", () => {
+//     const props = {
+//         ...defaultProps,
+//         params: {
+//             collectionID: "test-collection",
+//             pageID: undefined
+//         }
+//     }
+//     const component = shallow(
+//         <CollectionsController {...props} />
+//     )
 
-    setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection");
+//     setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection");
 
-    it("the first time goes to the page's ID updates", () => {
-        const newURL = component.instance().handleCollectionPageClick('test-page-1');
-        expect(newURL).toBe('/florence/collections/test-collection#test-page-1');
-    });
+//     it("the first time goes to the page's ID updates", () => {
+//         const newURL = component.instance().handleCollectionPageClick('test-page-1');
+//         expect(newURL).toBe('/florence/collections/test-collection#test-page-1');
+//     });
 
-    it("going from one page to another updates the route with the new page's ID", () => {
-        const newURL = component.instance().handleCollectionPageClick('test-page-2');
-        expect(newURL).toBe('/florence/collections/test-collection#test-page-2');
-    });
+//     it("going from one page to another updates the route with the new page's ID", () => {
+//         const newURL = component.instance().handleCollectionPageClick('test-page-2');
+//         expect(newURL).toBe('/florence/collections/test-collection#test-page-2');
+//     });
 
-    it("doesn't do anything if the same page is clicked", () => {
-        component.setProps({activePageURI: "test-page-2"});
-        const newURL = component.instance().handleCollectionPageClick('test-page-2');
-        expect(newURL).toBe(undefined);
-    });
-});
+//     it("doesn't do anything if the same page is clicked", () => {
+//         component.setProps({activePageURI: "test-page-2"});
+//         const newURL = component.instance().handleCollectionPageClick('test-page-2');
+//         expect(newURL).toBe(undefined);
+//     });
+// });
 
 describe("Deleting a page from a collection", () => {
     const props = {
