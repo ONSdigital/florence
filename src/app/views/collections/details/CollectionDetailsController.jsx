@@ -149,6 +149,11 @@ export class CollectionDetailsController extends Component {
                 location.pathname = this.props.rootPath + "/publishing-queue";
                 return;
             }
+            if (!this.props.collectionID || this.props.collectionID !== collection.id) {
+                // User has closed collection details or moved to another one, so do not update state
+                return;
+            }
+
             const mappedCollection = mapCollectionToState(collection);
             const activeCollection = this.mapPagesToCollection(mappedCollection);
             this.updateActiveCollectionGlobally(activeCollection);
@@ -477,36 +482,20 @@ export class CollectionDetailsController extends Component {
         });
     }
 
-
-    renderDrawer() {
-        if (this.state.isFetchingCollections) {
-            return (
-                <Drawer
-                    isVisible={this.state.drawerIsVisible} 
-                    isAnimatable={this.state.drawerIsAnimatable} 
-                    handleTransitionEnd={this.handleDrawerTransitionEnd}
-                >
-                    <div className="grid grid--align-center grid--full-height">
-                        <div className="loader loader--large"></div>
-                    </div>
-                </Drawer>
-            )
-        }
-
-
+    renderLoadingCollectionDetails() {
         return (
-            <Drawer
-                isVisible={this.state.drawerIsVisible} 
-                isAnimatable={this.state.drawerIsAnimatable} 
-                handleTransitionEnd={this.handleDrawerTransitionEnd}
-            >
-                {(this.props.activeCollection && !this.state.isEditingCollection) &&
-                    this.renderCollectionDetails()
-                }
-                {(this.props.activeCollection && this.state.isEditingCollection) &&
-                    this.renderEditCollection()
-                }
-            </Drawer>
+            <CollectionDetails
+                id={this.props.collectionID}
+                isLoadingNameAndDate={true}
+                isLoadingDetails={true}
+                onClose={this.handleDrawerCloseClick}
+                onPageClick={this.handleCollectionPageClick}
+                onEditPageClick={this.handleCollectionPageEditClick}
+                onDeletePageClick={this.handleCollectionPageDeleteClick}
+                onDeleteCollectionClick={this.handleCollectionDeleteClick}
+                onApproveCollectionClick={this.handleCollectionApproveClick}
+                onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
+            />
         )
     }
 
@@ -525,6 +514,7 @@ export class CollectionDetailsController extends Component {
                 onDeleteCollectionClick={this.handleCollectionDeleteClick}
                 onApproveCollectionClick={this.handleCollectionApproveClick}
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
+                isLoadingNameAndDate={false}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
                 isApprovingCollection={this.state.isApprovingCollection}
@@ -542,7 +532,23 @@ export class CollectionDetailsController extends Component {
     }
 
     render() {
-        return this.renderDrawer();
+        return (
+            <Drawer
+                isVisible={this.state.drawerIsVisible} 
+                isAnimatable={this.state.drawerIsAnimatable} 
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            >
+                {(this.props.collectionID && !this.props.activeCollection) &&
+                    this.renderLoadingCollectionDetails()
+                }
+                {(this.props.activeCollection && !this.state.isEditingCollection) &&
+                    this.renderCollectionDetails()
+                }
+                {(this.props.activeCollection && this.state.isEditingCollection) &&
+                    this.renderEditCollection()
+                }
+            </Drawer>
+        )
     }
 }
 

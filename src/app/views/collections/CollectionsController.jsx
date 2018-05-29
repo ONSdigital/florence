@@ -26,7 +26,6 @@ const propTypes = {
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         id: PropTypes.string.isRequired,
     }),
-    activePageURI: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
@@ -164,7 +163,7 @@ export class CollectionsController extends Component {
                         <h1>Select a collection</h1>
                         <DoubleSelectableBoxController
                             items={this.props.collections}
-                            activeItem={this.props.activeCollection}
+                            activeItemID={this.props.params.collectionID}
                             isUpdating={this.state.isFetchingCollections}
                             headings={["Name", "Publish date"]}
                             handleItemClick={this.handleCollectionSelection}
@@ -193,8 +192,7 @@ export function mapStateToProps(state) {
         user: state.state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
-        rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
+        rootPath: state.state.rootPath
     }
 }
 
