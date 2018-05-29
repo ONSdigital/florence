@@ -85,13 +85,6 @@ export class CollectionDetails extends Component {
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
     }
 
-    shouldComponentUpdate(nextProps) {
-        if (this.props.isLoadingDetails && nextProps.isLoadingDetails) {
-            return false;
-        }
-        return true;
-    }
-
     handleCollectionDeleteClick() {
         this.props.onDeleteCollectionClick(this.props.id);
     }
