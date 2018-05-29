@@ -1,7 +1,8 @@
 .drawer {
     position: fixed;
-    top: $lineheight * 3;
+    top: 0;
     right: 0;
+    padding-top: $lineheight * 3;
     -webkit-transform: translateX(103%);
     transform: translateX(103%);
     will-change: transform;
