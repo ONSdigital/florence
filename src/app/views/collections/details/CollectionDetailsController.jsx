@@ -90,7 +90,7 @@ export class CollectionDetailsController extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-         // Open and close edit collection modal
+        // Open and close edit collection modal
          if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
             this.setState({isEditingCollection: true});
         }
