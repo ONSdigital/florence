@@ -171,13 +171,18 @@ describe("When the collections details are loading", () => {
         <CollectionDetails {...props} />
     );
 
-    it("show a loading icon", () => {
+    it("shows a loading icon", () => {
         expect(component.find('.loader').length).toBe(1);
     });
 
     it("doesn't try to render any pages", () => {
         expect(component.find('.page').length).toBe(0);
     });
+
+    it("still renders when collection name is updated", () => {
+        component.setProps({name: "A new name"});
+        expect(component.find('h2').text()).toBe("A new name");
+    })
 });
 
 describe("Number of pages in a state are rendered correctly", () => {

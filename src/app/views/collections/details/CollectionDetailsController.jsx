@@ -384,6 +384,8 @@ export class CollectionDetailsController extends Component {
     }
 
     handleCollectionPageClick(uri) {
+        console.log(this.props.collectionID);
+        
         if (uri === this.props.activePageURI) {
             return;
         }
