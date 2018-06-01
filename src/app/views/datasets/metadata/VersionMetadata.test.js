@@ -7,6 +7,7 @@ import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 
 console.error = jest.fn();
+console.warn = jest.fn();
 
 jest.mock('uuid/v4', () => () => {
     return "12345";
@@ -18,6 +19,14 @@ jest.mock('../../../utilities/url', () => {
             return "test"
         },
         parent: function() {}
+    }
+});
+
+jest.mock('../../../utilities/date', () => {
+    return {
+        format: function() {
+            return "a formatted date"
+        }
     }
 });
 
@@ -375,7 +384,7 @@ test("Alert items map to card element correctly", async () => {
     const cardProps = component.instance().mapTypeContentsToCard(component.state("alerts"),"alerts");
     component.state("alerts").forEach((alert, index) => {
         expect(cardProps[index]).toMatchObject({
-            title: alert.date,
+            title: "a formatted date",
             id: alert.key
         });
     })
