@@ -254,10 +254,9 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	}
 
 	vaultKey := "key"
-	vaultPath := u.vaultPath + "/" +resum.Identifier
+	vaultPath := u.vaultPath + "/" + resum.Identifier
 
 	if len(uploadID) == 0 {
-		acl := "public-read"
 
 		if u.vaultClient != nil {
 			psk := createPSK()
@@ -272,7 +271,6 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		createMultiInput := &s3.CreateMultipartUploadInput{
 			Bucket:      &u.bucketName,
 			Key:         &resum.Identifier,
-			ACL:         &acl,
 			ContentType: &resum.Type,
 		}
 

@@ -10,7 +10,7 @@ import notifications from '../../../utilities/notifications';
 import Select from '../../../components/Select';
 import Input from '../../../components/Input';
 import FormErrorSummary from '../../../components/form-error-summary/FormErrorSummary';
-import {updateActiveInstance, updateActiveVersion, updateAllRecipes, updateActiveDataset, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
+import {updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
 import url from '../../../utilities/url'
 import CardList from '../../../components/CardList';
 import Modal from '../../../components/Modal';
@@ -19,6 +19,8 @@ import RelatedContentForm from './related-content/RelatedContentForm';
 import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
 import DatasetReviewActions from '../DatasetReviewActions'
+import AlertController from './alert/AlertController'
+import date from '../../../utilities/date'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -83,6 +85,7 @@ export class VersionMetadata extends Component {
             isSavingData: false,
             isReadOnly: false,
             isFetchingCollectionData: false,
+            isFetchingDimensionsData: false,
             isInstance: null,
             hasChanges: false,
             edition: null,
@@ -97,6 +100,7 @@ export class VersionMetadata extends Component {
             editKey: "",
             titleInput: "",
             descInput: "",
+            checkboxInput: false,
             formErrors: []
         }
 
@@ -112,7 +116,9 @@ export class VersionMetadata extends Component {
         this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
+        this.handleAlertSave = this.handleAlertSave.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
+        this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
 
     componentWillMount() {
@@ -175,6 +181,7 @@ export class VersionMetadata extends Component {
                     dimensions: this.props.instance.dimensions,
                     edition: this.props.instance.edition,
                 });
+                this.populateDimensionInputs();
             }
 
             if (this.props.params.version) {
@@ -289,6 +296,29 @@ export class VersionMetadata extends Component {
             this.props.dispatch(emptyActiveVersion());
         }
         action();
+    }
+
+    populateDimensionInputs() {
+        this.setState({isFetchingDimensionsData: true});
+        datasets.getLatestVersion(this.props.params.datasetID).then(latestVersion => {
+            if (!latestVersion) {
+                this.setState({isFetchingDimensionsData: false});
+                return;
+            }
+
+            this.setState({
+                dimensions: latestVersion.dimensions.map(dimension => ({
+                    ...dimension,
+                    hasChanged: true
+                })),
+                isFetchingDimensionsData: false
+            });
+        }).catch(error => {
+            this.setState({isFetchingDimensionsData: false});
+            this.handleRequestError("auto-populate the dimension metadata", error.status);
+            console.error("Error getting latest published version to auto-populate dimensions inputs", error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`});
+        });
     }
 
     async updateReviewStateData() {
@@ -454,21 +484,21 @@ export class VersionMetadata extends Component {
     }
 
     updateDimensions(instanceID) {
-        const requests = [];
-        this.state.dimensions.forEach(dimension => {
-            if (dimension.hasChanged) {
-                requests.push(datasets.updateDimensionLabelAndDescription(instanceID, dimension.name, dimension.label, dimension.description).catch(error => {
-                    this.handleRequestError(`save updates to the '${dimension.name}' dimension`, error.status);
+        const dimensionsHaveUpdated = this.state.dimensions.some(dimension => dimension.hasChanged);
+        if (!dimensionsHaveUpdated) {
+            return Promise.resolve();
+        }
 
-                    console.error(`Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'`, error);
-                    
-                    log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for '${dimension.name}' - '${instanceID}'. Error: ${JSON.stringify(error)}`});
-                    
-                    return error;
-                }));
-            }
-        });
-        Promise.all(requests).catch(error => error);
+        return datasets.updateInstanceDimensions(instanceID, this.state.dimensions)
+            .catch(error => {
+                this.handleRequestError(`save updates to dimensions`, error.status);
+
+                console.error(`Unable to save version dimension updates for dimensions - '${instanceID}'`, error);
+                
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for dimensions - '${instanceID}'. Error: ${JSON.stringify(error)}`});
+                
+                return error;
+            })
     }
 
     confirmEditionAndCreateVersion(instanceID, selectedEdition, body) {
@@ -591,7 +621,7 @@ export class VersionMetadata extends Component {
     mapTypeContentsToCard(items, type){
         return items.map(item => {
             return {
-                title: type === "alerts" ? item.date : item.name,
+                title: type === "alerts" ? date.format(item.date, "dddd, dd/mm/yyyy h:MMTT") : item.name,
                 id: item.key,
             }
         });
@@ -617,7 +647,7 @@ export class VersionMetadata extends Component {
                     name="dimension-name"
                     label="Dimension title"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
                 <Input
                     value={dimension.description}                  
@@ -626,7 +656,7 @@ export class VersionMetadata extends Component {
                     name="dimension-description"
                     label="Learn more (optional)"
                     onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData}
+                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
                 />
             </div>
             )
@@ -653,6 +683,7 @@ export class VersionMetadata extends Component {
             showModal: true,
             modalType: type,
             editKey: key,
+            checkboxInput: relatedItem.type === "correction",
             titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
             descInput: relatedItem.description,
             hasChanges: true
@@ -698,7 +729,7 @@ export class VersionMetadata extends Component {
                         ...item,
                         date: this.state.titleInput,
                         description: this.state.descInput,
-                        type: "correction",
+                        type: "alert",
                         hasChanged: true
                     }
                 }
@@ -859,7 +890,7 @@ export class VersionMetadata extends Component {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("alerts", this.state.editKey);
                 } else {
-                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "correction"});
+                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "alert"});
                     this.setState({alerts: alerts});
                 }
             } else if (this.state.modalType === "changes") {
@@ -881,7 +912,74 @@ export class VersionMetadata extends Component {
             });
         }
      }
+     
+    handleAlertSave(newAlert) {
+        const newState = {
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            titleInput: "",
+            descInput: "",
+            checkboxInput: false,
+            hasChanges: true
+        }
 
+        // No existing alerts so we just add our new one into state - stops any runtime errors if we set 
+        // 'alerts' to null or undefined anywhere (because `.some()` would fail later)
+        if (!this.state.alerts || this.state.alerts.length === 0) {
+            const alerts = [{
+                key: newAlert.id,
+                date: newAlert.date,
+                description: newAlert.description,
+                hasChanged: true,
+                type: newAlert.isCorrection ? "correction" : ""
+            }];
+            this.setState({
+                ...newState,
+                alerts
+            });
+            return;
+        }
+
+        const isExistingAlert = this.state.alerts.some(alert => alert.key === newAlert.id);
+        
+        if (isExistingAlert) {
+            const alerts = this.state.alerts.map(alert => {
+                if (alert.key !== newAlert.id) {
+                    return alert;
+                }
+                return {
+                    ...alert,
+                    hasChanged: true,
+                    date: newAlert.date,
+                    description: newAlert.description,
+                    type: newAlert.isCorrection ? "correction" : ""
+                }
+            });
+
+            this.setState({
+                ...newState,
+                alerts,
+            });
+
+            return;
+        }
+
+        const alerts = [...this.state.alerts];
+        alerts.push({
+            key: newAlert.id,
+            date: newAlert.date,
+            description: newAlert.description,
+            hasChanged: true,
+            type: newAlert.isCorrection ? "correction" : ""
+        })
+
+        this.setState({
+            ...newState,
+            alerts
+        });
+    }
+    
     addErrorToSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
             return error === errorMsg;
@@ -1008,7 +1106,7 @@ export class VersionMetadata extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-4">
+                <div className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4">
                     <div className="margin-top--2">
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
@@ -1047,7 +1145,10 @@ export class VersionMetadata extends Component {
                                     disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                             </div>
-                            <h2> In this dataset </h2>
+                            <div className="grid grid--justify-space-between">
+                                <h2 className="inline-block"> In this dataset </h2>
+                                <div><button onClick={this.populateDimensionInputs} className="btn btn--primary margin-left--1" type="button">Fill from latest version</button></div>
+                            </div>
                             {this.mapDimensionsToInputs(this.state.dimensions)}
                             <div className="margin-bottom--1">
                                 <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
@@ -1090,17 +1191,16 @@ export class VersionMetadata extends Component {
                       </div>
                     }
                 </div>
-                {this.state.showModal &&
-
+                {(this.state.showModal && this.state.modalType !== "alerts") &&
                 <Modal sizeClass="grid__col-3">
                         {this.state.modalType ?
 
                           <RelatedContentForm
                               name="related-content-modal"
-                              formTitle={this.state.modalType === "alerts" ? "Add an alert" : "Add latest change"}
+                              formTitle={"Add latest change"}
                               titleInput={this.state.titleInput}
                               descInput={this.state.descInput}
-                              titleLabel={this.state.modalType === "alerts" ? "Date (e.g 01 September 2017)" : "Name"}
+                              titleLabel={"Name"}
                               descLabel={"Description"}
                               onCancel={this.handleRelatedContentCancel}
                               onFormInput={this.handleInputChange}
@@ -1128,6 +1228,16 @@ export class VersionMetadata extends Component {
                       }
                       </Modal>
 
+                }
+                {(this.state.showModal && this.state.modalType === "alerts") &&
+                    <AlertController
+                        date={this.state.titleInput}
+                        description={this.state.descInput}
+                        isCorrection={this.state.checkboxInput}
+                        onSave={this.handleAlertSave}
+                        onCancel={this.handleRelatedContentCancel}
+                        id={this.state.editKey}
+                    />
                 }
             </div>
         )

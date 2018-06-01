@@ -110,13 +110,11 @@ func TestUnitUpload(t *testing.T) {
 
 			key := "12345"
 			id := "test-id"
-			acl := "public-read"
 			contentType := "text/plain"
 
 			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
 				Bucket:      &testBucketName,
 				Key:         &key,
-				ACL:         &acl,
 				ContentType: &contentType,
 			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
 
@@ -177,7 +175,6 @@ func TestUnitUpload(t *testing.T) {
 
 			key := "12345"
 			id := "test-id"
-			acl := "public-read"
 			contentType := "text/plain"
 			encodedPSK := "48656C6C6F20576F726C64"
 			psk := []byte("Hello World")
@@ -194,7 +191,6 @@ func TestUnitUpload(t *testing.T) {
 			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
 				Bucket:      &testBucketName,
 				Key:         &key,
-				ACL:         &acl,
 				ContentType: &contentType,
 			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
 
