@@ -4,15 +4,13 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
 import CollectionCreate from './create/CollectionCreate';
-import RestoreContent from './restore-content/RestoreContent'
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection , addAllCollections} from '../../config/actions';
+import { emptyActiveCollection , addAllCollections} from '../../config/actions';
 import notifications from '../../utilities/notifications';
-import Modal from '../../components/Modal';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
-import CollectionDetailsController from './details/CollectionDetailsController'
-import mapCollectionToState from './mapCollectionToState'
+import CollectionDetailsController from './details/CollectionDetailsController';
+import collectionMapper from './mapper/collectionMapper';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -32,15 +30,13 @@ const propTypes = {
 export class CollectionsController extends Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
-            showRestoreContent: false
+            isFetchingCollections: false
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
-        this.handleRestoreDeletedContentClose = this.handleRestoreDeletedContentClose.bind(this);
-        this.handleRestoreDeletedContentSuccess = this.handleRestoreDeletedContentSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -57,7 +53,7 @@ export class CollectionsController extends Component {
             const allCollections = collections.filter(collection => {
                 return collection.approvalStatus !== "COMPLETE";
             }).map(collection => {
-                return mapCollectionToState(collection)
+                return collectionMapper.collectionResponseToState(collection)
             });
             this.props.dispatch(addAllCollections(allCollections));
             this.setState({isFetchingCollections: false});
@@ -120,7 +116,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        const collections = [...this.props.collections, this.mapCollectionToState(newCollection)];
+        const collections = [...this.props.collections, collectionMapper.collectionResponseToState(newCollection)];
         this.props.dispatch(addAllCollections(collections));
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
         this.fetchCollections();
@@ -132,27 +128,6 @@ export class CollectionsController extends Component {
 
     handleCollectionSelection(collection) {
         this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
-    }
-
-    handleRestoreDeletedContentClose() {
-        this.props.dispatch(push(location.pathname.split('/restore-content')[0]));
-    }
-
-    handleRestoreDeletedContentSuccess(restoredItem) {
-        const addDeleteToInProgress = {
-            uri: restoredItem.uri,
-            title: restoredItem.title,
-            type: restoredItem.type
-        };
-
-        const updatedActiveCollection = {
-            ...this.props.activeCollection,
-            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
-        };
-
-        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
-
-        this.handleRestoreDeletedContentClose();
     }
 
     render() {
@@ -175,12 +150,6 @@ export class CollectionsController extends Component {
                     
                     </div>
                 </div>
-                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
-                {this.state.showRestoreContent &&
-                    <Modal sizeClass="grid__col-8">
-                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
-                    </Modal>
-                }
             </div>
         )
     }
