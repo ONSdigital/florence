@@ -172,9 +172,10 @@ export class CollectionsController extends Component {
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
                         <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
-                        <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
+                    
                     </div>
                 </div>
+                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
                 {this.state.showRestoreContent &&
                     <Modal sizeClass="grid__col-8">
                         <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
