@@ -13,7 +13,7 @@ import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addA
 import collectionValidation from '../validation/collectionValidation';
 import collections from '../../../utilities/api-clients/collections';
 import date from '../../../utilities/date';
-import mapCollectionToState from '../mapCollectionToState'
+import collectionMapper from '../mapper/collectionMapper';
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -287,7 +287,7 @@ export class CollectionEditController extends Component {
                 if (collection.id !== this.props.id) {
                     return collection;
                 }
-                return mapCollectionToState(activeCollection);
+                return collectionMapper.collectionResponseToState(activeCollection);
             });
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.props.dispatch(addAllCollections(allCollections));

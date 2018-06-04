@@ -141,7 +141,7 @@ export class CollectionDetails extends Component {
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ? "Review" : "Edit"}</button>
                     <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
                 </div>
             </li>
@@ -351,20 +351,13 @@ export class CollectionDetails extends Component {
 
         if (this.props.canBeDeleted) {
             return (
-                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
+                <button className="btn btn--warning btn--margin-right" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
             )
         }
         
         if (this.props.canBeApproved) {
             return (
-                <span>
-                    <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
-                    {this.props.isApprovingCollection &&
-                        <div className="inline-block margin-left--1">
-                            <div className="loader loader--inline"></div>
-                        </div>
-                    }
-                </span>
+                <button className="btn btn--positive btn--margin-right" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
             )   
         }
     }
@@ -435,8 +428,13 @@ export class CollectionDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
                     {this.renderCollectionActions()}
+                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
+                    {this.props.isApprovingCollection &&
+                        <div className="inline-block margin-left--1">
+                            <div className="loader loader--inline"></div>
+                        </div>
+                    }
                 </div>
             </div>
         )
