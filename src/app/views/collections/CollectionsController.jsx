@@ -4,15 +4,13 @@ import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
 import CollectionCreateController from './create/CollectionCreateController';
-import RestoreContent from './restore-content/RestoreContent'
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
-import { updateActiveCollection, emptyActiveCollection , addAllCollections} from '../../config/actions';
+import { emptyActiveCollection , addAllCollections} from '../../config/actions';
 import notifications from '../../utilities/notifications';
-import Modal from '../../components/Modal';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
-import CollectionDetailsController from './details/CollectionDetailsController'
-import mapCollectionToState from './mapCollectionToState'
+import CollectionDetailsController from './details/CollectionDetailsController';
+import collectionMapper from './mapper/collectionMapper';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -26,22 +24,19 @@ const propTypes = {
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         id: PropTypes.string.isRequired,
     }),
-    activePageURI: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
 export class CollectionsController extends Component {
     constructor(props) {
         super(props);
-
+        
         this.state = {
-            showRestoreContent: false
+            isFetchingCollections: false
         };
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
-        this.handleRestoreDeletedContentClose = this.handleRestoreDeletedContentClose.bind(this);
-        this.handleRestoreDeletedContentSuccess = this.handleRestoreDeletedContentSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -58,7 +53,7 @@ export class CollectionsController extends Component {
             const allCollections = collections.filter(collection => {
                 return collection.approvalStatus !== "COMPLETE";
             }).map(collection => {
-                return mapCollectionToState(collection)
+                return collectionMapper.collectionResponseToState(collection)
             });
             this.props.dispatch(addAllCollections(allCollections));
             this.setState({isFetchingCollections: false});
@@ -121,7 +116,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        const collections = [...this.props.collections, this.mapCollectionToState(newCollection)];
+        const collections = [...this.props.collections, collectionMapper.collectionResponseToState(newCollection)];
         this.props.dispatch(addAllCollections(collections));
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
         this.fetchCollections();
@@ -135,27 +130,6 @@ export class CollectionsController extends Component {
         this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
     }
 
-    handleRestoreDeletedContentClose() {
-        this.props.dispatch(push(location.pathname.split('/restore-content')[0]));
-    }
-
-    handleRestoreDeletedContentSuccess(restoredItem) {
-        const addDeleteToInProgress = {
-            uri: restoredItem.uri,
-            title: restoredItem.title,
-            type: restoredItem.type
-        };
-
-        const updatedActiveCollection = {
-            ...this.props.activeCollection,
-            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
-        };
-
-        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
-
-        this.handleRestoreDeletedContentClose();
-    }
-
     render() {
         return (
             <div>
@@ -164,7 +138,7 @@ export class CollectionsController extends Component {
                         <h1>Select a collection</h1>
                         <DoubleSelectableBoxController
                             items={this.props.collections}
-                            activeItem={this.props.activeCollection}
+                            activeItemID={this.props.params.collectionID}
                             isUpdating={this.state.isFetchingCollections}
                             headings={["Name", "Publish date"]}
                             handleItemClick={this.handleCollectionSelection}
@@ -173,14 +147,9 @@ export class CollectionsController extends Component {
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
                         <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
-                        <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
                     </div>
                 </div>
-                {this.state.showRestoreContent &&
-                    <Modal sizeClass="grid__col-8">
-                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
-                    </Modal>
-                }
+                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
             </div>
         )
     }
@@ -193,8 +162,7 @@ export function mapStateToProps(state) {
         user: state.state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
-        rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
+        rootPath: state.state.rootPath
     }
 }
 

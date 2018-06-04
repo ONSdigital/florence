@@ -8,11 +8,12 @@ import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './Collecti
 import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import log, {eventTypes} from '../../../utilities/log'
-import mapCollectionToState from '../mapCollectionToState'
-import {updateActiveCollection, emptyActiveCollection} from '../../../config/actions'
+import {updateActiveCollection, emptyActiveCollection, addAllCollections} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
+import collectionMapper from "../mapper/collectionMapper";
+import Modal from "../../../components/Modal";
+import RestoreContent from "../restore-content/RestoreContent";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -62,6 +63,7 @@ export class CollectionDetailsController extends Component {
         this.state = {
             isFetchingCollectionDetails: false,
             isEditingCollection: false,
+            isRestoringContent: false,
             isApprovingCollection: false,
             isCancellingDelete: {
                 value: false,
@@ -80,6 +82,8 @@ export class CollectionDetailsController extends Component {
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
         this.handleCancelPageDeleteClick = this.handleCancelPageDeleteClick.bind(this);
+        this.handleRestoreDeletedContentClose = this.handleRestoreDeletedContentClose.bind(this);
+        this.handleRestoreDeletedContentSuccess = this.handleRestoreDeletedContentSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -90,7 +94,7 @@ export class CollectionDetailsController extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-         // Open and close edit collection modal
+        // Open and close edit collection modal
          if (nextProps.routes[nextProps.routes.length-1].path === "edit") {
             this.setState({isEditingCollection: true});
         }
@@ -99,11 +103,11 @@ export class CollectionDetailsController extends Component {
         }
         // Display restore content modal
         if (nextProps.routes[nextProps.routes.length-1].path === "restore-content") {
-            this.setState({showRestoreContent: true});
+            this.setState({isRestoringContent: true});
         }
 
         if (this.props.routes[this.props.routes.length-1].path === "restore-content" && nextProps.routes[nextProps.routes.length-1].path !== "restore-content") {
-            this.setState({showRestoreContent: false});
+            this.setState({isRestoringContent: false});
         }
 
         if (!this.props.collectionID && nextProps.collectionID) {
@@ -149,9 +153,14 @@ export class CollectionDetailsController extends Component {
                 location.pathname = this.props.rootPath + "/publishing-queue";
                 return;
             }
-            const mappedCollection = mapCollectionToState(collection);
-            const activeCollection = this.mapPagesToCollection(mappedCollection);
-            this.updateActiveCollectionGlobally(activeCollection);
+            if (!this.props.collectionID || this.props.collectionID !== collection.id) {
+                // User has closed collection details or moved to another one, so do not update state
+                return;
+            }
+
+            const mappedCollection = collectionMapper.collectionResponseToState(collection);
+            const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
+            this.updateActiveCollectionGlobally(collectionWithPages);
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             console.error(`Fetching collection ${collectionID}: `, error);
@@ -169,90 +178,6 @@ export class CollectionDetailsController extends Component {
         cookies.add("collection", collection.id, null);
     }
 
-    collectionCanBeApproved(collection) {
-        // One of the lists doesn't have a value, so we can't verify whether it can be
-        // deleted or not. Therefore it's safer to not allow approval
-        if (!collection.inProgress || !collection.complete || !collection.reviewed) {
-            return false;
-        }
-
-        if (collection.reviewed.length >= 1 && collection.inProgress.length === 0 && collection.complete.length === 0) {
-            return true;
-        }
-
-        // We shouldn't get to this return but we'll return false by default because it's safer to disallow
-        // approval rather than approve something in a unexpected state
-        return false;
-    }
-    
-    collectionCanBeDeleted(collection) {
-        // One of the lists doesn't have a value, so we can't verify whether it can be
-        // deleted or not. Therefore it's safer to not allow approval
-        if (!collection.inProgress || !collection.complete || !collection.reviewed) {
-            return false;
-        }
-
-        if (collection.reviewed.length === 0 && collection.inProgress.length === 0 && collection.complete.length === 0 && (!collection.deletes || collection.deletes.length === 0)) {
-            return true;
-        }
-
-        // We shouldn't get to this return but we'll return false by default because it's safer to disallow
-        // approval rather than approve something in a unexpected state
-        return false;
-    }
-
-    mapPagesAndPendingDeletes(state) {
-        if (!this.props.activeCollection[state]) {
-            return;
-        }
-
-        if (!this.state.pendingDeletedPages || this.state.pendingDeletedPages.length === 0) {
-            return this.props.activeCollection[state];
-        }
-
-        return this.props.activeCollection[state].filter(page => {
-            return !this.state.pendingDeletedPages.includes(page.uri);
-        });
-    }
-
-    mapPagesToCollection(collection) {
-        try {
-            const canBeApproved = this.collectionCanBeApproved(collection);
-            const canBeDeleted = this.collectionCanBeDeleted(collection);
-            const mapPageToState = pagesArray => {
-                if (!pagesArray) {
-                    log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
-                    return null;
-                }
-                return pagesArray.map(page => {
-                    return {
-                        lastEdit: {
-                            email: page.events ? page.events[0].email : "",
-                            date: page.events ? page.events[0].date : ""
-                        },
-                        title: page.description.title,
-                        edition: page.description.edition || "",
-                        uri: page.uri,
-                        type: page.type
-                    }
-                });
-            }
-            const mappedCollection = {
-                ...collection,
-                canBeApproved,
-                canBeDeleted,
-                inProgress: mapPageToState(collection.inProgress),
-                complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed)
-            }
-            return mappedCollection;
-        } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Redux state" + JSON.stringify(error));
-            console.error("Error mapping collection GET response to Redux state" + error);
-            return null;
-        }
-    }
-
     handleCollectionDeleteClick(collectionID) {
         this.props.dispatch(push(`${this.props.rootPath}/collections`));
         collections.delete(collectionID).then(() => {
@@ -263,11 +188,10 @@ export class CollectionDetailsController extends Component {
                 isDismissable: true
             }
             notifications.add(notification);
-            this.setState(state => ({
-                collections: state.collections.filter(collection => {
-                    return collection.id !== collectionID
-                })
-            }));
+            const allCollections = this.props.collections.filter(collection => {
+                return collection.id !== collectionID
+            })
+            this.props.dispatch(addAllCollections(allCollections));
         }).catch(error => {
             console.error(`Error deleting collection '${collectionID}'`, error);
             collectionDetailsErrorNotifications.deleteCollection(error);
@@ -277,7 +201,7 @@ export class CollectionDetailsController extends Component {
     handleCollectionApproveClick() {
         const activeCollection = this.props.activeCollection;
         const collectionID = this.props.collectionID;
-        if (!this.collectionCanBeApproved(activeCollection)) {
+        if (!collectionMapper.collectionCanBeApproved(activeCollection)) {
             const notification = {
                 type: 'neutral',
                 message: `Unable to approve collection '${activeCollection.name}', please check that there are no pages in progress or awaiting review`,
@@ -288,27 +212,21 @@ export class CollectionDetailsController extends Component {
             return false;
         }
 
-        const updatePublishStatusToNeutral = state => {
-            return {
-                collections: state.collections.map(collection => {
-                    if (collection.id !== collectionID) {
-                        return collection;
-                    }
-                    return {
-                        ...collection,
-                        status: {
-                            ...collection.status,
-                            neutral: true
-                        }
-                    }
-                })
+        const allCollections = this.props.collections.map(collection => {
+            if (collection.id !== collectionID) {
+                return collection;
             }
-        }
-
-        this.setState({
-            isApprovingCollection: true,
-            ...updatePublishStatusToNeutral(this.state),
+            return {
+                ...collection,
+                status: {
+                    ...collection.status,
+                    neutral: true
+                }
+            }
         });
+        this.props.dispatch(addAllCollections(allCollections));
+
+        this.setState({isApprovingCollection: true});
         collections.approve(collectionID).then(() => {
             this.setState({isApprovingCollection: false});
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -378,7 +296,7 @@ export class CollectionDetailsController extends Component {
         }
     }
 
-    handleCollectionPageClick(uri) {
+    handleCollectionPageClick(uri) {       
         if (uri === this.props.activePageURI) {
             return;
         }
@@ -428,8 +346,8 @@ export class CollectionDetailsController extends Component {
                     ...this.props.activeCollection,
                     [state]: pages
                 };
-                updatedCollection.canBeApproved = this.collectionCanBeApproved(updatedCollection);
-                updatedCollection.canBeDeleted = this.collectionCanBeDeleted(updatedCollection);
+                updatedCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedCollection);
+                updatedCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedCollection);
                 this.props.dispatch(updateActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
@@ -456,7 +374,7 @@ export class CollectionDetailsController extends Component {
                     onClick: undoPageDelete
                 },
                 {
-                    text: "Close",
+                    text: "OK",
                     onClick: handleNotificationClose
                 }
             ],
@@ -477,36 +395,41 @@ export class CollectionDetailsController extends Component {
         });
     }
 
+    handleRestoreDeletedContentClose() {
+        this.props.dispatch(push(location.pathname.split('/restore-content')[0]));
+    }
 
-    renderDrawer() {
-        if (this.state.isFetchingCollections) {
-            return (
-                <Drawer
-                    isVisible={this.state.drawerIsVisible} 
-                    isAnimatable={this.state.drawerIsAnimatable} 
-                    handleTransitionEnd={this.handleDrawerTransitionEnd}
-                >
-                    <div className="grid grid--align-center grid--full-height">
-                        <div className="loader loader--large"></div>
-                    </div>
-                </Drawer>
-            )
-        }
+    handleRestoreDeletedContentSuccess(restoredItem) {
+        const addDeleteToInProgress = {
+            uri: restoredItem.uri,
+            title: restoredItem.title,
+            type: restoredItem.type
+        };
 
+        const updatedActiveCollection = {
+            ...this.props.activeCollection,
+            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
+        };
 
+        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+
+        this.handleRestoreDeletedContentClose();
+    }
+
+    renderLoadingCollectionDetails() {
         return (
-            <Drawer
-                isVisible={this.state.drawerIsVisible} 
-                isAnimatable={this.state.drawerIsAnimatable} 
-                handleTransitionEnd={this.handleDrawerTransitionEnd}
-            >
-                {(this.props.activeCollection && !this.state.isEditingCollection) &&
-                    this.renderCollectionDetails()
-                }
-                {(this.props.activeCollection && this.state.isEditingCollection) &&
-                    this.renderEditCollection()
-                }
-            </Drawer>
+            <CollectionDetails
+                id={this.props.collectionID}
+                isLoadingNameAndDate={true}
+                isLoadingDetails={true}
+                onClose={this.handleDrawerCloseClick}
+                onPageClick={this.handleCollectionPageClick}
+                onEditPageClick={this.handleCollectionPageEditClick}
+                onDeletePageClick={this.handleCollectionPageDeleteClick}
+                onDeleteCollectionClick={this.handleCollectionDeleteClick}
+                onApproveCollectionClick={this.handleCollectionApproveClick}
+                onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
+            />
         )
     }
 
@@ -515,9 +438,9 @@ export class CollectionDetailsController extends Component {
             <CollectionDetails 
                 {...this.props.activeCollection}
                 activePageURI={this.props.activePageURI}
-                inProgress={this.mapPagesAndPendingDeletes('inProgress')}
-                complete={this.mapPagesAndPendingDeletes('complete')}
-                reviewed={this.mapPagesAndPendingDeletes('reviewed')}
+                inProgress={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection['inProgress'], this.state.pendingDeletedPages)}
+                complete={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection['complete'], this.state.pendingDeletedPages)}
+                reviewed={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection['reviewed'], this.state.pendingDeletedPages)}
                 onClose={this.handleDrawerCloseClick}
                 onPageClick={this.handleCollectionPageClick}
                 onEditPageClick={this.handleCollectionPageEditClick}
@@ -525,6 +448,7 @@ export class CollectionDetailsController extends Component {
                 onDeleteCollectionClick={this.handleCollectionDeleteClick}
                 onApproveCollectionClick={this.handleCollectionApproveClick}
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
+                isLoadingNameAndDate={false}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
                 isApprovingCollection={this.state.isApprovingCollection}
@@ -542,13 +466,36 @@ export class CollectionDetailsController extends Component {
     }
 
     render() {
-        return this.renderDrawer();
+        return (
+            <div>
+                <Drawer
+                    isVisible={this.state.drawerIsVisible} 
+                    isAnimatable={this.state.drawerIsAnimatable} 
+                    handleTransitionEnd={this.handleDrawerTransitionEnd}
+                >
+                    {(this.props.collectionID && !this.props.activeCollection) &&
+                        this.renderLoadingCollectionDetails()
+                    }
+                    {(this.props.activeCollection && !this.state.isEditingCollection) &&
+                        this.renderCollectionDetails()
+                    }
+                    {(this.props.activeCollection && this.state.isEditingCollection) &&
+                        this.renderEditCollection()
+                    }
+                </Drawer>
+                {(this.state.isRestoringContent && this.props.activeCollection) &&
+                    <Modal sizeClass="grid__col-8">
+                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
+                    </Modal>
+                }
+            </div>
+        )
     }
 }
 
 CollectionDetailsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
     return {
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
