@@ -11,8 +11,8 @@ import { updateActiveCollection, emptyActiveCollection , addAllCollections} from
 import notifications from '../../utilities/notifications';
 import Modal from '../../components/Modal';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
-import CollectionDetailsController from './details/CollectionDetailsController'
-import mapCollectionToState from './mapCollectionToState'
+import CollectionDetailsController from './details/CollectionDetailsController';
+import collectionMapper from './mapper/collectionMapper';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -57,7 +57,7 @@ export class CollectionsController extends Component {
             const allCollections = collections.filter(collection => {
                 return collection.approvalStatus !== "COMPLETE";
             }).map(collection => {
-                return mapCollectionToState(collection)
+                return collectionMapper.collectionResponseToState(collection)
             });
             this.props.dispatch(addAllCollections(allCollections));
             this.setState({isFetchingCollections: false});
@@ -120,7 +120,7 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        const collections = [...this.props.collections, this.mapCollectionToState(newCollection)];
+        const collections = [...this.props.collections, collectionMapper.collectionResponseToState(newCollection)];
         this.props.dispatch(addAllCollections(collections));
         this.props.dispatch(push(`${this.props.rootPath}/collections/${newCollection.id}`));
         this.fetchCollections();
