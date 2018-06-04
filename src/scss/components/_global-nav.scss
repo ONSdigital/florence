@@ -1,5 +1,7 @@
 .global-nav {
     &__list {
+        position: relative;
+        z-index: 1;
         overflow: hidden;
         background: $mine-shaft;
         padding: 0 20px;

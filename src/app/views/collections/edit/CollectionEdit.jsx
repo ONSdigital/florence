@@ -176,8 +176,8 @@ class CollectionEdit extends Component {
                     </form>
                 </div>
                 <div className="drawer__footer">
-                    <button disabled={this.props.isSavingEdits} className="btn" type="button" onClick={this.props.onCancel}>Cancel</button>
-                    <button disabled={this.props.isSavingEdits} className="btn btn--positive btn--margin-left" type="button" onClick={this.handleSave}>Save and return</button>
+                    <button disabled={this.props.isSavingEdits} className="btn btn--positive" type="button" onClick={this.handleSave}>Save and return</button>
+                    <button disabled={this.props.isSavingEdits} className="btn btn--margin-left" type="button" onClick={this.props.onCancel}>Cancel</button>
                     {this.props.isSavingEdits &&
                         <div className="inline-block">
                             <div className="form__loader loader"></div>
