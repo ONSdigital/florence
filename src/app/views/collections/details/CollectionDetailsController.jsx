@@ -12,6 +12,8 @@ import {updateActiveCollection, emptyActiveCollection, addAllCollections} from '
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 import collectionMapper from "../mapper/collectionMapper";
+import Modal from "../../../components/Modal";
+import RestoreContent from "../restore-content/RestoreContent";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -61,6 +63,7 @@ export class CollectionDetailsController extends Component {
         this.state = {
             isFetchingCollectionDetails: false,
             isEditingCollection: false,
+            isRestoringContent: false,
             isApprovingCollection: false,
             isCancellingDelete: {
                 value: false,
@@ -79,6 +82,8 @@ export class CollectionDetailsController extends Component {
         this.handleCollectionPageEditClick = this.handleCollectionPageEditClick.bind(this);
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
         this.handleCancelPageDeleteClick = this.handleCancelPageDeleteClick.bind(this);
+        this.handleRestoreDeletedContentClose = this.handleRestoreDeletedContentClose.bind(this);
+        this.handleRestoreDeletedContentSuccess = this.handleRestoreDeletedContentSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -98,11 +103,11 @@ export class CollectionDetailsController extends Component {
         }
         // Display restore content modal
         if (nextProps.routes[nextProps.routes.length-1].path === "restore-content") {
-            this.setState({showRestoreContent: true});
+            this.setState({isRestoringContent: true});
         }
 
         if (this.props.routes[this.props.routes.length-1].path === "restore-content" && nextProps.routes[nextProps.routes.length-1].path !== "restore-content") {
-            this.setState({showRestoreContent: false});
+            this.setState({isRestoringContent: false});
         }
 
         if (!this.props.collectionID && nextProps.collectionID) {
@@ -396,6 +401,27 @@ export class CollectionDetailsController extends Component {
         });
     }
 
+    handleRestoreDeletedContentClose() {
+        this.props.dispatch(push(location.pathname.split('/restore-content')[0]));
+    }
+
+    handleRestoreDeletedContentSuccess(restoredItem) {
+        const addDeleteToInProgress = {
+            uri: restoredItem.uri,
+            title: restoredItem.title,
+            type: restoredItem.type
+        };
+
+        const updatedActiveCollection = {
+            ...this.props.activeCollection,
+            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
+        };
+
+        this.props.dispatch(updateActiveCollection(updatedActiveCollection));
+
+        this.handleRestoreDeletedContentClose();
+    }
+
     renderLoadingCollectionDetails() {
         return (
             <CollectionDetails
@@ -447,21 +473,28 @@ export class CollectionDetailsController extends Component {
 
     render() {
         return (
-            <Drawer
-                isVisible={this.state.drawerIsVisible} 
-                isAnimatable={this.state.drawerIsAnimatable} 
-                handleTransitionEnd={this.handleDrawerTransitionEnd}
-            >
-                {(this.props.collectionID && !this.props.activeCollection) &&
-                    this.renderLoadingCollectionDetails()
+            <div>
+                <Drawer
+                    isVisible={this.state.drawerIsVisible} 
+                    isAnimatable={this.state.drawerIsAnimatable} 
+                    handleTransitionEnd={this.handleDrawerTransitionEnd}
+                >
+                    {(this.props.collectionID && !this.props.activeCollection) &&
+                        this.renderLoadingCollectionDetails()
+                    }
+                    {(this.props.activeCollection && !this.state.isEditingCollection) &&
+                        this.renderCollectionDetails()
+                    }
+                    {(this.props.activeCollection && this.state.isEditingCollection) &&
+                        this.renderEditCollection()
+                    }
+                </Drawer>
+                {(this.state.isRestoringContent && this.props.activeCollection) &&
+                    <Modal sizeClass="grid__col-8">
+                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
+                    </Modal>
                 }
-                {(this.props.activeCollection && !this.state.isEditingCollection) &&
-                    this.renderCollectionDetails()
-                }
-                {(this.props.activeCollection && this.state.isEditingCollection) &&
-                    this.renderEditCollection()
-                }
-            </Drawer>
+            </div>
         )
     }
 }
