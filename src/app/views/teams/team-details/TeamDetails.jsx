@@ -21,11 +21,14 @@ class TeamDetails extends Component {
     renderMembers() {
         const members = this.props.members;
         const list = (
-            <ul className="list list--neutral">
-                {members.map((member, index) => {
-                    return <li className="list__item" key={index}>{member}</li>
-                })}
-            </ul>
+            <div>
+                <h3 className="margin-bottom--1">Members:</h3>
+                <ul className="list list--neutral">
+                    {members.map((member, index) => {
+                        return <li className="list__item" key={index}>{member}</li>
+                    })}
+                </ul>
+            </div>
         )
         return (members.length > 0) ? list : <p>This team has no members</p>
     }
@@ -33,36 +36,67 @@ class TeamDetails extends Component {
     render() {
         return (
             <div className="drawer__container">
-                <h2 className="drawer__heading">{this.props.name}</h2>
+                <div className="drawer__heading">
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--3 margin-bottom--2">
+                            <h2>{this.props.name}</h2>
+                        </div>
+                    </div>
+                </div>
                 {this.props.isReadOnly &&
                     <div className="drawer__banner drawer__banner--dark">
-                        <h3>Read only</h3>
-                        <p>The list of teams if still being fetched so you can't edit or delete a team</p>
+                        <div className="grid grid--justify-space-around">
+                            <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                                <div>
+                                    <h3>Read only</h3>
+                                    <p>The list of teams if still being fetched so you can't edit or delete a team</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 }
                 {this.props.userIsAdmin && 
                     <div className="drawer__banner">
-                        <button onClick={this.props.onEditMembers} disabled={this.props.isReadOnly} className="btn btn--primary">Add / remove members</button>
+                        <div className="grid grid--justify-space-around">
+                            <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                                <div>
+                                    <button onClick={this.props.onEditMembers} disabled={this.props.isReadOnly} className="btn btn--primary">Add / remove members</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 }
                 <div className="drawer__body">
-                    {this.props.isShowingLoader &&
-                            <div className="drawer__loader loader loader--dark"></div>}
-                    {this.props.members &&
-                        this.renderMembers()
-                    }
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1">
+                            {this.props.isShowingLoader &&
+                                <div className="grid grid--align-center margin-top--4">
+                                    <div className="loader loader--large loader--dark"></div>
+                                </div>
+                            }
+                            {this.props.members &&
+                                this.renderMembers()
+                            }
+                        </div>
+                    </div>
                 </div>
                 <div className="drawer__footer">
-                    {this.props.userIsAdmin &&
-                        <button 
-                            className="btn btn--warning btn--margin-right" 
-                            disabled={this.props.isReadOnly} 
-                            onClick={this.props.onDelete}
-                        >
-                            Delete team
-                        </button>
-                    }
-                    <button className="btn" onClick={this.props.onCancel}>Cancel</button>
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                            <div>
+                                {this.props.userIsAdmin &&
+                                    <button 
+                                        className="btn btn--warning btn--margin-right" 
+                                        disabled={this.props.isReadOnly} 
+                                        onClick={this.props.onDelete}
+                                    >
+                                        Delete team
+                                    </button>
+                                }
+                                <button className="btn" onClick={this.props.onCancel}>Close</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
