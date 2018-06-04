@@ -36,7 +36,7 @@ export const deletedPagePropTypes = PropTypes.shape({
 const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
-    name: PropTypes.string.isRequired,
+    name: PropTypes.string,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
@@ -44,6 +44,7 @@ const propTypes = {
     onCancelPageDeleteClick: PropTypes.func.isRequired,
     onDeleteCollectionClick: PropTypes.func.isRequired,
     onApproveCollectionClick: PropTypes.func.isRequired,
+    isLoadingNameAndDate: PropTypes.bool,
     isLoadingDetails: PropTypes.bool,
     isCancellingDelete: PropTypes.shape({
         value: PropTypes.bool.isRequired,
@@ -70,7 +71,7 @@ const propTypes = {
         neutral: PropTypes.bool,
         warning: PropTypes.bool
     }),
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     publishDate: PropTypes.string,
     dispatch: PropTypes.func.isRequired
 };
@@ -82,13 +83,6 @@ export class CollectionDetails extends Component {
         this.handleRestoreContentClick = this.handleRestoreContentClick.bind(this);
         this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
-    }
-
-    shouldComponentUpdate(nextProps) {
-        if (this.props.isLoadingDetails && nextProps.isLoadingDetails) {
-            return false;
-        }
-        return true;
     }
 
     handleCollectionDeleteClick() {
@@ -147,7 +141,7 @@ export class CollectionDetails extends Component {
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">Edit</button>
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ? "Review" : "Edit"}</button>
                     <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
                 </div>
             </li>
@@ -325,6 +319,8 @@ export class CollectionDetails extends Component {
                 </div>
             )
         }
+
+        return;
     }
 
     renderCollectionPageActions() {
@@ -334,8 +330,8 @@ export class CollectionDetails extends Component {
 
         return (
             <div className="drawer__banner">
-                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary" disabled>Create/edit page</a>
-                <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
+                <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
             </div>
         )
     }
@@ -345,26 +341,23 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionActions() {
+        if (this.props.isLoadingNameAndDate) {
+            return;
+        }
+
         if (this.props.status && (this.props.status.neutral || this.props.status.warning)) {
             return;
         }
 
         if (this.props.canBeDeleted) {
             return (
-                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
+                <button className="btn btn--warning btn--margin-right" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
             )
         }
         
         if (this.props.canBeApproved) {
             return (
-                <span>
-                    <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
-                    {this.props.isApprovingCollection &&
-                        <div className="inline-block margin-left--1">
-                            <div className="loader loader--inline"></div>
-                        </div>
-                    }
-                </span>
+                <button className="btn btn--positive btn--margin-right" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
             )   
         }
     }
@@ -397,10 +390,16 @@ export class CollectionDetails extends Component {
                 <div className="drawer__heading">
                     <div className="grid grid--justify-space-between grid--align-end">
                         <div>
-                            <h2>{this.props.name}</h2>
-                            {this.renderPublishDate()}
+                            <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
+                            {this.props.isLoadingNameAndDate ? 
+                                <p>Loading...</p>
+                            :
+                                this.renderPublishDate()
+                            }
                         </div>
-                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                        {!this.props.isLoadingNameAndDate &&
+                            <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                        }
                     </div>
                 </div>
                 {this.renderCollectionState()}
@@ -429,8 +428,13 @@ export class CollectionDetails extends Component {
                     }
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
                     {this.renderCollectionActions()}
+                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
+                    {this.props.isApprovingCollection &&
+                        <div className="inline-block margin-left--1">
+                            <div className="loader loader--inline"></div>
+                        </div>
+                    }
                 </div>
             </div>
         )
