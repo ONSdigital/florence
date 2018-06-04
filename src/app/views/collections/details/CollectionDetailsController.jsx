@@ -212,27 +212,21 @@ export class CollectionDetailsController extends Component {
             return false;
         }
 
-        const updatePublishStatusToNeutral = state => {
-            return {
-                collections: state.collections.map(collection => {
-                    if (collection.id !== collectionID) {
-                        return collection;
-                    }
-                    return {
-                        ...collection,
-                        status: {
-                            ...collection.status,
-                            neutral: true
-                        }
-                    }
-                })
+        const allCollections = this.props.collections.map(collection => {
+            if (collection.id !== collectionID) {
+                return collection;
             }
-        }
-
-        this.setState({
-            isApprovingCollection: true,
-            ...updatePublishStatusToNeutral(this.state),
+            return {
+                ...collection,
+                status: {
+                    ...collection.status,
+                    neutral: true
+                }
+            }
         });
+        this.props.dispatch(addAllCollections(allCollections));
+
+        this.setState({isApprovingCollection: true});
         collections.approve(collectionID).then(() => {
             this.setState({isApprovingCollection: false});
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
