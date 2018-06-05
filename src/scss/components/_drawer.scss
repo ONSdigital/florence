@@ -30,15 +30,15 @@
     }
 
     &__heading {
-        padding-left: $gutter * 8;
-        padding-right: $gutter * 8;
+        // padding-left: $gutter * 8;
+        // padding-right: $gutter * 8;
         color: $cadet-blue;
-        margin-top: $lineheight * 3;
-        margin-bottom: $lineheight * 2;
+        // margin-top: $lineheight * 3;
+        // margin-bottom: $lineheight * 2;
     }
 
     &__banner {
-        padding: ($lineheight) ($gutter * 8);
+        // padding: ($lineheight) ($gutter * 8);
         background-color: $grey-chateau;
 
         &--dark {
@@ -54,7 +54,7 @@
     }
 
     &__body {
-        padding: ($lineheight) ($gutter * 8);
+        // padding: ($lineheight) ($gutter * 8);
         background-color: $quill-grey;
         flex: 1;
         overflow-y: scroll;
@@ -67,6 +67,6 @@
     }
 
     &__footer {
-        padding: $lineheight ($gutter * 8);
+        // padding: $lineheight ($gutter * 8);
     }
 }
