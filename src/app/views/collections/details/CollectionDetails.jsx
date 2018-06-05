@@ -150,7 +150,7 @@ export class CollectionDetails extends Component {
 
     renderPagesList(pages) {
         return (
-            <ul className="list list--neutral margin-bottom--2">
+            <ul className="list list--neutral margin-bottom--1">
                 {pages}
             </ul>
         )
@@ -307,7 +307,11 @@ export class CollectionDetails extends Component {
         if (this.props.status.neutral) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
-                    Preparing collection for the publishing queue
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            Preparing collection for the publishing queue
+                        </div>
+                    </div>
                 </div>
             )
         }
@@ -315,7 +319,11 @@ export class CollectionDetails extends Component {
         if (this.props.status.warning) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
-                    Error whilst preparing this collection for the publishing queue
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            Error whilst preparing this collection for the publishing queue
+                        </div>
+                    </div>
                 </div>
             )
         }
@@ -330,8 +338,14 @@ export class CollectionDetails extends Component {
 
         return (
             <div className="drawer__banner">
-                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
-                <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                <div className="grid grid--justify-space-around">
+                    <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
+                        <div>
+                            <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
+                            <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -388,53 +402,65 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__container">
                 <div className="drawer__heading">
-                    <div className="grid grid--justify-space-between grid--align-end">
-                        <div>
-                            <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
-                            {this.props.isLoadingNameAndDate ? 
-                                <p>Loading...</p>
-                            :
-                                this.renderPublishDate()
-                            }
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            <div className="grid grid--justify-space-between grid--align-end margin-top--3 margin-bottom--2">
+                                <div>
+                                    <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
+                                    {this.props.isLoadingNameAndDate ? 
+                                        <p>Loading...</p>
+                                    :
+                                        this.renderPublishDate()
+                                    }
+                                </div>
+                                {!this.props.isLoadingNameAndDate &&
+                                    <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                                }
+                            </div>
                         </div>
-                        {!this.props.isLoadingNameAndDate &&
-                            <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
-                        }
                     </div>
                 </div>
                 {this.renderCollectionState()}
                 {this.renderCollectionPageActions()}
                 <div className="drawer__body">
-                    {this.props.isLoadingDetails ?
-                        <div className="grid grid--align-center margin-top--4">
-                            <div className="loader loader--large loader--dark"></div>
-                        </div>
-                        :
-                        <div>
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
-                            {this.renderInProgress()}
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
-                            {this.renderWaitingReview()}
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
-                            {this.renderReviewed()}
-                            
-                            {(this.props.deletes && this.props.deletes.length > 0) &&
-                                <div>
-                                    <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
-                                    {this.renderDeleted()}
-                                </div>
-                            }
-                        </div>
-                    }
+                    <div className="grid grid--justify-space-around">
+                        {this.props.isLoadingDetails ?
+                            <div className="grid grid--align-center margin-top--4">
+                                <div className="loader loader--large loader--dark"></div>
+                            </div>
+                            :
+                            <div className="grid__col-8 margin-top--2">
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
+                                {this.renderInProgress()}
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
+                                {this.renderWaitingReview()}
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
+                                {this.renderReviewed()}
+                                
+                                {(this.props.deletes && this.props.deletes.length > 0) &&
+                                    <div>
+                                        <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
+                                        {this.renderDeleted()}
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
                 <div className="drawer__footer">
-                    {this.renderCollectionActions()}
-                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
-                    {this.props.isApprovingCollection &&
-                        <div className="inline-block margin-left--1">
-                            <div className="loader loader--inline"></div>
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                            <div>
+                                {this.renderCollectionActions()}
+                                <button className="btn" onClick={this.props.onClose} type="button">Close</button>
+                                {this.props.isApprovingCollection &&
+                                    <div className="inline-block margin-left--1">
+                                        <div className="loader loader--inline"></div>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         )
