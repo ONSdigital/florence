@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 
-import CollectionCreate from './create/CollectionCreate';
+import CollectionCreateController from './create/CollectionCreateController';
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
 import { emptyActiveCollection , addAllCollections} from '../../config/actions';
@@ -146,10 +146,10 @@ export class CollectionsController extends Component {
                     </div>
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
-                        <CollectionCreate user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
-                    
+                        <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
                     </div>
                 </div>
+                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
             </div>
         )
     }
