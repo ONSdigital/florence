@@ -7,6 +7,7 @@ import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 
 console.error = jest.fn();
+console.warn = jest.fn();
 
 jest.mock('uuid/v4', () => () => {
     return "12345";
@@ -18,6 +19,14 @@ jest.mock('../../../utilities/url', () => {
             return "test"
         },
         parent: function() {}
+    }
+});
+
+jest.mock('../../../utilities/date', () => {
+    return {
+        format: function() {
+            return "a formatted date"
+        }
     }
 });
 
@@ -375,7 +384,7 @@ test("Alert items map to card element correctly", async () => {
     const cardProps = component.instance().mapTypeContentsToCard(component.state("alerts"),"alerts");
     component.state("alerts").forEach((alert, index) => {
         expect(cardProps[index]).toMatchObject({
-            title: alert.date,
+            title: "a formatted date",
             id: alert.key
         });
     })
@@ -419,3 +428,68 @@ test("Changing the dimension title value updates the dimension label in state", 
 });
 
 // TODO test that the saving responses are passed to the error handler in the correct order
+
+// describe("addErrorToSummary returns correct values when"), async () => {
+
+//     const component = await shallow(
+//         <VersionMetadata {...defaultProps} />
+//     );
+//     await component.instance().componentWillMount();
+
+//     it("passed a new error message", () => {
+//         const testArr = ["Error message 1"];
+//         const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+//         expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+//     });
+
+//     it("passed a duplicate error message", ()=> {
+//         const testArr = ["Error message 1", "Error message 2"];
+//         const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+//         expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+//     });
+
+// }
+
+test("addErrorToSummary returns correct values when it is passed a new error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1"];
+    const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
+
+test("addErrorToSummary returns correct values when it is passed a duplicate error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().addErrorToSummary("Error message 2", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
+
+test("removeErrorFromSummary returns correct values when it is passed an existing error message", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().removeErrorFromSummary("Error message 1", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 2"]));
+});
+
+test("removeErrorFromSummary returns correct values when it is passed an error that doesn't exist", async () => {
+    const component = await shallow(
+        <VersionMetadata {...defaultProps} />
+    );
+    await component.instance().componentWillMount();
+   
+    const testArr = ["Error message 1", "Error message 2"];
+    const newArr = component.instance().removeErrorFromSummary("Error message 3", testArr)
+    expect(newArr).toEqual(expect.arrayContaining(["Error message 1", "Error message 2"]));
+});
