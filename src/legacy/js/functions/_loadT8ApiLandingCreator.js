@@ -94,30 +94,49 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
 
     // Call the recipe API, get data and create elements.
     function getRecipes() {
-      $.ajax({
-          url: '/recipes',
-          dataType: 'json',
-          crossDomain: true,
-          success: function (recipeData) {
-            var templateData = {};
-            var content = "";
-            $.each(recipeData.items, function(i, v) {
-              // Get the dataset names and id's
-              var datasetAlias = v.alias;
-              var datasetName = v.output_instances[0].title;
-              var datasetId = v.output_instances[0].dataset_id;
-              // Create elements, store data in data attr to be used later
-              content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+    $.when(
+        $.ajax({
+            url: '/recipes',
+            dataType: 'json',
+            crossDomain: true,
+        }),
+        $.ajax({
+            url: '/dataset/datasets',
+            dataType: 'json',
+            crossDomain: true,
+        })
+    ).then(function(recipeData, datasetData){
+        var completData = [];
+        // Get and compare the recipeData/datasetData
+        $.each(recipeData[0].items, function(ri, rv){
+            $.each(datasetData[0].items, function(di, dv){
+                if (rv.output_instances[0].dataset_id === dv.id) {
+                    completData.push(ri);
+                }
             });
-            templateData.content = content;
-            // Load modal and add the data
-            viewRecipeModal(templateData);
-          },
-          error: function () {
-            sweetAlert("There is a problem fetching the data");
-            loadCreateScreen(parentUrl, collectionId);
-          }
-      });
+        });
+        var completDatalist = recipeData[0].items;
+        // remove recipeData that exist in datasetData
+        for (var i = completData.length -1; i >= 0; i--) {
+            completDatalist.splice(completData[i],1);
+        }
+        var templateData = {};
+        var content = "";
+        $.each(completDatalist, function(i, v) {
+        // Get the dataset names and id's
+        var datasetAlias = v.alias;
+        var datasetName = v.output_instances[0].title;
+        var datasetId = v.output_instances[0].dataset_id;
+        // Create elements, store data in data attr to be used later
+        content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+        });
+        templateData.content = content;
+        // Load modal and add the data
+        viewRecipeModal(templateData);
+    }).fail(function(){
+        sweetAlert("There is a problem fetching the data");
+        loadCreateScreen(parentUrl, collectionId);
+    })
 
       // Add the data to the details panel
       // TO DO - A call will need to be made to the dataset API when it's ready
@@ -143,7 +162,7 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
         $('#js-modal-recipe').remove();
         return false;
       });
-
+      
     }
 
     function pageTypeDataT8(pageType) {
