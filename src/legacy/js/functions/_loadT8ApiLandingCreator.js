@@ -105,30 +105,23 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             dataType: 'json',
             crossDomain: true,
         })
-    ).then(function(recipeData, datasetData){
-        var completData = [];
-        // Get and compare the recipeData/datasetData
-        $.each(recipeData[0].items, function(ri, rv){
-            $.each(datasetData[0].items, function(di, dv){
-                if (rv.output_instances[0].dataset_id === dv.id) {
-                    completData.push(ri);
-                }
+    ).then(function(recipeResponse, datasetResponse){
+        const recipesWithoutExistingDataset = recipeResponse[0].items.filter(recipeItem => {
+            const doesMatchRecipe = datasetResponse[0].items.some(datasetItem => {
+                return recipeItem.output_instances[0].dataset_id === datasetItem.id
             });
+            return !doesMatchRecipe;
         });
-        var completDatalist = recipeData[0].items;
-        // remove recipeData that exist in datasetData
-        for (var i = completData.length -1; i >= 0; i--) {
-            completDatalist.splice(completData[i],1);
-        }
+
         var templateData = {};
         var content = "";
-        $.each(completDatalist, function(i, v) {
-        // Get the dataset names and id's
-        var datasetAlias = v.alias;
-        var datasetName = v.output_instances[0].title;
-        var datasetId = v.output_instances[0].dataset_id;
-        // Create elements, store data in data attr to be used later
-        content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+        $.each(recipesWithoutExistingDataset, function(i, v) {
+            // Get the dataset names and id's
+            var datasetAlias = v.alias;
+            var datasetName = v.output_instances[0].title;
+            var datasetId = v.output_instances[0].dataset_id;
+            // Create elements, store data in data attr to be used later
+            content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
         });
         templateData.content = content;
         // Load modal and add the data
