@@ -89,7 +89,7 @@ export default class Input extends Component {
                         onChange={this.props.onChange}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
-                        defaultValue={this.props.value}
+                        value={this.props.value}
                     >
                     </textarea>
                 }
