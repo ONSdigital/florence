@@ -276,7 +276,7 @@ export class CollectionCreateController extends Component {
 
         const date = this.state.newCollectionDetails.publishDate.value;
         const time = this.state.newCollectionDetails.publishTime.value;
-        return (new Date(date + " " + time + "Z").toISOString());
+        return (new Date(date + " " + time).toISOString());
     }
 
     mapStateToPostBody() {
