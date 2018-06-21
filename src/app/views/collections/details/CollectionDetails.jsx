@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import dateFormat from 'dateformat';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -8,6 +7,7 @@ import { push } from 'react-router-redux';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
 import Page from '../../../components/page/Page';
+import date from '../../../utilities/date';
 
 export const pagePropTypes = {
     lastEdit: PropTypes.shape({
@@ -103,7 +103,7 @@ export class CollectionDetails extends Component {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
             
-            const date = dateFormat(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
+            const date = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
             if (!lastEdit.email || typeof lastEdit.email !== "string") {
                 return `Last edit: email not available (${date})`;
             }
@@ -387,7 +387,7 @@ export class CollectionDetails extends Component {
 
         if (this.props.type === "scheduled" && this.props.publishDate) {
             return (
-                <p>Publish date: {dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}</p>
+                <p>Publish date: {date.format(this.props.publishDate, "dddd, d mmmm yyyy h:MMTT")}</p>
             )
         }
 
