@@ -291,12 +291,14 @@ function markdownEditor() {
     });
 
     // output interactive tag as text instead of the actual tag.
-    converter.hooks.chain("preBlockGamut", function (text) {
-        var newText = text.replace(/(<ons-interactive\surl="([-A-Za-z0-9+&@#/%?=~_|!:,.;()*$]+)"\s?(?:\s?full-width="(.*[^"])")?\/>)/ig, function (match) {
+    converter.hooks.chain("preBlockGamut", function (text) {   
+        var newText = text.replace(/(<ons-interactive\surl="([-A-Za-z0-9+&@#/%?=~_|!:,.;()*$]+)"\s?(?:\s?full-width="(.*[^"])")?(?:\s?url2="([-A-Za-z0-9+&@#/%?=~_|!:,.;()*$]+)"\s?)?\/>)/ig, function (match) {
             var path = $(match).attr('url');
+            var secondUrl = $(match).attr('url2');
+            var path2 = secondUrl == undefined ? '' : `url2="${secondUrl}"`;
             var fullWidth = $(match).attr('full-width') || "";
             var fullWidthText = fullWidth == "true" ? 'display="full-width"' : '';
-            return '[interactive url="' + path + '" ' + fullWidthText + ']';
+            return `[interactive url="${path}" ${fullWidthText} ${path2} ]`;
         });
         return newText;
     });
