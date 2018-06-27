@@ -517,10 +517,14 @@ func decryptObjectContentChunks(size int, psk []byte, r io.ReadCloser) ([]byte, 
 		return nil, err
 	}
 
-	chunks := split(b, size)
 	var buf bytes.Buffer
-	for _, chunk := range chunks {
-		unencryptedChunk, err := decryptObjectContent(psk, ioutil.NopCloser(bytes.NewReader(chunk)))
+	for chunkOffset := 0; chunkOffset < len(b); chunkOffset += size {
+		chunkEnd := chunkOffset + size
+		if chunkEnd > len(b) {
+			chunkEnd = len(b)
+		}
+
+		unencryptedChunk, err := decryptObjectContent(psk, ioutil.NopCloser(bytes.NewReader(b[chunkOffset:chunkEnd])))
 		if err != nil {
 			return nil, err
 		}
@@ -532,19 +536,6 @@ func decryptObjectContentChunks(size int, psk []byte, r io.ReadCloser) ([]byte, 
 	}
 
 	return buf.Bytes(), nil
-}
-
-func split(buf []byte, lim int) [][]byte {
-	var chunk []byte
-	chunks := make([][]byte, 0, len(buf)/lim+1)
-	for len(buf) >= lim {
-		chunk, buf = buf[:lim], buf[lim:]
-		chunks = append(chunks, chunk)
-	}
-	if len(buf) > 0 {
-		chunks = append(chunks, buf[:len(buf)])
-	}
-	return chunks
 }
 
 func decryptObjectContent(psk []byte, b io.ReadCloser) ([]byte, error) {
