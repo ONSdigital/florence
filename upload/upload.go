@@ -256,9 +256,9 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	vaultKey := "key"
 	vaultPath := u.vaultPath + "/" + resum.Identifier
 
-	if len(uploadID) == 0 {
-
-		if u.vaultClient != nil {
+	if u.vaultClient != nil {
+		// If the vault key is not found for this file then create one, otherwise assume it exists
+		if _, err := u.vaultClient.ReadKey(vaultPath, vaultKey); err != nil {
 			psk := createPSK()
 
 			if err := u.vaultClient.WriteKey(vaultPath, vaultKey, hex.EncodeToString(psk)); err != nil {
@@ -267,6 +267,9 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 				return
 			}
 		}
+	}
+
+	if len(uploadID) == 0 {
 
 		createMultiInput := &s3.CreateMultipartUploadInput{
 			Bucket:      &u.bucketName,
