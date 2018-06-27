@@ -165,7 +165,8 @@ class DatasetUploadController extends Component {
                 chunkSize: 5 * 1024 * 1024,
                 query: {
                     aliasName: ""
-                }
+                },
+                forceChunkSize: true,
             });
             r.assignBrowse(input);
             r.assignDrop(input);
