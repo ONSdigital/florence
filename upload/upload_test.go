@@ -185,6 +185,7 @@ func TestUnitUpload(t *testing.T) {
 			vault := mocks.NewMockVaultClient(mockCtrl)
 
 			vaultPath := vaultRootPath + "/" + key
+			vault.EXPECT().ReadKey(vaultPath, vaultKey).Return("", errors.New("no key created yet- better go create one"))
 			vault.EXPECT().WriteKey(vaultPath, vaultKey, gomock.Any()).Return(nil)
 			vault.EXPECT().ReadKey(vaultPath, vaultKey).Return(encodedPSK, nil)
 
