@@ -371,27 +371,5 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
-
-    // Check running version versus latest and notify user if they don't match
-    var runningVersion,
-        userWarned = false;
-    function checkVersion() {
-        return fetch('/florence/dist/legacy-assets/version.json')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(responseJson) {
-                return responseJson;
-            })
-            .catch(function(err) {
-                console.log("Error getting latest Florence version: ", err);
-                return err
-            });
-    }
-
-    checkVersion().then(function(response) {
-        runningVersion = response;
-    });
-
 }
 
