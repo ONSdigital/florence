@@ -373,7 +373,7 @@ export class CollectionEditController extends Component {
         }
 
         try {
-            const newPublishDate = new Date(state.publishDate.value + " " + state.publishTime.value + "Z").toISOString();
+            const newPublishDate = new Date(state.publishDate.value + " " + state.publishTime.value).toISOString();
             if (newPublishDate !== this.props.publishDate) {
                 return true;
             }
@@ -405,7 +405,7 @@ export class CollectionEditController extends Component {
         }
 
         if (this.publishDateHasChanged(state)) {
-            body.publishDate = state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value + "Z").toISOString() : "";
+            body.publishDate = state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value).toISOString() : "";
         }
 
         return body;
