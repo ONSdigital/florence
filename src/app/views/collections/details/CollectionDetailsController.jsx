@@ -271,6 +271,7 @@ export class CollectionDetailsController extends Component {
                     return deletedPage.root.uri !== uri;
                 })
             };
+            updatedActiveCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedActiveCollection)
             this.props.dispatch(updateActiveCollection(updatedActiveCollection));
         }).catch(error => {
             this.setState({isCancellingDelete: {
