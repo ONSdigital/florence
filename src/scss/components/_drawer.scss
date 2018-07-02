@@ -35,6 +35,10 @@
         color: $cadet-blue;
         // margin-top: $lineheight * 3;
         // margin-bottom: $lineheight * 2;
+
+        h2 {
+            max-width: 600px; // prevents element growing so wide it pushes edit button onto next line
+        }
     }
 
     &__banner {
