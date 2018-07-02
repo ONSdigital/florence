@@ -122,7 +122,7 @@ class CollectionEdit extends Component {
                                     <h2>{this.props.originalName}</h2>
                                     {this.renderPublishDate()}
                                 </div>
-                                <p>Editing collection...</p>
+                                <p id="editing-text">Editing collection...</p>
                             </div>
                         </div>
                     </div>
