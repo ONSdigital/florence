@@ -43,8 +43,8 @@
         z-index: 1001;
         width: 500px;
         height: $lineheight * 17;
-        &--height-50{
-            height: 400px;
+        &-large{
+            height: $lineheight * 19;
         }
     }
 
