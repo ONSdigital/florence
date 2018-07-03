@@ -33,7 +33,7 @@ function loadEmbedIframe(onSave) {
             if (additionalParsedEmbedUrl.host === window.location.host) {
                 additionalEmbedUrl = additionalParsedEmbedUrl.pathname;
             }
-            additionalEmbedUrl = ` url2="${additionalEmbedUrl}"`;
+            additionalEmbedUrl = ` additionalUrl="${additionalEmbedUrl}"`;
         }
 
         onSave(`<ons-interactive url="${embedUrl}" full-width="${fullWidth}"${additionalEmbedUrl}/>`);
