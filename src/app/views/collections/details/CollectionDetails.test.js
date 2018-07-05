@@ -263,6 +263,22 @@ describe("'Last edit' information for a page in a collection", () => {
         component.setProps({...defaultProps});
     });
 
+    it("Renders the correct message", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2017-12-14T11:36:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Thu 14 Dec 2017 - 11:36:03)");
+    });
+    
+    it("Renders the correct date and time during BST", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2020-06-14T14:25:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Sun 14 Jun 2020 - 15:25:03)");
+    });
+
     it("Excludes the date if the data isn't available", () => {
         const event = {
             email: "foobar@email.com",
