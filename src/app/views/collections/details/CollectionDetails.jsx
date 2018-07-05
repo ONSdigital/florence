@@ -93,7 +93,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {
+    renderLastEditText(lastEdit) {   
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Error getting 'last edit' details";
@@ -103,12 +103,12 @@ export class CollectionDetails extends Component {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
             
-            const date = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
+            const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
             if (!lastEdit.email || typeof lastEdit.email !== "string") {
-                return `Last edit: email not available (${date})`;
+                return `Last edit: email not available (${formattedDate})`;
             }
             return (
-                `Last edit: ${lastEdit.email} (${date})`
+                `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit));
