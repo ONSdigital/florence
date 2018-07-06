@@ -305,7 +305,7 @@ describe("Data sent as request body on save", () => {
             publishType: "scheduled"
         });
         const request = scheduledComponent.instance().mapEditsToAPIRequestBody(scheduledComponent.state());
-        expect(request.publishDate).toEqual("2018-05-15T09:30:00.000Z");
+        expect(request.publishDate).toEqual("2018-05-15T08:30:00.000Z");
     });
 
     it("only includes a new publish date if the collection is scheduled", () => {

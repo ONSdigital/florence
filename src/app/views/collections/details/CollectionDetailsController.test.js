@@ -5,6 +5,8 @@ import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
 import { push } from 'react-router-redux';
 
+console.error = () => {};
+
 jest.mock('../../../utilities/notifications', () => ({
     add: jest.fn(() => {}),
     remove: jest.fn(() => {}),
