@@ -55,8 +55,6 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
-            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
-
             if (response.status >= 500) {
                 throw new HttpError(response);
             }
@@ -88,9 +86,19 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             }
 
             logEventPayload.status = 200;
+
+            let responseIsJSON = false;
+            try {
+                responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+            } catch (error) {
+                console.error(`Error trying to parse content-type header`, error);
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error trying to parse content-type header: ${JSON.stringify(error)}`});
+                reject({status: 'RUNTIME_ERROR', message: `Error trying to parse response's content-type header`});
+                return;
+            }
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
-                log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
+                log.add(eventTypes.runtimeWarning, {message: `Received request response for method '${method}' that didn't have the 'application/json' header`});
             }
             
             // We're wrapping this try/catch in an async function because we're using 'await' 
