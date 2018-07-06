@@ -9,7 +9,8 @@ jest.mock('../log', () => {
             // do nothing
         }),
         eventTypes: {
-            runtimeWarning: "RUNTIME_WARNING"
+            runtimeWarning: "RUNTIME_WARNING",
+            unexpectedRuntimeError: 'UNEXPECTED_RUNTIME_ERROR'
         }
     }
 })
@@ -150,6 +151,38 @@ test("PUT/POST request response without a JSON body but with an 'application/jso
 
     await expect(request('PUT', '/foobar')).resolves.toBe(undefined);
     await expect(request('POST', '/foobar')).resolves.toBe(undefined);
+});
+
+test("GET request response without a 'content-type' header logs an error", async () => {
+    fetch.mockResponse(JSON.stringify({}), 
+        {
+            "headers": new Headers({}),
+            "status": 200
+        }
+    );
+
+    let runtimeErrors = log.add.mock.calls.filter(call => {
+        return call[0] === "UNEXPECTED_RUNTIME_ERROR"
+    });
+    expect(runtimeErrors.length).toBe(0);
+    try {
+        await request('GET', '/foobar');
+    } catch (error) {
+        runtimeErrors = log.add.mock.calls.filter(call => {
+            return call[0] === "UNEXPECTED_RUNTIME_ERROR"
+        });
+        expect(runtimeErrors.length).toBe(1);
+    }
+});
+
+test("GET request response without a 'content-type' header returns a RUNTIME_ERROR to the caller", async () => {
+    fetch.mockResponse(JSON.stringify({}), 
+        {
+            "headers": new Headers({}),
+            "status": 200
+        }
+    );
+    await expect(request('GET', '/foobar')).rejects.toEqual({status: "RUNTIME_ERROR", message: "Error trying to parse response's content-type header"});
 });
 
 test("GET request response without an 'application/json' header logs a warning", async () => {
