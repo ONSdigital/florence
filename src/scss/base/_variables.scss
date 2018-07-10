@@ -42,6 +42,41 @@ $tawny-port: #6D272B;
 $silver-sand: #BBBDC0;
 $focus: #ffbf47;
 
+$colours: (
+    black: $black,
+    white: $white,
+    mine-shaft: $mine-shaft,
+    grey-chateau: $grey-chateau,
+    porcelain: $porcelain,
+    quill-grey: $quill-grey,
+    pickled-bluewood: $pickled-bluewood,
+    slate-grey: $slate-grey,
+    iron: $iron,
+    iron-dark: $iron-dark,
+    cadet-blue: $cadet-blue,
+    astral: $astral,
+    como: $como,
+    concrete: $concrete,
+    emperor: $emperor,
+    scarpa-flow: $scarpa-flow,
+    dusty-grey: $dusty-grey,
+    mirage: $mirage,
+    nevada: $nevada,
+    nobel: $nobel,
+    night-shadz: $night-shadz,
+    ash: $ash,
+    ship-grey: $ship-grey,
+    tea: $tea,
+    gurkha: $gurkha,
+    olive-haze: $olive-haze,
+    nappa: $nappa,
+    kabul: $kabul,
+    wild-sand: $wild-sand,
+    tawny-port: $tawny-port,
+    silver-sand: $silver-sand,
+    focu: $focus
+);
+
 /* Panel heights - TODO probably update with new grid */
 $panel-height-1-top-nav: 916px; // wrapper height minus navbar height
 $panel-height-2-top-nav: 853px; // wrapper height minus (navbar height * 2)

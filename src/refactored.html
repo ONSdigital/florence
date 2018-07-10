@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <title>Florence</title>
 
-    <link rel="stylesheet" href="/florence/dist/css/main.css">
+    <link rel="stylesheet" href="/florence/dist/css/app.css">
 </head>
 <body>
+<noscript><h1>Enable Javascript to use Florence</h1></noscript>
 <div id="app"></div>
 
 <!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
     because the NPM module appears to be out-of-date and breaks our code. -->
-<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
+<script defer type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
 
-<script type="text/javascript" src="/florence/dist/js/florence.bundle.js"></script>
+<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
 </body>
 </html>

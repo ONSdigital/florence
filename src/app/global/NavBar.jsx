@@ -22,11 +22,12 @@ class NavBar extends Component {
     }
 
     handleLogoutClick() {
-        const cookieRemoved = cookies.remove('access_token');
-        if (!cookieRemoved) {
+        const accessTokenCookieRemoved = cookies.remove('access_token');
+        if (!accessTokenCookieRemoved) {
             console.warn(`Error trying to remove 'access_token' cookie`);
             return
         }
+        cookies.remove('collection');
         localStorage.removeItem("loggedInAs");
         this.props.dispatch(userLoggedOut());
     }
@@ -39,11 +40,35 @@ class NavBar extends Component {
         if(!this.props.isAuthenticated) {
             return (
                 <ul>
-                    {route.includes(`${rootPath}/logs`) &&
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/logs`} activeClassName="selected" className="global-nav__link">Logs</Link>
-                        </li>
-                    }
+                    {!isViewer ?
+                        <span>
+                            {route.includes(`${rootPath}/logs`) &&
+                                <li className="global-nav__item">
+                                    <Link to={`${rootPath}/logs`} activeClassName="selected" className="global-nav__link">Logs</Link>
+                                </li>
+                            }
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                            </li>
+
+                            <li className="global-nav__item">
+                                <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                            </li>
+
+                            <li className="global-nav__item">
+                                <a className="global-nav__link" href="/florence/reports">Reports</a>
+                            </li>
+
+                            <li className="global-nav__item">
+                                <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
+                            </li>
+
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
+                            </li>
+                        </span>
+                    : "" }
+
                     <li className="global-nav__item">
                         <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
                     </li>

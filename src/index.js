@@ -8,6 +8,7 @@ import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 import App from './app/App';
 import Layout from './app/global/Layout'
 import LoginController from './app/views/login/LoginController';
+import CollectionsController from './app/views/collections/CollectionsController';
 import TeamsController from './app/views/teams/TeamsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
@@ -16,6 +17,8 @@ import Logs from './app/views/logs/Logs';
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
+
+import SelectableTest from './SelectableTest';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -36,7 +39,7 @@ const userIsNotAuthorised = connectedReduxRedirect({
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectPath: `${rootPath}/not-authorised`,
     allowRedirectBack: false
-})
+});
 
 class UnknownRoute extends Component {
     render() {
@@ -61,13 +64,20 @@ class Index extends Component {
                 <Router history={ history }>
                     <Route component={ App }>
                         <Route component={ Layout }>
-                            <Redirect exact from={rootPath} to={`${rootPath}/collections`}/>
+                            <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
+                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
+                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
+                                    <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                    <Route path='restore-content' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                                </Route>
+                            </Route>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                 <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
                                     <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                     <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                 </Route>
                             </Route>
+                            <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
                             <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />

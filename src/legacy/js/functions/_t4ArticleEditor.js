@@ -84,6 +84,55 @@ function articleEditor(collectionId, data) {
       data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
   });
 
+    $("#articleType-checkbox").click(function () {
+        data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+    });
+
+    $('#neutral-article-image-upload-submit').click(function() {
+        var file = document.getElementById("neutral-article-image-upload").files[0];
+
+        if (!file) {
+            sweetAlert('Please select a file to upload.');
+            return;
+        }
+
+        var formData = new FormData();
+        formData.append("file", file);
+        var fileExtension = file.name.split('.').pop();
+        var filename = file.filename ? file.filename : StringUtils.randomId();
+        var imagePath = data.uri + "/" + filename + '.' + fileExtension;
+
+        $.ajax({
+            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
+            type: 'POST',
+            data: formData,
+            async: false,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function () {
+                data.imageUri = imagePath;
+                save(updateContent);
+            },
+            error: function (error) {
+                sweetAlert("Error", error);
+            }
+        });
+    });
+
+    $('#neutral-article-image-upload-delete').on('click', function () {
+
+        if (data.imageUri) {
+
+            deleteContent(Florence.collection.id, data.imageUri,
+                onSuccess = function () {
+                    console.log("deleted image file: " + data.imageUri);
+                    data.imageUri = "";
+                    save(updateContent);
+                });
+        }
+    });
+
   // Save
   var editNav = $('.edit-nav');
   editNav.off(); // remove any existing event handlers.
@@ -122,8 +171,9 @@ function articleEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // equations

@@ -40,6 +40,11 @@
     border-bottom-color: rgba(52, 59, 89, 0.2);
 }
 
+.loader--inline {
+    position: relative;
+    top: 5px;
+}
+
 @-webkit-keyframes spin {
     0% {
         -webkit-transform: rotate(0deg);

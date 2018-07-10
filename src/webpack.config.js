@@ -7,11 +7,12 @@ const isProduction = (process.env.NODE_ENV === 'production');
 module.exports = {
     context: path.resolve(__dirname),
     entry: {
-        app: './index.js'
+        app: ['babel-regenerator-runtime', './index.js'],
+        tablebuilder: './tablebuilder/tablebuilder.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
-        filename: 'js/florence.bundle.js',
+        filename: 'js/[name].bundle.js',
     },
     module: {
         loaders: [
@@ -58,7 +59,7 @@ module.exports = {
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
         ]),
-        new ExtractTextPlugin("css/main.css")
+        new ExtractTextPlugin("css/[name].css")
     ],
     externals: {
         resumeablejs: "Resumable"

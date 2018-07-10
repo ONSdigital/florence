@@ -107,8 +107,9 @@ function methodologyEditor(collectionId, data) {
       var uri = data.tables[parseInt(nameTable)].uri;
       var title = data.tables[parseInt(nameTable)].title;
       var filename = data.tables[parseInt(nameTable)].filename;
+      var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename};
+      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
     });
     data.tables = newTable;
     // equations

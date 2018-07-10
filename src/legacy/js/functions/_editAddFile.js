@@ -43,23 +43,23 @@ function addFile(collectionId, data, field, idField) {
 
     //Add
     if (data.type === 'static_adhoc') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_qmi') {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'article_download' || (data.type === 'static_methodology_download' && field === 'pdfDownloads')) {
         downloadExtensions = /\.pdf$/;
     } else if (data.type === 'static_methodology_download' && field === 'downloads') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.zip$/;
     } else if (data.type === 'static_methodology') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.ppt$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.ppt$|.pdf$|.zip$/;
     } else if (data.type === 'static_foi') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_page') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'static_article') {
-        downloadExtensions = /\.xls$|.pdf$|.zip$/;
+        downloadExtensions = /\.xls$|.xlsx$|.pdf$|.zip$/;
     } else if (data.type === 'dataset' || data.type === 'timeseries_dataset') {
-        downloadExtensions = /\.csv$|.xls$|.doc$|.pdf$|.zip$/;
+        downloadExtensions = /\.csv$|.xls$|.xlsx$|.doc$|.pdf$|.zip$/;
     } else if (data.type === 'article' || data.type === 'bulletin'|| data.type === 'compendium_chapter') {
         downloadExtensions = /\.pdf$/;
     } else {

@@ -20,7 +20,8 @@ export const eventTypes = {
     socketBufferFull: "SOCKET_BUFFER_FULL",
     socketOpen: "SOCKET_OPEN",
     socketError: "SOCKET_ERROR",
-    unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR"
+    unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
+    runtimeWarning: "RUNTIME_WARNING"
 }
 
 const instanceID = uuid();

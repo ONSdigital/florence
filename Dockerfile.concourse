@@ -1,4 +1,4 @@
-FROM onsdigital/dp-docker-go
+FROM onsdigital/dp-concourse-tools-ubuntu
 
 WORKDIR /app/
 

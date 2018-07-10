@@ -9,11 +9,16 @@ export const initialState = {
     teams: {
         active: {},
         all: [],
+        allIDsAndNames: [],
         users: []
     },
     datasets: {
         all: [],
         jobs: []
+    },
+    collections: {
+        all: [],
+        active: null
     },
     notifications: []
 };

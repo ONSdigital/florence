@@ -1,7 +1,12 @@
 export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
+export const ADD_ALL_COLLECTIONS = 'ADD_ALL_COLLECTIONS';
+export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
+export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
+
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
+export const UPDATE_ALL_TEAM_IDS_AND_NAMES = 'UPDATE_ALL_TEAM_IDS_AND_NAMES';
 export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
@@ -26,6 +31,27 @@ export function userLoggedIn(email, userType, isAdmin) {
 export function userLoggedOut() {
     return {
         type: USER_LOGGED_OUT
+    }
+}
+
+export function addAllCollections(collections) {
+    return {
+        type: ADD_ALL_COLLECTIONS,
+        collections
+    }
+}
+
+export function updateActiveCollection(collection) {
+    return {
+        type: UPDATE_ACTIVE_COLLECTION,
+        collection
+    }
+}
+
+export function emptyActiveCollection() {
+    return {
+        type: EMPTY_ACTIVE_COLLECTION,
+        collection: null
     }
 }
 
@@ -61,6 +87,13 @@ export function updateAllTeams(allTeams) {
     return {
         type: UPDATE_ALL_TEAMS,
         allTeams: allTeams
+    }
+}
+
+export function updateAllTeamIDsAndNames(allTeamIDsAndNames) {
+    return {
+        type: UPDATE_ALL_TEAM_IDS_AND_NAMES,
+        allTeamIDsAndNames
     }
 }
 

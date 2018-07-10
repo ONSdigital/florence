@@ -78,6 +78,10 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadTableBuilder(pageData, onInsertSave);
     });
 
+    $("#js-editor--table-v2").click(function () {
+        loadTableBuilderV2(pageData, onInsertSave);
+    });
+
     $("#js-editor--equation").click(function () {
         loadEquationBuilder(pageData, onInsertSave);
     });
@@ -264,6 +268,13 @@ function markdownEditor() {
     // output table tag as text instead of the actual tag.
     converter.hooks.chain("preBlockGamut", function (text) {
         var newText = text.replace(/(<ons-table\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
+            var path = $(match).attr('path');
+            return '[table path="' + path + '" ]';
+        });
+        return newText;
+    });
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/(<ons-table-v2\spath="[-A-Za-z0-9+&@#\/%?=~_|!:,.;\(\)*[\]$]+"?\s?\/>)/ig, function (match) {
             var path = $(match).attr('path');
             return '[table path="' + path + '" ]';
         });

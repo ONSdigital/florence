@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM onsdigital/dp-concourse-tools-ubuntu
 
 WORKDIR /app/
 

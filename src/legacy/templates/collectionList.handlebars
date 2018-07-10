@@ -27,18 +27,16 @@
         <label for="collectionname" class="hidden">Scheduled publish</label>
         <input id="collectionname" type="text" placeholder="Collection name"/>
         <label for="team" class="hidden">Select the team the collection can be previewed by</label>
-        {{#unless isDataVis}}
-        	<div class="select-wrap">
-                <select id="team">
-                    <option selected disabled="disabled">Select the team the collection can be previewed by</option>
-                    {{#each teams}}
-                        <option value="{{name}}">{{name}}</option>
-                    {{/each}}
-                </select>
-            </div>
-            <ul id="team-tag"></ul>
-            <input type="text" class="hidden" id="team-input">
-        {{/unless}}
+        <div class="select-wrap">
+            <select id="team">
+                <option selected disabled="disabled">Select the team the collection can be previewed by</option>
+                {{#each teams}}
+                    <option value="{{name}}">{{name}}</option>
+                {{/each}}
+            </select>
+        </div>
+        <ul id="team-tag"></ul>
+        <input type="text" class="hidden" id="team-input">
         <input type="radio" id="scheduledpublish" name="publishType" value="scheduled" checked><label
             for="scheduledpublish">Scheduled publish</label>
         <input type="radio" id="manualpublish" name="publishType" value="manual" required><label for="manualpublish">Manual

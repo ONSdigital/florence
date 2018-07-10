@@ -5,18 +5,16 @@ import (
 	"bytes"
 	"encoding/json"
 	"mime"
+	"net"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"path/filepath"
-	"strconv"
 	"strings"
 	"time"
 
-	mgo "gopkg.in/mgo.v2"
-
 	"github.com/ONSdigital/florence/assets"
-	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
@@ -27,15 +25,13 @@ import (
 var bindAddr = ":8080"
 var babbageURL = "http://localhost:8080"
 var zebedeeURL = "http://localhost:8082"
-var recipeAPIURL = "http://localhost:22300"
-var importAPIURL = "http://localhost:21800"
-var uploadBucketName = "dp-frontend-florence-file-uploads"
+var tableRendererURL = "http://localhost:23300"
 var enableNewApp = false
 var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
+var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
-var session *mgo.Session
 
 // Version is set by the make target
 var Version string
@@ -52,17 +48,8 @@ func main() {
 	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
 		zebedeeURL = v
 	}
-	if v := os.Getenv("RECIPE_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
-	}
-	if v := os.Getenv("UPLOAD_BUCKET_NAME"); len(v) > 0 {
-		uploadBucketName = v
-	}
-	if v := os.Getenv("IMPORT_API_URL"); len(v) > 0 {
-		recipeAPIURL = v
-	}
-	if v := os.Getenv("ENABLE_NEW_APP"); len(v) > 0 {
-		enableNewApp, _ = strconv.ParseBool(v)
+	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
+		tableRendererURL = v
 	}
 
 	log.Namespace = "florence"
@@ -82,7 +69,8 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	babbageProxy := reverseProxy.Create(babbageURL, nil)
+
+	babbageProxy := createBabbageProxy(babbageURL, nil)
 
 	zebedeeURL, err := url.Parse(zebedeeURL)
 	if err != nil {
@@ -91,61 +79,35 @@ func main() {
 	}
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
-	recipeAPIURL, err := url.Parse(recipeAPIURL)
+	tableURL, err := url.Parse(tableRendererURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
 
-	importAPIURL, err := url.Parse(importAPIURL)
-	if err != nil {
-		log.Error(err, nil)
-		os.Exit(1)
-	}
-	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirectory)
+	tableProxy := reverseProxy.Create(tableURL, tableDirector)
 
 	router := pat.New()
 
-	newAppHandler := refactoredIndexFile
-
-	if !enableNewApp {
-		newAppHandler = legacyIndexFile
-	}
-
-	uploader, err := upload.New(uploadBucketName)
-	if err != nil {
-		log.Error(err, nil)
-		os.Exit(1)
-	}
-
-	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
-	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
-	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
-
-	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
-	router.Handle("/import{uri:.*}", importAPIProxy)
+	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
+	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/collections", legacyIndexFile)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
 	router.HandleFunc("/florence/reports", legacyIndexFile)
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", newAppHandler)
+	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
-		"bind_addr":      bindAddr,
-		"babbage_url":    babbageURL,
-		"zebedee_url":    zebedeeURL,
-		"recipe_api_url": recipeAPIURL,
-		"import_api_url": importAPIURL,
-		"enable_new_app": enableNewApp,
+		"bind_addr":          bindAddr,
+		"babbage_url":        babbageURL,
+		"zebedee_url":        zebedeeURL,
+		"table_renderer_url": tableRendererURL,
+		"enable_new_app":     enableNewApp,
 	})
 
 	s := server.New(bindAddr, router)
@@ -177,14 +139,24 @@ func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
+	assetPath := "../dist/" + path
 
-	b, err := getAsset("../dist/" + path)
+	etag, err := getAssetETag(assetPath)
+
+	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	b, err := getAsset(assetPath)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
 		return
 	}
 
+	w.Header().Set(`ETag`, etag)
+	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
 	w.Write(b)
@@ -227,8 +199,8 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
-func importAPIDirectory(req *http.Request) {
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+func tableDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
@@ -290,6 +262,33 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		// 	break
 		// }
 	}
+}
+
+// FIXME this is to fix go-ns reverse proxy replacing host name so that
+// babbage has correct values when using {{location.hostname}} in handlebars
+func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
+	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+	director := proxy.Director
+	proxy.Transport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+	proxy.Director = func(req *http.Request) {
+		director(req)
+		//req.Host = proxyURL.Host
+		if directorFunc != nil {
+			directorFunc(req)
+		}
+	}
+
+	return proxy
 }
 
 type florenceLogEvent struct {

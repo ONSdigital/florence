@@ -1,7 +1,9 @@
 function setupFlorence() {
+    websocket.open();
+    log.add(log.eventTypes.appInitialised);
+
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
-    Handlebars.registerPartial("browseNodeDataVis", templates.browseNodeDataVis);
     Handlebars.registerPartial("editNav", templates.editNav);
     Handlebars.registerPartial("editNavChild", templates.editNavChild);
     Handlebars.registerPartial("selectorHour", templates.selectorHour);
@@ -187,9 +189,6 @@ function setupFlorence() {
             window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
-            var thisCollection = CookieUtils.getCookieValue("collection");
-            window.history.pushState({}, "", "/florence/collections")
-            viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
@@ -207,7 +206,7 @@ function setupFlorence() {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
-            viewController();
+            // viewController();
         }
     }
 

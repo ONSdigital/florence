@@ -9,7 +9,7 @@
             {{#each this.tables}}
                 <div id="{{@index}}" class="edit-section__sortable-item">
                     <div class="edit-section__title">{{title}}</div>
-                    <input class="copy-markdown-target" style="position:absolute;left:-99999px;" value="&lt;ons-table path=&#34;{{filename}}&#34; /&gt;">
+                    <input class="copy-markdown-target" style="position:absolute;left:-99999px;" value="&lt;ons-table{{#if_eq version '2'}}-v2{{/if_eq}} path=&#34;{{filename}}&#34; /&gt;">
                     <div class="edit-section__buttons">
                         <button class="btn btn-markdown-edit copy-markdown">
                             Copy
@@ -32,6 +32,7 @@
         </div>
         <div class="text-center">
             <button class="btn btn--subtle btn-add-section" id="add-table">Add table</button>
+            <button class="btn btn--subtle btn-add-section" id="add-table-v2">Add table (new)</button>
         </div>
     </div>
 </div>

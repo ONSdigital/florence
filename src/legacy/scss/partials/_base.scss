@@ -612,20 +612,19 @@ button {
     padding-right: $gutter / 4;
     padding-left: $gutter / 4;
 
-    // border: 4px solid $nevada;
-
-    // If preview isn't available this should be overlaid
-    &.disabled:before {
+    // If preview isn't available this should be overlaid - we're not doing it on the iframe element itself because iframes can't have a :before or :after
+    &.disabled &__iframe:before {
         content: "No page available to preview";
         position: absolute;
         left: 0;
         right: 0;
         top: 50%;
         color: $iron;
+        font-size: 16px;
         z-index: 12;
         text-align: center;
     }
-    &.disabled:after {
+    &.disabled &__iframe:after {
         content: "";
         color: $ship-gray;
         width: 100%;
@@ -635,6 +634,12 @@ button {
         opacity: 0.75;
         top: 0;
         left: 0;
+    }
+
+    &__iframe {
+        height: 100%;
+        width: 100%;
+        position: relative;
     }
 
     iframe {

@@ -16,7 +16,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
   $(".workspace-edit").scrollTop(Florence.globalVars.pagePos);
   //Add file types
   if (data.type === 'compendium_data'){
-    downloadExtensions = /\.csv$|.xls$|.zip$/;
+    downloadExtensions = /\.csv$|.xls$|.xlsx$|.zip$/;
   }
   else if (data.type === 'article_download'){
     downloadExtensions = /\.pdf$/;

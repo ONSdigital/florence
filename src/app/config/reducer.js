@@ -1,4 +1,6 @@
 import { initialState } from './initialState';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS} from './actions';
+
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -19,12 +21,48 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case (ADD_ALL_COLLECTIONS): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all: action.collections
+                }
+            }
+        }
+        case (UPDATE_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: action.collection
+                }
+            }
+        }
+        case (EMPTY_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: null
+                }
+            }
+        }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     all: action.allTeams
                 })
             })
+        }
+        case (UPDATE_ALL_TEAM_IDS_AND_NAMES): {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    allIDsAndNames: action.allTeamIDsAndNames
+                }
+            }
         }
         case ('UPDATE_USERS'): {
             return Object.assign({}, state, {

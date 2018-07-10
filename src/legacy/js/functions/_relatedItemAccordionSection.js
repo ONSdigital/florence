@@ -48,7 +48,9 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
-    } else {
+    } else if (idField === 'highlighted-content') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
+    }else {
         dataTemplate = {list: list, idField: idField};
     }
     return dataTemplate;
@@ -151,7 +153,6 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
     }
 
     function renderRelatedItemModal() {
-
         var viewModel = {hasLatest: false}; //Set to true if 'latest' checkbox should show
         var latestCheck; //Populated with true/false later to check state of checkbox
 
@@ -301,8 +302,11 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 else if (field === 'links') {
                     initialiseField();
                 }
+                else if (field === 'highlightedContent' && (page.type === 'article' || page.type === 'timeseries' || page.type === 'bulletin')) {
+                    initialiseField();
+                }
                 else {
-                    sweetAlert("This is not a valid document");
+                    sweetAlert("This type of page ("+ (page.type) +") cannot be added here.");
                     return;
                 }
 

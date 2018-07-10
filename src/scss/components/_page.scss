@@ -1,0 +1,166 @@
+.page {
+    position: relative;
+    padding-left: $gutter * 2;
+    padding-top: 5px;
+    padding-bottom: 5px;
+
+    &.active {
+        font-weight: 400;
+    }
+
+    &:after {
+        content: '';
+        width: 24px;
+        height: 58px;
+        position: absolute;
+        left: 0;
+        top: -10px;
+        font-size: 12px;
+        background: transparent url(../img/sprite.svg) no-repeat -12px 0;
+        background-size: 48px;
+        display: block;
+        text-align: center;
+        font-weight: normal;
+        color: $mine-shaft;
+        padding-top: 16px;
+    }
+
+    &--home_page {
+        &:after {
+            content: 'HO';
+        }
+    }
+    &--home_page_census {
+        &:after {
+            content: 'CS';
+        }
+    }
+    &--taxonomy_landing_page {
+        &:after {
+            content: 'LP';
+        }
+    }
+    &--product_page {
+        &:after {
+            content: 'PP';
+        }
+    }
+    &--article {
+        &:after {
+            content: 'AR';
+        }
+    }
+    &--article_download {
+        &:after {
+            content: 'AP';
+        }
+    }
+    &--bulletin {
+        &:after {
+            content: 'SB';
+        }
+    }
+    &--timeseries {
+        &:after {
+            content: 'TS';
+        }
+    }
+    &--compendium_landing_page {
+        &:after {
+            content: 'CO';
+        }
+    }
+    &--compendium_chapter {
+        &:after {
+            content: 'CH';
+        }
+    }
+    &--compendium_data {
+        &:after {
+            content: 'CD';
+        }
+    }
+    &--static_landing_page {
+        &:after {
+            content: 'SL';
+        }
+    }
+    &--static_page {
+        &:after {
+            content: 'SP';
+        }
+    }
+    &--static_article {
+        &:after {
+            content: 'SA';
+        }
+    }
+    &--static_qmi {
+        &:after {
+            content: 'QM';
+        }
+    }
+    &--static_foi {
+        &:after {
+            content: 'FO';
+        }
+    }
+    &--static_adhoc {
+        &:after {
+            content: 'AH';
+        }
+    }
+    &--static_methodology {
+        &:after {
+            content: 'ME';
+        }
+    }
+    &--static_methodology_download {
+        &:after {
+            content: 'MP';
+        }
+    }
+    &--dataset_landing_page {
+        &:after {
+            content: 'DA';
+        }
+    }
+    &--dataset {
+        &:after {
+            content: 'DS';
+        }
+    }
+    &--timeseries_dataset {
+        &:after {
+            content: 'DB';
+        }
+    }
+    &--release {
+        &:after {
+            content: 'RE';
+        }
+    }
+    &--visualisation {
+        &:after {
+            content: 'VIS';
+        }
+    }
+    &--api_dataset_landing_page {
+        &:after {
+            content: 'DS';
+        }
+    }
+    &--directory {
+        &:after {
+            background: transparent url(../img/sprite.png) no-repeat -4px -418px;
+            background-size: 30px auto;
+            height: 15px;
+        }
+
+        &.selected:after {
+            background: transparent url(../img/sprite.png) no-repeat -4px -445px;
+            background-size: 30px auto;
+            height: 15px;
+        }
+    }
+}

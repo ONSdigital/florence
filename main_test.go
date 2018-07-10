@@ -15,8 +15,8 @@ import (
 func TestMain(t *testing.T) {
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
-		request, err := http.NewRequest("GET", "/florence/dist/js/florence.bundle.js", nil)
-		request.URL.RawQuery = ":uri=js/florence.bundle.js"
+		request, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
+		request.URL.RawQuery = ":uri=js/app.bundle.js"
 		So(err, ShouldBeNil)
 		request.Header.Set("Accept-Language", "en")
 		staticFiles(recorder, request)
@@ -84,6 +84,13 @@ func TestMain(t *testing.T) {
 		request.Header.Set("Accept-Language", "en")
 		refactoredIndexFile(recorder, request)
 		So(recorder.Code, ShouldEqual, 404)
+	})
+
+	Convey("Table renderer proxy director function trims '/table' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/table/parse", nil)
+		So(err, ShouldBeNil)
+		tableDirector(request)
+		So(request.URL.String(), ShouldEqual, "/parse")
 	})
 
 	Convey("Zebedee proxy director function trims '/zebedee' from the request URL", t, func() {
