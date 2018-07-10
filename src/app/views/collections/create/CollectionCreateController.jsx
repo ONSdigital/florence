@@ -356,7 +356,7 @@ export class CollectionCreateController extends Component {
 
         if (this.state.newCollectionDetails.type === "scheduled" && this.state.newCollectionDetails.scheduleType === "calender-entry-schedule") {
             const release = this.state.newCollectionDetails.release;
-            const validatedRelease = collectionValidation.release(release.uri, release.date, release.title);
+            const validatedRelease = collectionValidation.release(release);
             if (!validatedRelease.isValid) {
                 const collectionRelease = {
                     ...release,
@@ -399,19 +399,20 @@ export class CollectionCreateController extends Component {
                     break;
                 }
                 case (409): {
-                    log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
-                    const collectionName = {
-                        value: this.state.newCollectionDetails.name.value,
-                        errorMsg: "A collection with this name already exists"
-                    };
-                    const newCollectionDetails = {
-                        ...this.state.newCollectionDetails,
-                        name: collectionName
-                    };
-                    this.setState({
-                        newCollectionDetails: newCollectionDetails,
-                        isSubmitting: false
-                    });
+                    this.handle409SubmitStatus(error);
+                    // log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
+                    // const collectionName = {
+                    //     value: this.state.newCollectionDetails.name.value,
+                    //     errorMsg: "A collection with this name already exists"
+                    // };
+                    // const newCollectionDetails = {
+                    //     ...this.state.newCollectionDetails,
+                    //     name: collectionName
+                    // };
+                    // this.setState({
+                    //     newCollectionDetails: newCollectionDetails,
+                    //     isSubmitting: false
+                    // });
                     break;
                 }
                 default: {
@@ -426,6 +427,42 @@ export class CollectionCreateController extends Component {
             }
             console.error(error);
         });
+    }
+
+    handle409SubmitStatus(error) {
+        if (error.body.message.includes("A collection with this name already exists")) {
+            log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
+            const collectionName = {
+                value: this.state.newCollectionDetails.name.value,
+                errorMsg: "A collection with this name already exists"
+            };
+            const newCollectionDetails = {
+                ...this.state.newCollectionDetails,
+                name: collectionName
+            };
+            this.setState({
+                newCollectionDetails: newCollectionDetails,
+                isSubmitting: false
+            });
+            return;
+        }
+
+        if (error.body.message.includes("Cannot use this release")) {
+            log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a scheduled collection using a release that is in another collection. Release: " + this.state.newCollectionDetails.release.title});
+            const collectionRelease = {
+                ...this.state.newCollectionDetails.release,
+                errorMsg: "Release is already in use in another collection"
+            };
+            const newCollectionDetails = {
+                ...this.state.newCollectionDetails,
+                release: collectionRelease
+            };
+            this.setState({
+                newCollectionDetails: newCollectionDetails,
+                isSubmitting: false
+            });
+            return;
+        }
     }
 
     render () {
