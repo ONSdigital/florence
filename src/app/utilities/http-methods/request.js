@@ -81,10 +81,17 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             }
 
             if (!response.ok) {
-                reject({status: response.status, message: response.statusText});
-                return;
+                response.text().then(body => {
+                    reject({status: response.status, message: response.statusText, body: JSON.parse(body)})
+                })
+                return; 
             }
 
+            if (response.status === 204) {
+                resolve({status: response.status, message: response.statusText})
+                return;
+            }
+            
             logEventPayload.status = 200;
 
             let responseIsJSON = false;
