@@ -88,7 +88,7 @@ class CollectionCreate extends Component {
                     : 
                     <div>
                         <div className="margin-bottom--1">
-                        {this.props.newCollectionDetails.release.uri ?
+                        {this.props.newCollectionDetails.release ?
                             <div>
                                 <p>Selected release: </p>
                                 <p className="font-weight--600 colour--night-shadz">
@@ -162,7 +162,7 @@ class CollectionCreate extends Component {
                 </form>
                 {this.props.showScheduleByRelease &&
                     <Modal sizeClass="grid__col-8">
-                        <ScheduleByRelease onClose={this.props.handleCloseRelease} onReleaseSelect={this.props.handleSelectRelease} />
+                        <ScheduleByRelease onClose={this.props.handleCloseRelease} onSubmit={this.props.handleSelectRelease} />
                     </Modal>
                 }
             </div>
