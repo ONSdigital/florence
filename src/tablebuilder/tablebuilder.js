@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM, { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 import TableBuilder from 'dp-table-builder-ui';
 import 'dp-table-builder-ui/dist/assets/scss/main.scss';
 
