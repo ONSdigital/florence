@@ -44,4 +44,8 @@ export default class collections {
         return http.delete(`/zebedee/DeleteContent/${collectionID}?uri=${pageURI}`);
     }
 
+    static async checkContentIsInCollection(pageURI) {
+        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`)
+    }
+
 }
