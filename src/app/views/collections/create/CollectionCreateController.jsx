@@ -302,7 +302,7 @@ export class CollectionCreateController extends Component {
         this.setState({isSubmitting: true});
 
         let hasError = false;
-        let newCollectionDetails = this.state.newCollectionDetails
+        let newCollectionDetails = this.state.newCollectionDetails;
 
         const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
         if (!validatedName.isValid) {
