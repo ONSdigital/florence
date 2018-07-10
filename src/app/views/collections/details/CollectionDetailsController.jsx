@@ -183,7 +183,7 @@ export class CollectionDetailsController extends Component {
         collections.delete(collectionID).then(() => {
             const notification = {
                 type: 'positive',
-                message: `Successfully deleted collection '${collectionID}'`,
+                message: `Collection deleted`,
                 autoDismiss: 4000,
                 isDismissable: true
             }
