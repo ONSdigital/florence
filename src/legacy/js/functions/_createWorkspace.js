@@ -188,24 +188,26 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
-            // FIXME this has been removed because it doesn't add 'data.json' to the end, which
-            // causes false positives, and it's safer to remove than deploy a full fix on a friday afternoon
-            // $.ajax({
-            //     url: "/zebedee/checkcollectionsforuri?uri=" + dest,
-            //     type: 'GET',
-            //     contentType: 'application/json',
-            //     cache: false,
-            //     success: function (response, textStatus, xhr) {
-            //         if (xhr.status == 204) {
-            //             loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
-            //             return;
-            //         }
-            //         sweetAlert("Cannot edit this page", "This page is already in another collection: " + response, "error");
-            //     },
-            //     error: function (response) {
-            //         handleApiError(response);
-            //     }
-            // });
+            var checkDest = dest;
+            if(!dest.endsWith("/data.json")) {
+                checkDest += "/data.json";
+            }
+            $.ajax({
+                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
+                type: 'GET',
+                contentType: 'application/json',
+                cache: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status == 204) {
+                        loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+                        return;
+                    }
+                    sweetAlert("Cannot edit this page", "This page is already in another collection: " + response, "error");
+                },
+                error: function (response) {
+                    handleApiError(response);
+                }
+            });
         });
 
         $('.workspace-menu').on('click', '.js-browse__menu', function() {
