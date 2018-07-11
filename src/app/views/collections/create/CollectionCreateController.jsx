@@ -400,19 +400,6 @@ export class CollectionCreateController extends Component {
                 }
                 case (409): {
                     this.handle409SubmitStatus(error);
-                    // log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
-                    // const collectionName = {
-                    //     value: this.state.newCollectionDetails.name.value,
-                    //     errorMsg: "A collection with this name already exists"
-                    // };
-                    // const newCollectionDetails = {
-                    //     ...this.state.newCollectionDetails,
-                    //     name: collectionName
-                    // };
-                    // this.setState({
-                    //     newCollectionDetails: newCollectionDetails,
-                    //     isSubmitting: false
-                    // });
                     break;
                 }
                 default: {
