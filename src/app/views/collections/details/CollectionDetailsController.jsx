@@ -184,7 +184,7 @@ export class CollectionDetailsController extends Component {
             const allCollections = this.props.collections.filter(collection => {
                 return collection.id !== collectionID
             });
-            console.log("Collections excluding deleted collection", allCollections);
+            console.log(allCollections);
             this.props.dispatch(addAllCollections(allCollections));
             const notification = {
                 type: 'positive',
