@@ -181,17 +181,17 @@ export class CollectionDetailsController extends Component {
     handleCollectionDeleteClick(collectionID) {
         this.props.dispatch(push(`${this.props.rootPath}/collections`));
         collections.delete(collectionID).then(() => {
+            const allCollections = this.props.collections.filter(collection => {
+                return collection.id !== collectionID
+            });
+            this.props.dispatch(addAllCollections(allCollections));
             const notification = {
                 type: 'positive',
                 message: `Collection deleted`,
                 autoDismiss: 4000,
                 isDismissable: true
-            }
+            };
             notifications.add(notification);
-            const allCollections = this.props.collections.filter(collection => {
-                return collection.id !== collectionID
-            })
-            this.props.dispatch(addAllCollections(allCollections));
         }).catch(error => {
             console.error(`Error deleting collection '${collectionID}'`, error);
             collectionDetailsErrorNotifications.deleteCollection(error);
