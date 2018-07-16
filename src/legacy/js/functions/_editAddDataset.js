@@ -131,9 +131,9 @@ function addDataset(collectionId, data, field, idField) {
                     var uriToCheck = checkPathSlashes(data.uri + "/" + this[0].value.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase())
                     fetch(uriToCheck, {credentials: 'include'}).then(function(response) {
                         if (response.ok) {
-                            // content was found, return so as not to overwrite exisitng content and display an error
-                            console.error("It looks like there is already an edition with this title");
-                            swal("It looks like there is already an edition with this title")
+                            // content was found, return so as not to overwrite existing content and display an error
+                            console.error(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            swal(`It looks like there is already an edition with the title, "${pageTitle}"`);
                             return;
                         } 
                         submitform();
