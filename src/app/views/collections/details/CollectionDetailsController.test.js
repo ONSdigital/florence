@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme';
 import {CollectionDetailsController, mapStateToProps} from './CollectionDetailsController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import { push } from 'react-router-redux';
+import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS } from '../../../config/actions';
 
 console.error = () => {};
 
@@ -196,12 +196,11 @@ describe("Deleting a collection", () => {
         expect(notifications.add.mock.calls.length).toEqual(1);
     });
 
-    it("removes the collection from the state", async () => {
-        expect(componentWithProps.prop('collections').some(collection => {return collection.id === 'test-collection-12345'})).toBeTruthy();
+    it("marks a collection in state as ready to delete from all collections", async () => {
         await componentWithProps.instance().handleCollectionDeleteClick('test-collection-12345');
-        expect(dispatchedAction.collections.some(collection => {return collection.id === 'test-collection-12345'})).toBeFalsy();
+        expect(dispatchedAction.type).toBe(MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS);
+        expect(dispatchedAction.collectionID).toBe('test-collection-12345');
     });
-
 });
 
 describe("When fetching a collection's detail", async () => {
