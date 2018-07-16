@@ -2,11 +2,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
+import objectIsEmpty from 'is-empty-object';
 
 import CollectionCreateController from './create/CollectionCreateController';
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
-import { emptyActiveCollection , addAllCollections} from '../../config/actions';
+import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import CollectionDetailsController from './details/CollectionDetailsController';
@@ -24,6 +25,7 @@ const propTypes = {
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
         id: PropTypes.string.isRequired,
     }),
+    collectionsToDelete: PropTypes.object.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
 
@@ -41,6 +43,17 @@ export class CollectionsController extends Component {
 
     componentWillMount() {
         this.fetchCollections();
+    }
+
+    componentWillReceiveProps(nextProps) {
+        // CollectionsController handles removing any collections from allCollections state
+        // having an ID in the toDelete object means that this component needs to remove it from state
+        // this stops other components having to understand and handle allCollections state.
+        // This helps fix any issues where other components might try to update the allCollections state
+        // without knowing that it's still being fetched.
+        if (!objectIsEmpty(nextProps.collectionsToDelete) && !this.state.isFetchingCollections) {
+            this.removeCollectionsFromState(nextProps.collectionsToDelete);
+        }
     }
 
     componentWillUnmount() {
@@ -115,6 +128,15 @@ export class CollectionsController extends Component {
         });
     }
 
+    removeCollectionsFromState(collectionsToDelete) {
+        for (const collectionID in collectionsToDelete) {
+            if (!collectionsToDelete.hasOwnProperty(collectionID)) {
+                return;
+            }
+            this.props.dispatch(deleteCollectionFromAllCollections(collectionID));
+        }
+    }
+
     handleCollectionCreateSuccess(newCollection) {
         let mappedCollection = collectionMapper.collectionResponseToState(newCollection);
         const collections = [...this.props.collections, mappedCollection];
@@ -163,6 +185,7 @@ export function mapStateToProps(state) {
         user: state.state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
+        collectionsToDelete: state.state.collections.toDelete,
         rootPath: state.state.rootPath
     }
 }
