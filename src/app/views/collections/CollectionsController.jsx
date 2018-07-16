@@ -19,7 +19,9 @@ const propTypes = {
     params: PropTypes.shape({
         collectionID: PropTypes.string
     }).isRequired,
-    user: PropTypes.object.isRequired,
+    user: PropTypes.shape({
+        userType: PropTypes.string.isRequired,
+    }).isRequired,
     collections: PropTypes.array,
     activeCollection: PropTypes.shape({
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
