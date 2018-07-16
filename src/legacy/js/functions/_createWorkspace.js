@@ -198,7 +198,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 contentType: 'application/json',
                 cache: false,
                 success: function (response, textStatus, xhr) {
-                    if (xhr.status == 204) {
+                    console.log(response);
+                    console.log(collectionData);
+                    if (xhr.status == 204 || response === collectionData.name) {
                         loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
                         return;
                     }
