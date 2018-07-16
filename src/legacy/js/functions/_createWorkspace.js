@@ -187,7 +187,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
-            loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
             var checkDest = dest;
             if(!dest.endsWith("/data.json")) {
                 checkDest += "/data.json";
