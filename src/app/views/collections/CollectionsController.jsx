@@ -44,7 +44,7 @@ export class CollectionsController extends Component {
     }
 
     componentWillMount() {
-        this.fetchCollections();
+        return this.fetchCollections();
     }
 
     componentWillReceiveProps(nextProps) {
@@ -54,7 +54,7 @@ export class CollectionsController extends Component {
         // This helps fix any issues where other components might try to update the allCollections state
         // without knowing that it's still being fetched.
         if (!objectIsEmpty(nextProps.collectionsToDelete) && !this.state.isFetchingCollections) {
-            this.removeCollectionsFromState(nextProps.collectionsToDelete);
+            this.removeCollectionFromState(nextProps.collectionsToDelete);
         }
     }
 
@@ -64,7 +64,11 @@ export class CollectionsController extends Component {
 
     fetchCollections() {
         this.setState({isFetchingCollections: true});
-        collections.getAll().then(collections => {
+
+        // This Promise needs to be returned so that our tests pass, otherwise they don't detect
+        // the catch block properly (using 'await') and the test gets executed before the catch
+        // block has been run
+        return collections.getAll().then(collections => {
             const allCollections = collections.filter(collection => {
                 return collection.approvalStatus !== "COMPLETE";
             }).map(collection => {
@@ -73,6 +77,7 @@ export class CollectionsController extends Component {
             this.props.dispatch(addAllCollections(allCollections));
             this.setState({isFetchingCollections: false});
         }).catch(error => {
+            this.setState({isFetchingCollections: false});
             switch(error.status) {
                 case(401): {
                     // This is handled by the request function, so do nothing here
@@ -101,7 +106,7 @@ export class CollectionsController extends Component {
                 case("RESPONSE_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        message: "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -110,7 +115,7 @@ export class CollectionsController extends Component {
                 case("UNEXPECTED_ERR"): {
                     const notification = {
                         type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information but won't be able to edit any team members",
+                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -125,12 +130,21 @@ export class CollectionsController extends Component {
                     notifications.add(notification);
                     break;
                 }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
             }
             console.error("Error fetching all collections:\n", error);
         });
     }
 
-    removeCollectionsFromState(collectionsToDelete) {
+    removeCollectionFromState(collectionsToDelete) {
         for (const collectionID in collectionsToDelete) {
             if (!collectionsToDelete.hasOwnProperty(collectionID)) {
                 return;
