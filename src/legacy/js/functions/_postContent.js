@@ -28,6 +28,40 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
     }
 
+    //var contentToClean = JSON.parse(content.replace(/"\s+|\s+"/g,'"'));
+    //var cleanedUpJSON = JSON.stringify(JSON.parse(content.replace(/"\s+|\s+"/g,'"')));
+    //var cleanedUpJSON = content.replace(/"\s+|\s+"/g,'"');
+    //console.log("CLEANED UP JSON =>", cleanedUpJSON);
+    //console.log("CONTENT =>", content);
+
+    //console.log("THE CONTENT =>", JSON.parse(content));
+
+    //var parsedContent = JSON.parse(content)
+
+    // for (var key in parsedContent) {
+    //     if (parsedContent.hasOwnProperty(key)) {
+    //         //console.log(key + " => " + parsedContent[key])
+    //         if (typeof parsedContent[key] === "object") {
+    //             //console.log(key + " is object!")
+    //             for (var subkey in parsedContent[key]) {
+    //                     //console.log(parsedContent[key][subkey])
+    //                     if (parsedContent[key][subkey] && typeof parsedContent[key][subkey] === "string") {
+    //                         console.log("About to trim ", parsedContent[key][subkey])
+    //                         parsedContent[key][subkey].trim()
+    //                     }
+    //             }
+    //         }
+    //     }
+    // }
+
+    // var edition = parsedContent.description.edition
+
+    // console.log("parsedContent length ", edition.length);
+    // var newEdition = edition.trim();
+    // console.log("parsedContent length ", newEdition.length);
+
+    // console.log("PARSED CONTENT =>", parsedContent);
+
     var url = url + '&overwriteExisting=' + overwriteExisting;
     var url = url + '&recursive=' + recursive;
 
@@ -40,6 +74,7 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
+        //data: cleanedUpJSON,
         data: content,
         success: function (response) {
             isUpdatingModal.remove();
