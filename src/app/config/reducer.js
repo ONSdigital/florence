@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS} from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS} from './actions';
 
 
 export default function reducer(state = initialState, action) {
@@ -27,6 +27,32 @@ export default function reducer(state = initialState, action) {
                 collections: {
                     ...state.collections,
                     all: action.collections
+                }
+            }
+        }
+        case (MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS): {
+            let toDelete = {...state.collections.toDelete};
+            toDelete[action.collectionID] = null;
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    toDelete
+                }
+            }
+        }
+        case (DELETE_COLLECTION_FROM_ALL_COLLECTIONS): {
+            const toDelete = {...state.collections.toDelete};
+            delete toDelete[action.collectionID];
+
+            const all = state.collections.all.filter(collection => collection.id !== action.collectionID);
+            
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all,
+                    toDelete
                 }
             }
         }

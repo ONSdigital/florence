@@ -8,7 +8,7 @@ import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './Collecti
 import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import {updateActiveCollection, emptyActiveCollection, addAllCollections} from '../../../config/actions'
+import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 import collectionMapper from "../mapper/collectionMapper";
@@ -180,12 +180,12 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionDeleteClick(collectionID) {
         this.props.dispatch(push(`${this.props.rootPath}/collections`));
-        collections.delete(collectionID).then(() => {
-            const allCollections = this.props.collections.filter(collection => {
-                return collection.id !== collectionID
-            });
-            console.log(allCollections);
-            this.props.dispatch(addAllCollections(allCollections));
+        collections.delete(collectionID).then(async () => {
+            // We mark the collection as ready to be removed from all collections. This means that
+            // the collectionsController, which owns the allCollections state can react to this state event
+            // however it needs to (rather than the collectionDetails having to understand what to do)
+            this.props.dispatch(markCollectionForDeleteFromAllCollections(collectionID));
+
             const notification = {
                 type: 'positive',
                 message: `Collection deleted`,

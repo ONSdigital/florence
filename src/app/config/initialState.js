@@ -18,7 +18,8 @@ export const initialState = {
     },
     collections: {
         all: [],
-        active: null
+        active: null,
+        toDelete: {}
     },
     notifications: []
 };
