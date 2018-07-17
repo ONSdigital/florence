@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme';
 import {CollectionDetailsController, mapStateToProps} from './CollectionDetailsController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS } from '../../../config/actions';
+import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION } from '../../../config/actions';
 
 console.error = () => {};
 

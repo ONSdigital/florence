@@ -39903,7 +39903,22 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
-            loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+            $.ajax({
+                url: "/zebedee/checkcollectionsforuri?uri=" + dest,
+                type: 'GET',
+                contentType: 'application/json',
+                cache: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status == 204) {
+                        loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+                        return;
+                    }
+                    sweetAlert("Cannot edit this page", "This page is already in another collection: " + response, "error");
+                },
+                error: function (response) {
+                    handleApiError(response);
+                }
+            });
         });
 
         $('.workspace-menu').on('click', '.js-browse__menu', function() {
@@ -43422,6 +43437,16 @@ function handleApiError(response) {
 
         if (response.responseJSON) {
             message = response.responseJSON.message;
+            
+            if (response.responseJSON.data) {
+                let kvs = [];
+                for (let k in response.responseJSON.data) {
+                    kvs.push(k + ": " + response.responseJSON.data[k]);
+                }
+                if(kvs.length > 0) {
+                    message += "\n\n" + kvs.join("\n");
+                }
+            }
         }
 
         console.log(message);
@@ -50283,12 +50308,7 @@ function saveContent(collectionId, uri, data, collectionData) {
             createWorkspace(uri, collectionId, 'edit', collectionData);
         },
         error = function (response) {
-            if (response.status === 409) {
-                sweetAlert("Cannot create this page", "It already exists.");
-            }
-            else {
-                handleApiError(response);
-            }
+            handleApiError(response);
         }
     );
 }

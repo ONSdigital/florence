@@ -9,7 +9,7 @@ import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './Collecti
 import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, addPagesToActiveCollection} from '../../../config/actions'
+import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 import collectionMapper from "../mapper/collectionMapper";
@@ -170,7 +170,7 @@ export class CollectionDetailsController extends Component {
                 this.props.dispatch(updateActiveCollection(mappedCollection));
             }
 
-            this.props.dispatch(addPagesToActiveCollection(collectionWithPages));
+            this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             console.error(`Fetching collection ${collectionID}: `, error);
@@ -284,7 +284,7 @@ export class CollectionDetailsController extends Component {
             };
             updatedActiveCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedActiveCollection);
             updatedActiveCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedActiveCollection)
-            this.props.dispatch(addPagesToActiveCollection(updatedActiveCollection));
+            this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
         }).catch(error => {
             this.setState({isCancellingDelete: {
                 value: false,
@@ -361,7 +361,7 @@ export class CollectionDetailsController extends Component {
                 };
                 updatedCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedCollection);
                 updatedCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedCollection);
-                this.props.dispatch(addPagesToActiveCollection(updatedCollection));
+                this.props.dispatch(updatePagesInActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
                 collectionDetailsErrorNotifications.deletePage(error, title, this.props.collectionID);
@@ -424,7 +424,7 @@ export class CollectionDetailsController extends Component {
             inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
         };
 
-        this.props.dispatch(addPagesToActiveCollection(updatedActiveCollection));
+        this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
 
         this.handleRestoreDeletedContentClose();
     }
