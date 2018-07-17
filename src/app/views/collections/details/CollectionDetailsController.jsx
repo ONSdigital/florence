@@ -15,6 +15,7 @@ import collectionDetailsErrorNotifications from './collectionDetailsErrorNotific
 import collectionMapper from "../mapper/collectionMapper";
 import Modal from "../../../components/Modal";
 import RestoreContent from "../restore-content/RestoreContent";
+import url from '../../../utilities/url';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -408,7 +409,7 @@ export class CollectionDetailsController extends Component {
     }
 
     handleRestoreDeletedContentClose() {
-        this.props.dispatch(push(location.pathname.split('/restore-content')[0]));
+        this.props.dispatch(push(url.resolve("../")));
     }
 
     handleRestoreDeletedContentSuccess(restoredItem) {
