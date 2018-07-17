@@ -489,6 +489,11 @@ describe("Mapping a collections pages to state", () => {
             type: "bulletin"
         });
     });
+
+    // TODO complete these tests!
+    it.skip("doesn't throw an error when a page has no events");
+    it.skip("logs any errors caused by mapping a page");
+    it.skip("continues to map other pages even if one fails");
 });
 
 describe("Pages currently being deleted from a collection", () => {
