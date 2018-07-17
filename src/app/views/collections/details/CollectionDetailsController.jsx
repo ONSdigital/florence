@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
+import objectIsEmpty from 'is-empty-object';
 
 import Drawer from '../../../components/drawer/Drawer';
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './CollectionDetails';
@@ -160,7 +161,14 @@ export class CollectionDetailsController extends Component {
 
             const mappedCollection = collectionMapper.collectionResponseToState(collection);
             const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
-            this.updateActiveCollectionGlobally(collectionWithPages);
+
+            // If we have no data in state yet for the collection then use this opportunity to add it.
+            // We are most likely to see this on page load if it's directly to a collection details screen
+            // otherwise we should have the some basic data which has come from the array of all collections
+            if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
+                this.props.dispatch(updateActiveCollection(mappedCollection));
+            }
+
             this.props.dispatch(addPagesToActiveCollection(collectionWithPages));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
