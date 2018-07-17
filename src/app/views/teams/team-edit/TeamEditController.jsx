@@ -120,6 +120,9 @@ export class TeamEditController extends Component {
                     this.setState({disabledUsers});
                     
                     switch(error.status) {
+                        case(401): {
+                            // do nothing - handled by request utility function
+                        }
                         case(404): {
                             const notification = {
                                 type: "warning",
@@ -189,6 +192,9 @@ export class TeamEditController extends Component {
                     this.setState({disabledUsers});
 
                     switch(error.status) {
+                        case(401): {
+                            // do nothing - handled by request utility function
+                        }
                         case(404): {
                             const notification = {
                                 type: "warning",

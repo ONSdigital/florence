@@ -389,6 +389,10 @@ export class CollectionCreateController extends Component {
         }).catch(error => {
             this.setState({isSubmitting: false});
             switch(error.status) {
+                case(401): {
+                    // do nothing - this is handled by the request utility function
+                    break;
+                }
                 case(400): {
                     const notification = {
                         "type": "warning",
