@@ -48,7 +48,7 @@ export default class collectionMapper {
             }
             notifications.add(notification);
             console.error("Error mapping collections to component state: ", error);
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collections to component state: " + error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collections to component state:\n${JSON.stringify(error)}`});
             return false;
         }
     }
@@ -76,12 +76,12 @@ export default class collectionMapper {
                             type: page.type
                         }
                     } catch (error) {
-                        log.add(eventTypes.unexpectedRuntimeError, "Error mapping a page to Florence's state" + JSON.stringify(error));
-                        console.error("Error mapping a page to Florence's state" + error);
+                        log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping a page to Florence's state\n${JSON.stringify(error)}`});
+                        console.error("Error mapping a page to Florence's state", error);
                     }
                     return updatedPage
                 });
-            }
+            };
             const mappedCollection = {
                 ...collection,
                 canBeApproved,
@@ -92,8 +92,8 @@ export default class collectionMapper {
             };
             return mappedCollection;
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Florence's state" + JSON.stringify(error));
-            console.error("Error mapping collection GET response to Florence's state" + error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collection GET response to Florence's state\n${JSON.stringify(error)}`});
+            console.error("Error mapping collection GET response to Florence's state", error);
             return null;
         }
     }
