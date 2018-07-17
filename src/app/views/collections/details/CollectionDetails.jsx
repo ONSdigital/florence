@@ -393,7 +393,7 @@ export class CollectionDetails extends Component {
 
         if (this.props.type === "scheduled" && !this.props.publishDate) {
             return (
-                <p>Publishing date: no publish date available</p>
+                <p>Publish date: no publish date available</p>
             )
         }
     }
