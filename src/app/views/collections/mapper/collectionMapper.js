@@ -63,16 +63,23 @@ export default class collectionMapper {
                     return null;
                 }
                 return pagesArray.map(page => {
-                    return {
-                        lastEdit: {
-                            email: page.events ? page.events[0].email : "",
-                            date: page.events ? page.events[0].date : ""
-                        },
-                        title: page.description.title,
-                        edition: page.description.edition || "",
-                        uri: page.uri,
-                        type: page.type
+                    let updatedPage = {};
+                    try {
+                        updatedPage = {
+                            lastEdit: {
+                                email: (page.events && page.events.length > 0) ? page.events[0].email : "",
+                                date: (page.events && page.events.length > 0) ? page.events[0].date : ""
+                            },
+                            title: page.description.title,
+                            edition: page.description.edition || "",
+                            uri: page.uri,
+                            type: page.type
+                        }
+                    } catch (error) {
+                        log.add(eventTypes.unexpectedRuntimeError, "Error mapping a page to Florence's state" + JSON.stringify(error));
+                        console.error("Error mapping a page to Florence's state" + error);
                     }
+                    return updatedPage
                 });
             }
             const mappedCollection = {
@@ -82,7 +89,7 @@ export default class collectionMapper {
                 inProgress: mapPageToState(collection.inProgress),
                 complete: mapPageToState(collection.complete),
                 reviewed: mapPageToState(collection.reviewed)
-            }
+            };
             return mappedCollection;
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error mapping collection GET response to Florence's state" + JSON.stringify(error));
