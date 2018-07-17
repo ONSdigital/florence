@@ -41,11 +41,11 @@ function setLocation(href) {
     });
 }
 
-let dispatchedAction;
+let dispatchedActions = [];
 
 const defaultProps = {
     dispatch: action => {
-        dispatchedAction = action;
+        dispatchedActions.push(action);
     },
     rootPath: '/florence',
     routes:[{}],
@@ -131,6 +131,10 @@ const componentWithProps = mount(
     <CollectionDetailsController {...defaultProps} />
 )
 
+beforeEach(() => {
+    dispatchedActions = [];
+});
+
 describe("When the active collection parameter changes", () => {
     it("from collections root to a collection ID it sets the collection details to show", () => {
         component.setProps({collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c"});
@@ -156,10 +160,10 @@ describe("When the active collection parameter changes", () => {
     it("from one collection ID to another, it updates collection name and date instantly", () => {
         component.setProps({collectionID: "different-collection-12345"});
         component.setProps({collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c"});
-        expect(dispatchedAction.collection).toBeTruthy();
-        expect(dispatchedAction.collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
-        expect(dispatchedAction.collection.name).toBe("asdasdasd");
-        expect(dispatchedAction.collection.type).toBe("manual");
+        expect(dispatchedActions[1].collection).toBeTruthy();
+        expect(dispatchedActions[1].collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
+        expect(dispatchedActions[1].collection.name).toBe("asdasdasd");
+        expect(dispatchedActions[1].collection.type).toBe("manual");
     });
     
     it("from one collection ID to `/collections`, it hides the collection details", () => {
@@ -183,10 +187,42 @@ describe("Collection details are hidden", () => {
 });
 
 // TODO complete these tests!
-describe.skip("Restore content to a collection", () => {
-    it("maps the page data to the structure expected in state");
-    it("adds the correct page/s back into the collections");
-    it("renders the page correctly in the collection details");
+describe("Restore content to a collection", () => {
+    const restoredData = {
+        uri: "/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018",
+        title: "Gross Domestic Product: March 2018",
+        type: "bulletin"
+    };
+    
+    beforeAll(() => {
+        component.setProps({
+            activeCollection: {
+                ...defaultProps.collections[0],
+                inProgress: []
+            }
+        });
+    });
+
+    afterAll(() => {
+        component.setProps({activeCollection: defaultProps.activeCollection});
+    });
+
+    it("adds the correct page back into the collections", () => {
+        component.instance().handleRestoreDeletedContentSuccess(restoredData);
+        expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+        expect(dispatchedActions[0].collection.inProgress.some(page => page.uri = restoredData.uri)).toBe(true);
+    });
+
+    it("maps the page data to the structure expected in state", () => {
+        component.instance().handleRestoreDeletedContentSuccess(restoredData);
+        expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+
+        const restoredPage = dispatchedActions[0].collection.inProgress.find(page => page.uri = restoredData.uri);
+        expect(restoredPage).toBeTruthy();
+        expect(restoredPage.uri).toBe("/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018");
+        expect(restoredPage.title).toBe("Gross Domestic Product: March 2018");
+        expect(restoredPage.type).toBe("bulletin");
+    });
 });
 
 describe("Deleting a collection", () => {
@@ -205,8 +241,8 @@ describe("Deleting a collection", () => {
 
     it("marks a collection in state as ready to delete from all collections", async () => {
         await componentWithProps.instance().handleCollectionDeleteClick('test-collection-12345');
-        expect(dispatchedAction.type).toBe(MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS);
-        expect(dispatchedAction.collectionID).toBe('test-collection-12345');
+        expect(dispatchedActions[1].type).toBe(MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS);
+        expect(dispatchedActions[1].collectionID).toBe('test-collection-12345');
     });
 });
 
