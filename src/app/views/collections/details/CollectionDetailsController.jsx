@@ -275,7 +275,7 @@ export class CollectionDetailsController extends Component {
             };
             updatedActiveCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedActiveCollection);
             updatedActiveCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedActiveCollection)
-            this.props.dispatch(addPagesToActiveCollection(updatedCollection));
+            this.props.dispatch(addPagesToActiveCollection(updatedActiveCollection));
         }).catch(error => {
             this.setState({isCancellingDelete: {
                 value: false,

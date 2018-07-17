@@ -64,7 +64,8 @@ export default function reducer(state = initialState, action) {
                     active: {
                         id: action.collection.id,
                         name: action.collection.name,
-                        status: action.collection.status,
+                        publishDate: action.collection.publishDate,
+                        status: {...action.collection.status},
                         type: action.collection.type,
                         isForcedManualType: action.collection.isForcedManualType,
                         teams: [...action.collection.teams],
