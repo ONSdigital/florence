@@ -179,7 +179,14 @@ describe("Collection details are hidden", () => {
         component.instance().handleDrawerCloseClick();
         expect(component.state('drawerIsVisible')).toBe(false);
         expect(component.state('drawerIsAnimatable')).toBe(true);
-    })
+    });
+});
+
+// TODO complete these tests!
+describe.skip("Restore content to a collection", () => {
+    it("maps the page data to the structure expected in state");
+    it("adds the correct page/s back into the collections");
+    it("renders the page correctly in the collection details");
 });
 
 describe("Deleting a collection", () => {
