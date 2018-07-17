@@ -1,8 +1,14 @@
 import collectionMapper from "./collectionMapper";
+import log from '../../../utilities/log';
+
+console.error = () => {};
 
 jest.mock('../../../utilities/log', () => ({
     add: jest.fn(() => {}),
-    eventTypes: {}
+    eventTypes: {
+        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
+        runtimeWarning: "RUNTIME_WARNING"
+    }
 }));
 
 const collectionData = {
@@ -48,6 +54,10 @@ const exampleUnmappedPages = [
         type: "taxonomy_landing_page"
     }
 ]
+
+beforeEach(() => {
+    log.add.mockClear();
+});
 
 describe("readablePublishDate returns correct display date when", () => {
     it("a collection has a publishDate and is set to manual publish", () => {
@@ -490,10 +500,74 @@ describe("Mapping a collections pages to state", () => {
         });
     });
 
-    // TODO complete these tests!
-    it.skip("doesn't throw an error when a page has no events");
-    it.skip("logs any errors caused by mapping a page");
-    it.skip("continues to map other pages even if one fails");
+    it("doesn't throw an error when a page has no events", () => {
+        const pageWithoutEvents = {...exampleUnmappedPages[0]};
+        delete pageWithoutEvents.events;
+        const mappedCollection = collectionMapper.pagesToCollectionState({
+            ...collectionData,
+            inProgress: [pageWithoutEvents]
+        });
+
+        expect(mappedCollection.inProgress[0]).toEqual({
+            lastEdit: {
+                email: "",
+                date: ""
+            },
+            title: "Environmental accounts",
+            edition: "",
+            uri: "/economy/environmentalaccounts",
+            type: "taxonomy_landing_page"
+        });
+    });
+    
+    it("logs any errors caused by mapping a page", () => {
+        const brokenCollectionData = {
+            ...collectionData,
+            inProgress: [{uri: "/economy"}],
+            reviewed: [],
+            complete: []
+        };
+        const logCount = log.add.mock.calls.length;
+        collectionMapper.pagesToCollectionState(brokenCollectionData);
+        expect(log.add.mock.calls.length).toBe(logCount+1);
+        expect(log.add.mock.calls[0][0]).toBe("UNEXPECTED_RUNTIME_ERROR");
+    });
+    
+    it("continues to map other pages even if one fails", () => {
+        const brokenCollectionData = {
+            ...collectionData,
+            inProgress: [{}, {...exampleUnmappedPages[0]}],
+            reviewed: [{...exampleUnmappedPages[1]}],
+            complete: []
+        };
+        const expectedMappedInProgress = [
+            {},
+            {
+                lastEdit: {
+                    email: "test@test.com",
+                    date: "2018-05-29T13:41:40.536Z"
+                },
+                title: "Environmental accounts",
+                edition: "",
+                uri: "/economy/environmentalaccounts",
+                type: "taxonomy_landing_page"
+            }
+        ];
+        const expectedMappedReviewed = [{
+            lastEdit: {
+                email: "test@test.com", 
+                date: "2018-05-28T10:23:13.569Z"
+            },
+            title: "Economy",
+            edition: "",
+            uri: "/economy",
+            type: "taxonomy_landing_page"
+        }];
+
+        expect(collectionMapper.pagesToCollectionState(brokenCollectionData).inProgress).toMatchObject(expectedMappedInProgress);
+        expect(collectionMapper.pagesToCollectionState(brokenCollectionData).complete).toMatchObject([]);
+        expect(collectionMapper.pagesToCollectionState(brokenCollectionData).reviewed).toMatchObject(expectedMappedReviewed);
+    });
 });
 
 describe("Pages currently being deleted from a collection", () => {
