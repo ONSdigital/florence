@@ -106,7 +106,7 @@ class CollectionEdit extends Component {
 
         if (this.props.originalPublishType === "scheduled" && !this.props.originalPublishDate) {
             return (
-                <p>Publishing date: no publish date available</p>
+                <p>Publish date: no publish date available</p>
             )
         }
     }
