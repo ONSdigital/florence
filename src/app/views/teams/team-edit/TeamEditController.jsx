@@ -122,6 +122,7 @@ export class TeamEditController extends Component {
                     switch(error.status) {
                         case(401): {
                             // do nothing - handled by request utility function
+                            break;
                         }
                         case(404): {
                             const notification = {
@@ -194,6 +195,7 @@ export class TeamEditController extends Component {
                     switch(error.status) {
                         case(401): {
                             // do nothing - handled by request utility function
+                            break;
                         }
                         case(404): {
                             const notification = {
