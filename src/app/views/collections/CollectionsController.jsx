@@ -154,15 +154,23 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionCreateSuccess(newCollection) {
-        let mappedCollection = collectionMapper.collectionResponseToState(newCollection);
-        const collections = [...this.props.collections, mappedCollection];
+        const mappedCollection = collectionMapper.collectionResponseToState(newCollection);
+        let collections = [...this.props.collections, mappedCollection];
+        collections.sort((collection1, collection2) => {
+            const firstID = collection1.id.toLowerCase();
+            const secondID = collection2.id.toLowerCase();
+            if (firstID < secondID) {
+                return -1;
+            }
+            if (firstID > secondID) {
+                return 1;
+            }
+            return 0;
+        });
         this.props.dispatch(addAllCollections(collections));
         this.props.dispatch(push(`${this.props.rootPath}/collections/${mappedCollection.id}`));
         this.fetchCollections();
-
-        // scroll to newly created collection
-        const element = document.getElementById(mappedCollection.id).getBoundingClientRect();
-        document.getElementById('selectable-box').scrollTop = element.top;
+        document.getElementById(mappedCollection.id).scrollIntoView();
     }
 
     handleCollectionSelection(collection) {
