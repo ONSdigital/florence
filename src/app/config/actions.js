@@ -66,7 +66,7 @@ export function updateActiveCollection(collection) {
     }
 }
 
-export function addPagesToActiveCollection(collection) {
+export function updatePagesInActiveCollection(collection) {
     return {
         type: UPDATE_PAGES_IN_ACTIVE_COLLECTION,
         collection

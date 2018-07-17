@@ -11,7 +11,7 @@
     "setupFiles": [
       "./setupJest.js"
     ],
-    "collectCoverage": true,
+    "collectCoverage": false,
     "globals": {
       "window": true
     }
