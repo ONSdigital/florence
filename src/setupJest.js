@@ -9,7 +9,8 @@ const mockedGetElement = () => ({
     getBoundingClientRect: () => ({
         top: 0
     }),
-    scrollTop: 0
+    scrollTop: 0,
+    scrollIntoView: () => {}
 });
 Object.defineProperty(document, 'getElementById', {
     value: mockedGetElement,
