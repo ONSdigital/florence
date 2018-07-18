@@ -40,7 +40,6 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         dataType: 'json',
         contentType: 'application/json',
         type: 'POST',
-        //data: cleanedUpJSON,
         data: content,
         success: function (response) {
             isUpdatingModal.remove();
