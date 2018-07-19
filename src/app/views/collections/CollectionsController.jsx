@@ -41,6 +41,8 @@ export class CollectionsController extends Component {
 
         this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
         this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
+
+        this.isViewer = this.props.user.userType === "VIEWER";
     }
 
     componentWillMount() {
@@ -181,7 +183,7 @@ export class CollectionsController extends Component {
         return (
             <div>
                 <div className="grid grid--justify-space-around">
-                    <div className="grid__col-4">
+                    <div className={this.isViewer ? "grid__col-8" : "grid__col-4"}>
                         <h1>Select a collection</h1>
                         <DoubleSelectableBoxController
                             items={this.props.collections}
@@ -191,10 +193,12 @@ export class CollectionsController extends Component {
                             handleItemClick={this.handleCollectionSelection}
                         />
                     </div>
+                    {!this.isViewer ? 
                     <div className="grid__col-4">
                         <h1>Create a collection</h1>
                         <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
                     </div>
+                    : null}
                 </div>
                 <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
             </div>
