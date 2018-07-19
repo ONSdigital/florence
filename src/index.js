@@ -19,6 +19,7 @@ import './scss/main.scss';
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
+import { PreviewController } from './app/views/preview/PreviewController';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -77,6 +78,7 @@ class Index extends Component {
                                     <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
                                 </Route>
                             </Route>
+                            <Route path={`${rootPath}/preview`} component={ userIsAuthenticated(PreviewController) }/>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
