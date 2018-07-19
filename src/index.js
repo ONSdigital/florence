@@ -31,15 +31,15 @@ const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: `${rootPath}/login`
 });
 
-const userIsNotAuthorised = connectedReduxRedirect({
-    authenticatedSelector: state => {
-        return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
-    },
-    redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsAuthenticated',
-    redirectPath: `${rootPath}/not-authorised`,
-    allowRedirectBack: false
-});
+// const userIsNotAuthorised = connectedReduxRedirect({
+//     authenticatedSelector: state => {
+//         return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
+//     },
+//     redirectAction: routerActions.replace,
+//     wrapperDisplayName: 'UserIsAuthenticated',
+//     redirectPath: `${rootPath}/not-authorised`,
+//     allowRedirectBack: false
+// });
 
 class UnknownRoute extends Component {
     render() {
@@ -49,13 +49,13 @@ class UnknownRoute extends Component {
     }
 }
 
-class NotAuthorised extends Component {
-    render() {
-        return (
-            <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
-        )
-    }
-}
+// class NotAuthorised extends Component {
+//     render() {
+//         return (
+//             <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
+//         )
+//     }
+// }
 
 class Index extends Component {
     render() {
@@ -65,22 +65,21 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
-                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                    <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
-                                    <Route path='restore-content' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated((CollectionsController)) }>
+                                <Route path=':collectionID' component={ userIsAuthenticated((CollectionsController)) }>
+                                    <Route path='edit' component={ userIsAuthenticated((CollectionsController)) }/>
+                                    <Route path='restore-content' component={ userIsAuthenticated((CollectionsController)) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                    <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
-                                    <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated((TeamsController)) }>
+                                <Route path={`:team`} component={ userIsAuthenticated((TeamsController)) }>
+                                    <Route path={`edit`} component={ userIsAuthenticated((TeamsController)) }/>
+                                    <Route path={`delete`} component={ userIsAuthenticated((TeamsController)) }/>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
-                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>
