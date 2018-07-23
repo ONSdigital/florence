@@ -5,10 +5,10 @@ import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
 
 import cookies from '../utilities/cookies';
+import auth from '../utilities/auth';
 
 const propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    userType: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -33,7 +33,7 @@ class NavBar extends Component {
     }
 
     renderNavItems() {
-        if(!this.props.isAuthenticated) {
+        if(!auth.isAuthenticated(this.props.user)) {
             return (
                 <li className="global-nav__item">
                     <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
@@ -43,17 +43,15 @@ class NavBar extends Component {
 
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
-        const isViewer = this.props.userType == 'VIEWER';
 
         if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 || route.indexOf(`${rootPath}/not-authorised`) >= 0 ) {
             return (
                 <span>
-                    {!isViewer ?
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                    </li>
+                    {auth.isAdminOrEditor(this.props.user) ?
                         <span>
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
-                            </li>
-
                             <li className="global-nav__item">
                                 <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                             </li>
@@ -91,13 +89,11 @@ class NavBar extends Component {
 }
 
 function mapStateToProps(state) {
-    const isAuthenticated = state.state.user.isAuthenticated;
-    const userType = state.state.user.userType;
+    const user = state.state.user;
     const rootPath = state.state.rootPath;
 
     return {
-        isAuthenticated,
-        userType,
+        user,
         rootPath
     }
 }
