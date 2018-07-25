@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import cookies from '../utilities/cookies';
 import auth from '../utilities/auth';
 
+import PreviewNav from './PreviewNav';
+
 const propTypes = {
     user: PropTypes.object.isRequired,
     rootPath: PropTypes.string.isRequired,
@@ -79,8 +81,10 @@ class NavBar extends Component {
     }
 
     render() {
+        const isViewingPreview = this.props.location.pathname.indexOf("preview") != -1;
         return (
             <ul className="global-nav__list">
+                {isViewingPreview ? <PreviewNav /> : null }
                 { this.renderNavItems() }
             </ul>
         )
