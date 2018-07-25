@@ -12,6 +12,7 @@ import notifications from '../../utilities/notifications';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import CollectionDetailsController from './details/CollectionDetailsController';
 import collectionMapper from './mapper/collectionMapper';
+import cookies from '../../utilities/cookies'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -176,6 +177,11 @@ export class CollectionsController extends Component {
     }
 
     handleCollectionSelection(collection) {
+        if (this.isViewer) {
+            cookies.add("collection", collection.id, null);
+            this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}/preview`));
+            return;
+        }
         this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
     }
 
