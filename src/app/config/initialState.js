@@ -21,5 +21,8 @@ export const initialState = {
         active: null,
         toDelete: {}
     },
-    notifications: []
+    notifications: [],
+    preview: {
+        selectedPage: null
+    }
 };

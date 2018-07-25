@@ -22,6 +22,11 @@ export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
 export const TOGGLE_NOTIFICATION_VISIBILITY = 'TOGGLE_NOTIFICATION_VISIBILITY';
 
+export const ADD_PREVIEW_COLLECTION = "ADD_PREVIEW_COLLECTION";
+export const REMOVE_PREVIEW_COLLECTION = "REMOVE_PREVIEW_COLLECTION";
+export const UPDATE_PREVIEW_SELECTED_PAGE = "UPDATE_PREVIEW_SELECTED_PAGE";
+export const REMOVE_PREVIEW_SELECTED_PAGE = "REMOVE_PREVIEW_SELECTED_PAGE";
+
 export function userLoggedIn(email, userType, isAdmin) {
     return {
         type: USER_LOGGED_IN,
@@ -162,5 +167,33 @@ export function toggleNotificationVisibility(notificationID) {
     return {
         type: TOGGLE_NOTIFICATION_VISIBILITY,
         notificationID
+    }
+}
+
+export function addPreviewCollection(previewCollection) {
+    return {
+        type: ADD_PREVIEW_COLLECTION,
+        preview: previewCollection
+    }
+}
+
+export function removePreviewCollection() {
+    return {
+        type: REMOVE_PREVIEW_COLLECTION,
+        preview: {}
+    }
+}
+
+export function updateSelectedPreviewPage(selectedPage) {
+    return {
+        type: UPDATE_PREVIEW_SELECTED_PAGE,
+        selectedPage
+    }
+}
+
+export function removeSelectedPreviewPage() {
+    return {
+        type: REMOVE_PREVIEW_SELECTED_PAGE,
+        selectedPage: {}
     }
 }
