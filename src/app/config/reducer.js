@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION} from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE } from './actions';
 
 
 export default function reducer(state = initialState, action) {
@@ -186,6 +186,41 @@ export default function reducer(state = initialState, action) {
                     return notification;
                 })
             })
+        }
+        case (ADD_PREVIEW_COLLECTION): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    ...action.preview
+                }
+            }
+        }
+        case(REMOVE_PREVIEW_COLLECTION): {
+            return {
+                ...state,
+                preview: {
+                    selectedPage: null
+                }
+            }
+        }
+        case (UPDATE_PREVIEW_SELECTED_PAGE): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    selectedPage: action.selectedPage
+                }
+            }
+        }
+        case (REMOVE_PREVIEW_SELECTED_PAGE): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    selectedPage: null
+                }
+            }
         }
         default: {
             break;
