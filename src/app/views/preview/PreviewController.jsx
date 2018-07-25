@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import http from '../../utilities/http';
-import collections from '../../utilities/api-clients/collections';
 import notifications from '../../utilities/notifications';
 import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage } from '../../config/actions';
 import cookies from '../../utilities/cookies'
@@ -13,6 +12,7 @@ import Iframe from '../../components/iframe/Iframe';
 
 const propTypes = {
     selectedPageUri: PropTypes.string,
+    rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
 };
