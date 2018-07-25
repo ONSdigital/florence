@@ -43,14 +43,14 @@ class PreviewNav extends Component {
 
     render() {
         return (
-            <span>
+            <div className="global-nav__preview-select">
                 <Select id="preview-select" 
                     contents={this.mapPagesToSelect(this.props.preview.pages) || []} 
                     onChange={this.handleSelectChange}
                     defaultOption={this.props.preview.pages ? "Select an option" : "Loading pages..."}
                     selectedOption={this.props.preview.selectedPage || "" }
                 />
-            </span>
+            </div>
         );
     }
 }
