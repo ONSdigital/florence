@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 
 import http from '../../utilities/http';
 import notifications from '../../utilities/notifications';
@@ -23,12 +23,17 @@ export class PreviewController extends Component {
     }
 
     componentWillMount() {
-        this.fetchCollectionAndPages(this.props.routeParams.collectionID)
+        const collectionID = this.props.routeParams.collectionID
+        this.fetchCollectionAndPages(collectionID)
 
         // check if there is already page URL to preview in current URL
         const previewPageURL = new URL(window.location.href).searchParams.get("url")
         if (previewPageURL) {
             this.props.dispatch(updateSelectedPreviewPage(previewPageURL));
+        }
+
+        if (!cookies.get("collection")) {
+            cookies.add("collection", collectionID, null);
         }
     }
 
@@ -40,9 +45,6 @@ export class PreviewController extends Component {
         this.fetchCollection(collectionID).then(collection => {
             const pages = [...collection.inProgress, ...collection.complete, ...collection.reviewed];
             const collectionPreview = {collectionID, name: collection.name, pages};
-            if (!cookies.get("collection")) {
-                cookies.add("collection", collectionID, null);
-            }
             this.props.dispatch(addPreviewCollection(collectionPreview));
         }).catch(error => {
             const notification = {
@@ -51,11 +53,20 @@ export class PreviewController extends Component {
                 isDismissable: true
             };
 
-            if (error.status === 401) {
-                notification.message = "You do not have persmission to view this data and have been redirected to collections screen";
-                notifications.add(notification);
-                this.props.dispatch(push(`${this.props.rootPath}/collections/`));
-                return;
+            switch(error.status) {
+                case(401): {
+                    notification.message = "You do not have persmission to view this data and have been redirected to collections screen";
+                    notifications.add(notification);
+                    this.props.dispatch(replace(`${this.props.rootPath}/collections/`));
+                    cookies.remove("collection");
+                    return;
+                }
+                case(404): {
+                    notification.message = "That collection doesn't appear to exist. You have been redirected to collections screen";
+                    notifications.add(notification);
+                    this.props.dispatch(replace(`${this.props.rootPath}/collections/`));
+                    return;
+                }
             }
 
             notifications.add(notification);
