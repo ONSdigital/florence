@@ -82,7 +82,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
 
             if (!response.ok) {
                 response.text().then(body => {
-                    reject({status: response.status, message: response.statusText, body: JSON.parse(body)})
+                    reject({status: response.status, message: response.statusText, body: body ? JSON.parse(body) : null})
                 })
                 return; 
             }
