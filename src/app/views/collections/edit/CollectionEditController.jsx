@@ -429,7 +429,7 @@ export class CollectionEditController extends Component {
                 nameErrorMsg={this.state.name.errorMsg}
                 originalPublishType={this.props.publishType}
                 publishType={this.state.publishType}
-                originalPublishDate={dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}
+                originalPublishDate={dateFormat(this.props.publishDate, "dddd, d mmmm yyyy h:MMTT")}
                 publishDate={this.state.publishDate.value}
                 publishDateErrorMsg={this.state.publishDate.errorMsg}
                 publishTime={this.state.publishTime.value}
