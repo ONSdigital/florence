@@ -1381,6 +1381,7 @@ select {
       background-color: #FFFFFF; }
 
 .global-nav__preview-select {
+  width: 400px;
   margin-top: 2px;
   float: left; }
 
