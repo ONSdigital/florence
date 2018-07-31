@@ -62,6 +62,7 @@ export default class Input extends Component {
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
                         accept={this.props.accept}
+                        onBlur={this.props.onChange}
                     />
                 :
                     <textarea

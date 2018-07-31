@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
+import Input from '../../../components/Input';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired
@@ -80,7 +81,7 @@ class TeamCreate extends Component {
 
     handleFormInput(event) {
         const input = Object.assign({}, this.state.input, {
-            value: event.target.value,
+            value: event.target.value.trim(),
             error: ""
         });
         this.setState({input});
@@ -116,13 +117,14 @@ class TeamCreate extends Component {
     render() {
         return (
             <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit}>
-                {/* Can't use <Input/> component because we need hidden labels
-                 if this becomes a common use case can add to the input component */}
-                <div className="form__input">
-                    <input type="text" className="input input__text" disabled={this.state.isAwaitingResponse} placeholder="Name" value={this.state.input.value} onChange={this.handleFormInput}/>
-                    {this.state.input.error && 
-                        <div className="error-msg">{this.state.input.error}</div>
-                    }
+                <div className="margin-bottom--2">
+                    <Input
+                        id="team-name"
+                        label="Team name"
+                        onChange={this.handleFormInput}
+                        disabled={this.state.isAwaitingResponse}
+                        error={this.state.input.error}
+                    />
                 </div>
                 <button className="btn btn--positive" disabled={this.state.isAwaitingResponse}>Create</button>
                 {this.state.isAwaitingResponse &&
