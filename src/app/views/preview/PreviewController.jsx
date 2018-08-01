@@ -49,20 +49,21 @@ export class PreviewController extends Component {
         }).catch(error => {
             const notification = {
                 type: "warning",
-                message: "There was an error getting data about the selected collection. Please try refreshing the page",
+                message: "There was an error getting data for this collection. Please try refreshing the page",
                 isDismissable: true
             };
 
             switch(error.status) {
                 case(401): {
-                    notification.message = "You do not have persmission to view this data and have been redirected to collections screen";
+                    notification.message = "You do not have permission to view this data, so you have been redirected to the collections screen";
+                    notification.type = "neutral";
                     notifications.add(notification);
                     this.props.dispatch(replace(`${this.props.rootPath}/collections/`));
                     cookies.remove("collection");
                     return;
                 }
                 case(404): {
-                    notification.message = "That collection doesn't appear to exist. You have been redirected to collections screen";
+                    notification.message = "That collection doesn't appear to exist, so you have been redirected to the collections screen";
                     notifications.add(notification);
                     this.props.dispatch(replace(`${this.props.rootPath}/collections/`));
                     return;
