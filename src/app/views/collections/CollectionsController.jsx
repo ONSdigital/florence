@@ -62,7 +62,9 @@ export class CollectionsController extends Component {
     }
 
     componentWillUnmount() {
-        this.props.dispatch(emptyActiveCollection());
+        if (this.props.activeCollection) {
+            this.props.dispatch(emptyActiveCollection());
+        }
     }
 
     fetchCollections() {
