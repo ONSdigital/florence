@@ -84,8 +84,8 @@ class NavBar extends Component {
         const isViewingPreview = this.props.location.pathname.indexOf("preview") != -1;
         return (
             <ul className="global-nav__list">
-                {isViewingPreview ? <PreviewNav /> : null }
-                { this.renderNavItems() }
+                {isViewingPreview && <PreviewNav />}
+                {this.renderNavItems()}
             </ul>
         )
     }
