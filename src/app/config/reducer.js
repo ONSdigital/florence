@@ -105,7 +105,7 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 global: {
                     ...state.global,
-                    workingOn: action.workingOn
+                    workingOn: {...action.workingOn}
                 }
             }
         }
