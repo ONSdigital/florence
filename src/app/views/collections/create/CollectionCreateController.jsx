@@ -61,6 +61,7 @@ export class CollectionCreateController extends Component {
         this.blankNewCollectionDetails = this.state.newCollectionDetails;
 
         this.handleCollectionNameChange = this.handleCollectionNameChange.bind(this);
+        this.handleCollectionNameBlur = this.handleCollectionNameBlur.bind(this);
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
         this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
         this.handleCollectionTypeChange = this.handleCollectionTypeChange.bind(this);
@@ -149,6 +150,17 @@ export class CollectionCreateController extends Component {
             name: collectionName
         };
         this.setState({newCollectionDetails: newCollectionDetails});
+    }
+
+    handleCollectionNameBlur(event) {
+        const newCollectionDetails = {
+            ...this.state.newCollectionDetails,
+            name: {
+                ...this.state.newCollectionDetails.name,
+                value: event.target.value.trim()
+            }
+        }
+        this.setState({newCollectionDetails});
     }
 
     handleTeamSelection(event) {
@@ -299,15 +311,28 @@ export class CollectionCreateController extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.setState({isSubmitting: true});
+
+        // Trim the name so that it never has extra white space around it (since we'll do this on successful submit anyway)
+        // and update state so that this change renders even if there's a validation error
+        const trimmedCollectionName = this.state.newCollectionDetails.name.value.trim();
+        let newCollectionDetails = {
+            ...this.state.newCollectionDetails,
+            name: {
+                ...this.state.newCollectionDetails.name,
+                value: this.state.newCollectionDetails.name.value.trim()
+            }
+        };
+        this.setState({
+            newCollectionDetails,
+            isSubmitting: true
+        });
 
         let hasError = false;
-        let newCollectionDetails = this.state.newCollectionDetails;
 
-        const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
+        const validatedName = collectionValidation.name(trimmedCollectionName);
         if (!validatedName.isValid) {
             const collectionName = {
-                value: this.state.newCollectionDetails.name.value,
+                value: trimmedCollectionName,
                 errorMsg: validatedName.errorMsg
             };
 
@@ -462,6 +487,7 @@ export class CollectionCreateController extends Component {
                 <CollectionCreate 
                     newCollectionDetails={this.state.newCollectionDetails}
                     handleCollectionNameChange={this.handleCollectionNameChange}
+                    handleCollectionNameBlur={this.handleCollectionNameBlur}
                     handleTeamSelection={this.handleTeamSelection}
                     handleRemoveTeam={this.handleRemoveTeam}
                     handleCollectionTypeChange={this.handleCollectionTypeChange}

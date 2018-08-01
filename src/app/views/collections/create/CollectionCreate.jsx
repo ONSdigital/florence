@@ -21,6 +21,7 @@ const propTypes = {
         scheduleType: PropTypes.string.isRequired,
     }).isRequired,
     handleCollectionNameChange: PropTypes.func.isRequired,
+    handleCollectionNameBlur: PropTypes.func,
     handleTeamSelection: PropTypes.func.isRequired,
     handleRemoveTeam: PropTypes.func.isRequired,
     handleCollectionTypeChange: PropTypes.func.isRequired,
@@ -127,6 +128,7 @@ class CollectionCreate extends Component {
                         error={this.props.newCollectionDetails.name.errorMsg}
                         value={this.props.newCollectionDetails.name.value}
                         onChange={this.props.handleCollectionNameChange}
+                        onBlur={this.props.handleCollectionNameBlur}
                     />
 
                     <Select

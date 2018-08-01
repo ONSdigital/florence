@@ -64,6 +64,7 @@ export class CollectionEditController extends Component {
         this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
         this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleNameBlur = this.handleNameBlur.bind(this);
         this.handleAddTeam = this.handleAddTeam.bind(this);
         this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
     }
@@ -128,6 +129,16 @@ export class CollectionEditController extends Component {
             name: {
                 value: name,
                 errorMsg: ""
+            }
+        });
+    }
+    
+    handleNameBlur(name) {
+        console.log({name});
+        this.setState({
+            name: {
+                ...this.state.name,
+                value: name.trim()
             }
         });
     }
@@ -230,14 +241,24 @@ export class CollectionEditController extends Component {
     handleSave() {
         let hasError = false;
         
-        const validatedName = collectionValidation.name(this.state.name.value);
+        const trimmedName = this.state.name.value.trim();
+
+        // Update state with trimmed name, so that we never show a name with whitespace longer than we have to
+        // i.e. the user has completed their typing by saving, confirming that they have finished typing the name
+        this.setState({name: {
+            ...this.state.name,
+            value: trimmedName
+        }});
+
+
+        const validatedName = collectionValidation.name(trimmedName);
         if (!validatedName.isValid) {
-            this.setState(state => ({
+            this.setState({
                 name: {
-                    ...state.name,
+                    value: trimmedName,
                     errorMsg: validatedName.errorMsg
                 }
-            }));
+            });
             hasError = true;
         }
 
@@ -419,6 +440,7 @@ export class CollectionEditController extends Component {
                 onCancel={this.handleCancel}
                 onSave={this.handleSave}
                 onNameChange={this.handleNameChange}
+                onNameBlur={this.handleNameBlur}
                 onTeamSelect={this.handleAddTeam}
                 onRemoveTeam={this.handleRemoveTeam}
                 onPublishTypeChange={this.handlePublishTypeChange}

@@ -14,6 +14,7 @@ const propTypes = {
     nameErrorMsg: PropTypes.string,
     onCancel: PropTypes.func.isRequired,
     onNameChange: PropTypes.func.isRequired,
+    onNameBlur: PropTypes.func.isRequired,
     onRemoveTeam: PropTypes.func.isRequired,
     onTeamSelect: PropTypes.func.isRequired,
     onPublishTypeChange: PropTypes.func.isRequired,
@@ -54,6 +55,7 @@ class CollectionEdit extends Component {
         this.handleTeamSelection = this.handleTeamSelection.bind(this);
         this.handleTeamRemove = this.handleTeamRemove.bind(this);
         this.handleNameChange = this.handleNameChange.bind(this);
+        this.handleNameBlur = this.handleNameBlur.bind(this);
         this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
         this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
         this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
@@ -70,6 +72,10 @@ class CollectionEdit extends Component {
 
     handleNameChange(event) {
         this.props.onNameChange(event.target.value);
+    }
+    
+    handleNameBlur(event) {
+        this.props.onNameBlur(event.target.value);
     }
 
     handlePublishTypeChange(event) {
@@ -136,6 +142,7 @@ class CollectionEdit extends Component {
                                 value={this.props.name}
                                 error={this.props.nameErrorMsg}
                                 onChange={this.handleNameChange}
+                                onBlur={this.handleNameBlur}
                             />
                             <Select
                                 id="collection-edit-teams"
