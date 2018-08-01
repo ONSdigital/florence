@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push, replace } from 'react-router-redux';
+import { replace } from 'react-router-redux';
 
 import http from '../../utilities/http';
 import notifications from '../../utilities/notifications';
