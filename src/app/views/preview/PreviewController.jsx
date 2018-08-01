@@ -5,13 +5,17 @@ import { replace } from 'react-router-redux';
 
 import http from '../../utilities/http';
 import notifications from '../../utilities/notifications';
-import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage } from '../../config/actions';
+import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage, updateWorkingOn, emptyWorkingOn } from '../../config/actions';
 import cookies from '../../utilities/cookies'
 
 import Iframe from '../../components/iframe/Iframe';
 
 const propTypes = {
     selectedPageUri: PropTypes.string,
+    workingOn: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string
+    }),
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -24,7 +28,11 @@ export class PreviewController extends Component {
 
     componentWillMount() {
         const collectionID = this.props.routeParams.collectionID
-        this.fetchCollectionAndPages(collectionID)
+        this.fetchCollectionAndPages(collectionID);
+
+        if (!this.props.workingOn || !this.props.workingOn.id) {
+            this.props.dispatch(updateWorkingOn(collectionID, ""));
+        }
 
         // check if there is already page URL to preview in current URL
         const previewPageURL = new URL(window.location.href).searchParams.get("url")
@@ -38,6 +46,7 @@ export class PreviewController extends Component {
     }
 
     componentWillUnmount() {
+        this.props.dispatch(emptyWorkingOn());
         this.props.dispatch(removeSelectedPreviewPage());
     }
 
@@ -46,6 +55,9 @@ export class PreviewController extends Component {
             const pages = [...collection.inProgress, ...collection.complete, ...collection.reviewed];
             const collectionPreview = {collectionID, name: collection.name, pages};
             this.props.dispatch(addPreviewCollection(collectionPreview));
+            if (!this.props.workingOn || !this.props.workingOn.name) {
+                this.props.dispatch(updateWorkingOn(collectionID, collection.name));
+            }
         }).catch(error => {
             const notification = {
                 type: "warning",
@@ -93,6 +105,7 @@ PreviewController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         selectedPageUri: state.state.preview.selectedPage,
+        workingOn: state.state.global.workingOn,
         rootPath: state.state.rootPath
     }
 }
