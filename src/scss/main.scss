@@ -11,6 +11,10 @@
 * Refactored SCSS 
 */
 
+* {
+    box-sizing: border-box;
+}
+
 //Base styling
 @import "base/variables";
 @import "base/grid";
