@@ -6,7 +6,7 @@ export const initialState = {
         isAdmin: false
     },
     global: {
-        workingOn: {}
+        workingOn: null
     },
     rootPath: "/florence",
     teams: {
