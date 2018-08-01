@@ -88,10 +88,10 @@ export function emptyActiveCollection() {
     }
 }
 
-export function updateWorkingOn(workingOn) {
+export function updateWorkingOn(id, name) {
     return {
         type: UPDATE_WORKING_ON,
-        workingOn
+        workingOn: {id, name}
     }
 }
 
