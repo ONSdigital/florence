@@ -7,7 +7,7 @@ import objectIsEmpty from 'is-empty-object';
 import CollectionCreateController from './create/CollectionCreateController';
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
-import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections} from '../../config/actions';
+import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn} from '../../config/actions';
 import notifications from '../../utilities/notifications';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
 import CollectionDetailsController from './details/CollectionDetailsController';
@@ -179,6 +179,7 @@ export class CollectionsController extends Component {
     handleCollectionSelection(collection) {
         if (this.isViewer) {
             cookies.add("collection", collection.id, null);
+            this.props.dispatch(updateWorkingOn(collection.id, collection.name));
             this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}/preview`));
             return;
         }
@@ -199,12 +200,12 @@ export class CollectionsController extends Component {
                             handleItemClick={this.handleCollectionSelection}
                         />
                     </div>
-                    {!this.isViewer ? 
-                    <div className="grid__col-4">
-                        <h1>Create a collection</h1>
-                        <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
-                    </div>
-                    : null}
+                    {!this.isViewer && 
+                        <div className="grid__col-4">
+                            <h1>Create a collection</h1>
+                            <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
+                        </div>
+                    }
                 </div>
                 <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
             </div>
