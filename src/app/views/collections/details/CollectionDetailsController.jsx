@@ -359,6 +359,12 @@ export class CollectionDetailsController extends Component {
                     ...this.props.activeCollection,
                     [state]: pages
                 };
+                
+                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== uri);
+                this.setState({
+                    pendingDeletedPages: updatedPendingDeletes
+                });
+
                 updatedCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedCollection);
                 updatedCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedCollection);
                 this.props.dispatch(updatePagesInActiveCollection(updatedCollection));
