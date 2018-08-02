@@ -46,7 +46,8 @@ class NavBar extends Component {
             return
         }
         return (
-            <li className="global-nav__item">
+            // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
+            <li className="global-nav__item global-nav__item--working-on">
                 <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
                     Working on:&nbsp;
                     {this.props.workingOn.name || 
