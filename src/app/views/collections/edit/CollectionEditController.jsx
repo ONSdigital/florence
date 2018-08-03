@@ -9,7 +9,7 @@ import url from '../../../utilities/url';
 import teams from '../../../utilities/api-clients/teams';
 import log, {eventTypes} from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
-import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addAllCollections, updatePagesInActiveCollection} from '../../../config/actions';
+import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection} from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
 import collections from '../../../utilities/api-clients/collections';
 import date from '../../../utilities/date';
@@ -37,6 +37,8 @@ export class CollectionEditController extends Component {
     constructor(props) {
         super(props);
 
+        console.log(props);
+
         this.state = {
             isSavingEdits: false,
             isFetchingAllTeams: false,
@@ -44,7 +46,7 @@ export class CollectionEditController extends Component {
                 value: props.name,
                 errorMsg: ""
             },
-            teams: props.teams,
+            updatedTeamsList: null,
             addedTeams: new Map, // used to lookup on save to validate whether the teams have changed
             removedTeams: new Map, // used to lookup on save to validate whether the teams have changed
             publishType: props.publishType,
@@ -115,7 +117,7 @@ export class CollectionEditController extends Component {
 
             const notification = {
                 type: 'warning',
-                message: 'An unexpected error occured getting the list all teams, if you need edit the teams please try refreshing Florence',
+                message: 'An unexpected error occured getting the list all teams, if you need to  edit the teams please try refreshing Florence',
                 autoDismiss: 5000,
                 isDismissable: true
             }
@@ -133,11 +135,13 @@ export class CollectionEditController extends Component {
     }
 
     handleAddTeam(teamID) {
+        const currentTeams = this.state.updatedTeamsList || this.props.teams || [];
+
         if (!teamID) {
             return;
         }
 
-        const teamAlreadyAdded = this.state.teams.some(team => {
+        const teamAlreadyAdded = currentTeams.some(team => {
             return team.id === teamID;
         });
         if (teamAlreadyAdded) {
@@ -162,24 +166,26 @@ export class CollectionEditController extends Component {
             const newState = {...state};
             if (newState.removedTeams.delete(teamID)) {
                 return {
-                    teams: [...newState.teams, selectedTeam],
+                    updatedTeamsList: [...currentTeams, selectedTeam],
                     removedTeams: newState.removedTeams      
                 }
             }
 
             return {
-                teams: [...newState.teams, selectedTeam],
+                updatedTeamsList: [...currentTeams, selectedTeam],
                 addedTeams: newState.addedTeams.set(teamID)
             }
     });
     }
 
     handleRemoveTeam(teamID) {
+        const currentTeams = this.state.updatedTeamsList || this.props.teams || [];
+
         this.setState(state => {
             const newState = {...state};
             if (newState.addedTeams.delete(teamID)) {
                 return {
-                    teams: newState.teams.filter(team => {
+                    updatedTeamsList: currentTeams.filter(team => {
                         return team.id !== teamID
                     }),
                     addedTeams: newState.addedTeams
@@ -187,7 +193,7 @@ export class CollectionEditController extends Component {
             }
 
             return {
-                teams: newState.teams.filter(team => {
+                updatedTeamsList: currentTeams.filter(team => {
                     return team.id !== teamID
                 }),
                 removedTeams: newState.removedTeams.set(teamID),
@@ -281,7 +287,7 @@ export class CollectionEditController extends Component {
                 name: response.name,
                 publishDate: response.publishDate,
                 type: response.type,
-                teams: this.state.teams
+                teams: this.state.updatedTeamsList || this.props.teams
             };
             const allCollections = this.props.collections.map(collection => {
                 if (collection.id !== this.props.id) {
@@ -291,6 +297,7 @@ export class CollectionEditController extends Component {
             });
             this.props.dispatch(updateActiveCollection(activeCollection));
             this.props.dispatch(updatePagesInActiveCollection(activeCollection));
+            this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
             this.props.dispatch(addAllCollections(allCollections));
             this.props.dispatch(push(url.resolve('../')));
         }).catch(error => {
@@ -398,7 +405,7 @@ export class CollectionEditController extends Component {
             // Switch the teams array of objects back to an array of strings.
             // Basically, we read from teamsDetails but write to teams, so not to 
             // break what Zebedee is expecting but still be able to use the team IDs
-            body.teams = state.teams.map(team => (team.name));
+            body.teams = state.updatedTeamsList.map(team => (team.name));
         }
 
         if (state.publishType !== this.props.publishType) {
@@ -434,7 +441,7 @@ export class CollectionEditController extends Component {
                 publishDateErrorMsg={this.state.publishDate.errorMsg}
                 publishTime={this.state.publishTime.value}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
-                teams={this.state.teams || []}
+                teams={this.state.updatedTeamsList || this.props.teams || []}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
                 isSavingEdits={this.state.isSavingEdits}
