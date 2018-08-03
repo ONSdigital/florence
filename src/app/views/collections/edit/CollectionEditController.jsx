@@ -19,10 +19,6 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    allTeams: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-    })),
     teams: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired
@@ -37,8 +33,6 @@ export class CollectionEditController extends Component {
     constructor(props) {
         super(props);
 
-        console.log(props);
-
         this.state = {
             isSavingEdits: false,
             isFetchingAllTeams: false,
@@ -46,6 +40,7 @@ export class CollectionEditController extends Component {
                 value: props.name,
                 errorMsg: ""
             },
+            allTeams: [],
             updatedTeamsList: null,
             addedTeams: new Map, // used to lookup on save to validate whether the teams have changed
             removedTeams: new Map, // used to lookup on save to validate whether the teams have changed
@@ -83,24 +78,38 @@ export class CollectionEditController extends Component {
                 }
             });
         }
-        this.setState({
-            isFetchingAllTeams: true
-        });
+        this.setState({isFetchingAllTeams: true});
         teams.getAll().then(response => {
-            const teams = response.map(team => {
-                return {id: team.id.toString(), name: team.name}
+            const allTeams = response.map(team => {
+                let disabled = false;
+                // if (this.state.updatedTeamsList) {
+                //     console.log('State', this.state.updatedTeamsList);
+                //     disabled = this.state.updatedTeamsList.some(addedTeam => team.id === addedTeam.id);
+                // }
+                // if (!this.state.updatedTeamsList && this.props.teams && this.props.teams.length > 0) {
+                //     console.log('Props', this.props.teams, this.state.updatedTeamsList);
+                //     disabled = this.props.teams.some(addedTeam => team.id === addedTeam.id);
+                // }
+                if (this.props.teams && this.props.teams.length > 0) {
+                    disabled = this.props.teams.some(addedTeam => team.id == addedTeam.id);
+                }
+
+                return {
+                    id: team.id.toString(), 
+                    name: team.name,
+                    disabled
+                }
             });
             this.setState({
-                isFetchingAllTeams: false
+                isFetchingAllTeams: false,
+                allTeams
             });
-            this.props.dispatch(updateAllTeamIDsAndNames(teams));
+            // this.props.dispatch(updateAllTeamIDsAndNames(teams));
 
             // Not needed for this screen but keeps teams array up-to-date for the teams screen
             this.props.dispatch(updateAllTeams(response));
         }).catch(error => {
-            this.setState({
-                isFetchingAllTeams: false
-            });
+            this.setState({isFetchingAllTeams: false});
             log.add(eventTypes.unexpectedRuntimeError, "Error fetching or mapping all teams" + JSON.stringify(error));
             console.error("Error fetching or mapping all teams", error);
             
@@ -148,7 +157,7 @@ export class CollectionEditController extends Component {
             return;
         }
 
-        const selectedTeam = this.props.allTeams.find(team => {
+        const selectedTeam = this.state.allTeams.find(team => {
             return team.id === teamID;
         });
         if (!selectedTeam) {
@@ -164,16 +173,24 @@ export class CollectionEditController extends Component {
         }
         this.setState(state => {
             const newState = {...state};
+            const updatedTeamsList = [...currentTeams, selectedTeam];
+            const allTeams = state.allTeams.map(team => ({
+               ...team,
+               disabled: team.id == selectedTeam.id ? true : team.disabled 
+            }));
+
             if (newState.removedTeams.delete(teamID)) {
                 return {
-                    updatedTeamsList: [...currentTeams, selectedTeam],
-                    removedTeams: newState.removedTeams      
+                    updatedTeamsList,
+                    removedTeams: newState.removedTeams,
+                    allTeams    
                 }
             }
 
             return {
-                updatedTeamsList: [...currentTeams, selectedTeam],
-                addedTeams: newState.addedTeams.set(teamID)
+                updatedTeamsList,
+                addedTeams: newState.addedTeams.set(teamID),
+                allTeams
             }
     });
     }
@@ -183,21 +200,26 @@ export class CollectionEditController extends Component {
 
         this.setState(state => {
             const newState = {...state};
+            const updatedTeamsList = currentTeams.filter(team => {
+                return team.id !== teamID
+            });
+            const allTeams = state.allTeams.map(team => ({
+                ...team,
+                disabled: team.id == teamID ? false : team.disabled
+             }));
+
             if (newState.addedTeams.delete(teamID)) {
                 return {
-                    updatedTeamsList: currentTeams.filter(team => {
-                        return team.id !== teamID
-                    }),
-                    addedTeams: newState.addedTeams
+                    updatedTeamsList,
+                    addedTeams: newState.addedTeams,
+                    allTeams
                 }
             }
 
             return {
-                updatedTeamsList: currentTeams.filter(team => {
-                    return team.id !== teamID
-                }),
+                updatedTeamsList,
                 removedTeams: newState.removedTeams.set(teamID),
-                
+                allTeams
             }
         });
     }
@@ -442,7 +464,7 @@ export class CollectionEditController extends Component {
                 publishTime={this.state.publishTime.value}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.updatedTeamsList || this.props.teams || []}
-                allTeams={this.state.isFetchingAllTeams ? [] : this.props.allTeams}
+                allTeams={this.state.isFetchingAllTeams ? [] : this.state.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
                 isSavingEdits={this.state.isSavingEdits}
             />
@@ -454,7 +476,6 @@ CollectionEditController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        allTeams: state.state.teams.allIDsAndNames,
         teams: state.state.collections.active ? state.state.collections.active.teams : undefined,
         publishType: state.state.collections.active ? state.state.collections.active.type : undefined,
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
