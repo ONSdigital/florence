@@ -6,6 +6,7 @@ export const MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS = 'MARK_COLLECTION_
 export const DELETE_COLLECTION_FROM_ALL_COLLECTIONS = 'DELETE_COLLECTION_FROM_ALL_COLLECTIONS';
 export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
 export const UPDATE_PAGES_IN_ACTIVE_COLLECTION = 'UPDATE_PAGES_IN_ACTIVE_COLLECTION';
+export const UPDATE_TEAMS_IN_ACTIVE_COLLECTION = 'UPDATE_TEAMS_IN_ACTIVE_COLLECTION';
 export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
 
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
@@ -70,6 +71,13 @@ export function updatePagesInActiveCollection(collection) {
     return {
         type: UPDATE_PAGES_IN_ACTIVE_COLLECTION,
         collection
+    }
+}
+
+export function updateTeamsInActiveCollection(teams) {
+    return {
+        type: UPDATE_TEAMS_IN_ACTIVE_COLLECTION,
+        teams
     }
 }
 
