@@ -8,7 +8,8 @@ const propTypes = {
         PropTypes.string,
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
+            disabled: PropTypes.bool
         })]
     )).isRequired,
     selectedOption: PropTypes.string,
@@ -55,7 +56,7 @@ class Select extends Component {
                         value={this.props.selectedOption}>
                         <option value="">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
-                            return <option key={index} value={item.id || item}>{item.name || item}</option>
+                            return <option disabled={item.disabled} key={index} value={item.id || item}>{item.name || item}</option>
                         })}
                     </select>
                 </div>
