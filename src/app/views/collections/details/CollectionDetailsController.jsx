@@ -9,7 +9,7 @@ import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './Collecti
 import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection} from '../../../config/actions'
+import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 import collectionMapper from "../mapper/collectionMapper";
@@ -171,6 +171,7 @@ export class CollectionDetailsController extends Component {
             }
 
             this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
+            this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
             this.setState({isFetchingCollectionDetails: false});
         }).catch(error => {
             console.error(`Fetching collection ${collectionID}: `, error);
