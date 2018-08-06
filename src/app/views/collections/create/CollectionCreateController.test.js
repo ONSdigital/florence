@@ -114,6 +114,47 @@ test("Handle team selection change updates state correctly", () => {
     expect(component.update().state().newCollectionDetails.teams).toContainEqual({id: "1", name: "Team 1"});
 });
 
+describe("Selecting/removing a team", () => {
+    let component;
+
+    beforeEach(() => {
+        component = mount(
+            <CollectionCreateController {...defaultProps} />
+        );
+        component.setProps({allTeams: mockedTeams});
+    });
+    
+    it("disables a team on selection", () => {
+        const selectedTeamID = "2";
+        const getDisabledTeams = () => component.state('updatedAllTeams').filter(team => team.disabled);
+
+        // Check that the component has the state and props we'd expect at this point
+        expect(component.prop('allTeams').length).toBe(2);
+        expect(component.state('updatedAllTeams')).toBe(null);
+
+        component.instance().handleTeamSelection({preventDefault: ()=>{}, target: {value: selectedTeamID}});
+
+        expect(component.state('updatedAllTeams')).toBeTruthy();
+        expect(getDisabledTeams().length).toBe(1);
+        expect(getDisabledTeams()[0].id).toBe("2");
+        expect(getDisabledTeams()[0].name).toBe("Team 2");
+    });
+
+    it("enables a team on removal", () => {
+        const removedTeam = {id: "2", name: "Team 2"};
+        const getDisabledTeams = () => component.state('updatedAllTeams').filter(team => team.disabled);
+
+        // Ensure that the component has the state and props we'd expect at this point
+        expect(component.state('updatedAllTeams')).toBe(null);
+        component.instance().handleTeamSelection({preventDefault: ()=>{}, target: {value: removedTeam.id}});
+        expect(getDisabledTeams().length).toBe(1);
+        expect(component.state('updatedAllTeams')).toBeTruthy();
+
+        component.instance().handleRemoveTeam(removedTeam);
+        expect(getDisabledTeams().length).toBe(0);
+    })
+});
+
 test("Handle team selection doesn't add a team that is already in the collection", () => {
     const component = shallow(
         <CollectionCreateController {...defaultProps} />
