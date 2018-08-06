@@ -162,6 +162,7 @@ export class CollectionEditController extends Component {
             console.error(`Unable to find team ID '${teamID}' in teams array in Redux`);
             return;
         }
+
         this.setState(state => {
             const newState = {...state};
             const updatedTeamsList = [...currentTeams, selectedTeam];
