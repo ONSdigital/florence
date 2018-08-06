@@ -142,6 +142,7 @@ class CollectionEdit extends Component {
                                 label="Select a team(s) that can view this collection"
                                 contents={this.props.allTeams}
                                 defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
+                                selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
                             />
                             <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove}/>
