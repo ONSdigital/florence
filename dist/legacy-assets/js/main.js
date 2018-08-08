@@ -39906,7 +39906,6 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
-            loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
             var checkDest = dest;
             if(!dest.endsWith("/data.json")) {
                 checkDest += "/data.json";
@@ -39917,7 +39916,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 contentType: 'application/json',
                 cache: false,
                 success: function (response, textStatus, xhr) {
-                    if (xhr.status == 204) {
+                    if (xhr.status == 204 || response === collectionData.name) {
                         loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
                         return;
                     }
@@ -40270,8 +40269,6 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
-                document.getElementById("response").innerHTML = "Uploading . . .";
-
                 var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
                 if (file.name.match(/\.csv$/)) {
                     fileNameNoSpace = 'upload-' + fileNameNoSpace;
@@ -40292,7 +40289,7 @@ function addDataset(collectionId, data, field, idField) {
                 }
 
                 if (!!file.name.match(downloadExtensions)) {
-                    showUploadedItem(fileNameNoSpace);
+                    //showUploadedItem(fileNameNoSpace);
                     if (formdata) {
                         formdata.append("name", file);
                     }
@@ -40308,26 +40305,47 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
+                // check if edition already exists to prevent overwriting content
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            document.getElementById("response").innerHTML = "File uploaded successfully";
-                            if (!data[field]) {
-                                data[field] = [];
+                    var uriToCheck = checkPathSlashes(data.uri + "/" + this[0].value.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase())
+                    fetch(uriToCheck, {credentials: 'include'}).then(function(response) {
+                        if (response.ok) {
+                            // content was found, return so as not to overwrite existing content and display an error
+                            console.error(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            swal(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            return;
+                        } 
+                        submitform();
+                        document.getElementById("response").innerHTML = "Uploading...";
+                    })
+                }
+
+                function submitform() {
+                    if (formdata) {
+                        $.ajax({
+                            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                            type: 'POST',
+                            data: formdata,
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+                                document.getElementById("response").innerHTML = "File uploaded successfully";
+                                if (!data[field]) {
+                                    data[field] = [];
+                                }
+                                data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+                                uploadedNotSaved.uploaded = true;
+                                // create the dataset
+                                loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+                                // on success save parent and child data
+                            },
+                            error: function(error) {
+                                swal("There was an error uploading the file, please try again.")
+                                console.error(error.status, error.statusText)
                             }
-                            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
-                            uploadedNotSaved.uploaded = true;
-                            // create the dataset
-                            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
-                            // on success save parent and child data
-                        }
-                    });
+                        });
+                    }
                 }
             });
 
