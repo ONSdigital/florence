@@ -20,6 +20,13 @@ job "florence" {
       value     = "publishing.*"
     }
 
+    restart {
+      attempts = 3
+      delay    = "15s"
+      interval = "1m"
+      mode     = "delay"
+    }
+
     task "florence" {
       driver = "docker"
 
