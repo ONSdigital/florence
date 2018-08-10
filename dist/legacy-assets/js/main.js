@@ -50580,7 +50580,7 @@ function setShortcuts(field, callback) {
     // redirect a viewer to not authorised message if they try access old Florence
     var userType = localStorage.getItem("userType");
     if (userType == "VIEWER") {
-        window.location.href = '/florence/not-authorised';
+        window.location.href = '/florence/collections';
     }
 
     // Get ping times to zebedee and surface for user

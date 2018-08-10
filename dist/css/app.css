@@ -61,6 +61,9 @@ select {
 /* 
 * Refactored SCSS 
 */
+* {
+  box-sizing: border-box; }
+
 /* Spacing */
 /* Font families */
 /* Colour palette */
@@ -1380,6 +1383,11 @@ select {
       top: 0;
       background-color: #FFFFFF; }
 
+.global-nav__preview-select {
+  width: 400px;
+  margin-top: 2px;
+  float: left; }
+
 .modal__overlay {
   background-color: rgba(0, 0, 0, 0.65);
   position: fixed;
@@ -1494,6 +1502,10 @@ select {
   width: 21px;
   height: 21px; }
 
+.loader--inline {
+  position: relative;
+  top: 5px; }
+
 .loader--large {
   border-width: 5px; }
 
@@ -1502,15 +1514,22 @@ select {
   width: 42px;
   height: 42px; }
 
+.loader--small {
+  border-width: 2px; }
+
+.loader--small,
+.loader--small:after {
+  width: 16px;
+  height: 16px; }
+
+.loader--small.loader--inline {
+  top: 3px; }
+
 .loader--dark {
   border-left-color: #343B59;
   border-top-color: rgba(52, 59, 89, 0.2);
   border-right-color: rgba(52, 59, 89, 0.2);
   border-bottom-color: rgba(52, 59, 89, 0.2); }
-
-.loader--inline {
-  position: relative;
-  top: 5px; }
 
 @-webkit-keyframes spin {
   0% {
@@ -1792,6 +1811,13 @@ select {
     background-size: 30px auto;
     height: 15px; }
 
+.preview {
+  height: calc(100vh - 63px); }
+  .preview__iframe {
+    height: 100%;
+    width: 100%;
+    border-width: 0; }
+
 .btn {
   font-family: 'Roboto Slab', serif;
   border-radius: 4px;
@@ -1926,7 +1952,8 @@ select {
         border-bottom: 1px solid #58585B;
         top: -3px;
         right: -3px;
-        height: 42px; }
+        height: 42px;
+        box-sizing: border-box; }
     .select-wrap--error {
       border-radius: 4px;
       border-top: 3px solid #AA354C;
