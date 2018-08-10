@@ -61,6 +61,9 @@ select {
 /* 
 * Refactored SCSS 
 */
+* {
+  box-sizing: border-box; }
+
 /* Spacing */
 /* Font families */
 /* Colour palette */
@@ -1499,6 +1502,10 @@ select {
   width: 21px;
   height: 21px; }
 
+.loader--inline {
+  position: relative;
+  top: 5px; }
+
 .loader--large {
   border-width: 5px; }
 
@@ -1507,15 +1514,22 @@ select {
   width: 42px;
   height: 42px; }
 
+.loader--small {
+  border-width: 2px; }
+
+.loader--small,
+.loader--small:after {
+  width: 16px;
+  height: 16px; }
+
+.loader--small.loader--inline {
+  top: 3px; }
+
 .loader--dark {
   border-left-color: #343B59;
   border-top-color: rgba(52, 59, 89, 0.2);
   border-right-color: rgba(52, 59, 89, 0.2);
   border-bottom-color: rgba(52, 59, 89, 0.2); }
-
-.loader--inline {
-  position: relative;
-  top: 5px; }
 
 @-webkit-keyframes spin {
   0% {
