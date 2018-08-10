@@ -16,10 +16,12 @@ import collectionMapper from "../mapper/collectionMapper";
 import Modal from "../../../components/Modal";
 import RestoreContent from "../restore-content/RestoreContent";
 import url from '../../../utilities/url';
+import auth from '../../../utilities/auth';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
     collectionID: PropTypes.string,
     collections: PropTypes.array,
     activeCollection: PropTypes.shape({
@@ -90,6 +92,10 @@ export class CollectionDetailsController extends Component {
     }
 
     componentWillMount() {
+        if (!auth.canViewCollectionsDetails(this.props.user)) {
+            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+            return;
+        }
         if (this.props.collectionID) {
             this.fetchActiveCollection(this.props.collectionID);
             this.setState({drawerIsVisible: true});
@@ -538,6 +544,7 @@ CollectionDetailsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
+        user: state.state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,

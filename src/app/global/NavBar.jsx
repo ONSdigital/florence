@@ -5,10 +5,17 @@ import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
 
 import cookies from '../utilities/cookies';
+import auth from '../utilities/auth';
+import url from '../utilities/url';
+
+import PreviewNav from './PreviewNav';
 
 const propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    userType: PropTypes.string.isRequired,
+    user: PropTypes.object.isRequired,
+    workingOn: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string
+    }),
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -32,8 +39,29 @@ class NavBar extends Component {
         this.props.dispatch(userLoggedOut());
     }
 
+    renderWorkingOnItem() {
+        const workingOn = this.props.workingOn || {};
+        const showWorkingOn = workingOn.id;
+        if (!showWorkingOn) {
+            return
+        }
+        return (
+            // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
+            <li className="global-nav__item global-nav__item--working-on">
+                <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
+                    Working on:&nbsp;
+                    {this.props.workingOn.name || 
+                        <div className="margin-left--1 inline-block">
+                            <div className="loader loader--inline loader--small"></div>
+                        </div>
+                    }
+                </Link>
+            </li>
+        )
+    }
+
     renderNavItems() {
-        if(!this.props.isAuthenticated) {
+        if(!auth.isAuthenticated(this.props.user)) {
             return (
                 <li className="global-nav__item">
                     <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
@@ -43,17 +71,16 @@ class NavBar extends Component {
 
         const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
-        const isViewer = this.props.userType == 'VIEWER';
 
         if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users-and-access`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 || route.indexOf(`${rootPath}/not-authorised`) >= 0 ) {
             return (
                 <span>
-                    {!isViewer ?
+                    { this.renderWorkingOnItem() }
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                    </li>
+                    {auth.isAdminOrEditor(this.props.user) ?
                         <span>
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
-                            </li>
-
                             <li className="global-nav__item">
                                 <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                             </li>
@@ -81,9 +108,12 @@ class NavBar extends Component {
     }
 
     render() {
+        const regex = new RegExp(`${this.props.rootPath}/collections/.*/preview`, "g");
+        const isViewingPreview = regex.test(this.props.location.pathname);
         return (
             <ul className="global-nav__list">
-                { this.renderNavItems() }
+                {isViewingPreview && <PreviewNav />}
+                {this.renderNavItems()}
             </ul>
         )
     }
@@ -91,14 +121,14 @@ class NavBar extends Component {
 }
 
 function mapStateToProps(state) {
-    const isAuthenticated = state.state.user.isAuthenticated;
-    const userType = state.state.user.userType;
+    const user = state.state.user;
     const rootPath = state.state.rootPath;
+    const workingOn = state.state.global ? state.state.global.workingOn : null;
 
     return {
-        isAuthenticated,
-        userType,
-        rootPath
+        user,
+        rootPath,
+        workingOn
     }
 }
 

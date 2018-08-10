@@ -5,6 +5,9 @@ export const initialState = {
         userType: '',
         isAdmin: false
     },
+    global: {
+        workingOn: null
+    },
     rootPath: "/florence",
     teams: {
         active: {},
@@ -21,5 +24,8 @@ export const initialState = {
         active: null,
         toDelete: {}
     },
-    notifications: []
+    notifications: [],
+    preview: {
+        selectedPage: null
+    }
 };
