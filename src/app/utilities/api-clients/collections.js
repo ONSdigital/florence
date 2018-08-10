@@ -48,4 +48,11 @@ export default class collections {
         return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`)
     }
 
+    static getInProgressContent(collectionID) {
+        return http.get(`/zebedee/collectionDetails/${collectionID}`)
+            .then(response => {
+                return response.inProgress;
+            })
+    }
+
 }
