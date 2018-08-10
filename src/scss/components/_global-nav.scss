@@ -6,7 +6,7 @@
         background: $mine-shaft;
         padding: 0 20px;
         color: $grey-chateau;
-        height: $lineheight * 3;
+        height: $navbar-height;
         text-align: right;
         list-style: none;
     }
@@ -35,5 +35,11 @@
                 background-color: $white;
             }
         }
+    }
+
+    &__preview-select {
+        width: 400px;
+        margin-top: 2px;
+        float: left;
     }
 }
