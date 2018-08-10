@@ -3,6 +3,7 @@ import { CollectionEditController, mapStateToProps } from "./CollectionEditContr
 import CollectionEdit from './CollectionEdit';
 import collections from '../../../utilities/api-clients/collections';
 import { shallow } from 'enzyme';
+import { UPDATE_ALL_TEAMS } from '../../../config/actions';
 
 console.error = () => {};
 console.warn = () => {};
@@ -40,7 +41,6 @@ const defaultProps = {
     dispatch: action => {
         dispatchedAction = action;
     },
-    allTeams: [],
     teams: [],
     publishType: "manual"
 };
@@ -53,11 +53,7 @@ const propsWithScheduleDetails = {
 
 const propsWithTeams = {
     ...defaultProps,
-    allTeams: [
-        {id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"]},
-        {id: "2", name: "Team 2", members: []}
-    ],
-    teams: [{id: "2", name: "Team 2", members: []}]
+    teams: [{id: "2", name: "Team 2"}]
 };
 
 const defaultComponent = shallow(
@@ -136,54 +132,109 @@ describe("Editing the collection's associated teams", () => {
         {id: "2", name: "Team 2", members: []},
         {id: "3", name: "Team 3", members: ["member2@email.com"]}
     ];
+    let editingTeamsComponent;
+
+    beforeEach(() => {
+        editingTeamsComponent = shallow(
+            <CollectionEditController {...propsWithTeams} />
+        );
+    });
 
     it("on mount it updates global state with the latest list of all teams", () => {
-        expect(componentWithTeams.prop('allTeams')).toEqual(propsWithTeams.allTeams);
-        componentWithTeams.setProps({allTeams: fetchedAllTeams});
+        editingTeamsComponent.instance().componentWillMount();
+        expect(dispatchedAction.type).toEqual(UPDATE_ALL_TEAMS);
         expect(dispatchedAction.allTeams).toEqual(fetchedAllTeams);
     });
 
     it("adds a team to the state", () => {
-        const addedTeam = {id: "3", name: "Team 3", members: ["member2@email.com"]};
-        componentWithTeams.instance().handleAddTeam(addedTeam.id);
-        expect(componentWithTeams.state('teams')).toEqual(expect.arrayContaining([addedTeam]));
+        const addedTeam = {id: "3", name: "Team 3"};
+        expect(editingTeamsComponent.prop('teams').some(team => team.id == addedTeam.id)).toEqual(false);
+        expect(editingTeamsComponent.state('updatedTeamsList')).toEqual(null);
+        editingTeamsComponent.instance().handleAddTeam(addedTeam.id);
+        expect(editingTeamsComponent.state('updatedTeamsList').some(team => team.id == addedTeam.id)).toEqual(true);
+    });
+
+    it("disables a team option if it's added at load", () => {
+        const disabledTeams = editingTeamsComponent.prop('allTeams').filter(team => team.disabled);
+        expect(disabledTeams.length).toBe(1);
+        expect(disabledTeams[0].name).toBe("Team 2");
+        expect(disabledTeams[0].id).toBe("2");
+    });
+
+    it("disables a team option after a user has added it", () => {
+        const addedTeam = {id: "3", name: "Team 3"};
+        const getDisabledTeams = () => editingTeamsComponent.state('allTeams').filter(team => team.disabled);
+
+        // First verify that the component's state is as expected
+        expect(getDisabledTeams().length).toBe(1);
+        expect(getDisabledTeams().some(team => team.id === addedTeam.id)).toBe(false);
+        
+        editingTeamsComponent.instance().handleAddTeam(addedTeam.id);
+
+        expect(getDisabledTeams().length).toBe(2);
+        expect(getDisabledTeams().some(team => team.id === addedTeam.id)).toBe(true);
     });
 
     it("remove a team from the state", () => {
-        const removedTeam = {id: "3", name: "Team 3", members: ["member2@email.com"]};
-        componentWithTeams.instance().handleRemoveTeam(removedTeam.id);
-        expect(componentWithTeams.state('teams')).not.toEqual(expect.arrayContaining([removedTeam]));
+        const removedTeam = {id: "2", name: "Team 2"};
+        expect(editingTeamsComponent.prop('teams').some(team => team.id == removedTeam.id)).toEqual(true);
+        expect(editingTeamsComponent.state('updatedTeamsList')).toBe(null);
+        editingTeamsComponent.instance().handleRemoveTeam(removedTeam.id);
+        expect(editingTeamsComponent.state('teams')).not.toEqual(expect.arrayContaining([removedTeam]));
+        expect(editingTeamsComponent.state('updatedTeamsList')).toEqual([]);
+    });
+
+    it("enables a team option if it's not added at load", () => {
+        const getEnabledTeams = () => editingTeamsComponent.state('allTeams').filter(team => !team.disabled);
+        expect(editingTeamsComponent.state('allTeams').length).toBe(3);
+        expect(getEnabledTeams().length).toBe(2);
+    });
+
+    it("enables a team option after a user has removed it", () => {
+        const removedTeamID = "2";
+        const getEnabledTeams = () => editingTeamsComponent.state('allTeams').filter(team => !team.disabled);
+        const getDisabledTeams = () => editingTeamsComponent.state('allTeams').filter(team => team.disabled);
+
+        expect(getEnabledTeams().length).toBe(2);
+        expect(getDisabledTeams().some(team => team.id === removedTeamID)).toBe(true);
+        expect(getEnabledTeams().some(team => team.id === removedTeamID)).toBe(false);
+
+        editingTeamsComponent.instance().handleRemoveTeam(removedTeamID);
+        expect(getEnabledTeams().length).toBe(3);
+        expect(getDisabledTeams().some(team => team.id === removedTeamID)).toBe(false);
+        expect(getEnabledTeams().some(team => team.id === removedTeamID)).toBe(true);
     });
 
     it("doesn't add the same team twice", () => {
-        const addedTeam = {id: "2", name: "Team 2", members: []};
-        componentWithTeams.instance().handleAddTeam(addedTeam.id);
-        const teamOnlyAddedOnce = componentWithTeams.state('teams').filter(team => {
-            return team.id === "2";
-        }).length === 1;
-        expect(teamOnlyAddedOnce).toEqual(true);
+        const addedTeam = {id: "2", name: "Team 2"};
+
+        // Check that the team we're going to attempt to add already exists
+        expect(editingTeamsComponent.state('allTeams').some(team => team.id === addedTeam.id)).toBe(true);
+
+        editingTeamsComponent.instance().handleAddTeam(addedTeam.id);
+        
+        expect(editingTeamsComponent.state('updatedTeamsList')).toBe(null);
     });
 
     it("does nothing if it gets no ID for the team to add", () => {
-        const originalTeams = componentWithTeams.state('teams');
         try {
-            componentWithTeams.instance().handleAddTeam();
+            editingTeamsComponent.instance().handleAddTeam();
         } catch (error) {
             fail()
             console.error(error);
         }
-        expect(componentWithTeams.state('teams')).toEqual(originalTeams);
+        expect(editingTeamsComponent.state('updatedTeamsList')).toEqual(null);
     });
     
     it("does nothing if it doesn't recognise the ID in all teams for the team to add", () => {
-        const originalTeams = componentWithTeams.state('teams');
+        const originalTeams = editingTeamsComponent.state('teams');
         try {
-            componentWithTeams.instance().handleAddTeam("unrecognised-id");
+            editingTeamsComponent.instance().handleAddTeam("unrecognised-id");
         } catch (error) {
             fail()
             console.error(error);
         }
-        expect(componentWithTeams.state('teams')).toEqual(originalTeams);
+        expect(editingTeamsComponent.state('teams')).toEqual(originalTeams);
     });
 });
 
@@ -219,26 +270,26 @@ describe("Editing the collection's publish type", () => {
 describe("Checking whether associated teams have changed", () => {
 
     it("returns 'true' when a new team has been added", () => {
-        const teamsLength = componentWithTeams.state('teams').length;
+        const teamsLength = componentWithTeams.prop('teams').length;
 
         componentWithTeams.instance().handleAddTeam("1");
-        expect(componentWithTeams.state('teams').length).toEqual(teamsLength+1);
+        expect(componentWithTeams.state('updatedTeamsList').length).toEqual(teamsLength+1);
         expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
         componentWithTeams.instance().handleRemoveTeam("1");
     });
 
     it("returns 'true' when an existing team has been removed", () => {
-        const teamsLength = componentWithTeams.state('teams').length;
+        const teamsLength = componentWithTeams.prop('teams').length;
 
         componentWithTeams.instance().handleRemoveTeam("2");
-        expect(componentWithTeams.state('teams').length).toEqual(teamsLength-1);
+        expect(componentWithTeams.state('updatedTeamsList').length).toEqual(teamsLength-1);
         expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
         componentWithTeams.instance().handleAddTeam("2");
     });
 
     it("returns 'false' when an existing team has been removed and added again", () => {
         const teamIDToBeRemoved = "2";
-        const stateContainsTeamToRemove = componentWithTeams.state('teams').some(team => (team.id === teamIDToBeRemoved));
+        const stateContainsTeamToRemove = componentWithTeams.prop('teams').some(team => (team.id === teamIDToBeRemoved));
         expect(stateContainsTeamToRemove).toEqual(true);
 
         componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
@@ -251,7 +302,7 @@ describe("Checking whether associated teams have changed", () => {
         const teamIDToBeRemoved = "2";
         componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
         
-        const stateContainsTeamToRemove = componentWithTeams.state('teams').some(team => (team.id === teamIDToBeRemoved));
+        const stateContainsTeamToRemove = componentWithTeams.prop('teams').some(team => (team.id === teamIDToBeRemoved));
         expect(stateContainsTeamToRemove).toEqual(false);
 
         componentWithTeams.instance().handleAddTeam(teamIDToBeRemoved);
@@ -469,12 +520,7 @@ describe("The mapPropsToState function", () => {
         const expectProps = {
             publishType: "scheduled",
             publishDate: "2018-01-12T09:30:00.000Z",
-            teams: ["Team 2", "Team 3"],
-            allTeams: [
-                {id: "1", name: "Team 1", members: []},
-                {id: "2", name: "Team 2", members: []},
-                {id: "3", name: "Team 3", members: []}
-            ]
+            teams: ["Team 2", "Team 3"]
         }
         expect(mapStateToProps({state})).toMatchObject(expectProps);
     });
@@ -493,12 +539,7 @@ describe("The mapPropsToState function", () => {
         const expectProps = {
             publishType: undefined,
             publishDate: undefined,
-            teams: undefined,
-            allTeams: [
-                {id: "1", name: "Team 1", members: []},
-                {id: "2", name: "Team 2", members: []},
-                {id: "3", name: "Team 3", members: []}
-            ]
+            teams: undefined
         }
         expect(mapStateToProps({state})).toMatchObject(expectProps);
     });

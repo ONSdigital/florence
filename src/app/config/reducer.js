@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION } from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -67,7 +67,6 @@ export default function reducer(state = initialState, action) {
                         status: {...action.collection.status},
                         type: action.collection.type,
                         isForcedManualType: action.collection.isForcedManualType,
-                        teams: [...action.collection.teams],
                         canBeApproved: action.collection.canBeApproved,
                         canBeDeleted: action.collection.canBeDeleted
                     }
@@ -87,6 +86,18 @@ export default function reducer(state = initialState, action) {
                         deletes: action.collection.deletes,
                         canBeApproved: action.collection.canBeApproved,
                         canBeDeleted: action.collection.canBeDeleted
+                    }
+                }
+            }
+        }
+        case(UPDATE_TEAMS_IN_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: {
+                        ...state.collections.active,
+                        teams: action.teams
                     }
                 }
             }
