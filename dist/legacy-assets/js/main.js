@@ -50764,6 +50764,16 @@ function setShortcuts(field, callback) {
             this.collection = collectionTemp
         }
     }
+
+    $(document).on('blur', 'input, textarea', function() {
+        if (this.type === "file") {
+            return;
+        }
+        var trimmed = this.value.trim();
+        $(this).val(trimmed);
+        $(this).change();
+        $(this).trigger("input");
+    })
 }
 
 function releaseEditor(collectionId, data) {
