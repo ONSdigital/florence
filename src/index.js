@@ -14,45 +14,40 @@ import TeamsController from './app/views/teams/TeamsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import Logs from './app/views/logs/Logs';
 
+import auth from './app/utilities/auth'
+
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
+import PreviewController from './app/views/preview/PreviewController';
 
 const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.state.user.isAuthenticated;
+        return auth.isAuthenticated(state.state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectPath: `${rootPath}/login`
 });
 
-const userIsNotAuthorised = connectedReduxRedirect({
+const userisAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
+        return auth.isAdminOrEditor(state.state.user)
     },
     redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsAuthenticated',
-    redirectPath: `${rootPath}/not-authorised`,
+    wrapperDisplayName: 'userisAdminOrEditor',
+    redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
-});
+})
 
 class UnknownRoute extends Component {
     render() {
         return (
             <h1>Sorry, this page couldn't be found</h1>
-        )
-    }
-}
-
-class NotAuthorised extends Component {
-    render() {
-        return (
-            <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
         )
     }
 }
@@ -65,22 +60,22 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
-                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                    <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
-                                    <Route path='restore-content' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(CollectionsController) }>
+                                <Route path=':collectionID' component={ userIsAuthenticated(CollectionsController) }>
+                                    <Route path='edit' component={ userIsAuthenticated(CollectionsController) }/>
+                                    <Route path='restore-content' component={ userIsAuthenticated(CollectionsController) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                <Route path={`:team`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }>
-                                    <Route path={`edit`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
-                                    <Route path={`delete`} component={ userIsAuthenticated(userIsNotAuthorised(TeamsController)) }/>
+                            <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
+                                <Route path={`:team`} component={ userIsAuthenticated(TeamsController) }>
+                                    <Route path={`edit`} component={ userIsAuthenticated(TeamsController) }/>
+                                    <Route path={`delete`} component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
-                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path={`*`} component={ UnknownRoute } />
                         </Route>
                     </Route>
