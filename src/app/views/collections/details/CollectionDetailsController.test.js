@@ -188,12 +188,24 @@ describe("Collection details are hidden", () => {
 
 // TODO complete these tests!
 describe("Restore content to a collection", () => {
-    const restoredData = {
+    const singleRestoredData = {
         uri: "/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018",
         title: "Gross Domestic Product: March 2018",
         type: "bulletin"
     };
-    
+
+    const multiRestoredData= [
+        {
+            uri: "/about/test",
+            description: {title: "Test Page"},
+            type: "test_type"
+        }, {
+            uri: "/about/test/two",
+            description: {title: "Test Page 2"},
+            type: "test_type"
+        }
+    ]
+
     beforeAll(() => {
         component.setProps({
             activeCollection: {
@@ -207,22 +219,47 @@ describe("Restore content to a collection", () => {
         component.setProps({activeCollection: defaultProps.activeCollection});
     });
 
-    it("adds the correct page back into the collections", () => {
-        component.instance().handleRestoreDeletedContentSuccess(restoredData);
-        expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
-        expect(dispatchedActions[0].collection.inProgress.some(page => page.uri = restoredData.uri)).toBe(true);
-    });
+    describe("When restoring single file", () => {
+        it("adds the correct page back into the collections", () => {
+            component.instance().handleRestoreSingleDeletedContentSuccess(singleRestoredData);
+            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+            expect(dispatchedActions[0].collection.inProgress.some(page => page.uri = singleRestoredData.uri)).toBe(true);
+        });
 
-    it("maps the page data to the structure expected in state", () => {
-        component.instance().handleRestoreDeletedContentSuccess(restoredData);
-        expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+        it("maps the page data to the structure expected in state", () => {
+            component.instance().handleRestoreSingleDeletedContentSuccess(singleRestoredData);
+            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
 
-        const restoredPage = dispatchedActions[0].collection.inProgress.find(page => page.uri = restoredData.uri);
-        expect(restoredPage).toBeTruthy();
-        expect(restoredPage.uri).toBe("/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018");
-        expect(restoredPage.title).toBe("Gross Domestic Product: March 2018");
-        expect(restoredPage.type).toBe("bulletin");
-    });
+            const restoredPage = dispatchedActions[0].collection.inProgress.find(page => page.uri = singleRestoredData.uri);
+            expect(restoredPage).toBeTruthy();
+            expect(restoredPage.uri).toBe("/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018");
+            expect(restoredPage.title).toBe("Gross Domestic Product: March 2018");
+            expect(restoredPage.type).toBe("bulletin");
+        });
+    })
+
+    describe("When restoring multiple files", () => {
+        it("adds all pages into collection", () => {
+            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
+            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+            expect(dispatchedActions[0].collection.inProgress.some(page => page.uri = multiRestoredData[0].uri)).toBe(true);
+            expect(dispatchedActions[0].collection.inProgress.some(page => page.uri = multiRestoredData[1].uri)).toBe(true);
+        })
+
+        it("maps the page data to the structure expected in state", () => {
+            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
+            const restoredPage = dispatchedActions[0].collection.inProgress.find(page => page.uri = multiRestoredData[0].uri);
+            expect(restoredPage).toBeTruthy();
+            expect(restoredPage.uri).toBe("/about/test");
+            expect(restoredPage.title).toBe("Test Page");
+            expect(restoredPage.type).toBe("test_type");
+        });
+
+        it("correct number of pages are restored", () => {
+            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
+            expect(dispatchedActions[0].collection.inProgress.length).toBe(multiRestoredData.length)
+        });
+    })
 });
 
 describe("Deleting a collection", () => {
