@@ -82,14 +82,6 @@ export class CollectionEditController extends Component {
         teams.getAll().then(response => {
             const allTeams = response.map(team => {
                 let disabled = false;
-                // if (this.state.updatedTeamsList) {
-                //     console.log('State', this.state.updatedTeamsList);
-                //     disabled = this.state.updatedTeamsList.some(addedTeam => team.id === addedTeam.id);
-                // }
-                // if (!this.state.updatedTeamsList && this.props.teams && this.props.teams.length > 0) {
-                //     console.log('Props', this.props.teams, this.state.updatedTeamsList);
-                //     disabled = this.props.teams.some(addedTeam => team.id === addedTeam.id);
-                // }
                 if (this.props.teams && this.props.teams.length > 0) {
                     disabled = this.props.teams.some(addedTeam => team.id == addedTeam.id);
                 }
@@ -104,7 +96,6 @@ export class CollectionEditController extends Component {
                 isFetchingAllTeams: false,
                 allTeams
             });
-            // this.props.dispatch(updateAllTeamIDsAndNames(teams));
 
             // Not needed for this screen but keeps teams array up-to-date for the teams screen
             this.props.dispatch(updateAllTeams(response));
@@ -171,6 +162,7 @@ export class CollectionEditController extends Component {
             console.error(`Unable to find team ID '${teamID}' in teams array in Redux`);
             return;
         }
+
         this.setState(state => {
             const newState = {...state};
             const updatedTeamsList = [...currentTeams, selectedTeam];

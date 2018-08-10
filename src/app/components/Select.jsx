@@ -53,8 +53,9 @@ class Select extends Component {
                         onChange={this.props.onChange}
                         onFocus={this.handleFocus}
                         onBlur={this.handleFocus}
-                        value={this.props.selectedOption}>
-                        <option value="">{this.props.defaultOption || "Select an option"}</option>
+                        value={this.props.selectedOption}
+                    >
+                        <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
                             return <option disabled={item.disabled} key={index} value={item.id || item}>{item.name || item}</option>
                         })}
