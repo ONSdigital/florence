@@ -85,7 +85,8 @@ export class CollectionDetailsController extends Component {
         this.handleCollectionPageDeleteClick = this.handleCollectionPageDeleteClick.bind(this);
         this.handleCancelPageDeleteClick = this.handleCancelPageDeleteClick.bind(this);
         this.handleRestoreDeletedContentClose = this.handleRestoreDeletedContentClose.bind(this);
-        this.handleRestoreDeletedContentSuccess = this.handleRestoreDeletedContentSuccess.bind(this);
+        this.handleRestoreMultiDeletedContentSuccess = this.handleRestoreMultiDeletedContentSuccess.bind(this);
+        this.handleRestoreSingleDeletedContentSuccess = this.handleRestoreSingleDeletedContentSuccess.bind(this)
     }
 
     componentWillMount() {
@@ -419,7 +420,25 @@ export class CollectionDetailsController extends Component {
         this.props.dispatch(push(url.resolve("../")));
     }
 
-    handleRestoreDeletedContentSuccess(restoredItem) {
+    handleRestoreMultiDeletedContentSuccess(updatedInProgressList) {
+        const mappedUpdatedInprogressList = updatedInProgressList.map(item => {
+            return {
+                uri: item.uri,
+                title: item.description.title,
+                type: item.type
+            }
+        })
+
+        const updatedActiveCollection = {
+            ...this.props.activeCollection,
+            inProgress: [...mappedUpdatedInprogressList]
+        };
+
+        this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
+        this.handleRestoreDeletedContentClose();
+    }
+
+    handleRestoreSingleDeletedContentSuccess(restoredItem) {
         const addDeleteToInProgress = {
             uri: restoredItem.uri,
             title: restoredItem.title,
@@ -432,7 +451,6 @@ export class CollectionDetailsController extends Component {
         };
 
         this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
-
         this.handleRestoreDeletedContentClose();
     }
 
@@ -505,7 +523,10 @@ export class CollectionDetailsController extends Component {
                 </Drawer>
                 {(this.state.isRestoringContent && this.props.activeCollection) &&
                     <Modal sizeClass="grid__col-8">
-                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} onSuccess={this.handleRestoreDeletedContentSuccess} activeCollectionId={this.props.activeCollection.id} />
+                        <RestoreContent onClose={this.handleRestoreDeletedContentClose} 
+                            onMultiFileSuccess={this.handleRestoreMultiDeletedContentSuccess} 
+                            onSingleFileSuccess={this.handleRestoreSingleDeletedContentSuccess} 
+                            activeCollectionId={this.props.activeCollection.id} />
                     </Modal>
                 }
             </div>
