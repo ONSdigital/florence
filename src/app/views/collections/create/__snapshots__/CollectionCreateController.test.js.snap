@@ -51,10 +51,10 @@ exports[`Create collection form matches stored snapshot 1`] = `
             onBlur={[Function]}
             onChange={[Function]}
             onFocus={[Function]}
-            value={undefined}
+            value="default-option"
           >
             <option
-              value=""
+              value="default-option"
             >
               Loading teams...
             </option>
