@@ -54,7 +54,8 @@ export class CollectionCreateController extends Component {
             },
             isGettingTeams: true,
             isSubmitting: false,
-            showScheduleByRelease: false
+            showScheduleByRelease: false,
+            updatedAllTeams: null
         };
 
 
@@ -169,6 +170,16 @@ export class CollectionCreateController extends Component {
         const selectedTeam = this.props.allTeams.find(team => {
             return team.id === teamID;
         });
+        const allTeams = this.state.updatedAllTeams || this.props.allTeams || [];
+        const updatedAllTeams = allTeams.map(team => {
+            if (team.id == teamID) {
+                return {
+                    ...team,
+                    disabled: true
+                }
+            }
+            return team;
+        })
 
         const teams = [...this.state.newCollectionDetails.teams, selectedTeam];
 
@@ -176,19 +187,34 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             teams: teams
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({
+            newCollectionDetails,
+            updatedAllTeams
+        });
     }
 
     handleRemoveTeam(teamToRemove) {
         const updatedTeams = this.state.newCollectionDetails.teams.filter(team => {
             return team.id !== teamToRemove.id
         });
+        const updatedAllTeams = this.state.updatedAllTeams.map(team => {
+            if (team.id === teamToRemove.id) {
+                return {
+                    ...team,
+                    disabled: false
+                }
+            }
+            return team;
+        });
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
             teams: updatedTeams
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({
+            newCollectionDetails, 
+            updatedAllTeams
+        });
     }
 
     handleCollectionTypeChange(event) {
@@ -384,7 +410,7 @@ export class CollectionCreateController extends Component {
         }
 
         collections.create(this.mapStateToPostBody()).then(response => {
-            this.setState({ newCollectionDetails: this.blankNewCollectionDetails, isSubmitting: false });
+            this.setState({ newCollectionDetails: this.blankNewCollectionDetails, isSubmitting: false, updatedAllTeams: null });
             this.props.onSuccess(response);
         }).catch(error => {
             this.setState({isSubmitting: false});
@@ -470,7 +496,7 @@ export class CollectionCreateController extends Component {
                     handleSelectRelease={this.handleSelectRelease}
                     handleCloseRelease={this.handleCloseRelease}
                     hasTeams={!this.state.isGettingTeams}
-                    allTeams={this.props.allTeams}
+                    allTeams={this.state.updatedAllTeams || this.props.allTeams || []}
                     handleScheduleTypeChange={this.handleScheduleTypeChange}
                     handlePublishTimeChange={this.handlePublishTimeChange}
                     handlePublishDateChange={this.handlePublishDateChange}
