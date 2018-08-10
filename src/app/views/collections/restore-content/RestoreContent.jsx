@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import SelectableBox from '../../../components/selectable-box-new/SelectableBox'
 import Input from '../../../components/Input'
 
+import collections from '../../../utilities/api-clients/collections'
 import content from '../../../utilities/api-clients/content'
 import notifications from '../../../utilities/notifications';
 import log, {eventTypes} from '../../../utilities/log';
@@ -12,7 +13,8 @@ import log, {eventTypes} from '../../../utilities/log';
 const propTypes = {
     activeCollection: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
-    onSuccess: PropTypes.func.isRequired
+    onMultiFileSuccess: PropTypes.func.isRequired,
+    onSingleFileSuccess: PropTypes.func.isRequired
 }
 
 export class RestoreContent extends Component {
@@ -30,6 +32,7 @@ export class RestoreContent extends Component {
         this.handleItemClick = this.handleItemClick.bind(this);
         this.handleDoneClick = this.handleDoneClick.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleMultipleRestoredPages = this.handleMultipleRestoredPages.bind(this);
     }
 
     componentWillMount() {
@@ -46,7 +49,7 @@ export class RestoreContent extends Component {
                     deletedContent.deletedFiles.length.toString(),
                     deletedContent.eventDate
                 ],
-                returnValue: {id: deletedContent.id.toString(), uri: deletedContent.uri, title: deletedContent.pageTitle, type: deletedContent.type},
+                returnValue: {id: deletedContent.id.toString(), uri: deletedContent.uri, title: deletedContent.pageTitle, type: deletedContent.type, isMultiDelete: deletedContent.deletedFiles.length > 1 },
             }
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, `Error mapping deleted content (id: ${deletedContent.id}, title: ${deletedContent.pageTitle})to state. ${error}`);
@@ -120,8 +123,15 @@ export class RestoreContent extends Component {
     handleDoneClick() {
         this.setState({isRestoringDeletingContent: true});
         content.restoreDeleted(this.state.activeItem.id, this.props.activeCollection.id).then(() => {
+            // When restoring multiple deletes we need to check the collectionDetails end point to get 
+            // the names and page type because they are not contained in the response from deletedContent 
+            // end point. We should proably do this properly when Zebedee is replaced 
+            if (this.state.activeItem.isMultiDelete) {
+                this.handleMultipleRestoredPages(this.props.activeCollection.id);
+                return;
+            }
+            this.props.onSingleFileSuccess(this.state.activeItem);
             this.setState({isRestoringDeletingContent: false});
-            this.props.onSuccess(this.state.activeItem);
         }).catch(error => {
             switch(error.status) {
                 case(401): {
@@ -177,6 +187,26 @@ export class RestoreContent extends Component {
             this.setState({isRestoringDeletingContent: false});
             console.error("Error restoring deleted content:\n", error);
         });
+    }
+
+    handleMultipleRestoredPages(collectionID) {
+        // When restoring multiple deletes we need to check the collectionDetails end point to get 
+        // the names and page type because they are not contained in the response from deletedContent 
+        // end point. We should proably do this properly when Zebedee is replaced 
+        collections.getInProgressContent(collectionID).then(pagesInProgress => {
+            this.props.onMultiFileSuccess(pagesInProgress);
+            this.setState({isRestoringDeletingContent: false});
+        }).catch(error => {
+            this.props.onSingleFileSuccess(this.state.activeItem);
+            console.error("Error fetching inProgress pages from collection details end point", error);
+            const notification = {
+                type: 'warning',
+                message: `We were unable to get all deletes, but they will have been restored. Refresh the page to see the full list of restored deletes`,
+                autoDismiss: 5000
+            };
+            notifications.add(notification);
+            this.setState({isRestoringDeletingContent: false});
+        })
     }
 
     handleSearch(event) {
