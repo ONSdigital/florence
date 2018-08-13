@@ -177,9 +177,19 @@ describe("On mount of the collections screen", () => {
 });
 
 describe("On unmount of the collections screen", () => {
-    it("removes the active collection from state", () => {
+    it("removes the active collection from state, if it has one", () => {
+        component.setProps({activeCollection: {
+            id: "test-collection-12345",
+            name: "Test collection"
+        }});
         component.instance().componentWillUnmount();
         expect(dispatchedActions[0].type).toBe(EMPTY_ACTIVE_COLLECTION);
+    });
+
+    it("doesn't attempt to remove the active collection from state if one isn't set", () => {
+        component.setProps({activeCollection: null});
+        component.instance().componentWillUnmount();
+        expect(dispatchedActions).toEqual([]);
     });
 });
 
