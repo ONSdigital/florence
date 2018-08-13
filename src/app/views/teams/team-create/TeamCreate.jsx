@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
+import Input from '../../../components/Input';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired
@@ -21,6 +22,7 @@ class TeamCreate extends Component {
         }
 
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.handleFormBlur = this.handleFormBlur.bind(this);
         this.handleFormInput = this.handleFormInput.bind(this);
     }
 
@@ -33,7 +35,13 @@ class TeamCreate extends Component {
         }
 
         const newTeamName = (this.state.input.value).trim();
-        this.setState({isAwaitingResponse: true});
+        this.setState({
+            isAwaitingResponse: true,
+            input: {
+                ...this.state.input,
+                value: newTeamName
+            }
+        });
         teams.add(newTeamName).then(() => {
             const input = Object.assign({}, this.state.input, {
                 value: "",
@@ -78,6 +86,14 @@ class TeamCreate extends Component {
         });
     }
 
+    handleFormBlur(event) {
+        const input = {
+            ...this.state.input,
+            value: event.target.value.trim()
+        };
+        this.setState({input});
+    }
+
     handleFormInput(event) {
         const input = Object.assign({}, this.state.input, {
             value: event.target.value,
@@ -116,10 +132,21 @@ class TeamCreate extends Component {
     render() {
         return (
             <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit}>
-                {/* Can't use <Input/> component because we need hidden labels
-                 if this becomes a common use case can add to the input component */}
+                {/* 
+                TODO: Swap this out for the Input component - we need the input to be controlled (but the Input component is currently uncontrolled) 
+                so that we can control it from this component when we need to clear it after submit. This relies on the collections screen refactoring to be merged in 
+                */}
                 <div className="form__input">
-                    <input type="text" className="input input__text" disabled={this.state.isAwaitingResponse} placeholder="Name" value={this.state.input.value} onChange={this.handleFormInput}/>
+                    <label htmlFor="team-name">Team name</label>
+                    <input 
+                        type="text" 
+                        id="team-name" 
+                        className="input input__text" 
+                        disabled={this.state.isAwaitingResponse} 
+                        value={this.state.input.value} 
+                        onChange={this.handleFormInput}
+                        onBlur={this.handleFormBlur} 
+                    />
                     {this.state.input.error && 
                         <div className="error-msg">{this.state.input.error}</div>
                     }

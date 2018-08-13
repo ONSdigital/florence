@@ -371,5 +371,29 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
+
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
+
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
+    }
+
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
+    });
+
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
+        }
+        trimInputWhitespace($(this));
+    });
 }
 
