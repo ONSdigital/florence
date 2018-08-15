@@ -113,7 +113,8 @@ export class DatasetMetadata extends Component {
             descError: "",
             latestVersion: "",
             status: "",
-            license: ""
+            license: "",
+            nextRelease: ""
         };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -184,6 +185,12 @@ export class DatasetMetadata extends Component {
             if (dataset && dataset.title) {
                 this.setState({
                     title: dataset.title
+                });
+            }
+
+            if (dataset && dataset.next_release) {
+                this.setState({
+                    nextRelease: dataset.next_release
                 });
             }
             
@@ -414,6 +421,7 @@ export class DatasetMetadata extends Component {
                 telephone: this.state.contactPhone,
             }],
             description: this.state.description,
+            next_release: this.state.nextRelease,
             release_frequency: this.state.releaseFrequency,
             title: this.state.title,
             license: this.state.license,
@@ -811,6 +819,13 @@ export class DatasetMetadata extends Component {
                                   type="textarea"
                                   id="description"
                                   label="About this dataset"
+                                  onChange={this.handleInputChange}
+                                  disabled={this.state.isReadOnly || this.state.isSavingData}
+                              />
+                              <Input
+                                  value={this.state.nextRelease}
+                                  id="nextRelease"
+                                  label="Next release date"
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
