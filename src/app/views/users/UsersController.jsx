@@ -35,7 +35,6 @@ class UsersController extends Component {
         this.setState({isFetchingUsers: true})
         users.getAll()
             .then(allUsersResponse => {
-                console.log(allUsersResponse);
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user)
                 })
