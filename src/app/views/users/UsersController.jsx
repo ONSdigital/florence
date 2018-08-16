@@ -114,8 +114,8 @@ class UsersController extends Component {
     }
 
     handleUserSelection(user) {
-        this.setState({selectedUser: user.id})
-        this.props.dispatch(push(`florence/users/${user.id}`))
+        this.setState({selectedUser: user.id});
+        this.props.dispatch(push(`${this.props.rootPath}/users/${user.id}`));
     }
 
     render() {
@@ -141,4 +141,10 @@ class UsersController extends Component {
     }
 }
 
-export default connect()(UsersController);
+export function mapStateToProps(state) {
+    return {
+        rootPath: state.state.rootPath
+    }
+}
+
+export default connect(mapStateToProps)(UsersController);
