@@ -11,6 +11,7 @@ import LoginController from './app/views/login/LoginController';
 import CollectionsController from './app/views/collections/CollectionsController';
 import TeamsController from './app/views/teams/TeamsController';
 import UsersController from './app/views/users/UsersController';
+import UserDetailsController from './app/views/users/details/UserDetailsController';
 // import DatasetController from './app/views/datasets/DatasetsController';
 // import DatasetOverviewController from './app/views/datasets/dataset-overview/DatasetOverviewController';
 import Logs from './app/views/logs/Logs';
@@ -82,7 +83,9 @@ class Index extends Component {
                                     <Route path={`delete`} component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(UsersController)) }/>
+                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(UsersController)) }>
+                                <Route path={`:userID`} component={ userIsAuthenticated(userisAdminOrEditor(UserDetailsController)) }/>
+                            </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
