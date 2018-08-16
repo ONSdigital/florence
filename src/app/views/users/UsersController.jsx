@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import users from '../../utilities/api-clients/user';
+import notifications from '../../utilities/notifications';
+import log, {eventTypes} from '../../utilities/log';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
 
@@ -31,14 +33,61 @@ class UsersController extends Component {
         this.setState({isFetchingUsers: true})
         users.getAll()
             .then(allUsersResponse => {
+                console.log(allUsersResponse);
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user)
                 })
                 this.setState({allUsers, isFetchingUsers: false})
             }).catch(error => {
-                // TODO handle errors properly
-                console.error(`Error getting all users`, error)
                 this.setState({isFetchingUsers: false})
+                switch(error) {
+                    case(404): {
+                        const notification = {
+                            type: 'warning',
+                            message: `No API route available to get users.`,
+                            autoDismiss: 5000
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case("RESPONSE_ERR"): {
+                        const notification = {
+                            type: "warning",
+                            message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case("UNEXPECTED_ERR"): {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case("FETCH_ERR"): {
+                        const notification = {
+                            type: "warning",
+                            message: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information and not be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                console.error("Error getting all users:\n", error);
             })
             
     }
@@ -50,7 +99,16 @@ class UsersController extends Component {
             const returnValue = {id: user.email}
             return {...user, id, columnValues, returnValue};
         } catch(error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping users to component state",
+                isDismissable: true,
+                autoDismiss: 3000
+            }
+            notifications.add(notification);
             console.error("Error mapping users to component state: ", error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping users to component state:\n${JSON.stringify(error)}`});
+            return false;
         }
     }
 
