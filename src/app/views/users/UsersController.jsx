@@ -135,7 +135,7 @@ export class UsersController extends Component {
                     <div className="grid__col-4">
                         <h1>Create a user</h1>
                     </div>
-                
+                    {this.props.children}
             </div>
         );
     }
