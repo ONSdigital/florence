@@ -40,7 +40,8 @@ function viewController(view) {
             });
         }
         else if (view === 'users') {
-            viewUsers();
+            //viewUsers();
+            window.location.pathname = "/florence/users";
         }
         else if (view === 'teams') {
             // viewTeams();
