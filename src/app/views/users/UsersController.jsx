@@ -14,7 +14,7 @@ import SelectableBox from '../../components/selectable-box-new/SelectableBox';
 // };
 
 
-class UsersController extends Component {
+export class UsersController extends Component {
     constructor(props) {
         super(props)
 
@@ -28,12 +28,12 @@ class UsersController extends Component {
     }
 
     componentWillMount() {
-        this.getAllUsers();
+        return this.getAllUsers();
     }
 
     getAllUsers() {
         this.setState({isFetchingUsers: true})
-        users.getAll()
+        return users.getAll()
             .then(allUsersResponse => {
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user)
