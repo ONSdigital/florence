@@ -17,8 +17,6 @@ export default class user {
         return http.get(`/zebedee/users`)
             .then(response => {
                 return response;
-            }).catch(error => {
-                console.error(`Error getting all users`, error)
             })
     }
 
