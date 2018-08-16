@@ -44,10 +44,14 @@ class UsersController extends Component {
     }
 
     mapUserToState(user) {
-        const id = user.email;
-        const columnValues = [user.name, user.email]
-        const returnValue = {id: user.email}
-        return {...user, id, columnValues, returnValue};
+        try {
+            const id = user.email;
+            const columnValues = [user.name, user.email]
+            const returnValue = {id: user.email}
+            return {...user, id, columnValues, returnValue};
+        } catch(error) {
+            console.error("Error mapping users to component state: ", error);
+        }
     }
 
     handleUserSelection(user) {
