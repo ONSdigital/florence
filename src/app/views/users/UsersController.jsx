@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import users from '../../utilities/api-clients/user';
@@ -114,6 +116,7 @@ class UsersController extends Component {
 
     handleUserSelection(user) {
         this.setState({selectedUser: user.id})
+        this.props.dispatch(push(`florence/users/${user.id}`))
     }
 
     render() {
@@ -139,5 +142,4 @@ class UsersController extends Component {
     }
 }
 
-
-export default UsersController;
+export default connect()(UsersController);
