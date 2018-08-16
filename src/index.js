@@ -52,6 +52,14 @@ class UnknownRoute extends Component {
     }
 }
 
+class Users extends Component {
+    render() {
+        return (
+            <h1>Users</h1>
+        )
+    }
+}
+
 class Index extends Component {
     render() {
         return (
@@ -73,6 +81,7 @@ class Index extends Component {
                                     <Route path={`delete`} component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
+                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(Users)) }/>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
