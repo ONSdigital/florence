@@ -121,3 +121,16 @@ describe("Selecting a user", () => {
         expect(dispatchedActions[0].payload.args[0]).toBe("/florence/users/user1");
     });
 });
+
+describe("Mapping users to state", () => {
+    it("maps correctly", () => {
+        const expectedValue = {
+            ...mockedAllUsers[0], 
+            id: mockedAllUsers[0].email, 
+            columnValues: [mockedAllUsers[0].name, mockedAllUsers[0].email],
+            returnValue: {id: mockedAllUsers[0].email}
+        }
+        const returnValue = component.instance().mapUserToState(mockedAllUsers[0]);
+        expect(returnValue).toMatchObject(expectedValue);
+    })
+})
