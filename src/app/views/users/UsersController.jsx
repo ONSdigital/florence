@@ -16,8 +16,11 @@ class UsersController extends Component {
 
         this.state = {
             isFetchingUsers: false,
-            allUsers: []
+            allUsers: [],
+            selectedUser: null
         }
+
+        this.handleUserSelection = this.handleUserSelection.bind(this)
     }
 
     componentWillMount() {
@@ -48,7 +51,7 @@ class UsersController extends Component {
     }
 
     handleUserSelection(user) {
-        console.log(user)
+        this.setState({selectedUser: user.id})
     }
 
     render() {
@@ -61,7 +64,7 @@ class UsersController extends Component {
                             rows={this.state.allUsers}
                             isUpdating={this.state.isFetchingUsers}
                             handleItemClick={this.handleUserSelection}
-                        
+                            activeRowID={this.state.selectedUser}
                         />
                     </div>
 
