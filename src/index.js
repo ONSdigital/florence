@@ -54,14 +54,6 @@ class UnknownRoute extends Component {
     }
 }
 
-class Users extends Component {
-    render() {
-        return (
-            <h1>Users</h1>
-        )
-    }
-}
-
 class Index extends Component {
     render() {
         return (
