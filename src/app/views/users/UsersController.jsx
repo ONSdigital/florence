@@ -8,8 +8,9 @@ import notifications from '../../utilities/notifications';
 import log, {eventTypes} from '../../utilities/log';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
+import UsersCreateController from './create/UsersCreateController';
 
-UsersController.propTypes = {
+const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element
@@ -135,12 +136,15 @@ export class UsersController extends Component {
 
                     <div className="grid__col-4">
                         <h1>Create a user</h1>
+                        <UsersCreateController />
                     </div>
                     {this.props.children}
             </div>
         );
     }
 }
+
+UsersController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
