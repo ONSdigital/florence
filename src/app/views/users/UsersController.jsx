@@ -9,10 +9,11 @@ import log, {eventTypes} from '../../utilities/log';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
 
-// UsersController.propTypes = {
-
-// };
-
+UsersController.propTypes = {
+    rootPath: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    children: PropTypes.element
+};
 
 export class UsersController extends Component {
     constructor(props) {
