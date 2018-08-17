@@ -14,9 +14,18 @@ class UsersCreateController extends Component {
 
         this.state = {
             newUser: {
-                username: "",
-                email: "",
-                password: "",
+                username: {
+                    value: "",
+                    error: "",
+                },
+                email: {
+                    value: "",
+                    error: ""
+                },
+                password: {
+                    value: "",
+                    error: ""
+                },
                 type: "viewer"
             },
             isSubmitting: false
@@ -31,9 +40,14 @@ class UsersCreateController extends Component {
         const propertyName = event.target.id;
         const value = event.target.value
 
+        const newPropertyState = {
+            ...this.state.newUser[propertyName],
+            value: value
+        }
+
         const newUserState = {
             ...this.state.newUser,
-            [propertyName]: value
+            [propertyName]: newPropertyState
         }
 
         this.setState({newUser: newUserState});
@@ -58,22 +72,22 @@ class UsersCreateController extends Component {
                         label="Username" 
                         type="text"
                         onChange={this.handleInputChange}
-                        value={this.state.newUser.username}
-                        error=""
+                        value={this.state.newUser.username.value}
+                        error={this.state.newUser.username.error}
                     />
                     <Input id="email" 
                         label="Email" 
                         type="text"
                         onChange={this.handleInputChange}
-                        value={this.state.newUser.email}
-                        error=""
+                        value={this.state.newUser.email.value}
+                        error={this.state.newUser.email.error}
                     />
                     <Input id="password" 
                         label="Password" 
                         type="password"
                         onChange={this.handleInputChange}
-                        value={this.state.newUser.password}
-                        error=""
+                        value={this.state.newUser.password.value}
+                        error={this.state.newUser.password.error}
                     />
                     <RadioGroup 
                         radioData={[
