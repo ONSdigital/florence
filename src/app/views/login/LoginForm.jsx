@@ -36,7 +36,7 @@ export default class LoginForm extends Component {
 
                         {
                             inputs.map((input, index) => {
-                                return <Input key={index} {...input} disabled={isSubmitting}/>
+                                return <Input key={index} {...input} disabled={isSubmitting} allowAutoComplete={true}/>
                             })
                         }
 
