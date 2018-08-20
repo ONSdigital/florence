@@ -22,8 +22,7 @@ export class UsersController extends Component {
 
         this.state = {
             isFetchingUsers: false,
-            allUsers: [],
-            selectedUser: null
+            allUsers: []
         }
 
         this.handleUserSelection = this.handleUserSelection.bind(this)
@@ -116,7 +115,6 @@ export class UsersController extends Component {
     }
 
     handleUserSelection(user) {
-        this.setState({selectedUser: user.id});
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.id}`));
     }
 
@@ -131,7 +129,7 @@ export class UsersController extends Component {
                                 rows={this.state.allUsers}
                                 isUpdating={this.state.isFetchingUsers}
                                 handleItemClick={this.handleUserSelection}
-                                activeRowID={this.state.selectedUser}
+                                activeRowID={this.props.params.userID}
                             />
                         </div>
     
