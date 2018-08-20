@@ -56,7 +56,7 @@ export class UsersController extends Component {
                     case("RESPONSE_ERR"): {
                         const notification = {
                             type: "warning",
-                            message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -65,7 +65,7 @@ export class UsersController extends Component {
                     case("UNEXPECTED_ERR"): {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -74,7 +74,7 @@ export class UsersController extends Component {
                     case("FETCH_ERR"): {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information and not be able to edit any team members",
+                            message: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -83,7 +83,7 @@ export class UsersController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
