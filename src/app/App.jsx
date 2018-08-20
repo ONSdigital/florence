@@ -45,6 +45,8 @@ class App extends Component {
                 user.getPermissions(email).then(userType => {
                     user.setUserState(userType);
                     this.setState({isCheckingAuthentication: false});
+                }).catch(error => {
+                    console.error(error);
                 });
                 return;
             }
