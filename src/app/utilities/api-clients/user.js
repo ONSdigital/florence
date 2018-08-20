@@ -20,6 +20,27 @@ export default class user {
             })
     }
 
+    static create(body) {
+        return http.post(`/zebedee/users`, body)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setPassword(body) {
+        return http.post(`/zebedee/password`, body)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setPermissions(body) {
+        return http.post(`/zebedee/permission`, body)
+            .then(response => {
+                return response;
+            });
+    }
+
     static getPermissions(email) {
         return http.get(`/zebedee/permission?email=${email}`)
             .then(response => {
