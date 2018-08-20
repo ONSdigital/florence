@@ -19,7 +19,8 @@ const propTypes = {
     activeUser: PropTypes.shape({
         email: PropTypes.string,
         name: PropTypes.string,
-        temporaryPassword: PropTypes.bool
+        temporaryPassword: PropTypes.bool,
+        role: PropTypes.string
     })
 };
 
