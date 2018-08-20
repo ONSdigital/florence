@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION, UPDATE_USERS, UPDATE_ACTIVE_USER } from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -129,6 +129,27 @@ export default function reducer(state = initialState, action) {
                 }
             }
         }
+        case (UPDATE_ACTIVE_USER): {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    active: {
+                        email: action.user.email,
+                        temporaryPassword: action.user.temporaryPassword,
+                        name: action.user.name,
+                        role: action.user.role
+                    }
+                }
+            }
+        }
+        case (UPDATE_USERS): {
+            return Object.assign({}, state, {
+                teams: Object.assign({}, state.teams, {
+                    users: action.users
+                })
+            })
+        }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
@@ -144,13 +165,6 @@ export default function reducer(state = initialState, action) {
                     allIDsAndNames: action.allTeamIDsAndNames
                 }
             }
-        }
-        case ('UPDATE_USERS'): {
-            return Object.assign({}, state, {
-                teams: Object.assign({}, state.teams, {
-                    users: action.users
-                })
-            })
         }
         case ('UPDATE_ACTIVE_TEAM'): {
             return Object.assign({}, state, {
