@@ -122,23 +122,25 @@ export class UsersController extends Component {
 
     render() {
         return (
-            <div className="grid grid--justify-space-around">
-                    <div className="grid__col-4">
-                        <h1>Select a user</h1>
-                        <SelectableBox 
-                            columns={[{heading: "User", width: "6"}, {heading: "Email", width: "6"}]}
-                            rows={this.state.allUsers}
-                            isUpdating={this.state.isFetchingUsers}
-                            handleItemClick={this.handleUserSelection}
-                            activeRowID={this.state.selectedUser}
-                        />
-                    </div>
-
-                    <div className="grid__col-4">
-                        <h1>Create a user</h1>
-                        <UsersCreateController />
-                    </div>
-                    {this.props.children}
+            <div>
+                <div className="grid grid--justify-space-around">
+                        <div className="grid__col-4">
+                            <h1>Select a user</h1>
+                            <SelectableBox 
+                                columns={[{heading: "User", width: "6"}, {heading: "Email", width: "6"}]}
+                                rows={this.state.allUsers}
+                                isUpdating={this.state.isFetchingUsers}
+                                handleItemClick={this.handleUserSelection}
+                                activeRowID={this.state.selectedUser}
+                            />
+                        </div>
+    
+                        <div className="grid__col-4">
+                            <h1>Create a user</h1>
+                            <UsersCreateController />
+                        </div>
+                </div>
+                {this.props.children}
             </div>
         );
     }

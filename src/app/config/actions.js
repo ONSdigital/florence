@@ -12,9 +12,11 @@ export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
 export const UPDATE_WORKING_ON = 'UPDATE_WORKING_ON';
 export const EMPTY_WORKING_ON = 'EMPTY_WORKING_ON'
 
+export const UPDATE_ACTIVE_USER = 'UPDATE_ACTIVE_USER';
+export const UPDATE_USERS = 'UPDATE_USERS';
+
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_ALL_TEAM_IDS_AND_NAMES = 'UPDATE_ALL_TEAM_IDS_AND_NAMES';
-export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
@@ -106,6 +108,13 @@ export function updateWorkingOn(id, name) {
 export function emptyWorkingOn() {
     return {
         type: EMPTY_WORKING_ON
+    }
+}
+
+export function updateActiveUser(user) {
+    return {
+        type: UPDATE_ACTIVE_USER,
+        user
     }
 }
 
