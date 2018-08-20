@@ -5,6 +5,7 @@ import Input from '../../../components/Input'
 import RadioGroup from '../../../components/radio-buttons/RadioGroup'
 
 import user from '../../../utilities/api-clients/user';
+import notifications from '../../../utilities/notifications';
 
 const propTypes = {
 
@@ -150,7 +151,72 @@ class UsersCreateController extends Component {
         return user.create(newUserDetails).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            console.error(error)
+            switch(error.status) {
+                case(403): {
+                    const notification = {
+                        type: 'warning',
+                        message: `You don't have permission to create users.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `No API route available to create users.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(409): {
+                    const notification = {
+                        type: 'warning',
+                        message: `User ${newUserDetails.name} already exists.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An error's occurred whilst trying to create a user.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to create a user.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to create a user.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to create a user.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error posting new user details:\n", error)
             return {response: null, error: error};
         })
     }
@@ -159,7 +225,63 @@ class UsersCreateController extends Component {
         return user.setPassword(newUserPassword).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            console.error(error)
+            switch(error.status) {
+                case(403): {
+                    const notification = {
+                        type: 'warning',
+                        message: `You don't have permission to set users' password.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `No API route available to set users' password.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An error's occurred whilst trying to set users' password.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to set users' password.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to set users' password.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to set users' password.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error posting new user password:\n", error)
             return {response: null, error: error};
         })
     }
@@ -168,7 +290,63 @@ class UsersCreateController extends Component {
         return user.setPermissions(newUserPerrmissions).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            console.error(error)
+            switch(error.status) {
+                case(403): {
+                    const notification = {
+                        type: 'warning',
+                        message: `You don't have permission to set users' permission.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `No API route available to set users' permission.`,
+                        autoDismiss: 5000
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("RESPONSE_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An error's occurred whilst trying to set users' permission.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to set users' permission.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to set users' permission.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to set users' permission.",
+                        isDismissable: true
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error posting new user permissions:\n", error)
             return {response: null, error: error};
         })
     }
