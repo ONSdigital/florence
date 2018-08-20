@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Input from '../../../components/Input'
 import RadioGroup from '../../../components/radio-buttons/RadioGroup'
 
+import user from '../../../utilities/api-clients/user';
+
 const propTypes = {
 
 };
@@ -65,8 +67,9 @@ class UsersCreateController extends Component {
         this.setState({newUser: newUserState});
     }
 
-    handleSubmit(event) {
+    async handleSubmit(event) {
         event.preventDefault();
+        this.setState({isSubmitting: true})
         const newUser = this.state.newUser
 
         if (!newUser.username.value.length) {
@@ -107,6 +110,67 @@ class UsersCreateController extends Component {
             this.setState({newUser: newUserState})
             return;
         }
+
+        await this.createNewUser(this.state.newUser)
+        this.setState({isSubmitting: false})
+
+    }
+
+    async createNewUser(newUser) {
+        const newUserDetails = {
+            name: newUser.username.value,
+            email: newUser.email.value
+        }
+        const newUserPassword = {
+            email: newUser.email.value,
+            password: newUser.password.value
+        }
+        const newUserPerrmissions = {
+            email: newUser.email.value,
+            admin: newUser.type.value === "admin",
+            editor: newUser.type.value === "publisher"
+        }
+        const newUserDetailsResponse = await this.postNewUserDetails(newUserDetails);
+        if (newUserDetailsResponse.error) {
+            return;
+        }
+
+        const newUserPasswordResponse = await this.postNewUserPassword(newUserPassword);
+        if (newUserPasswordResponse.error) {
+            return;
+        }
+
+        const newUserPerrmissionsResponse = await this.postNewUserPermissions(newUserPerrmissions);
+        if (newUserPerrmissionsResponse.error) {
+            return
+        }
+    }
+
+    postNewUserDetails(newUserDetails) {
+        return user.create(newUserDetails).then(response => {
+            return {response: response, error: null};
+        }).catch(error => {
+            console.error(error)
+            return {response: null, error: error};
+        })
+    }
+
+    postNewUserPassword(newUserPassword) {
+        return user.setPassword(newUserPassword).then(response => {
+            return {response: response, error: null};
+        }).catch(error => {
+            console.error(error)
+            return {response: null, error: error};
+        })
+    }
+
+    postNewUserPermissions(newUserPerrmissions) {
+        return user.setPermissions(newUserPerrmissions).then(response => {
+            return {response: response, error: null};
+        }).catch(error => {
+            console.error(error)
+            return {response: null, error: error};
+        })
     }
 
     render() {
