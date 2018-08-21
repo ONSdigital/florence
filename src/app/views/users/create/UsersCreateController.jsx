@@ -35,14 +35,9 @@ class UsersCreateController extends Component {
         }
 
         this.blankNewUserDetails = this.state.newUser;
-
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleUserTypeChange = this.handleUserTypeChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-
     }
 
-    handleInputChange(event) {
+    handleInputChange = (event) => {
         const propertyName = event.target.id;
         const value = event.target.value
 
@@ -59,7 +54,7 @@ class UsersCreateController extends Component {
         this.setState({newUser: newUserState});
     }
 
-    handleUserTypeChange(event) {
+    handleUserTypeChange = (event) => {
         const value = event.value;
 
         const newUserState = {
@@ -70,7 +65,7 @@ class UsersCreateController extends Component {
         this.setState({newUser: newUserState});
     }
 
-    async handleSubmit(event) {
+    handleSubmit = async (event) => {
         event.preventDefault();
         this.setState({isSubmitting: true})
         const newUser = this.state.newUser
@@ -126,7 +121,7 @@ class UsersCreateController extends Component {
 
     }
 
-    async createNewUser(newUser) {
+    createNewUser = async (newUser) => {
         const newUserDetails = {
             name: newUser.username.value,
             email: newUser.email.value
@@ -160,7 +155,7 @@ class UsersCreateController extends Component {
         return true;
     }
 
-    postNewUserDetails(newUserDetails) {
+    postNewUserDetails = (newUserDetails) => {
         return user.create(newUserDetails).then(response => {
             return {response: response, error: null};
         }).catch(error => {
@@ -234,7 +229,7 @@ class UsersCreateController extends Component {
         })
     }
 
-    postNewUserPassword(newUserPassword) {
+    postNewUserPassword = (newUserPassword) => {
         return user.setPassword(newUserPassword).then(response => {
             return {response: response, error: null};
         }).catch(error => {
@@ -299,7 +294,7 @@ class UsersCreateController extends Component {
         })
     }
 
-    postNewUserPermissions(newUserPerrmissions) {
+    postNewUserPermissions = (newUserPerrmissions) => {
         return user.setPermissions(newUserPerrmissions).then(response => {
             return {response: response, error: null};
         }).catch(error => {
@@ -364,7 +359,7 @@ class UsersCreateController extends Component {
         })
     }
 
-    deleteErroredNewUser(email) {
+    deleteErroredNewUser = (email) => {
         user.remove(email).then(response => {
             return {response: response, error: null};
         }).catch(error => {
@@ -378,7 +373,7 @@ class UsersCreateController extends Component {
         })
     }
 
-    render() {
+    render = () => {
         return (
             <div>
                 <form onSubmit={this.handleSubmit}>
