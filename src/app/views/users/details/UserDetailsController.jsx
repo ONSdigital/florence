@@ -76,11 +76,12 @@ export class UserDetailsController extends Component {
 
     getUserDetails(userID) {
         return new Promise(async (resolve, reject) => {
-            const userDetails = await user.get(userID).catch(error => reject(error));
-            resolve({
-                response: userDetails, 
-                error: null
-            });
+            user.get(userID).then(userDetails => {
+                resolve({
+                    response: userDetails, 
+                    error: null
+                });
+            }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting user '${userID}'`, error);
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting user '${userID}': ${JSON.stringify(error)}`});
@@ -93,24 +94,23 @@ export class UserDetailsController extends Component {
 
     getUserPermissions(userID) {
         return new Promise(async (resolve, reject) => {
-            const userPermissions = await user.getPermissions(userID).catch(error => reject(error));
-
-            // API still gives a 200 response even when an unrecognised user is requested
-            // we can check for this by the 'email' property being left empty, because for 
-            // working users it should always be populated
-            if (!userPermissions.email) {
-                reject({
-                    status: 404
+            user.getPermissions(userID).then(userPermissions => {
+                // API still gives a 200 response even when an unrecognised user is requested
+                // we can check for this by the 'email' property being left empty, because for 
+                // working users it should always be populated
+                if (!userPermissions.email) {
+                    reject({
+                        status: 404
+                    });
+                }
+                resolve({
+                    response: userPermissions, 
+                    error: null
                 });
-            }
-
-            resolve({
-                response: userPermissions, 
-                error: null
-            });
+            }).catch(error => reject(error));
         }).catch(error => {
-            console.error(`Unexpected response when getting permissions for '${userID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Unexpected response when getting permissions for '${userID}': ${JSON.stringify(error)}`});
+            console.error(`Error getting permissions for '${userID}'`, error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting permissions for '${userID}': ${JSON.stringify(error)}`});
             return {
                 response: null,
                 error
@@ -241,7 +241,7 @@ export class UserDetailsController extends Component {
 
 UserDetailsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
+export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active
     }
