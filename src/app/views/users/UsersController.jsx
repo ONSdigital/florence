@@ -13,7 +13,8 @@ import UsersCreateController from './create/UsersCreateController';
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    children: PropTypes.element
+    children: PropTypes.element,
+    params: PropTypes.object
 };
 
 export class UsersController extends Component {
