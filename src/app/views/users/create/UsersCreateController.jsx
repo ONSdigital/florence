@@ -8,7 +8,7 @@ import user from '../../../utilities/api-clients/user';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {
-
+    onCreateSuccess: PropTypes.func.isRequired
 };
 
 class UsersCreateController extends Component {
@@ -33,6 +33,8 @@ class UsersCreateController extends Component {
             },
             isSubmitting: false
         }
+
+        this.blankNewUserDetails = this.state.newUser;
 
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleUserTypeChange = this.handleUserTypeChange.bind(this);
@@ -112,8 +114,15 @@ class UsersCreateController extends Component {
             return;
         }
 
-        await this.createNewUser(this.state.newUser)
-        this.setState({isSubmitting: false})
+        const createdUser = await this.createNewUser(this.state.newUser)
+
+        if (createdUser) {
+            this.setState({newUser: this.blankNewUserDetails, isSubmitting: false});
+            this.props.onCreateSuccess({username: newUser.email.value});
+            return
+        }
+
+        this.setState({isSubmitting: false});
 
     }
 
@@ -138,13 +147,17 @@ class UsersCreateController extends Component {
 
         const newUserPasswordResponse = await this.postNewUserPassword(newUserPassword);
         if (newUserPasswordResponse.error) {
+            this.deleteErroredNewUser(newUser.email.value);
             return;
         }
 
         const newUserPerrmissionsResponse = await this.postNewUserPermissions(newUserPerrmissions);
         if (newUserPerrmissionsResponse.error) {
+            this.deleteErroredNewUser(newUser.email.value);
             return
         }
+
+        return true;
     }
 
     postNewUserDetails(newUserDetails) {
@@ -173,7 +186,7 @@ class UsersCreateController extends Component {
                 case(409): {
                     const notification = {
                         type: 'warning',
-                        message: `User ${newUserDetails.name} already exists.`,
+                        message: `User "${newUserDetails.name}" already exists.`,
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
@@ -347,6 +360,20 @@ class UsersCreateController extends Component {
                 }
             }
             console.error("Error posting new user permissions:\n", error)
+            return {response: null, error: error};
+        })
+    }
+
+    deleteErroredNewUser(email) {
+        user.remove(email).then(response => {
+            return {response: response, error: null};
+        }).catch(error => {
+            notifications.add({
+                type: "warning",
+                message: "An error has occurred, the user has been created but will not work",
+                isDismissable: true
+            })
+            console.error("Error deleting errored user:\n", error)
             return {response: null, error: error};
         })
     }
