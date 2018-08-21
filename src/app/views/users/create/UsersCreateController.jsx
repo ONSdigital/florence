@@ -114,7 +114,7 @@ class UsersCreateController extends Component {
 
         await this.createNewUser(this.state.newUser)
         this.setState({isSubmitting: false})
-        this.props.onCreateSuccess({username: newUser.username.value})
+        this.props.onCreateSuccess({username: newUser.email.value})
 
     }
 
