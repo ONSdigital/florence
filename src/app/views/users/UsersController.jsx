@@ -13,7 +13,8 @@ import UsersCreateController from './create/UsersCreateController';
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    children: PropTypes.element
+    children: PropTypes.element,
+    params: PropTypes.object
 };
 
 export class UsersController extends Component {
@@ -25,7 +26,8 @@ export class UsersController extends Component {
             allUsers: []
         }
 
-        this.handleUserSelection = this.handleUserSelection.bind(this)
+        this.handleUserSelection = this.handleUserSelection.bind(this);
+        this.handleUserCreateSuccess = this.handleUserCreateSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -118,6 +120,10 @@ export class UsersController extends Component {
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.id}`));
     }
 
+    handleUserCreateSuccess(user) {
+        this.props.dispatch(push(`${this.props.rootPath}/users/${user.username}`));
+    }
+
     render() {
         return (
             <div>
@@ -135,7 +141,7 @@ export class UsersController extends Component {
     
                         <div className="grid__col-4">
                             <h1>Create a user</h1>
-                            <UsersCreateController />
+                            <UsersCreateController onCreateSuccess={this.handleUserCreateSuccess}/>
                         </div>
                 </div>
                 {this.props.children}
