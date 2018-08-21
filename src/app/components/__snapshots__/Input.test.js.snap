@@ -13,6 +13,7 @@ exports[`Input without type renders a text input 1`] = `
   
   <input
     accept={undefined}
+    autoComplete="new-password"
     autoFocus={false}
     className="input input__text"
     disabled={false}
@@ -42,6 +43,7 @@ exports[`Password prop creates a password input 1`] = `
   
   <input
     accept={undefined}
+    autoComplete="new-password"
     autoFocus={false}
     className="input input__text"
     disabled={false}
