@@ -67,7 +67,6 @@ class UsersCreateController extends Component {
 
     handleSubmit = async (event) => {
         event.preventDefault();
-        this.setState({isSubmitting: true})
         const newUser = this.state.newUser
 
         if (!newUser.username.value.length) {
@@ -109,11 +108,13 @@ class UsersCreateController extends Component {
             return;
         }
 
+        this.setState({isSubmitting: true})
+
         const createdUser = await this.createNewUser(this.state.newUser)
 
         if (createdUser) {
             this.setState({newUser: this.blankNewUserDetails, isSubmitting: false});
-            this.props.onCreateSuccess({username: newUser.email.value});
+            this.props.onCreateSuccess({name: newUser.username.value, email: newUser.email.value});
             return
         }
 
@@ -132,8 +133,8 @@ class UsersCreateController extends Component {
         }
         const newUserPerrmissions = {
             email: newUser.email.value,
-            admin: newUser.type.value === "admin",
-            editor: newUser.type.value === "publisher"
+            admin: newUser.type === "admin",
+            editor: newUser.type === "publisher"
         }
         const newUserDetailsResponse = await this.postNewUserDetails(newUserDetails);
         if (newUserDetailsResponse.error) {
