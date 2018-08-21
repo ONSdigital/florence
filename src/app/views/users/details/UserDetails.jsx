@@ -6,9 +6,11 @@ import log, { eventTypes } from '../../../utilities/log';
 const propTypes = {
     isVisible: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
+    onDelete: PropTypes.func.isRequired,
     name: PropTypes.string,
     email: PropTypes.string,
     isLoading: PropTypes.bool,
+    isDeleting: PropTypes.bool,
     hasTemporaryPassword: PropTypes.bool,
     role: PropTypes.string,
     errorFetchingUserDetails: PropTypes.bool,
@@ -108,7 +110,8 @@ export class UserDetails extends Component {
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-8 margin-top--1 margin-bottom--1">
                                     <div>
-                                        <button className="btn" onClick={this.props.onClose}>Close</button>
+                                        <button disabled={this.props.isLoading || this.props.isDeleting} className="btn btn--warning" onClick={this.props.onDelete}>Delete</button>
+                                        <button className="btn margin-left--1" onClick={this.props.onClose}>Close</button>
                                     </div>
                                 </div>
                             </div>

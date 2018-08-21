@@ -16,7 +16,8 @@ export const initialState = {
         users: []
     },
     users: {
-        active: {}
+        active: {},
+        all: []
     },
     datasets: {
         all: [],
