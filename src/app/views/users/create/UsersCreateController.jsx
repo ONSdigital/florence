@@ -147,11 +147,13 @@ class UsersCreateController extends Component {
 
         const newUserPasswordResponse = await this.postNewUserPassword(newUserPassword);
         if (newUserPasswordResponse.error) {
+            this.deleteErroredNewUser(newUser.email.value);
             return;
         }
 
         const newUserPerrmissionsResponse = await this.postNewUserPermissions(newUserPerrmissions);
         if (newUserPerrmissionsResponse.error) {
+            this.deleteErroredNewUser(newUser.email.value);
             return
         }
 
@@ -358,6 +360,20 @@ class UsersCreateController extends Component {
                 }
             }
             console.error("Error posting new user permissions:\n", error)
+            return {response: null, error: error};
+        })
+    }
+
+    deleteErroredNewUser(email) {
+        user.remove(email).then(response => {
+            return {response: response, error: null};
+        }).catch(error => {
+            notifications.add({
+                type: "warning",
+                message: "An error has occurred, the user has been created but will not work",
+                isDismissable: true
+            })
+            console.error("Error deleting errored user:\n", error)
             return {response: null, error: error};
         })
     }
