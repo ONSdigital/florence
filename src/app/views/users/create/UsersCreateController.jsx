@@ -8,7 +8,7 @@ import user from '../../../utilities/api-clients/user';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {
-
+    onCreateSuccess: PropTypes.func.isRequired
 };
 
 class UsersCreateController extends Component {
