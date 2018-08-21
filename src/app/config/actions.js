@@ -13,7 +13,7 @@ export const UPDATE_WORKING_ON = 'UPDATE_WORKING_ON';
 export const EMPTY_WORKING_ON = 'EMPTY_WORKING_ON'
 
 export const UPDATE_ACTIVE_USER = 'UPDATE_ACTIVE_USER';
-export const UPDATE_USERS = 'UPDATE_USERS';
+export const ADD_ALL_USERS = 'ADD_ALL_USERS';
 export const REMOVE_USER_FROM_ALL_USERS = 'REMOVE_USER_FROM_ALL_USERS';
 
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
@@ -119,10 +119,10 @@ export function updateActiveUser(user) {
     }
 }
 
-export function updateUsers(users) {
+export function addAllUsers(users) {
     return {
-        type: UPDATE_USERS,
-        users: users
+        type: ADD_ALL_USERS,
+        users
     }
 }
 

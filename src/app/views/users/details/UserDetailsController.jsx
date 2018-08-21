@@ -286,6 +286,7 @@ export class UserDetailsController extends Component {
         }
 
         this.props.dispatch(removeUserFromAllUsers(userID));
+        this.props.dispatch(push(url.resolve("../")));
     }
 
     render() {
