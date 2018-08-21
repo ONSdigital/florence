@@ -69,7 +69,10 @@ const defaultProps = {
     dispatch: event => {
         dispatchedActions.push(event);
     },
-    rootPath: "/florence"
+    rootPath: "/florence",
+    params: {
+        userID: ""
+    }
 };
 
 const component = shallow(
