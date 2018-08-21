@@ -9,12 +9,16 @@ import log, {eventTypes} from '../../utilities/log';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
 import UsersCreateController from './create/UsersCreateController';
+import { addAllUsers } from '../../config/actions';
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element,
-    params: PropTypes.object
+    params: PropTypes.object,
+    users: PropTypes.arrayOf(PropTypes.shape({
+
+    })).isRequired
 };
 
 export class UsersController extends Component {
@@ -22,8 +26,7 @@ export class UsersController extends Component {
         super(props)
 
         this.state = {
-            isFetchingUsers: false,
-            allUsers: []
+            isFetchingUsers: false
         }
 
         this.handleUserSelection = this.handleUserSelection.bind(this);
@@ -41,7 +44,8 @@ export class UsersController extends Component {
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user)
                 })
-                this.setState({allUsers, isFetchingUsers: false})
+                this.props.dispatch(addAllUsers(allUsers));
+                this.setState({isFetchingUsers: false});
             }).catch(error => {
                 this.setState({isFetchingUsers: false})
                 switch(error) {
@@ -132,7 +136,7 @@ export class UsersController extends Component {
                             <h1>Select a user</h1>
                             <SelectableBox 
                                 columns={[{heading: "User", width: "6"}, {heading: "Email", width: "6"}]}
-                                rows={this.state.allUsers}
+                                rows={this.props.users}
                                 isUpdating={this.state.isFetchingUsers}
                                 handleItemClick={this.handleUserSelection}
                                 activeRowID={this.props.params.userID}
@@ -154,7 +158,8 @@ UsersController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        users: state.state.users.all
     }
 }
 
