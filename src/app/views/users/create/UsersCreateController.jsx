@@ -114,9 +114,15 @@ class UsersCreateController extends Component {
             return;
         }
 
-        await this.createNewUser(this.state.newUser)
-        this.setState({newUser: this.blankNewUserDetails, isSubmitting: false})
-        this.props.onCreateSuccess({username: newUser.email.value})
+        const createdUser = await this.createNewUser(this.state.newUser)
+
+        if (createdUser) {
+            this.setState({newUser: this.blankNewUserDetails, isSubmitting: false});
+            this.props.onCreateSuccess({username: newUser.email.value});
+            return
+        }
+
+        this.setState({isSubmitting: false});
 
     }
 
@@ -148,6 +154,8 @@ class UsersCreateController extends Component {
         if (newUserPerrmissionsResponse.error) {
             return
         }
+
+        return true;
     }
 
     postNewUserDetails(newUserDetails) {
@@ -176,7 +184,7 @@ class UsersCreateController extends Component {
                 case(409): {
                     const notification = {
                         type: 'warning',
-                        message: `User ${newUserDetails.name} already exists.`,
+                        message: `User "${newUserDetails.name}" already exists.`,
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
