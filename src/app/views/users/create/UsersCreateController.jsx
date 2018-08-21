@@ -34,6 +34,8 @@ class UsersCreateController extends Component {
             isSubmitting: false
         }
 
+        this.blankNewUserDetails = this.state.newUser;
+
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleUserTypeChange = this.handleUserTypeChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
@@ -113,7 +115,7 @@ class UsersCreateController extends Component {
         }
 
         await this.createNewUser(this.state.newUser)
-        this.setState({isSubmitting: false})
+        this.setState({newUser: this.blankNewUserDetails, isSubmitting: false})
         this.props.onCreateSuccess({username: newUser.email.value})
 
     }
