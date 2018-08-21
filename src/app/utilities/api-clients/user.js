@@ -9,38 +9,23 @@ export default class user {
     }
 
     static getAll() {
-        return http.get(`/zebedee/users`)
-            .then(response => {
-                return response;
-            })
+        return http.get(`/zebedee/users`);
     }
 
     static create(body) {
-        return http.post(`/zebedee/users`, body)
-            .then(response => {
-                return response;
-            });
+        return http.post(`/zebedee/users`, body);
     }
 
     static remove(email) {
-        return http.delete(`/zebedee/users?email=" + ${email}`)
-            .then(response => {
-                return response;
-            });
+        return http.delete(`/zebedee/users?email=" + ${email}`);
     }
 
     static setPassword(body) {
-        return http.post(`/zebedee/password`, body)
-            .then(response => {
-                return response;
-            });
+        return http.post(`/zebedee/password`, body);
     }
 
     static setPermissions(body) {
-        return http.post(`/zebedee/permission`, body)
-            .then(response => {
-                return response;
-            });
+        return http.post(`/zebedee/permission`, body);
     }
 
     static getPermissions(email) {
@@ -85,10 +70,7 @@ export default class user {
     }
 
     static updatePassword(body) {
-        return http.post('/zebedee/password', body)
-            .then(response => {
-                return response;
-            })
+        return http.post('/zebedee/password', body);
     }
 
 }
