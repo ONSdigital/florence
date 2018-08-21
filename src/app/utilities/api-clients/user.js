@@ -22,6 +22,13 @@ export default class user {
             });
     }
 
+    static remove(email) {
+        return http.delete(`/zebedee/users?email=" + ${email}`)
+            .then(response => {
+                return response;
+            });
+    }
+
     static setPassword(body) {
         return http.post(`/zebedee/password`, body)
             .then(response => {
