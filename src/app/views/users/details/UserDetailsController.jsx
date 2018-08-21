@@ -9,7 +9,7 @@ import url from "../../../utilities/url";
 import user from "../../../utilities/api-clients/user";
 import log, { eventTypes } from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
-import { updateActiveUser } from '../../../config/actions';
+import { updateActiveUser, removeUserFromAllUsers } from '../../../config/actions';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -32,6 +32,7 @@ export class UserDetailsController extends Component {
             mountTransition: true,
             isVisible: false,
             isFetchingUser: false,
+            isDeletingUser: false,
             errorFetchingUserDetails: false,
             errorFetchingUserPermissions: false
         };
@@ -118,6 +119,24 @@ export class UserDetailsController extends Component {
         });
     }
 
+    deleteUser(userID) {
+        return new Promise(async (resolve, reject) => {
+            user.remove(userID).then(() => {
+                resolve({
+                    response: null,
+                    error: null
+                });
+            }).catch(error => reject(error));
+        }).catch(error => {
+            console.error(`Error deleting user '${userID}'`, error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting user '${userID}': ${JSON.stringify(error)}`});
+            return {
+                response: null,
+                error
+            }
+        });
+    }
+
     mapUserResponsesToState(userDetails, userPermissions) {
         return {
             name: userDetails ? userDetails.name : "",
@@ -133,18 +152,22 @@ export class UserDetailsController extends Component {
         let notification = {
             type: "warning",
             isDismissable: true,
-            autoDismiss: 7000,
             message: ``
         };
 
         if (bothErrored && haveMatchingStatus) {
             switch (userDetailsError.status) {
+                case(401): {
+                    // handle by utility 'request' function
+                    break;
+                }
                 case(403): {
                     notification.message = `Unable to get user's details because you don't have permission`;
                     break;
                 }
                 case(404): {
-                    notification.message = `Unable to get user's details because the user doesn't exist anymore`;
+                    notification.message = `Unable to get user's details because the user doesn't exist anymore, so you have been redirected to the users screen`;
+                    this.props.dispatch(push(url.resolve("../")));
                     break;
                 }
                 case('FETCH_ERR'): {
@@ -168,12 +191,17 @@ export class UserDetailsController extends Component {
         if (!bothErrored) {
             const status = userDetailsError ? userDetailsError.status : userPermissionsError.status;
             switch (status) {
+                case(401): {
+                    // handle by utility 'request' function
+                    break;
+                }
                 case(403): {
                     notification.message = `Unable to get all of the user's details because you don't have permission`;
                     break;
                 }
                 case(404): {
-                    notification.message = `Unable to get all of the user's details because the user doesn't exist anymore`;
+                    notification.message = `Unable to get all of the user's details because the user doesn't exist anymore, so you have been redirected to the users screen`;
+                    this.props.dispatch(push(url.resolve("../")));
                     break;
                 }
                 case('FETCH_ERR'): {
@@ -190,6 +218,39 @@ export class UserDetailsController extends Component {
 
         // Send a default notification (we shouldn't get here but we're handling this scenrario, just in case!)
         notification.message = `An error occured trying to get the user's details`;
+        notifications.add(notification);
+    }
+
+    handleDeleteUserError(error) {
+        let notification = {
+            type: "warning",
+            isDismissable: true,
+            message: ``
+        };
+        
+        switch (error.status) {
+            case(401): {
+                // handled by utility 'request' function
+                break;
+            }
+            case(403): {
+                notification.message = `Unable to delete user because you do not have permission to do so`;
+                break;
+            }
+            case(404): {
+                notification.message = `Unable to delete user because it no longer exists`;
+                break;
+            }
+            case('FETCH_ERR'): {
+                notification.message = `Unable to delete user due to a network error. Check your connection and try again.`;
+                break;
+            }
+            default: {
+                notification.message = `Unable to delete user due to an unexpected error`;
+                break;
+            }
+        }
+        
         notifications.add(notification);
     }
 
@@ -212,6 +273,21 @@ export class UserDetailsController extends Component {
         this.setState({mountTransition: false});
     }
 
+    handleDelete = async () => {
+        const userID = this.props.params.userID;
+
+        this.setState({isDeletingUser: true});
+        const response = await this.deleteUser(userID);
+        this.setState({isDeletingUser: false});
+
+        if (response.error) {
+            this.handleDeleteUserError(response.error);
+            return;
+        }
+
+        this.props.dispatch(removeUserFromAllUsers(userID));
+    }
+
     render() {
         return (
             <Transition 
@@ -228,7 +304,9 @@ export class UserDetailsController extends Component {
                     name={this.props.activeUser.name}
                     email={this.props.params.userID}
                     onClose={this.handleClose}
+                    onDelete={this.handleDelete}
                     isLoading={this.state.isFetchingUser}
+                    isDeleting={this.state.isDeletingUser}
                     hasTemporaryPassword={this.props.activeUser.temporaryPassword}
                     role={this.props.activeUser.role}
                     errorFetchingUserDetails={this.state.errorFetchingUserDetails}

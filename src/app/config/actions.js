@@ -14,6 +14,7 @@ export const EMPTY_WORKING_ON = 'EMPTY_WORKING_ON'
 
 export const UPDATE_ACTIVE_USER = 'UPDATE_ACTIVE_USER';
 export const UPDATE_USERS = 'UPDATE_USERS';
+export const REMOVE_USER_FROM_ALL_USERS = 'REMOVE_USER_FROM_ALL_USERS';
 
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_ALL_TEAM_IDS_AND_NAMES = 'UPDATE_ALL_TEAM_IDS_AND_NAMES';
@@ -122,6 +123,13 @@ export function updateUsers(users) {
     return {
         type: UPDATE_USERS,
         users: users
+    }
+}
+
+export function removeUserFromAllUsers(userID) {
+    return {
+        type: REMOVE_USER_FROM_ALL_USERS,
+        userID
     }
 }
 

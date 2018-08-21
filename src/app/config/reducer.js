@@ -1,5 +1,5 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION, UPDATE_USERS, UPDATE_ACTIVE_USER } from './actions';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION, UPDATE_USERS, UPDATE_ACTIVE_USER, REMOVE_USER_FROM_ALL_USERS } from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -149,6 +149,15 @@ export default function reducer(state = initialState, action) {
                     users: action.users
                 })
             })
+        }
+        case(REMOVE_USER_FROM_ALL_USERS): {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    all: state.users.filter(user => user.email !== action.userID)
+                }
+            }
         }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
