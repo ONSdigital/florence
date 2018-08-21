@@ -125,7 +125,8 @@ export class UsersController extends Component {
     }
 
     handleUserCreateSuccess(user) {
-        this.props.dispatch(push(`${this.props.rootPath}/users/${user.username}`));
+        this.props.dispatch(push(`${this.props.rootPath}/users/${user.email}`));
+        this.getAllUsers();
     }
 
     render() {
