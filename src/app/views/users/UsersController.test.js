@@ -117,6 +117,9 @@ describe("On mount of the users screen", () => {
 })
 
 describe("Selecting a user", () => {
+    beforeAll(() => {
+        dispatchedActions = []
+    })
     it("routes to the users details page", () => {
         component.instance().handleUserSelection({id: "user1"});
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
