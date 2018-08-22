@@ -182,9 +182,7 @@ describe("Handle submit", () => {
             await component.instance().handleSubmit({preventDefault: ()=>{}});
             expect(defaultProps.onCreateSuccess.mock.calls.length).toBe(0)
         });
-
     });
-
 })
 
 describe("Create new user", () => {
@@ -196,13 +194,13 @@ describe("Create new user", () => {
         expect(result).toBeTruthy();
     })
 
-    it("returns on false on postNewUserDetails error", async () => {
+    it("returns on false if postNewUserDetails errors", async () => {
         user.create.mockImplementationOnce(() => Promise.reject({}));
         const result = await component.instance().createNewUser(testNewUser);
         expect(result).toBeFalsy();
     })
 
-    it("calls deleteErroredNewUser and returns on false on postNewUserPassword error", async () => {
+    it("calls deleteErroredNewUser and returns on false if postNewUserPassword errors", async () => {
         user.setPassword.mockImplementationOnce(() => Promise.reject({}));
         expect(user.remove.mock.calls.length).toBe(0);
         const result = await component.instance().createNewUser(testNewUser);
@@ -210,7 +208,7 @@ describe("Create new user", () => {
         expect(user.remove.mock.calls.length).toBe(1);
     })
 
-    it("calls deleteErroredNewUser and returns on false on postNewUserPermissions error", async () => {
+    it("calls deleteErroredNewUser and returns on false if postNewUserPermissions errors", async () => {
         user.setPermissions.mockImplementationOnce(() => Promise.reject({}));
         expect(user.remove.mock.calls.length).toBe(0);
         const result = await component.instance().createNewUser(testNewUser);
