@@ -123,19 +123,10 @@ class UsersCreateController extends Component {
     }
 
     createNewUser = async (newUser) => {
-        const newUserDetails = {
-            name: newUser.username.value,
-            email: newUser.email.value
-        }
-        const newUserPassword = {
-            email: newUser.email.value,
-            password: newUser.password.value
-        }
-        const newUserPerrmissions = {
-            email: newUser.email.value,
-            admin: newUser.type === "admin",
-            editor: newUser.type === "publisher"
-        }
+        const newUserDetails = this.mapUserDetailsPostBody(newUser);
+        const newUserPassword = this.mapUserPasswordPostBody(newUser);
+        const newUserPerrmissions = this.mapUserPermissionPostBody(newUser);
+        
         const newUserDetailsResponse = await this.postNewUserDetails(newUserDetails);
         if (newUserDetailsResponse.error) {
             return;
@@ -154,6 +145,28 @@ class UsersCreateController extends Component {
         }
 
         return true;
+    }
+
+    mapUserDetailsPostBody = (user) => {
+        return {
+            name: user.username.value,
+            email: user.email.value
+        }
+    }
+
+    mapUserPasswordPostBody = (user) => {
+        return {
+            email: user.email.value,
+            password: user.password.value
+        }
+    }
+
+    mapUserPermissionPostBody = (user) => {
+        return {
+            email: user.email.value,
+            admin: user.type === "admin",
+            editor: user.type === "publisher"
+        }
     }
 
     postNewUserDetails = (newUserDetails) => {
