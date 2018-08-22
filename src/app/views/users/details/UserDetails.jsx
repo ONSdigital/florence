@@ -1,20 +1,24 @@
 import React, { Component } from 'react';
+import {Link} from 'react-router';
 import Drawer from '../../../components/drawer/Drawer';
 import PropTypes from 'prop-types';
 import log, { eventTypes } from '../../../utilities/log';
+import url from '../../../utilities/url';
 
 const propTypes = {
     isVisible: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
+    onChangePassword: PropTypes.func,
     name: PropTypes.string,
     email: PropTypes.string,
     isLoading: PropTypes.bool,
     isDeleting: PropTypes.bool,
     hasTemporaryPassword: PropTypes.bool,
-    role: PropTypes.string,
+    role: PropTypes.oneOf(["ADMIN", "EDITOR", "VIEWER"]),
     errorFetchingUserDetails: PropTypes.bool,
-    errorFetchingUserPermissions: PropTypes.bool
+    errorFetchingUserPermissions: PropTypes.bool,
+    showChangePassword: PropTypes.bool
 };
 
 export class UserDetails extends Component {
@@ -29,9 +33,9 @@ export class UserDetails extends Component {
             )
         }
         
-        if (this.props.role === "PUBLISHER") {
+        if (this.props.role === "EDITOR") {
             return (
-                <p>{this.props.name} is a <strong>publisher</strong></p>
+                <p>{this.props.name} is an <strong>publisher</strong></p>
             )
         }
         
@@ -80,6 +84,15 @@ export class UserDetails extends Component {
                                 </div>
                             </div>
                         </div>
+                        {this.props.showChangePassword &&
+                            <div className="drawer__banner">
+                                <div className="grid grid--justify-space-around">
+                                    <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
+                                        <Link className="btn btn--primary" to={`${location.pathname}/change-password`}>Change password</Link>
+                                    </div>
+                                </div>
+                            </div>
+                        }
                         <div className="drawer__body">
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-8 margin-top--1">

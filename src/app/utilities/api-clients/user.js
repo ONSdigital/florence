@@ -70,7 +70,7 @@ export default class user {
     }
 
     static updatePassword(body) {
-        return http.post('/zebedee/password', body);
+        return http.post('/zebedee/password', body, undefined, true);
     }
 
 }
