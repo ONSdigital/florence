@@ -135,12 +135,14 @@ describe("Handle submit", () => {
 
     
     describe("on creation of user", () => {
+        beforeAll(() => {
+            tempUser.password.value = "test-password";
+        })
         afterEach(() => {
             defaultProps.onCreateSuccess.mockClear()
         })
 
         it("newUser state is reset", async () => {
-            tempUser.password.value = "test-password";
             component.setState({newUser: tempUser})
             expect(component.state().newUser.username.value).toBe("temp-username");
             await component.instance().handleSubmit({preventDefault: ()=>{}});
@@ -148,7 +150,6 @@ describe("Handle submit", () => {
         });
 
         it("onCreateSuccess is called with correct arguements", async () => {
-            tempUser.password.value = "test-password";
             component.setState({newUser: tempUser})
             expect(defaultProps.onCreateSuccess.mock.calls.length).toBe(0)
             await component.instance().handleSubmit({preventDefault: ()=>{}});
