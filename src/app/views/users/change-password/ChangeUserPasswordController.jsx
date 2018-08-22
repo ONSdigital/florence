@@ -100,7 +100,7 @@ export class ChangeUserPasswordController extends Component {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 7000,
-                message: "Password changed"
+                message: "Password successfully changed"
             });
         }).catch(error => {
             this.setState({isSubmitting: false});
