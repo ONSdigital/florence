@@ -6,6 +6,7 @@ import log, { eventTypes } from '../../utilities/log';
 import notifications from '../../utilities/notifications';
 import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
+import validatePassword from './validatePassword';
 
 const propTypes = {
     email: PropTypes.string.isRequired,
@@ -51,21 +52,15 @@ export default class ChangePasswordController extends Component {
     handleSubmit(event) {
         event.preventDefault();
         const newPassword = this.state.newPassword.value;
+        const validatedPassword = validatePassword(newPassword);
 
-        if (!newPassword.match(/.+\s.+\s.+\s.+/)) {
-            const newPassword = Object.assign({}, this.state.newPassword, {errorMsg: "Passphrases must contain 4 words, separated by spaces"});
-            this.setState({
-                newPassword: newPassword
-            });
-            return;
-        }
-
-        if (newPassword.length <= 15 ) {
-            const newPassword = Object.assign({}, this.state.newPassword, {errorMsg: "Passphrases must contain at least 15 characters"});
-
-            this.setState({
-                newPassword: newPassword
-            });
+        if (!validatedPassword.isValid) {
+            this.setState(state => ({
+                newPassword: {
+                    ...state.newPassword,
+                    errorMsg: validatedPassword.error
+                }
+            }));
             return;
         }
 
@@ -87,7 +82,7 @@ export default class ChangePasswordController extends Component {
                 type: 'positive',
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: "Password changed successfully."
+                message: "Password successfully changed"
             };
             notifications.add(notification);
         }).catch(error => {
