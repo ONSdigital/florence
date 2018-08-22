@@ -22,16 +22,16 @@ jest.mock('../../../utilities/notifications', () => {
 jest.mock('../../../utilities/api-clients/user', () => {
     return {
         create: jest.fn(() => {
-            return Promise.resolve();
+            return Promise.resolve({});
         }),
         setPassword: jest.fn(() => {
-            return Promise.resolve();
+            return Promise.resolve({});
         }),
         setPermissions: jest.fn(() => {
-            return Promise.resolve();
+            return Promise.resolve({});
         }),
         remove: jest.fn(() => {
-            return Promise.resolve();
+            return Promise.resolve({});
         }),
     }
 });
@@ -217,6 +217,73 @@ describe("Create new user", () => {
         expect(user.remove.mock.calls.length).toBe(1);
     })
 })
+
+describe("Posting new user details", () => {
+    it("returns response on success", async () => {
+        const postNewDetailsBody = {
+            name: testNewUser.username.value, 
+            email: testNewUser.email.value
+        }
+        const response = await component.instance().postNewUserDetails(postNewDetailsBody);
+        expect(response.response).toBeTruthy()
+    });
+
+    it("returns error on failure", async () => {
+        const postNewDetailsBody = {
+            name: testNewUser.username.value, 
+            email: testNewUser.email.value
+        }
+        user.create.mockImplementationOnce(() => Promise.reject({}));
+        const response = await component.instance().postNewUserDetails(postNewDetailsBody);
+        expect(response.error).toBeTruthy()
+    });
+});
+
+describe("Posting new user password", () => {
+    it("returns response on success", async () => {
+        const postNewPasswordBody = {
+            email: testNewUser.email.value,
+            password: testNewUser.password.value
+        }
+        const response = await component.instance().postNewUserDetails(postNewPasswordBody);
+        expect(response.response).toBeTruthy();
+    });
+
+    it("returns error on failure and calls deleteErroredUser", async () => {
+        const postNewPasswordBody = {
+            email: testNewUser.email.value,
+            password: testNewUser.password.value
+        }
+        user.setPassword.mockImplementationOnce(() => Promise.reject({}));
+        const response = await component.instance().postNewUserDetails(postNewPasswordBody);
+        expect(response.error).toBeNull();
+        expect(user.remove.mock.calls.length).toBe(1);
+    });
+});
+
+describe("Posting new user permission", () => {
+    it("returns response on success", async () => {
+        const postNewPermissionsBody = {
+            email: testNewUser.email.value,
+            admin: false,
+            editor: true
+        }
+        const response = await component.instance().postNewUserDetails(postNewPermissionsBody);
+        expect(response.response).toBeTruthy();
+    });
+
+    it("returns error on failure and calls deleteErroredUser", async () => {
+        const postNewPermissionsBody = {
+            email: testNewUser.email.value,
+            admin: false,
+            editor: true
+        }
+        user.setPassword.mockImplementationOnce(() => Promise.reject({}));
+        const response = await component.instance().postNewUserDetails(postNewPermissionsBody);
+        expect(response.error).toBeNull();
+        expect(user.remove.mock.calls.length).toBe(1);
+    });
+});
 
 test("mapUserDetailsPostBody maps correctly", () => {
     const result = component.instance().mapUserDetailsPostBody(testNewUser);
