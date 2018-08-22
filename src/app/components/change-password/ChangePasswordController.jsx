@@ -84,7 +84,7 @@ export default class ChangePasswordController extends Component {
             };
             log.add(eventTypes.passwordChangeSuccess, eventPayload);
             const notification = {
-                type: 'neutral',
+                type: 'positive',
                 isDismissable: true,
                 autoDismiss: 15000,
                 message: "Password changed successfully."
@@ -139,7 +139,7 @@ export default class ChangePasswordController extends Component {
             inputs: [
                 {
                     id: "new-password",
-                    label: "New Password",
+                    label: "New password",
                     type: "password",
                     onChange: this.handleInputChange,
                     error: this.state.newPassword.errorMsg
