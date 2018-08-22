@@ -88,7 +88,8 @@ describe("On mount of the users screen", () => {
 
     it("adds all users to state", () => {
         component.instance().componentWillMount();
-        expect(component.state('allUsers').length).toBe(mockedAllUsers.length)
+        expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
+        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
     })
 
     it("updates isFetchingUsers state to show it's fetching data for all users", () => {
