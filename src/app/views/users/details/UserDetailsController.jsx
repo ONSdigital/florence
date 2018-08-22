@@ -21,7 +21,12 @@ const propTypes = {
         name: PropTypes.string,
         temporaryPassword: PropTypes.bool,
         role: PropTypes.string
-    })
+    }),
+    currentUser: PropTypes.shape({
+        email: PropTypes.string.isRequired,
+        isAdmin: PropTypes.bool.isRequired
+    }).isRequired,
+    children: PropTypes.element
 };
 
 export class UserDetailsController extends Component {
@@ -33,6 +38,7 @@ export class UserDetailsController extends Component {
             isVisible: false,
             isFetchingUser: false,
             isDeletingUser: false,
+            isChangingPassword: false,
             errorFetchingUserDetails: false,
             errorFetchingUserPermissions: false
         };
@@ -291,29 +297,33 @@ export class UserDetailsController extends Component {
 
     render() {
         return (
-            <Transition 
-                in={this.state.mountTransition} 
-                appear={true} 
-                timeout={{enter: 0, exit: 130}}
-                onEntered={this.handleTransitionEntered} 
-                onExit={this.handleTransitionExit} 
-                onExited={this.handleTransitionExited}
-            >
-                <UserDetails
-                    key={this.props.params.userID}
-                    isVisible={this.state.isVisible}
-                    name={this.props.activeUser.name}
-                    email={this.props.params.userID}
-                    onClose={this.handleClose}
-                    onDelete={this.handleDelete}
-                    isLoading={this.state.isFetchingUser}
-                    isDeleting={this.state.isDeletingUser}
-                    hasTemporaryPassword={this.props.activeUser.temporaryPassword}
-                    role={this.props.activeUser.role}
-                    errorFetchingUserDetails={this.state.errorFetchingUserDetails}
-                    errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
-                />
-            </Transition>
+            <div>
+                <Transition 
+                    in={this.state.mountTransition} 
+                    appear={true} 
+                    timeout={{enter: 0, exit: 130}}
+                    onEntered={this.handleTransitionEntered} 
+                    onExit={this.handleTransitionExit} 
+                    onExited={this.handleTransitionExited}
+                >
+                    <UserDetails
+                        key={this.props.params.userID}
+                        isVisible={this.state.isVisible}
+                        name={this.props.activeUser.name}
+                        email={this.props.params.userID}
+                        onClose={this.handleClose}
+                        onDelete={this.handleDelete}
+                        isLoading={this.state.isFetchingUser}
+                        isDeleting={this.state.isDeletingUser}
+                        showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
+                        hasTemporaryPassword={this.props.activeUser.temporaryPassword}
+                        role={this.props.activeUser.role}
+                        errorFetchingUserDetails={this.state.errorFetchingUserDetails}
+                        errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
+                    />
+                </Transition>
+                {this.props.children}
+            </div>
         )
     }
 }
@@ -322,7 +332,8 @@ UserDetailsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        activeUser: state.state.users.active
+        activeUser: state.state.users.active,
+        currentUser: state.state.user
     }
 }
 
