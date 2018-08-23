@@ -14,7 +14,8 @@
     "collectCoverage": false,
     "globals": {
       "window": true
-    }
+    },
+    "testURL": "http://localhost"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
