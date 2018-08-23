@@ -29,32 +29,32 @@ export class UserDetails extends Component {
     renderRole() {
         if (this.props.role === "ADMIN") {
             return (
-                <p>{this.props.name} is an <strong>admin</strong></p>
+                <p className="margin-bottom--1">{this.props.name} is an <strong>admin</strong></p>
             )
         }
         
         if (this.props.role === "EDITOR") {
             return (
-                <p>{this.props.name} is an <strong>publisher</strong></p>
+                <p className="margin-bottom--1">{this.props.name} is an <strong>publisher</strong></p>
             )
         }
         
         if (this.props.role === "VIEWER") {
             return (
-                <p>{this.props.name} is a <strong>viewer</strong></p>
+                <p className="margin-bottom--1">{this.props.name} is a <strong>viewer</strong></p>
             )
         }
 
         if (!this.props.role) {
             log.add(eventTypes.runtimeWarning, {message: `Attempt to render role for user '${this.props.email}' but none passed in as prop`});
             return (
-                <p>{this.props.name} has no permissions</p>
+                <p className="margin-bottom--1">{this.props.name} has no permissions</p>
             )
         }
 
         log.add(eventTypes.runtimeWarning, {message: `Attempt to render an unknown user role for '${this.props.email}': '${this.props.role}'`});
         return (
-            <p>{this.props.name} is a <strong>{this.props.role}</strong> (unrecognised user type)</p>
+            <p className="margin-bottom--1">{this.props.name} is a <strong>{this.props.role}</strong> (unrecognised user type)</p>
         )
     }
 
@@ -96,16 +96,16 @@ export class UserDetails extends Component {
                                     :    
                                         <div>
                                             {this.props.errorFetchingUserDetails &&
-                                                <p>Unable to show user's details</p>
+                                                <p className="margin-bottom--1">Unable to show user's details</p>
                                             }
                                             {this.props.errorFetchingUserPermissions &&
-                                                <p>Unable to show user's permissions</p>
+                                                <p className="margin-bottom--1">Unable to show user's permissions</p>
                                             }
                                             {this.props.role &&
                                                 this.renderRole()
                                             }
                                             {this.props.hasTemporaryPassword &&
-                                                <p>Has a temporary password</p>
+                                                <p className="margin-bottom--1">Has a temporary password</p>
                                             }
                                         </div>
                                     }
