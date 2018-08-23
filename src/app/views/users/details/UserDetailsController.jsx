@@ -145,10 +145,6 @@ export class UserDetailsController extends Component {
     }
 
     mapUserResponsesToState(userDetails, userPermissions) {
-        console.log(userDetails);
-        console.log(userDetails.temporaryPassword);
-        console.log(userDetails ? userDetails.temporaryPassword : false);
-        console.log("-------");
         return {
             name: userDetails ? userDetails.name : "",
             email: userDetails ? userDetails.email || userPermissions.email : "",
