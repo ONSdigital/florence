@@ -3,7 +3,6 @@ import {Link} from 'react-router';
 import Drawer from '../../../components/drawer/Drawer';
 import PropTypes from 'prop-types';
 import log, { eventTypes } from '../../../utilities/log';
-import url from '../../../utilities/url';
 
 const propTypes = {
     isVisible: PropTypes.bool,
@@ -18,7 +17,8 @@ const propTypes = {
     role: PropTypes.oneOf(["ADMIN", "EDITOR", "VIEWER"]),
     errorFetchingUserDetails: PropTypes.bool,
     errorFetchingUserPermissions: PropTypes.bool,
-    showChangePassword: PropTypes.bool
+    showChangePassword: PropTypes.bool,
+    isCloseable: PropTypes.bool,
 };
 
 export class UserDetails extends Component {
