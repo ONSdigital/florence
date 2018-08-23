@@ -10,6 +10,7 @@ import user from "../../../utilities/api-clients/user";
 import log, { eventTypes } from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
 import { updateActiveUser, removeUserFromAllUsers } from '../../../config/actions';
+import auth from '../../../utilities/auth';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -320,6 +321,7 @@ export class UserDetailsController extends Component {
                         role={this.props.activeUser.role}
                         errorFetchingUserDetails={this.state.errorFetchingUserDetails}
                         errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
+                        isCloseable={auth.isAdmin(this.props.currentUser)}
                     />
                 </Transition>
                 {this.props.children}
