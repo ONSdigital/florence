@@ -325,7 +325,7 @@ export class UserDetailsController extends Component {
                             role={this.props.activeUser.role}
                             errorFetchingUserDetails={this.state.errorFetchingUserDetails}
                             errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
-                            isCloseable={auth.isAdmin(this.props.currentUser)}
+                            showFooter={auth.isAdmin(this.props.currentUser)}
                         />
                     </Drawer>
                 </Transition>
