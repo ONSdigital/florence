@@ -30,9 +30,9 @@ export class ConfirmUserDeleteController extends Component {
 
     deleteUser(userID) {
         return new Promise(async (resolve, reject) => {
-            user.remove(userID).then(() => {
+            user.remove(userID).then(response => {
                 resolve({
-                    response: null,
+                    response,
                     error: null
                 });
             }).catch(error => reject(error));
@@ -42,7 +42,7 @@ export class ConfirmUserDeleteController extends Component {
             return {
                 response: null,
                 error
-            }
+            };
         });
     }
 
@@ -94,6 +94,13 @@ export class ConfirmUserDeleteController extends Component {
         event.preventDefault();
 
         const userID = this.props.params.userID;
+
+        if (!this.state.email) {
+            this.setState({
+                error: `You must enter the user's email address`
+            });
+            return;
+        }
 
         if (this.state.email !== userID) {
             this.setState({
