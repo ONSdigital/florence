@@ -41,7 +41,8 @@ const defaultProps = {
         userID: "foo@bar.com"
     },
     activeUser: {},
-    currentUser: {}
+    currentUser: {},
+    rootPath: "/florence"
 }
 
 let component = shallow(
@@ -276,6 +277,60 @@ describe("Mapping API response to state", () => {
     it("defaults 'role' to an empty string if the API permissions response isn't defined", () => {
         const mappedToState = component.instance().mapUserResponsesToState(userDetailsResponse, null);
         expect(mappedToState.role).toBe("");
+    });
+});
+
+describe("Drawer on mount", () => {
+    it("doesn't animate when routing directly to the user details screen on load", () => {
+        const props = {
+            ...defaultProps,
+            arrivedByRedirect: false,
+            previousPathname: ""
+        };
+        const alternativeComponent = shallow(
+            <UserDetailsController {...props} />
+        );
+
+        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+    });
+    
+    it("doesn't animate when routing directly to the user details screen from another screen", () => {
+        const props = {
+            ...defaultProps,
+            arrivedByRedirect: false,
+            previousPathname: "/florence/teams/team-12345"
+        };
+        const alternativeComponent = shallow(
+            <UserDetailsController {...props} />
+        );
+
+        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+    });
+
+    it("doesn't animate when a user is redirected from '/users' to the details screen", () => {
+        const props = {
+            ...defaultProps,
+            arrivedByRedirect: true,
+            previousPathname: "/florence/users"
+        };
+        const alternativeComponent = shallow(
+            <UserDetailsController {...props} />
+        );
+
+        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+    });
+
+    it("animates when a user routes to a user's details from '/users'", () => {
+        const props = {
+            ...defaultProps,
+            arrivedByRedirect: false,
+            previousPathname: "/florence/users"
+        };
+        const alternativeComponent = shallow(
+            <UserDetailsController {...props} />
+        );
+
+        expect(alternativeComponent.state('isAnimatable')).toBe(true);
     });
 });
 
