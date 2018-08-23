@@ -17,7 +17,7 @@ const propTypes = {
     errorFetchingUserDetails: PropTypes.bool,
     errorFetchingUserPermissions: PropTypes.bool,
     showChangePassword: PropTypes.bool,
-    isCloseable: PropTypes.bool,
+    showFooter: PropTypes.bool,
 };
 
 export class UserDetails extends Component {
@@ -109,18 +109,18 @@ export class UserDetails extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="drawer__footer">
-                    <div className="grid grid--justify-space-around">
-                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
-                            <div>
-                                <button disabled={this.props.isLoading || this.props.isDeleting} className="btn btn--warning" onClick={this.props.onDelete}>Delete</button>
-                                {this.props.isCloseable && 
+                {this.props.showFooter && 
+                    <div className="drawer__footer">
+                        <div className="grid grid--justify-space-around">
+                            <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                                <div>
+                                    <button disabled={this.props.isLoading || this.props.isDeleting} className="btn btn--warning" onClick={this.props.onDelete}>Delete</button>
                                     <button className="btn margin-left--1" onClick={this.props.onClose}>Close</button>
-                                }
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                }
             </div>
         )
     }
