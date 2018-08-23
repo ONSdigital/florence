@@ -390,6 +390,7 @@ class UsersCreateController extends Component {
     render = () => {
         return (
             <div>
+                <h1>Create a user</h1>
                 <form onSubmit={this.handleSubmit}>
                     <Input id="username" 
                         label="Username" 
