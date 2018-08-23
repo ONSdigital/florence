@@ -1,9 +1,7 @@
 import React from 'react';
 import { UsersController } from './UsersController';
-import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import user from '../../utilities/api-clients/user';
-import { resetMocks } from 'jest-fetch-mock';
 
 console.error = () => {};
 
@@ -25,6 +23,14 @@ jest.mock('../../utilities/api-clients/user', () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedAllUsers);
+        }),
+    }
+});
+
+jest.mock('../../utilities/auth', () => {
+    return {
+        isAdmin: jest.fn(() => {
+            return true;
         }),
     }
 });
