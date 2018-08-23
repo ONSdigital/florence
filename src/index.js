@@ -45,7 +45,7 @@ const userisAdminOrEditor = connectedReduxRedirect({
     wrapperDisplayName: 'userisAdminOrEditor',
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
-})
+});
 
 class UnknownRoute extends Component {
     render() {
