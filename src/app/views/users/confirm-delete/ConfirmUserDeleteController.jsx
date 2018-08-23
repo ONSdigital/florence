@@ -28,6 +28,8 @@ export class ConfirmUserDeleteController extends Component {
         };
     }
 
+    compo
+
     deleteUser(userID) {
         return new Promise(async (resolve, reject) => {
             user.remove(userID).then(response => {
@@ -136,6 +138,7 @@ export class ConfirmUserDeleteController extends Component {
                             onChange={this.handleChange}
                             error={this.state.error}
                             disabled={this.state.isSavingDelete}
+                            isFocused={true}
                         />
                     </div>
                     <div className="modal__footer">
