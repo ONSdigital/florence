@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import users from '../../utilities/api-clients/user';
 import notifications from '../../utilities/notifications';
 import log, {eventTypes} from '../../utilities/log';
+import auth from '../../utilities/auth';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
 import UsersCreateController from './create/UsersCreateController';
@@ -31,9 +32,14 @@ export class UsersController extends Component {
 
         this.handleUserSelection = this.handleUserSelection.bind(this);
         this.handleUserCreateSuccess = this.handleUserCreateSuccess.bind(this);
+
+        this.isAdmin = auth.isAdmin(this.props.loggedInUser);
     }
 
     componentWillMount() {
+        if (!this.isAdmin) {
+            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`))
+        }
         return this.getAllUsers();
     }
 
@@ -109,13 +115,13 @@ export class UsersController extends Component {
         } catch(error) {
             const notification = {
                 type: "warning",
-                message: "Error mapping users to component state",
+                message: "Error mapping users to state",
                 isDismissable: true,
                 autoDismiss: 3000
             }
             notifications.add(notification);
-            console.error("Error mapping users to component state: ", error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping users to component state:\n${JSON.stringify(error)}`});
+            console.error("Error mapping users to state: ", error);
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping users to state:\n${JSON.stringify(error)}`});
             return false;
         }
     }
@@ -143,10 +149,10 @@ export class UsersController extends Component {
                                 activeRowID={this.props.params.userID}
                             />
                         </div>
-    
                         <div className="grid__col-4">
-                            <h1>Create a user</h1>
-                            <UsersCreateController onCreateSuccess={this.handleUserCreateSuccess}/>
+                            {this.isAdmin &&
+                                <UsersCreateController onCreateSuccess={this.handleUserCreateSuccess}/> 
+                            }
                         </div>
                 </div>
                 {this.props.children}
@@ -160,7 +166,8 @@ UsersController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        users: state.state.users.all
+        users: state.state.users.all,
+        loggedInUser: state.state.user
     }
 }
 
