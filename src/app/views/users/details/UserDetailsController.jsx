@@ -34,6 +34,9 @@ export class UserDetailsController extends Component {
     constructor(props) {
         super(props);
 
+        console.log(props);
+        console.log(history);
+
         this.state = {
             mountTransition: true,
             isVisible: false,
