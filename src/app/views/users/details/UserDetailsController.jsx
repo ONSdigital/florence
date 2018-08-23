@@ -4,6 +4,7 @@ import { push } from 'react-router-redux';
 import Transition from 'react-transition-group/Transition';
 import PropTypes from 'prop-types';
 
+import Drawer from '../../../components/drawer/Drawer';
 import UserDetails from './UserDetails';
 import url from "../../../utilities/url";
 import user from "../../../utilities/api-clients/user";
@@ -27,19 +28,19 @@ const propTypes = {
         email: PropTypes.string.isRequired,
         isAdmin: PropTypes.bool.isRequired
     }).isRequired,
-    children: PropTypes.element
+    children: PropTypes.element,
+    previousPathname: PropTypes.string,
+    rootPath: PropTypes.string.isRequired
 };
 
 export class UserDetailsController extends Component {
     constructor(props) {
         super(props);
 
-        console.log(props);
-        console.log(history);
-
         this.state = {
             mountTransition: true,
             isVisible: false,
+            isAnimatable: props.previousPathname === `${props.rootPath}/users`,
             isFetchingUser: false,
             isDeletingUser: false,
             isChangingPassword: false,
@@ -310,22 +311,23 @@ export class UserDetailsController extends Component {
                     onExit={this.handleTransitionExit} 
                     onExited={this.handleTransitionExited}
                 >
-                    <UserDetails
-                        key={this.props.params.userID}
-                        isVisible={this.state.isVisible}
-                        name={this.props.activeUser.name}
-                        email={this.props.params.userID}
-                        onClose={this.handleClose}
-                        onDelete={this.handleDelete}
-                        isLoading={this.state.isFetchingUser}
-                        isDeleting={this.state.isDeletingUser}
-                        showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
-                        hasTemporaryPassword={this.props.activeUser.hasTemporaryPassword}
-                        role={this.props.activeUser.role}
-                        errorFetchingUserDetails={this.state.errorFetchingUserDetails}
-                        errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
-                        isCloseable={auth.isAdmin(this.props.currentUser)}
-                    />
+                    <Drawer isVisible={this.state.isVisible} isAnimatable={this.state.isAnimatable}>
+                        <UserDetails
+                            key={this.props.params.userID}
+                            name={this.props.activeUser.name}
+                            email={this.props.params.userID}
+                            onClose={this.handleClose}
+                            onDelete={this.handleDelete}
+                            isLoading={this.state.isFetchingUser}
+                            isDeleting={this.state.isDeletingUser}
+                            showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
+                            hasTemporaryPassword={this.props.activeUser.hasTemporaryPassword}
+                            role={this.props.activeUser.role}
+                            errorFetchingUserDetails={this.state.errorFetchingUserDetails}
+                            errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
+                            isCloseable={auth.isAdmin(this.props.currentUser)}
+                        />
+                    </Drawer>
                 </Transition>
                 {this.props.children}
             </div>
@@ -338,7 +340,9 @@ UserDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active,
-        currentUser: state.state.user
+        currentUser: state.state.user,
+        previousPathname: state.routing.locationBeforeTransitions.previousPathname,
+        rootPath: state.state.rootPath
     }
 }
 

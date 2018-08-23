@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
-import Drawer from '../../../components/drawer/Drawer';
 import PropTypes from 'prop-types';
 import log, { eventTypes } from '../../../utilities/log';
 
@@ -60,72 +59,68 @@ export class UserDetails extends Component {
 
     render() {
         return (
-            <div>
-                <Drawer isVisible={this.props.isVisible} isAnimatable={true}>
-                    <div className="drawer__container">
-                        <div className="drawer__heading">
-                            <div className="grid grid--justify-space-around">
-                                <div className="grid__col-8 margin-top--3 margin-bottom--2">
-                                    <h2>
-                                        {this.props.isLoading ?
-                                            "Loading user..."
-                                        :
-                                            this.props.name || "[No name available]"
-                                        }
-                                    </h2>
-                                    <p>{this.props.email}</p>
-                                </div>
-                            </div>
+            <div className="drawer__container">
+                <div className="drawer__heading">
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--3 margin-bottom--2">
+                            <h2>
+                                {this.props.isLoading ?
+                                    "Loading user..."
+                                :
+                                    this.props.name || "[No name available]"
+                                }
+                            </h2>
+                            <p>{this.props.email}</p>
                         </div>
-                        {this.props.showChangePassword &&
-                            <div className="drawer__banner">
-                                <div className="grid grid--justify-space-around">
-                                    <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
-                                        <Link className="btn btn--primary" to={`${location.pathname}/change-password`}>Change password</Link>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <div className="drawer__body">
-                            <div className="grid grid--justify-space-around">
-                                <div className="grid__col-8 margin-top--1">
-                                    {this.props.isLoading ? 
-                                        <div className="grid grid--align-center margin-top--4">
-                                            <div className="loader loader--large loader--dark"></div>
-                                        </div>
-                                    :    
-                                        <div>
-                                            {this.props.errorFetchingUserDetails &&
-                                                <p className="margin-bottom--1">Unable to show user's details</p>
-                                            }
-                                            {this.props.errorFetchingUserPermissions &&
-                                                <p className="margin-bottom--1">Unable to show user's permissions</p>
-                                            }
-                                            {this.props.role &&
-                                                this.renderRole()
-                                            }
-                                            {this.props.hasTemporaryPassword &&
-                                                <p className="margin-bottom--1">Has a temporary password</p>
-                                            }
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                        <div className="drawer__footer">
-                            <div className="grid grid--justify-space-around">
-                                <div className="grid__col-8 margin-top--1 margin-bottom--1">
-                                    <div>
-                                        <button disabled={this.props.isLoading || this.props.isDeleting} className="btn btn--warning" onClick={this.props.onDelete}>Delete</button>
-                                        {this.props.isCloseable && 
-                                            <button className="btn margin-left--1" onClick={this.props.onClose}>Close</button>
-                                        }
-                                    </div>
-                                </div>
+                    </div>
+                </div>
+                {this.props.showChangePassword &&
+                    <div className="drawer__banner">
+                        <div className="grid grid--justify-space-around">
+                            <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
+                                <Link className="btn btn--primary" to={`${location.pathname}/change-password`}>Change password</Link>
                             </div>
                         </div>
                     </div>
-                </Drawer>
+                }
+                <div className="drawer__body">
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1">
+                            {this.props.isLoading ? 
+                                <div className="grid grid--align-center margin-top--4">
+                                    <div className="loader loader--large loader--dark"></div>
+                                </div>
+                            :    
+                                <div>
+                                    {this.props.errorFetchingUserDetails &&
+                                        <p className="margin-bottom--1">Unable to show user's details</p>
+                                    }
+                                    {this.props.errorFetchingUserPermissions &&
+                                        <p className="margin-bottom--1">Unable to show user's permissions</p>
+                                    }
+                                    {this.props.role &&
+                                        this.renderRole()
+                                    }
+                                    {this.props.hasTemporaryPassword &&
+                                        <p className="margin-bottom--1">Has a temporary password</p>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div className="drawer__footer">
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                            <div>
+                                <button disabled={this.props.isLoading || this.props.isDeleting} className="btn btn--warning" onClick={this.props.onDelete}>Delete</button>
+                                {this.props.isCloseable && 
+                                    <button className="btn margin-left--1" onClick={this.props.onClose}>Close</button>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
