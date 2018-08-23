@@ -135,24 +135,6 @@ export class UserDetailsController extends Component {
         });
     }
 
-    deleteUser(userID) {
-        return new Promise(async (resolve, reject) => {
-            user.remove(userID).then(() => {
-                resolve({
-                    response: null,
-                    error: null
-                });
-            }).catch(error => reject(error));
-        }).catch(error => {
-            console.error(`Error deleting user '${userID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting user '${userID}': ${JSON.stringify(error)}`});
-            return {
-                response: null,
-                error
-            }
-        });
-    }
-
     mapUserResponsesToState(userDetails, userPermissions) {
         return {
             name: userDetails ? userDetails.name : "",
@@ -237,39 +219,6 @@ export class UserDetailsController extends Component {
         notifications.add(notification);
     }
 
-    handleDeleteUserError(error) {
-        let notification = {
-            type: "warning",
-            isDismissable: true,
-            message: ``
-        };
-        
-        switch (error.status) {
-            case(401): {
-                // handled by utility 'request' function
-                break;
-            }
-            case(403): {
-                notification.message = `Unable to delete user because you do not have permission to do so`;
-                break;
-            }
-            case(404): {
-                notification.message = `Unable to delete user because it no longer exists`;
-                break;
-            }
-            case('FETCH_ERR'): {
-                notification.message = `Unable to delete user due to a network error. Check your connection and try again.`;
-                break;
-            }
-            default: {
-                notification.message = `Unable to delete user due to an unexpected error`;
-                break;
-            }
-        }
-        
-        notifications.add(notification);
-    }
-
     handleTransitionEntered = () => {
         this.setState({isVisible: true});
     }
@@ -289,22 +238,6 @@ export class UserDetailsController extends Component {
         this.setState({mountTransition: false});
     }
 
-    handleDelete = async () => {
-        const userID = this.props.params.userID;
-
-        this.setState({isDeletingUser: true});
-        const response = await this.deleteUser(userID);
-        this.setState({isDeletingUser: false});
-
-        if (response.error) {
-            this.handleDeleteUserError(response.error);
-            return;
-        }
-
-        this.props.dispatch(removeUserFromAllUsers(userID));
-        this.props.dispatch(push(url.resolve("../")));
-    }
-
     render() {
         return (
             <div>
@@ -322,7 +255,6 @@ export class UserDetailsController extends Component {
                             name={this.props.activeUser.name}
                             email={this.props.params.userID}
                             onClose={this.handleClose}
-                            onDelete={this.handleDelete}
                             isLoading={this.state.isFetchingUser}
                             isDeleting={this.state.isDeletingUser}
                             showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
