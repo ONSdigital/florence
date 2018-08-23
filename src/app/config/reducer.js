@@ -136,7 +136,7 @@ export default function reducer(state = initialState, action) {
                     ...state.users,
                     active: {
                         email: action.user.email,
-                        temporaryPassword: action.user.temporaryPassword,
+                        hasTemporaryPassword: action.user.hasTemporaryPassword,
                         name: action.user.name,
                         role: action.user.role
                     }

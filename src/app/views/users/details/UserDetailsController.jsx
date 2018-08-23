@@ -20,7 +20,7 @@ const propTypes = {
     activeUser: PropTypes.shape({
         email: PropTypes.string,
         name: PropTypes.string,
-        temporaryPassword: PropTypes.bool,
+        hasTemporaryPassword: PropTypes.bool,
         role: PropTypes.string
     }),
     currentUser: PropTypes.shape({
@@ -317,7 +317,7 @@ export class UserDetailsController extends Component {
                         isLoading={this.state.isFetchingUser}
                         isDeleting={this.state.isDeletingUser}
                         showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
-                        hasTemporaryPassword={this.props.activeUser.temporaryPassword}
+                        hasTemporaryPassword={this.props.activeUser.hasTemporaryPassword}
                         role={this.props.activeUser.role}
                         errorFetchingUserDetails={this.state.errorFetchingUserDetails}
                         errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
