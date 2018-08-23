@@ -1,9 +1,7 @@
 import React from 'react';
 import { UsersController } from './UsersController';
-import renderer from 'react-test-renderer';
 import { shallow, mount } from 'enzyme';
 import user from '../../utilities/api-clients/user';
-import { resetMocks } from 'jest-fetch-mock';
 
 console.error = () => {};
 
@@ -25,6 +23,14 @@ jest.mock('../../utilities/api-clients/user', () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedAllUsers);
+        }),
+    }
+});
+
+jest.mock('../../utilities/auth', () => {
+    return {
+        isAdmin: jest.fn(() => {
+            return true;
         }),
     }
 });
@@ -88,7 +94,8 @@ describe("On mount of the users screen", () => {
 
     it("adds all users to state", () => {
         component.instance().componentWillMount();
-        expect(component.state('allUsers').length).toBe(mockedAllUsers.length)
+        expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
+        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
     })
 
     it("updates isFetchingUsers state to show it's fetching data for all users", () => {

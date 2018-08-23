@@ -30,13 +30,18 @@ jest.mock('../../../utilities/log', () => ({
     eventTypes: {}
 }));
 
+jest.mock('../../../utilities/auth', () => ({
+    isAdmin: jest.fn(() => {return true}),
+}));
+
 let dispatchedActions = [];
 const defaultProps = {
     dispatch: action => dispatchedActions.push(action),
     params: {
         userID: "foo@bar.com"
     },
-    activeUser: {}
+    activeUser: {},
+    currentUser: {}
 }
 
 let component = shallow(
