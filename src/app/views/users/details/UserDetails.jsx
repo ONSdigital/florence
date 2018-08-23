@@ -74,13 +74,6 @@ export class UserDetails extends Component {
                                         }
                                     </h2>
                                     <p>{this.props.email}</p>
-                                    <p>
-                                        {this.props.isLoading ?
-                                            "Loading user type..."
-                                        :
-                                            this.props.role || "[No user type available]"
-                                        }
-                                    </p>
                                 </div>
                             </div>
                         </div>
