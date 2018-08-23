@@ -17,6 +17,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element,
     params: PropTypes.object,
+    loggedInUser: PropTypes.object,
     users: PropTypes.arrayOf(PropTypes.shape({
 
     })).isRequired
