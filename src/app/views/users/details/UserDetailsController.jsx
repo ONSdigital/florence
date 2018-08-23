@@ -30,7 +30,8 @@ const propTypes = {
     }).isRequired,
     children: PropTypes.element,
     previousPathname: PropTypes.string,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
+    arrivedByRedirect: PropTypes.bool
 };
 
 export class UserDetailsController extends Component {
