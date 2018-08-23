@@ -280,8 +280,8 @@ describe("Mapping API response to state", () => {
 });
 
 describe("Mapping state to component props", () => {
-    it("includes the active user", () => {
-        const state = {state: {
+    const state = {
+        state: {
             users: {
                 active: {
                     hasTemporaryPassword: false,
@@ -290,13 +290,63 @@ describe("Mapping state to component props", () => {
                     role: "PUBLISHER"
                 }
             }
-        }};
+        },
+        routing: {
+            locationBeforeTransitions: {
+                action: "PUSH",
+                previousPathname: "/florence/users"
+            }
+        }
+    };
 
+    it("includes the active user", () => {
         expect(mapStateToProps(state).activeUser).toEqual({
             hasTemporaryPassword: false,
             name: "Foo Bar",
             email: "foo@bar.com",
             role: "PUBLISHER"
         });
+    });
+    
+    it("includes routing 'previousPathname'", () => {
+        expect(mapStateToProps(state).previousPathname).toBe("/florence/users");
+    });
+
+    it("sets 'arrivedByRedirect' correctly", () => {
+        const redirectedState = {
+            ...state,
+            routing: {
+                ...state.routing,
+                locationBeforeTransitions: {
+                    ...state.routing.locationBeforeTransitions,
+                    action: "REPLACE"
+                }
+            }
+        };
+        expect(mapStateToProps(redirectedState).arrivedByRedirect).toBe(true);
+        
+        const pushedState = {
+            ...state,
+            routing: {
+                ...state.routing,
+                locationBeforeTransitions: {
+                    ...state.routing.locationBeforeTransitions,
+                    action: "PUSH"
+                }
+            }
+        };
+        expect(mapStateToProps(pushedState).arrivedByRedirect).toBe(false);
+        
+        const poppedState = {
+            ...state,
+            routing: {
+                ...state.routing,
+                locationBeforeTransitions: {
+                    ...state.routing.locationBeforeTransitions,
+                    action: "POP"
+                }
+            }
+        };
+        expect(mapStateToProps(poppedState).arrivedByRedirect).toBe(false);
     });
 });
