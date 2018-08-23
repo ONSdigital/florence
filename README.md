@@ -33,6 +33,8 @@ enabled, you will need vault running locally:
 Username: florence@magicroundabout.ons.gov.uk
 Password: Doug4l
 
+Further guidance on how to use Florence can be found in [usage.md](USAGE.md)
+
 #### Dependencies
 
 There are other ONS digital applications that you'll need to run to allow Florence to work end-to-end:
