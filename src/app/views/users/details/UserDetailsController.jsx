@@ -40,7 +40,11 @@ export class UserDetailsController extends Component {
         this.state = {
             mountTransition: true,
             isVisible: false,
-            isAnimatable: props.previousPathname === `${props.rootPath}/users`,
+            // Note: Checking the previous route ensures that we only animate the drawer when selecting it from the users screen
+            // rather than on initial load of the route. This is broken when a publisher click the global 'Users and access' link
+            // because they are redirected from '/users' to '/users/their-own-user-id'. This means we need to also check that they
+            // haven't been redirected from the users screen, since we don't want to animate on that load either.
+            isAnimatable: props.previousPathname === `${props.rootPath}/users` && !props.arrivedByRedirect,
             isFetchingUser: false,
             isDeletingUser: false,
             isChangingPassword: false,
@@ -341,6 +345,7 @@ export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active,
         currentUser: state.state.user,
+        arrivedByRedirect: state.routing.locationBeforeTransitions.action === "REPLACE",
         previousPathname: state.routing.locationBeforeTransitions.previousPathname,
         rootPath: state.state.rootPath
     }
