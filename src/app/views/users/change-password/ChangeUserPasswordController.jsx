@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import Modal from '../../../components/Modal';
@@ -18,7 +18,7 @@ const propTypes = {
     }).isRequired,
     currentUser: PropTypes.shape({
         isAdmin: PropTypes.bool.isRequired
-    })
+    }).isRequired
 };
 
 export class ChangeUserPasswordController extends Component {
@@ -36,10 +36,6 @@ export class ChangeUserPasswordController extends Component {
             },
             isSubmitting: false
         }
-    }
-
-    handleError = error => {
-        console.log(error);
     }
 
     handleCancel = () => {
@@ -94,7 +90,7 @@ export class ChangeUserPasswordController extends Component {
             email: this.props.params.userID
         };
         this.setState({isSubmitting: true});
-        user.updatePassword(passwordUpdate).then(() => {
+        return user.updatePassword(passwordUpdate).then(() => {
             this.props.dispatch(push(url.resolve("../")));
             notifications.add({
                 type: "positive",
@@ -105,13 +101,18 @@ export class ChangeUserPasswordController extends Component {
         }).catch(error => {
             this.setState({isSubmitting: false});
             
-            if (error.status === 401) {
+            if (error.status === 401 && !this.props.currentUser.isAdmin) {
                 this.setState(state => ({
                     currentPassword: {
                         ...state.currentPassword,
                         error: "Incorrect password"
                     }
                 }));
+                return;
+            }
+            
+            if (error.status === 401 && this.props.currentUser.isAdmin) {
+                user.logOut();
                 return;
             }
 
@@ -141,11 +142,11 @@ export class ChangeUserPasswordController extends Component {
 
     formInputs = () => {
         let inputs = [{
-                id: "new-password",
-                label: "New password",
-                type: "password",
-                onChange: e => this.handleInputChange(e.target.value, "newPassword"),
-                error: this.state.newPassword.error
+            id: "new-password",
+            label: "New password",
+            type: "password",
+            onChange: e => this.handleInputChange(e.target.value, "newPassword"),
+            error: this.state.newPassword.error
         }];
 
         if (!this.props.currentUser.isAdmin) {
