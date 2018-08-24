@@ -1,6 +1,6 @@
 import http from '../http';
 import { store } from '../../config/store';
-import { userLoggedIn, userLoggedOut } from '../../config/actions';
+import { userLoggedIn, userLoggedOut, reset } from '../../config/actions';
 import cookies from '../cookies';
 
 export default class user {
@@ -78,6 +78,7 @@ export default class user {
         localStorage.removeItem("loggedInAs");
         localStorage.removeItem('userType');
         store.dispatch(userLoggedOut());
+        store.dispatch(reset());
     }
 
     static updatePassword(body) {
