@@ -43,6 +43,10 @@ export class ChangeUserPasswordController extends Component {
     }
 
     handleInputChange = (value, property) => {
+        if (!property) {
+            console.warn("No input ID given to change handle function");
+            return;
+        }
         this.setState({
             [property]: {
                 value,
