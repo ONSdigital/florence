@@ -4,7 +4,7 @@ import { shallow } from 'enzyme';
 import user from "../../../utilities/api-clients/user";
 import log from "../../../utilities/log";
 import notifications from '../../../utilities/notifications';
-import { ChangeUserPasswordController } from './ChangeUserPasswordController';
+import { ChangeUserPasswordController, mapStateToProps } from './ChangeUserPasswordController';
 import validatePassword from '../../../components/change-password/validatePassword';
 
 jest.mock('../../../utilities/notifications', () => ({
@@ -33,6 +33,7 @@ jest.mock("../../../components/change-password/validatePassword", () => jest.fn(
 })));
 
 console.error = () => {};
+console.warn = () => {};
 
 let dispatchedActions = [];
 const defaultProps = {
@@ -459,23 +460,66 @@ describe("On close", () => {
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("../");
     });
-
 });
 
-describe("On input change", () => {
+describe("On input change component state updates", () => {
     const component = shallow(
         <ChangeUserPasswordController {...defaultProps} />
     );
 
-    it("the currentPassword value state updates", () => {
-
+    it("the 'current password' value updates", () => {
+        expect(component.state('currentPassword').value).toBe("");
+        component.instance().handleInputChange("a current password value", "currentPassword");
+        expect(component.state('currentPassword').value).toBe("a current password value");
     });
     
-    it("'current password' inline errors are removed");
-    it("the newPassword value state updates");
-    it("'new password' inline errors are removed");
+    it("'current password' inline errors are removed", () => {
+        component.setState({
+            currentPassword: {
+                value: "",
+                error: "An inline error"
+            }
+        });
+        expect(component.state('currentPassword').error).toBe("An inline error");
+        component.instance().handleInputChange("a current password value", "currentPassword");
+        expect(component.state('currentPassword').error).toBe("");
+    });
+
+    it("the newPassword value state updates", () => {
+        expect(component.state('newPassword').value).toBe("");
+        component.instance().handleInputChange("a new password value", "newPassword");
+        expect(component.state('newPassword').value).toBe("a new password value");
+    });
+
+    it("'new password' inline errors are removed", () => {
+        component.setState({
+            newPassword: {
+                value: "",
+                error: "An inline error"
+            }
+        });
+        expect(component.state('newPassword').error).toBe("An inline error");
+        component.instance().handleInputChange("a new password value", "newPassword");
+        expect(component.state('newPassword').error).toBe("");
+    });
+
+    it("doesn't update state if there is no 'property' passed to the method", () => {
+        const initalState = component.state();
+        component.instance().handleInputChange("a new password value", "");
+        expect(component.state()).toBe(initalState);
+    });
 });
 
 describe("Mapping state to props", () => {
-    it("logged in user details from state are mapped to 'currentUser' prop");
+
+    it("logged in user details from state are mapped to 'currentUser' prop", () => {
+        const state = {state: {
+            user: {
+                isAdmin: true
+            }
+        }};
+        const mappedProps = mapStateToProps(state);
+        expect(mappedProps.currentUser).toBeTruthy();
+        expect(mappedProps.currentUser.isAdmin).toBe(true);
+    });
 });
