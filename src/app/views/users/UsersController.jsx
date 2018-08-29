@@ -16,7 +16,9 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element,
-    params: PropTypes.object,
+    params: PropTypes.shape({
+        userID: PropTypes.string
+    }).isRequired,
     loggedInUser: PropTypes.object,
     users: PropTypes.arrayOf(PropTypes.shape({
 
@@ -38,7 +40,7 @@ export class UsersController extends Component {
     }
 
     componentWillMount() {
-        if (!this.isAdmin) {
+        if (!this.isAdmin && !this.props.params.userID) {
             this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`))
         }
         return this.getAllUsers();
