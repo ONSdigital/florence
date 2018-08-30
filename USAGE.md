@@ -13,7 +13,7 @@ Password: Doug4l
 
 #### Create a collection
 Content in Florence must be created through a collection. This includes bulletins, articles, content pages, and dataset landing pages.
-This does not include [importing a V4 file](#import-a-V4-file), which can be done without a collection, but the content must be
+This does not include [importing a V4 file](#import-a-v4-file), which can be done without a collection, but the content must be
 added to a collection in order to be published.
 
 Once signed in to Florence, `Create a collection` options should be apparent.
@@ -29,9 +29,9 @@ Your collection should now be available in the Collection list
 
 - Select an existing collection
 - Choose `Create/edit page`
-- You will be taken to the 'browse tree' where you can navigate to the 'product page' you want to create content under
+- You will be taken to the 'browse tree' where you can navigate to the 'product page' you want to create content under (for example navigate through `Economy` through to the `Gross Domestic Product` page).
 - When you've found the right place, choose `Create`
-- On the next page, select the content type from the drop down and fill in the required details (some types will only be available at certain levels) and create the page
+- On the next page, select the content type from the drop down and fill in the required details (some types will only be available at certain levels, for example bulletins can only be created under a product page) and create the page
 
 
 #### Create a CMD dataset page
