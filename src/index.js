@@ -25,6 +25,7 @@ import { store, history } from './app/config/store';
 import SelectableTest from './SelectableTest';
 import PreviewController from './app/views/preview/PreviewController';
 import ChangeUserPasswordController from './app/views/users/change-password/ChangeUserPasswordController';
+import ConfirmUserDeleteController from './app/views/users/confirm-delete/ConfirmUserDeleteController';
 
 const rootPath = store.getState().state.rootPath;
 
@@ -79,6 +80,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(UsersController)) }>
                                 <Route path=":userID" component={ userIsAuthenticated(userisAdminOrEditor(UserDetailsController)) }>
                                     <Route path="change-password" component={userIsAuthenticated(userisAdminOrEditor(ChangeUserPasswordController))} />
+                                    <Route path="confirm-delete" component={userIsAuthenticated(userisAdminOrEditor(ConfirmUserDeleteController))} />
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
