@@ -1,14 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
 
-import cookies from '../utilities/cookies';
 import auth from '../utilities/auth';
 import url from '../utilities/url';
 
 import PreviewNav from './PreviewNav';
+import user from '../utilities/api-clients/user';
 
 const propTypes = {
     user: PropTypes.object.isRequired,
@@ -29,14 +28,7 @@ class NavBar extends Component {
     }
 
     handleLogoutClick() {
-        const accessTokenCookieRemoved = cookies.remove('access_token');
-        if (!accessTokenCookieRemoved) {
-            console.warn(`Error trying to remove 'access_token' cookie`);
-            return
-        }
-        cookies.remove('collection');
-        localStorage.removeItem("loggedInAs");
-        this.props.dispatch(userLoggedOut());
+        user.logOut();
     }
 
     renderWorkingOnItem() {

@@ -1,6 +1,7 @@
 import http from '../http';
 import { store } from '../../config/store';
-import { userLoggedIn, userLoggedOut } from '../../config/actions';
+import { userLoggedIn, userLoggedOut, reset } from '../../config/actions';
+import cookies from '../cookies';
 
 export default class user {
 
@@ -66,7 +67,18 @@ export default class user {
     }
 
     static logOut() {
+        const accessTokenCookieRemoved = cookies.remove('access_token');
+        if (!accessTokenCookieRemoved) {
+            console.warn(`Error trying to remove 'access_token' cookie`);
+            return
+        }
+        if (cookies.get('collection')) {
+            cookies.remove('collection');
+        }
+        localStorage.removeItem("loggedInAs");
+        localStorage.removeItem('userType');
         store.dispatch(userLoggedOut());
+        store.dispatch(reset());
     }
 
     static updatePassword(body) {
