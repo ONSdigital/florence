@@ -243,11 +243,14 @@ export class UserDetailsController extends Component {
             <div>
                 <Transition 
                     in={this.state.mountTransition} 
-                    appear={true} 
-                    timeout={{enter: 0, exit: 130}}
+                    appear={true}
+                    timeout={{enter: 0}}
                     onEntered={this.handleTransitionEntered} 
                     onExit={this.handleTransitionExit} 
                     onExited={this.handleTransitionExited}
+                    addEndListener={(node, done) => {
+                        node.addEventListener('transitionend', done, false)
+                    }}
                 >
                     <Drawer isVisible={this.state.isVisible} isAnimatable={this.state.isAnimatable}>
                         <UserDetails
