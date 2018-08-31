@@ -391,7 +391,7 @@ class UsersCreateController extends Component {
         return (
             <div>
                 <h1>Create a user</h1>
-                <form onSubmit={this.handleSubmit}>
+                <form name="create-new-user" onSubmit={this.handleSubmit}>
                     <Input id="username" 
                         label="Username" 
                         type="text"
@@ -427,7 +427,7 @@ class UsersCreateController extends Component {
                     />
 
                     <button type="submit" className="btn btn--positive margin-top--1" disabled={this.state.isSubmitting}>
-                        Create User
+                        Create user
                     </button>
 
                     {this.state.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
