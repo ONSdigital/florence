@@ -25,7 +25,7 @@ class PreviewNav extends Component {
                 return pages.map(page => {
                     return {
                         id: page.uri,
-                        name: page.description.title
+                        name: this.createPageTitle(page)
                     }
                 })
             } catch (err) {
@@ -33,6 +33,19 @@ class PreviewNav extends Component {
             }
         }
         return;
+    }
+
+    createPageTitle(page) {
+        if (page.description.title && page.description.edition) { 
+            return `${page.description.title}: ${page.description.edition}`;
+        }
+        if (!page.description.title && page.description.edition) { 
+            return `[no title available]: ${page.description.edition}`;
+        }
+        if (page.description.title && !page.description.edition) { 
+            return page.description.title;
+        }
+        return "";
     }
 
     handleSelectChange(event) {
