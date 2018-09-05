@@ -4,14 +4,13 @@ import PropTypes from 'prop-types';
 const propTypes = {
     id: PropTypes.string,
     label: PropTypes.string,
-    contents: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
+    contents: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
             disabled: PropTypes.bool
-        })]
-    )).isRequired,
+        })
+    ).isRequired,
     selectedOption: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
@@ -57,7 +56,7 @@ class Select extends Component {
                     >
                         <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
-                            return <option disabled={item.disabled} key={index} value={item.id || item}>{item.name || item}</option>
+                            return <option disabled={item.disabled} key={index} value={item.id}>{item.name}</option>
                         })}
                     </select>
                 </div>
