@@ -41,7 +41,7 @@ export class ChangeUserPasswordController extends Component {
 
     componentWillMount() {
         if (!this.props.loggedInUser.isAdmin && (this.props.params.userID !== this.props.loggedInUser.email)) {
-            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`))
+            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.params.userID}`))
         }
     }
 
