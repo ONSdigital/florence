@@ -36,6 +36,9 @@ const defaultProps = {
     dispatch: action => dispatchedActions.push(action),
     params: {
         userID: "foobar@email.com"
+    },
+    loggedInUser: {
+        isAdmin: true
     }
 };
 
