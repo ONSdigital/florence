@@ -41,7 +41,7 @@ const defaultProps = {
         userID: "foo@bar.com"
     },
     activeUser: {},
-    currentUser: {},
+    loggedInUser: {},
     rootPath: "/florence"
 }
 
