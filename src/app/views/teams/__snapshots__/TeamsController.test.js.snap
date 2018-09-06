@@ -62,11 +62,17 @@ exports[`Admin users have option to edit teams 1`] = `
         <div
           className="form__input"
         >
+          <label
+            htmlFor="team-name"
+          >
+            Team name
+          </label>
           <input
             className="input input__text"
             disabled={false}
+            id="team-name"
+            onBlur={[Function]}
             onChange={[Function]}
-            placeholder="Name"
             type="text"
             value=""
           />
@@ -218,11 +224,17 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
         <div
           className="form__input"
         >
+          <label
+            htmlFor="team-name"
+          >
+            Team name
+          </label>
           <input
             className="input input__text"
             disabled={false}
+            id="team-name"
+            onBlur={[Function]}
             onChange={[Function]}
-            placeholder="Name"
             type="text"
             value=""
           />
