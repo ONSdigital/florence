@@ -24,7 +24,7 @@ const propTypes = {
         hasTemporaryPassword: PropTypes.bool,
         role: PropTypes.string
     }),
-    currentUser: PropTypes.shape({
+    loggedInUser: PropTypes.shape({
         email: PropTypes.string.isRequired,
         isAdmin: PropTypes.bool.isRequired
     }).isRequired,
@@ -260,12 +260,12 @@ export class UserDetailsController extends Component {
                             onClose={this.handleClose}
                             isLoading={this.state.isFetchingUser}
                             isDeleting={this.state.isDeletingUser}
-                            showChangePassword={this.props.currentUser.isAdmin || this.props.params.userID === this.props.currentUser.email}
+                            showChangePassword={this.props.loggedInUser.isAdmin || this.props.params.userID === this.props.loggedInUser.email}
                             hasTemporaryPassword={this.props.activeUser.hasTemporaryPassword}
                             role={this.props.activeUser.role}
                             errorFetchingUserDetails={this.state.errorFetchingUserDetails}
                             errorFetchingUserPermissions={this.state.errorFetchingUserPermissions}
-                            showFooter={auth.isAdmin(this.props.currentUser)}
+                            showFooter={auth.isAdmin(this.props.loggedInUser)}
                         />
                     </Drawer>
                 </Transition>
@@ -280,7 +280,7 @@ UserDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active,
-        currentUser: state.state.user,
+        loggedInUser: state.state.user,
         arrivedByRedirect: state.routing.locationBeforeTransitions.action === "REPLACE",
         previousPathname: state.routing.locationBeforeTransitions.previousPathname,
         rootPath: state.state.rootPath

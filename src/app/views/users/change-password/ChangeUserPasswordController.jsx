@@ -16,8 +16,9 @@ const propTypes = {
     params: PropTypes.shape({
         userID: PropTypes.string.isRequired
     }).isRequired,
-    currentUser: PropTypes.shape({
-        isAdmin: PropTypes.bool.isRequired
+    loggedInUser: PropTypes.shape({
+        isAdmin: PropTypes.bool.isRequired,
+        email: PropTypes.string.isRequired
     }).isRequired
 };
 
@@ -35,6 +36,12 @@ export class ChangeUserPasswordController extends Component {
                 error: ""
             },
             isSubmitting: false
+        }
+    }
+
+    componentWillMount() {
+        if (!this.props.loggedInUser.isAdmin && (this.props.params.userID !== this.props.loggedInUser.email)) {
+            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`))
         }
     }
 
@@ -60,7 +67,7 @@ export class ChangeUserPasswordController extends Component {
         let hasError = false;
         let newState = {...this.state};
 
-        if (!this.props.currentUser.isAdmin && !this.state.currentPassword.value) {
+        if (!this.props.loggedInUser.isAdmin && !this.state.currentPassword.value) {
             newState = {
                 ...newState,
                 currentPassword: {
@@ -105,7 +112,7 @@ export class ChangeUserPasswordController extends Component {
         }).catch(error => {
             this.setState({isSubmitting: false});
             
-            if (error.status === 401 && !this.props.currentUser.isAdmin) {
+            if (error.status === 401 && !this.props.loggedInUser.isAdmin) {
                 this.setState(state => ({
                     currentPassword: {
                         ...state.currentPassword,
@@ -115,7 +122,7 @@ export class ChangeUserPasswordController extends Component {
                 return;
             }
             
-            if (error.status === 401 && this.props.currentUser.isAdmin) {
+            if (error.status === 401 && this.props.loggedInUser.isAdmin) {
                 user.logOut();
                 return;
             }
@@ -153,7 +160,7 @@ export class ChangeUserPasswordController extends Component {
             error: this.state.newPassword.error
         }];
 
-        if (!this.props.currentUser.isAdmin) {
+        if (!this.props.loggedInUser.isAdmin) {
             inputs.splice(0, 0, {
                 id: "current-password",
                 label: "Current password",
@@ -186,7 +193,8 @@ ChangeUserPasswordController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        currentUser: state.state.user
+        rootPath: state.state.rootPath,
+        loggedInUser: state.state.user
     }
 }
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { push, replace } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import Modal from  '../../../components/Modal';
 import Input from '../../../components/Input';
@@ -14,6 +14,9 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
         userID: PropTypes.string.isRequired
+    }).isRequired,
+    loggedInUser: PropTypes.shape({
+        isAdmin: PropTypes.bool.isRequired
     }).isRequired
 };
 
@@ -28,7 +31,11 @@ export class ConfirmUserDeleteController extends Component {
         };
     }
 
-    compo
+    componentWillMount() {
+        if (!this.props.loggedInUser.isAdmin) {
+            this.props.dispatch(replace(url.resolve("../")));
+        }
+    }
 
     deleteUser(userID) {
         return new Promise(async (resolve, reject) => {
@@ -120,6 +127,12 @@ export class ConfirmUserDeleteController extends Component {
             return;
         }
 
+        notifications.add({
+            type: "positive",
+            message: "User successfully deleted",
+            autoDismiss: 7000,
+            isDismissable: true
+        });
         this.props.dispatch(removeUserFromAllUsers(userID));
         this.props.dispatch(push(url.resolve("../../")));
     }
@@ -156,4 +169,10 @@ export class ConfirmUserDeleteController extends Component {
 
 ConfirmUserDeleteController.propTypes = propTypes;
 
-export default connect()(ConfirmUserDeleteController);
+export function mapStateToProps(state) {
+    return {
+        loggedInUser: state.state.user
+    }
+}
+
+export default connect(mapStateToProps)(ConfirmUserDeleteController);

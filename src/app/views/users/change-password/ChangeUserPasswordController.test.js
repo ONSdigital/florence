@@ -41,22 +41,22 @@ const defaultProps = {
     params: {
         userID: "foobar@email.com"
     },
-    currentUser: {
+    loggedInUser: {
         isAdmin: false,
         email: "foobar@email.com"
     }
 };
 const publisherProps = {
     ...defaultProps,
-    currentUser: {
-        ...defaultProps.currentUser,
+    loggedInUser: {
+        ...defaultProps.loggedInUser,
         isAdmin: false
     }
 };
 const adminProps = {
     ...defaultProps,
-    currentUser: {
-        ...defaultProps.currentUser,
+    loggedInUser: {
+        ...defaultProps.loggedInUser,
         isAdmin: true
     }
 }
@@ -512,14 +512,14 @@ describe("On input change component state updates", () => {
 
 describe("Mapping state to props", () => {
 
-    it("logged in user details from state are mapped to 'currentUser' prop", () => {
+    it("logged in user details from state are mapped to 'loggedInUser' prop", () => {
         const state = {state: {
             user: {
                 isAdmin: true
             }
         }};
         const mappedProps = mapStateToProps(state);
-        expect(mappedProps.currentUser).toBeTruthy();
-        expect(mappedProps.currentUser.isAdmin).toBe(true);
+        expect(mappedProps.loggedInUser).toBeTruthy();
+        expect(mappedProps.loggedInUser.isAdmin).toBe(true);
     });
 });
