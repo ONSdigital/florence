@@ -369,57 +369,28 @@ function setupFlorence() {
         }
     }
 
-    // Check running version versus latest and notify user if they don't match
-    var runningVersion,
-        userWarned = false;
-    function checkVersion() {
-        return fetch('/florence/dist/legacy-assets/version.json')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(responseJson) {
-                return responseJson;
-            })
-            .catch(function(err) {
-                console.log("Error getting latest Florence version: ", err);
-                return err
-            });
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
+
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
     }
 
-    checkVersion().then(function(response) {
-        runningVersion = response;
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
     });
 
-    setInterval(function() {
-        // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
-        if (!userWarned) {
-            checkVersion().then(function (response) {
-                if (response instanceof TypeError) {
-                    // FIXME do something more useful with this
-                    return
-                }
-                if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
-                    console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
-                    swal({
-                        title: "New version of Florence available",
-                        type: "info",
-                        showCancelButton: true,
-                        closeOnCancel: false,
-                        closeOnConfirm: false,
-                        confirmButtonText: "Refresh Florence",
-                        cancelButtonText: "Don't refresh"
-                    }, function (isConfirm) {
-                        userWarned = true;
-                        if (isConfirm) {
-                            location.reload();
-                        } else {
-                            swal("Warning", "Florence could be unstable without the latest version", "warning")
-                        }
-                    });
-                    runningVersion = response;
-                }
-            });
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
         }
-    }, 10000)
+        trimInputWhitespace($(this));
+    });
 }
 
