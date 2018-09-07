@@ -55,6 +55,10 @@ class TeamCreate extends Component {
         }).catch(error => {
             this.setState({isAwaitingResponse: false});
             switch(error.status) {
+                case(401): {
+                    // do nothing - handled by request utility function
+                    break;
+                }
                 case(403): {
                     const input = Object.assign({}, this.state.input, {
                        error: `You don't have permission to create a team`

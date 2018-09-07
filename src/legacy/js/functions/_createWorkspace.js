@@ -11,9 +11,6 @@
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
 
-    $("#working-on").on('click', function () {
-    }); // add event listener to mainNav
-
     if (stopEventListener) {
         document.getElementById('iframe').onload = function () {
             var browserLocation = document.getElementById('iframe').contentWindow.location.href;
