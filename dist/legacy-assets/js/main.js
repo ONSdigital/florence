@@ -39903,13 +39903,17 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
+            var checkDest = dest;
+            if(!dest.endsWith("/data.json")) {
+                checkDest += "/data.json";
+            }
             $.ajax({
-                url: "/zebedee/checkcollectionsforuri?uri=" + dest,
+                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
                 type: 'GET',
                 contentType: 'application/json',
                 cache: false,
                 success: function (response, textStatus, xhr) {
-                    if (xhr.status == 204) {
+                    if (xhr.status == 204 || response === collectionData.name) {
                         loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
                         return;
                     }
@@ -40262,8 +40266,6 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
-                document.getElementById("response").innerHTML = "Uploading . . .";
-
                 var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
                 if (file.name.match(/\.csv$/)) {
                     fileNameNoSpace = 'upload-' + fileNameNoSpace;
@@ -40284,7 +40286,7 @@ function addDataset(collectionId, data, field, idField) {
                 }
 
                 if (!!file.name.match(downloadExtensions)) {
-                    showUploadedItem(fileNameNoSpace);
+                    //showUploadedItem(fileNameNoSpace);
                     if (formdata) {
                         formdata.append("name", file);
                     }
@@ -40300,26 +40302,47 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
+                // check if edition already exists to prevent overwriting content
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            document.getElementById("response").innerHTML = "File uploaded successfully";
-                            if (!data[field]) {
-                                data[field] = [];
+                    var uriToCheck = checkPathSlashes(data.uri + "/" + this[0].value.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase())
+                    fetch(uriToCheck, {credentials: 'include'}).then(function(response) {
+                        if (response.ok) {
+                            // content was found, return so as not to overwrite existing content and display an error
+                            console.error(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            swal(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            return;
+                        } 
+                        submitform();
+                        document.getElementById("response").innerHTML = "Uploading...";
+                    })
+                }
+
+                function submitform() {
+                    if (formdata) {
+                        $.ajax({
+                            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                            type: 'POST',
+                            data: formdata,
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+                                document.getElementById("response").innerHTML = "File uploaded successfully";
+                                if (!data[field]) {
+                                    data[field] = [];
+                                }
+                                data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+                                uploadedNotSaved.uploaded = true;
+                                // create the dataset
+                                loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+                                // on success save parent and child data
+                            },
+                            error: function(error) {
+                                swal("There was an error uploading the file, please try again.")
+                                console.error(error.status, error.statusText)
                             }
-                            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
-                            uploadedNotSaved.uploaded = true;
-                            // create the dataset
-                            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
-                            // on success save parent and child data
-                        }
-                    });
+                        });
+                    }
                 }
             });
 
@@ -41279,7 +41302,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
             initialiseDatasetVersion(collectionId, data, templateData, field, idField);
         });
 
-        $('#UploadForm').submit(function (e) {
+        $('#UploadForm').one('submit', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
 
@@ -41332,7 +41355,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 saveSubmittedFile();
             }
 
-            function saveSubmittedFile() {
+            async function saveSubmittedFile() {
                 var responseElem = document.getElementById("response");
                 responseElem.innerHTML = "Uploading . . .";
 
@@ -41361,20 +41384,18 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 }
 
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            uploadedNotSaved.uploaded = true;
-                            uploadedNotSaved.fileUrl = safeUriUpload;
-                            // create the new version/correction
-                            saveNewCorrection(collectionId, data.uri,
-                                function (response) {
-                                    responseElem.innerHTML = "File uploaded successfully";
+                    saveNewCorrection(collectionId, data.uri,
+                        function (response) {
+                            $.ajax({
+                                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                                type: 'POST',
+                                data: formdata,
+                                cache: false,
+                                processData: false,
+                                contentType: false,
+                                success: function () {
+                                    uploadedNotSaved.uploaded = true;
+                                    uploadedNotSaved.fileUrl = safeUriUpload;
                                     var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
                                     if (idField === "correction") {
                                         data[field].push({
@@ -41408,29 +41429,27 @@ function editDatasetVersion(collectionId, data, field, idField) {
                                         $("#" + idField + '-section').remove();
                                         saveDatasetVersion(collectionId, data.uri, data, field, idField);
                                     }
-                                }, function (response) {
-                                    if (response.status === 409) {
-                                        sweetAlert("You can add only one " + idField + " before publishing.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else if (response.status === 404) {
-                                        sweetAlert("You can only add " + idField + "s to content that has been published.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else {
-                                        responseElem.innerHTML = "";
-                                        handleApiError(response);
-                                    }
+                                },
+                                error: function (response) {
+                                    console.log("Error in uploading this file");
+                                    handleApiError(response);
                                 }
-                            );
-                        },
-                        error: function (response) {
-                            console.log("Error in uploading this file");
-                            handleApiError(response);
+                            });
+                        }, function (response) {
+                            if (response.status === 409) {
+                                sweetAlert("You can add only one " + idField + " before publishing.");
+                                responseElem.innerHTML = "";
+                            }
+                            else if (response.status === 404) {
+                                sweetAlert("You can only add " + idField + "s to content that has been published.");
+                                responseElem.innerHTML = "";
+                            }
+                            else {
+                                responseElem.innerHTML = "";
+                                handleApiError(response);
+                            }
                         }
-                    });
+                    );
                 }
             }
         });
@@ -44534,7 +44553,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 if (chartConfig) {
                     // remove the title, subtitle and any renderers for client side display
                     // these are only used by the template for export/printing
-                    chartConfig.chart.height = chartConfig.chart.height-300;
+                    chartConfig.chart.height = chartHeight;
                     chartConfig.chart.marginTop = 50;
                     chartConfig.chart.marginBottom = 50;
                     //do not use renderer for Florence
@@ -50736,58 +50755,29 @@ function setShortcuts(field, callback) {
         }
     }
 
-    // Check running version versus latest and notify user if they don't match
-    var runningVersion,
-        userWarned = false;
-    function checkVersion() {
-        return fetch('/florence/dist/legacy-assets/version.json')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(responseJson) {
-                return responseJson;
-            })
-            .catch(function(err) {
-                console.log("Error getting latest Florence version: ", err);
-                return err
-            });
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
+
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
     }
 
-    checkVersion().then(function(response) {
-        runningVersion = response;
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
     });
 
-    setInterval(function() {
-        // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
-        if (!userWarned) {
-            checkVersion().then(function (response) {
-                if (response instanceof TypeError) {
-                    // FIXME do something more useful with this
-                    return
-                }
-                if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
-                    console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
-                    swal({
-                        title: "New version of Florence available",
-                        type: "info",
-                        showCancelButton: true,
-                        closeOnCancel: false,
-                        closeOnConfirm: false,
-                        confirmButtonText: "Refresh Florence",
-                        cancelButtonText: "Don't refresh"
-                    }, function (isConfirm) {
-                        userWarned = true;
-                        if (isConfirm) {
-                            location.reload();
-                        } else {
-                            swal("Warning", "Florence could be unstable without the latest version", "warning")
-                        }
-                    });
-                    runningVersion = response;
-                }
-            });
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
         }
-    }, 10000)
+        trimInputWhitespace($(this));
+    });
 }
 
 function releaseEditor(collectionId, data) {
@@ -54114,8 +54104,6 @@ function staticPageEditor(collectionId, data) {
 }
 
 function datasetEditor(collectionId, data) {
-  debugger;
-
   var newFiles = [];
   var setActiveTab, getActiveTab;
   var parentUrl = getParentPage(data.uri);
