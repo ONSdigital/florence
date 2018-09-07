@@ -1,0 +1,30 @@
+.selected-item-list {
+
+    margin-bottom: $lineheight / 2;
+
+    &__item {
+        background-color: $slate-grey;
+        color: $white;
+        padding: $lineheight / 2;
+        margin: 0 ($lineheight / 2) ($lineheight / 2) 0;
+        display: inline-block;
+
+        &:hover {
+            background-color: lighten($slate-grey, 10%);
+        }
+    }
+
+    &__remove {
+        background-color: transparent;
+        color: $white;
+        font-size: 18px;
+        font-weight: 700;
+        padding-left: $lineheight / 3;
+
+        &:hover {
+            color: $night-shadz;
+            font-weight: 700;
+        }
+    }
+
+}

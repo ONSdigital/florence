@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Radio button matches stored snapshot 1`] = `
+<fieldset
+  className="fieldset"
+>
+  <legend>
+    Select a test radio
+  </legend>
+  <div
+    className="radio"
+  >
+    <input
+      checked={true}
+      className="radio__input selected"
+      id="test-radio1"
+      name="test-group"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      type="radio"
+      value="test-value1"
+    />
+    <label
+      className="radio__label radio__label--selected"
+      htmlFor="test-radio1"
+    >
+      Test radio 1
+    </label>
+  </div>
+  <div
+    className="radio"
+  >
+    <input
+      checked={false}
+      className="radio__input"
+      id="test-radio2"
+      name="test-group"
+      onBlur={[Function]}
+      onChange={[Function]}
+      onFocus={[Function]}
+      type="radio"
+      value="test-value2"
+    />
+    <label
+      className="radio__label"
+      htmlFor="test-radio2"
+    >
+      Test radio 2
+    </label>
+  </div>
+</fieldset>
+`;

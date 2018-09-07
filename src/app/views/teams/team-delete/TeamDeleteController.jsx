@@ -76,6 +76,10 @@ export class TeamDeleteController extends Component {
         }).catch(error => {
             this.setState({formIsPosting: false});
             switch(error.status) {
+                case(401): {
+                    // do nothing - handled by request utility function
+                    break;
+                }
                 case(404): {
                     const notification = {
                         type: "warning",

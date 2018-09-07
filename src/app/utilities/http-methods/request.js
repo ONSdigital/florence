@@ -55,8 +55,6 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
-            const responseIsJSON = response.headers.get('content-type').match(/application\/json/);
-
             if (response.status >= 500) {
                 throw new HttpError(response);
             }
@@ -83,29 +81,56 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             }
 
             if (!response.ok) {
-                reject({status: response.status, message: response.statusText});
+                response.text().then(body => {
+                    reject({status: response.status, message: response.statusText, body: body ? JSON.parse(body) : null})
+                })
+                return; 
+            }
+
+            if (response.status === 204) {
+                resolve({status: response.status, message: response.statusText})
                 return;
             }
-
+            
             logEventPayload.status = 200;
 
-            if (!responseIsJSON) {
-                resolve();
+            let responseIsJSON = false;
+            try {
+                responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+            } catch (error) {
+                console.error(`Error trying to parse content-type header`, error);
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error trying to parse content-type header: ${JSON.stringify(error)}`});
+                reject({status: 'RUNTIME_ERROR', message: `Error trying to parse response's content-type header`});
+                return;
             }
-
-            if (responseIsJSON) {
+            
+            if (!responseIsJSON && method !== "POST" && method !== "PUT") {
+                log.add(eventTypes.runtimeWarning, {message: `Received request response for method '${method}' that didn't have the 'application/json' header`});
+            }
+            
+            // We're wrapping this try/catch in an async function because we're using 'await' 
+            // which requires being executed inside an async function (which the 'fetch' can't be set as)
+            (async () => {
                 try {
-                    return response.json();
+                    const json = await response.json();
+                    resolve(json);
                 } catch (error) {
                     console.error("Error trying to parse request body as JSON: ", error);
+                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
+
+                    // We're not necessarily relying on a response with these methods
+                    // so we should still resolve the promise, just with no response body
+                    if (method === "POST" || method === "PUT") {
+                        resolve();
+                        return;
+                    }
+
+                    // We're trying to get data at this point and the body can't be parsed
+                    // which means this request is a failure and the promise should be rejected
                     reject({status: response.status, message: "JSON response body couldn't be parsed"});
                 }
-            }
-
-        }).then(responseJSON => {
-            resolve(responseJSON);
-        }).catch(fetchError => {
-
+            })()
+        }).catch((fetchError = {message: "No error message given"}) => {
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
 

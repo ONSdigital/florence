@@ -9,7 +9,7 @@ export default class user {
             .then(response => {
                 return response;
             }).catch(error => {
-                console.error(`Error getting user details for ${email} \n${error}`);
+                console.error(`Error getting user details for ${email}`, error);
             })
     }
 
@@ -18,7 +18,7 @@ export default class user {
             .then(response => {
                 return response;
             }).catch(error => {
-                console.error(`Error getting all users \n${error}`)
+                console.error(`Error getting all users`, error)
             })
     }
 
@@ -27,7 +27,7 @@ export default class user {
             .then(response => {
                 return response;
             }).catch(error => {
-                console.error(`Error getting user permissions for ${email} \n${error}`);
+                console.error(`Error getting user permissions for ${email}`, error);
         });
     }
 
