@@ -1,10 +1,15 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import { shallow } from 'enzyme';
-
 import { userLoggedIn, userLoggedOut } from './actions';
 import { initialState } from './initialState';
 import reducer from './reducer';
+
+jest.mock('../utilities/log', () => {
+    return {
+        add: function() {
+            // do nothing
+        },
+        eventTypes: {}
+    }
+})
 
 test('Reducer returns proper initial state', () => {
     expect(reducer(undefined, {})).toEqual(initialState);
