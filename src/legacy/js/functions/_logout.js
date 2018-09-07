@@ -8,7 +8,7 @@ function logout() {
   localStorage.setItem("userType", "");
   
   // Redirect to refactored login page
-  window.location.pathname = "/florence";
+  window.location.pathname = "/florence/login";
 }
 
 function delete_cookie(name) {

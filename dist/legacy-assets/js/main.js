@@ -39730,9 +39730,6 @@ function isValidDate(d) {
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
     var safePath = '';
 
-    $("#working-on").on('click', function () {
-    }); // add event listener to mainNav
-
     if (stopEventListener) {
         document.getElementById('iframe').onload = function () {
             var browserLocation = document.getElementById('iframe').contentWindow.location.href;
@@ -48419,7 +48416,7 @@ function logout() {
   localStorage.setItem("userType", "");
   
   // Redirect to refactored login page
-  window.location.pathname = "/florence";
+  window.location.pathname = "/florence/login";
 }
 
 function delete_cookie(name) {
@@ -50578,9 +50575,6 @@ function setShortcuts(field, callback) {
             window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
-            var thisCollection = CookieUtils.getCookieValue("collection");
-            window.history.pushState({}, "", "/florence/collections")
-            viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
@@ -50598,14 +50592,14 @@ function setShortcuts(field, callback) {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
-            viewController();
+            // viewController();
         }
     }
 
     // redirect a viewer to not authorised message if they try access old Florence
     var userType = localStorage.getItem("userType");
     if (userType == "VIEWER") {
-        window.location.href = '/florence/not-authorised';
+        window.location.href = '/florence/collections';
     }
 
     // Get ping times to zebedee and surface for user
@@ -54892,150 +54886,161 @@ function viewCollectionDetails(collectionId, $this) {
     }
 }function viewCollections(collectionId) {
 
-    var result = {};
-    var pageDataRequests = []; // list of promises - one for each ajax request.
-    pageDataRequests.push(
-        $.ajax({
-            url: "/zebedee/collections",
-            type: "get",
-            success: function (data) {
-                result.data = data;
-                // result.data = mock.collections;
-            },
-            error: function (jqxhr) {
-                handleApiError(jqxhr);
-            }
-        })
-    );
-    pageDataRequests.push(
-        getTeams(
-            success = function (team) {
-                result.team = team;
-            },
-            error = function (response) {
-                handleApiError(response);
-            }
-        )
-    );
-
-    $.when.apply($, pageDataRequests).then(function () {
-
-        var response = [], teams = [], date = "";
-
-        $.each(result.data, function (i, collection) {
-            var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
-
-            if (collection.approvalStatus != "COMPLETE") {
-
-                // Set publish date
-                if (!collection.publishDate) {
-                    date = '[manual collection]';
-                } else if (collection.publishDate && collection.type === 'manual') {
-                    date = StringUtils.formatIsoDateString(collection.publishDate) + ' [rolled back]';
-                } else {
-                    date = StringUtils.formatIsoDateString(collection.publishDate);
-                }
-
-                // Set approval state
-                switch (collection.approvalStatus) {
-                    case (undefined): {
-                        break;
-                    }
-                    case ('NOT_STARTED'): {
-                        approvalStates.notStarted = true;
-                        break;
-                    }
-                    case ('IN_PROGRESS'): {
-                        approvalStates.inProgress = true;
-                        break;
-                    }
-                    case ('COMPLETE'): {
-                        approvalStates.completed = true;
-                        break;
-                    }
-                    case ('ERROR'): {
-                        approvalStates.thrownError = true;
-                        break;
-                    }
-                }
-
-                response.push({id: collection.id, name: collection.name, date: date, approvalState: approvalStates});
-            }
-        });
-
-        var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams});
-        $('.section').html(collectionsHtml);
-
-        if (collectionId) {
-            viewCollectionDetails(collectionId, $('.js-selectable-table tr[data-id="' + collectionId + '"]'));
-        }
-
-        $('.js-selectable-table tbody tr').click(function () {
-            var collectionId = $(this).attr('data-id');
-            viewCollectionDetails(collectionId, $(this));
-        });
-
-        $("#team-tag").tagit({
-            singleField: true,
-            singleFieldNode: $('#team-input')
-        });
-
-        $('.ui-autocomplete-input').hide();
-
-        $('select#team').change(function () {
-            $('#team-tag').tagit('createTag', $("#team option:selected").text());
-        });
-
-        $('#team-input').change(function () {
-            teams = $('#team-input').val().split(',');
-            //After creating the array tagit leaves an empty string if all elements are removed
-            if (teams.length === 1 && teams[0] === "") {
-                teams = [];
-            }
-        });
-
-        $('form input[type=radio]').click(function () {
-
-            if ($(this).val() === 'manual') {
-                $('#scheduledPublishOptions').hide();
-            } else if ($(this).val() === 'scheduled') {
-                $('#scheduledPublishOptions').show();
-            } else if ($(this).val() === 'custom') {
-                $('#customScheduleOptions').show();
-                $('#releaseScheduleOptions').hide();
-            } else if ($(this).val() === 'release') {
-                $('#customScheduleOptions').hide();
-                $('#releaseScheduleOptions').show();
-            }
-        });
+    if (collectionId) {
+        location.href = location.origin + "/florence/collections/" + collectionId;
+    } else {
+        location.pathname = "/florence/collections";
+    }
 
 
-        $(function () {
-            var today = new Date();
-            $('#date').datepicker({
-                minDate: today,
-                dateFormat: 'dd/mm/yy',
-                constrainInput: true
-            });
-        });
+    // var result = {};
+    // var pageDataRequests = []; // list of promises - one for each ajax request.
+    // pageDataRequests.push(
+    //     $.ajax({
+    //         url: "/zebedee/collections",
+    //         type: "get",
+    //         success: function (data) {
+    //             result.data = data;
+    //         },
+    //         error: function (jqxhr) {
+    //             handleApiError(jqxhr);
+    //         }
+    //     })
+    // );
+    // pageDataRequests.push(
+    //     getTeams(
+    //         success = function (team) {
+    //             result.team = team;
+    //         },
+    //         error = function (response) {
+    //             handleApiError(response);
+    //         }
+    //     )
+    // );
+
+    // $.when.apply($, pageDataRequests).then(function () {
+
+    //     var response = [], teams = [], date = "";
+
+    //     $.each(result.data, function (i, collection) {
+    //         var approvalStates = {inProgress: false, thrownError: false, completed: false, notStarted: false};
+
+    //         if (collection.approvalStatus != "COMPLETE") {
+
+    //             // Set publish date
+    //             if (!collection.publishDate) {
+    //                 date = '[manual collection]';
+    //             } else if (collection.publishDate && collection.type === 'manual') {
+    //                 date = StringUtils.formatIsoDateString(collection.publishDate) + ' [rolled back]';
+    //             } else {
+    //                 date = StringUtils.formatIsoDateString(collection.publishDate);
+    //             }
+
+    //             // Set approval state
+    //             switch (collection.approvalStatus) {
+    //                 case (undefined): {
+    //                     break;
+    //                 }
+    //                 case ('NOT_STARTED'): {
+    //                     approvalStates.notStarted = true;
+    //                     break;
+    //                 }
+    //                 case ('IN_PROGRESS'): {
+    //                     approvalStates.inProgress = true;
+    //                     break;
+    //                 }
+    //                 case ('COMPLETE'): {
+    //                     approvalStates.completed = true;
+    //                     break;
+    //                 }
+    //                 case ('ERROR'): {
+    //                     approvalStates.thrownError = true;
+    //                     break;
+    //                 }
+    //             }
+
+    //             response.push({id: collection.id, name: collection.name, date: date, approvalState: approvalStates});
+    //         }
+    //     });
+
+    //     var isDataVis = false;
+    //     if (Florence.Authentication.userType() === "DATA_VISUALISATION") {
+    //         isDataVis = true;
+    //     }
+    //     var collectionsHtml = templates.collectionList({response: response, teams: result.team.teams, isDataVis: isDataVis});
+    //     $('.section').html(collectionsHtml);
+
+    //     if (collectionId) {
+    //         viewCollectionDetails(collectionId, $('.js-selectable-table tr[data-id="' + collectionId + '"]'));
+    //     }
+
+    //     $('.js-selectable-table tbody tr').click(function () {
+    //         var collectionId = $(this).attr('data-id');
+    //         viewCollectionDetails(collectionId, $(this));
+    //     });
+
+    //     $("#team-tag").tagit({
+    //         singleField: true,
+    //         singleFieldNode: $('#team-input')
+    //     });
+
+    //     $('.ui-autocomplete-input').hide();
+
+    //     $('select#team').change(function () {
+    //         $('#team-tag').tagit('createTag', $("#team option:selected").text());
+    //     });
+
+    //     $('#team-input').change(function () {
+    //         teams = $('#team-input').val().split(',');
+    //         //After creating the array tagit leaves an empty string if all elements are removed
+    //         if (teams.length === 1 && teams[0] === "") {
+    //             teams = [];
+    //         }
+    //     });
+
+    //     $('form input[type=radio]').click(function () {
+
+    //         if ($(this).val() === 'manual') {
+    //             $('#scheduledPublishOptions').hide();
+    //         } else if ($(this).val() === 'scheduled') {
+    //             $('#scheduledPublishOptions').show();
+    //         } else if ($(this).val() === 'custom') {
+    //             $('#customScheduleOptions').show();
+    //             $('#releaseScheduleOptions').hide();
+    //         } else if ($(this).val() === 'release') {
+    //             $('#customScheduleOptions').hide();
+    //             $('#releaseScheduleOptions').show();
+    //         }
+    //     });
 
 
-        $('.btn-select-release').on("click", function (e) {
-            e.preventDefault();
-            viewReleaseSelector();
-        });
+    //     $(function () {
+    //         var today = new Date();
+    //         $('#date').datepicker({
+    //             minDate: today,
+    //             dateFormat: 'dd/mm/yy',
+    //             constrainInput: true
+    //         });
+    //     });
 
-        $('.form-create-collection').submit(function (e) {
-            e.preventDefault();
-            createCollection(teams);
-        });
-    });
+
+    //     $('.btn-select-release').on("click", function (e) {
+    //         e.preventDefault();
+    //         viewReleaseSelector();
+    //     });
+
+    //     $('.form-create-collection').submit(function (e) {
+    //         e.preventDefault();
+    //         createCollection(teams);
+    //     });
+    // });
 }function viewController(view) {
 
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
-            viewCollections();
+            // viewCollections();
+            window.location.pathname = "/florence/collections";
         }
         else if (view === 'workspace') {
             /*
@@ -55045,11 +55050,12 @@ function viewCollectionDetails(collectionId, $this) {
 
             const collectionID = getQueryVariable("collection");
             const pageURI = getQueryVariable("uri");
-            window.history.replaceState({}, "Florence", "/florence/collections");
+            window.history.replaceState({}, "Florence", "/florence/workspace");
             
-            if (!pageURI || !collectionID) {
-                console.error("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                viewCollections();
+            if (!collectionID) {
+                console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
+                // viewCollections();
+                window.location.pathname = "/florence/collections";
                 return;
             }
 
@@ -55060,6 +55066,10 @@ function viewCollectionDetails(collectionId, $this) {
                     date: response.publishDate,
                     type: response.type
                 });
+                if (!pageURI) {
+                    createWorkspace("/", collectionID, "browse", response);
+                    return;
+                }
                 createWorkspace(pageURI, collectionID, "edit", response);
             }, error => {
                 console.error("Error getting collection data, redirected to collections screen", error);
@@ -55083,12 +55093,14 @@ function viewCollectionDetails(collectionId, $this) {
             viewReports();
         }
         else {
-            viewController('collections');
+            // viewController('collections');
+            window.location.pathname = "/florence";
         }
     }
     else {
         // Redirect to refactored login screen
-        window.location.pathname = "/florence/login";
+        const redirect = location.pathname !== "/florence" ? "?redirect=" + location.pathname : "";
+        window.location.href = "/florence/login" + redirect;
     }
 }
 

@@ -1356,10 +1356,12 @@ templates['mainNav'] = template({"1":function(depth0,helpers,partials,data) {
     + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.environment : depth0)) != null ? stack1.name : stack1), depth0))
     + " environment</li>";
 },"4":function(depth0,helpers,partials,data) {
-    var stack1;
+    var stack1, alias1=this.lambda, alias2=this.escapeExpression;
 
-  return "            <li id=\"working-on\" class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--collection selected\" href=\"javascript:void(0)\">Working\n                on: "
-    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
+  return "            <li id=\"working-on\" class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--collection selected\" href=\"/florence/collections/"
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.id : stack1), depth0))
+    + "\">Working\n                on: "
+    + alias2(alias1(((stack1 = (depth0 != null ? depth0.collection : depth0)) != null ? stack1.name : stack1), depth0))
     + "</a></li>\n";
 },"6":function(depth0,helpers,partials,data) {
     return "        <li class=\"nav__item\"><a class=\"nav__link js-nav-item js-nav-item--login selected\" href=\"javascript:void(0)\">Login</a></li>\n";

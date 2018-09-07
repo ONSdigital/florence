@@ -2,10 +2,14 @@ import React, {Component} from 'react';
 import PropTypes from 'prop-types';
 
 const propTypes = {
-    isVisible: PropTypes.bool.isRequired,
-    isAnimatable: PropTypes.bool.isRequired,
-    handleTransitionEnd: PropTypes.func.isRequired,
+    isVisible: PropTypes.bool,
+    isAnimatable: PropTypes.bool,
+    handleTransitionEnd: PropTypes.func,
     children: PropTypes.node
+}
+
+const defaultProps = {
+    handleTransitionEnd: () => {}
 }
 
 class Drawer extends Component {
@@ -43,5 +47,6 @@ class Drawer extends Component {
 }
 
 Drawer.propTypes = propTypes;
+Drawer.defaultProps = defaultProps;
 
 export default Drawer;
