@@ -19,7 +19,8 @@ const propTypes = {
     loggedInUser: PropTypes.shape({
         isAdmin: PropTypes.bool.isRequired,
         email: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    rootPath: PropTypes.string.isRequired
 };
 
 export class ChangeUserPasswordController extends Component {
