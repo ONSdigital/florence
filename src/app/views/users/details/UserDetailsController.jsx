@@ -10,7 +10,7 @@ import url from "../../../utilities/url";
 import user from "../../../utilities/api-clients/user";
 import log, { eventTypes } from '../../../utilities/log';
 import notifications from '../../../utilities/notifications';
-import { updateActiveUser, removeUserFromAllUsers } from '../../../config/actions';
+import { updateActiveUser } from '../../../config/actions';
 import auth from '../../../utilities/auth';
 
 const propTypes = {
