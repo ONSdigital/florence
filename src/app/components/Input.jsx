@@ -51,7 +51,7 @@ export default class Input extends Component {
                 }
                 {
                     this.props.error ?
-                        <div className="error-msg">{this.props.error}</div>
+                        <div id={`input-error-${this.props.id}`} className="error-msg">{this.props.error}</div>
                         :
                         ""
                 }
