@@ -133,6 +133,13 @@ export class LoginController extends Component {
     }
 
     handleInputChange(event) {
+        // This stop the password/email values changing whilst the user is setting their new password.
+        // Specifically when the browser's autocomplete changes the value to an previously saved
+        // password, causing a 401 when we try to send the request to set their new password
+        if (this.state.requestPasswordChange) {
+            return;
+        }
+
         const id = event.target.id;
         const value = event.target.value;
 
