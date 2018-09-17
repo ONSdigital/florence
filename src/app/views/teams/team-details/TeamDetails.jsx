@@ -39,7 +39,7 @@ class TeamDetails extends Component {
                 <div className="drawer__heading">
                     <div className="grid grid--justify-space-around">
                         <div className="grid__col-8 margin-top--3 margin-bottom--2">
-                            <h2>{this.props.name}</h2>
+                            <h2 id="team-name">{this.props.name}</h2>
                         </div>
                     </div>
                 </div>
