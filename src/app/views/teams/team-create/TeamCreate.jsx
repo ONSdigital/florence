@@ -119,11 +119,11 @@ class TeamCreate extends Component {
 
     render() {
         return (
-            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit}>
+            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit} name="create-new-team">
                 {/* Can't use <Input/> component because we need hidden labels
                  if this becomes a common use case can add to the input component */}
                 <div className="form__input">
-                    <input type="text" className="input input__text" disabled={this.state.isAwaitingResponse} placeholder="Name" value={this.state.input.value} onChange={this.handleFormInput}/>
+                    <input type="text" className="input input__text" disabled={this.state.isAwaitingResponse} placeholder="Name" value={this.state.input.value} name="name" onChange={this.handleFormInput}/>
                     {this.state.input.error && 
                         <div className="error-msg">{this.state.input.error}</div>
                     }
