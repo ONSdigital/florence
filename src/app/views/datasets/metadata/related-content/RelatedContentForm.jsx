@@ -84,7 +84,7 @@ class RelatedContentForm extends Component {
                         }
                         {this.props.requiresDescription &&
                         <Input
-                            type="text"
+                            type="textarea"
                             label={this.props.descLabel}
                             error={this.props.descError}
                             id="add-related-content-desc"

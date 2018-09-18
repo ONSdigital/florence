@@ -31,13 +31,13 @@ class AlertView extends Component {
 
     render() {
         return (
-            <Modal sizeClass="grid__col-5">
+            <Modal sizeClass="grid__col-lg-5 grid__col-md-8 grid__col-xs-10">
                 <form onSubmit={this.props.onSave}>
                     <div className="modal__header">
                         <h2>{this.props.isEditing ? "Edit" : "Add"} alert</h2>
                     </div>
                     <div className="modal__body">
-                        <div className="grid grid__col-4">
+                        <div className="grid__col-md-5 grid__col-sm-6 grid__col-sm-8">
                             <Input 
                                 id="alert-date" 
                                 type="datetime-local"
