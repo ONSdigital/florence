@@ -26,12 +26,14 @@ enabled, you will need vault running locally:
 - Run `brew install vault`
 - Run `vault server -dev`
 
-3. Browse to the Florence homepage http://localhost:8081/florence/index.html
+3. Browse to the Florence homepage http://localhost:8081/florence
 
 4. If you are running Florence for the first time you will need to login with the setup credentials. You will be asked to change this password.
 
 Username: florence@magicroundabout.ons.gov.uk
 Password: Doug4l
+
+Further guidance on how to use Florence can be found in [usage.md](USAGE.md)
 
 #### Dependencies
 
