@@ -171,13 +171,18 @@ describe("When the collections details are loading", () => {
         <CollectionDetails {...props} />
     );
 
-    it("show a loading icon", () => {
+    it("shows a loading icon", () => {
         expect(component.find('.loader').length).toBe(1);
     });
 
     it("doesn't try to render any pages", () => {
         expect(component.find('.page').length).toBe(0);
     });
+
+    it("still renders when collection name is updated", () => {
+        component.setProps({name: "A new name"});
+        expect(component.find('h2').text()).toBe("A new name");
+    })
 });
 
 describe("Number of pages in a state are rendered correctly", () => {
@@ -256,6 +261,22 @@ describe("'Last edit' information for a page in a collection", () => {
         
         // reset props for futures tests
         component.setProps({...defaultProps});
+    });
+
+    it("Renders the correct message", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2017-12-14T11:36:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Thu 14 Dec 2017 - 11:36:03)");
+    });
+    
+    it("Renders the correct date and time during BST", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2020-06-14T14:25:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Sun 14 Jun 2020 - 15:25:03)");
     });
 
     it("Excludes the date if the data isn't available", () => {
