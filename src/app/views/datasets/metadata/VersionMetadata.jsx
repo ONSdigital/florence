@@ -662,7 +662,9 @@ export class VersionMetadata extends Component {
         })
 
         const editions = recipe.output_instances[0].editions;
-        return editions.map(edition => edition);
+        return editions.map((edition) => {
+            return {id: edition, name: edition}
+        });
       }
   
       mapDimensionsToInputs(dimensions){
@@ -915,8 +917,10 @@ export class VersionMetadata extends Component {
 
     handleSelectChange(event) {
         const target = event.target;
-        const value = target.value;
         const id = target.id;
+        let value = target.value;
+        if (value === "default-option") {value = ""}
+        console.log(target.value, target.id);
         this.setState({
             [id]: value,
             hasChanges: true
