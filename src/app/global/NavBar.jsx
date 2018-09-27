@@ -40,23 +40,27 @@ class NavBar extends Component {
 
     renderWorkingOnItem() {
         const workingOn = this.props.workingOn || {};
-        const showWorkingOn = workingOn.id;
+        const showWorkingOn = workingOn.id;    
         if (!showWorkingOn) {
             return
         }
-        return (
-            // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
-            <li className="global-nav__item global-nav__item--working-on">
-                <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
-                    Working on:&nbsp;
-                    {this.props.workingOn.name || 
-                        <div className="margin-left--1 inline-block">
-                            <div className="loader loader--inline loader--small"></div>
-                        </div>
-                    }
-                </Link>
-            </li>
-        )
+        
+        const route = this.props.location.pathname;
+        if (route.indexOf(`/datasets`) >= 0 || route.indexOf(`/preview`) >= 0) {
+            return (
+                // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
+                <li className="global-nav__item global-nav__item--working-on">
+                    <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
+                        Working on:&nbsp;
+                        {this.props.workingOn.name || 
+                            <div className="margin-left--1 inline-block">
+                                <div className="loader loader--inline loader--small"></div>
+                            </div>
+                        }
+                    </Link>
+                </li>
+            )
+        }
     }
 
     renderNavItems() {
