@@ -3,7 +3,7 @@ import { shallow, mount } from 'enzyme';
 import {CollectionDetailsController, mapStateToProps} from './CollectionDetailsController';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION } from '../../../config/actions';
+import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from '../../../config/actions';
 
 console.error = () => {};
 
@@ -157,13 +157,15 @@ describe("When the active collection parameter changes", () => {
         expect(collections.get.mock.calls[callsCounter][0]).toBe("test-collection-12345");
     });
     
-    it.only("from one collection ID to another, it updates collection name and date instantly", () => {
+    it("from one collection ID to another, it updates collection name and date instantly", () => {
         component.setProps({collectionID: "different-collection-12345"});
         component.setProps({collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c"});
-        expect(dispatchedActions[1].collection).toBeTruthy();
-        expect(dispatchedActions[1].collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
-        expect(dispatchedActions[1].collection.name).toBe("asdasdasd");
-        expect(dispatchedActions[1].collection.type).toBe("manual");
+        const updateActiveCollectionAction = dispatchedActions.filter(action => action.type === UPDATE_ACTIVE_COLLECTION);
+        const action = updateActiveCollectionAction[updateActiveCollectionAction.length-1];
+        expect(action.collection).toBeTruthy();
+        expect(action.collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
+        expect(action.collection.name).toBe("asdasdasd");
+        expect(action.collection.type).toBe("manual");
     });
     
     it("from one collection ID to `/collections`, it hides the collection details", () => {
@@ -399,6 +401,48 @@ describe("Map state to props function", () => {
         reduxState.routing.locationBeforeTransitions.hash = "#/economy#";
         expectedProps.activePageURI = "/economy#"
         expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+    });
+});
+
+describe("Clicking 'edit' for a page", () => {
+    const props = {
+        ...defaultProps,
+        collectionID: "my-collection-12345",
+        activeCollection: {
+            inProgress: [{
+                type: "dataset_details",
+                id: "cpi",
+                uri: "/datasets/cpi",
+                lastEditedBy: "test.user@email.com"
+            }],
+            complete: [{
+                type: "dataset_version",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com"
+            }],
+            reviewed: []
+        }
+    };
+    const editClickComponent = shallow(
+        <CollectionDetailsController {...props} />
+    )
+
+    it("routes to the datasets screen for dataset/versions", () => {
+        const datasetURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com"}, "inProgress");
+        expect(datasetURL).toBe("/florence/datasets/cpi/metadata?collection=my-collection-12345");
+
+        const versionURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_version", datasetID: "cpi", id:"cpi/editions/current/versions/2", uri:"/datasets/cpi/editions/current/versions/2", edition: "current", version: "2", lastEditedBy: "test.user@email.com"}, "complete");
+        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata?collection=my-collection-12345");
+    });
+
+    it("routes to the workspace for a non-dataset pages", () => {
+        const pageURL = editClickComponent.instance().handleCollectionPageEditClick({type: "article", uri:"/economy/grossdomesticproductgdp/articles/ansarticle"});
+        expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+        // const pageURL = editClickComponent.instance().handleCollectionPageEditClick({type: "article", id:"/economy/grossdomesticproductgdp/articles/ansarticle"});
+        // expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
     });
 });
 

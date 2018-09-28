@@ -111,14 +111,19 @@ export default class collectionMapper {
                 title: version.title,
                 edition: version.edition,
                 version: version.version,
+                datasetID: version.id,
                 id: `${version.id}/editions/${version.edition}/versions/${version.version}`,
-                type: "dataset_version"
+                type: "dataset_version",
+                uri: `/datasets/${version.id}/editions/${version.edition}/versions/${version.version}`,
+                lastEditedBy: version.lastEditedBy
             });
     
             const mapDataset = dataset => ({
                 title: dataset.title,
                 type: "dataset_details",
-                id: dataset.id
+                id: dataset.id,
+                uri: `/datasets/${dataset.id}`,
+                lastEditedBy: version.lastEditedBy
             });
     
             const mapDatasets = () => {

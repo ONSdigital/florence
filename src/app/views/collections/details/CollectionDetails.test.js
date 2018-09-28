@@ -23,7 +23,7 @@ jest.mock('../../../utilities/notifications', () => {
 
 const defaultProps = {
     collectionID: 'test-collection-12345',
-    activePageID: 'economy-grossdomesticproduct-bulletins-gdp-2014',
+    activePageURI: 'economy-grossdomesticproduct-bulletins-gdp-2014',
     name: 'Test collection',
     onClose: () => {},
     onPageClick: () => {},
@@ -38,7 +38,7 @@ const defaultProps = {
 const alternativePageProps = {
     inProgress: [
             {
-                id: "/",
+                uri: "/",
                 type: "homepage",
                 description: {
                     title: "Home"
@@ -50,7 +50,7 @@ const alternativePageProps = {
                 
             },
             {
-                id: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
                 type: "bulletin",
                 description: {
                     title: "Consumer Price Inflation",
@@ -64,7 +64,7 @@ const alternativePageProps = {
         ],
         complete: [
             {
-                id: "/businessindustryandtrade",
+                uri: "/businessindustryandtrade",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business industry and trade"
@@ -77,7 +77,7 @@ const alternativePageProps = {
         ],
         reviewed: [
             {
-                id: "/businessindustryandtrade/businessbirthsanddeaths",
+                uri: "/businessindustryandtrade/businessbirthsanddeaths",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business births and deaths"
@@ -111,9 +111,13 @@ describe("Collection details page edit/delete buttons only show for an active pa
         ...defaultProps,
         ...alternativePageProps
     };
-    const component = shallow(
-        <CollectionDetails {...props} />
-    );
+    let component;
+
+    beforeEach(() => {
+        component = shallow(
+            <CollectionDetails {...props} />
+        );
+    });
 
     it("render the correct number of in progress pages", () => {
         const pages = component.find('.list__item--expandable[data-page-state="inProgress"]');
@@ -136,15 +140,15 @@ describe("Collection details page edit/delete buttons only show for an active pa
     });
 
     it("buttons will hide for inactive pages", () => {
-        const activePages = component.find('.list__item--expandable.active');
         const pages = component.find('.list__item--expandable');
+        const activePages = component.find('.list__item--expandable.active');
         expect(pages.length).toBe(5);
         expect(activePages.length).toBe(0);
     });
 
     it("buttons will show for active pages", () => {
         component.setProps({
-            activePageID: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
+            activePageURI: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
         });
         const activePages = component.find('.list__item--expandable.active');
         expect(activePages.length).toBe(1);
@@ -153,7 +157,7 @@ describe("Collection details page edit/delete buttons only show for an active pa
 
     it("buttons show for active deleted pages", () => {
         component.setProps({
-            activePageID: "/about/surveys"
+            activePageURI: "/about/surveys"
         });
         const activePages = component.find('.list__item--expandable.active');
         const activeDeletedPages = component.find('.list__item--expandable[data-page-state="deletes"].active');
@@ -232,7 +236,7 @@ describe("Invalid props doesn't break the component", () => {
         expect(component.find('h3').length).toBe(3);
     });
     
-    it("missing 'activePageID'", () => {
+    it("missing 'activePageURI'", () => {
         component.setProps({...alternativePageProps});
         expect(component.find('.list__item--expandable').length).toBe(5);
     });

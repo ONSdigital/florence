@@ -125,12 +125,12 @@ export class CollectionDetails extends Component {
 
     renderPageItem(page, state) {
         const pageID = page.uri;
-        const isActivePage = this.props.activePageURI === pageID;
+        const isActivePage = pageID && this.props.activePageURI === pageID;
         const handlePageClick = () => {
             this.props.onPageClick(pageID);
         }
         const handleEditClick = () => {
-            this.props.onEditPageClick(page);
+            this.props.onEditPageClick(page, state);
         }
         const handleDeleteClick = () => {
             this.props.onDeletePageClick(page, state);

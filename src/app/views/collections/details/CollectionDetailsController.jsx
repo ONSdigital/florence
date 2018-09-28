@@ -37,20 +37,6 @@ const propTypes = {
             root: deletedPagePropTypes,
             totalDeletes: PropTypes.number.isRequired
         })),
-        datasets: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
-        })),
-        datasetVersions: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired,
-            edition: PropTypes.string.isRequired,
-            version: PropTypes.string.isRequired,
-            uri: PropTypes.string.isRequired,
-            state: PropTypes.string.isRequired
-        })),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
@@ -337,26 +323,38 @@ export class CollectionDetailsController extends Component {
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageEditClick(page) {
+    handleCollectionPageEditClick(page, state) {
         if (page.type === "dataset_details") {
-            const newURL = url.resolve(`/datasets/${page.uri}/metadata?collection=${this.props.collectionID}`);
-            const dataset = this.props.activeCollection.datasets.find(dataset => {
-                return dataset.id === page.uri;
+            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.collectionID}`);
+            const dataset = this.props.activeCollection[state].find(collectionPage => {
+                if (collectionPage.type !== "dataset_details") {
+                    return false;
+                }
+                if (collectionPage.uri !== page.uri) {
+                    return false;
+                }
+                return true
             });
             const lastEditedBy = dataset.lastEditedBy;
-            const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
-            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, reviewState));
+            // const reviewState = dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveDatasetReviewState(lastEditedBy, state));
             this.props.dispatch(push(newURL));
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(`/datasets/${page.uri}/metadata?collection=${this.props.collectionID}`);
-            const version = this.props.activeCollection.datasetVersions.find(version => {
-                return `${version.id}/editions/${version.edition}/versions/${version.version}` === page.uri;
+            const newURL = url.resolve(`/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}/metadata?collection=${this.props.collectionID}`);
+            const version = this.props.activeCollection[state].find(collectionPage => {
+                if (collectionPage.type !== "dataset_version") {
+                    return false;
+                }
+                if (collectionPage.uri !== page.uri) {
+                    return false;
+                }
+                return true;
             });
             const lastEditedBy = version.lastEditedBy;
-            const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
-            this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, reviewState));
+            // const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
+            this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, state));
             this.props.dispatch(push(newURL));
             return newURL;
         }
