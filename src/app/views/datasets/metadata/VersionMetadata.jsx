@@ -920,7 +920,6 @@ export class VersionMetadata extends Component {
         const id = target.id;
         let value = target.value;
         if (value === "default-option") {value = ""}
-        console.log(target.value, target.id);
         this.setState({
             [id]: value,
             hasChanges: true
