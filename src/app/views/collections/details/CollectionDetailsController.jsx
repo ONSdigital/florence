@@ -179,11 +179,7 @@ export class CollectionDetailsController extends Component {
 
     updateActiveCollectionGlobally(collection) {
         this.props.dispatch(updateActiveCollection(collection));
-        const workingOn = {
-            id: collection.id,
-            name: collection.name
-        };
-        this.props.dispatch(updateWorkingOn(workingOn));
+        this.props.dispatch(updateWorkingOn(collection.id, collection.name));
         cookies.add("collection", collection.id, null);
     }
 
