@@ -1,3 +1,5 @@
+export const SET_CONFIG = "SET_CONFIG";
+
 export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
@@ -41,6 +43,13 @@ export const ADD_PREVIEW_COLLECTION = "ADD_PREVIEW_COLLECTION";
 export const REMOVE_PREVIEW_COLLECTION = "REMOVE_PREVIEW_COLLECTION";
 export const UPDATE_PREVIEW_SELECTED_PAGE = "UPDATE_PREVIEW_SELECTED_PAGE";
 export const REMOVE_PREVIEW_SELECTED_PAGE = "REMOVE_PREVIEW_SELECTED_PAGE";
+
+export function setConfig(config) {
+    return {
+        type: SET_CONFIG,
+        config
+    }
+}
 
 export function userLoggedIn(email, userType, isAdmin) {
     return {
