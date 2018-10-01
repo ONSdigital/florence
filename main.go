@@ -32,6 +32,8 @@ import (
 var getAsset = assets.Asset
 var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
+var cfg *config.Config
+var sharedCfg = config.SharedConfig{}
 
 // Version is set by the make target
 var Version string
@@ -39,7 +41,8 @@ var Version string
 func main() {
 	log.Debug("florence version", log.Data{"version": Version})
 
-	cfg, err := config.Get()
+	var err error
+	cfg, err = config.Get()
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
@@ -124,15 +127,17 @@ func main() {
 
 	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
-	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
-	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
-	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+	if cfg.SharedConfig.EnableDatasetImport {
+		router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
+		router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+		router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+		router.Handle("/import{uri:.*}", importAPIProxy)
+		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
+		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	}
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
-	router.Handle("/import{uri:.*}", importAPIProxy)
-	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
-	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -235,6 +240,14 @@ func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
+	cfgJSON, err := json.Marshal(cfg.SharedConfig)
+	if err != nil {
+		log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+		w.WriteHeader(500)
+		return
+	}
+	b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", string(cfgJSON), 1))
+
 	w.Header().Set(`Content-Type`, "text/html")
 	w.WriteHeader(200)
 	w.Write(b)
@@ -249,6 +262,14 @@ func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(404)
 		return
 	}
+
+	cfgJSON, err := json.Marshal(cfg.SharedConfig)
+	if err != nil {
+		log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+		w.WriteHeader(500)
+		return
+	}
+	b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", string(cfgJSON), 1))
 
 	w.Header().Set(`Content-Type`, "text/html")
 	w.WriteHeader(200)
