@@ -38,6 +38,7 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
     name: PropTypes.string,
+    enableDatasetImport: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
@@ -346,7 +347,9 @@ export class CollectionDetails extends Component {
                     <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
                         <div>
                             <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
-                            <Link to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                            {this.props.enableDatasetImport &&
+                                <Link to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                            }
                             <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
                         </div>
                     </div>
