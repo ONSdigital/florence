@@ -12,7 +12,9 @@
                     <option value="article" name="article">Article</option>
                     <option value="article_download" name="article_download">Article (PDF only)</option>
                     <option value="dataset_landing_page" name="dataset_landing_page">Dataset</option>
-                    <option value="api_dataset_landing_page" name="api_dataset_landing_page">API Dataset</option>
+                    {{#if showCreateAPIDatasetOption}}
+                        <option value="api_dataset_landing_page" name="api_dataset_landing_page">API Dataset</option>
+                    {{/if}}
                     <option value="timeseries_landing_page" name="timeseries_landing_page">Timeseries dataset</option>
                     <option value="compendium_landing_page" name="compendium_landing_page">Compendium</option>
                     <option value="static_landing_page" name="static_landing_page">Static landing page</option>
