@@ -123,7 +123,7 @@ export default class collectionMapper {
                 type: "dataset_details",
                 id: dataset.id,
                 uri: `/datasets/${dataset.id}`,
-                lastEditedBy: version.lastEditedBy
+                lastEditedBy: dataset.lastEditedBy
             });
     
             const mapDatasets = () => {
