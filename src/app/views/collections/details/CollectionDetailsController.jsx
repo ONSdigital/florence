@@ -21,6 +21,7 @@ import auth from '../../../utilities/auth';
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
+    enableDatasetImport: PropTypes.bool,
     user: PropTypes.object.isRequired,
     collectionID: PropTypes.string,
     collections: PropTypes.array,
@@ -516,6 +517,7 @@ export class CollectionDetailsController extends Component {
         return (
             <CollectionDetails 
                 {...this.props.activeCollection}
+                enableDatasetImport={this.props.enableDatasetImport}
                 activePageURI={this.props.activePageURI}
                 inProgress={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection['inProgress'], this.state.pendingDeletedPages)}
                 complete={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection['complete'], this.state.pendingDeletedPages)}
@@ -583,7 +585,8 @@ export function mapStateToProps(state) {
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', '')
+        activePageURI: state.routing.locationBeforeTransitions.hash.replace('#', ''),
+        enableDatasetImport: state.state.config.enableDatasetImport
     }
 }
 

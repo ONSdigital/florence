@@ -5,6 +5,7 @@ import { Router, Route, IndexRoute, IndexRedirect, Redirect } from 'react-router
 import { routerActions } from 'react-router-redux';
 import { connectedReduxRedirect } from 'redux-auth-wrapper/history3/redirect';
 
+import { setConfig } from './app/config/actions';
 import App from './app/App';
 import Layout from './app/global/Layout';
 import LoginController from './app/views/login/LoginController';
@@ -28,6 +29,9 @@ import SelectableTest from './SelectableTest';
 import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
+
+const config = window.getEnv();
+store.dispatch(setConfig(config));
 
 const rootPath = store.getState().state.rootPath;
 
@@ -81,33 +85,37 @@ class Index extends Component {
                                     <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/uploads`}>
-                                <IndexRedirect to="data" />
-                                <Route path="data">
-                                    <IndexRoute component={userIsAuthenticated(userisAdminOrEditor(DatasetUploadsController))} />
-                                    <Route path=":jobID">
-                                        <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadDetails)) } />
-                                        <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadMetadata)) } />
+                            {config.enableDatasetImport === true &&
+                                <Route>
+                                    <Route path={`${rootPath}/uploads`}>
+                                        <IndexRedirect to="data" />
+                                        <Route path="data">
+                                            <IndexRoute component={userIsAuthenticated(userisAdminOrEditor(DatasetUploadsController))} />
+                                            <Route path=":jobID">
+                                                <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadDetails)) } />
+                                                <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadMetadata)) } />
+                                            </Route>
+                                        </Route>
+                                    </Route>
+                                    <Route path={`${rootPath}/datasets`} >
+                                        <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetsController)) } />
+                                        <Route path=":datasetID">
+                                            <IndexRedirect to={`${rootPath}/datasets`} />
+                                            <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(DatasetPreviewController)) } />
+                                            <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetMetadata)) } />
+                                            <Route path="editions/:edition/versions/:version">
+                                                <IndexRedirect to="metadata"/>
+                                                <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) }/>
+                                                <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(VersionPreviewController)) } />
+                                            </Route>
+                                            <Route path="instances">
+                                                <IndexRedirect to={`${rootPath}/datasets`}/>
+                                                <Route path=":instanceID/metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) } />
+                                            </Route>
+                                        </Route>
                                     </Route>
                                 </Route>
-                            </Route>
-                            <Route path={`${rootPath}/datasets`} >
-                                <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetsController)) } />
-                                <Route path=":datasetID">
-                                    <IndexRedirect to={`${rootPath}/datasets`} />
-                                    <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(DatasetPreviewController)) } />
-                                    <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetMetadata)) } />
-                                    <Route path="editions/:edition/versions/:version">
-                                        <IndexRedirect to="metadata"/>
-                                        <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) }/>
-                                        <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(VersionPreviewController)) } />
-                                    </Route>
-                                    <Route path="instances">
-                                        <IndexRedirect to={`${rootPath}/datasets`}/>
-                                        <Route path=":instanceID/metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) } />
-                                    </Route>
-                                </Route>
-                            </Route>
+                            }
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
