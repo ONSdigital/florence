@@ -67,7 +67,7 @@ The following environment variables are available when running the Go server.
 | RECIPE_API_URL        | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
 | TABLE_RENDERER_URL    | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
 | UPLOAD_BUCKET_NAME    | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                   |
-| ENABLE_DATASET_IMPORT | false                             | Displays the screens to allow filterable datasets can be imported through Florence (note: it requires the whole CMD stack to be running) |
+| ENABLE_DATASET_IMPORT | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
 
 For example:
 ```
