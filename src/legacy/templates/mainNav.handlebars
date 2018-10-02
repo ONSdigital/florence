@@ -11,7 +11,7 @@
         {{#if environment.name}}<li class="environment-notification">You're on {{environment.name}} environment</li>{{/if}}
 
         {{#if this.collection.name}}
-            <li id="working-on" class="nav__item"><a class="nav__link js-nav-item js-nav-item--collection selected" href="javascript:void(0)">Working
+            <li id="working-on" class="nav__item"><a class="nav__link js-nav-item js-nav-item--collection selected" href="/florence/collections/{{this.collection.id}}">Working
                 on: {{this.collection.name}}</a></li>
         {{/if}}
 

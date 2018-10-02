@@ -189,9 +189,6 @@ function setupFlorence() {
             window.history.pushState({}, "", "/florence/collections")
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
-            var thisCollection = CookieUtils.getCookieValue("collection");
-            window.history.pushState({}, "", "/florence/collections")
-            viewCollections(thisCollection);
             $(".js-nav-item--collections").addClass('selected');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
@@ -209,14 +206,14 @@ function setupFlorence() {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
             logout();
-            viewController();
+            // viewController();
         }
     }
 
     // redirect a viewer to not authorised message if they try access old Florence
     var userType = localStorage.getItem("userType");
     if (userType == "VIEWER") {
-        window.location.href = '/florence/not-authorised';
+        window.location.href = '/florence/collections';
     }
 
     // Get ping times to zebedee and surface for user
@@ -371,5 +368,29 @@ function setupFlorence() {
             this.collection = collectionTemp
         }
     }
+
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
+
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
+    }
+
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
+    });
+
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
+        }
+        trimInputWhitespace($(this));
+    });
 }
 

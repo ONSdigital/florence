@@ -92,16 +92,14 @@ func main() {
 	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
-	router.HandleFunc("/florence", legacyIndexFile)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/collections", legacyIndexFile)
 	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
 	router.HandleFunc("/florence/reports", legacyIndexFile)
 	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
 	router.HandleFunc("/florence/workspace", legacyIndexFile)
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:/.*}", refactoredIndexFile)
+	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
 	router.Handle("/{uri:.*}", babbageProxy)
 
 	log.Debug("Starting server", log.Data{
