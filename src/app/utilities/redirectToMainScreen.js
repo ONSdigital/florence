@@ -10,15 +10,20 @@ import { store } from '../config/store';
 export default function redirectToMainScreen(screen) {
     const rootPath = store.getState().state.rootPath;
 
-    if (screen === `${rootPath}/teams` || screen === `${rootPath}/datasets`) {
+    if (!screen) {
+        browserHistory.push(`${rootPath}/collections`);
+        return;
+    }
+
+    if (screen.startsWith(`${rootPath}/teams`) || screen.startsWith(`${rootPath}/datasets`) || screen.startsWith(`${rootPath}/collections`)) {
         browserHistory.push(screen);
         return;
     }
 
-    if (screen === `${rootPath}/collections` || screen === `${rootPath}/publishing-queue` || screen === `${rootPath}/reports` || screen === `${rootPath}/users-and-access`) {
+    if (screen === `${rootPath}/publishing-queue` || screen === `${rootPath}/reports` || screen === `${rootPath}/users-and-access` || screen === `${rootPath}/workspace`) {
         window.location.href = screen;
         return;
     }
 
-    window.location.href = `${rootPath}/collections`;
+    browserHistory.push(`${rootPath}/collections`);
 }

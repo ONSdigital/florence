@@ -7,7 +7,7 @@ const isProduction = (process.env.NODE_ENV === 'production');
 module.exports = {
     context: path.resolve(__dirname),
     entry: {
-        app: './index.js',
+        app: ['babel-regenerator-runtime', './index.js'],
         tablebuilder: './tablebuilder/tablebuilder.js'
     },
     output: {
