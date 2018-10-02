@@ -219,7 +219,7 @@ test("Correct modal type shows when user wants to add an alert", async () => {
     const component = shallow(
         <VersionMetadata {...defaultProps} />
     );
-    expect(component.state("modalType")).toBe(undefined);
+    expect(component.state("modalType")).toBe("");
     await component.instance().handleAddRelatedClick("alerts");
     expect(component.state("modalType")).toBe("alerts");
 });
@@ -308,7 +308,7 @@ test("Warning modal shown when unsaved changes have been made", async () => {
     component.instance().handleSelectChange({preventDefault: ()=>{}, target: {id: "edition", value: "another-type"}});
     component.instance().handleBackButton();
     expect(component.state("showModal")).toBe(true);
-    expect(component.state("modalType")).toBe(undefined);
+    expect(component.state("modalType")).toBe("");
     expect(component.find(".modal__header h2").exists()).toBe(true);
 });
 
