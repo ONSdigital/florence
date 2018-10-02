@@ -242,7 +242,8 @@ const defaultProps = {
     collections: [],
     activeCollection: null,
     collectionsToDelete: {},
-    routes: [{}]
+    routes: [{}],
+    enableDatasetImport: false
 };
 
 const component = shallow(
@@ -383,7 +384,10 @@ describe("mapStateToProps function", () => {
                 active: {id: "an-example-collection-12345"},
                 toDelete: {"deleted-example-collection-12345": null}
             },
-            rootPath: "/florence"
+            rootPath: "/florence",
+            config: {
+                enableDatasetImport: false
+            }
         }
     };
 
