@@ -48,6 +48,7 @@ const defaultProps = {
         dispatchedActions.push(action);
     },
     rootPath: '/florence',
+    enableDatasetImport: false,
     routes:[{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -372,7 +373,10 @@ describe("Map state to props function", () => {
                     name: "A collection"
                 }]
             },
-            rootPath: "/florence"
+            rootPath: "/florence",
+            config: {
+                enableDatasetImport: false
+            }
         },
         routing: {
             locationBeforeTransitions: {
