@@ -32,8 +32,6 @@ import (
 var getAsset = assets.Asset
 var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
-var cfg *config.Config
-var sharedCfg = config.SharedConfig{}
 
 // Version is set by the make target
 var Version string
@@ -41,8 +39,7 @@ var Version string
 func main() {
 	log.Debug("florence version", log.Data{"version": Version})
 
-	var err error
-	cfg, err = config.Get()
+	cfg, err := config.Get()
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
@@ -142,12 +139,12 @@ func main() {
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
-	router.HandleFunc("/florence/reports", legacyIndexFile)
-	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
-	router.HandleFunc("/florence/workspace", legacyIndexFile)
+	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/users-and-access").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
+	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{"config": cfg})
@@ -230,50 +227,54 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
-func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting legacy HTML file", nil)
+func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting legacy HTML file", nil)
 
-	b, err := getAsset("../dist/legacy-assets/index.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/legacy-assets/index.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	cfgJSON, err := json.Marshal(cfg.SharedConfig)
-	if err != nil {
-		log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
-		w.WriteHeader(500)
-		return
-	}
-	b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", string(cfgJSON), 1))
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
-func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting refactored HTML file", nil)
+func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting refactored HTML file", nil)
 
-	b, err := getAsset("../dist/refactored.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/refactored.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	cfgJSON, err := json.Marshal(cfg.SharedConfig)
-	if err != nil {
-		log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
-		w.WriteHeader(500)
-		return
-	}
-	b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", string(cfgJSON), 1))
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
 func zebedeeDirector(req *http.Request) {
