@@ -80,7 +80,6 @@ class AlertController extends Component {
     }
     
     handleIsCorrectionChange(isCorrection) {
-        console.log(isCorrection);
         this.setState({newIsCorrectionBoolean: isCorrection});
     }
     
