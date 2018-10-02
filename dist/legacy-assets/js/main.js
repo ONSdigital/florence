@@ -50755,29 +50755,32 @@ function setShortcuts(field, callback) {
         }
     }
 
-    function trimInputWhitespace($input) {
-        // We don't trim on the file input type because it's value
-        // can't be set for security reasons, which it causes a runtime error
-        if ($input.type === "file") {
-            return;
-        }
+    // FIXME this break the chart builder data input, if it starts with whitespace (which it often needs to for formating)
+    // I've commented the function out for now so a release can go live, but we should fix this properly.
+    
+    // function trimInputWhitespace($input) {
+    //     // We don't trim on the file input type because it's value
+    //     // can't be set for security reasons, which it causes a runtime error
+    //     if ($input.type === "file") {
+    //         return;
+    //     }
 
-        var trimmed = $input.val().trim();
-        $input.val(trimmed);
-        $input.change();
-        $input.trigger("input");
-    }
+    //     var trimmed = $input.val().trim();
+    //     $input.val(trimmed);
+    //     $input.change();
+    //     $input.trigger("input");
+    // }
 
-    $(document).on('blur', 'input, textarea', function() {
-        trimInputWhitespace($(this));
-    });
+    // $(document).on('blur', 'input, textarea', function() {
+    //     trimInputWhitespace($(this));
+    // });
 
-    $(document).on('keypress', 'input, textarea', function(event) {
-        if (event.which !== 13) {
-            return;
-        }
-        trimInputWhitespace($(this));
-    });
+    // $(document).on('keypress', 'input, textarea', function(event) {
+    //     if (event.which !== 13) {
+    //         return;
+    //     }
+    //     trimInputWhitespace($(this));
+    // });
 }
 
 function releaseEditor(collectionId, data) {
