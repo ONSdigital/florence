@@ -5,15 +5,27 @@ export const initialState = {
         userType: '',
         isAdmin: false
     },
+    global: {
+        workingOn: null
+    },
     rootPath: "/florence",
     teams: {
         active: {},
         all: [],
+        allIDsAndNames: [],
         users: []
     },
     datasets: {
         all: [],
         jobs: []
     },
-    notifications: []
+    collections: {
+        all: [],
+        active: null,
+        toDelete: {}
+    },
+    notifications: [],
+    preview: {
+        selectedPage: null
+    }
 };

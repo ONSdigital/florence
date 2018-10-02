@@ -1,4 +1,5 @@
 import { initialState } from './initialState';
+import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION } from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -19,12 +20,130 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case (ADD_ALL_COLLECTIONS): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all: action.collections
+                }
+            }
+        }
+        case (MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS): {
+            let toDelete = {...state.collections.toDelete};
+            toDelete[action.collectionID] = null;
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    toDelete
+                }
+            }
+        }
+        case (DELETE_COLLECTION_FROM_ALL_COLLECTIONS): {
+            const toDelete = {...state.collections.toDelete};
+            delete toDelete[action.collectionID];
+
+            const all = state.collections.all.filter(collection => collection.id !== action.collectionID);
+            
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all,
+                    toDelete
+                }
+            }
+        }
+        case (UPDATE_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: {
+                        id: action.collection.id,
+                        name: action.collection.name,
+                        publishDate: action.collection.publishDate,
+                        status: {...action.collection.status},
+                        type: action.collection.type,
+                        isForcedManualType: action.collection.isForcedManualType,
+                        canBeApproved: action.collection.canBeApproved,
+                        canBeDeleted: action.collection.canBeDeleted
+                    }
+                }
+            }
+        }
+        case (UPDATE_PAGES_IN_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: {
+                        ...state.collections.active,
+                        inProgress: action.collection.inProgress,
+                        complete: action.collection.complete,
+                        reviewed: action.collection.reviewed,
+                        deletes: action.collection.deletes,
+                        canBeApproved: action.collection.canBeApproved,
+                        canBeDeleted: action.collection.canBeDeleted
+                    }
+                }
+            }
+        }
+        case(UPDATE_TEAMS_IN_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: {
+                        ...state.collections.active,
+                        teams: action.teams
+                    }
+                }
+            }
+        }
+        case (EMPTY_ACTIVE_COLLECTION): {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    active: null
+                }
+            }
+        }
+        case(UPDATE_WORKING_ON): {
+            return {
+                ...state,
+                global: {
+                    ...state.global,
+                    workingOn: {...action.workingOn}
+                }
+            }
+        }
+        case(EMPTY_WORKING_ON): {
+            return {
+            ...state,
+            global: {
+                ...state.global,
+                workingOn: null
+                }
+            }
+        }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     all: action.allTeams
                 })
             })
+        }
+        case (UPDATE_ALL_TEAM_IDS_AND_NAMES): {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    allIDsAndNames: action.allTeamIDsAndNames
+                }
+            }
         }
         case ('UPDATE_USERS'): {
             return Object.assign({}, state, {
@@ -95,6 +214,41 @@ export default function reducer(state = initialState, action) {
                     return notification;
                 })
             })
+        }
+        case (ADD_PREVIEW_COLLECTION): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    ...action.preview
+                }
+            }
+        }
+        case(REMOVE_PREVIEW_COLLECTION): {
+            return {
+                ...state,
+                preview: {
+                    selectedPage: null
+                }
+            }
+        }
+        case (UPDATE_PREVIEW_SELECTED_PAGE): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    selectedPage: action.selectedPage
+                }
+            }
+        }
+        case (REMOVE_PREVIEW_SELECTED_PAGE): {
+            return {
+                ...state,
+                preview: {
+                    ...state.preview,
+                    selectedPage: null
+                }
+            }
         }
         default: {
             break;

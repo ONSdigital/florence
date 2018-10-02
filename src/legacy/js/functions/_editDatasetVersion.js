@@ -95,7 +95,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
             initialiseDatasetVersion(collectionId, data, templateData, field, idField);
         });
 
-        $('#UploadForm').submit(function (e) {
+        $('#UploadForm').one('submit', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
 
@@ -148,7 +148,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 saveSubmittedFile();
             }
 
-            function saveSubmittedFile() {
+            async function saveSubmittedFile() {
                 var responseElem = document.getElementById("response");
                 responseElem.innerHTML = "Uploading . . .";
 
@@ -177,20 +177,18 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 }
 
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            uploadedNotSaved.uploaded = true;
-                            uploadedNotSaved.fileUrl = safeUriUpload;
-                            // create the new version/correction
-                            saveNewCorrection(collectionId, data.uri,
-                                function (response) {
-                                    responseElem.innerHTML = "File uploaded successfully";
+                    saveNewCorrection(collectionId, data.uri,
+                        function (response) {
+                            $.ajax({
+                                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                                type: 'POST',
+                                data: formdata,
+                                cache: false,
+                                processData: false,
+                                contentType: false,
+                                success: function () {
+                                    uploadedNotSaved.uploaded = true;
+                                    uploadedNotSaved.fileUrl = safeUriUpload;
                                     var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
                                     if (idField === "correction") {
                                         data[field].push({
@@ -224,29 +222,27 @@ function editDatasetVersion(collectionId, data, field, idField) {
                                         $("#" + idField + '-section').remove();
                                         saveDatasetVersion(collectionId, data.uri, data, field, idField);
                                     }
-                                }, function (response) {
-                                    if (response.status === 409) {
-                                        sweetAlert("You can add only one " + idField + " before publishing.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else if (response.status === 404) {
-                                        sweetAlert("You can only add " + idField + "s to content that has been published.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else {
-                                        responseElem.innerHTML = "";
-                                        handleApiError(response);
-                                    }
+                                },
+                                error: function (response) {
+                                    console.log("Error in uploading this file");
+                                    handleApiError(response);
                                 }
-                            );
-                        },
-                        error: function (response) {
-                            console.log("Error in uploading this file");
-                            handleApiError(response);
+                            });
+                        }, function (response) {
+                            if (response.status === 409) {
+                                sweetAlert("You can add only one " + idField + " before publishing.");
+                                responseElem.innerHTML = "";
+                            }
+                            else if (response.status === 404) {
+                                sweetAlert("You can only add " + idField + "s to content that has been published.");
+                                responseElem.innerHTML = "";
+                            }
+                            else {
+                                responseElem.innerHTML = "";
+                                handleApiError(response);
+                            }
                         }
-                    });
+                    );
                 }
             }
         });

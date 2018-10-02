@@ -17,10 +17,14 @@ exports[`Input without type renders a text input 1`] = `
     className="input input__text"
     disabled={false}
     id="test-input"
+    max={undefined}
+    min={undefined}
     name="test-input"
+    onBlur={undefined}
     onChange={undefined}
     placeholder=""
     type="text"
+    value={undefined}
   />
   
 </div>
@@ -43,10 +47,14 @@ exports[`Password prop creates a password input 1`] = `
     className="input input__text"
     disabled={false}
     id="test-password-input"
+    max={undefined}
+    min={undefined}
     name="test-password-input"
+    onBlur={undefined}
     onChange={undefined}
     placeholder=""
     type="password"
+    value={undefined}
   />
   <span
     className="btn btn--password"
