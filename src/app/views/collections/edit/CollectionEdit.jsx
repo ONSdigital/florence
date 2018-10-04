@@ -106,7 +106,7 @@ class CollectionEdit extends Component {
 
         if (this.props.originalPublishType === "scheduled" && !this.props.originalPublishDate) {
             return (
-                <p>Publishing date: no publish date available</p>
+                <p>Publish date: no publish date available</p>
             )
         }
     }
@@ -115,74 +115,87 @@ class CollectionEdit extends Component {
         return (
             <div className="drawer__container">
                 <div className="drawer__heading">
-                    <div className="grid grid--justify-space-between grid--align-end">
-                        <div>
-                            <h2>{this.props.originalName}</h2>
-                            {this.renderPublishDate()}
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            <div className="grid grid--justify-space-between grid--align-end margin-top--3 margin-bottom--2">
+                                <div>
+                                    <h2>{this.props.originalName}</h2>
+                                    {this.renderPublishDate()}
+                                </div>
+                                <p id="editing-text">Editing collection...</p>
+                            </div>
                         </div>
-                        <p>Editing collection...</p>
                     </div>
                 </div>
                 <div className="drawer__body">
-                    <form className="form" onSubmit={this.handleSave}>
-                        <Input
-                            id="collection-edit-name"
-                            label="Name"
-                            value={this.props.name}
-                            error={this.props.nameErrorMsg}
-                            onChange={this.handleNameChange}
-                        />
-                        <Select
-                            id="collection-edit-teams"
-                            label="Select a team(s) that can view this collection"
-                            contents={this.props.allTeams}
-                            defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
-                            onChange={this.handleTeamSelection}
-                        />
-                        <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove}/>
-                        <RadioGroup
-                            groupName="collection-edit-type"
-                            radioData={this.publishTypeRadioButtons}
-                            selectedValue={this.props.publishType}
-                            onChange={this.handlePublishTypeChange}
-                            legend="Publish type"
-                            inline={true}
-                        />
-                        {this.props.publishType === "scheduled" && 
-                            <span>
-                                <Input
-                                    type="date"
-                                    id="edit-publish-date"
-                                    label="Publish date"
-                                    error={this.props.publishDateErrorMsg}
-                                    value={this.props.publishDate}
-                                    min={this.minimumPublishDate}
-                                    max={this.maximumPublishDate}
-                                    onChange={this.handlePublishDateChange}
-                                />
-                                <Input
-                                    type="time"
-                                    id="edit-publish-time"
-                                    label="Publish time"
-                                    error={this.props.publishTimeErrorMsg}
-                                    value={this.props.publishTime}
-                                    onChange={this.handlePublishTimeChange}
-                                />
-                            </span>
-                        }
-                        
-                        {/* Without this hidden submit input the form doesn't submit on enter consistently */}
-                        <input type="submit" hidden={true}/>
-                    </form>
+                    <div className="grid grid--justify-space-around">
+                        <form className="form grid__col-8 margin-top--1" onSubmit={this.handleSave}>
+                            <Input
+                                id="collection-edit-name"
+                                label="Name"
+                                value={this.props.name}
+                                error={this.props.nameErrorMsg}
+                                onChange={this.handleNameChange}
+                            />
+                            <Select
+                                id="collection-edit-teams"
+                                label="Select a team(s) that can view this collection"
+                                contents={this.props.allTeams}
+                                defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
+                                selectedOption="default-option"
+                                onChange={this.handleTeamSelection}
+                            />
+                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove}/>
+                            <RadioGroup
+                                groupName="collection-edit-type"
+                                radioData={this.publishTypeRadioButtons}
+                                selectedValue={this.props.publishType}
+                                onChange={this.handlePublishTypeChange}
+                                legend="Publish type"
+                                inline={true}
+                            />
+                            {this.props.publishType === "scheduled" && 
+                                <span>
+                                    <Input
+                                        type="date"
+                                        id="edit-publish-date"
+                                        label="Publish date"
+                                        error={this.props.publishDateErrorMsg}
+                                        value={this.props.publishDate}
+                                        min={this.minimumPublishDate}
+                                        max={this.maximumPublishDate}
+                                        onChange={this.handlePublishDateChange}
+                                    />
+                                    <Input
+                                        type="time"
+                                        id="edit-publish-time"
+                                        label="Publish time"
+                                        error={this.props.publishTimeErrorMsg}
+                                        value={this.props.publishTime}
+                                        onChange={this.handlePublishTimeChange}
+                                    />
+                                </span>
+                            }
+                            
+                            {/* Without this hidden submit input the form doesn't submit on enter consistently */}
+                            <input type="submit" hidden={true}/>
+                        </form>
+                    </div>
                 </div>
                 <div className="drawer__footer">
-                    <button disabled={this.props.isSavingEdits} className="btn" type="button" onClick={this.props.onCancel}>Cancel</button>
-                    <button disabled={this.props.isSavingEdits} className="btn btn--positive btn--margin-left" type="button" onClick={this.handleSave}>Save and return</button>
-                    {this.props.isSavingEdits &&
-                        <div className="inline-block">
-                            <div className="form__loader loader"></div>
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                            <div>
+                                <button disabled={this.props.isSavingEdits} className="btn btn--positive" type="button" onClick={this.handleSave}>Save and return</button>
+                                <button disabled={this.props.isSavingEdits} className="btn btn--margin-left" type="button" onClick={this.props.onCancel}>Cancel</button>
+                                {this.props.isSavingEdits &&
+                                    <div className="inline-block">
+                                        <div className="form__loader loader"></div>
+                                    </div>
+                                }
+                            </div>
                         </div>
-                    }
+                    </div>
                 </div>
             </div>
         )

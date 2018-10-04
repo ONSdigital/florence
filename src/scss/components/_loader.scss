@@ -22,6 +22,11 @@
     height: 21px;
 }
 
+.loader--inline {
+    position: relative;
+    top: 5px;
+}
+
 // Large loader animation
 .loader--large {
     border-width: 5px;
@@ -36,17 +41,25 @@
     vertical-align: middle;
 }
 
+// Small loader animation
+.loader--small {
+    border-width: 2px;
+}
+.loader--small,
+.loader--small:after {
+    width: 16px;
+    height: 16px;
+}
+.loader--small.loader--inline {
+    top: 3px;
+}
+
 // Dark loader animation
 .loader--dark {
     border-left-color: $pickled-bluewood;
     border-top-color: rgba(52,	59,	89, 0.2);
     border-right-color: rgba(52, 59, 89, 0.2);
     border-bottom-color: rgba(52, 59, 89, 0.2);
-}
-
-.loader--inline {
-    position: relative;
-    top: 5px;
 }
 
 @-webkit-keyframes spin {

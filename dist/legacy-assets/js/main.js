@@ -95,6 +95,8 @@ var Florence = Florence || {
         refreshAdminMenu: function () {
             // Display a message to show users are on dev or sandpit
             Florence.environment = isDevOrSandpit();
+            Florence.showDatasetsTab = Florence.globalVars.config.enableDatasetImport;
+            console.log(Florence)
 
             var mainNavHtml = templates.mainNav(Florence);
             $('.js-nav').html(mainNavHtml);
@@ -39930,7 +39932,26 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
-            loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+            var checkDest = dest;
+            if(!dest.endsWith("/data.json")) {
+                checkDest += "/data.json";
+            }
+            $.ajax({
+                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
+                type: 'GET',
+                contentType: 'application/json',
+                cache: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status == 204 || response === collectionData.name) {
+                        loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+                        return;
+                    }
+                    sweetAlert("Cannot edit this page", "This page is already in another collection: " + response, "error");
+                },
+                error: function (response) {
+                    handleApiError(response);
+                }
+            });
         });
 
         $('.workspace-menu').on('click', '.js-browse__menu', function() {
@@ -40273,8 +40294,6 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
-                document.getElementById("response").innerHTML = "Uploading . . .";
-
                 var fileNameNoSpace = file.name.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase();
                 if (file.name.match(/\.csv$/)) {
                     fileNameNoSpace = 'upload-' + fileNameNoSpace;
@@ -40295,7 +40314,7 @@ function addDataset(collectionId, data, field, idField) {
                 }
 
                 if (!!file.name.match(downloadExtensions)) {
-                    showUploadedItem(fileNameNoSpace);
+                    //showUploadedItem(fileNameNoSpace);
                     if (formdata) {
                         formdata.append("name", file);
                     }
@@ -40311,26 +40330,47 @@ function addDataset(collectionId, data, field, idField) {
                     return;
                 }
 
+                // check if edition already exists to prevent overwriting content
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            document.getElementById("response").innerHTML = "File uploaded successfully";
-                            if (!data[field]) {
-                                data[field] = [];
+                    var uriToCheck = checkPathSlashes(data.uri + "/" + this[0].value.replace(/[^a-zA-Z0-9\.]/g, "").toLowerCase())
+                    fetch(uriToCheck, {credentials: 'include'}).then(function(response) {
+                        if (response.ok) {
+                            // content was found, return so as not to overwrite existing content and display an error
+                            console.error(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            swal(`It looks like there is already an edition with the title "${pageTitle}"`);
+                            return;
+                        } 
+                        submitform();
+                        document.getElementById("response").innerHTML = "Uploading...";
+                    })
+                }
+
+                function submitform() {
+                    if (formdata) {
+                        $.ajax({
+                            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                            type: 'POST',
+                            data: formdata,
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function () {
+                                document.getElementById("response").innerHTML = "File uploaded successfully";
+                                if (!data[field]) {
+                                    data[field] = [];
+                                }
+                                data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
+                                uploadedNotSaved.uploaded = true;
+                                // create the dataset
+                                loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
+                                // on success save parent and child data
+                            },
+                            error: function(error) {
+                                swal("There was an error uploading the file, please try again.")
+                                console.error(error.status, error.statusText)
                             }
-                            data[field].push({uri: data.uri + '/' + pageTitleTrimmed});
-                            uploadedNotSaved.uploaded = true;
-                            // create the dataset
-                            loadT8EditionCreator(collectionId, data, pageType, pageTitle, fileNameNoSpace, versionLabel);
-                            // on success save parent and child data
-                        }
-                    });
+                        });
+                    }
                 }
             });
 
@@ -41290,7 +41330,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
             initialiseDatasetVersion(collectionId, data, templateData, field, idField);
         });
 
-        $('#UploadForm').submit(function (e) {
+        $('#UploadForm').one('submit', function (e) {
             e.preventDefault();
             e.stopImmediatePropagation();
 
@@ -41343,7 +41383,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 saveSubmittedFile();
             }
 
-            function saveSubmittedFile() {
+            async function saveSubmittedFile() {
                 var responseElem = document.getElementById("response");
                 responseElem.innerHTML = "Uploading . . .";
 
@@ -41372,20 +41412,18 @@ function editDatasetVersion(collectionId, data, field, idField) {
                 }
 
                 if (formdata) {
-                    $.ajax({
-                        url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
-                        type: 'POST',
-                        data: formdata,
-                        cache: false,
-                        processData: false,
-                        contentType: false,
-                        success: function () {
-                            uploadedNotSaved.uploaded = true;
-                            uploadedNotSaved.fileUrl = safeUriUpload;
-                            // create the new version/correction
-                            saveNewCorrection(collectionId, data.uri,
-                                function (response) {
-                                    responseElem.innerHTML = "File uploaded successfully";
+                    saveNewCorrection(collectionId, data.uri,
+                        function (response) {
+                            $.ajax({
+                                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                                type: 'POST',
+                                data: formdata,
+                                cache: false,
+                                processData: false,
+                                contentType: false,
+                                success: function () {
+                                    uploadedNotSaved.uploaded = true;
+                                    uploadedNotSaved.fileUrl = safeUriUpload;
                                     var tmpDate = Florence.collection.publishDate ? Florence.collection.publishDate : (new Date()).toISOString();
                                     if (idField === "correction") {
                                         data[field].push({
@@ -41419,29 +41457,27 @@ function editDatasetVersion(collectionId, data, field, idField) {
                                         $("#" + idField + '-section').remove();
                                         saveDatasetVersion(collectionId, data.uri, data, field, idField);
                                     }
-                                }, function (response) {
-                                    if (response.status === 409) {
-                                        sweetAlert("You can add only one " + idField + " before publishing.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else if (response.status === 404) {
-                                        sweetAlert("You can only add " + idField + "s to content that has been published.");
-                                        responseElem.innerHTML = "";
-                                        deleteContent(collectionId, uploadedNotSaved.fileUrl);
-                                    }
-                                    else {
-                                        responseElem.innerHTML = "";
-                                        handleApiError(response);
-                                    }
+                                },
+                                error: function (response) {
+                                    console.log("Error in uploading this file");
+                                    handleApiError(response);
                                 }
-                            );
-                        },
-                        error: function (response) {
-                            console.log("Error in uploading this file");
-                            handleApiError(response);
+                            });
+                        }, function (response) {
+                            if (response.status === 409) {
+                                sweetAlert("You can add only one " + idField + " before publishing.");
+                                responseElem.innerHTML = "";
+                            }
+                            else if (response.status === 404) {
+                                sweetAlert("You can only add " + idField + "s to content that has been published.");
+                                responseElem.innerHTML = "";
+                            }
+                            else {
+                                responseElem.innerHTML = "";
+                                handleApiError(response);
+                            }
                         }
-                    });
+                    );
                 }
             }
         });
@@ -43448,6 +43484,16 @@ function handleApiError(response) {
 
         if (response.responseJSON) {
             message = response.responseJSON.message;
+            
+            if (response.responseJSON.data) {
+                let kvs = [];
+                for (let k in response.responseJSON.data) {
+                    kvs.push(k + ": " + response.responseJSON.data[k]);
+                }
+                if(kvs.length > 0) {
+                    message += "\n\n" + kvs.join("\n");
+                }
+            }
         }
 
         console.log(message);
@@ -44559,7 +44605,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 if (chartConfig) {
                     // remove the title, subtitle and any renderers for client side display
                     // these are only used by the template for export/printing
-                    chartConfig.chart.height = chartConfig.chart.height-300;
+                    chartConfig.chart.height = chartHeight;
                     chartConfig.chart.marginTop = 50;
                     chartConfig.chart.marginBottom = 50;
                     //do not use renderer for Florence
@@ -44999,8 +45045,12 @@ function initialiseChartList(collectionId, data) {
 
 
 function loadCreateScreen(parentUrl, collectionId, type, collectionData) {
+    var showCreateAPIDatasetOption = Florence.globalVars.config.enableDatasetImport;
     var isDataVis = type === "visualisation"; // Flag for template to show correct options in select
-    var html = templates.workCreate({"dataVis": isDataVis});
+    var html = templates.workCreate({
+        "dataVis": isDataVis, 
+        "showCreateAPIDatasetOption": showCreateAPIDatasetOption
+    });
 
     $('.workspace-menu').html(html);
     loadCreator(parentUrl, collectionId, type, collectionData);
@@ -45111,13 +45161,22 @@ function loadEmbedIframe(onSave) {
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
         var fullWidth = $('input#full-width-checkbox').is(':checked');
+
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
-        } else {
-            onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
-            modal.remove();
+            return;
         }
+
+        // pass in window.location.origin as a base url to handle relative urls
+        var parsedEmbedUrl = new URL(embedUrl, window.location.origin);
+        if (parsedEmbedUrl.host === window.location.host) {
+            embedUrl = parsedEmbedUrl.pathname;
+        }
+
+        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
+        modal.remove();
+
     }
 
     // bind events
@@ -50354,12 +50413,7 @@ function saveContent(collectionId, uri, data, collectionData) {
             createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
-            if (response.status === 409) {
-                sweetAlert("Cannot create this page", "It already exists.");
-            }
-            else {
-                handleApiError(response);
-            }
+            handleApiError(response);
         }
     );
 }
@@ -50546,6 +50600,9 @@ function setShortcuts(field, callback) {
 
     Florence.globalVars.activeTab = false;
 
+    var config = window.getEnv();
+    Florence.globalVars.config = config || { enableDatasetImport: false };
+ 
     // load main florence template
     var florence = templates.florence;
 
@@ -50648,7 +50705,7 @@ function setShortcuts(field, callback) {
     // redirect a viewer to not authorised message if they try access old Florence
     var userType = localStorage.getItem("userType");
     if (userType == "VIEWER") {
-        window.location.href = '/florence/not-authorised';
+        window.location.href = '/florence/collections';
     }
 
     // Get ping times to zebedee and surface for user
@@ -50804,58 +50861,29 @@ function setShortcuts(field, callback) {
         }
     }
 
-    // Check running version versus latest and notify user if they don't match
-    var runningVersion,
-        userWarned = false;
-    function checkVersion() {
-        return fetch('/florence/dist/legacy-assets/version.json')
-            .then(function(response) {
-                return response.json();
-            })
-            .then(function(responseJson) {
-                return responseJson;
-            })
-            .catch(function(err) {
-                console.log("Error getting latest Florence version: ", err);
-                return err
-            });
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
+
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
     }
 
-    checkVersion().then(function(response) {
-        runningVersion = response;
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
     });
 
-    setInterval(function() {
-        // Get the latest version and alert user if it differs from version stored on load (but only if the user hasn't been warned already, so they don't get spammed after being warned already)
-        if (!userWarned) {
-            checkVersion().then(function (response) {
-                if (response instanceof TypeError) {
-                    // FIXME do something more useful with this
-                    return
-                }
-                if (response.major !== runningVersion.major || response.minor !== runningVersion.minor || response.build !== runningVersion.build) {
-                    console.log("New version of Florence available: ", response.major + "." + response.minor + "." + response.build);
-                    swal({
-                        title: "New version of Florence available",
-                        type: "info",
-                        showCancelButton: true,
-                        closeOnCancel: false,
-                        closeOnConfirm: false,
-                        confirmButtonText: "Refresh Florence",
-                        cancelButtonText: "Don't refresh"
-                    }, function (isConfirm) {
-                        userWarned = true;
-                        if (isConfirm) {
-                            location.reload();
-                        } else {
-                            swal("Warning", "Florence could be unstable without the latest version", "warning")
-                        }
-                    });
-                    runningVersion = response;
-                }
-            });
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
         }
-    }, 10000)
+        trimInputWhitespace($(this));
+    });
 }
 
 function releaseEditor(collectionId, data) {
@@ -54181,8 +54209,6 @@ function staticPageEditor(collectionId, data) {
 }
 
 function datasetEditor(collectionId, data) {
-  debugger;
-
   var newFiles = [];
   var setActiveTab, getActiveTab;
   var parentUrl = getParentPage(data.uri);

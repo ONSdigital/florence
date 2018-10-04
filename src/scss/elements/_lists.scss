@@ -37,6 +37,10 @@
             position: relative;
             margin-bottom: $lineheight * 2;
             margin-top: $lineheight * 2;
+            
+            &:first-of-type {
+                margin-top: $lineheight;
+            }
 
             &:before {
                 position: absolute;
