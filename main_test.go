@@ -126,7 +126,7 @@ func TestMain(t *testing.T) {
 	Convey("Environment variables are set", t, func() {
 		cfg := &config.Config{
 			SharedConfig: config.SharedConfig{
-				EnableDatasetImport: true
+				EnableDatasetImport: true,
 			},
 		}
 
@@ -142,7 +142,8 @@ func TestMain(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, "/* server generated shared config */ {enableDatasetImport: true}"), ShouldBeTrue)
+			t.Logf("%+v\n", html)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -152,11 +153,11 @@ func TestMain(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, "/* server generated shared config */ {enableDatasetImport: true}"), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true}`), ShouldBeTrue)
 		})
 
 	})
-	
+
 	Convey("No environment variables are set", t, func() {
 		cfg := &config.Config{}
 
@@ -166,13 +167,13 @@ func TestMain(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("Shared config written into legacy HTML contains the correct config", func() {
-			handler := http.HandlerFunc(legacyIndexFile(enabledCfg))
+			handler := http.HandlerFunc(legacyIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
 			body, err := ioutil.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, "/* server generated shared config */ {enableDatasetImport: true}"), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -182,7 +183,7 @@ func TestMain(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, "/* server generated shared config */ {enableDatasetImport: true}"), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false}`), ShouldBeTrue)
 		})
 
 	})
