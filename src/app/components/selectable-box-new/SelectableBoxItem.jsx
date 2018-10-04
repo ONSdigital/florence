@@ -37,12 +37,12 @@ export default class SelectableBoxItem extends Component {
         const status = this.props.status || {};
         const columns = [];
         for (let i = 0; i < this.props.columns.length; i++) {
-            const isFirst = i === 0;
+            const isFirstColumn = i === 0;
             columns.push(
                 <div key={`${this.props.id}-col-${i}`} className={`grid__col-${this.props.columns[i].width}`}>
                     {this.props.columnValues[i]}
 
-                    {status.message && isFirst ? ` [${status.message}]` : ''}
+                    {status.message && isFirstColumn ? <strong>{status.message}</strong> : ''}
                 </div>
             )
         }
