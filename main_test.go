@@ -142,7 +142,6 @@ func TestMain(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			t.Logf("%+v\n", html)
 			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true}`), ShouldBeTrue)
 		})
 
