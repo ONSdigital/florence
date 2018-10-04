@@ -6,7 +6,9 @@ import (
 	"context"
 	"encoding/json"
 	"mime"
+	"net"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
@@ -28,6 +30,7 @@ import (
 )
 
 var getAsset = assets.Asset
+var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
 
 // Version is set by the make target
@@ -199,14 +202,24 @@ func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
+	assetPath := "../dist/" + path
 
-	b, err := getAsset("../dist/" + path)
+	etag, err := getAssetETag(assetPath)
+
+	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	b, err := getAsset(assetPath)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
 		return
 	}
 
+	w.Header().Set(`ETag`, etag)
+	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
 	w.Write(b)
@@ -328,6 +341,33 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		// 	break
 		// }
 	}
+}
+
+// FIXME this is to fix go-ns reverse proxy replacing host name so that
+// babbage has correct values when using {{location.hostname}} in handlebars
+func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
+	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+	director := proxy.Director
+	proxy.Transport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+	proxy.Director = func(req *http.Request) {
+		director(req)
+		//req.Host = proxyURL.Host
+		if directorFunc != nil {
+			directorFunc(req)
+		}
+	}
+
+	return proxy
 }
 
 type florenceLogEvent struct {
