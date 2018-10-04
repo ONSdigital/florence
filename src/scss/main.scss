@@ -9,6 +9,10 @@
 * Refactored SCSS
 */
 
+* {
+    box-sizing: border-box;
+}
+
 //Base styling
 @import "base/variables";
 @import "base/grid";
@@ -28,6 +32,7 @@
 @import "components/pagination";
 @import "components/selected-item-list";
 @import "components/page";
+@import "components/preview";
 
 @import "components/card";
 @import "components/table";

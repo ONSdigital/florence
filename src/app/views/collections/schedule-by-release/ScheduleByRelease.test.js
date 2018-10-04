@@ -52,7 +52,7 @@ jest.mock('../../../utilities/api-clients/releases', () => ({
 
 const props = {
     onClose: () => {},
-    onReleaseSelect: () => {}
+    onSubmit: () => {}
 }
 
 const component = shallow(

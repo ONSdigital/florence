@@ -11,7 +11,7 @@
     "setupFiles": [
       "./setupJest.js"
     ],
-    "collectCoverage": true,
+    "collectCoverage": false,
     "globals": {
       "window": true
     }
@@ -23,6 +23,7 @@
     "eslint": "^4.11.0",
     "eslint-loader": "^1.7.1",
     "eslint-plugin-react": "^7.5.1",
+    "handsontable": "^0.35.1",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^20.0.0",
     "jest-fetch-mock": "^1.2.0",
@@ -30,8 +31,7 @@
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5",
-    "replace-in-file": "^3.1.1",
-    "handsontable": "^0.35.1"
+    "replace-in-file": "^3.1.1"
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
@@ -40,8 +40,8 @@
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "test": "export NODE_ENV=testing && jest --no-cache",
-    "test-watch": "export NODE_ENV=testing && jest --watch --no-cache",
+    "test": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --no-cache",
+    "test-watch": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored"
   },
   "dependencies": {
