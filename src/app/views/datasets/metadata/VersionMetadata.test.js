@@ -266,7 +266,7 @@ test("Available editions maps correctly to select element", async () => {
         <VersionMetadata {...defaultProps} />
     );
 
-    const validSelectContents = ["time-series", "another-type"];
+    const validSelectContents = [{id: "time-series", name: "time-series"},{id: "another-type", name: "another-type"}];
     await component.instance().componentWillMount();
     await component.update();
     const createdSelectContents = component.instance().mapEditionsToSelectOptions();
