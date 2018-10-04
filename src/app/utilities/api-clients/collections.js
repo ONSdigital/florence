@@ -99,4 +99,15 @@ export default class collections {
         //     });
     }
 
+    static async checkContentIsInCollection(pageURI) {
+        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`)
+    }
+
+    static getInProgressContent(collectionID) {
+        return http.get(`/zebedee/collectionDetails/${collectionID}`)
+            .then(response => {
+                return response.inProgress;
+            })
+    }
+
 }
