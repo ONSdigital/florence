@@ -18,6 +18,16 @@ function handleApiError(response) {
 
         if (response.responseJSON) {
             message = response.responseJSON.message;
+            
+            if (response.responseJSON.data) {
+                let kvs = [];
+                for (let k in response.responseJSON.data) {
+                    kvs.push(k + ": " + response.responseJSON.data[k]);
+                }
+                if(kvs.length > 0) {
+                    message += "\n\n" + kvs.join("\n");
+                }
+            }
         }
 
         console.log(message);

@@ -48,25 +48,11 @@ export default class collectionValidation {
         };
     }
 
-    static release(releaseURI, releaseDateISO, releaseTitle) {
-        if (!releaseURI) {
+    static release(release) {
+        if (!release.uri) {
             return {
                 isValid: false,
-                errorMsg: "Release must have a URI"
-            };
-        }
-        
-        if (!releaseDateISO) {
-            return {
-                isValid: false,
-                errorMsg: "Release must have a release date"
-            };
-        }
-        
-        if (!releaseTitle) {
-            return {
-                isValid: false,
-                errorMsg: "Release must have a title"
+                errorMsg: "Must select a release"
             };
         }
 

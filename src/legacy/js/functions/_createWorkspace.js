@@ -194,7 +194,26 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
-            loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+            var checkDest = dest;
+            if(!dest.endsWith("/data.json")) {
+                checkDest += "/data.json";
+            }
+            $.ajax({
+                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
+                type: 'GET',
+                contentType: 'application/json',
+                cache: false,
+                success: function (response, textStatus, xhr) {
+                    if (xhr.status == 204 || response === collectionData.name) {
+                        loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
+                        return;
+                    }
+                    sweetAlert("Cannot edit this page", "This page is already in another collection: " + response, "error");
+                },
+                error: function (response) {
+                    handleApiError(response);
+                }
+            });
         });
 
         $('.workspace-menu').on('click', '.js-browse__menu', function() {

@@ -18,6 +18,8 @@ import DatasetMetadata from './app/views/datasets/metadata/DatasetMetadata';
 import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
 import Logs from './app/views/logs/Logs';
 
+import auth from './app/utilities/auth'
+
 import './scss/main.scss';
 
 import { store, history } from './app/config/store';
@@ -25,27 +27,28 @@ import { store, history } from './app/config/store';
 import SelectableTest from './SelectableTest';
 import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
+import PreviewController from './app/views/preview/PreviewController';
 
 const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.state.user.isAuthenticated;
+        return auth.isAuthenticated(state.state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: 'UserIsAuthenticated',
     redirectPath: `${rootPath}/login`
 });
 
-const userIsNotAuthorised = connectedReduxRedirect({
+const userisAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.state.user.userType == 'ADMIN' || state.state.user.userType == 'EDITOR';
+        return auth.isAdminOrEditor(state.state.user)
     },
     redirectAction: routerActions.replace,
-    wrapperDisplayName: 'UserIsAuthenticated',
-    redirectPath: `${rootPath}/not-authorised`,
+    wrapperDisplayName: 'userisAdminOrEditor',
+    redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
-});
+})
 
 class UnknownRoute extends Component {
     render() {
@@ -53,14 +56,6 @@ class UnknownRoute extends Component {
             <div className="grid grid--justify-center">
                 <h1>Sorry, this page couldnt be found</h1>
             </div>
-        )
-    }
-}
-
-class NotAuthorised extends Component {
-    render() {
-        return (
-            <h1>Sorry, you don't have access to this screen. Please go to <a href="/ermintrude/index.html">Ermintrude</a>.</h1>
         )
     }
 }
@@ -73,13 +68,14 @@ class Index extends Component {
                     <Route component={ App }>
                         <Route component={ Layout }>
                             <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
-                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                <Route path=':collectionID' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }>
-                                    <Route path='edit' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
-                                    <Route path='restore-content' component={ userIsAuthenticated(userIsNotAuthorised(CollectionsController)) }/>
+                            <Route path={`${rootPath}/collections`} component={ userIsAuthenticated(CollectionsController) }>
+                                <Route path=':collectionID' component={ userIsAuthenticated(CollectionsController) }>
+                                    <Route path='edit' component={ userIsAuthenticated(CollectionsController) }/>
+                                    <Route path='restore-content' component={ userIsAuthenticated(CollectionsController) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(TeamsController) }>
+                            <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
                                     <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
@@ -88,34 +84,33 @@ class Index extends Component {
                             <Route path={`${rootPath}/uploads`}>
                                 <IndexRedirect to="data" />
                                 <Route path="data">
-                                    <IndexRoute component={userIsAuthenticated(DatasetUploadsController)} />
+                                    <IndexRoute component={userIsAuthenticated(userisAdminOrEditor(DatasetUploadsController))} />
                                     <Route path=":jobID">
-                                        <IndexRoute component={ userIsAuthenticated(DatasetUploadDetails) } />
-                                        <Route path="metadata" component={ userIsAuthenticated(DatasetUploadMetadata) } />
+                                        <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadDetails)) } />
+                                        <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadMetadata)) } />
                                     </Route>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/datasets`} >
-                                <IndexRoute component={ userIsAuthenticated(DatasetsController) } />
+                                <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetsController)) } />
                                 <Route path=":datasetID">
                                     <IndexRedirect to={`${rootPath}/datasets`} />
-                                    <Route path="preview" component={ userIsAuthenticated(DatasetPreviewController) } />
-                                    <Route path="metadata" component={ userIsAuthenticated(DatasetMetadata) } />
+                                    <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(DatasetPreviewController)) } />
+                                    <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetMetadata)) } />
                                     <Route path="editions/:edition/versions/:version">
                                         <IndexRedirect to="metadata"/>
-                                        <Route path="metadata" component={ userIsAuthenticated(VersionMetadata) }/>
-                                        <Route path="preview" component={ userIsAuthenticated(VersionPreviewController) } />
+                                        <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) }/>
+                                        <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(VersionPreviewController)) } />
                                     </Route>
                                     <Route path="instances">
                                         <IndexRedirect to={`${rootPath}/datasets`}/>
-                                        <Route path=":instanceID/metadata" component={ userIsAuthenticated(VersionMetadata) } />
+                                        <Route path=":instanceID/metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) } />
                                     </Route>
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/selectable-list`} component={ SelectableTest } />
                             <Route path={`${rootPath}/logs`} component={ Logs } />
                             <Route path={`${rootPath}/login`} component={ LoginController } />
-                            <Route path={`${rootPath}/not-authorised`} component={ NotAuthorised } />
                             <Route path="*" component={ UnknownRoute } />
                         </Route>
                     </Route>
