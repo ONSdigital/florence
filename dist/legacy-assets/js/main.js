@@ -95,6 +95,7 @@ var Florence = Florence || {
         refreshAdminMenu: function () {
             // Display a message to show users are on dev or sandpit
             Florence.environment = isDevOrSandpit();
+            Florence.showDatasetsTab = Florence.globalVars.config.enableDatasetImport;
 
             var mainNavHtml = templates.mainNav(Florence);
             $('.js-nav').html(mainNavHtml);
@@ -45043,8 +45044,12 @@ function initialiseChartList(collectionId, data) {
 
 
 function loadCreateScreen(parentUrl, collectionId, type, collectionData) {
+    var showCreateAPIDatasetOption = Florence.globalVars.config.enableDatasetImport;
     var isDataVis = type === "visualisation"; // Flag for template to show correct options in select
-    var html = templates.workCreate({"dataVis": isDataVis});
+    var html = templates.workCreate({
+        "dataVis": isDataVis, 
+        "showCreateAPIDatasetOption": showCreateAPIDatasetOption
+    });
 
     $('.workspace-menu').html(html);
     loadCreator(parentUrl, collectionId, type, collectionData);
@@ -50594,6 +50599,9 @@ function setShortcuts(field, callback) {
 
     Florence.globalVars.activeTab = false;
 
+    var config = window.getEnv();
+    Florence.globalVars.config = config || { enableDatasetImport: false };
+ 
     // load main florence template
     var florence = templates.florence;
 
