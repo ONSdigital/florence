@@ -1,4 +1,7 @@
 export const initialState = {
+    config: {
+        enableDatasetImport: false
+    },
     user: {
         isAuthenticated: false,
         email: '',
