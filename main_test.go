@@ -16,6 +16,33 @@ import (
 )
 
 func TestMain(t *testing.T) {
+	mockHTMLFile := `
+	<!DOCTYPE html>
+	<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Florence</title>
+	
+		<link rel="stylesheet" href="/florence/dist/css/app.css">
+	</head>
+	<body>
+	<noscript><h1>Enable Javascript to use Florence</h1></noscript>
+	<script>
+		function getEnv() {
+		  return /* environment variables placeholder */
+		}
+	</script>
+	<div id="app"></div>
+	
+	<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
+		because the NPM module appears to be out-of-date and breaks our code. -->
+	<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
+	
+	<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
+	</body>
+	</html>
+	`
+
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
 		request, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
@@ -93,34 +120,83 @@ func TestMain(t *testing.T) {
 		So(recorder.Code, ShouldEqual, 404)
 	})
 
-	Convey("Replaces placeholder in refactored HTML file with the shared config", t, func() {
-		cfg := &config.Config{}
-		recorder := httptest.NewRecorder()
-		rdr := bytes.NewReader([]byte(``))
-		request, err := http.NewRequest("GET", "", rdr)
-		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(refactoredIndexFile(cfg))
-		handler.ServeHTTP(recorder, request)
-		body, err := ioutil.ReadAll(recorder.Body)
-		So(err, ShouldBeNil)
-		html := string(body)
-		So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-		So(strings.Contains(html, "/* server generated shared config */"), ShouldBeTrue)
-	})
+	Convey("The shared config variables", t, func() {
+		getAsset = func(path string) ([]byte, error) {
+			return []byte(mockHTMLFile), nil
+		}
 
-	Convey("Replaces placeholder in legacy HTML file with the shared config", t, func() {
-		cfg := &config.Config{}
-		recorder := httptest.NewRecorder()
-		rdr := bytes.NewReader([]byte(``))
-		request, err := http.NewRequest("GET", "", rdr)
-		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(legacyIndexFile(cfg))
-		handler.ServeHTTP(recorder, request)
-		body, err := ioutil.ReadAll(recorder.Body)
-		So(err, ShouldBeNil)
-		html := string(body)
-		So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-		So(strings.Contains(html, "/* server generated shared config */"), ShouldBeTrue)
+		Convey("Replaces placeholder in refactored HTML file", func() {
+			getAsset = func(path string) ([]byte, error) {
+				return []byte(mockHTMLFile), nil
+			}
+			cfg := &config.Config{}
+			recorder := httptest.NewRecorder()
+			rdr := bytes.NewReader([]byte(``))
+			request, err := http.NewRequest("GET", "", rdr)
+			So(err, ShouldBeNil)
+			handler := http.HandlerFunc(refactoredIndexFile(cfg))
+			handler.ServeHTTP(recorder, request)
+			body, err := ioutil.ReadAll(recorder.Body)
+			So(err, ShouldBeNil)
+			html := string(body)
+			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
+			So(strings.Contains(html, "/* server generated shared config */"), ShouldBeTrue)
+		})
+
+		Convey("Replaces placeholder in legacy HTML file", func() {
+			getAsset = func(path string) ([]byte, error) {
+				return []byte(mockHTMLFile), nil
+			}
+			cfg := &config.Config{}
+			recorder := httptest.NewRecorder()
+			rdr := bytes.NewReader([]byte(``))
+			request, err := http.NewRequest("GET", "", rdr)
+			So(err, ShouldBeNil)
+			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler.ServeHTTP(recorder, request)
+			body, err := ioutil.ReadAll(recorder.Body)
+			So(err, ShouldBeNil)
+			html := string(body)
+			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
+			So(strings.Contains(html, "/* server generated shared config */"), ShouldBeTrue)
+		})
+
+		Convey("Returns original HTML if placeholder isn't present", func() {
+			HTMLFile := `
+			<!DOCTYPE html>
+			<html lang="en">
+			<head>
+				<meta charset="UTF-8">
+				<title>Florence</title>
+			
+				<link rel="stylesheet" href="/florence/dist/css/app.css">
+			</head>
+			<body>
+			<noscript><h1>Enable Javascript to use Florence</h1></noscript>
+			<div id="app"></div>
+			
+			<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
+				because the NPM module appears to be out-of-date and breaks our code. -->
+			<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
+			
+			<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
+			</body>
+			</html>
+			`
+			getAsset = func(path string) ([]byte, error) {
+				return []byte(HTMLFile), nil
+			}
+			cfg := &config.Config{}
+			recorder := httptest.NewRecorder()
+			rdr := bytes.NewReader([]byte(``))
+			request, err := http.NewRequest("GET", "", rdr)
+			So(err, ShouldBeNil)
+			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler.ServeHTTP(recorder, request)
+			body, err := ioutil.ReadAll(recorder.Body)
+			So(err, ShouldBeNil)
+			So(string(body), ShouldEqual, HTMLFile)
+		})
 	})
 
 	Convey("Environment variables are set", t, func() {
@@ -128,6 +204,9 @@ func TestMain(t *testing.T) {
 			SharedConfig: config.SharedConfig{
 				EnableDatasetImport: true,
 			},
+		}
+		getAsset = func(path string) ([]byte, error) {
+			return []byte(mockHTMLFile), nil
 		}
 
 		recorder := httptest.NewRecorder()
