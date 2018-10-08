@@ -21,8 +21,12 @@ jest.mock('../../../utilities/notifications', () => {
     }
 });
 
+jest.mock('../../../utilities/url', () => ({
+    resolve: jest.fn(url => `/florence${url}`)
+}))
+
 const defaultProps = {
-    collectionID: 'test-collection-12345',
+    id: 'test-collection-12345',
     activePageURI: 'economy-grossdomesticproduct-bulletins-gdp-2014',
     name: 'Test collection',
     onClose: () => {},
@@ -32,7 +36,7 @@ const defaultProps = {
     inProgress: [],
     complete: [],
     reviewed: [],
-    deletes: []
+    deletes: [],
 };
 
 const alternativePageProps = {
@@ -393,11 +397,28 @@ describe("Delete collection button", () => {
     });
 });
 
-describe("Cancelling deleted content", () => {
-    const component = shallow(
-        <CollectionDetails  />
-    )
+describe("Dataset import functionality", () => {
+    it("doesn't display when it is disabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: false
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
 
-    
+        expect(component.find("#import-dataset-link").exists()).toBe(false);
+    });
+
+    it("displays when it is enabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: true
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
+
+        expect(component.find("#import-dataset-link").exists()).toBe(true);
+    });
 });
-
