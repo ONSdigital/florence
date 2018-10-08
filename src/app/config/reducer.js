@@ -1,8 +1,9 @@
 import { initialState } from './initialState';
 
-import { 
-    
-    UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, 
+import {
+    SET_CONFIG,
+    UPDATE_ACTIVE_COLLECTION, 
+    EMPTY_ACTIVE_COLLECTION, 
     UPDATE_ALL_TEAM_IDS_AND_NAMES , 
     ADD_ALL_COLLECTIONS, 
     MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, 
@@ -29,6 +30,14 @@ import {
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
+        case (SET_CONFIG): {
+            return {
+                ...state,
+                config: {
+                    enableDatasetImport: action.config.enableDatasetImport
+                }
+            }
+        }
         case ('USER_LOGGED_IN'): {
             return Object.assign({}, state, {
                 user: Object.assign({}, state.user, {

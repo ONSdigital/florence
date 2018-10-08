@@ -10,6 +10,9 @@ import auth from '../utilities/auth';
 import PreviewNav from './PreviewNav';
 
 const propTypes = {
+    config: PropTypes.shape({
+        enableDatasetImport: PropTypes.bool
+    }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({
         id: PropTypes.string.isRequired,
@@ -20,7 +23,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class NavBar extends Component {
+export class NavBar extends Component {
     constructor(props) {
         super(props);
 
@@ -81,11 +84,13 @@ class NavBar extends Component {
                 </li>
                 {auth.isAdminOrEditor(this.props.user) ?
                     <span>
-                        <li className="global-nav__item">
-                            <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
-                                Datasets
-                            </Link>
-                        </li>
+                        {this.props.config.enableDatasetImport &&
+                            <li className="global-nav__item">
+                                <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                                    Datasets
+                                </Link>
+                            </li>
+                        }
                         <li className="global-nav__item">
                             <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                         </li>
@@ -133,7 +138,8 @@ function mapStateToProps(state) {
     return {
         user,
         rootPath,
-        workingOn
+        workingOn,
+        config: state.state.config
     }
 }
 
