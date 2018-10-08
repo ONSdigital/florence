@@ -31,8 +31,6 @@ jest.mock('../../../utilities/api-clients/collections', () => ({
     })
 }));
 
-// jest.mock('./CollectionDetails', () => jest.fn(props => <div>{props}</div>));
-
 function setLocation(href) {
     Object.defineProperty(window.location, 'href', {
         writable: true,
