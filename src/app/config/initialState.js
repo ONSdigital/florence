@@ -1,4 +1,7 @@
 export const initialState = {
+    config: {
+        enableDatasetImport: false
+    },
     user: {
         isAuthenticated: false,
         email: '',
@@ -6,7 +9,7 @@ export const initialState = {
         isAdmin: false
     },
     global: {
-        workingOn: {}
+        workingOn: null
     },
     rootPath: "/florence",
     teams: {
@@ -23,7 +26,12 @@ export const initialState = {
         activeJob: {}
     },
     collections: {
-        active: null
+        all: [],
+        active: null,
+        toDelete: {}
     },
-    notifications: []
+    notifications: [],
+    preview: {
+        selectedPage: null
+    }
 };

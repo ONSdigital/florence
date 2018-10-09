@@ -26,12 +26,14 @@ enabled, you will need vault running locally:
 - Run `brew install vault`
 - Run `vault server -dev`
 
-3. Browse to the Florence homepage http://localhost:8081/florence/index.html
+3. Browse to the Florence homepage http://localhost:8081/florence
 
 4. If you are running Florence for the first time you will need to login with the setup credentials. You will be asked to change this password.
 
 Username: florence@magicroundabout.ons.gov.uk
 Password: Doug4l
+
+Further guidance on how to use Florence can be found in [usage.md](USAGE.md)
 
 #### Dependencies
 
@@ -56,15 +58,16 @@ make watch-src
 
 The following environment variables are available when running the Go server.
 
-| Environment variable | Default                           | Description                                                                                                                              |
-|----------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| BIND_ADDR            | :8080                             | Host and port to bind to                                                                                                                 |
-| BABBAGE_URL          | http://localhost:8080             | URL that [Babbage](https://github.com/ONSdigital/babbage) can be accessed on                                                                                                      |
-| ZEBEDEE_URL          | http://localhost:8081             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on                                                                                                      |
-| IMPORT_API_URL       | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                                                                       |
-| RECIPE_API_URL       | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                                                                      |
-| TABLE_RENDERER_URL     | http://localhost:23300  | The URL that dp-table-renderer can be accessed on                                                                                          |
-| UPLOAD_BUCKET_NAME   | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                      |
+| Environment variable  | Default                           | Description                                                                                                                              |
+|-----------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| BIND_ADDR             | :8080                             | Host and port to bind to                                                                                                                 |
+| BABBAGE_URL           | http://localhost:8080             | URL that [Babbage](https://github.com/ONSdigital/babbage) can be accessed on                                                             |
+| ZEBEDEE_URL           | http://localhost:8081             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on                                                             |
+| IMPORT_API_URL        | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                        |
+| RECIPE_API_URL        | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
+| TABLE_RENDERER_URL    | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
+| UPLOAD_BUCKET_NAME    | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                   |
+| ENABLE_DATASET_IMPORT | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
 
 For example:
 ```

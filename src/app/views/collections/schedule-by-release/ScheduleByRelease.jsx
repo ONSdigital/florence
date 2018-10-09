@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import SelectableBox from '../../../components/selectable-box-new/SelectableBox';
+import collections from '../../../utilities/api-clients/collections';
 import releases from '../../../utilities/api-clients/releases';
 import log, { eventTypes } from '../../../utilities/log';
 import Input from '../../../components/Input';
@@ -10,7 +11,7 @@ import notifications from '../../../utilities/notifications'
 
 const propTypes = {
     onClose: PropTypes.func.isRequired,
-    onReleaseSelect: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired
 };
 
 const columns = [
@@ -38,13 +39,17 @@ export class ScheduleByRelease extends Component {
             numberOfReleases: 0,
             releasesPerPage: 10,
             searchSubmitDelay: 300,
-            searchQuery: ""
+            searchQuery: "",
+            selectedRelease: ""
         };
 
         this.searchTimeout = null;
 
         this.loadMoreReleases = this.loadMoreReleases.bind(this);
         this.handleSearch = this.handleSearch.bind(this);
+        this.handleReleaseSelect = this.handleReleaseSelect.bind(this);
+        this.handleSubmit = this.handleSubmit.bind(this);
+        this.shouldSubmitBeDisabled = this.shouldSubmitBeDisabled.bind(this);
     }
 
     componentWillMount() {
@@ -203,6 +208,57 @@ export class ScheduleByRelease extends Component {
         )
     }
 
+    async handleReleaseSelect(release) {
+        this.setState({selectedRelease: release});
+
+        if (this.state.selectedRelease.uri === release.uri) {
+            return;
+        }
+
+        const collectionName = await this.checkReleaseIsInCollection(release);
+
+        if (collectionName) {
+            const newTableData = this.state.tableData.map(tableData => {
+                if (tableData.id !== release.uri) {
+                    return tableData;
+                }
+                tableData.status = {};
+                tableData.status.neutral = true;
+                tableData.status.message = `This release is already used in collection: "${collectionName}"`;
+                return tableData
+            })
+            this.setState({tableData: newTableData});
+        }
+    }
+
+    checkReleaseIsInCollection(release) {
+        const collectionName = collections.checkContentIsInCollection(release.uri).then(response => {
+            if (response.status === 204) {
+                return null;
+            }
+            if (typeof response == 'string') {
+                return response;
+            }
+        })
+        return collectionName
+    }
+
+    shouldSubmitBeDisabled() {
+        const releaseIsInCollection = this.state.tableData.find(release => {
+            return this.state.selectedRelease.uri === release.id && release.status
+        })
+
+        if (!releaseIsInCollection && this.state.selectedRelease) {
+            return false;
+        }
+
+        return true
+    }
+
+    handleSubmit() {
+        this.props.onSubmit(this.state.selectedRelease)
+    }
+
     render() {
         return (
             <div className="grid">
@@ -222,9 +278,10 @@ export class ScheduleByRelease extends Component {
                         this.renderQueryText()
                     }
                     <SelectableBox
+                        activeRowID={this.state.selectedRelease.uri}
                         columns={columns}
                         isUpdating={this.state.isFetchingReleases || this.state.isFetchingSearchedReleases}
-                        handleItemClick={this.props.onReleaseSelect}
+                        handleItemClick={this.handleReleaseSelect}
                         rows={this.state.tableData}
                     />
                     {!this.state.isFetchingReleases &&
@@ -251,6 +308,7 @@ export class ScheduleByRelease extends Component {
                 </div>
                 <div className="modal__footer grid__col-12">
                     <div>
+                        <button className="btn btn--positive margin-right--1" type="button" disabled={this.shouldSubmitBeDisabled()} onClick={this.handleSubmit}>Submit</button>
                         <button className="btn" type="button" onClick={this.props.onClose}>Close</button>
                     </div>
                 </div>

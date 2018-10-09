@@ -10,14 +10,14 @@
 
     &:after {
         content: '';
-        width: 25px;
+        width: 24px;
         height: 58px;
         position: absolute;
         left: 0;
         top: -10px;
         font-size: 12px;
         background: transparent url(../img/sprite.svg) no-repeat -12px 0;
-        background-size: 48px auto;
+        background-size: 48px;
         display: block;
         text-align: center;
         font-weight: normal;
