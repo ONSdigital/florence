@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
-import Input from '../../../components/Input';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired

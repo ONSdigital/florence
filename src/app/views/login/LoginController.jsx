@@ -13,6 +13,7 @@ import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
+import log, { eventTypes } from '../../utilities/log';
 
 
 const propTypes = {
