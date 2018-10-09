@@ -69,9 +69,14 @@
         float: right;
         margin-top: -$lineheight * 2;
 
+        &:hover {
+            cursor: pointer;
+        }
+
         &:hover,
         &:focus {
             text-decoration: underline;
+            outline: 0;
 
             &:after {
                 background: none;
