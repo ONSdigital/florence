@@ -61,6 +61,16 @@ export class LoginController extends Component {
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);
+            }).catch(error => {
+                this.setState({isSubmitting: false});
+                notifications.add({
+                    type: "warning",
+                    message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
+                    autoDismiss: 8000,
+                    isDismissable: true
+                });
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting a user's permissions on login: ${JSON.stringify(error)}`});
+                console.error("Error getting a user's permissions on login", error);
             });
         }).catch(error => {
             if (error) {
