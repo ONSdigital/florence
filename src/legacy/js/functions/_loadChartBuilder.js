@@ -751,7 +751,7 @@ function loadChartBuilder(pageData, onSave, chart) {
                 if (chartConfig) {
                     // remove the title, subtitle and any renderers for client side display
                     // these are only used by the template for export/printing
-                    chartConfig.chart.height = chartConfig.chart.height-300;
+                    chartConfig.chart.height = chartHeight;
                     chartConfig.chart.marginTop = 50;
                     chartConfig.chart.marginBottom = 50;
                     //do not use renderer for Florence

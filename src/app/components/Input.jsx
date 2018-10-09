@@ -6,6 +6,7 @@ const propTypes = {
     label: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
+    onBlur: PropTypes.func,
     error: PropTypes.string,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
@@ -63,6 +64,7 @@ export default class Input extends Component {
                         name={this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
+                        onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
                         accept={this.props.accept}
@@ -81,6 +83,7 @@ export default class Input extends Component {
                         name={this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
+                        onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
                     >
