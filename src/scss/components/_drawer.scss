@@ -1,13 +1,14 @@
 .drawer {
     position: fixed;
-    top: $lineheight * 3;
+    top: 0;
     right: 0;
+    padding-top: $lineheight * 3;
     -webkit-transform: translateX(103%);
     transform: translateX(103%);
     will-change: transform;
     width: 50%;
     background-color: $pickled-bluewood;
-    height: calc(100vh - #{($lineheight * 3)});
+    height: 100vh;
 
     &.visible {
         -webkit-transform: none;
@@ -29,15 +30,19 @@
     }
 
     &__heading {
-        padding-left: $gutter * 8;
-        padding-right: $gutter * 6;
+        // padding-left: $gutter * 8;
+        // padding-right: $gutter * 8;
         color: $cadet-blue;
-        margin-top: $lineheight * 3;
-        margin-bottom: $lineheight * 2;
+        // margin-top: $lineheight * 3;
+        // margin-bottom: $lineheight * 2;
+
+        h2 {
+            max-width: 600px; // prevents element growing so wide it pushes edit button onto next line
+        }
     }
 
     &__banner {
-        padding: ($lineheight) ($gutter * 6) ($lineheight) ($gutter * 8);
+        // padding: ($lineheight) ($gutter * 8);
         background-color: $grey-chateau;
 
         &--dark {
@@ -53,7 +58,7 @@
     }
 
     &__body {
-        padding: ($lineheight) ($gutter * 6) ($lineheight) ($gutter * 8);
+        // padding: ($lineheight) ($gutter * 8);
         background-color: $quill-grey;
         flex: 1;
         overflow-y: scroll;
@@ -66,6 +71,6 @@
     }
 
     &__footer {
-        padding: $lineheight ($gutter * 6) ($lineheight) ($gutter * 8);
+        // padding: $lineheight ($gutter * 8);
     }
 }

@@ -9,7 +9,8 @@ jest.mock('../log', () => {
             // do nothing
         }),
         eventTypes: {
-            runtimeWarning: "RUNTIME_WARNING"
+            runtimeWarning: "RUNTIME_WARNING",
+            unexpectedRuntimeError: 'UNEXPECTED_RUNTIME_ERROR'
         }
     }
 })
@@ -42,8 +43,8 @@ test("Request doesn't retry when the fetch resolves", async () => {
 })
 
 test("Request back-off attempts 5 retries when fetches fail", async () => {
-    fetch.mockReject();
     let retries = 0;
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', true, function() {
@@ -58,7 +59,7 @@ test("Request back-off attempts 5 retries when fetches fail", async () => {
 })
 
 test("Request back-off resolves as soon as a fetch is successful", async () => {
-    fetch.mockReject();
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', true, function(retryCount) {
@@ -102,7 +103,7 @@ test("Request returns to caller to handle 401 if callerHandles401 flag is set", 
 })
 
 test("Request back-off won't retry failed fetch if willRetry flag is set to false and reject with an error status", async () => {
-    fetch.mockReject();
+    fetch.mockReject('{}');
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request('GET', '/foobar', false, function() {
@@ -150,6 +151,40 @@ test("PUT/POST request response without a JSON body but with an 'application/jso
 
     await expect(request('PUT', '/foobar')).resolves.toBe(undefined);
     await expect(request('POST', '/foobar')).resolves.toBe(undefined);
+});
+
+test("GET request response without a 'content-type' header logs an error", async () => {
+    fetch.mockResponse(JSON.stringify({}), 
+        {
+            "headers": new Headers({}),
+            "status": 200
+        }
+    );
+
+    let runtimeErrors = log.add.mock.calls.filter(call => {
+        return call[0] === "UNEXPECTED_RUNTIME_ERROR"
+    });
+    expect(runtimeErrors.length).toBe(0);
+    try {
+        await request('GET', '/foobar');
+    } catch (error) {
+        runtimeErrors = log.add.mock.calls.filter(call => {
+            return call[0] === "UNEXPECTED_RUNTIME_ERROR"
+        });
+        expect(runtimeErrors.length).toBe(1);
+    }
+});
+
+// We're skipping this test because it will fail until we fix a bug in one of our APIs which means we have to just try to handle requests with no content-type header
+// However, we should reinstate the test once that bug is fix in the API
+test.skip("GET request response without a 'content-type' header returns a RUNTIME_ERROR to the caller", async () => {
+    fetch.mockResponse(JSON.stringify({}), 
+        {
+            "headers": new Headers({}),
+            "status": 200
+        }
+    );
+    await expect(request('GET', '/foobar')).rejects.toEqual({status: "RUNTIME_ERROR", message: "Error trying to parse response's content-type header"});
 });
 
 test("GET request response without an 'application/json' header logs a warning", async () => {

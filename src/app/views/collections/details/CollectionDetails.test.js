@@ -21,9 +21,13 @@ jest.mock('../../../utilities/notifications', () => {
     }
 });
 
+jest.mock('../../../utilities/url', () => ({
+    resolve: jest.fn(url => `/florence${url}`)
+}))
+
 const defaultProps = {
-    collectionID: 'test-collection-12345',
-    activePageID: 'economy-grossdomesticproduct-bulletins-gdp-2014',
+    id: 'test-collection-12345',
+    activePageURI: 'economy-grossdomesticproduct-bulletins-gdp-2014',
     name: 'Test collection',
     onClose: () => {},
     onPageClick: () => {},
@@ -32,13 +36,13 @@ const defaultProps = {
     inProgress: [],
     complete: [],
     reviewed: [],
-    deletes: []
+    deletes: [],
 };
 
 const alternativePageProps = {
     inProgress: [
             {
-                id: "/",
+                uri: "/",
                 type: "homepage",
                 description: {
                     title: "Home"
@@ -50,7 +54,7 @@ const alternativePageProps = {
                 
             },
             {
-                id: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
+                uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
                 type: "bulletin",
                 description: {
                     title: "Consumer Price Inflation",
@@ -64,7 +68,7 @@ const alternativePageProps = {
         ],
         complete: [
             {
-                id: "/businessindustryandtrade",
+                uri: "/businessindustryandtrade",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business industry and trade"
@@ -77,7 +81,7 @@ const alternativePageProps = {
         ],
         reviewed: [
             {
-                id: "/businessindustryandtrade/businessbirthsanddeaths",
+                uri: "/businessindustryandtrade/businessbirthsanddeaths",
                 type: "taxonomy_landing_page",
                 description: {
                     title: "Business births and deaths"
@@ -111,9 +115,13 @@ describe("Collection details page edit/delete buttons only show for an active pa
         ...defaultProps,
         ...alternativePageProps
     };
-    const component = shallow(
-        <CollectionDetails {...props} />
-    );
+    let component;
+
+    beforeEach(() => {
+        component = shallow(
+            <CollectionDetails {...props} />
+        );
+    });
 
     it("render the correct number of in progress pages", () => {
         const pages = component.find('.list__item--expandable[data-page-state="inProgress"]');
@@ -136,15 +144,15 @@ describe("Collection details page edit/delete buttons only show for an active pa
     });
 
     it("buttons will hide for inactive pages", () => {
-        const activePages = component.find('.list__item--expandable.active');
         const pages = component.find('.list__item--expandable');
+        const activePages = component.find('.list__item--expandable.active');
         expect(pages.length).toBe(5);
         expect(activePages.length).toBe(0);
     });
 
     it("buttons will show for active pages", () => {
         component.setProps({
-            activePageID: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
+            activePageURI: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017"
         });
         const activePages = component.find('.list__item--expandable.active');
         expect(activePages.length).toBe(1);
@@ -153,7 +161,7 @@ describe("Collection details page edit/delete buttons only show for an active pa
 
     it("buttons show for active deleted pages", () => {
         component.setProps({
-            activePageID: "/about/surveys"
+            activePageURI: "/about/surveys"
         });
         const activePages = component.find('.list__item--expandable.active');
         const activeDeletedPages = component.find('.list__item--expandable[data-page-state="deletes"].active');
@@ -171,13 +179,18 @@ describe("When the collections details are loading", () => {
         <CollectionDetails {...props} />
     );
 
-    it("show a loading icon", () => {
+    it("shows a loading icon", () => {
         expect(component.find('.loader').length).toBe(1);
     });
 
     it("doesn't try to render any pages", () => {
         expect(component.find('.page').length).toBe(0);
     });
+
+    it("still renders when collection name is updated", () => {
+        component.setProps({name: "A new name"});
+        expect(component.find('h2').text()).toBe("A new name");
+    })
 });
 
 describe("Number of pages in a state are rendered correctly", () => {
@@ -227,7 +240,7 @@ describe("Invalid props doesn't break the component", () => {
         expect(component.find('h3').length).toBe(3);
     });
     
-    it("missing 'activePageID'", () => {
+    it("missing 'activePageURI'", () => {
         component.setProps({...alternativePageProps});
         expect(component.find('.list__item--expandable').length).toBe(5);
     });
@@ -256,6 +269,22 @@ describe("'Last edit' information for a page in a collection", () => {
         
         // reset props for futures tests
         component.setProps({...defaultProps});
+    });
+
+    it("Renders the correct message", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2017-12-14T11:36:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Thu 14 Dec 2017 - 11:36:03)");
+    });
+    
+    it("Renders the correct date and time during BST", () => {
+        const event = {
+            email: "foobar@email.com",
+            date: "2020-06-14T14:25:03.402Z"
+        };
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Sun 14 Jun 2020 - 15:25:03)");
     });
 
     it("Excludes the date if the data isn't available", () => {
@@ -368,11 +397,28 @@ describe("Delete collection button", () => {
     });
 });
 
-describe("Cancelling deleted content", () => {
-    const component = shallow(
-        <CollectionDetails  />
-    )
+describe("Dataset import functionality", () => {
+    it("doesn't display when it is disabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: false
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
 
-    
+        expect(component.find("#import-dataset-link").exists()).toBe(false);
+    });
+
+    it("displays when it is enabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: true
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
+
+        expect(component.find("#import-dataset-link").exists()).toBe(true);
+    });
 });
-

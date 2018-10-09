@@ -20,6 +20,7 @@ import log, {eventTypes} from '../../../utilities/log'
 import collections from '../../../utilities/api-clients/collections'
 import DatasetReviewActions from '../DatasetReviewActions'
 import AlertController from './alert/AlertController'
+import UsageNotesController from './usage-notes/UsageNotesController';
 import date from '../../../utilities/date'
 
 const propTypes = {
@@ -57,6 +58,10 @@ const propTypes = {
       release_date: PropTypes.string,
       state: PropTypes.string,
       id: PropTypes.string,
+      usage_notes: PropTypes.arrayOf(PropTypes.shape({
+          note: PropTypes.string,
+          title: PropTypes.string
+      })),
       dimensions: PropTypes.arrayOf(PropTypes.object),
       alerts: PropTypes.arrayOf(PropTypes.object),
       latest_changes: PropTypes.arrayOf(PropTypes.object)
@@ -68,6 +73,10 @@ const propTypes = {
       dimensions: PropTypes.arrayOf(PropTypes.object),
       release_date: PropTypes.string,
       id: PropTypes.string,
+      usage_notes: PropTypes.arrayOf(PropTypes.shape({
+          note: PropTypes.string,
+          title: PropTypes.string
+      })),
       alerts: PropTypes.arrayOf(PropTypes.object),
       latest_changes: PropTypes.arrayOf(PropTypes.object),
       lastEditedBy: PropTypes.string,
@@ -95,13 +104,16 @@ export class VersionMetadata extends Component {
             dimensions: [],
             versionID: "",
             showModal: false,
+            modalType: "",
+            modalTitle: "",
             alerts: [],
             changes: [],
             editKey: "",
             titleInput: "",
             descInput: "",
             checkboxInput: false,
-            formErrors: []
+            formErrors: [],
+            usageNotes: []
         }
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -117,6 +129,7 @@ export class VersionMetadata extends Component {
         this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
         this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
         this.handleAlertSave = this.handleAlertSave.bind(this);
+        this.handleUsageNoteSave = this.handleUsageNoteSave.bind(this);
         this.handleBackButton = this.handleBackButton.bind(this);
         this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
@@ -187,19 +200,27 @@ export class VersionMetadata extends Component {
             if (this.props.params.version) {
                 this.props.dispatch(updateActiveVersion(responses[1]));
 
-                var alerts = [];
+                let alerts = [];
                 if (this.props.version.alerts) {
-                    this.props.version.alerts.map((alert) => {
+                    this.props.version.alerts.map(alert => {
                         alert.key = uuid();
                         alerts.push(alert);
                     })
                 }
 
-                var changes = [];
+                let changes = [];
                 if (this.props.version.latest_changes) {
-                    this.props.version.latest_changes.map((change) => {
+                    this.props.version.latest_changes.map(change => {
                         change.key = uuid();
                         changes.push(change);
+                    })
+                }
+                
+                let usageNotes = [];
+                if (this.props.version.usage_notes) {
+                    this.props.version.usage_notes.map(usageNote => {
+                        usageNote.key = uuid();
+                        usageNotes.push(usageNote);
                     })
                 }
 
@@ -210,7 +231,8 @@ export class VersionMetadata extends Component {
                     versionID: this.props.version.id,
                     alerts: alerts,
                     changes: changes,
-                    releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : ""
+                    releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : "",
+                    usageNotes
                 });
             }
             
@@ -619,6 +641,13 @@ export class VersionMetadata extends Component {
     }
 
     mapTypeContentsToCard(items, type){
+        if (type === "usageNotes") {
+            return items.map(item => ({
+                title: item.title,
+                id: item.key
+            }));
+        }
+
         return items.map(item => {
             return {
                 title: type === "alerts" ? date.format(item.date, "dddd, dd/mm/yyyy h:MMTT") : item.name,
@@ -633,7 +662,9 @@ export class VersionMetadata extends Component {
         })
 
         const editions = recipe.output_instances[0].editions;
-        return editions.map(edition => edition);
+        return editions.map((edition) => {
+            return {id: edition, name: edition}
+        });
       }
   
       mapDimensionsToInputs(dimensions){
@@ -665,29 +696,54 @@ export class VersionMetadata extends Component {
       }
     
     handleEditRelatedClick(type, key) {
+        let newState = {
+            showModal: true,
+            modalType: type,
+            editKey: key,
+            hasChanges: true
+        }
         let relatedItem;
-        
         if (type === "alerts") {
             relatedItem = this.state.alerts.find(alert => {
                 return alert.key === key;
             });
+            newState = {
+                ...newState,
+                titleInput: relatedItem.date,
+                descInput: relatedItem.description,
+                checkboxInput: true
+            }
         }
 
         if (type === "changes") {
             relatedItem = this.state.changes.find(change => {
                 return change.key === key;
             });
+            newState = {
+                ...newState,
+                titleInput: relatedItem.name,
+                descInput: relatedItem.description
+            }
+        }
+        
+        if (type === "usageNotes") {
+            relatedItem = this.state.usageNotes.find(usageNote => {
+                return usageNote.key === key;
+            });
+            newState = {
+                ...newState,
+                titleInput: relatedItem.title,
+                descInput: relatedItem.note
+            }
         }
 
-        this.setState({
-            showModal: true,
-            modalType: type,
-            editKey: key,
-            checkboxInput: relatedItem.type === "correction",
-            titleInput: type === "alerts" ? relatedItem.date : relatedItem.name,
-            descInput: relatedItem.description,
-            hasChanges: true
-        });
+        if (!relatedItem) {
+            console.error("Unable to find data for content item:", type, key);
+            log.add(eventTypes.runtimeWarning, {message: `Unable to find data for content item. Type: '${type}', key: '${key}'`});
+            return;
+        }
+
+        this.setState(newState);
     }
 
     handleDeleteRelatedClick(type, key) {
@@ -708,6 +764,14 @@ export class VersionMetadata extends Component {
         if (type === "changes") {
             this.setState({
                 changes: remove(this.state.changes, key),
+                hasChanges: true
+            });
+            return;
+        }
+        
+        if (type === "usageNotes") {
+            this.setState({
+                usageNotes: remove(this.state.usageNotes, key),
                 hasChanges: true
             });
             return;
@@ -783,10 +847,11 @@ export class VersionMetadata extends Component {
         });
     }
 
-    handleAddRelatedClick(type) {
+    handleAddRelatedClick(type, title) {
         this.setState({
             showModal: true,
-            modalType: type
+            modalType: type,
+            modalTitle: title
         });
     }
 
@@ -852,9 +917,9 @@ export class VersionMetadata extends Component {
 
     handleSelectChange(event) {
         const target = event.target;
-        const value = target.value;
         const id = target.id;
-        console.log(id)
+        let value = target.value;
+        if (value === "default-option") {value = ""}
         this.setState({
             [id]: value,
             hasChanges: true
@@ -911,7 +976,74 @@ export class VersionMetadata extends Component {
                 hasChanges: true
             });
         }
-     }
+    }
+
+    handleUsageNoteSave(newUsageNote) {
+        const newState = {
+            showModal: false,
+            modalType: "",
+            editKey: "",
+            titleInput: "",
+            descInput: "",
+            checkboxInput: false,
+            hasChanges: true
+        }
+
+        // No existing usage notes so we just add our new one into state - stops any runtime errors if we set 
+        // 'usageNotes' to null or undefined anywhere (because `.some()` would fail later)
+        if (!this.state.usageNotes || this.state.usageNotes.length === 0) {
+            const usageNotes = [{
+                key: newUsageNote.id,
+                title: newUsageNote.title,
+                note: newUsageNote.note,
+                hasChanged: true,
+                type: "usageNotes"
+            }];
+            this.setState({
+                ...newState,
+                usageNotes
+            });
+            return;
+        }
+
+        const isExistingUsageNote = this.state.usageNotes.some(usageNote => usageNote.key === newUsageNote.id);
+        
+        if (isExistingUsageNote) {
+            const usageNotes = this.state.usageNotes.map(usageNote => {
+                if (usageNote.key !== newUsageNote.id) {
+                    return usageNote;
+                }
+                return {
+                    ...usageNote,
+                    hasChanged: true,
+                    title: newUsageNote.title,
+                    note: newUsageNote.note,
+                    type: "usageNotes"
+                }
+            });
+
+            this.setState({
+                ...newState,
+                usageNotes
+            });
+
+            return;
+        }
+
+        const usageNotes = [...this.state.usageNotes];
+        usageNotes.push({
+            key: newUsageNote.id,
+            title: newUsageNote.title,
+            note: newUsageNote.note,
+            hasChanged: true,
+            type: "usageNotes"
+        })
+
+        this.setState({
+            ...newState,
+            usageNotes
+        });
+    }
      
     handleAlertSave(newAlert) {
         const newState = {
@@ -1053,7 +1185,8 @@ export class VersionMetadata extends Component {
             const instanceMetadata = {
                 edition: this.state.edition,
                 alerts: alerts,
-                latest_changes: changes
+                latest_changes: changes,
+                usage_notes: this.state.usageNotes
             }
             if (this.state.releaseDate) {
                 instanceMetadata.release_date = this.state.releaseDate.toISOString();
@@ -1066,7 +1199,8 @@ export class VersionMetadata extends Component {
             this.updateInstanceVersion({
                 release_date: this.state.releaseDate.toISOString(),
                 alerts: alerts,
-                latest_changes: changes
+                latest_changes: changes,
+                usage_notes: this.state.usageNotes
             }, isSubmittingForReview, isMarkingAsReviewed);
         }
     }
@@ -1100,6 +1234,78 @@ export class VersionMetadata extends Component {
                 onApprove={this.handleSaveAndMarkAsReviewed}
                 notInCollectionYet={!instanceOrVersionData.collection_id}     
             />
+        )
+    }
+
+    renderModal() {
+        if (this.state.showModal !== true) {
+            return;
+        }
+
+        if (this.state.modalType === "alerts") {
+            return (
+                <AlertController
+                    date={this.state.titleInput}
+                    description={this.state.descInput}
+                    isCorrection={this.state.checkboxInput}
+                    onSave={this.handleAlertSave}
+                    onCancel={this.handleRelatedContentCancel}
+                    id={this.state.editKey}
+                />
+            )
+        }
+        
+        if (this.state.modalType === "usageNotes") {
+            return (
+                <UsageNotesController 
+                    title={this.state.titleInput}
+                    note={this.state.descInput}
+                    onSave={this.handleUsageNoteSave}
+                    onCancel={this.handleRelatedContentCancel}
+                    id={this.state.editKey}
+                />
+            )
+        }
+
+        if (this.state.modalType) {
+            return (
+                <Modal sizeClass="grid__col-lg-5 grid__col-md-8 grid__col-xs-10">
+                    <RelatedContentForm
+                        name="related-content-modal"
+                        formTitle={this.state.modalTitle}
+                        titleInput={this.state.titleInput}
+                        descInput={this.state.descInput}
+                        titleLabel={"Name"}
+                        descLabel={"Description"}
+                        onCancel={this.handleRelatedContentCancel}
+                        onFormInput={this.handleInputChange}
+                        onFormSubmit={this.handleRelatedContentSubmit}
+                        titleError={this.state.titleError}
+                        descError={this.state.descError}
+                        requiresDescription={true}
+                        requiresURL={false}
+                    />
+                </Modal>
+            )
+        }
+
+        return (
+            <Modal sizeClass="grid__col-lg-5 grid__col-md-8 grid__col-xs-10">
+                <div>
+                    <div className="modal__header">
+                        <h2>Warning!</h2>
+                    </div>
+                    <div className="modal__body">
+                        <p>You will lose any changes by going back without saving. </p><br/>
+                        <p>Click "Continue" to lose changes and go back to the previous page or
+                            click "Cancel" to stay on the current page.</p>
+                    </div>
+                    <div className="modal__footer">
+                    <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
+                    <button type="button" className="btn" onClick={this.handleRelatedContentCancel}>Cancel</button>
+                    </div>
+                </div>
+            </Modal>
         )
     }
 
@@ -1162,7 +1368,7 @@ export class VersionMetadata extends Component {
                                         onDelete={this.handleDeleteRelatedClick}
                                         disabled={this.state.isReadOnly || this.state.isSavingData}
                                     />
-                                    <button disabled={this.state.isReadOnly || this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}> Add an alert</button>
+                                    <button disabled={this.state.isReadOnly || this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}>Add an alert</button>
                                 </div>
                                 <div className="margin-bottom--1">
                                     <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
@@ -1171,10 +1377,19 @@ export class VersionMetadata extends Component {
                                         type="changes"
                                         onEdit={this.handleEditRelatedClick}
                                         onDelete={this.handleDeleteRelatedClick}
-
                                     />
-                                    <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes")}}> Add change</button>
+                                    <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes", "Add a change")}}>Add change</button>
                                 </div>
+                            </div>
+                            <div className="margin-bottom--1">
+                                <h2 className="margin-top--2 margin-bottom--1">Usage notes</h2>
+                                <CardList
+                                    contents={this.mapTypeContentsToCard(this.state.usageNotes, "usageNotes")}
+                                    type="usageNotes"
+                                    onEdit={this.handleEditRelatedClick}
+                                    onDelete={this.handleDeleteRelatedClick}
+                                />
+                                <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("usageNotes", "Add a usage note")}}>Add usage note</button>
                             </div>
                           </div>
                           <button type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
@@ -1191,54 +1406,7 @@ export class VersionMetadata extends Component {
                       </div>
                     }
                 </div>
-                {(this.state.showModal && this.state.modalType !== "alerts") &&
-                <Modal sizeClass="grid__col-3">
-                        {this.state.modalType ?
-
-                          <RelatedContentForm
-                              name="related-content-modal"
-                              formTitle={"Add latest change"}
-                              titleInput={this.state.titleInput}
-                              descInput={this.state.descInput}
-                              titleLabel={"Name"}
-                              descLabel={"Description"}
-                              onCancel={this.handleRelatedContentCancel}
-                              onFormInput={this.handleInputChange}
-                              onFormSubmit={this.handleRelatedContentSubmit}
-                              titleError={this.state.titleErzror}
-                              descError={this.state.descError}
-                              requiresDescription={true}
-                              requiresURL={false}
-                          />
-                        :
-                          <div>
-                          <div className="modal__header">
-                              <h2>Warning!</h2>
-                          </div>
-                          <div className="modal__body">
-                              <p>You will lose any changes by going back without saving. </p><br/>
-                              <p>Click "Continue" to lose changes and go back to the previous page or
-                                  click "Cancel" to stay on the current page.</p>
-                          </div>
-                          <div className="modal__footer">
-                          <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                          <button type="button" className="btn" onClick={this.handleRelatedContentCancel}>Cancel</button>
-                          </div>
-                        </div>
-                      }
-                      </Modal>
-
-                }
-                {(this.state.showModal && this.state.modalType === "alerts") &&
-                    <AlertController
-                        date={this.state.titleInput}
-                        description={this.state.descInput}
-                        isCorrection={this.state.checkboxInput}
-                        onSave={this.handleAlertSave}
-                        onCancel={this.handleRelatedContentCancel}
-                        id={this.state.editKey}
-                    />
-                }
+                {this.state.showModal === true && this.renderModal()}
             </div>
         )
     }
