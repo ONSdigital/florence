@@ -30,8 +30,7 @@ export default class user {
     }
 
     static getPermissions(email) {
-        return Promise.reject({status: 401, statusText: "You are not authorised to perform this action"});
-        // return http.get(`/zebedee/permission?email=${email}`, true, true);
+        return http.get(`/zebedee/permission?email=${email}`, true, true);
     }
 
     static getOldUserType(user) {
