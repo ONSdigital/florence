@@ -4,6 +4,7 @@ var Florence = Florence || {
         refreshAdminMenu: function () {
             // Display a message to show users are on dev or sandpit
             Florence.environment = isDevOrSandpit();
+            Florence.showDatasetsTab = Florence.globalVars.config.enableDatasetImport;
 
             var mainNavHtml = templates.mainNav(Florence);
             $('.js-nav').html(mainNavHtml);

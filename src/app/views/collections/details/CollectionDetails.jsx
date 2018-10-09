@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import dateFormat from 'dateformat';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -8,13 +7,14 @@ import { push } from 'react-router-redux';
 import url from '../../../utilities/url';
 import log, {eventTypes} from '../../../utilities/log';
 import Page from '../../../components/page/Page';
+import date from '../../../utilities/date';
 
 export const pagePropTypes = {
     lastEdit: PropTypes.shape({
         email: PropTypes.string,
         date: PropTypes.string
     }),
-    id: PropTypes.string.isRequired,
+    uri: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     version: PropTypes.string,
@@ -36,8 +36,9 @@ export const deletedPagePropTypes = PropTypes.shape({
 
 const propTypes = {
     id: PropTypes.string.isRequired,
-    activePageID: PropTypes.string,
-    name: PropTypes.string.isRequired,
+    activePageURI: PropTypes.string,
+    name: PropTypes.string,
+    enableDatasetImport: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
@@ -45,6 +46,7 @@ const propTypes = {
     onCancelPageDeleteClick: PropTypes.func.isRequired,
     onDeleteCollectionClick: PropTypes.func.isRequired,
     onApproveCollectionClick: PropTypes.func.isRequired,
+    isLoadingNameAndDate: PropTypes.bool,
     isLoadingDetails: PropTypes.bool,
     isCancellingDelete: PropTypes.shape({
         value: PropTypes.bool.isRequired,
@@ -71,7 +73,7 @@ const propTypes = {
         neutral: PropTypes.bool,
         warning: PropTypes.bool
     }),
-    type: PropTypes.string.isRequired,
+    type: PropTypes.string,
     publishDate: PropTypes.string,
     dispatch: PropTypes.func.isRequired
 };
@@ -85,13 +87,6 @@ export class CollectionDetails extends Component {
         this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
     }
 
-    shouldComponentUpdate(nextProps) {
-        if (this.props.isLoadingDetails && nextProps.isLoadingDetails) {
-            return false;
-        }
-        return true;
-    }
-
     handleCollectionDeleteClick() {
         this.props.onDeleteCollectionClick(this.props.id);
     }
@@ -100,7 +95,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {
+    renderLastEditText(lastEdit) {   
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
@@ -110,12 +105,12 @@ export class CollectionDetails extends Component {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
             
-            const date = dateFormat(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
+            const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
             if (!lastEdit.email || typeof lastEdit.email !== "string") {
-                return `Last edit: email not available (${date})`;
+                return `Last edit: email not available (${formattedDate})`;
             }
             return (
-                `Last edit: ${lastEdit.email} (${date})`
+                `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit));
@@ -130,13 +125,13 @@ export class CollectionDetails extends Component {
     }
 
     renderPageItem(page, state) {
-        const pageID = page.id;
-        const isActivePage = this.props.activePageID === pageID;
+        const pageID = page.uri;
+        const isActivePage = pageID && this.props.activePageURI === pageID;
         const handlePageClick = () => {
             this.props.onPageClick(pageID);
         }
         const handleEditClick = () => {
-            this.props.onEditPageClick(page);
+            this.props.onEditPageClick(page, state);
         }
         const handleDeleteClick = () => {
             this.props.onDeletePageClick(page, state);
@@ -160,7 +155,7 @@ export class CollectionDetails extends Component {
 
     renderPagesList(pages) {
         return (
-            <ul className="list list--neutral margin-bottom--2">
+            <ul className="list list--neutral margin-bottom--1">
                 {pages}
             </ul>
         )
@@ -226,12 +221,12 @@ export class CollectionDetails extends Component {
         };
         const deleteIsBeingCancelled = this.props.isCancellingDelete ? (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri) : false;
         return (
-            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageID === deletedPage.root.uri ? " active" : "")}>
+            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
                 <div className="expandable-item__header">
                     <Page 
                         type={deletedPage.root.type} 
                         title={deletedPage.root.description.title + (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")} 
-                        isActive={this.props.activePageID === deletedPage.root.uri} 
+                        isActive={this.props.activePageURI === deletedPage.root.uri} 
                     />
                 </div>
                 <div className="expandable-item__contents">
@@ -317,7 +312,11 @@ export class CollectionDetails extends Component {
         if (this.props.status.neutral) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
-                    Preparing collection for the publishing queue
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            Preparing collection for the publishing queue
+                        </div>
+                    </div>
                 </div>
             )
         }
@@ -325,10 +324,16 @@ export class CollectionDetails extends Component {
         if (this.props.status.warning) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
-                    Error whilst preparing this collection for the publishing queue
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            Error whilst preparing this collection for the publishing queue
+                        </div>
+                    </div>
                 </div>
             )
         }
+
+        return;
     }
 
     renderCollectionPageActions() {
@@ -338,9 +343,17 @@ export class CollectionDetails extends Component {
 
         return (
             <div className="drawer__banner">
-                <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className="btn btn--primary">Create/edit page</a>
-                <Link to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
-                <button className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                <div className="grid grid--justify-space-around">
+                    <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
+                        <div>
+                            <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
+                            {this.props.enableDatasetImport &&
+                                <Link id="import-dataset-link" to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                            }
+                            <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                        </div>
+                    </div>
+                </div>
             </div>
         )
     }
@@ -350,26 +363,23 @@ export class CollectionDetails extends Component {
     }
 
     renderCollectionActions() {
+        if (this.props.isLoadingNameAndDate) {
+            return;
+        }
+
         if (this.props.status && (this.props.status.neutral || this.props.status.warning)) {
             return;
         }
 
         if (this.props.canBeDeleted) {
             return (
-                <button className="btn btn--warning btn--margin-left" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
+                <button className="btn btn--warning btn--margin-right" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
             )
         }
         
         if (this.props.canBeApproved) {
             return (
-                <span>
-                    <button className="btn btn--positive btn--margin-left" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
-                    {this.props.isApprovingCollection &&
-                        <div className="inline-block margin-left--1">
-                            <div className="loader loader--inline"></div>
-                        </div>
-                    }
-                </span>
+                <button className="btn btn--positive btn--margin-right" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
             )   
         }
     }
@@ -385,13 +395,13 @@ export class CollectionDetails extends Component {
 
         if (this.props.type === "scheduled" && this.props.publishDate) {
             return (
-                <p>Publish date: {dateFormat(this.props.publishDate, "dddd, dd/mm/yyyy h:MMTT")}</p>
+                <p>Publish date: {date.format(this.props.publishDate, "dddd, d mmmm yyyy h:MMTT")}</p>
             )
         }
 
         if (this.props.type === "scheduled" && !this.props.publishDate) {
             return (
-                <p>Publishing date: no publish date available</p>
+                <p>Publish date: no publish date available</p>
             )
         }
     }
@@ -400,42 +410,65 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__container">
                 <div className="drawer__heading">
-                    <div className="grid grid--justify-space-between grid--align-end">
-                        <div>
-                            <h2>{this.props.name}</h2>
-                            {this.renderPublishDate()}
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8">
+                            <div className="grid grid--justify-space-between grid--align-end margin-top--3 margin-bottom--2">
+                                <div>
+                                    <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
+                                    {this.props.isLoadingNameAndDate ? 
+                                        <p>Loading...</p>
+                                    :
+                                        this.renderPublishDate()
+                                    }
+                                </div>
+                                {!this.props.isLoadingNameAndDate &&
+                                    <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
+                                }
+                            </div>
                         </div>
-                        <Link to={`${location.pathname}/edit`} className="colour--cadet-blue  font-size--16">Edit</Link>
                     </div>
                 </div>
                 {this.renderCollectionState()}
                 {this.renderCollectionPageActions()}
                 <div className="drawer__body">
-                    {this.props.isLoadingDetails ?
-                        <div className="grid grid--align-center margin-top--4">
-                            <div className="loader loader--large loader--dark"></div>
-                        </div>
-                        :
-                        <div>
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
-                            {this.renderInProgress()}
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
-                            {this.renderWaitingReview()}
-                            <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
-                            {this.renderReviewed()}
-                            
-                            {(this.props.deletes && this.props.deletes.length > 0) &&
-                                <div>
-                                    <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
-                                    {this.renderDeleted()}
-                                </div>
-                            }
-                        </div>
-                    }
+                    <div className="grid grid--justify-space-around">
+                        {this.props.isLoadingDetails ?
+                            <div className="grid grid--align-center margin-top--4">
+                                <div className="loader loader--large loader--dark"></div>
+                            </div>
+                            :
+                            <div className="grid__col-8 margin-top--2">
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
+                                {this.renderInProgress()}
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
+                                {this.renderWaitingReview()}
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
+                                {this.renderReviewed()}
+                                
+                                {(this.props.deletes && this.props.deletes.length > 0) &&
+                                    <div>
+                                        <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
+                                        {this.renderDeleted()}
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
                 </div>
                 <div className="drawer__footer">
-                    <button className="btn" onClick={this.props.onClose} type="button">Close</button>
-                    {this.renderCollectionActions()}
+                    <div className="grid grid--justify-space-around">
+                        <div className="grid__col-8 margin-top--1 margin-bottom--1">
+                            <div>
+                                {this.renderCollectionActions()}
+                                <button className="btn" onClick={this.props.onClose} type="button">Close</button>
+                                {this.props.isApprovingCollection &&
+                                    <div className="inline-block margin-left--1">
+                                        <div className="loader loader--inline"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )

@@ -1,5 +1,5 @@
 import React from 'react';
-import { CollectionCreate } from './CollectionCreate';
+import { CollectionCreateController } from './CollectionCreateController';
 import { mount, shallow } from 'enzyme';
 import renderer from 'react-test-renderer';
 
@@ -90,14 +90,14 @@ const defaultProps = {
 
 test("Create collection form matches stored snapshot", () => {
     const component = renderer.create(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     expect(component.toJSON()).toMatchSnapshot();
 });
 
 test("Handle collection name change updates state correctly", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     expect(component.update().state().newCollectionDetails.name.value).toBe("");
     component.instance().handleCollectionNameChange({target: {value: "Test collection"}});
@@ -106,7 +106,7 @@ test("Handle collection name change updates state correctly", () => {
 
 test("Handle team selection change updates state correctly", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     component.setProps({ allTeams: mockedTeams });
     expect(component.update().state().newCollectionDetails.teams).toHaveLength(0);
@@ -114,9 +114,50 @@ test("Handle team selection change updates state correctly", () => {
     expect(component.update().state().newCollectionDetails.teams).toContainEqual({id: "1", name: "Team 1"});
 });
 
+describe("Selecting/removing a team", () => {
+    let component;
+
+    beforeEach(() => {
+        component = mount(
+            <CollectionCreateController {...defaultProps} />
+        );
+        component.setProps({allTeams: mockedTeams});
+    });
+    
+    it("disables a team on selection", () => {
+        const selectedTeamID = "2";
+        const getDisabledTeams = () => component.state('updatedAllTeams').filter(team => team.disabled);
+
+        // Check that the component has the state and props we'd expect at this point
+        expect(component.prop('allTeams').length).toBe(2);
+        expect(component.state('updatedAllTeams')).toBe(null);
+
+        component.instance().handleTeamSelection({preventDefault: ()=>{}, target: {value: selectedTeamID}});
+
+        expect(component.state('updatedAllTeams')).toBeTruthy();
+        expect(getDisabledTeams().length).toBe(1);
+        expect(getDisabledTeams()[0].id).toBe("2");
+        expect(getDisabledTeams()[0].name).toBe("Team 2");
+    });
+
+    it("enables a team on removal", () => {
+        const removedTeam = {id: "2", name: "Team 2"};
+        const getDisabledTeams = () => component.state('updatedAllTeams').filter(team => team.disabled);
+
+        // Ensure that the component has the state and props we'd expect at this point
+        expect(component.state('updatedAllTeams')).toBe(null);
+        component.instance().handleTeamSelection({preventDefault: ()=>{}, target: {value: removedTeam.id}});
+        expect(getDisabledTeams().length).toBe(1);
+        expect(component.state('updatedAllTeams')).toBeTruthy();
+
+        component.instance().handleRemoveTeam(removedTeam);
+        expect(getDisabledTeams().length).toBe(0);
+    })
+});
+
 test("Handle team selection doesn't add a team that is already in the collection", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     component.setProps({ allTeams: mockedTeams });
     const teams = [{id: "1", name: "Team 1"}];
@@ -129,7 +170,7 @@ test("Handle team selection doesn't add a team that is already in the collection
 
 test("Handle schedule type change updates state correctly", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     expect(component.update().state().newCollectionDetails.scheduleType).toBe("custom-schedule");
     component.instance().handleScheduleTypeChange({value: "calender-entry-schedule"});
@@ -138,7 +179,7 @@ test("Handle schedule type change updates state correctly", () => {
 
 test("Handle publish date change updates state correctly", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     expect(component.update().state().newCollectionDetails.publishDate.value).toBe("");
     component.instance().handlePublishDateChange({target: {value: "2017-12-07"}});
@@ -147,7 +188,7 @@ test("Handle publish date change updates state correctly", () => {
 
 test("Handle publish time change updates state correctly", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     expect(component.update().state().newCollectionDetails.publishTime.value).toBe("09:30");
     component.instance().handlePublishTimeChange({target: {value: "13:00"}});
@@ -156,7 +197,7 @@ test("Handle publish time change updates state correctly", () => {
 
 test("Handle submit validates that a collection has a name", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     component.instance().handleSubmit({preventDefault: ()=>{}});
     expect(component.update().state().newCollectionDetails.name.errorMsg).toBe("Collections must be given a name");
@@ -164,7 +205,7 @@ test("Handle submit validates that a collection has a name", () => {
 
 test("Handle submit validates that a scheduled collection has a date", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     const name = {value: "Test Collection", errorMsg: ""};
     const newCollection = {...newCollectionDetails, name: name};
@@ -175,7 +216,7 @@ test("Handle submit validates that a scheduled collection has a date", () => {
 
 test("Handle submit validates that a scheduled collection has a time", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     const name = {value: "Test Collection", errorMsg: ""};
     const date = {value: "2017-12-07", errorMsg: ""};
@@ -188,7 +229,7 @@ test("Handle submit validates that a scheduled collection has a time", () => {
 
 test("Make publish date returns correct date value", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     const date = {value: "2017-12-07", errorMsg: ""};
     const time = {value: "09:30", errorMsg: ""};
@@ -200,7 +241,7 @@ test("Make publish date returns correct date value", () => {
 
 test("Map state to post body returns correct object", () => {
     const component = shallow(
-        <CollectionCreate {...defaultProps} />
+        <CollectionCreateController {...defaultProps} />
     );
     const name = {value: "Test collection", errorMsg: ""};
     const date = {value: "2017-12-07", errorMsg: ""};
