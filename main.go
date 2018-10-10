@@ -6,7 +6,9 @@ import (
 	"context"
 	"encoding/json"
 	"mime"
+	"net"
 	"net/http"
+	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
@@ -28,6 +30,7 @@ import (
 )
 
 var getAsset = assets.Asset
+var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
 
 // Version is set by the make target
@@ -121,25 +124,27 @@ func main() {
 
 	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
-	router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
-	router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
-	router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+	if cfg.SharedConfig.EnableDatasetImport {
+		router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
+		router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+		router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+		router.Handle("/import{uri:.*}", importAPIProxy)
+		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
+		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	}
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
-	router.Handle("/import{uri:.*}", importAPIProxy)
-	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
-	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
-	router.HandleFunc("/florence/reports", legacyIndexFile)
-	router.HandleFunc("/florence/users-and-access", legacyIndexFile)
-	router.HandleFunc("/florence/workspace", legacyIndexFile)
+	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/users-and-access").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
+	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 	router.Handle("/{uri:.*}", routerProxy)
 
 	log.Debug("Starting server", log.Data{"config": cfg})
@@ -199,47 +204,77 @@ func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":uri")
+	assetPath := "../dist/" + path
 
-	b, err := getAsset("../dist/" + path)
+	etag, err := getAssetETag(assetPath)
+
+	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+		w.WriteHeader(http.StatusNotModified)
+		return
+	}
+
+	b, err := getAsset(assetPath)
 	if err != nil {
 		log.Error(err, nil)
 		w.WriteHeader(404)
 		return
 	}
 
+	w.Header().Set(`ETag`, etag)
+	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
 	w.Write(b)
 }
 
-func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting legacy HTML file", nil)
+func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting legacy HTML file", nil)
 
-	b, err := getAsset("../dist/legacy-assets/index.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/legacy-assets/index.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
-func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting refactored HTML file", nil)
+func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting refactored HTML file", nil)
 
-	b, err := getAsset("../dist/refactored.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/refactored.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
 func zebedeeDirector(req *http.Request) {
@@ -328,6 +363,33 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		// 	break
 		// }
 	}
+}
+
+// FIXME this is to fix go-ns reverse proxy replacing host name so that
+// babbage has correct values when using {{location.hostname}} in handlebars
+func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
+	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
+	director := proxy.Director
+	proxy.Transport = &http.Transport{
+		Proxy: http.ProxyFromEnvironment,
+		DialContext: (&net.Dialer{
+			Timeout:   5 * time.Second,
+			KeepAlive: 30 * time.Second,
+		}).DialContext,
+		MaxIdleConns:          100,
+		IdleConnTimeout:       90 * time.Second,
+		TLSHandshakeTimeout:   5 * time.Second,
+		ExpectContinueTimeout: 1 * time.Second,
+	}
+	proxy.Director = func(req *http.Request) {
+		director(req)
+		//req.Host = proxyURL.Host
+		if directorFunc != nil {
+			directorFunc(req)
+		}
+	}
+
+	return proxy
 }
 
 type florenceLogEvent struct {

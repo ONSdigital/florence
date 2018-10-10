@@ -124,7 +124,10 @@ class DatasetUploadMetadata extends Component {
             return recipe.id === this.props.job.recipe;
         })
         const editions = recipe.output_instances[0].editions;
-        return editions.map(edition => edition);
+        return editions.map(edition => ({
+            id: edition,
+            name: edition
+        }));
     }
 
     handleEditionChange(event) {

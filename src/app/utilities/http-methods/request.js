@@ -56,15 +56,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             logEventPayload.message = response.message;
             log.add(eventTypes.requestReceived, logEventPayload);
 
-            let responseIsJSON = false;
-            let responseIsText = false;
-            const responseType = response.headers.get('content-type');
-
-            if (responseType !== null) {
-                responseIsJSON = response.headers.get('content-type').match(/application\/json/);
-                responseIsText = response.headers.get('content-type').match(/text\/plain/);
-            }
-
             if (response.status >= 500) {
                 throw new HttpError(response);
             }
@@ -91,14 +82,41 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             }
 
             if (!response.ok) {
-                reject({status: response.status, message: response.statusText});
-                return;
+                response.text().then(body => {
+                    reject({status: response.status, message: response.statusText, body: body ? JSON.parse(body) : null})
+                })
+                return; 
             }
 
-            logEventPayload.status = response.status;
+            if (response.status === 204) {
+                resolve({status: response.status, message: response.statusText})
+                return;
+            }
+            
+            logEventPayload.status = 200;
+
+            let responseIsJSON = false;
+            let responseIsText = false;
+            try {
+                responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+                responseIsText = response.headers.get('content-type').match(/text\/plain/);
+            } catch (error) {
+                console.error(`Error trying to parse content-type header`, error);
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error trying to parse content-type header: ${JSON.stringify(error)}`});
+                
+                // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
+                // unless we just allow 204 responses to resolve, instead of reject with an error
+                if (response.status >= 200) {
+                    resolve();
+                    return;
+                }
+                
+                reject({status: 'RUNTIME_ERROR', message: `Error trying to parse response's content-type header`});
+                return;
+            }
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
-                log.add(eventTypes.runtimeWarning, `Received request response for method '${method}' that didn't have the 'application/json' header`)
+                log.add(eventTypes.runtimeWarning, {message: `Received request response for method '${method}' that didn't have the 'application/json' header`});
             }
             
             // We've detected a text response so we should try to parse as text, not JSON
@@ -120,11 +138,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     }
                 })()
                 return
-            }
-
-            if (!responseType && response.status === 204) {
-                resolve();
-                return;
             }
 
             // We're wrapping this try/catch in an async function because we're using 'await' 
