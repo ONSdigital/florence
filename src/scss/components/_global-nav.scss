@@ -1,5 +1,8 @@
 .global-nav {
     &__list {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
         background: $mine-shaft;
         padding: 0 20px;
         color: $grey-chateau;
@@ -41,5 +44,11 @@
             outline: 0 solid;
             text-decoration: underline !important;
         }
+    }
+
+    &__preview-select {
+        width: 400px;
+        margin-top: 2px;
+        float: left;
     }
 }
