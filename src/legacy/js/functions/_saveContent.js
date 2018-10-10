@@ -12,12 +12,7 @@ function saveContent(collectionId, uri, data, collectionData) {
             createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
-            if (response.status === 409) {
-                sweetAlert("Cannot create this page", "It already exists.");
-            }
-            else {
-                handleApiError(response);
-            }
+            handleApiError(response);
         }
     );
 }

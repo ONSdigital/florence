@@ -18,6 +18,12 @@ type Config struct {
 	VaultToken         string `envconfig:"VAULT_TOKEN"                json:"-"`
 	VaultPath          string `envconfig:"VAULT_PATH"`
 	TableRendererURL   string `envconfig:"TABLE_RENDERER_URL"`
+	SharedConfig       SharedConfig
+}
+
+// SharedConfig represents the configuration made available to the client-side application from the server
+type SharedConfig struct {
+	EnableDatasetImport bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 }
 
 var cfg *Config
@@ -36,6 +42,7 @@ func Get() (*Config, error) {
 		ImportAPIURL:       "http://localhost:21800",
 		DatasetAPIURL:      "http://localhost:22000",
 		UploadBucketName:   "dp-frontend-florence-file-uploads",
+		SharedConfig:       SharedConfig{EnableDatasetImport: false},
 		EncryptionDisabled: false,
 		TableRendererURL:   "http://localhost:23300",
 		VaultAddr:          "http://localhost:8200",

@@ -72,10 +72,19 @@ jest.mock('../../../utilities/api-clients/content', () => {
     }
 });
 
+jest.mock('../../../utilities/api-clients/collections', () => {
+    return {
+        getInProgressContent: () => {
+            return Promise.resolve(mockAllDeletedContent);
+        }
+    }
+});
+
 const defaultProps = {
     activeCollection: {},
     onClose: () => {},
-    onSuccess: jest.fn()
+    onSingleFileSuccess: jest.fn(),
+    onMultiFileSuccess: jest.fn()
 };
 
 const mockClickedItem = {
@@ -140,7 +149,7 @@ describe("Searching for deleted content", () => {
             ],
             id: "2",
             pageTitle: "Deleted page 2",
-            returnValue: {"id": "2", "title": "Deleted page 2", "type": "static_page", "uri": "/test/deletes/2"}
+            returnValue: {"id": "2", "title": "Deleted page 2", "isMultiDelete": true, "type": "static_page", "uri": "/test/deletes/2"}
         };
         component.instance().handleSearch(mockSearchTerm);
         expect(component.update().state().filteredDeletedContent).toContainEqual(expectedFilteredDeletedContent)
@@ -192,10 +201,10 @@ describe("When posting selected content to restore", () => {
         expect(component.state('isRestoringDeletingContent')).toBe(false);
     });
 
-    it("onSuccess is called after successful post", async () => {
+    it("onSingleFileSuccess is called after successful post", async () => {
         await component.instance().handleDoneClick();
         await component.update();
-        expect(defaultProps.onSuccess).toHaveBeenCalled();
+        expect(defaultProps.onSingleFileSuccess).toHaveBeenCalled();
     });
 
 });

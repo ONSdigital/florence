@@ -3,18 +3,27 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
-import url from '../utilities/url'
 
+import url from '../utilities/url'
 import cookies from '../utilities/cookies';
+import auth from '../utilities/auth';
+import PreviewNav from './PreviewNav';
 
 const propTypes = {
-    isAuthenticated: PropTypes.bool.isRequired,
-    userType: PropTypes.string.isRequired,
+    config: PropTypes.shape({
+        enableDatasetImport: PropTypes.bool
+    }),
+    user: PropTypes.object.isRequired,
+    workingOn: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        name: PropTypes.string
+    }),
+    rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
 }
 
-class NavBar extends Component {
+export class NavBar extends Component {
     constructor(props) {
         super(props);
 
@@ -33,68 +42,72 @@ class NavBar extends Component {
     }
 
     renderWorkingOnItem() {
-        const route = this.props.location.pathname;
         const workingOn = this.props.workingOn || {};
-        const showWorkingOn = workingOn.id && (route.includes(url.resolve("/datasets")) || route.includes(url.resolve("/workspace")));
+        const showWorkingOn = workingOn.id;    
         if (!showWorkingOn) {
             return
         }
-        return (
-            <li className="global-nav__item">
-                <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
-                    Working on: {this.props.workingOn.name}
-                </Link>
-            </li>
-        )
+        
+        const route = this.props.location.pathname;
+        if (route.indexOf(`/datasets`) >= 0 || route.indexOf(`/preview`) >= 0) {
+            return (
+                // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
+                <li className="global-nav__item global-nav__item--working-on">
+                    <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
+                        Working on:&nbsp;
+                        {this.props.workingOn.name || 
+                            <div className="margin-left--1 inline-block">
+                                <div className="loader loader--inline loader--small"></div>
+                            </div>
+                        }
+                    </Link>
+                </li>
+            )
+        }
     }
 
     renderNavItems() {
-        const isViewer = this.props.userType == 'VIEWER';
+        if(!auth.isAuthenticated(this.props.user)) {
+            return (
+                <li className="global-nav__item">
+                    <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
+                </li>
+            )
+        }
 
+        const rootPath = this.props.rootPath;
         return (
             <span>
-                {!isViewer ?
+                { this.renderWorkingOnItem() }
+                <li className="global-nav__item">
+                    <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                </li>
+                {auth.isAdminOrEditor(this.props.user) ?
                     <span>
-                        { this.renderWorkingOnItem() }
-
+                        {this.props.config.enableDatasetImport &&
+                            <li className="global-nav__item">
+                                <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                                    Datasets
+                                </Link>
+                            </li>
+                        }
                         <li className="global-nav__item">
-                            <Link to={url.resolve("/collections")} activeClassName="selected" className="global-nav__link">
-                                Collections
-                            </Link>
+                            <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
                         </li>
 
                         <li className="global-nav__item">
-                            <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
-                                Datasets
-                            </Link>
+                            <a className="global-nav__link" href="/florence/reports">Reports</a>
                         </li>
 
                         <li className="global-nav__item">
-                            <a className="global-nav__link" href={url.resolve("/publishing-queue")}>
-                                Publishing queue
-                            </a>
+                            <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
                         </li>
 
                         <li className="global-nav__item">
-                            <a className="global-nav__link" href={url.resolve("/reports")}>
-                                Reports
-                            </a>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <a className="global-nav__link" href={url.resolve("/users-and-access")}>
-                                Users and access
-                            </a>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <Link to={url.resolve("/teams")} activeClassName="selected" className="global-nav__link">
-                                Teams
-                            </Link>
+                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
                         </li>
                     </span>
                 : "" }
-
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={this.handleLogoutClick} className="global-nav__link">
                         Logout
@@ -105,19 +118,12 @@ class NavBar extends Component {
     }
 
     render() {
+        const regex = new RegExp(`${this.props.rootPath}/collections/.*/preview`, "g");
+        const isViewingPreview = regex.test(this.props.location.pathname);
         return (
             <ul className="global-nav__list">
-                { this.props.isAuthenticated ?
-                    this.renderNavItems()
-                    :
-                    <li className="global-nav__item">
-                        <Link to={url.resolve("/login")}
-                              activeClassName="selected"
-                              className="global-nav__link">
-                            Login
-                        </Link>
-                    </li>
-                }
+                {isViewingPreview && <PreviewNav />}
+                {this.renderNavItems()}
             </ul>
         )
     }
@@ -125,14 +131,15 @@ class NavBar extends Component {
 }
 
 function mapStateToProps(state) {
-    const isAuthenticated = state.state.user.isAuthenticated;
-    const userType = state.state.user.userType;
-    const workingOn = state.state.global.workingOn;
+    const user = state.state.user;
+    const rootPath = state.state.rootPath;
+    const workingOn = state.state.global ? state.state.global.workingOn : null;
 
     return {
-        isAuthenticated,
-        userType,
-        workingOn
+        user,
+        rootPath,
+        workingOn,
+        config: state.state.config
     }
 }
 

@@ -12,7 +12,7 @@ const propTypes = {
             secondColumn: PropTypes.string.isRequired
         }),
     })).isRequired,
-    activeItem: PropTypes.object,
+    activeItemID: PropTypes.string,
     handleItemClick: PropTypes.func.isRequired,
     isUpdating: PropTypes.bool
 };
@@ -37,7 +37,7 @@ export default class DoubleSelectableBoxController extends Component {
                             <DoubleSelectableBoxItem
                                 key={index}
                                 {...item}
-                                isSelected={this.props.activeItem && item.id === this.props.activeItem.id}
+                                isSelected={this.props.activeItemID && item.id === this.props.activeItemID}
                                 handleClick={this.bindItemClick}
                             />
                         )
