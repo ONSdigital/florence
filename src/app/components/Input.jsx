@@ -69,7 +69,7 @@ export default class Input extends Component {
                     <input
                         id={this.props.id}
                         type={this.state.type}
-                        className="input input__text"
+                        className={"input" + (this.state.displayShowHide ? " input--show-hide" : "")}
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
