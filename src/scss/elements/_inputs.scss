@@ -24,6 +24,10 @@
 
     }
 
+    &--show-hide {
+        padding-right: $gutter * 3;
+    }
+
     &__textarea {
         height: auto;
         min-height: ($lineheight * 5);
