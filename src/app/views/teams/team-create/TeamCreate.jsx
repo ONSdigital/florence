@@ -141,19 +141,19 @@ class TeamCreate extends Component {
                 so that we can control it from this component when we need to clear it after submit. This relies on the collections screen refactoring to be merged in 
                 */}
                 <div className="form__input">
-                    <label htmlFor="team-name">Team name</label>
+                    <label className="form__label" htmlFor="team-name">Team name</label>
+                    {this.state.input.error && 
+                        <div className="error-msg">{this.state.input.error}</div>
+                    }
                     <input 
                         type="text" 
                         id="team-name" 
-                        className="input input__text" 
+                        className="input" 
                         disabled={this.state.isAwaitingResponse} 
                         value={this.state.input.value} 
                         onChange={this.handleFormInput}
                         onBlur={this.handleFormBlur} 
                     />
-                    {this.state.input.error && 
-                        <div className="error-msg">{this.state.input.error}</div>
-                    }
                 </div>
                 <button className="btn btn--positive" disabled={this.state.isAwaitingResponse}>Create</button>
                 {this.state.isAwaitingResponse &&
