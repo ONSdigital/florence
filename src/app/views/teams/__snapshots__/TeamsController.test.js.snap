@@ -67,12 +67,14 @@ exports[`Admin users have option to edit teams 1`] = `
           className="form__input"
         >
           <label
+            className="form__label"
             htmlFor="team-name"
           >
             Team name
           </label>
+          
           <input
-            className="input input__text"
+            className="input"
             disabled={false}
             id="team-name"
             onBlur={[Function]}
@@ -80,7 +82,6 @@ exports[`Admin users have option to edit teams 1`] = `
             type="text"
             value=""
           />
-          
         </div>
         <button
           className="btn btn--positive"
@@ -288,12 +289,14 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
           className="form__input"
         >
           <label
+            className="form__label"
             htmlFor="team-name"
           >
             Team name
           </label>
+          
           <input
-            className="input input__text"
+            className="input"
             disabled={false}
             id="team-name"
             onBlur={[Function]}
@@ -301,7 +304,6 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
             type="text"
             value=""
           />
-          
         </div>
         <button
           className="btn btn--positive"
