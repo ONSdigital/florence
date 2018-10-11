@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { shallow, mount } from 'enzyme';
 import {CollectionDetailsController, mapStateToProps} from './CollectionDetailsController';
+import CollectionDetails from './CollectionDetails';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION } from '../../../config/actions';
+import { MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from '../../../config/actions';
 
 console.error = () => {};
 
@@ -48,6 +49,7 @@ const defaultProps = {
         dispatchedActions.push(action);
     },
     rootPath: '/florence',
+    enableDatasetImport: false,
     routes:[{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -160,10 +162,12 @@ describe("When the active collection parameter changes", () => {
     it("from one collection ID to another, it updates collection name and date instantly", () => {
         component.setProps({collectionID: "different-collection-12345"});
         component.setProps({collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c"});
-        expect(dispatchedActions[1].collection).toBeTruthy();
-        expect(dispatchedActions[1].collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
-        expect(dispatchedActions[1].collection.name).toBe("asdasdasd");
-        expect(dispatchedActions[1].collection.type).toBe("manual");
+        const updateActiveCollectionAction = dispatchedActions.filter(action => action.type === UPDATE_ACTIVE_COLLECTION);
+        const action = updateActiveCollectionAction[updateActiveCollectionAction.length-1];
+        expect(action.collection).toBeTruthy();
+        expect(action.collection.id).toBe("asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c");
+        expect(action.collection.name).toBe("asdasdasd");
+        expect(action.collection.type).toBe("manual");
     });
     
     it("from one collection ID to `/collections`, it hides the collection details", () => {
@@ -370,7 +374,10 @@ describe("Map state to props function", () => {
                     name: "A collection"
                 }]
             },
-            rootPath: "/florence"
+            rootPath: "/florence",
+            config: {
+                enableDatasetImport: false
+            }
         },
         routing: {
             locationBeforeTransitions: {
@@ -402,191 +409,76 @@ describe("Map state to props function", () => {
     });
 });
 
-describe("Approving a collection", () => {
-    // const component = shallow(
-    //     <CollectionsController {...defaultProps}/>
-    // );
-    // const collectionWithInProgressPages = {
-    //     id: "in-progress-collection-123",
-    //     name: "In progress collection",
-    //     inProgress: [{
-    //         uri: "/economy/inflationsandprices/consumerinflation/bulletins/consumerpriceinflation/july2017",
-    //         type: "bulletin",
-    //         description: {
-    //             title: "Consumer Price Inflation",
-    //             edition: "July 2017"
-    //         },
-    //         events: [
-    //             {
-    //                 email: "foobar@email.com",
-    //                 date: "2017-12-14T11:36:03.402Z"
-    //             }
-    //         ]
-    //     }],
-    //     complete: [],
-    //     reviewed: [{
-    //         uri: "/businessindustryandtrade",
-    //         type: "taxonomy_landing_page",
-    //         description: {
-    //             title: "Business industry and trade"
-    //         },
-    //         events: [
-    //             {
-    //                 email: "foobar@email.com",
-    //                 date: "2017-12-14T11:36:03.402Z"
-    //             },
-    //             {
-    //                 email: "foobar@email.com",
-    //                 date: "2017-12-10T10:21:43.402Z"
-    //             }
-    //         ]
-    //     }]
-    // }
+describe("Clicking 'edit' for a page", () => {
+    const props = {
+        ...defaultProps,
+        collectionID: "my-collection-12345",
+        activeCollection: {
+            inProgress: [{
+                type: "dataset_details",
+                id: "cpi",
+                uri: "/datasets/cpi",
+                lastEditedBy: "test.user@email.com"
+            }],
+            complete: [{
+                type: "dataset_version",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com"
+            }],
+            reviewed: []
+        }
+    };
+    const editClickComponent = shallow(
+        <CollectionDetailsController {...props} />
+    )
 
-    // const collectionThatsReadyToApprove = {
-    //     id: "ready-to-approve-collection-123",
-    //     name: "Ready to approve collection",
-    //     inProgress: [],
-    //     complete: [],
-    //     reviewed: [{
-    //         uri: "/businessindustryandtrade",
-    //         type: "taxonomy_landing_page",
-    //         description: {
-    //             title: "Business industry and trade"
-    //         },
-    //         events: [
-    //             {
-    //                 email: "foobar@email.com",
-    //                 date: "2017-12-14T11:36:03.402Z"
-    //             },
-    //             {
-    //                 email: "foobar@email.com",
-    //                 date: "2017-12-10T10:21:43.402Z"
-    //             }
-    //         ]
-    //     }]
-    // };
+    it("routes to the datasets screen for dataset/versions", () => {
+        const datasetURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com"}, "inProgress");
+        expect(datasetURL).toBe("/florence/datasets/cpi/metadata?collection=my-collection-12345");
 
-    // it("shows a notification when an error occurs", () => {
-    //     notifications.add.mockClear();
-    //     expect(notifications.add.mock.calls.length).toBe(0);
-    //     component.setProps({activeCollection: collectionWithInProgressPages});
-    //     component.instance().handleCollectionApproveClick();
-    //     expect(notifications.add.mock.calls.length).toBe(1);
-    // });
+        const versionURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_version", datasetID: "cpi", id:"cpi/editions/current/versions/2", uri:"/datasets/cpi/editions/current/versions/2", edition: "current", version: "2", lastEditedBy: "test.user@email.com"}, "complete");
+        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata?collection=my-collection-12345");
+    });
 
-    // it("exits the function if the collection isn't in the correct state to be approved", () => {
-    //     component.setProps({activeCollection: collectionWithInProgressPages});
-    //     expect(component.instance().handleCollectionApproveClick()).toBe(false);
-    // });
-
-    // it("shows a notification if the collection isn't in the correct state to be approved", async () => {
-    //     notifications.add.mockClear();
-    //     expect(notifications.add.mock.calls.length).toBe(0);
-    //     component.setProps({activeCollection: collectionThatsReadyToApprove});
-    //     const returnValue = await component.instance().handleCollectionApproveClick();
-    //     await component.update();
-    //     expect(returnValue).not.toBe(false); // confirms thats it was a valid collection to be approved but there was an issue from the API response
-    //     expect(notifications.add.mock.calls.length).toBe(1);
-    // });
-
-    // it("on successful approval the state updates to show that collection's pre-publish process is in progress", async () => {
-    //     const collectionsArray = component.props('collections');
-    //     const props = {
-    //         params: {
-    //             collectionID: 'ready-to-approve-collection-123'
-    //         },
-    //         activeCollection: collectionThatsReadyToApprove
-    //     };
-    //     component.setState({collections: [
-    //         ...collectionsArray, 
-    //         collectionThatsReadyToApprove
-    //     ]});
-    //     component.setProps(props);
-    //     component.instance().handleCollectionApproveClick();
-    //     await component.update();
-    //     expect(component.state('collections').find(collection => collection.id === 'ready-to-approve-collection-123').status.neutral).toBe(true);
-    // });
+    it("routes to the workspace for a non-dataset pages", () => {
+        const pageURL = editClickComponent.instance().handleCollectionPageEditClick({type: "article", uri:"/economy/grossdomesticproductgdp/articles/ansarticle"});
+        expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+    });
 });
 
-describe("Deleting a page from a collection", () => {
-    it("calls mapper function to exclude removed pages from collection details state");
-    // const props = {
-    //     ...defaultProps,
-    //     activeCollection: collection
-    // }
-    // const component = shallow(
-    //     <CollectionsController {...props} />
-    // )
-
-    // expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
+describe("Dataset import functionality", () => {
+    it("disabled in collection details when disabled in global config", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            activeCollection: {
+                id: "test-collection-12345"
+            },
+            enableDatasetImport: false
+        }
+        const component = shallow(
+            <CollectionDetailsController {...props} />
+        );
+        
+        expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(false);
+    });
     
-    // it("removes the page from the collection details", () => {
-    //     component.instance().handleCollectionPageDeleteClick(
-    //         collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
-    //     );
-    //     expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual([collection.inProgress[1]]);
-    // });
-
-    // it("redirects the user to the collection details", () => {
-    //     setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-collection-12345#test-page-1");
-    //     const newURL = component.instance().handleCollectionPageDeleteClick(
-    //         "test-page-1", "Test page 1", 'inProgress'
-    //     );
-    //     expect(newURL).toBe('/florence/collections/test-collection-12345');
-    // });
-
-    // it("undo puts the page back into the collection details", () => {
-    //     component.instance().handleCollectionPageDeleteUndo(() => {}, collection.inProgress[0].uri, '12345');
-    //     expect(component.instance().mapPagesAndPendingDeletes('inProgress')).toEqual(collection.inProgress);
-    // });
-    
-    // it("undo redirects the user to the undeleted page", () => {
-    //     const newURL = component.instance().handleCollectionPageDeleteUndo(() => {}, 'test-page-1', '12345');
-    //     expect(newURL).toBe("/florence/collections/test-collection-12345#test-page-1");
-    // });
-
-    // it("a timer deletes the page from the server after the click of 'delete'", async () => {
-    //     await component.instance().handleCollectionPageDeleteClick(
-    //         collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
-    //     );
-    //     await jest.runOnlyPendingTimers();
-    //     expect(dispatchedAction.collection.inProgress.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-    //     expect(dispatchedAction.collection.complete.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-    //     expect(dispatchedAction.collection.reviewed.some(page => page.uri === collection.inProgress[0].uri)).toBe(false);
-    //     expect(dispatchedAction.collection.inProgress.length).toBe(1);
-    // });
-
-    // it("updates whether the collection can be approved", async () => {
-    //     const customActiveCollection = {
-    //         ...collection,
-    //         inProgress: [collection.inProgress[0]],
-    //         complete: [],
-    //         reviewed: [collection.inProgress[1]]
-    //     }
-    //     component.setProps({activeCollection: customActiveCollection});
-    //     await component.instance().handleCollectionPageDeleteClick(
-    //         collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
-    //     );
-    //     await jest.runOnlyPendingTimers();
-    //     expect(dispatchedAction.collection.canBeApproved).toEqual(true);
-    //     expect(dispatchedAction.collection.canBeDeleted).toEqual(false);
-    // });
-    
-    // it("updates whether the collection can be deleted", async () => {
-    //     const customActiveCollection = {
-    //         ...collection,
-    //         inProgress: [collection.inProgress[0]],
-    //         complete: [],
-    //         reviewed: [],
-    //         deletes: []
-    //     }
-    //     component.setProps({activeCollection: customActiveCollection});
-    //     await component.instance().handleCollectionPageDeleteClick(
-    //         collection.inProgress[0].uri, collection.inProgress[0].description.title, 'inProgress'
-    //     );
-    //     await jest.runOnlyPendingTimers();
-    //     expect(dispatchedAction.collection.canBeApproved).toEqual(false);
-    //     expect(dispatchedAction.collection.canBeDeleted).toEqual(true);
-    // });
+    it("enabled in collection details when enabled in global config", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            activeCollection: {
+                id: "test-collection-12345"
+            },
+            enableDatasetImport: true
+        }
+        const component = shallow(
+            <CollectionDetailsController {...props} />
+        );
+        
+        expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(true);
+    });
 });

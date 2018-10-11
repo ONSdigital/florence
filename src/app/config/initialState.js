@@ -1,4 +1,7 @@
 export const initialState = {
+    config: {
+        enableDatasetImport: false
+    },
     user: {
         isAuthenticated: false,
         email: '',
@@ -17,7 +20,10 @@ export const initialState = {
     },
     datasets: {
         all: [],
-        jobs: []
+        jobs: [],
+        activeInstance: {},
+        recipes: [],
+        activeJob: {}
     },
     collections: {
         all: [],
