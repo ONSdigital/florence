@@ -414,6 +414,10 @@ export class CollectionDetailsController extends Component {
                 this.props.dispatch(updatePagesInActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
+                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri);
+                this.setState({
+                    pendingDeletedPages: updatedPendingDeletes
+                });
                 window.clearTimeout(deletePageTimer);
                 collectionDetailsErrorNotifications.deletePage(error, deletedPage.title, this.props.collectionID);
                 console.error("Error deleting page from a collection: ", error);
