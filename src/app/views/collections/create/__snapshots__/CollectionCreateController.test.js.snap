@@ -19,7 +19,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         <input
           accept={undefined}
           autoFocus={false}
-          className="input input__text"
+          className="input"
           disabled={false}
           id="collection-name"
           max={undefined}
@@ -178,7 +178,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             <input
               accept={undefined}
               autoFocus={false}
-              className="input input__text"
+              className="input"
               disabled={false}
               id="publish-date"
               max="2017-10-12"
@@ -205,7 +205,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             <input
               accept={undefined}
               autoFocus={false}
-              className="input input__text"
+              className="input"
               disabled={false}
               id="publish-time"
               max={undefined}
