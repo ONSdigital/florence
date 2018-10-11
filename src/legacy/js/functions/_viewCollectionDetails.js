@@ -53,6 +53,23 @@ function viewCollectionDetails(collectionId, $this) {
         }
         collection.approvalState = approvalStates;
 
+        // temporary code to add API datasets to a collection
+        // this will come from the zebedee collection api when ready
+        if (collection.name === "hasAPIData") {
+            collection.datasets = [
+                {
+                    "edition": "March 2019",
+                    "instance_id": "1078493",
+                    "dataset": {
+                        "id": "DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC",
+                        "title": "COICOP",
+                        "href": "http://localhost:8080/datasets/DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC"
+                    },
+                    "version": 1
+                }
+            ]
+        }
+
         var showPanelOptions = {
             html: window.templates.collectionDetails(collection)
         };
@@ -164,9 +181,9 @@ function viewCollectionDetails(collectionId, $this) {
                 var safePath = checkPathSlashes(path);
                 Florence.globalVars.welsh = false;
             }
-            getPageDataDescription(collectionId, safePath,
-                success = function () {
-                    createWorkspace(safePath, collectionId, 'edit', collection);
+            getPageData(collectionId, safePath,
+                success = function (response) {
+                    createWorkspace(safePath, collectionId, 'edit', collection, null, response.apiDatasetId);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -217,6 +234,40 @@ function viewCollectionDetails(collectionId, $this) {
             //} else {
             //  deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
             //}
+        });
+
+        $('.dataset-delete').click(function () {
+            var instanceId = $(this).attr('data-instanceId');
+
+            function deleteAlert(text) {
+                swal({
+                    title: "Warning",
+                    text: text,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: false
+                }, function (result) {
+                    if (result === true) {
+                        deleteAPIDataset(collectionId, instanceId, function () {
+                                viewCollectionDetails(collectionId);
+                                swal({
+                                    title: "Dataset deleted",
+                                    text: "This dataset has been deleted",
+                                    type: "success",
+                                    timer: 2000
+                                });
+                            }, function (error) {
+                                handleApiError(error);
+                            }
+                        );
+                    }
+                });
+            }
+
+            deleteAlert("Are you sure you want to delete this dataset from the collection?");
+
         });
 
         $('.delete-marker-remove').click(function () {

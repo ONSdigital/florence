@@ -8,7 +8,7 @@
  * @returns {boolean}
  **/
 
-function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
 
     if (stopEventListener) {
@@ -25,7 +25,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-        
+
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -37,6 +37,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // If we're viewing a filterable dataset then redirect the iframe to use the new path
+        if (datasetID){
+          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
@@ -94,13 +98,19 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click', collectionData);
+                loadBrowseScreen(collectionId, 'click', collectionData, datasetID);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPreviewUrl();
+                if(datasetID){
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
+                } else {
+                  Florence.globalVars.pagePath = getPreviewUrl();
+                }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -361,4 +371,3 @@ function toggleDeleteRevertChildren($item) {
 
     $childContainer.find('.page__buttons').toggleClass('deleted');
 }
-

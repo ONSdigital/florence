@@ -3,6 +3,7 @@
     &__label {
         display: block;
         margin-bottom: $lineheight / 3;
+        font-weight: 600;
     }
 
     &__input {
@@ -36,4 +37,27 @@
 .fieldset {
     margin-bottom: $lineheight / 2;
     border: 0;
+
+    &__legend {
+        display: block;
+        margin-bottom: $lineheight / 3;
+        font-weight: 600;
+    }
+}
+
+.error-summary {
+    border: 3px solid $night-shadz;
+    //background-color: lighten($night-shadz, 50);
+    padding: $lineheight;
+    margin: $lineheight 0;
+
+    &__list {
+        margin: $lineheight 0 0 $lineheight;
+
+        &-item {
+            font-weight: 600;
+            color: $night-shadz;
+        }
+
+    }
 }

@@ -125,7 +125,7 @@
             content: 'DA';
         }
     }
-    &--dataset {
+    &--dataset, &--dataset_version, &--dataset_details {
         &:after {
             content: 'DS';
         }
