@@ -391,6 +391,9 @@ export class CollectionDetailsController extends Component {
             if (deletedPage.type === "dataset_version") {
                 return collections.removeDatasetVersion(collectionID, deletedPage.uri, deletedPage.edition, deletedPage.version);
             }
+            if (this.props.enableDatasetImport) {
+                return collections.deletePageIncludingDatasetImport(collectionID, deletedPage.uri);    
+            }
             return collections.deletePage(collectionID, deletedPage.uri);
         };
 
