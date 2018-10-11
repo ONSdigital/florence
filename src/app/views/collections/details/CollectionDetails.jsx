@@ -14,9 +14,10 @@ export const pagePropTypes = {
         email: PropTypes.string,
         date: PropTypes.string
     }),
+    uri: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
-    uri: PropTypes.string.isRequired,
+    version: PropTypes.string,
     type: PropTypes.string
 }
 
@@ -37,6 +38,7 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
     name: PropTypes.string,
+    enableDatasetImport: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
@@ -96,7 +98,7 @@ export class CollectionDetails extends Component {
     renderLastEditText(lastEdit) {   
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
-                return "Error getting 'last edit' details";
+                return "Last edit: information not available";
             }
 
             if (!lastEdit.date || typeof lastEdit.date !== "string") {
@@ -118,31 +120,34 @@ export class CollectionDetails extends Component {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
 
-            return "Error rendering 'last edit' details";
+            return "Error showing 'last edit' details";
         }
     }
 
     renderPageItem(page, state) {
+        const pageID = page.uri;
+        const isActivePage = pageID && this.props.activePageURI === pageID;
         const handlePageClick = () => {
-            this.props.onPageClick(page.uri);
+            this.props.onPageClick(pageID);
         }
         const handleEditClick = () => {
-            this.props.onEditPageClick(page.uri);
+            this.props.onEditPageClick(page, state);
         }
         const handleDeleteClick = () => {
-            this.props.onDeletePageClick(page.uri, page.title, state);
+            this.props.onDeletePageClick(page, state);
         }
+
         return (
-            <li key={page.uri} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (this.props.activePageURI === page.uri ? " active" : "")}>
+            <li key={pageID} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}>
                 <div className="expandable-item__header">
-                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "")} isActive={this.props.activePageURI === page.uri} />
+                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")} isActive={isActivePage} />
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ? "Review" : "Edit"}</button>
-                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">Delete</button>
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ?  "Review" : "Edit"}</button>
+                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button" disabled={page.type === "dataset_details" || page.type === "dataset_version"}>Delete</button>
                 </div>
             </li>
         )
@@ -158,7 +163,7 @@ export class CollectionDetails extends Component {
 
     renderInProgress() {
         if (!this.props.inProgress) {
-            return <p className="margin-bottom--2">Error getting in progress pages</p>
+            return <p className="margin-bottom--2">Error rendering in progress pages</p>
         }
 
         if (this.props.inProgress.length === 0) {
@@ -173,7 +178,7 @@ export class CollectionDetails extends Component {
     
     renderWaitingReview() {
         if (!this.props.complete) {
-            return <p className="margin-bottom--2">Error getting pages awaiting review</p>
+            return <p className="margin-bottom--2">Error rendering pages awaiting review</p>
         }
 
         if (this.props.complete.length === 0) {
@@ -188,7 +193,7 @@ export class CollectionDetails extends Component {
     
     renderReviewed() {
         if (!this.props.reviewed) {
-            return <p className="margin-bottom--2">Error getting reviewed pages</p>
+            return <p className="margin-bottom--2">Error rendering reviewed pages</p>
         }
 
         if (this.props.reviewed.length === 0) {
@@ -342,6 +347,9 @@ export class CollectionDetails extends Component {
                     <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
                         <div>
                             <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
+                            {this.props.enableDatasetImport &&
+                                <Link id="import-dataset-link" to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                            }
                             <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
                         </div>
                     </div>

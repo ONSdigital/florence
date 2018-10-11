@@ -68,6 +68,9 @@ job "florence" {
 
       vault {
         policies = ["florence"]
+
+        change_mode   = "signal"
+        change_signal = "SIGTERM"
       }
     }
   }

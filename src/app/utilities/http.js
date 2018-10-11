@@ -15,7 +15,7 @@ export default class http {
     * @returns {Promise} which returns the response body in JSON format
     */
     static delete(uri, willRetry, callerHandles401) {
-        return request("DELETE", uri, willRetry, undefined, null, callerHandles401);
+        return request("DELETE", uri, willRetry, undefined, undefined, callerHandles401);
     }
 
     /**
@@ -26,7 +26,7 @@ export default class http {
      * @returns {Promise} which returns the response body in JSON format
      */
     static get(uri, willRetry, callerHandles401) {
-        return request("GET", uri, willRetry, undefined, null, callerHandles401);
+        return request("GET", uri, willRetry, undefined, undefined, callerHandles401);
     }
 
     /**

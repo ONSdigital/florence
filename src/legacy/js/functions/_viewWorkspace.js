@@ -4,6 +4,7 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
+
   Florence.globalVars.pagePath = currentPath;
 
   if (menu === 'browse') {
@@ -22,4 +23,3 @@ function viewWorkspace(path, collectionId, menu) {
     loadPageDataIntoEditor(currentPath, collectionId);
   }
 }
-

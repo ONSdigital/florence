@@ -175,7 +175,9 @@ test("GET request response without a 'content-type' header logs an error", async
     }
 });
 
-test("GET request response without a 'content-type' header returns a RUNTIME_ERROR to the caller", async () => {
+// We're skipping this test because it will fail until we fix a bug in one of our APIs which means we have to just try to handle requests with no content-type header
+// However, we should reinstate the test once that bug is fix in the API
+test.skip("GET request response without a 'content-type' header returns a RUNTIME_ERROR to the caller", async () => {
     fetch.mockResponse(JSON.stringify({}), 
         {
             "headers": new Headers({}),
