@@ -3,13 +3,12 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { push } from 'react-router-redux';
 import objectIsEmpty from 'is-empty-object';
-
 import CollectionCreateController from './create/CollectionCreateController';
 import {pagePropTypes} from './details/CollectionDetails';
 import collections from '../../utilities/api-clients/collections';
-import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn} from '../../config/actions';
-import notifications from '../../utilities/notifications';
 import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
+import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn } from '../../config/actions';
+import notifications from '../../utilities/notifications';
 import CollectionDetailsController from './details/CollectionDetailsController';
 import collectionMapper from './mapper/collectionMapper';
 import cookies from '../../utilities/cookies'
@@ -193,7 +192,7 @@ export class CollectionsController extends Component {
             <div>
                 <div className="grid grid--justify-space-around">
                     <div className={this.isViewer ? "grid__col-8" : "grid__col-4"}>
-                        <h1>Select a collection</h1>
+                        <h1 className="text-center">Select a collection</h1>
                         <DoubleSelectableBoxController
                             items={this.props.collections}
                             activeItemID={this.props.params.collectionID}
@@ -204,7 +203,7 @@ export class CollectionsController extends Component {
                     </div>
                     {!this.isViewer && 
                         <div className="grid__col-4">
-                            <h1>Create a collection</h1>
+                            <h1 className="text-center">Create a collection</h1>
                             <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
                         </div>
                     }

@@ -229,4 +229,3 @@ function staticLandingPageEditor(collectionId, data) {
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
-

@@ -8,7 +8,7 @@
 
 function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
-    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData, datasetId;
     var parentUrlData = parentUrl + "/data";
 
     $.ajax({
@@ -52,8 +52,8 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             pageData = pageTypeDataT8(pageType);
             pageTitle = $('#pagename').val();
             pageData.description.title = pageTitle;
-            apiDatsetID = $('#apiDatasetId span').text();
-            pageData.apiDatasetId = apiDatsetID;
+            apiDatasetID = $('#apiDatasetId span').text();
+            pageData.apiDatasetId = apiDatasetID;
             uriSection = "datasets";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
@@ -64,7 +64,29 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
                 return true;
             }
             else {
-                saveContent(collectionId, safeNewUri, pageData);
+                isUpdatingModal.add();
+
+                // on creation use /page end point instead of content.
+                // the /page end point will create the dataset entry
+                // in the database
+
+                $.ajax({
+                    url: "/zebedee/page/" + collectionId + "?uri=" + safeNewUri + "/data.json",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'POST',
+                    data: JSON.stringify(pageData),
+                    success: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        createWorkspace(safeNewUri, collectionId, 'edit', null, null, pageData.apiDatasetId);
+                    },
+                    error: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        handleApiError(response);
+                    }
+                });
             }
             e.preventDefault();
         });
@@ -72,29 +94,42 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
 
     // Call the recipe API, get data and create elements.
     function getRecipes() {
-      $.ajax({
-          url: 'http://localhost:8081/recipes',
-          dataType: 'json',
-          crossDomain: true,
-          success: function (recipeData) {
-            var templateData = {};
-            $.each(recipeData.items, function(i, v) {
-              // Get the dataset names and id's
-              var datasetName = v.alias,
-                  datasetId = v.output_instances[0].dataset_id;
-              // Create elements, store data in data attr to be used later
-              templateData  = {
-                  content: '<li><h1>' + datasetName + '</h1><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--inverse margin-left--0 btn-import">Import</button></li>'
-              };
+    $.when(
+        $.ajax({
+            url: '/recipes',
+            dataType: 'json',
+            crossDomain: true,
+        }),
+        $.ajax({
+            url: '/dataset/datasets',
+            dataType: 'json',
+            crossDomain: true,
+        })
+    ).then(function(recipeResponse, datasetResponse){
+        const recipesWithoutExistingDataset = recipeResponse[0].items.filter(recipeItem => {
+            const doesMatchRecipe = datasetResponse[0].items.some(datasetItem => {
+                return recipeItem.output_instances[0].dataset_id === datasetItem.id
             });
-            // Load modal and add the data
-            viewRecipeModal(templateData);
-          },
-          error: function () {
-            sweetAlert("There is a problem fetching the data");
-            loadCreateScreen(parentUrl, collectionId);
-          }
-      });
+            return !doesMatchRecipe;
+        });
+
+        var templateData = {};
+        var content = "";
+        $.each(recipesWithoutExistingDataset, function(i, v) {
+            // Get the dataset names and id's
+            var datasetAlias = v.alias;
+            var datasetName = v.output_instances[0].title;
+            var datasetId = v.output_instances[0].dataset_id;
+            // Create elements, store data in data attr to be used later
+            content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+        });
+        templateData.content = content;
+        // Load modal and add the data
+        viewRecipeModal(templateData);
+    }).fail(function(){
+        sweetAlert("There is a problem fetching the data");
+        loadCreateScreen(parentUrl, collectionId);
+    })
 
       // Add the data to the details panel
       // TO DO - A call will need to be made to the dataset API when it's ready
@@ -104,18 +139,23 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             getDatasetName = $(this).data('datasetname');
         $('.btn-get-recipes, .dataset-list').remove();
         $('.btn-page-create').show();
+        if($('.apiDatasetBlock').length) {
+          $('.apiDatasetBlock').remove();
+        }
         $('.edition').append(
-          '<div id="apiDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
+          '<div class="apiDatasetBlock">' +
+          '<div id="apiDatasetId">Connected dataset ID: <span>'+getDatasetID+'</span></div>' +
           '<label for="apiDatasetName">Dataset name</label>' +
           '<input id="apiDatasetName" type="text" value="'+getDatasetName+'" />'+
           // Hidden input for #pagename so it can be validated
           // Populated with #apiDatasetName value on submit
-          '<input id="pagename" type="hidden" value="" />'
+          '<input id="pagename" type="hidden" value="" />' +
+          '</div>'
         );
         $('#js-modal-recipe').remove();
         return false;
       });
-
+      
     }
 
     function pageTypeDataT8(pageType) {

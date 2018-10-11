@@ -4,9 +4,6 @@ export default class collections {
 
     static get(collectionID) {
         return http.get(`/zebedee/collectionDetails/${collectionID}`)
-            .then(response => {
-                return response;
-            })
     }
     
     static getAll() {
@@ -36,12 +33,78 @@ export default class collections {
         return http.put(`/zebedee/collection/${collectionID}`, body);
     }
 
+    // In CMD we're using a new endpoint to delete pages (https://github.com/ONSdigital/zebedee/blob/cmd-develop/zebedee-cms/src/main/java/com/github/onsdigital/zebedee/api/Page.java)
+    // which means that this method only works once Zebedee has been updated to CMD. For now, we need to be able to continue using the old
+    // `deletePage` method so that we can still delete content before CMD is merged into prod Zebedee. This is why I've created this very
+    // verbose and unusual method name, so our controllers can choose which one to use.
+    static deletePageIncludingDatasetImport(collectionID, pageURI) {
+        return http.delete(`/zebedee/page/${collectionID}?uri=${pageURI}`);
+    }
+
     static deletePage(collectionID, pageURI) {
         return http.delete(`/zebedee/content/${collectionID}?uri=${pageURI}`);
     }
 
     static cancelDelete(collectionID, pageURI) {
         return http.delete(`/zebedee/DeleteContent/${collectionID}?uri=${pageURI}`);
+    }
+
+    static addDataset(collectionID, datasetID) {
+        const body = {state: "InProgress"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setDatasetStatusToComplete(collectionID, datasetID) {
+        const body = {state: "Complete"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setDatasetStatusToReviewed(collectionID, datasetID) {
+        const body = {state: "Reviewed"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static removeDataset(collectionID, datasetID) {
+        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}`);
+        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true)
+        //     .then(response => {
+        //         return response;
+        //     });
+    }
+
+    static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        const body = {state: "InProgress"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {
+        const body = {state: "Complete"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
+    }
+
+    static setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID) {
+        const body = {state: "Reviewed"};
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
+    }
+
+    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`);
+        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
+        //     .then(response => {
+        //         return response;
+        //     });
     }
 
     static async checkContentIsInCollection(pageURI) {

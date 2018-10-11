@@ -19,7 +19,6 @@ const propTypes = {
     })),
     dispatch: PropTypes.func.isRequired,
     onDeleteSuccess: PropTypes.func.isRequired,
-    rootPath: PropTypes.string.isRequired,
     pathname: PropTypes.string.isRequired
 }
 
@@ -71,7 +70,6 @@ export class TeamDeleteController extends Component {
                 return team.name !== this.props.name;
             })
             this.props.dispatch(updateAllTeams(newTeams));
-            this.props.dispatch(push(`${this.props.rootPath}/teams`));
             this.props.onDeleteSuccess();
         }).catch(error => {
             this.setState({formIsPosting: false});
@@ -149,7 +147,6 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         teams: state.state.teams.all,
-        rootPath: state.state.rootPath,
         pathname: state.routing.locationBeforeTransitions.pathname
     }
 }
