@@ -6,9 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"mime"
-	"net"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
@@ -68,7 +66,7 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	routerProxy := reverseProxy.Create(routerURL, director)
+	routerProxy := reverseProxy.Create(routerURL, frontendRouterDirector)
 
 	zebedeeURL, err := url.Parse(cfg.ZebedeeURL)
 	if err != nil {
@@ -82,7 +80,7 @@ func main() {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
-	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
+	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, recipeAPIDirector)
 
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
@@ -278,6 +276,10 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 }
 
 func zebedeeDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "zebedee",
+	})
 	if c, err := req.Cookie(`access_token`); err == nil && len(c.Value) > 0 {
 		req.Header.Set(`X-Florence-Token`, c.Value)
 	}
@@ -291,15 +293,42 @@ func director(req *http.Request) {
 }
 
 func importAPIDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "import-data",
+	})
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
 }
 
+func recipeAPIDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "recipe-api",
+	})
+}
+
 func tableDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "table-builder",
+	})
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
+func frontendRouterDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "frontend-router",
+	})
+	director(req)
+}
+
 func datasetAPIDirector(req *http.Request) {
+	log.DebugR(req, "Proxying request", log.Data{
+		"destination": req.URL,
+		"proxy_name":  "dataset-api",
+	})
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
 }
@@ -363,33 +392,6 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 		// 	break
 		// }
 	}
-}
-
-// FIXME this is to fix go-ns reverse proxy replacing host name so that
-// babbage has correct values when using {{location.hostname}} in handlebars
-func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
-	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
-	director := proxy.Director
-	proxy.Transport = &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   5 * time.Second,
-			KeepAlive: 30 * time.Second,
-		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   5 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-	proxy.Director = func(req *http.Request) {
-		director(req)
-		//req.Host = proxyURL.Host
-		if directorFunc != nil {
-			directorFunc(req)
-		}
-	}
-
-	return proxy
 }
 
 type florenceLogEvent struct {
