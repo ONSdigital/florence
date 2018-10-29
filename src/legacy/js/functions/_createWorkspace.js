@@ -61,9 +61,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
-            $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
+            $('#nav--workspace__welsh').empty().append('<a href="javascript:void(0)">Language: English</a>');
         } else {
-            $('#nav--workspace__welsh').empty().append('<a href="#">Language: Welsh</a>');
+            $('#nav--workspace__welsh').empty().append('<a href="javascript:void(0)">Language: Welsh</a>');
         }
 
         /* Bind clicking */
