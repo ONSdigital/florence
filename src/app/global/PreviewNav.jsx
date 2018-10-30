@@ -12,7 +12,7 @@ const propTypes = {
     preview: PropTypes.object.isRequired
 }
 
-class PreviewNav extends Component {
+export class PreviewNav extends Component {
     constructor(props) {
         super(props);
 
@@ -49,9 +49,13 @@ class PreviewNav extends Component {
     }
 
     handleSelectChange(event) {
-        const uri = event.target.value;
+        const selection = event.target.value;
+        if (selection === "default-option") {
+            return;
+        }
+        const uri = selection;
         this.props.dispatch(updateSelectedPreviewPage(uri));
-        this.props.dispatch(push(`${window.location.pathname}?url=${uri}`));
+        this.props.dispatch(push(`${this.props.rootPath}/collections/${this.props.workingOn.id}/preview?url=${uri}`));
     }
 
     render() {
@@ -73,6 +77,8 @@ PreviewNav.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         preview: state.state.preview,
+        rootPath: state.state.rootPath,
+        workingOn: state.state.global.workingOn || {}
     }
 }
 
