@@ -9,7 +9,9 @@ import Select from '../components/Select'
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    preview: PropTypes.object.isRequired
+    preview: PropTypes.object.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    workingOn: PropTypes.object.isRequired
 }
 
 export class PreviewNav extends Component {
