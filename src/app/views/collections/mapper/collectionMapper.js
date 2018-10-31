@@ -33,6 +33,8 @@ export default class collectionMapper {
                 inProgress: collection.inProgress,
                 complete: collection.complete,
                 reviewed: collection.reviewed,
+                datasets: collection.datasets,
+                datasetVersions: collection.datasetVersions,
                 teams: collection.teamsDetails ? collection.teamsDetails.map(team => ({
                     id: team.id.toString(),
                     name: team.name
@@ -82,7 +84,7 @@ export default class collectionMapper {
                     return updatedPage
                 });
             };
-            const mappedCollection = {
+            const collectionWithPages = {
                 ...collection,
                 canBeApproved,
                 canBeDeleted,
@@ -90,10 +92,81 @@ export default class collectionMapper {
                 complete: mapPageToState(collection.complete),
                 reviewed: mapPageToState(collection.reviewed)
             };
-            return mappedCollection;
+            const collectionWithDatasetsAndPages = this.datasetsToCollectionState(collectionWithPages);
+            return {
+                ...collectionWithDatasetsAndPages,
+                canBeDeleted: this.collectionCanBeDeleted(collectionWithDatasetsAndPages),
+                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages)
+            };
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collection GET response to Florence's state\n${JSON.stringify(error)}`});
             console.error("Error mapping collection GET response to Florence's state", error);
+            return null;
+        }
+    }
+
+    static datasetsToCollectionState(collection) {
+        try {
+            const mapVersion = version => ({
+                title: version.title,
+                edition: version.edition,
+                version: version.version,
+                datasetID: version.id,
+                id: `${version.id}/editions/${version.edition}/versions/${version.version}`,
+                type: "dataset_version",
+                uri: `/datasets/${version.id}/editions/${version.edition}/versions/${version.version}`,
+                lastEditedBy: version.lastEditedBy
+            });
+    
+            const mapDataset = dataset => ({
+                title: dataset.title,
+                type: "dataset_details",
+                id: dataset.id,
+                uri: `/datasets/${dataset.id}`,
+                lastEditedBy: dataset.lastEditedBy
+            });
+    
+            const mapDatasets = () => {
+                let inProgress = collection.inProgress || [];
+                let complete = collection.complete || [];
+                let reviewed = collection.reviewed || [];
+                
+                if (collection.datasetVersions) {
+                    collection.datasetVersions.forEach(version => {
+                        if (version.state === 'InProgress') {
+                            inProgress.push(mapVersion(version));
+                        }
+                        if (version.state === 'Complete') {
+                            complete.push(mapVersion(version));
+                        }
+                        if (version.state === 'Reviewed') {
+                            reviewed.push(mapVersion(version));
+                        }
+                    });
+                }
+    
+                if (collection.datasets) {
+                    collection.datasets.forEach(dataset => {
+                        if (dataset.state === 'InProgress') {
+                            inProgress.push(mapDataset(dataset));
+                        }
+                        if (dataset.state === 'Complete') {
+                            complete.push(mapDataset(dataset));
+                        }
+                        if (dataset.state === 'Reviewed') {
+                            reviewed.push(mapDataset(dataset));
+                        }
+                    });
+                }
+    
+                return {inProgress, complete, reviewed};
+    
+            };
+    
+            return {...collection, ...mapDatasets()};
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collection datasets response to Florence's state\n${JSON.stringify(error)}`});
+            console.error("Error mapping collection datasets response to Florence's state", error);
             return null;
         }
     }

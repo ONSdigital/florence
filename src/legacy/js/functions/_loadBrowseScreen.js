@@ -1,5 +1,4 @@
-function loadBrowseScreen(collectionId, click, collectionData) {
-
+function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     // Get collection data if it's undefined and re-run the function once request has returned
     if (!collectionData) {
         getCollection(collectionId, success = function(getCollectionResponse) {
@@ -65,30 +64,55 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 // Bind the actions for a click on a browse tree item
-function bindBrowseTreeClick() {
+function bindBrowseTreeClick(collectionId) {
     $('.js-browse__item-title').click(function () {
         var $this = $(this),
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
-            baseURL = Florence.babbageBaseUrl;
-            isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations');
-
-        if (uri) {
-            var newURL = baseURL + uri;
-
-            treeNodeSelect(newURL);
-
-            // Update iframe location which will send change event for iframe to update too
-            document.getElementById('iframe').contentWindow.location.href = newURL;
-            $('.browser-location').val(newURL);
-
-        } else if (!uri && isVisualisationsDirectory) {
-            // This is the data vis directory - handle differently
-            openVisDirectory();
+            baseURL = Florence.babbageBaseUrl,
+            isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations'),
+            datasetID;
+        
+        // Check if this is an api and get the dataset ID from Zebedee.
+        if($this.hasClass('page__item--api_dataset_landing_page')){
+          getPageData(collectionId, uri,
+              success = function (response) {
+                  datasetID = response.apiDatasetId;
+                  updatePreviewAndBrowseTree(datasetID);
+              },
+              error = function (response) {
+                  handleApiError(response);
+              }
+          );
         } else {
+          updatePreviewAndBrowseTree();
+        }
 
-            // Set all directories above it in the tree to be active when a directory clicked
-            selectParentDirectories($this);
+        function updatePreviewAndBrowseTree(datasetID){
+          if (uri) {
+              var newURL = baseURL + uri;
+              var iframeURL = newURL;
+
+              treeNodeSelect(newURL);
+
+              
+              // If this is an api landing page then go to the /datasets/{datasetID} path
+              if (datasetID) {
+                  iframeURL = '/datasets/' + datasetID;
+                }
+
+                // Update iframe location which will send change event for iframe to update too
+              document.getElementById('iframe').contentWindow.location.href = iframeURL;
+              $('.browser-location').val(newURL);
+
+            } else if (!uri && isVisualisationsDirectory) {
+                // This is the data vis directory - handle differently
+                openVisDirectory();
+            } else {
+
+              // Set all directories above it in the tree to be active when a directory clicked
+              selectParentDirectories($this);
+          }
         }
 
         // Open active branches in browse tree

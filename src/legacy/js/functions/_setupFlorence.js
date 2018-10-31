@@ -111,9 +111,26 @@ function setupFlorence() {
         return "";
     });
 
+    Handlebars.registerHelper('if_any', function () {
+        var len = arguments.length - 1;
+        var options = arguments[len];
+        var val = false;
+
+        for (var i = 0; i < len; i++) {
+            if (arguments[i]) {
+                val = true;
+                return options.fn(this);
+            }
+        }
+        return;
+    });
+
 
     Florence.globalVars.activeTab = false;
 
+    var config = window.getEnv();
+    Florence.globalVars.config = config || { enableDatasetImport: false };
+ 
     // load main florence template
     var florence = templates.florence;
 
@@ -190,6 +207,9 @@ function setupFlorence() {
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
             $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--datasets")) {
+            window.history.pushState({}, "", "/florence/datasets");
+            viewController('datasets');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
@@ -369,31 +389,28 @@ function setupFlorence() {
         }
     }
 
-    // FIXME this break the chart builder data input, if it starts with whitespace (which it often needs to for formating)
-    // I've commented the function out for now so a release can go live, but we should fix this properly.
-    
-    // function trimInputWhitespace($input) {
-    //     // We don't trim on the file input type because it's value
-    //     // can't be set for security reasons, which it causes a runtime error
-    //     if ($input.type === "file") {
-    //         return;
-    //     }
+    function trimInputWhitespace($input) {
+        // We don't trim on the file input type because it's value
+        // can't be set for security reasons, which it causes a runtime error
+        if ($input.type === "file") {
+            return;
+        }
 
-    //     var trimmed = $input.val().trim();
-    //     $input.val(trimmed);
-    //     $input.change();
-    //     $input.trigger("input");
-    // }
+        var trimmed = $input.val().trim();
+        $input.val(trimmed);
+        $input.change();
+        $input.trigger("input");
+    }
 
-    // $(document).on('blur', 'input, textarea', function() {
-    //     trimInputWhitespace($(this));
-    // });
+    $(document).on('blur', 'input, textarea', function() {
+        trimInputWhitespace($(this));
+    });
 
-    // $(document).on('keypress', 'input, textarea', function(event) {
-    //     if (event.which !== 13) {
-    //         return;
-    //     }
-    //     trimInputWhitespace($(this));
-    // });
+    $(document).on('keypress', 'input, textarea', function(event) {
+        if (event.which !== 13) {
+            return;
+        }
+        trimInputWhitespace($(this));
+    });
 }
 
