@@ -6,6 +6,9 @@ function viewController(view) {
             // viewCollections();
             window.location.pathname = "/florence/collections";
         }
+        else if (view === 'datasets') {
+            window.location.pathname = "/florence/uploads/data";
+        } 
         else if (view === 'workspace') {
             /*
                 Example of a correct URL:

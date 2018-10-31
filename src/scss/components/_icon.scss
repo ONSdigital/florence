@@ -1,0 +1,377 @@
+//_icons.scss
+
+@mixin small-icon {
+    height: 16px;
+    width: 20px;
+}
+
+$svg: 'https://cdn.ons.gov.uk/assets/images/icon-sprite.svg';
+$baseline: 8px;
+$col: 16px;
+
+@media screen {
+    .icon {
+
+        background-image:url($svg);
+        background-repeat: no-repeat;
+        display: inline-block;
+        background-size: 300px 1000px;
+        height: 36px;
+        width: 40px;
+
+        &-arrow-up {
+
+            &--dark {
+                background-position: -15px -14px;
+                height: ($baseline * 4);
+            }
+
+            &--dark-small {
+                background-position: -138px -14px;
+                @include small-icon;
+                height: ($baseline * 2);
+                background-size: 301px 1000px; // Horrible fix to small icons being blurry, possibly problem with SVG creation/export?
+            }
+
+            &--light {
+                background-position: -79px -14px;
+                height: ($baseline * 4);
+            }
+
+            &--light-small {
+                background-position: -170px -14px;
+                @include small-icon;
+                height: ($baseline * 2);
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-arrow-down {
+
+            &--dark {
+                background-position: -15px -44px;
+            }
+
+            &--dark-small {
+                background-position: -138px -30px;
+                @include small-icon;
+                height: ($baseline * 2);
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -44px;
+            }
+
+            &--light-small {
+                background-position: -170px -30px;
+                @include small-icon;
+                height: ($baseline * 2);
+                background-size: 301px 1000px;
+            }
+        }
+
+        &-arrow-right {
+
+            &--dark {
+                background-position: -16px -478px;
+            }
+
+            &--dark-small {
+                background-position: -138px -246px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -80px -478px;
+            }
+
+            &--light-small {
+                background-position: -170px -246px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+        &-arrow-left {
+
+            &--dark {
+                background-position: -16px -542px;
+            }
+
+            &--dark-small {
+                background-position: -138px -278px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -80px -542px;
+            }
+
+            &--light-small {
+                background-position: -170px -278px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-print {
+
+            &--dark {
+                background-position: -14px -76px;
+                width: 40px; //icon needs more width or else it cuts off one side
+            }
+
+            &--dark-small {
+                background-position: -138px -46px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -76px;
+                width: 40px;
+            }
+
+            &--light-small {
+                background-position: -170px -46px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+        &-email {
+
+            &--dark {
+                background-position: -11px -776px;
+                width: 40px; //icon needs more width or else it cuts off one side
+            }
+
+            &--dark-small {
+                background-position: -138px -398px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -776px;
+                width: 40px;
+            }
+
+            &--light-small {
+                background-position: -170px -398px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-external {
+
+            &--dark {
+                background-position: -14px -126px;
+            }
+
+            &--dark-small {
+                background-position: -138px -71px;
+                @include small-icon;
+                width: 16px;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -126px;
+            }
+
+            &--light-small {
+                background-position: -170px -71px;
+                @include small-icon;
+                width: 16px;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-download {
+
+            &--dark {
+                background-position: -14px -173px;
+            }
+
+            &--dark-small {
+                background-position: -138px -95px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -173px;
+            }
+
+            &--light-small {
+                background-position: -170px -95px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-calendar {
+            &--dark {
+                background-position: -14px -221px;
+            }
+
+            &--dark-small {
+                background-position: -138px -119px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -221px;
+            }
+
+            &--light-small {
+                background-position: -170px -119px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-rss {
+
+            &--dark {
+                background-position: -14px -268px;
+            }
+
+            &--dark-small {
+                background-position: -138px -143px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -268px;
+            }
+
+            &--light-small {
+                background-position: -170px -143px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+        }
+
+
+        &-menu {
+
+            &--dark {
+                background-position: -14px -325px;
+            }
+
+            &--dark-small {
+                background-position: -138px -171px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -325px;
+            }
+
+            &--light-small {
+                background-position: -170px -171px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+        }
+
+
+        &-search {
+
+            &--dark {
+                background-position: -12px -387px;
+                height: ($baseline * 3); // Smaller icon so smaller height & width
+                width: ($col * 2)
+            }
+
+            &--dark-small {
+                background-position: -138px -196px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -74px -387px;
+                height: ($baseline * 3); // Smaller icon so smaller height & width
+                width: ($col * 2)
+            }
+
+            &--light-small {
+                background-position: -170px -196px;
+                @include small-icon;
+                background-size: 301px 1000px;
+            }
+
+        }
+
+        &-return {
+
+            &--dark {
+                background-position: -14px -613px;
+            }
+
+            &--dark-small {
+                background-position: -138px -313px;
+                @include small-icon;
+                height: 18px;
+                background-size: 301px 1000px;
+            }
+
+            &--light {
+                background-position: -79px -613px;
+            }
+
+            &--light-small {
+                background-position: -170px -313px;
+                @include small-icon;
+                height: 18px;
+                background-size: 301px 1000px;
+            }
+        }
+
+        &-info {
+            background-position: -15px -679px;
+            width: 35px;
+            height: 35px;
+
+            &--info-box {
+                position: absolute;
+                left: $col;
+                top: 22px;
+            }
+
+
+            // specific class to all previous versions text to appear along side on grid
+            &--inline {
+                background-position: -15px -677px;
+                width: 35px;
+                height: 35px;
+                display: block;
+                margin-bottom: -26px;
+            }
+
+
+        }
+
+        &-drop-down {
+            background-position: -16px -738px;
+        }
+    }
+
+}

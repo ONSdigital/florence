@@ -14,7 +14,7 @@ exports[`Input without type renders a text input 1`] = `
   <input
     accept={undefined}
     autoFocus={false}
-    className="input input__text"
+    className="input"
     disabled={false}
     id="test-input"
     max={undefined}
@@ -22,7 +22,8 @@ exports[`Input without type renders a text input 1`] = `
     name="test-input"
     onBlur={undefined}
     onChange={undefined}
-    placeholder=""
+    onFocus={[Function]}
+    placeholder={undefined}
     type="text"
     value={undefined}
   />
@@ -44,7 +45,7 @@ exports[`Password prop creates a password input 1`] = `
   <input
     accept={undefined}
     autoFocus={false}
-    className="input input__text"
+    className="input input--show-hide"
     disabled={false}
     id="test-password-input"
     max={undefined}
@@ -52,7 +53,8 @@ exports[`Password prop creates a password input 1`] = `
     name="test-password-input"
     onBlur={undefined}
     onChange={undefined}
-    placeholder=""
+    onFocus={[Function]}
+    placeholder={undefined}
     type="password"
     value={undefined}
   />

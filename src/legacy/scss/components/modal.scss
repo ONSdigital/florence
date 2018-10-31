@@ -52,31 +52,59 @@
         }
     }
 
+    &-title {
+      margin: 0 auto;
+      margin-top: $lineheight * 5;
+      h1 {
+        color:$white;
+        margin: 0;
+      }
+    }
+
     &-recipe {
       // Duplicate of builder__inner, which should later be migrated over to use modal classing
-      background-color: lighten( $pickled-bluewood, 10% );
+      background-color: $white;
       border:3px solid $pickled-bluewood;
       width: $col--6;
-      margin-top: $lineheight * 5;
+      margin-top: $lineheight * 2;
       margin-right: auto;
       margin-left: auto;
-      overflow: hidden;
+      overflow: scroll;
       position: relative;
-
+        height: 600px;
+      &__header {
+        background-color: $pickled-bluewood;
+        padding:20px;
+        h2 {
+          font-family: 'Open Sans', sans-serif;
+          color:$white;
+          margin:0;
+          padding:0;
+          font-size: 18px;
+        }
+      }
       &__body {
         padding: 20px;
         ul {
           list-style:none;
-          border:$white;
-          li:not(:last-child) {
-            padding:0 0 20px;
-            margin:0 0 20px;
-            border-bottom:1px solid $white;
+          li {
+            overflow: hidden;
+            &:not(:last-child) {
+              padding:0 0 20px;
+              margin:0 0 20px;
+              border-bottom:1px solid $ship-gray;
+            }
           }
-          h1 {
-            color:$white;
-            font-size:16px;
-            margin:0;
+          h3 {
+            font-family: 'Open Sans', sans-serif;
+            font-size:14px;
+            line-height: 18px;
+            padding: 0;
+            margin: 0;
+          }
+          .btn {
+            float: right;
+            margin: 0;
           }
         }
       }

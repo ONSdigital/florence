@@ -4,12 +4,21 @@ BINPATH ?= build
 VERSION=`git describe --tags`
 LDFLAGS=-ldflags "-w -s -X main.Version=${VERSION}"
 
+VAULT_ADDR?='http://127.0.0.1:8200'
+
+# The following variables are used to generate a vault token for the app. The reason for declaring variables, is that
+# its difficult to move the token code in a Makefile action. Doing so makes the Makefile more difficult to
+# read and starts introduction if/else statements.
+VAULT_POLICY:="$(shell vault policy write -address=$(VAULT_ADDR) read-psk policy.hcl)"
+TOKEN_INFO:="$(shell vault token create -address=$(VAULT_ADDR) -policy=read-psk -period=24h -display-name=florence)"
+APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
+
 build: generate
 	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
 
 debug: generate
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
-	MONGO_URI=${MONGO_URI} HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
+	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 generate: ${GOPATH}/bin/go-bindata
 	# build the production version
@@ -36,6 +45,11 @@ node-modules:
 watch-src:
 	make node-modules
 	cd src; npm run watch
+
+vault:
+	@echo "$(VAULT_POLICY)"
+	@echo "$(TOKEN_INFO)"
+	@echo "$(APP_TOKEN)"
 
 ${GOPATH}/bin/go-bindata:
 	go get -u github.com/jteeuwen/go-bindata/go-bindata

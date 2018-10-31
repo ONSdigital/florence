@@ -4,7 +4,9 @@ exports[`Radio button matches stored snapshot 1`] = `
 <fieldset
   className="fieldset"
 >
-  <legend>
+  <legend
+    className="fieldset__legend"
+  >
     Select a test radio
   </legend>
   <div

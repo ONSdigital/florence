@@ -9,7 +9,7 @@ function saveContent(collectionId, uri, data, collectionData) {
     postContent(collectionId, uri, JSON.stringify(data), false, false,
         success = function (message) {
             console.log("Updating completed " + message);
-            createWorkspace(uri, collectionId, 'edit', collectionData);
+            createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
             handleApiError(response);
