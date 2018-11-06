@@ -40,7 +40,7 @@
     border-radius: 0;
     width: 100%;
     min-width: 100%;
-    padding: 7px ($gutter / 2);
+    padding: 7px ($gutter * 2.5) 7px ($gutter / 2);
     background-color: transparent;
     position: relative;
     cursor: pointer;
