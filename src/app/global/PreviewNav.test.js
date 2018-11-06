@@ -48,11 +48,9 @@ const component = shallow(
 test("Map pages to select component", () => {
     
     const pagesResult = component.instance().mapPagesToSelect(pages);
-    expect(pagesResult).toContainEqual(
-        {id: "/test-uri", name: "Test title: Edition"},
-        {id: "/test-uri2", name: "Test title 2"}, 
-        {id: "/test-uri3", name: "Test title 3"}
-        )
+    expect(pagesResult[0]).toMatchObject({id: "/test-uri", name: "Test title: Edition"})
+    expect(pagesResult[1]).toMatchObject({id: "/test-uri2", name: "Test title 2"})
+    expect(pagesResult[2]).toMatchObject({id: "/test-uri3", name: "[no title available]: Edition 3"})
 })
 
 describe("Creating page title", () => {
