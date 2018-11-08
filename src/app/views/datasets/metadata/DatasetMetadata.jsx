@@ -114,7 +114,8 @@ export class DatasetMetadata extends Component {
             latestVersion: "",
             status: "",
             license: "",
-            nextRelease: ""
+            nextRelease: "",
+            unitOfMeasure: ""
         };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
@@ -221,6 +222,12 @@ export class DatasetMetadata extends Component {
             if (dataset.keywords && dataset.keywords.length > 0) {
                 this.setState({
                     keywords: dataset.keywords.join(", ")
+                });
+            }
+
+            if (dataset && dataset.unit_of_Measure) {
+                this.setState({
+                    unitOfMeasure: dataset.unit_of_Measure
                 });
             }
 
@@ -427,6 +434,7 @@ export class DatasetMetadata extends Component {
             license: this.state.license,
             national_statistic: this.state.isNationalStat,
             keywords: this.splitKeywordsString(this.state.keywords),
+            unit_of_Measure: this.state.unitOfMeasure,
             qmi: {
                 href: this.state.relatedQMI,
             },
@@ -834,6 +842,13 @@ export class DatasetMetadata extends Component {
                                   id="keywords"
                                   label="Keywords"
                                   placeholder={`e.g. housing, inflation`}
+                                  onChange={this.handleInputChange}
+                                  disabled={this.state.isReadOnly || this.state.isSavingData}
+                              />
+                              <Input
+                                  value={this.state.unitOfMeasure}
+                                  id="unitOfMeasure"
+                                  label="Unit of Measure"
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
