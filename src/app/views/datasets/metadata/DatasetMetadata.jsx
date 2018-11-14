@@ -44,6 +44,7 @@ const propTypes = {
         id: PropTypes.string,
         description: PropTypes.string,
         keywords: PropTypes.array,
+        unit_of_measure: PropTypes.string,
         license: PropTypes.string,
         national_statistic: PropTypes.bool,
         collection_id: PropTypes.string,
@@ -225,9 +226,9 @@ export class DatasetMetadata extends Component {
                 });
             }
 
-            if (dataset && dataset.unit_of_Measure) {
+            if (dataset && dataset.unit_of_measure) {
                 this.setState({
-                    unitOfMeasure: dataset.unit_of_Measure
+                    unitOfMeasure: dataset.unit_of_measure
                 });
             }
 
@@ -434,7 +435,7 @@ export class DatasetMetadata extends Component {
             license: this.state.license,
             national_statistic: this.state.isNationalStat,
             keywords: this.splitKeywordsString(this.state.keywords),
-            unit_of_Measure: this.state.unitOfMeasure,
+            unit_of_measure: this.state.unitOfMeasure,
             qmi: {
                 href: this.state.relatedQMI,
             },
@@ -838,17 +839,17 @@ export class DatasetMetadata extends Component {
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                               <Input
-                                  value={ this.state.keywords}
-                                  id="keywords"
-                                  label="Keywords"
-                                  placeholder={`e.g. housing, inflation`}
+                                  value={this.state.unitOfMeasure}
+                                  id="unitOfMeasure"
+                                  label="Unit of Measure"
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
                               <Input
-                                  value={this.state.unitOfMeasure}
-                                  id="unitOfMeasure"
-                                  label="Unit of Measure"
+                                  value={ this.state.keywords}
+                                  id="keywords"
+                                  label="Keywords"
+                                  placeholder={`e.g. housing, inflation`}
                                   onChange={this.handleInputChange}
                                   disabled={this.state.isReadOnly || this.state.isSavingData}
                               />
