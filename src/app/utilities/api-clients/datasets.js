@@ -26,6 +26,13 @@ export default class datasets {
              });
     }
 
+    static getEditions(datasetID) {
+        return http.get(`/dataset/datasets/${datasetID}/editions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
     static getVersion(datasetID, edition, version) {
         return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`)
              .then(response => {
