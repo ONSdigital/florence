@@ -1678,6 +1678,12 @@ select {
     height: 100%;
     border-width: 0; }
 
+.simple-select-list {
+  border-top: #D1D2D4 solid 1px; }
+  .simple-select-list__item {
+    border-bottom: #D1D2D4 solid 1px;
+    padding: 21px 0; }
+
 .card {
   background-color: #E7E8E9;
   padding: 21px 20px;
