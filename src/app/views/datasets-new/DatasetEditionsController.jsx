@@ -96,28 +96,8 @@ class DatasetEditionsController extends Component {
         this.setState({isFetchingDatasets: true, isFetchingEditions: true, isFetchingLatestVersion: true});
         const dataset = await this.getDataset(datasetID);
         const editions = await this.getEditions(datasetID);
-        const versionPromises = editions.map(async(edition) => {
-            return await this.getVersion(datasetID, edition.id, edition.latestVersion);
-        })
-        const allVersions = await Promise.all(versionPromises).then(version => {
-            return version;
-        })
-        const versionDates = allVersions.map(version => {
-            return date.format(version.release_date, "dd mmmm yyyy")
-        })
-
-        const editionsWithLatestDate = editions.map((edition, index) => {
-            edition.details[1] = `Release date: ${versionDates[index]}`
-            return edition;
-        })
-
-        console.log(editionsWithLatestDate);
-
-        this.setState({editions: editionsWithLatestDate});
-
-
-        //console.log(await this.getVersion(datasetID, editions[0].id, editions[0].latestVersion))
-        console.log(versionDates);
+        const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions)
+        this.setState({editions: editionsWithReleaseDates});
     }
 
     getDataset = async(datasetID) => {
@@ -180,8 +160,34 @@ class DatasetEditionsController extends Component {
         }
     }
 
-    getVersion = (datasetID, edition, version) => {
-        return datasets.getVersion(datasetID, edition, "3").then(versionResp => {
+    mapVersionReleaseDatesToEditions = async(datasetID, editions) => {
+        const allVersions = await this.getAllVersions(datasetID, editions).then(versions => {
+            return versions;
+        });
+        const mappedEditions = editions.map(edition => {
+            allVersions.find(version => {
+                if (version.edition !== edition.id) {
+                    return
+                }
+                edition.details[1] = `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`
+            });
+            return edition;
+        });
+        return mappedEditions;
+    }
+
+    getAllVersions = async(datasetID, editions) => {
+        const versionPromises = editions.map(async(edition) => {
+            return await this.getVersion(datasetID, edition.id, edition.latestVersion);
+        })
+        const allVersions = await Promise.all(versionPromises).then(version => {
+            return version;
+        })
+        return allVersions;
+    }
+
+    getVersion = async(datasetID, edition, version) => {
+        return await datasets.getVersion(datasetID, edition, "3").then(versionResp => {
             return versionResp;
         })
     }
