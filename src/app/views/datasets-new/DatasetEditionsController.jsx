@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -11,7 +10,13 @@ import date from '../../utilities/date'
 import SimpleSelectableList from '../../components/simple-selectable-list/SimpleSelectableList';
 
 const propTypes = {
-
+    routeParams: PropTypes.shape({
+        datasetID: PropTypes.string.isRequired
+    }).isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired
+    }).isRequired,
+    dispatch: PropTypes.func.isRequired
 }
 
 class DatasetEditionsController extends Component {
