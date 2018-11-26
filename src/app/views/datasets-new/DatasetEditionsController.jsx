@@ -28,8 +28,14 @@ class DatasetEditionsController extends Component {
     }
 
     async componentWillMount() {
+        this.setState({isFetchingDatasets: true, isFetchingEditions: true, isFetchingLatestVersion: true});
         const datasetID = this.props.routeParams.datasetID;
+
+        const dataset = await this.getDataset(datasetID);
+        this.setState({dataset: this.mapDatasetToState(dataset), isFetchingDatasets: false});
+
         this.createListOfEditions(datasetID);
+       
         // this.setState({isFetchingEditions: true});
         // datasets.getEditions(datasetID).then(async (editions) => {
 
@@ -92,19 +98,25 @@ class DatasetEditionsController extends Component {
         // });
     }
 
-    createListOfEditions = async(datasetID) => {
-        this.setState({isFetchingDatasets: true, isFetchingEditions: true, isFetchingLatestVersion: true});
-        const dataset = await this.getDataset(datasetID);
-        const editions = await this.getEditions(datasetID);
+    createListOfEditions = async(datasetID) => {    
+        const editions = await this.getEditions(datasetID) || [];
+        if (!editions.length) {
+            const createEditionEntry = {
+                title: "Create new edition", 
+                id: "create-new-edition",
+                url:  this.props.location.pathname + "/instances",
+            }
+            editions.push(createEditionEntry);
+            this.setState({editions: editions});
+            return;
+        }
         const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions)
         this.setState({editions: editionsWithReleaseDates});
     }
 
-    getDataset = async(datasetID) => {
+    getDataset = (datasetID) => {
         this.setState({isFetchingDatasets: true});
         return datasets.get(datasetID).then(dataset => {
-            this.setState({dataset: this.mapDatasetToState(dataset)})
-            this.setState({isFetchingDatasets: false});
             return this.mapDatasetToState(dataset);
         }).catch(error => {
             console.error(`Error getting dataset (${datasetID}):\n`, error);
