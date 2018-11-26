@@ -19,83 +19,19 @@ class DatasetEditionsController extends Component {
         super(props);
 
         this.state = {
-            fetchingDataset: false,
+            isFetchingDataset: false,
             dataset: {},
-            fetchingEditions: false,
+            isFetchingEditions: false,
             editions: [],
         }
 
     }
 
     async componentWillMount() {
-        this.setState({isFetchingDatasets: true, isFetchingEditions: true, isFetchingLatestVersion: true});
         const datasetID = this.props.routeParams.datasetID;
-
         const dataset = await this.getDataset(datasetID);
-        this.setState({dataset: this.mapDatasetToState(dataset), isFetchingDatasets: false});
-
+        this.setState({dataset: this.mapDatasetToState(dataset)});
         this.createListOfEditions(datasetID);
-       
-        // this.setState({isFetchingEditions: true});
-        // datasets.getEditions(datasetID).then(async (editions) => {
-
-        //     await this.getDataset(datasetID);
-            
-        //     this.setState({
-        //         isFetchingEditions: false, 
-        //         editions: this.mapDatasetEditionsToView(editions.items)
-        //     });
- 
-        // }).catch(error => {
-        //     switch (error.status) {
-        //         case(404): {
-        //             const notification = {
-        //                 "type": "warning",
-        //                 "message": "No API route available for a list of editions.",
-        //                 isDismissable: true
-        //             }
-        //             notifications.add(notification)
-        //             break;
-        //         }
-        //         case("RESPONSE_ERR"):{
-        //             const notification = {
-        //                 "type": "warning",
-        //                 "message": "An error's occurred whilst trying to get a list of editions.",
-        //                 isDismissable: true
-        //             }
-        //             notifications.add(notification)
-        //             break;
-        //         }
-        //         case("FETCH_ERR"): {
-        //             const notification = {
-        //                 type: "warning",
-        //                 message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-        //                 isDismissable: true
-        //             }
-        //             notifications.add(notification);
-        //             break;
-        //         }
-        //         case("UNEXPECTED_ERR"): {
-        //             const notification = {
-        //                 type: "warning",
-        //                 message: "An unexpected error has occurred whilst trying to get a list of editions.",
-        //                 isDismissable: true
-        //             }
-        //             notifications.add(notification);
-        //             break;
-        //         }
-        //         default: {
-        //             const notification = {
-        //                 type: "warning",
-        //                 message: "An unexpected error's occurred whilst trying to get a list of editions.",
-        //                 isDismissable: true
-        //             }
-        //             notifications.add(notification);
-        //             break;
-        //         }
-        //     }
-        //     this.setState({isFetchingEditions: false});
-        // });
     }
 
     createListOfEditions = async(datasetID) => {    
@@ -114,13 +50,61 @@ class DatasetEditionsController extends Component {
         this.setState({editions: editionsWithReleaseDates});
     }
 
-    getDataset = (datasetID) => {
-        this.setState({isFetchingDatasets: true});
+    getDataset = datasetID => {
+        this.setState({isFetchingDataset: true});
         return datasets.get(datasetID).then(dataset => {
+            this.setState({isFetchingDataset: false});
             return this.mapDatasetToState(dataset);
         }).catch(error => {
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
             console.error(`Error getting dataset (${datasetID}):\n`, error);
-            this.setState({isFetchingDatasets: false});
+            this.setState({isFetchingDataset: false});
         })
     }
 
@@ -141,10 +125,62 @@ class DatasetEditionsController extends Component {
         }
     }
 
-    getEditions = async(datasetID) => {
+    getEditions = datasetID => {
+        this.setState({isFetchingEditions: true});
         return datasets.getEditions(datasetID).then(editions => {
+            this.setState({isFetchingEditions: false});
             return this.mapDatasetEditionsToView(editions.items);
-        })
+        }).catch(error => {
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available for a list of editions.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get a list of editions.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get a list of editions.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get a list of editions.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error getting dataset (${datasetID}):\n`, error);
+            this.setState({isFetchingEditions: false});
+        });
     }
 
     mapDatasetEditionsToView = editions => {
@@ -227,10 +263,5 @@ class DatasetEditionsController extends Component {
 
 DatasetEditionsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        
-    }
-}
-export default connect(mapStateToProps)(DatasetEditionsController);
+export default (DatasetEditionsController);
 
