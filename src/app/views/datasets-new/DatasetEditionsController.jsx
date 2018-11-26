@@ -240,7 +240,7 @@ class DatasetEditionsController extends Component {
     }
 
     getVersion = async(datasetID, edition, version) => {
-        return await datasets.getVersion(datasetID, edition, "3").then(versionResp => {
+        return await datasets.getVersion(datasetID, edition, version).then(versionResp => {
             return versionResp;
         })
     }
