@@ -12,7 +12,7 @@ import LoginController from './app/views/login/LoginController';
 import CollectionsController from './app/views/collections/CollectionsController';
 import TeamsController from './app/views/teams/TeamsController';
 import SelectADataset from './app/views/datasets-new/DatasetsController'
-import DatasetEditionsController from './app/views/datasets-new/DatasetEditionsController'
+import DatasetEditionsController from './app/views/datasets-new/editions/DatasetEditionsController'
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
