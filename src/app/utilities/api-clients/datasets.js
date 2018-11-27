@@ -26,6 +26,13 @@ export default class datasets {
              });
     }
 
+    static getEdition(datasetID, editionID) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${editionID}`)
+             .then(response => {
+                 return response;
+             });
+    }
+
     static getEditions(datasetID) {
         return http.get(`/dataset/datasets/${datasetID}/editions`)
              .then(response => {
@@ -35,6 +42,13 @@ export default class datasets {
 
     static getVersion(datasetID, edition, version) {
         return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static getVersions(datasetID, edition) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions`)
              .then(response => {
                  return response;
              });
