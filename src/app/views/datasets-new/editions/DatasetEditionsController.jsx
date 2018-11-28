@@ -27,7 +27,13 @@ class DatasetEditionsController extends Component {
             isFetchingDataset: false,
             dataset: {},
             isFetchingEditions: false,
-            editions: [],
+            editions: [
+                {
+                    title: "Create new edition", 
+                    id: "create-new-edition",
+                    url:  this.props.location.pathname + "/instances",
+                }
+            ],
         }
 
     }
@@ -41,18 +47,8 @@ class DatasetEditionsController extends Component {
 
     createListOfEditions = async(datasetID) => {    
         const editions = await this.getEditions(datasetID) || [];
-        if (!editions.length) {
-            const createEditionEntry = {
-                title: "Create new edition", 
-                id: "create-new-edition",
-                url:  this.props.location.pathname + "/instances",
-            }
-            editions.push(createEditionEntry);
-            this.setState({editions: editions});
-            return;
-        }
         const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions)
-        this.setState({editions: editionsWithReleaseDates});
+        this.setState({editions: [...this.state.editions, ...editionsWithReleaseDates]});
     }
 
     getDataset = datasetID => {
