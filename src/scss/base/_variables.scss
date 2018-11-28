@@ -43,6 +43,7 @@ $wild-sand: #F5F5F5;
 $tawny-port: #6D272B;
 $silver-sand: #BBBDC0;
 $focus: #ffbf47;
+$primary-link: #3B7A9E;
 
 $colours: (
     black: $black,
@@ -82,6 +83,8 @@ $colours: (
 /* Panel heights - TODO probably update with new grid */
 $panel-height-1-top-nav: 916px; // wrapper height minus navbar height
 $panel-height-2-top-nav: 853px; // wrapper height minus (navbar height * 2)
+
+$navbar-height: $lineheight * 3;
 
 
 // --------------------------------------------------

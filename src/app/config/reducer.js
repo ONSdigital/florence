@@ -1,11 +1,44 @@
 import { initialState } from './initialState';
-import { UPDATE_ACTIVE_COLLECTION, EMPTY_ACTIVE_COLLECTION, UPDATE_ALL_TEAM_IDS_AND_NAMES , ADD_ALL_COLLECTIONS, MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, DELETE_COLLECTION_FROM_ALL_COLLECTIONS, UPDATE_PAGES_IN_ACTIVE_COLLECTION, ADD_PREVIEW_COLLECTION, REMOVE_PREVIEW_COLLECTION, UPDATE_PREVIEW_SELECTED_PAGE, REMOVE_PREVIEW_SELECTED_PAGE, UPDATE_WORKING_ON, EMPTY_WORKING_ON, UPDATE_TEAMS_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_USER, REMOVE_USER_FROM_ALL_USERS, ADD_ALL_USERS, RESET } from './actions';
+
+import {
+    SET_CONFIG,
+    UPDATE_ACTIVE_COLLECTION, 
+    EMPTY_ACTIVE_COLLECTION, 
+    UPDATE_ALL_TEAM_IDS_AND_NAMES , 
+    ADD_ALL_COLLECTIONS, 
+    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, 
+    DELETE_COLLECTION_FROM_ALL_COLLECTIONS, 
+    UPDATE_PAGES_IN_ACTIVE_COLLECTION, 
+    ADD_PREVIEW_COLLECTION, 
+    REMOVE_PREVIEW_COLLECTION, 
+    UPDATE_PREVIEW_SELECTED_PAGE, 
+    REMOVE_PREVIEW_SELECTED_PAGE, 
+    UPDATE_WORKING_ON, 
+    EMPTY_WORKING_ON, 
+    UPDATE_TEAMS_IN_ACTIVE_COLLECTION,
+    UPDATE_ACTIVE_USER,
+    REMOVE_USER_FROM_ALL_USERS,
+    ADD_ALL_USERS,
+    UPDATE_ACTIVE_DATASET_REVIEW_STATE, 
+    UPDATE_ACTIVE_VERSION_REVIEW_STATE,
+    UPDATE_ACTIVE_JOB,
+    UPDATE_ACTIVE_DATASET,
+    UPDATE_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_VERSION, 
+    EMPTY_ACTIVE_DATASET, 
+    EMPTY_ACTIVE_VERSION, 
+    EMPTY_ACTIVE_INSTANCE,
+    UPDATE_ACTIVE_DATASET_COLLECTION_ID,
+} from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case (RESET): {
+        case (SET_CONFIG): {
             return {
-                ...initialState
+                ...state,
+                config: {
+                    enableDatasetImport: action.config.enableDatasetImport
+                }
             }
         }
         case ('USER_LOGGED_IN'): {
@@ -198,11 +231,116 @@ export default function reducer(state = initialState, action) {
                 })
             })
         }
+        case (UPDATE_ACTIVE_INSTANCE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeInstance: action.instance
+                }
+            });
+        }
+        case (EMPTY_ACTIVE_INSTANCE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeInstance: null
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_VERSION): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: {
+                        ...state.datasets.activeVersion,
+                        ...action.version
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_VERSION_REVIEW_STATE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: {
+                        ...state.datasets.activeVersion,
+                        lastEditedBy: action.lastEditedBy,
+                        reviewState: action.reviewState
+                    }
+                }
+            });
+        }
+        case (EMPTY_ACTIVE_VERSION): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeVersion: null
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_JOB): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeJob: action.job
+                }
+            });
+        }
+        case (EMPTY_ACTIVE_DATASET): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: null
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        ...action.dataset
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET_REVIEW_STATE): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        lastEditedBy: action.lastEditedBy,
+                        reviewState: action.reviewState
+                    }
+                }
+            });
+        }
+        case (UPDATE_ACTIVE_DATASET_COLLECTION_ID): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    activeDataset: {
+                        ...state.datasets.activeDataset,
+                        collection_id: action.collectionID
+                    }
+                }
+            });
+        }
         case ('UPDATE_ALL_DATASETS'): {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     all: action.allDatasets
                 })
+            })
+        }
+        case ('UPDATE_ALL_RECIPES'): {
+            return Object.assign({}, state, {
+                datasets: {
+                    ...state.datasets,
+                    recipes: action.allRecipes
+                }
             })
         }
         case ('UPDATE_ALL_JOBS'): {

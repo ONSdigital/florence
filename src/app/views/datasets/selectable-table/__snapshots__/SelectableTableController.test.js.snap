@@ -1,0 +1,104 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Selectable table with values renders component with all values 1`] = `
+<div
+  className="selectable-table"
+>
+  <div
+    className="selectable-table__heading"
+  >
+    Title
+  </div>
+  <details
+    className="selectable-table__details"
+  >
+    <summary
+      className="selectable-table__summary"
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-10"
+        >
+          <strong>
+            CPI
+          </strong>
+        </div>
+      </div>
+    </summary>
+    <div>
+      <a
+        className="inline-block margin-bottom--1"
+        onClick={[Function]}
+        style={Object {}}
+      >
+         Edit dataset details
+      </a>
+      <div>
+        <div
+          className="grid simple-table__heading"
+        >
+          <div
+            className="grid__col-2"
+          />
+          <div
+            className="grid__col-3"
+          >
+            Status
+          </div>
+          <div
+            className="grid__col-3"
+          >
+            Date last modified
+          </div>
+          <div
+            className="grid__col-2"
+          >
+            Edition
+          </div>
+          <div
+            className="grid__col-1"
+          >
+            Version
+          </div>
+        </div>
+        <div
+          className="grid simple-table__row"
+        >
+          <div
+            className="grid__col-2"
+          >
+            <span>
+              <a
+                onClick={[Function]}
+                style={Object {}}
+              >
+                View
+              </a>
+            </span>
+          </div>
+          <div
+            className="grid__col-3"
+          />
+          <div
+            className="grid__col-3"
+          >
+            17/10/17 17:11
+          </div>
+          <div
+            className="grid__col-2"
+          >
+            2016
+          </div>
+          <div
+            className="grid__col-1"
+          >
+            -
+          </div>
+        </div>
+      </div>
+    </div>
+  </details>
+</div>
+`;

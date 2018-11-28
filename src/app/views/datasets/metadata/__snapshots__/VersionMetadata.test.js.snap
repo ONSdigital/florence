@@ -1,0 +1,39 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Dataset version metadata page matches stored snapshot 1`] = `
+<div
+  className="grid grid--justify-center"
+>
+  <div
+    className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <button
+        className="btn btn--link"
+        onClick={[Function]}
+        type="button"
+      >
+        Back
+      </button>
+    </div>
+    <h1
+      className="margin-top--1 margin-bottom--1"
+    >
+      Metadata
+    </h1>
+    <p>
+      This information is specific to this new data and can be updated each time new data is added.
+    </p>
+    <div
+      className="margin-top--2"
+    >
+      <div
+        className="loader loader--dark"
+      />
+    </div>
+  </div>
+</div>
+`;

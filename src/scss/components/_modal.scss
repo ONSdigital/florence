@@ -4,13 +4,14 @@
         background-color: rgba($black, 0.65);
         position: fixed;
         width: 100%;
-        height: 100%;
+        height: 100vh;
         top: 0;
         left: 0;
         z-index: 2;
         display: flex;
         align-items: center;
         justify-content: center;
+        overflow: hidden;
     }
 
     &__inner {
@@ -39,6 +40,10 @@
     &__footer {
         background-color: $grey-chateau;
         padding: $gutter;
+
+        & a {
+            color: $black;
+        }
     }
 
 }

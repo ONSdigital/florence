@@ -16,7 +16,7 @@ import notifications from '../notifications';
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry, body, callerHandles401) {
+export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -35,12 +35,13 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             retryCount,
             URI
         };
-         const fetchConfig = {
+        const fetchConfig = {
             method,
             credentials: "include",
-            header: {
+            headers: {
                 'Content-Type': 'application/json',
-                'Request-ID': UID
+                'Request-ID': UID,
+                'internal-token': "FD0108EA-825D-411C-9B1D-41EF7727F465"
             }
         }
 
@@ -95,11 +96,21 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
             logEventPayload.status = 200;
 
             let responseIsJSON = false;
+            let responseIsText = false;
             try {
                 responseIsJSON = response.headers.get('content-type').match(/application\/json/);
+                responseIsText = response.headers.get('content-type').match(/text\/plain/);
             } catch (error) {
                 console.error(`Error trying to parse content-type header`, error);
                 log.add(eventTypes.unexpectedRuntimeError, {message: `Error trying to parse content-type header: ${JSON.stringify(error)}`});
+                
+                // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
+                // unless we just allow 204 responses to resolve, instead of reject with an error
+                if (response.status >= 200) {
+                    resolve();
+                    return;
+                }
+                
                 reject({status: 'RUNTIME_ERROR', message: `Error trying to parse response's content-type header`});
                 return;
             }
@@ -108,6 +119,27 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                 log.add(eventTypes.runtimeWarning, {message: `Received request response for method '${method}' that didn't have the 'application/json' header`});
             }
             
+            // We've detected a text response so we should try to parse as text, not JSON
+            if (responseIsText) {
+                (async () => {
+                    try {
+                        const text = await response.text();
+                        resolve(text);
+                    } catch (error) {
+                        console.error("Error trying to parse request body as text: ", error);
+                        log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse text response from request but unable to. Error message: ' + error);
+    
+                        if (method === "POST" || method === "PUT") {
+                            resolve();
+                            return;
+                        }
+    
+                        reject({status: response.status, message: "Text response body couldn't be parsed"});
+                    }
+                })()
+                return
+            }
+
             // We're wrapping this try/catch in an async function because we're using 'await' 
             // which requires being executed inside an async function (which the 'fetch' can't be set as)
             (async () => {
@@ -115,9 +147,6 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                     const json = await response.json();
                     resolve(json);
                 } catch (error) {
-                    console.error("Error trying to parse request body as JSON: ", error);
-                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
-
                     // We're not necessarily relying on a response with these methods
                     // so we should still resolve the promise, just with no response body
                     if (method === "POST" || method === "PUT") {
@@ -125,11 +154,14 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                         return;
                     }
 
+                    console.error("Error trying to parse request body as JSON: ", error);
+                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
+
                     // We're trying to get data at this point and the body can't be parsed
                     // which means this request is a failure and the promise should be rejected
                     reject({status: response.status, message: "JSON response body couldn't be parsed"});
                 }
-            })()
+            })();
         }).catch((fetchError = {message: "No error message given"}) => {
             logEventPayload.message = fetchError.message;
             log.add(eventTypes.requestFailed, logEventPayload);
@@ -141,9 +173,7 @@ export default function request(method, URI, willRetry = true, onRetry, body, ca
                     setTimeout(function() { tryFetch(resolve, reject, URI, willRetry, body) }, interval);
                     retryCount++;
                     interval = interval * 2;
-                    if (onRetry) {
-                        onRetry(retryCount);
-                    }
+                    onRetry(retryCount);
                 } else {
 
                     // pass error back to caller when max number of retries is met

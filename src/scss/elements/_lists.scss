@@ -1,7 +1,10 @@
 .list {
 
+    margin-left: $gutter;
+
     &--neutral {
         list-style: none;
+        margin-left: 0;
     }
 
     &__item {

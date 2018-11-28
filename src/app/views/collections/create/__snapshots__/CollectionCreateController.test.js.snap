@@ -20,7 +20,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
           accept={undefined}
           autoComplete="new-password"
           autoFocus={false}
-          className="input input__text"
+          className="input"
           disabled={false}
           id="collection-name"
           max={undefined}
@@ -28,7 +28,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
           name="collection-name"
           onBlur={undefined}
           onChange={[Function]}
-          placeholder=""
+          onFocus={[Function]}
+          placeholder={undefined}
           type="text"
           value=""
         />
@@ -69,7 +70,9 @@ exports[`Create collection form matches stored snapshot 1`] = `
       <fieldset
         className="fieldset"
       >
-        <legend>
+        <legend
+          className="fieldset__legend"
+        >
           Publish type
         </legend>
         <div
@@ -119,7 +122,9 @@ exports[`Create collection form matches stored snapshot 1`] = `
         <fieldset
           className="fieldset"
         >
-          <legend>
+          <legend
+            className="fieldset__legend"
+          >
             Schedule type
           </legend>
           <div
@@ -180,7 +185,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
               accept={undefined}
               autoComplete="new-password"
               autoFocus={false}
-              className="input input__text"
+              className="input"
               disabled={false}
               id="publish-date"
               max="2017-10-12"
@@ -188,7 +193,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               name="publish-date"
               onBlur={undefined}
               onChange={[Function]}
-              placeholder=""
+              onFocus={[Function]}
+              placeholder={undefined}
               type="date"
               value=""
             />
@@ -208,7 +214,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
               accept={undefined}
               autoComplete="new-password"
               autoFocus={false}
-              className="input input__text"
+              className="input"
               disabled={false}
               id="publish-time"
               max={undefined}
@@ -216,7 +222,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               name="publish-time"
               onBlur={undefined}
               onChange={[Function]}
-              placeholder=""
+              onFocus={[Function]}
+              placeholder={undefined}
               type="time"
               value="09:30"
             />

@@ -95,6 +95,7 @@ var Florence = Florence || {
         refreshAdminMenu: function () {
             // Display a message to show users are on dev or sandpit
             Florence.environment = isDevOrSandpit();
+            Florence.showDatasetsTab = Florence.globalVars.config.enableDatasetImport;
 
             var mainNavHtml = templates.mainNav(Florence);
             $('.js-nav').html(mainNavHtml);
@@ -356,7 +357,24 @@ if (typeof module !== 'undefined') {
   module.exports = StringUtils;
 }
 
-function deleteCollection(collectionId, success, error) {
+function deleteAPIDataset(collectionId, instanceId, success, error) {
+
+    $.ajax({
+        url: "/zebedee/collections/" + collectionId + "/datasets/" + instanceId,
+        type: 'DELETE',
+        success: function (response) {
+            if (success)
+                success(response);
+        },
+        error: function (response) {
+            if (error) {
+                error(response);
+            } else {
+                handleApiError(response);
+            }
+        }
+    });
+}function deleteCollection(collectionId, success, error) {
   $.ajax({
     url: "/zebedee/collection/" + collectionId,
     type: 'DELETE',
@@ -39727,7 +39745,7 @@ function isValidDate(d) {
  * @returns {boolean}
  **/
 
-function createWorkspace(path, collectionId, menu, collectionData, stopEventListener) {
+function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
 
     if (stopEventListener) {
@@ -39744,7 +39762,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             currentPath = path;
             safePath = checkPathSlashes(currentPath);
         }
-        
+
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
             document.cookie = "lang=" + "en;path=/";
@@ -39756,6 +39774,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
         $('.section').html(workSpace);
 
+        // If we're viewing a filterable dataset then redirect the iframe to use the new path
+        if (datasetID){
+          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
             $navItem = $nav.find('.js-workspace-nav__item');
@@ -39776,9 +39798,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         updateBrowserURL(path);
 
         if (Florence.globalVars.welsh !== true) {
-            $('#nav--workspace__welsh').empty().append('<a href="#">Language: English</a>');
+            $('#nav--workspace__welsh').empty().append('<a href="javascript:void(0)">Language: English</a>');
         } else {
-            $('#nav--workspace__welsh').empty().append('<a href="#">Language: Welsh</a>');
+            $('#nav--workspace__welsh').empty().append('<a href="javascript:void(0)">Language: Welsh</a>');
         }
 
         /* Bind clicking */
@@ -39813,13 +39835,19 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             menuItem.addClass('selected');
 
             if (menuItem.is('#browse')) {
-                loadBrowseScreen(collectionId, 'click', collectionData);
+                loadBrowseScreen(collectionId, 'click', collectionData, datasetID);
             } else if (menuItem.is('#create')) {
                 Florence.globalVars.pagePath = getPreviewUrl();
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                Florence.globalVars.pagePath = getPreviewUrl();
+                if(datasetID){
+                  var url = $('#browser-location').val();
+                  url = url.replace(/^.*\/\/[^\/]+/, '')
+                  Florence.globalVars.pagePath = url;
+                } else {
+                  Florence.globalVars.pagePath = getPreviewUrl();
+                }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
                 loadImportScreen(Florence.collection.id);
@@ -40080,7 +40108,6 @@ function toggleDeleteRevertChildren($item) {
 
     $childContainer.find('.page__buttons').toggleClass('deleted');
 }
-
 function deleteTeam(name) {
   $.ajax({
     url: "/zebedee/teams/" + name,
@@ -43644,8 +43671,7 @@ var isUpdatingModal = {
         $disabledModal.remove();
     }
 }
-function loadBrowseScreen(collectionId, click, collectionData) {
-
+function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     // Get collection data if it's undefined and re-run the function once request has returned
     if (!collectionData) {
         getCollection(collectionId, success = function(getCollectionResponse) {
@@ -43711,30 +43737,55 @@ function loadBrowseScreen(collectionId, click, collectionData) {
 }
 
 // Bind the actions for a click on a browse tree item
-function bindBrowseTreeClick() {
+function bindBrowseTreeClick(collectionId) {
     $('.js-browse__item-title').click(function () {
         var $this = $(this),
             $thisItem = $this.closest('.js-browse__item'),
             uri = $thisItem.attr('data-url'),
-            baseURL = Florence.babbageBaseUrl;
-            isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations');
-
-        if (uri) {
-            var newURL = baseURL + uri;
-
-            treeNodeSelect(newURL);
-
-            // Update iframe location which will send change event for iframe to update too
-            document.getElementById('iframe').contentWindow.location.href = newURL;
-            $('.browser-location').val(newURL);
-
-        } else if (!uri && isVisualisationsDirectory) {
-            // This is the data vis directory - handle differently
-            openVisDirectory();
+            baseURL = Florence.babbageBaseUrl,
+            isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations'),
+            datasetID;
+        
+        // Check if this is an api and get the dataset ID from Zebedee.
+        if($this.hasClass('page__item--api_dataset_landing_page')){
+          getPageData(collectionId, uri,
+              success = function (response) {
+                  datasetID = response.apiDatasetId;
+                  updatePreviewAndBrowseTree(datasetID);
+              },
+              error = function (response) {
+                  handleApiError(response);
+              }
+          );
         } else {
+          updatePreviewAndBrowseTree();
+        }
 
-            // Set all directories above it in the tree to be active when a directory clicked
-            selectParentDirectories($this);
+        function updatePreviewAndBrowseTree(datasetID){
+          if (uri) {
+              var newURL = baseURL + uri;
+              var iframeURL = newURL;
+
+              treeNodeSelect(newURL);
+
+              
+              // If this is an api landing page then go to the /datasets/{datasetID} path
+              if (datasetID) {
+                  iframeURL = '/datasets/' + datasetID;
+                }
+
+                // Update iframe location which will send change event for iframe to update too
+              document.getElementById('iframe').contentWindow.location.href = iframeURL;
+              $('.browser-location').val(newURL);
+
+            } else if (!uri && isVisualisationsDirectory) {
+                // This is the data vis directory - handle differently
+                openVisDirectory();
+            } else {
+
+              // Set all directories above it in the tree to be active when a directory clicked
+              selectParentDirectories($this);
+          }
         }
 
         // Open active branches in browse tree
@@ -44993,8 +45044,12 @@ function initialiseChartList(collectionId, data) {
 
 
 function loadCreateScreen(parentUrl, collectionId, type, collectionData) {
+    var showCreateAPIDatasetOption = Florence.globalVars.config.enableDatasetImport;
     var isDataVis = type === "visualisation"; // Flag for template to show correct options in select
-    var html = templates.workCreate({"dataVis": isDataVis});
+    var html = templates.workCreate({
+        "dataVis": isDataVis, 
+        "showCreateAPIDatasetOption": showCreateAPIDatasetOption
+    });
 
     $('.workspace-menu').html(html);
     loadCreator(parentUrl, collectionId, type, collectionData);
@@ -46012,100 +46067,11 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     });
 
     $("#js-editor--box").click(function() {
-        var $input = $('#wmd-input');
-        var selectionStart = $input[0].selectionStart;
-        var selectionEnd = $input[0].selectionEnd;
-        var beforeCursor = $input.val().substring(0, selectionStart);
-        var afterCursor = $input.val().substring(selectionStart);
-        var beforeCursorArray = beforeCursor.split("\n");
-        var afterCursorArray = afterCursor.split("\n");
-        var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
-        var newInputValue = $input.val();
-        var cursorIsInsideBoxTag = false;
-        var cursorIsOnOpeningTag = false;
-        var cursorIsOnClosingTag = false;
-        var nextClosingTag = afterCursor.indexOf("</ons-box>");
-        var nextOpeningTag = afterCursor.indexOf("<ons-box");
+        loadPulloutBox();
+    });
 
-        // Detect that the cursor is inside box markdown, 
-        // so that we can choose to remove it instead of adding a new one.
-        if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
-            cursorIsInsideBoxTag = true;
-        }
-
-        // Detect that the cursor is on a box tag so that we can
-        // choose to remove the entire tag
-        if (selectedLine.indexOf("<ons-box") >= 0) {
-            cursorIsOnOpeningTag = true;
-        }
-        if (selectedLine.indexOf("</ons-box>") >= 0) {
-            cursorIsOnClosingTag = true;
-        }
-
-        if (cursorIsOnOpeningTag) {
-            var eachLine = $input.val().split("\n");
-            var closingTagRemoved = false;
-            eachLine.splice([beforeCursorArray.length-1], 1);
-
-            var index = [beforeCursorArray.length-1];
-            while(!closingTagRemoved) {
-                if (eachLine[index].indexOf("</ons-box>") >= 0) {
-                    eachLine.splice(index, 1);
-                    closingTagRemoved = true;
-                }
-                index++;
-            }
-            newInputValue = eachLine.join("\n");
-        } else if (cursorIsOnClosingTag) {
-            var eachLine = $input.val().split("\n");
-            var closingTagRemoved = false;
-            eachLine.splice([beforeCursorArray.length-1], 1);
-
-            var index = [beforeCursorArray.length-1];
-            while(!closingTagRemoved) {
-                if (eachLine[index].indexOf("<ons-box") >= 0) {
-                    eachLine.splice(index, 1);
-                    closingTagRemoved = true;
-                }
-                index--;
-            }
-            newInputValue = eachLine.join("\n");
-        } else if (cursorIsInsideBoxTag) {
-            beforeCursorArray.reverse();
-            for (var [index, value] of beforeCursorArray.entries()) {
-                if (value.indexOf("<ons-box") >= 0) {
-                    beforeCursorArray.splice(index, 1);
-                    break;
-                }
-            }
-            beforeCursorArray.reverse();
-
-            for (var [index, value] of afterCursorArray.entries()) {
-                if (value.indexOf("</ons-box>") >= 0) {
-                    afterCursorArray.splice(index, 1);
-                    break;
-                }
-            }
-            newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
-        } else {
-            if (selectionStart === selectionEnd) {
-                var eachLine = $input.val().split("\n");
-                var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
-                var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
-                eachLine[beforeCursorArray.length-1] = wrappedSelection;
-                newInputValue = eachLine.join("\n");
-
-            } else {
-                selection = $input.val().substring(selectionStart, selectionEnd);
-                newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
-            }
-        }
-
-        $input.val(newInputValue);
-        $('#wmd-input').trigger('input');
-        $input[0].setSelectionRange(selectionStart, selectionEnd);
-        Florence.Editor.markdownEditor.refreshPreview();
-
+    $("#js-editor--warning-box").click(function () {
+        loadPulloutWarningBox();
     });
 
     $("#wmd-input").on('click', function () {
@@ -46219,6 +46185,15 @@ function markdownEditor() {
             var align = $(match).attr('align') || "";
             var content = $(match)[0].innerHTML;
             return '[box align="' + align + '"]' + content + '[/box]';
+        });
+        return newText;
+    });
+
+     // output warning box tag as text instead of the actual tag.
+     converter.hooks.chain("preBlockGamut", function (text) {
+        var newText = text.replace(/<ons-warning-box>((?:.|\n)*?)<\/ons-warning-box>/igm, function (match) {
+            var content = $(match)[0].innerHTML;
+            return '[warning]' + content + '[/warning]';
         });
         return newText;
     });
@@ -46348,7 +46323,197 @@ function loadParentLink(collectionId, data, parentUrl) {
     }
   });
 
-}/**
+}function loadPulloutBox () {
+    var $input = $('#wmd-input');
+    var selectionStart = $input[0].selectionStart;
+    var selectionEnd = $input[0].selectionEnd;
+    var beforeCursor = $input.val().substring(0, selectionStart);
+    var afterCursor = $input.val().substring(selectionStart);
+    var beforeCursorArray = beforeCursor.split("\n");
+    var afterCursorArray = afterCursor.split("\n");
+    var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
+    var newInputValue = $input.val();
+    var cursorIsInsideBoxTag = false;
+    var cursorIsOnOpeningTag = false;
+    var cursorIsOnClosingTag = false;
+    var nextClosingTag = afterCursor.indexOf("</ons-box>");
+    var nextOpeningTag = afterCursor.indexOf("<ons-box");
+
+    // Detect that the cursor is inside box markdown, 
+    // so that we can choose to remove it instead of adding a new one.
+    if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
+        cursorIsInsideBoxTag = true;
+    }
+
+    // Detect that the cursor is on a box tag so that we can
+    // choose to remove the entire tag
+    if (selectedLine.indexOf("<ons-box") >= 0) {
+        cursorIsOnOpeningTag = true;
+    }
+    if (selectedLine.indexOf("</ons-box>") >= 0) {
+        cursorIsOnClosingTag = true;
+    }
+
+    if (cursorIsOnOpeningTag) {
+        var eachLine = $input.val().split("\n");
+        var closingTagRemoved = false;
+        eachLine.splice([beforeCursorArray.length-1], 1);
+
+        var index = [beforeCursorArray.length-1];
+        while(!closingTagRemoved) {
+            if (eachLine[index].indexOf("</ons-box>") >= 0) {
+                eachLine.splice(index, 1);
+                closingTagRemoved = true;
+            }
+            index++;
+        }
+        newInputValue = eachLine.join("\n");
+    } else if (cursorIsOnClosingTag) {
+        var eachLine = $input.val().split("\n");
+        var closingTagRemoved = false;
+        eachLine.splice([beforeCursorArray.length-1], 1);
+
+        var index = [beforeCursorArray.length-1];
+        while(!closingTagRemoved) {
+            if (eachLine[index].indexOf("<ons-box") >= 0) {
+                eachLine.splice(index, 1);
+                closingTagRemoved = true;
+            }
+            index--;
+        }
+        newInputValue = eachLine.join("\n");
+    } else if (cursorIsInsideBoxTag) {
+        beforeCursorArray.reverse();
+        for (var [index, value] of beforeCursorArray.entries()) {
+            if (value.indexOf("<ons-box") >= 0) {
+                beforeCursorArray.splice(index, 1);
+                break;
+            }
+        }
+        beforeCursorArray.reverse();
+
+        for (var [index, value] of afterCursorArray.entries()) {
+            if (value.indexOf("</ons-box>") >= 0) {
+                afterCursorArray.splice(index, 1);
+                break;
+            }
+        }
+        newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
+    } else {
+        if (selectionStart === selectionEnd) {
+            var eachLine = $input.val().split("\n");
+            var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
+            var wrappedSelection = '<ons-box align="full">\n' + selection + '\n</ons-box>';
+            eachLine[beforeCursorArray.length-1] = wrappedSelection;
+            newInputValue = eachLine.join("\n");
+
+        } else {
+            selection = $input.val().substring(selectionStart, selectionEnd);
+            newInputValue = $input.val().slice(0, selectionStart) + '<ons-box align="full">\n' + selection + '\n</ons-box>' + $input.val().slice(selectionEnd);
+        }
+    }
+
+    $input.val(newInputValue);
+    $('#wmd-input').trigger('input');
+    $input[0].setSelectionRange(selectionStart, selectionEnd);
+    Florence.Editor.markdownEditor.refreshPreview();
+
+};
+function loadPulloutWarningBox () {
+    var $input = $('#wmd-input');
+    var selectionStart = $input[0].selectionStart;
+    var selectionEnd = $input[0].selectionEnd;
+    var beforeCursor = $input.val().substring(0, selectionStart);
+    var afterCursor = $input.val().substring(selectionStart);
+    var beforeCursorArray = beforeCursor.split("\n");
+    var afterCursorArray = afterCursor.split("\n");
+    var selectedLine = $input.val().split("\n")[beforeCursorArray.length-1];
+    var newInputValue = $input.val();
+    var cursorIsInsideBoxTag = false;
+    var cursorIsOnOpeningTag = false;
+    var cursorIsOnClosingTag = false;
+    var nextClosingTag = afterCursor.indexOf("</ons-warning-box>");
+    var nextOpeningTag = afterCursor.indexOf("<ons-warning-box");
+
+    // Detect that the cursor is inside box markdown, 
+    // so that we can choose to remove it instead of adding a new one.
+    if (nextClosingTag < nextOpeningTag || (nextClosingTag >= 0 && nextOpeningTag === -1)) {
+        cursorIsInsideBoxTag = true;
+    }
+
+    // Detect that the cursor is on a box tag so that we can
+    // choose to remove the entire tag
+    if (selectedLine.indexOf("<ons-warning-box") >= 0) {
+        cursorIsOnOpeningTag = true;
+    }
+    if (selectedLine.indexOf("</ons-warning-box>") >= 0) {
+        cursorIsOnClosingTag = true;
+    }
+
+    if (cursorIsOnOpeningTag) {
+        var eachLine = $input.val().split("\n");
+        var closingTagRemoved = false;
+        eachLine.splice([beforeCursorArray.length-1], 1);
+
+        var index = [beforeCursorArray.length-1];
+        while(!closingTagRemoved) {
+            if (eachLine[index].indexOf("</ons-warning-box>") >= 0) {
+                eachLine.splice(index, 1);
+                closingTagRemoved = true;
+            }
+            index++;
+        }
+        newInputValue = eachLine.join("\n");
+    } else if (cursorIsOnClosingTag) {
+        var eachLine = $input.val().split("\n");
+        var closingTagRemoved = false;
+        eachLine.splice([beforeCursorArray.length-1], 1);
+
+        var index = [beforeCursorArray.length-1];
+        while(!closingTagRemoved) {
+            if (eachLine[index].indexOf("<ons-warning-box") >= 0) {
+                eachLine.splice(index, 1);
+                closingTagRemoved = true;
+            }
+            index--;
+        }
+        newInputValue = eachLine.join("\n");
+    } else if (cursorIsInsideBoxTag) {
+        beforeCursorArray.reverse();
+        for (var [index, value] of beforeCursorArray.entries()) {
+            if (value.indexOf("<ons-warning-box") >= 0) {
+                beforeCursorArray.splice(index, 1);
+                break;
+            }
+        }
+        beforeCursorArray.reverse();
+
+        for (var [index, value] of afterCursorArray.entries()) {
+            if (value.indexOf("</ons-warning-box>") >= 0) {
+                afterCursorArray.splice(index, 1);
+                break;
+            }
+        }
+        newInputValue = beforeCursorArray.join("\n") + afterCursorArray.join("\n");
+    } else {
+        if (selectionStart === selectionEnd) {
+            var eachLine = $input.val().split("\n");
+            var selection = beforeCursorArray[beforeCursorArray.length-1] + afterCursorArray[0];
+            var wrappedSelection = '<ons-warning-box>\n' + selection + '\n</ons-warning-box>';
+            eachLine[beforeCursorArray.length-1] = wrappedSelection;
+            newInputValue = eachLine.join("\n");
+
+        } else {
+            selection = $input.val().substring(selectionStart, selectionEnd);
+            newInputValue = $input.val().slice(0, selectionStart) + '<ons-warning-box>\n' + selection + '\n</ons-warning-box>' + $input.val().slice(selectionEnd);
+        }
+    }
+
+    $input.val(newInputValue);
+    $('#wmd-input').trigger('input');
+    $input[0].setSelectionRange(selectionStart, selectionEnd);
+    Florence.Editor.markdownEditor.refreshPreview();
+};/**
  * Creates releases' JSON
  * @param collectionId
  * @param releaseDate
@@ -47421,7 +47586,7 @@ function pageTypeDataT7(pageType) {
 
 function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
-    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
+    var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData, datasetId;
     var parentUrlData = parentUrl + "/data";
 
     $.ajax({
@@ -47465,8 +47630,8 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             pageData = pageTypeDataT8(pageType);
             pageTitle = $('#pagename').val();
             pageData.description.title = pageTitle;
-            apiDatsetID = $('#apiDatasetId span').text();
-            pageData.apiDatasetId = apiDatsetID;
+            apiDatasetID = $('#apiDatasetId span').text();
+            pageData.apiDatasetId = apiDatasetID;
             uriSection = "datasets";
             pageTitleTrimmed = pageTitle.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
             newUri = makeUrl(parentUrl, uriSection, pageTitleTrimmed);
@@ -47477,7 +47642,29 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
                 return true;
             }
             else {
-                saveContent(collectionId, safeNewUri, pageData);
+                isUpdatingModal.add();
+
+                // on creation use /page end point instead of content.
+                // the /page end point will create the dataset entry
+                // in the database
+
+                $.ajax({
+                    url: "/zebedee/page/" + collectionId + "?uri=" + safeNewUri + "/data.json",
+                    dataType: 'json',
+                    contentType: 'application/json',
+                    type: 'POST',
+                    data: JSON.stringify(pageData),
+                    success: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        createWorkspace(safeNewUri, collectionId, 'edit', null, null, pageData.apiDatasetId);
+                    },
+                    error: function (response) {
+                        isUpdatingModal.remove();
+                        addLocalPostResponse(response);
+                        handleApiError(response);
+                    }
+                });
             }
             e.preventDefault();
         });
@@ -47485,29 +47672,42 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
 
     // Call the recipe API, get data and create elements.
     function getRecipes() {
-      $.ajax({
-          url: 'http://localhost:8081/recipes',
-          dataType: 'json',
-          crossDomain: true,
-          success: function (recipeData) {
-            var templateData = {};
-            $.each(recipeData.items, function(i, v) {
-              // Get the dataset names and id's
-              var datasetName = v.alias,
-                  datasetId = v.output_instances[0].dataset_id;
-              // Create elements, store data in data attr to be used later
-              templateData  = {
-                  content: '<li><h1>' + datasetName + '</h1><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--inverse margin-left--0 btn-import">Import</button></li>'
-              };
+    $.when(
+        $.ajax({
+            url: '/recipes',
+            dataType: 'json',
+            crossDomain: true,
+        }),
+        $.ajax({
+            url: '/dataset/datasets',
+            dataType: 'json',
+            crossDomain: true,
+        })
+    ).then(function(recipeResponse, datasetResponse){
+        const recipesWithoutExistingDataset = recipeResponse[0].items.filter(recipeItem => {
+            const doesMatchRecipe = datasetResponse[0].items.some(datasetItem => {
+                return recipeItem.output_instances[0].dataset_id === datasetItem.id
             });
-            // Load modal and add the data
-            viewRecipeModal(templateData);
-          },
-          error: function () {
-            sweetAlert("There is a problem fetching the data");
-            loadCreateScreen(parentUrl, collectionId);
-          }
-      });
+            return !doesMatchRecipe;
+        });
+
+        var templateData = {};
+        var content = "";
+        $.each(recipesWithoutExistingDataset, function(i, v) {
+            // Get the dataset names and id's
+            var datasetAlias = v.alias;
+            var datasetName = v.output_instances[0].title;
+            var datasetId = v.output_instances[0].dataset_id;
+            // Create elements, store data in data attr to be used later
+            content =  content + '<li><div class="float-left col--8"><h3>' + datasetAlias + '</h3></div><button data-datasetid="'+ datasetId +'" data-datasetname="'+ datasetName +'" class="btn btn--primary btn-import">Connect</button></li>'
+        });
+        templateData.content = content;
+        // Load modal and add the data
+        viewRecipeModal(templateData);
+    }).fail(function(){
+        sweetAlert("There is a problem fetching the data");
+        loadCreateScreen(parentUrl, collectionId);
+    })
 
       // Add the data to the details panel
       // TO DO - A call will need to be made to the dataset API when it's ready
@@ -47517,18 +47717,23 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             getDatasetName = $(this).data('datasetname');
         $('.btn-get-recipes, .dataset-list').remove();
         $('.btn-page-create').show();
+        if($('.apiDatasetBlock').length) {
+          $('.apiDatasetBlock').remove();
+        }
         $('.edition').append(
-          '<div id="apiDatasetId">Imported dataset ID: <span>'+getDatasetID+'</span></div>' +
+          '<div class="apiDatasetBlock">' +
+          '<div id="apiDatasetId">Connected dataset ID: <span>'+getDatasetID+'</span></div>' +
           '<label for="apiDatasetName">Dataset name</label>' +
           '<input id="apiDatasetName" type="text" value="'+getDatasetName+'" />'+
           // Hidden input for #pagename so it can be validated
           // Populated with #apiDatasetName value on submit
-          '<input id="pagename" type="hidden" value="" />'
+          '<input id="pagename" type="hidden" value="" />' +
+          '</div>'
         );
         $('#js-modal-recipe').remove();
         return false;
       });
-
+      
     }
 
     function pageTypeDataT8(pageType) {
@@ -50165,18 +50370,8 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     }
 
     else if (pageData.type === 'api_dataset_landing_page') {
-        var html = templates.workEditT8LandingPage(templateData);
+        var html = templates.workEditT8ApiLandingPage(templateData);
         $('.workspace-menu').html(html);
-        editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
-        addDataset(collectionId, pageData, 'datasets', 'edition');
-        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
-        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
-        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
-        renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
-        editTopics(collectionId, pageData, templateData, 'topics', 'topics');
-        editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
-        accordion();
         datasetLandingEditor(collectionId, pageData);
     }
 
@@ -50324,7 +50519,7 @@ function saveContent(collectionId, uri, data, collectionData) {
     postContent(collectionId, uri, JSON.stringify(data), false, false,
         success = function (message) {
             console.log("Updating completed " + message);
-            createWorkspace(uri, collectionId, 'edit', collectionData);
+            createWorkspace(uri, collectionId, 'edit', collectionData, null, data.apiDatasetId);
         },
         error = function (response) {
             handleApiError(response);
@@ -50497,9 +50692,26 @@ function setShortcuts(field, callback) {
         return "";
     });
 
+    Handlebars.registerHelper('if_any', function () {
+        var len = arguments.length - 1;
+        var options = arguments[len];
+        var val = false;
+
+        for (var i = 0; i < len; i++) {
+            if (arguments[i]) {
+                val = true;
+                return options.fn(this);
+            }
+        }
+        return;
+    });
+
 
     Florence.globalVars.activeTab = false;
 
+    var config = window.getEnv();
+    Florence.globalVars.config = config || { enableDatasetImport: false };
+ 
     // load main florence template
     var florence = templates.florence;
 
@@ -50576,6 +50788,9 @@ function setShortcuts(field, callback) {
             viewController('collections');
         } else if (menuItem.hasClass("js-nav-item--collection")) {
             $(".js-nav-item--collections").addClass('selected');
+        } else if (menuItem.hasClass("js-nav-item--datasets")) {
+            window.history.pushState({}, "", "/florence/datasets");
+            viewController('datasets');
         } else if (menuItem.hasClass("js-nav-item--users")) {
             window.history.pushState({}, "", "/florence/users-and-access");
             viewController('users');
@@ -53962,7 +54177,6 @@ function staticLandingPageEditor(collectionId, data) {
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }
-
 function staticPageEditor(collectionId, data) {
 
   var newLinks = [], newFiles = [], newChart = [], newTable = [], newImage = [];
@@ -54651,6 +54865,23 @@ function viewCollectionDetails(collectionId, $this) {
         }
         collection.approvalState = approvalStates;
 
+        // temporary code to add API datasets to a collection
+        // this will come from the zebedee collection api when ready
+        if (collection.name === "hasAPIData") {
+            collection.datasets = [
+                {
+                    "edition": "March 2019",
+                    "instance_id": "1078493",
+                    "dataset": {
+                        "id": "DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC",
+                        "title": "COICOP",
+                        "href": "http://localhost:8080/datasets/DE3BC0B6-D6C4-4E20-917E-95D7EA8C91DC"
+                    },
+                    "version": 1
+                }
+            ]
+        }
+
         var showPanelOptions = {
             html: window.templates.collectionDetails(collection)
         };
@@ -54762,9 +54993,9 @@ function viewCollectionDetails(collectionId, $this) {
                 var safePath = checkPathSlashes(path);
                 Florence.globalVars.welsh = false;
             }
-            getPageDataDescription(collectionId, safePath,
-                success = function () {
-                    createWorkspace(safePath, collectionId, 'edit', collection);
+            getPageData(collectionId, safePath,
+                success = function (response) {
+                    createWorkspace(safePath, collectionId, 'edit', collection, null, response.apiDatasetId);
                 },
                 error = function (response) {
                     handleApiError(response);
@@ -54815,6 +55046,40 @@ function viewCollectionDetails(collectionId, $this) {
             //} else {
             //  deleteAlert("This will delete the English and Welsh content of this page, if any. Are you sure you want to delete this page from the collection?");
             //}
+        });
+
+        $('.dataset-delete').click(function () {
+            var instanceId = $(this).attr('data-instanceId');
+
+            function deleteAlert(text) {
+                swal({
+                    title: "Warning",
+                    text: text,
+                    type: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    closeOnConfirm: false
+                }, function (result) {
+                    if (result === true) {
+                        deleteAPIDataset(collectionId, instanceId, function () {
+                                viewCollectionDetails(collectionId);
+                                swal({
+                                    title: "Dataset deleted",
+                                    text: "This dataset has been deleted",
+                                    type: "success",
+                                    timer: 2000
+                                });
+                            }, function (error) {
+                                handleApiError(error);
+                            }
+                        );
+                    }
+                });
+            }
+
+            deleteAlert("Are you sure you want to delete this dataset from the collection?");
+
         });
 
         $('.delete-marker-remove').click(function () {
@@ -55045,6 +55310,9 @@ function viewCollectionDetails(collectionId, $this) {
             // viewCollections();
             window.location.pathname = "/florence/collections";
         }
+        else if (view === 'datasets') {
+            window.location.pathname = "/florence/uploads/data";
+        } 
         else if (view === 'workspace') {
             /*
                 Example of a correct URL:
@@ -55209,6 +55477,8 @@ function viewPublishDetails(collections) {
                             id: response.id,
                             name: response.name,
                             pageDetails: response.reviewed,
+                            datasets: response.datasets,
+                            datasetVersions: response.datasetVersions,
                             pageType: 'manual',
                             pendingDeletes: response.pendingDeletes
                         });
@@ -55216,7 +55486,9 @@ function viewPublishDetails(collections) {
                         result.collectionDetails.push({
                             id: response.id,
                             name: response.name,
-                            pageDetails: response.reviewed
+                            pageDetails: response.reviewed,
+                            datasets: response.datasets,
+                            datasetVersions: response.datasetVersions,
                         });
                     }
                 },
@@ -56177,6 +56449,7 @@ function viewWorkspace(path, collectionId, menu) {
   if (path) {
     currentPath = path;
   }
+
   Florence.globalVars.pagePath = currentPath;
 
   if (menu === 'browse') {
@@ -56195,7 +56468,6 @@ function viewWorkspace(path, collectionId, menu) {
     loadPageDataIntoEditor(currentPath, collectionId);
   }
 }
-
 /**
  * Editor screen for uploading visualisations
  * @param collectionId

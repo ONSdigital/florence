@@ -1,3 +1,5 @@
+export const SET_CONFIG = "SET_CONFIG";
+
 export const USER_LOGGED_IN = 'USER_LOGGED_IN';
 export const USER_LOGGED_OUT = 'USER_LOGGED_OUT';
 
@@ -24,8 +26,19 @@ export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
 export const UPDATE_ALL_DATASETS = 'UPDATE_ALL_DATASETS';
+export const UPDATE_ACTIVE_DATASET = 'UPDATE_ACTIVE_DATASET';
+export const EMPTY_ACTIVE_DATASET = 'EMPTY_ACTIVE_DATASET';
+export const UPDATE_ACTIVE_DATASET_REVIEW_STATE = 'UPDATE_ACTIVE_DATASET_REVIEW_STATE';
+export const UPDATE_ACTIVE_DATASET_COLLECTION_ID = 'UPDATE_ACTIVE_DATASET_COLLECTION_ID';
+export const UPDATE_ALL_RECIPES = 'UPDATE_ALL_RECIPES';
 export const UPDATE_ALL_JOBS = 'UPDATE_ALL_JOBS';
+export const UPDATE_ACTIVE_JOB = 'UPDATE_ACTIVE_JOB';
 export const ADD_NEW_JOB = 'ADD_NEW_JOB';
+export const UPDATE_ACTIVE_INSTANCE = 'UPDATE_ACTIVE_INSTANCE';
+export const UPDATE_ACTIVE_VERSION_REVIEW_STATE = 'UPDATE_ACTIVE_VERSION_REVIEW_STATE';
+export const EMPTY_ACTIVE_INSTANCE = 'EMPTY_ACTIVE_INSTANCE';
+export const UPDATE_ACTIVE_VERSION = 'UPDATE_ACTIVE_VERSION';
+export const EMPTY_ACTIVE_VERSION = 'EMPTY_ACTIVE_VERSION';
 
 export const ADD_NOTIFICATION = 'ADD_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
@@ -36,9 +49,10 @@ export const REMOVE_PREVIEW_COLLECTION = "REMOVE_PREVIEW_COLLECTION";
 export const UPDATE_PREVIEW_SELECTED_PAGE = "UPDATE_PREVIEW_SELECTED_PAGE";
 export const REMOVE_PREVIEW_SELECTED_PAGE = "REMOVE_PREVIEW_SELECTED_PAGE";
 
-export function reset() {
+export function setConfig(config) {
     return {
-        type: RESET
+        type: SET_CONFIG,
+        config
     }
 }
 
@@ -148,6 +162,41 @@ export function updateAllDatasets(allDatasets) {
     }
 }
 
+export function updateActiveDataset(dataset) {
+    return {
+        type: UPDATE_ACTIVE_DATASET,
+        dataset
+    }
+}
+
+export function emptyActiveDataset() {
+    return {
+        type: EMPTY_ACTIVE_DATASET
+    }
+}
+
+export function updateActiveDatasetCollectionID(collectionID) {
+    return {
+        type: UPDATE_ACTIVE_DATASET_COLLECTION_ID,
+        collectionID
+    }
+}
+
+export function updateActiveDatasetReviewState(lastEditedBy, reviewState) {
+    return {
+        type: UPDATE_ACTIVE_DATASET_REVIEW_STATE,
+        lastEditedBy,
+        reviewState
+    }
+}
+
+export function updateAllRecipes(allRecipes) {
+    return {
+        type: UPDATE_ALL_RECIPES,
+        allRecipes
+    }
+}
+
 export function updateAllJobs(allJobs) {
     return {
         type: UPDATE_ALL_JOBS,
@@ -155,10 +204,52 @@ export function updateAllJobs(allJobs) {
     }
 }
 
+export function updateActiveJob(job) {
+    return {
+        type: UPDATE_ACTIVE_JOB,
+        job
+    }
+}
+
 export function addNewJob(job) {
     return {
         type: ADD_NEW_JOB,
         job
+    }
+}
+
+export function updateActiveInstance(instance) {
+    return {
+        type: UPDATE_ACTIVE_INSTANCE,
+        instance
+    }
+}
+
+export function emptyActiveInstance() {
+    return {
+        type: EMPTY_ACTIVE_INSTANCE
+    }
+}
+
+
+export function updateActiveVersion(version) {
+    return {
+        type: UPDATE_ACTIVE_VERSION,
+        version
+    }
+}
+
+export function updateActiveVersionReviewState(lastEditedBy, reviewState) {
+    return {
+        type: UPDATE_ACTIVE_VERSION_REVIEW_STATE,
+        lastEditedBy,
+        reviewState
+    }
+}
+
+export function emptyActiveVersion() {
+    return {
+        type: EMPTY_ACTIVE_VERSION
     }
 }
 

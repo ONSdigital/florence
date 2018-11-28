@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"bytes"
+	"context"
 	"encoding/json"
 	"mime"
 	"net"
@@ -10,24 +11,23 @@ import (
 	"net/http/httputil"
 	"net/url"
 	"os"
+	"os/signal"
 	"path/filepath"
 	"strings"
 	"time"
 
 	"github.com/ONSdigital/florence/assets"
+	"github.com/ONSdigital/florence/config"
+	"github.com/ONSdigital/florence/healthcheck"
+	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
+	hc "github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/log"
 	"github.com/ONSdigital/go-ns/server"
+	"github.com/ONSdigital/go-ns/vault"
 	"github.com/gorilla/pat"
 	"github.com/gorilla/websocket"
 )
-
-var bindAddr = ":8080"
-var babbageURL = "http://localhost:8080"
-var zebedeeURL = "http://localhost:8082"
-var tableRendererURL = "http://localhost:23300"
-var enableNewApp = false
-var mongoURI = "localhost:27017"
 
 var getAsset = assets.Asset
 var getAssetETag = assets.GetAssetETag
@@ -39,20 +39,19 @@ var Version string
 func main() {
 	log.Debug("florence version", log.Data{"version": Version})
 
-	if v := os.Getenv("BIND_ADDR"); len(v) > 0 {
-		bindAddr = v
-	}
-	if v := os.Getenv("BABBAGE_URL"); len(v) > 0 {
-		babbageURL = v
-	}
-	if v := os.Getenv("ZEBEDEE_URL"); len(v) > 0 {
-		zebedeeURL = v
-	}
-	if v := os.Getenv("TABLE_RENDERER_URL"); len(v) > 0 {
-		tableRendererURL = v
+	cfg, err := config.Get()
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
 	}
 
 	log.Namespace = "florence"
+
+	zc := healthcheck.New(cfg.ZebedeeURL, "zebedee")
+	rtrc := healthcheck.New(cfg.RouterURL, "router")
+	dc := healthcheck.New(cfg.DatasetAPIURL, "dataset-api")
+	rc := healthcheck.New(cfg.RecipeAPIURL, "recipe-api")
+	ic := healthcheck.New(cfg.ImportAPIURL, "import-api")
 
 	/*
 		NOTE:
@@ -64,56 +63,97 @@ func main() {
 		because we can't see what issue it's fixing and whether it's necessary.
 	*/
 
-	babbageURL, err := url.Parse(babbageURL)
+	routerURL, err := url.Parse(cfg.RouterURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
+	routerProxy := reverseProxy.Create(routerURL, director)
 
-	babbageProxy := createBabbageProxy(babbageURL, nil)
-
-	zebedeeURL, err := url.Parse(zebedeeURL)
+	zebedeeURL, err := url.Parse(cfg.ZebedeeURL)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
-	tableURL, err := url.Parse(tableRendererURL)
+	recipeAPIURL, err := url.Parse(cfg.RecipeAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
+
+	tableURL, err := url.Parse(cfg.TableRendererURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	tableProxy := reverseProxy.Create(tableURL, tableDirector)
+
+	importAPIURL, err := url.Parse(cfg.ImportAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector)
+
+	datasetAPIURL, err := url.Parse(cfg.DatasetAPIURL)
+	if err != nil {
+		log.Error(err, nil)
+		os.Exit(1)
+	}
+	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
+
+	router := pat.New()
+
+	var vc upload.VaultClient
+	if !cfg.EncryptionDisabled {
+		vc, err = vault.CreateVaultClient(cfg.VaultToken, cfg.VaultAddr, 3)
+		if err != nil {
+			log.Error(err, nil)
+			os.Exit(1)
+		}
+	}
+
+	uploader, err := upload.New(cfg.UploadBucketName, cfg.VaultPath, vc)
 	if err != nil {
 		log.Error(err, nil)
 		os.Exit(1)
 	}
 
-	tableProxy := reverseProxy.Create(tableURL, tableDirector)
+	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
-	router := pat.New()
+	if cfg.SharedConfig.EnableDatasetImport {
+		router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
+		router.Path("/upload").Methods("POST").HandlerFunc(uploader.Upload)
+		router.Path("/upload/{id}").Methods("GET").HandlerFunc(uploader.GetS3URL)
+		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
+		router.Handle("/import{uri:.*}", importAPIProxy)
+		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
+		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+	}
 
-	router.Handle("/zebedee/{uri:.*}", zebedeeProxy)
+	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
-	router.HandleFunc("/florence/publishing-queue", legacyIndexFile)
-	router.HandleFunc("/florence/reports", legacyIndexFile)
-	router.HandleFunc("/florence/workspace", legacyIndexFile)
+	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
+	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler)
-	router.HandleFunc("/florence{uri:.*}", refactoredIndexFile)
-	router.Handle("/{uri:.*}", babbageProxy)
+	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
+	router.Handle("/{uri:.*}", routerProxy)
 
-	log.Debug("Starting server", log.Data{
-		"bind_addr":          bindAddr,
-		"babbage_url":        babbageURL,
-		"zebedee_url":        zebedeeURL,
-		"table_renderer_url": tableRendererURL,
-		"enable_new_app":     enableNewApp,
-	})
+	log.Debug("Starting server", log.Data{"config": cfg})
 
-	s := server.New(bindAddr, router)
+	s := server.New(cfg.BindAddr, router)
 	// TODO need to reconsider default go-ns server timeouts
 	s.Server.IdleTimeout = 120 * time.Second
 	s.Server.WriteTimeout = 120 * time.Second
 	s.Server.ReadTimeout = 30 * time.Second
+	s.HandleOSSignals = false
 	s.MiddlewareOrder = []string{"RequestID", "Log"}
 
 	// FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
@@ -126,9 +166,34 @@ func main() {
 	}
 	s.MiddlewareOrder = newMo
 
-	if err := s.ListenAndServe(); err != nil {
-		log.Error(err, nil)
-		os.Exit(2)
+	go func() {
+		if err := s.ListenAndServe(); err != nil {
+			log.Error(err, nil)
+			os.Exit(2)
+		}
+	}()
+
+	stop := make(chan os.Signal, 1)
+	signal.Notify(stop, os.Interrupt, os.Kill)
+
+	for {
+		hc.MonitorExternal(rtrc, zc, ic, rc, dc)
+
+		timer := time.NewTimer(time.Second * 60)
+
+		select {
+		case <-timer.C:
+			continue
+		case <-stop:
+			log.Info("shutting service down gracefully", nil)
+			timer.Stop()
+			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+			defer cancel()
+			if err := s.Server.Shutdown(ctx); err != nil {
+				log.Error(err, nil)
+			}
+			return
+		}
 	}
 }
 
@@ -161,34 +226,54 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	w.Write(b)
 }
 
-func legacyIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting legacy HTML file", nil)
+func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting legacy HTML file", nil)
 
-	b, err := getAsset("../dist/legacy-assets/index.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/legacy-assets/index.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
-func refactoredIndexFile(w http.ResponseWriter, req *http.Request) {
-	log.Debug("Getting refactored HTML file", nil)
+func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
+	return func(w http.ResponseWriter, req *http.Request) {
+		log.Debug("Getting refactored HTML file", nil)
 
-	b, err := getAsset("../dist/refactored.html")
-	if err != nil {
-		log.Error(err, nil)
-		w.WriteHeader(404)
-		return
+		b, err := getAsset("../dist/refactored.html")
+		if err != nil {
+			log.Error(err, nil)
+			w.WriteHeader(404)
+			return
+		}
+
+		cfgJSON, err := json.Marshal(cfg.SharedConfig)
+		if err != nil {
+			log.Error(err, log.Data{"message": "error marshalling shared configuration struct"})
+			w.WriteHeader(500)
+			return
+		}
+		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
+
+		w.Header().Set(`Content-Type`, "text/html")
+		w.WriteHeader(200)
+		w.Write(b)
 	}
-
-	w.Header().Set(`Content-Type`, "text/html")
-	w.WriteHeader(200)
-	w.Write(b)
 }
 
 func zebedeeDirector(req *http.Request) {
@@ -198,8 +283,24 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
+func director(req *http.Request) {
+	if c, err := req.Cookie(`access_token`); err == nil && len(c.Value) > 0 {
+		req.Header.Set(`X-Florence-Token`, c.Value)
+	}
+}
+
+func importAPIDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+}
+
 func tableDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
+}
+
+func datasetAPIDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {

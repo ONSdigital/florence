@@ -10,7 +10,7 @@ import {
     updateActiveTeamMembers
 } from '../../config/actions';
 import teams from '../../utilities/api-clients/teams';
-import safeURL from '../../utilities/safeURL';
+import url from '../../utilities/url';
 import notifications from '../../utilities/notifications';
 
 import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
@@ -135,18 +135,19 @@ export class TeamsController extends Component {
     }
 
     handleMembersEditClick() {
-        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/edit`));
+        this.props.dispatch(push(`${location.pathname}/edit`));
     }
 
     handleDrawerCancelClick() {
-        this.props.dispatch(push(`${this.props.rootPath}/teams`));
+        this.props.dispatch(push(url.resolve("../")));
     }
 
     handleTeamDeleteClick() {
-        this.props.dispatch(push(`${this.props.rootPath}/teams/${this.props.activeTeam.path}/delete`));
+        this.props.dispatch(push(`${location.pathname}/delete`));
     }
 
     handleTeamDeleteSuccess() {
+        this.props.dispatch(push(url.resolve("../../")));
         const notification = {
             type: 'positive',
             message: `Team '${this.props.activeTeam.name}' successfully deleted`,
@@ -166,7 +167,7 @@ export class TeamsController extends Component {
         teams.getAll().then(allTeams => {
             // Add any props (such as 'path') to response from API
             const allTeamsWithProps = allTeams.map(team => {
-                const path = safeURL(team.name + "_" + team.id);
+                const path = url.sanitise(team.name + "_" + team.id);
                 return Object.assign({}, team, {
                     path: path
                 });
@@ -196,7 +197,7 @@ export class TeamsController extends Component {
                         isDismissable: true
                     }
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/teams`));
+                    this.props.dispatch(push(url.resolve("../")));
                 }
             }
         }).catch(error => {
@@ -250,8 +251,13 @@ export class TeamsController extends Component {
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
             switch(error.status) {
-                case(401): {
-                    // This is handle by the request function, so do nothing here
+                case(404): {
+                    const notification = {
+                        type: "warning",
+                        message: `Couldn't find members for the team: '${teamName}'. This team may have been deleted.`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
                     break;
                 }
                 case("RESPONSE_ERR"): {
@@ -291,7 +297,7 @@ export class TeamsController extends Component {
         if (clickedTeam.isSelected) {
             return;
         }
-        const path = safeURL(clickedTeam.name + "_" + clickedTeam.id);
+        const path = url.sanitise(clickedTeam.name + "_" + clickedTeam.id);
         this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
     }
 
@@ -325,7 +331,7 @@ export class TeamsController extends Component {
             <div>
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-4">
-                        <h1>Select a team</h1>
+                        <h1 className="text-center">Select a team</h1>
                         <SelectableBoxController 
                             items={this.props.allTeams}
                             activeItem={this.props.activeTeam}
@@ -335,7 +341,7 @@ export class TeamsController extends Component {
                         />
                     </div>
                     <div className="grid__col-4">
-                        <h1>Create a team</h1>
+                        <h1 className="text-center">Create a team</h1>
                         <TeamCreate onCreateSuccess={this.handleTeamCreateSuccess} />
                     </div>
                 </div>
