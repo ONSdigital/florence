@@ -55307,7 +55307,7 @@ function viewCollectionDetails(collectionId, $this) {
     if (Florence.Authentication.isAuthenticated()) {
 
         if (view === 'collections') {
-            // viewCollections();
+
             window.location.pathname = "/florence/collections";
         }
         else if (view === 'datasets') {
@@ -55325,7 +55325,7 @@ function viewCollectionDetails(collectionId, $this) {
             
             if (!collectionID) {
                 console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                // viewCollections();
+                
                 window.location.pathname = "/florence/collections";
                 return;
             }
@@ -55347,15 +55347,12 @@ function viewCollectionDetails(collectionId, $this) {
             });
         }
         else if (view === 'users') {
-            //viewUsers();
             window.location.pathname = "/florence/users";
         }
         else if (view === 'teams') {
-            // viewTeams();
             window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
-            // viewLogIn();
             window.location.pathname = "/florence/login";
         }
         else if (view === 'publish') {
