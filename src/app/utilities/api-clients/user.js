@@ -30,7 +30,7 @@ export default class user {
     }
 
     static getPermissions(email) {
-        return http.get(`/zebedee/permission?email=${email}`);
+        return http.get(`/zebedee/permission?email=${email}`, true, true);
     }
 
     static getOldUserType(user) {

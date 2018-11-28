@@ -139,7 +139,7 @@ export class ChangeUserPasswordController extends Component {
                     break;
                 }
                 case(404): {
-                    notification.message = "Unable to change user's password because this user doesn't longer exist";
+                    notification.message = "Unable to change user's password because this user doesn't exist";
                     break;
                 }
                 case("FETCH_ERR"): {
