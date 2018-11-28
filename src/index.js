@@ -13,7 +13,8 @@ import CollectionsController from './app/views/collections/CollectionsController
 import TeamsController from './app/views/teams/TeamsController';
 import SelectADataset from './app/views/datasets-new/DatasetsController';
 import DatasetEditionsController from './app/views/datasets-new/editions/DatasetEditionsController';
-import DatasetVersionsController from './app/views/datasets-new/versions/DatasetVersionsController'
+import DatasetVersionsController from './app/views/datasets-new/versions/DatasetVersionsController';
+import DatasetMetadataController from './app/views/datasets-new/edit/DatasetMetadataController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
@@ -85,6 +86,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/datasets`} component={ userIsAuthenticated(SelectADataset) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID`} component={ userIsAuthenticated(DatasetEditionsController) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID`} component={ userIsAuthenticated(DatasetVersionsController) }/>
+                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID/versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }/>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
