@@ -37,16 +37,16 @@ class DatasetVersionsController extends Component {
     async componentWillMount() {
         const datasetID = this.props.routeParams.datasetID;
         const editionID = this.props.routeParams.editionID;
-        const dataset = await this.getDataset(datasetID);
-        const edition = await this.getEdition(datasetID, editionID)
-        const versions = await this.getAllVersions(datasetID, editionID)
-        this.setState({dataset: dataset, edition: edition, versions: versions});
+
+        this.getAllVersions(datasetID, editionID);
+        this.getDataset(datasetID);
+        this.getEdition(datasetID, editionID)
     }
 
     getDataset = datasetID => {
         this.setState({isFetchingDataset: true});
         return datasets.get(datasetID).then(dataset => {
-            this.setState({isFetchingDataset: false});
+            this.setState({isFetchingDataset: false, dataset: this.mapDatasetToState(dataset)});
             return this.mapDatasetToState(dataset);
         }).catch(error => {
             switch (error.status) {
@@ -121,7 +121,7 @@ class DatasetVersionsController extends Component {
     getEdition = (datasetID, editionID) => {
         this.setState({isFetchingEdition: true});
         return datasets.getEdition(datasetID, editionID).then(edition => {
-            this.setState({isFetchingEdition: false});
+            this.setState({isFetchingEdition: false, edition: this.mapDatasetEditionToView(edition)});
             return this.mapDatasetEditionToView(edition)
         }).catch(error => {
             console.error(error);
@@ -149,7 +149,7 @@ class DatasetVersionsController extends Component {
     getAllVersions = (datasetID, editions) => {
         this.setState({isFetchingVersions: true});
         return datasets.getVersions(datasetID, editions).then(versions => {
-            this.setState({isFetchingVersions: false});
+            this.setState({isFetchingVersions: false, versions: this.mapDatasetVersionsToView(versions.items)});
             return this.mapDatasetVersionsToView(versions.items);
         }).catch(error => {
             console.error(error)
