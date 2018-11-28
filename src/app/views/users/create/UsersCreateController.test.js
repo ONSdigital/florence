@@ -126,14 +126,6 @@ describe("Handle submit", () => {
         expect(component.state().newUser.password.error.length).not.toBe(0);
     })
 
-    // it("sets isSubmitting state to true", async () => {
-    //     console.log(component.state())
-    //     component.instance().handleSubmit({preventDefault: ()=>{}});
-    //     console.log(component.state())
-    //     expect(component.state().isSubmitting).toBeTruthy()
-    // })
-
-    
     describe("on creation of user", () => {
         beforeAll(() => {
             tempUser.password.value = "test-password";
