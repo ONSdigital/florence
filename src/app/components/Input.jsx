@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     id: PropTypes.string.isRequired,
+    name: PropTypes.string,
     label: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
@@ -15,7 +16,8 @@ const propTypes = {
     value: PropTypes.string,
     min: PropTypes.string,
     max: PropTypes.string,
-    allowAutoComplete: PropTypes.bool
+    allowAutoComplete: PropTypes.bool,
+    placeholder: PropTypes.string
 };
 
 const defaultProps = {
@@ -34,6 +36,7 @@ export default class Input extends Component {
         };
 
         this.showHide = this.showHide.bind(this);
+        this.moveCaretToEnd = this.moveCaretToEnd.bind(this);
     }
 
     showHide(e) {
@@ -42,6 +45,13 @@ export default class Input extends Component {
         this.setState({
             type: this.state.type === 'text' ? 'password' : 'text'
         })
+    }
+
+    moveCaretToEnd(event) {
+        // Move caret to the end of the value on input focus
+        const val = event.target.value;
+        event.target.value = '';
+        event.target.value = val;
     }
 
     render() {
@@ -57,16 +67,17 @@ export default class Input extends Component {
                         ""
                 }
                 {this.props.type !== "textarea" ?
-                    <input 
+                    <input
                         id={this.props.id}
                         type={this.state.type}
-                        className="input input__text"
-                        name={this.props.id}
+                        className={"input" + (this.state.displayShowHide ? " input--show-hide" : "")}
+                        name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
-                        placeholder={this.props.inline ? this.props.label : ""}
+                        onFocus={this.moveCaretToEnd}
+                        placeholder={this.props.inline ? this.props.label : this.props.placeholder}
                         accept={this.props.accept}
                         value={this.props.value}
                         min={this.props.min}
@@ -80,12 +91,13 @@ export default class Input extends Component {
                     <textarea
                         id={this.props.id}
                         className="input input__textarea"
-                        name={this.props.id}
+                        name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
+                        value={this.props.value}
                     >
                     </textarea>
                 }

@@ -21,9 +21,13 @@ jest.mock('../../../utilities/notifications', () => {
     }
 });
 
+jest.mock('../../../utilities/url', () => ({
+    resolve: jest.fn(url => `/florence${url}`)
+}))
+
 const defaultProps = {
-    collectionID: 'test-collection-12345',
-    activePageID: 'economy-grossdomesticproduct-bulletins-gdp-2014',
+    id: 'test-collection-12345',
+    activePageURI: 'economy-grossdomesticproduct-bulletins-gdp-2014',
     name: 'Test collection',
     onClose: () => {},
     onPageClick: () => {},
@@ -32,7 +36,7 @@ const defaultProps = {
     inProgress: [],
     complete: [],
     reviewed: [],
-    deletes: []
+    deletes: [],
 };
 
 const alternativePageProps = {
@@ -111,9 +115,13 @@ describe("Collection details page edit/delete buttons only show for an active pa
         ...defaultProps,
         ...alternativePageProps
     };
-    const component = shallow(
-        <CollectionDetails {...props} />
-    );
+    let component;
+
+    beforeEach(() => {
+        component = shallow(
+            <CollectionDetails {...props} />
+        );
+    });
 
     it("render the correct number of in progress pages", () => {
         const pages = component.find('.list__item--expandable[data-page-state="inProgress"]');
@@ -136,8 +144,8 @@ describe("Collection details page edit/delete buttons only show for an active pa
     });
 
     it("buttons will hide for inactive pages", () => {
-        const activePages = component.find('.list__item--expandable.active');
         const pages = component.find('.list__item--expandable');
+        const activePages = component.find('.list__item--expandable.active');
         expect(pages.length).toBe(5);
         expect(activePages.length).toBe(0);
     });
@@ -232,7 +240,7 @@ describe("Invalid props doesn't break the component", () => {
         expect(component.find('h3').length).toBe(3);
     });
     
-    it("missing 'activePageID'", () => {
+    it("missing 'activePageURI'", () => {
         component.setProps({...alternativePageProps});
         expect(component.find('.list__item--expandable').length).toBe(5);
     });
@@ -311,8 +319,8 @@ describe("'Last edit' information for a page in a collection", () => {
 
     it("Renders an error message if neither the email or date are available", () => {
         const event = {};
-        expect(component.instance().renderLastEditText(event)).toBe("Error getting 'last edit' details");
-        expect(component.instance().renderLastEditText()).toBe("Error getting 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Last edit: information not available");
+        expect(component.instance().renderLastEditText()).toBe("Last edit: information not available");
     })
     
     it("Renders an error message if it isn't a valid date and no email is available", () => {
@@ -320,7 +328,7 @@ describe("'Last edit' information for a page in a collection", () => {
             email: "",
             date: "not a valid date"
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Error rendering 'last edit' details");
+        expect(component.instance().renderLastEditText(event)).toBe("Error showing 'last edit' details");
     });
 
 });
@@ -389,11 +397,28 @@ describe("Delete collection button", () => {
     });
 });
 
-describe("Cancelling deleted content", () => {
-    const component = shallow(
-        <CollectionDetails  />
-    )
+describe("Dataset import functionality", () => {
+    it("doesn't display when it is disabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: false
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
 
-    
+        expect(component.find("#import-dataset-link").exists()).toBe(false);
+    });
+
+    it("displays when it is enabled in props", () => {
+        const props = {
+            ...defaultProps,
+            enableDatasetImport: true
+        };
+        const component = shallow(
+            <CollectionDetails {...props} />
+        );
+
+        expect(component.find("#import-dataset-link").exists()).toBe(true);
+    });
 });
-

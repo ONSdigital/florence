@@ -3,13 +3,16 @@ import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
+import url from '../utilities/url'
+import cookies from '../utilities/cookies';
 import auth from '../utilities/auth';
-import url from '../utilities/url';
-
 import PreviewNav from './PreviewNav';
 import user from '../utilities/api-clients/user';
 
 const propTypes = {
+    config: PropTypes.shape({
+        enableDatasetImport: PropTypes.bool
+    }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({
         id: PropTypes.string.isRequired,
@@ -20,7 +23,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class NavBar extends Component {
+export class NavBar extends Component {
     constructor(props) {
         super(props);
 
@@ -33,23 +36,27 @@ class NavBar extends Component {
 
     renderWorkingOnItem() {
         const workingOn = this.props.workingOn || {};
-        const showWorkingOn = workingOn.id;
+        const showWorkingOn = workingOn.id;    
         if (!showWorkingOn) {
             return
         }
-        return (
-            // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
-            <li className="global-nav__item global-nav__item--working-on">
-                <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
-                    Working on:&nbsp;
-                    {this.props.workingOn.name || 
-                        <div className="margin-left--1 inline-block">
-                            <div className="loader loader--inline loader--small"></div>
-                        </div>
-                    }
-                </Link>
-            </li>
-        )
+        
+        const route = this.props.location.pathname;
+        if (route.indexOf(`/datasets`) >= 0 || route.indexOf(`/preview`) >= 0) {
+            return (
+                // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
+                <li className="global-nav__item global-nav__item--working-on">
+                    <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
+                        Working on:&nbsp;
+                        {this.props.workingOn.name || 
+                            <div className="margin-left--1 inline-block">
+                                <div className="loader loader--inline loader--small"></div>
+                            </div>
+                        }
+                    </Link>
+                </li>
+            )
+        }
     }
 
     renderNavItems() {
@@ -61,42 +68,46 @@ class NavBar extends Component {
             )
         }
 
-        const route = this.props.location.pathname;
         const rootPath = this.props.rootPath;
-
-        if (route.indexOf(`${rootPath}/collections`) >= 0 || route.indexOf(`${rootPath}/publishing-queue`) >= 0 || route.indexOf(`${rootPath}/reports`) >= 0 || route.indexOf(`${rootPath}/users`) >= 0 || route.indexOf(`${rootPath}/teams`) >= 0 || route.indexOf(`${rootPath}/not-authorised`) >= 0 ) {
-            return (
-                <span>
-                    { this.renderWorkingOnItem() }
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
-                    </li>
-                    {auth.isAdminOrEditor(this.props.user) ?
-                        <span>
+        return (
+            <span>
+                { this.renderWorkingOnItem() }
+                <li className="global-nav__item">
+                    <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                </li>
+                {auth.isAdminOrEditor(this.props.user) ?
+                    <span>
+                        {this.props.config.enableDatasetImport &&
                             <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                                <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                                    Datasets
+                                </Link>
                             </li>
+                        }
+                        <li className="global-nav__item">
+                            <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                        </li>
 
-                            <li className="global-nav__item">
-                                <a className="global-nav__link" href="/florence/reports">Reports</a>
-                            </li>
+                        <li className="global-nav__item">
+                            <a className="global-nav__link" href="/florence/reports">Reports</a>
+                        </li>
 
-                            <li className="global-nav__item">
+                        <li className="global-nav__item">
                             <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">Users and access</Link>
-                            </li>
+                        </li>
 
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
-                            </li>
-                        </span>
-                    : "" }
-
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/login`} onClick={this.handleLogoutClick} className="global-nav__link">Logout</Link>
-                    </li>
-                </span>
-            )
-        }
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
+                        </li>
+                    </span>
+                : "" }
+                <li className="global-nav__item">
+                    <Link to={url.resolve("/login")} onClick={this.handleLogoutClick} className="global-nav__link">
+                        Logout
+                    </Link>
+                </li>
+            </span>
+        )
     }
 
     render() {
@@ -120,7 +131,8 @@ function mapStateToProps(state) {
     return {
         user,
         rootPath,
-        workingOn
+        workingOn,
+        config: state.state.config
     }
 }
 

@@ -4,25 +4,49 @@
     padding: 10px $gutter;
     text-decoration: none;
     position: relative;
-    background-color: $iron;
+    background-color: $concrete;
+    display: inline-block;
+
+    &:hover,
+    &:focus {
+        outline: 0; //reset the default focus styling (for example those set on <a> tags)
+    }
+
+    &:hover,
+    &:focus {
+        &:after {
+            content: '';
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            background-color: rgba(0,0,0,0.2);
+            top: 0;
+            left: 0;
+            border-radius: 4px;
+        }
+    }
 
     /* Colours */
-    &--primary {
+    &--primary,
+    &--primary:visited {
         color: $concrete;
         background-color: $astral;
     }
 
-    &--positive {
+    &--positive,
+    &--positive:visited {
         color: $concrete;
         background-color: $como;
     }
 
-    &--warning {
+    &--warning,
+    &--warning:visited {
         color: $concrete;
         background-color: $tawny-port;
     }
 
-    &--subtle {
+    &--subtle,
+    &--subtle:visited {
         color: $mirage;
         background-color: $cadet-blue;
         opacity: 0.5;
@@ -30,6 +54,23 @@
         &:hover {
             opacity: 1;
             color: $pickled-bluewood;
+        }
+    }
+
+    &--link {
+        color: $primary-link;
+        text-decoration: underline;
+        padding: 0;
+        font-family: $base-font-family;
+        background-color:  transparent;
+
+        &:focus {
+            outline: 3px solid $focus;
+        }
+
+        &:hover:after, 
+        &:focus:after {
+            display: none;
         }
     }
     
@@ -49,29 +90,20 @@
         }
     }
 
-    &:hover,
-    &:focus {
-        &:after {
-            content: '';
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            background-color: rgba(0,0,0,0.2);
-            top: 0;
-            left: 0;
-            border-radius: 4px;
-        }
-    }
-
     &--password {
         background: none;
         font-size: ($lineheight / 2 ) + 2;
         float: right;
         margin-top: -$lineheight * 2;
 
+        &:hover {
+            cursor: pointer;
+        }
+
         &:hover,
         &:focus {
             text-decoration: underline;
+            outline: 0;
 
             &:after {
                 background: none;

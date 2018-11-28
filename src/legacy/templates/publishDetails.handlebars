@@ -15,20 +15,42 @@
                         <button class="btn btn--positive margin-top--1 margin-bottom--0 btn-collection-publish">Publish collection</button>
                     {{/if}}
                     <button class="btn btn--primary margin-top--1 margin-bottom--0 btn-collection-unlock">Unlock collection</button>
-                    {{#if pageDetails}}
+                    {{#if_any pageDetails datasets datasetVersions}}
                         <h4>Approved pages in this collection</h4>
                         <ul class="page-list">
-                            {{#each pageDetails}}
-                                <li class="page-list__item"><span class="page__item page__item--{{type}}"
-                                          data-path="{{uri}}">{{description.title}}{{#if description.edition}}
-                                    : {{description.edition}}{{/if}}</span>
-                                    <div class="page__buttons page__buttons--list">
-                                        <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
-                                    </div>
-                                </li>
-                            {{/each}}
+                            {{#if pageDetails}}
+                                {{#each pageDetails}}
+                                    <li class="page-list__item"><span class="page__item page__item--{{type}}"
+                                              data-path="{{uri}}">{{description.title}}{{#if description.edition}}
+                                        : {{description.edition}}{{/if}}</span>
+                                        <div class="page__buttons page__buttons--list">
+                                            <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
+                                        </div>
+                                    </li>
+                                {{/each}}
+                            {{/if}}
+                            {{#if datasets}}
+                                {{#each datasets}}
+                                    <li class="page-list__item"><span class="page__item page__item--dataset"
+                                                                      data-path="{{uri}}">{{title}}</span>
+                                        <div class="page__buttons page__buttons--list">
+                                            <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
+                                        </div>
+                                    </li>
+                                {{/each}}
+                            {{/if}}
+                            {{#if datasetVersions}}
+                                {{#each datasetVersions}}
+                                    <li class="page-list__item"><span class="page__item page__item--dataset_version"
+                                                                      data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
+                                        <div class="page__buttons page__buttons--list">
+                                            <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
+                                        </div>
+                                    </li>
+                                {{/each}}
+                            {{/if}}
                         </ul>
-                    {{/if}}
+                    {{/if_any}}
                     {{#if pendingDeletes}}
                         <h4>Deleted pages in this collection</h4>
                         <ul class="page-list">

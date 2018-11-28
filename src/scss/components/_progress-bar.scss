@@ -8,5 +8,14 @@
         background-color: $como;
         transition: 0.4s linear;
         transition-property: width;
+
+        &--error {
+            background-color: $night-shadz;
+        }
+    }
+
+    &__error {
+        color: $night-shadz;
+        font-weight: 600;
     }
 }
