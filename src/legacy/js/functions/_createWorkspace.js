@@ -184,13 +184,17 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
+            var checkDest = dest;
+            if(!dest.endsWith("/data.json")) {
+                checkDest += "/data.json";
+            }
             $.ajax({
-                url: "/zebedee/checkcollectionsforuri?uri=" + dest,
+                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
                 type: 'GET',
                 contentType: 'application/json',
                 cache: false,
                 success: function (response, textStatus, xhr) {
-                    if (xhr.status == 204) {
+                    if (xhr.status == 204 || response === collectionData.name) {
                         loadPageDataIntoEditor(Florence.globalVars.pagePath, collectionId);
                         return;
                     }
