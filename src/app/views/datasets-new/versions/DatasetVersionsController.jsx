@@ -29,7 +29,13 @@ class DatasetVersionsController extends Component {
             isFetchingEdition: false,
             edition: {},
             isFetchingVersions: false,
-            versions: []
+            versions: [
+                {
+                    title: "Create new version", 
+                    id: "create-new-version",
+                    url:  this.props.location.pathname + "/instances",
+                }
+            ]
         }
 
     }
@@ -149,7 +155,7 @@ class DatasetVersionsController extends Component {
     getAllVersions = (datasetID, editions) => {
         this.setState({isFetchingVersions: true});
         return datasets.getVersions(datasetID, editions).then(versions => {
-            this.setState({isFetchingVersions: false, versions: this.mapDatasetVersionsToView(versions.items)});
+            this.setState({isFetchingVersions: false, versions: [...this.state.versions, ...this.mapDatasetVersionsToView(versions.items)]});
             return this.mapDatasetVersionsToView(versions.items);
         }).catch(error => {
             console.error(error)
