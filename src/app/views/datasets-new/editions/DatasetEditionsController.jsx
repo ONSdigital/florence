@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { push } from 'react-router-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 import datasets from '../../../utilities/api-clients/datasets';
@@ -19,7 +20,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class DatasetEditionsController extends Component {
+export class DatasetEditionsController extends Component {
     constructor(props) {
         super(props);
 
@@ -213,6 +214,7 @@ class DatasetEditionsController extends Component {
         const allVersions = await this.getAllVersions(datasetID, editions).then(versions => {
             return versions;
         });
+        //console.log("ALL VERSIONS =>", allVersions);
         const mappedEditions = editions.map(edition => {
             allVersions.find(version => {
                 if (version.edition !== edition.id) {
@@ -235,8 +237,8 @@ class DatasetEditionsController extends Component {
         return allVersions;
     }
 
-    getVersion = async(datasetID, edition, version) => {
-        return await datasets.getVersion(datasetID, edition, version).then(versionResp => {
+    getVersion = async(datasetID, editionID, versionID) => {
+        return await datasets.getVersion(datasetID, editionID, versionID).then(versionResp => {
             return versionResp;
         })
     }
@@ -264,5 +266,6 @@ class DatasetEditionsController extends Component {
 
 DatasetEditionsController.propTypes = propTypes;
 
-export default (DatasetEditionsController);
+
+export default connect()(DatasetEditionsController);
 
