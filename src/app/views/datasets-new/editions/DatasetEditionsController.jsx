@@ -214,7 +214,6 @@ export class DatasetEditionsController extends Component {
         const allVersions = await this.getAllVersions(datasetID, editions).then(versions => {
             return versions;
         });
-        //console.log("ALL VERSIONS =>", allVersions);
         const mappedEditions = editions.map(edition => {
             allVersions.find(version => {
                 if (version.edition !== edition.id) {
