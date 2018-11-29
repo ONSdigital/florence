@@ -44,11 +44,13 @@ export class DatasetEditionsController extends Component {
         const dataset = await this.getDataset(datasetID);
         this.setState({dataset: this.mapDatasetToState(dataset)});
         this.createListOfEditions(datasetID);
+        
     }
 
     createListOfEditions = async(datasetID) => {    
         const editions = await this.getEditions(datasetID) || [];
         const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions)
+        //console.log(await datasets.getLatestVersionForEditions(datasetID, editions))
         this.setState({editions: [...this.state.editions, ...editionsWithReleaseDates]});
     }
 
@@ -211,9 +213,19 @@ export class DatasetEditionsController extends Component {
     }
 
     mapVersionReleaseDatesToEditions = async(datasetID, editions) => {
-        const allVersions = await this.getAllVersions(datasetID, editions).then(versions => {
+        const allVersions = await this.getLatestVersionForAllEditions(datasetID, editions).then(versions => {
             return versions;
         });
+
+        // if we fail to get latest versions display inline error
+        if (!allVersions) {
+            const mappedEditions = editions.map(edition => {
+                edition.details[1] = "Release date: error retreiving release date"
+                return edition;
+            })
+            return mappedEditions;
+        }
+
         const mappedEditions = editions.map(edition => {
             allVersions.find(version => {
                 if (version.edition !== edition.id) {
@@ -226,19 +238,11 @@ export class DatasetEditionsController extends Component {
         return mappedEditions;
     }
 
-    getAllVersions = async(datasetID, editions) => {
-        const versionPromises = editions.map(async(edition) => {
-            return await this.getVersion(datasetID, edition.id, edition.latestVersion);
-        })
-        const allVersions = await Promise.all(versionPromises).then(version => {
-            return version;
-        })
-        return allVersions;
-    }
-
-    getVersion = async(datasetID, editionID, versionID) => {
-        return await datasets.getVersion(datasetID, editionID, versionID).then(versionResp => {
-            return versionResp;
+    getLatestVersionForAllEditions = (datasetID, editions) => {
+        return datasets.getLatestVersionForEditions(datasetID, editions).then(versions => {
+            return versions;
+        }).catch(error => {
+            console.error("Error getting latest versions", error);
         })
     }
 
