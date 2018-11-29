@@ -14,7 +14,7 @@ import TeamsController from './app/views/teams/TeamsController';
 import SelectADataset from './app/views/datasets-new/DatasetsController';
 import DatasetEditionsController from './app/views/datasets-new/editions/DatasetEditionsController';
 import DatasetVersionsController from './app/views/datasets-new/versions/DatasetVersionsController';
-import DatasetMetadataController from './app/views/datasets-new/edit/DatasetMetadataController';
+import DatasetMetadataController from './app/views/datasets-new/edit-metadata/DatasetMetadataController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
