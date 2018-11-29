@@ -54,6 +54,28 @@ export default class datasets {
              });
     }
 
+    static getLatestVersionForEditions = async(datasetID, editionsList) => {
+        return new Promise(async (resolve, reject) => {
+            const versionFetches = editionsList.map(edition => {
+                return http.get(`/dataset/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`).then(response => {
+                    return response;
+                }).catch(error => {
+                    reject(error);
+                    return;
+                })
+            })
+
+            const allLatestVersions = await Promise.all(versionFetches).then(version => {
+                return version;
+            }).catch(error => {
+                console.error(error)
+                reject(error);
+                return;
+            })
+            resolve(allLatestVersions);
+        })
+    }
+
     static getLatestVersion(datasetID) {
         const datasetURL = `/dataset/datasets/${datasetID}`;
 
