@@ -31,6 +31,7 @@ import SelectableTest from './SelectableTest';
 import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
+import NewPreviewController from './app/views/datasets-new/preview/PreviewController';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -83,6 +84,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets`} component={ userIsAuthenticated(SelectADataset) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID`} component={ userIsAuthenticated(DatasetEditionsController) }/>
+                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:edition/versions/:version/new-preview`} component={ userIsAuthenticated(NewPreviewController) }/>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
