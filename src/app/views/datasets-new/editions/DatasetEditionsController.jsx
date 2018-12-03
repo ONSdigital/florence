@@ -35,11 +35,13 @@ export class DatasetEditionsController extends Component {
                     url:  this.props.location.pathname + "/instances",
                 }
             ],
+            isFetchingEditionsAndVersions: false
         }
 
     }
 
     async componentWillMount() {
+        this.setState({isFetchingEditionsAndVersions: true})
         const datasetID = this.props.routeParams.datasetID;
         const dataset = await this.getDataset(datasetID);
         this.setState({dataset: this.mapDatasetToState(dataset)});
@@ -50,8 +52,7 @@ export class DatasetEditionsController extends Component {
     createListOfEditions = async(datasetID) => {    
         const editions = await this.getEditions(datasetID) || [];
         const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions)
-        //console.log(await datasets.getLatestVersionForEditions(datasetID, editions))
-        this.setState({editions: [...this.state.editions, ...editionsWithReleaseDates]});
+        this.setState({editions: [...this.state.editions, ...editionsWithReleaseDates], isFetchingEditionsAndVersions: false});
     }
 
     getDataset = datasetID => {
@@ -260,7 +261,7 @@ export class DatasetEditionsController extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Select an Edition</h1>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."}</p>
-                    <SimpleSelectableList rows={this.state.editions} isFetchingData={this.state.fetchingEditions}/>
+                    <SimpleSelectableList rows={this.state.editions} showLoadingState={this.state.isFetchingEditionsAndVersions}/>
                </div>
             </div>
         )
