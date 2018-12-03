@@ -33,6 +33,9 @@ jest.mock('../../../utilities/api-clients/datasets', () => {
         getAllVersions: jest.fn(() => {
             return Promise.resolve(mockedVersions);
         }),
+        getLatestVersionForEditions: jest.fn(() => {
+            return Promise.resolve(mockedVersions);
+        }),
     }
 });
 
@@ -76,10 +79,31 @@ const mockedEditions = {
     ]
 };
 
+const mockedMappedEditions = [ 
+    { 
+        title: 'Test Dataset 1',
+        id: 'edition-1',
+        url: 'florence/collections/12345/datasets/6789/editions/edition-1',
+        details: [ 
+            'Edition: edition-1', 
+            'Release date: loading...' ],
+        latestVersion: '3' 
+    },
+    { 
+        title: 'Test Dataset 1',
+        id: 'edition-2',
+        url: 'florence/collections/12345/datasets/6789/editions/edition-2',
+        details: [ 
+            'Edition: edition-2', 
+            'Release date: loading...' ],
+        latestVersion: '12' 
+    } 
+]
+
 const mockedVersions = [
     {
         alerts: [],
-        edition: "time-series",
+        edition: "edition-1",
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
         release_date: "2018-09-07T00:00:00.000Z",
         state: "published",
@@ -87,7 +111,7 @@ const mockedVersions = [
     },
     {
         alerts: [],
-        edition: "time-series",
+        edition: "edition-2",
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
         release_date: "2018-09-07T00:00:00.000Z",
         state: "published",
@@ -201,11 +225,35 @@ describe("Calling getEditions", () => {
     });
 });
 
-describe("Calling getVersion", () => {
-    it("returns version data", async() => {
-        const version = await component.instance().getVersion();
-        expect(version).toMatchObject(mockedVersions[0])
-    })
+describe("Mapping version release dates to editions method", () => {
+    it("returns mapped editions correctly", async() => {
+        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions)
+        expect (mappedEditions[0]).toMatchObject({
+            title: 'Test Dataset 1',
+            id: 'edition-1',
+            url: 'florence/collections/12345/datasets/6789/editions/edition-1',
+            details: [ 
+                'Edition: edition-1', 
+                'Release date: 07 September 2018' ],
+            latestVersion: '3'
+        });
+    });
+
+    it("displays inline error if no versions returned", async() => {
+        datasets.getLatestVersionForEditions.mockImplementationOnce(() => (
+            Promise.reject({ status: 500 })
+        ));
+        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions)
+        expect(mappedEditions[0]).toMatchObject({
+            title: 'Test Dataset 1',
+            id: 'edition-1',
+            url: 'florence/collections/12345/datasets/6789/editions/edition-1',
+            details: [   
+                'Edition: edition-1',
+                'Release date: error retreiving release date' ],
+            latestVersion: '3'
+        });
+    });
 });
 
 test("Mapping dataset to state", () => {
@@ -228,9 +276,4 @@ test("Mapping edition to state", () => {
     component.setState({ dataset: { title: "Dataset Title" } })
     const mappedEditions = component.instance().mapDatasetEditionsToView(mockedEditions.items);
     expect(mappedEditions[0]).toMatchObject(expectedMappedEdition);
-})
-
-// test("Mapping release date to edition", async () => {
-//     const thing = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedEditions);
-//     console.log(thing)
-// })
+});
