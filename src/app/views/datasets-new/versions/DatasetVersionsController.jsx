@@ -197,7 +197,7 @@ class DatasetVersionsController extends Component {
                     <h1 className="margin-top--1 margin-bottom--1">Select a version</h1>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."}</p>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.state.edition.title ? this.state.edition.title : "loading..."}</p>
-                    <SimpleSelectableList rows={this.state.versions} isFetchingData={this.state.fetchingEditions}/>
+                    <SimpleSelectableList rows={this.state.versions} showLoadingState={this.state.isFetchingVersions}/>
                </div>
             </div>
         )
