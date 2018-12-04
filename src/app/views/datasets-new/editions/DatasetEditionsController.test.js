@@ -152,13 +152,13 @@ describe("Calling getDataset", () => {
         expect(component.state('isFetchingDataset')).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
-        component.instance().getDataset();
+        component.instance().getDataset(mockedDataset.id);
         expect(component.state('isFetchingDataset')).toBe(true);
     })
 
     it("updates isFetchingDatasets state to show it has fetched data for all datasets", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
-        await component.instance().getDataset();
+        await component.instance().getDataset(mockedDataset.id);
         expect(component.state('isFetchingDataset')).toBe(false);
     });
 
@@ -166,7 +166,7 @@ describe("Calling getDataset", () => {
         datasets.get.mockImplementationOnce(() => (
             Promise.reject({ status: 500 })
         ));
-        await component.instance().getDataset();
+        await component.instance().getDataset(mockedDataset.id);
         expect(component.state('isFetchingDataset')).toBe(false);
     });
 
@@ -174,7 +174,7 @@ describe("Calling getDataset", () => {
         datasets.get.mockImplementationOnce(() => (
             Promise.reject({ status: 404 })
         ));
-        await component.instance().getDataset();
+        await component.instance().getDataset(mockedDataset.id);
         expect(mockNotifications.length).toBe(1);
     });
 });
