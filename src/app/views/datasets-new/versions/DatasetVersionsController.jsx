@@ -19,7 +19,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class DatasetVersionsController extends Component {
+export class DatasetVersionsController extends Component {
     constructor(props) {
         super(props);
 
@@ -127,15 +127,15 @@ class DatasetVersionsController extends Component {
     getEdition = (datasetID, editionID) => {
         this.setState({isFetchingEdition: true});
         return datasets.getEdition(datasetID, editionID).then(edition => {
-            this.setState({isFetchingEdition: false, edition: this.mapDatasetEditionToView(edition)});
-            return this.mapDatasetEditionToView(edition)
+            this.setState({isFetchingEdition: false, edition: this.mapDatasetEditionToState(edition)});
+            return this.mapDatasetEditionToState(edition)
         }).catch(error => {
             console.error(error);
             this.setState({isFetchingEdition: false});
         })
     }
 
-    mapDatasetEditionToView = editionResponse => {
+    mapDatasetEditionToState = editionResponse => {
         try {
             const edition = editionResponse.current || editionResponse.next || editionResponse;
             return {
@@ -155,15 +155,15 @@ class DatasetVersionsController extends Component {
     getAllVersions = (datasetID, editions) => {
         this.setState({isFetchingVersions: true});
         return datasets.getVersions(datasetID, editions).then(versions => {
-            this.setState({isFetchingVersions: false, versions: [...this.state.versions, ...this.mapDatasetVersionsToView(versions.items)]});
-            return this.mapDatasetVersionsToView(versions.items);
+            this.setState({isFetchingVersions: false, versions: [...this.state.versions, ...this.mapDatasetVersionsToState(versions.items)]});
+            return this.mapDatasetVersionsToState(versions.items);
         }).catch(error => {
             console.error(error)
             this.setState({isFetchingVersions: false});
         })
     }
 
-    mapDatasetVersionsToView = versions => {
+    mapDatasetVersionsToState = versions => {
         try {
             const versionsList =  versions.map((version, index) => {
                 const latest = (index + 1) === versions.length ? "(latest)" : null;
