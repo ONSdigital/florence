@@ -55,7 +55,7 @@ make watch-src
 ```
 - Update JS, CSS and other source file changes
 ```
-make node-modules 
+make node-modules
 ```
 
 ### Configuration
