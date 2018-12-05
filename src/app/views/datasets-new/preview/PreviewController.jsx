@@ -26,11 +26,7 @@ export class PreviewController extends Component {
     }
     
     async componentWillMount() {
-        // this.state.isLoadingPreview = true;
-
-        const getDatasetresponse = await this.getDataset(this.props.params.datasetID)
-            // .then(this.state.isLoadingPreview = false)
-            
+        const getDatasetresponse = await this.getDataset(this.props.params.datasetID) 
 
         this.setState({
             collectionID: this.props.params.collectionID,
@@ -39,14 +35,11 @@ export class PreviewController extends Component {
             edition: this.props.params.edition,
             version: this.props.params.version
         });
-
     }
 
     async getDataset(datasetID) {
         this.state.isLoadingPreview = true
         return await datasets.get(datasetID)
-        // .then((response => response.current || response.next), this.state.isLoadingPreview = false)
-        // .then(response => response.current || response.next)
         .then(response => {
             this.setState({isLoadingPreview: false});
             return response.current || response.next
@@ -93,7 +86,6 @@ export class PreviewController extends Component {
             this.state.isLoadingPreview = false
             console.error(`Error fetching dataset ID '${this.props.params.datasetID}'`, error);
         })
-        // return await promise 
     }
 
     handleBackButton = () => {
