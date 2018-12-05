@@ -150,7 +150,7 @@ export class DatasetsController extends Component {
                     <Input id="search-datasets" placeholder="Search by name or ID" onChange={this.handleSearchInput}/>
                     <SimpleSelectableList 
                         rows={this.state.filteredDatasets.length ? this.state.filteredDatasets : this.state.datasets} 
-                        isFetchingData={this.state.isFetchingDatasets}
+                        showLoadingState={this.state.isFetchingDatasets}
                     />
                </div>
             </div>
