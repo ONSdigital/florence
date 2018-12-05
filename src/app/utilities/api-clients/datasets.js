@@ -26,6 +26,13 @@ export default class datasets {
              });
     }
 
+    static getEdition(datasetID, editionID) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${editionID}`)
+             .then(response => {
+                 return response;
+             });
+    }
+
     static getEditions(datasetID) {
         return http.get(`/dataset/datasets/${datasetID}/editions`)
              .then(response => {
@@ -38,6 +45,35 @@ export default class datasets {
              .then(response => {
                  return response;
              });
+    }
+
+    static getVersions(datasetID, edition) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static getLatestVersionForEditions = async(datasetID, editionsList) => {
+        return new Promise(async (resolve, reject) => {
+            const versionFetches = editionsList.map(edition => {
+                return http.get(`/dataset/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`).then(response => {
+                    return response;
+                }).catch(error => {
+                    reject(error);
+                    return;
+                })
+            })
+
+            const allLatestVersions = await Promise.all(versionFetches).then(version => {
+                return version;
+            }).catch(error => {
+                console.error(error)
+                reject(error);
+                return;
+            })
+            resolve(allLatestVersions);
+        })
     }
 
     static getLatestVersion(datasetID) {

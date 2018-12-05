@@ -22,7 +22,6 @@ export default class SimpleSelectableListItem extends Component {
                 {details.map((detail, i) => {
                     return <p key={`detail-${i}`}>{detail}</p>
                 })}
-            
             </li>
         )
     }
