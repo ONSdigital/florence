@@ -18,35 +18,31 @@ const propTypes = {
 
 }
 
-export class DatasetMetadataController extends Component {
+export class metadataController extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            datasetMetadata: {
+            isGettingDatasetMetadata: false,
+            isGettingVersionMetadata: false,
+            metadata: {
                 title: "",
                 summary: "",
                 keywords: [],
                 nationalStatistic: false,
                 licence: "",
                 contactName: "",
-                contentEmail: "",
+                contactEmail: "",
                 contactTelephone: "",
-                relatedLinks: []
-            },
-            isGettingDatasetMetadata: false,
-            edition: {},
-            version: {},
-            versionMetadata: {
+                relatedLinks: [],
+                releaseFrequency: "",
                 edition: "",
                 version: "",
                 releaseDate: "",
                 nextReleaseDate: "",
-                releaseFrequency: "",
                 notices: [],
                 dimensions: [],
-            },
-            isGettingVersionMetadata: false,
+            }
         }
 
     }
@@ -60,16 +56,16 @@ export class DatasetMetadataController extends Component {
     }
 
     getDataset = (datasetID) => {
-        this.setState({isGettingDatasetMetadata: true})
+        this.setState({isGettingmetadata: true})
         datasets.get(datasetID).then(dataset => {
-            this.setState({datasetMetadata: this.mapDatasetToState(dataset), isGettingDatasetMetadata: false})
+            this.setState({metadata: this.mapDatasetToState(dataset), isGettingDatasetMetadata: false})
         })
     }
 
     mapDatasetToState = datasetResponse => {
         try {
             const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
-            return {
+            const mappedDataset = {
                 title: dataset.title,
                 summary: dataset.description,
                 keywords: dataset.keywords,
@@ -78,35 +74,60 @@ export class DatasetMetadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contact[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                relatedLinks: dataset.relatedDatasets || []
+                relatedLinks: dataset.relatedDatasets || [],
+                releaseFrequency: dataset.release_frequency || "",
             }
+            return {...this.state.metadata, ...mappedDataset}
         } catch (error) {
             console.error(error)
         }
     }
 
     getVersion = (datasetID, editionID, versionID) => {
-        this.setState({isGettingVersionMetadata: true})
+        this.setState({isGettingmetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
-            this.setState({versionMetadata: this.mapVersionToState(version), isGettingVersionMetadata: false});
+            this.setState({metadata: this.mapVersionToState(version), isGettingVersionMetadata: false});
         })
     }
 
     mapVersionToState = versionResponse => {
         try {
             const version = versionResponse.current || versionResponse.next || versionResponse;
-            return {
+            const mappedVersion =  {
                 edition: version.edition,
                 version: version.version,
                 releaseDate: version.release_date || "",
                 nextReleaseDate: version.next_release || "",
-                releaseFrequency: version.release_frequency || "",
                 notices: version.alerts || [],
                 dimensions: version.dimensions || [],
             }
+            return {...this.state.metadata, ...mappedVersion}
         } catch (error) {
             console.error(error)
         }
+    }
+
+    handleFieldOnChange = (event) => {
+        console.log(event.target.name)
+        const fieldName = event.target.name;
+        const value = event.target.value;
+        console.log("FIELD NAME =>", fieldName, "VALUE =>", value)
+    }
+
+    handleStringInputChange = (event) => {
+        const fieldName = event.target.name;
+        const value = event.target.value;
+        const newMetadataState = {...this.state.metadata, [fieldName]: value};
+        this.setState({metadata: newMetadataState})
+    }
+
+    handleDateInputChange = (event) => {
+        const fieldName = event.target.name;
+        const value = event.target.value;
+        const ISODate = new Date(value).toISOString();
+        const newMetadataState = {...this.state.metadata, [fieldName]: ISODate};
+        console.log(newMetadataState)
+        this.setState({metadata: newMetadataState})
     }
 
     handleBackButton = () => {
@@ -122,42 +143,44 @@ export class DatasetMetadataController extends Component {
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Edit metadata</h1>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.datasetMetadata.title ? this.state.datasetMetadata.title : "loading..."}</p>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.state.versionMetadata.edition ? this.state.versionMetadata.edition : "loading..."}</p>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.state.versionMetadata.version ? this.state.versionMetadata.version : "loading..."}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.metadata.title ? this.state.metadata.title : "loading..."}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.state.metadata.edition ? this.state.metadata.edition : "loading..."}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.state.metadata.version ? this.state.metadata.version : "loading..."}</p>
 
                     <h2>Title</h2>
-                    <Input id="title" value={this.state.datasetMetadata.title}/>
+                    <Input id="title" value={this.state.metadata.title} onChange={this.handleStringInputChange}/>
 
                     <h2>Release dates</h2>
-                    <Input id="release-date" label="Release date" type="date" value={this.state.versionMetadata.releaseDate && date.format(this.state.versionMetadata.releaseDate, "yyyy-mm-dd")}/>
-                    <Input id="next-release" label="Next release date" type="date"/>
-                    <Input id="release-frequency" label="Release frequency" />
+                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.releaseDate && date.format(this.state.metadata.releaseDate, "yyyy-mm-dd")}/>
+                    <Input id="next-release" name="nextReleaseDate" label="Next release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.nextReleaseDate && date.format(this.state.metadata.nextReleaseDate, "yyyy-mm-dd")}/>
+                    <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.handleStringInputChange} value={this.state.metadata.releaseFrequency}/>
 
                     <h2>Notices</h2>
                     <p>Add an alert, correction, change summary or usage note.</p>
                     <a>Add a notice</a>
                     
                     <h2 className="margin-top--1">About</h2>
-                    <Input id="dataset-summary" label="Summary" type="textarea" />
+                    <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
 
                     <h2>Dimensions</h2>
-                    <Input id="dimension-title" label="Title"/>
-                    <Input id="dimension-description" label="Description" type="textarea" />
-
-                    <br/>
-                    <Input id="dimension-title" label="Title"/>
-                    <Input id="dimension-description" label="Description" type="textarea" />
+                    {this.state.metadata.dimensions.map((dimension, i) => {
+                        return (
+                            <div key={`dimension-${i}`}>
+                            <Input id={`dimension-title-${i}`} label="Title" value={dimension.name}/>
+                            <Input id={`dimension-description-${i}`} label="Description" type="textarea" value={dimension.description} />
+                            </div>
+                        )
+                    })} 
 
                     <h2>Meta</h2>
-                    <Input id="keywords" label="Keywords"/>
-                    <Input id="licence" label="Licence" />
+                    <Input id="keywords" label="Keywords" value={this.state.metadata.keywords.join(", ")}/>
+                    <Input id="licence" label="Licence" onChange={this.handleStringInputChange} value={this.state.metadata.licence}/>
                     {/* <RadioGroup id="national-statistic" /> */}
 
                     <h2>Contact details</h2>
-                    <Input id="contact-name" label="Contact name" />
-                    <Input id="contact-email" label="Contact email" />
-                    <Input id="contact-telephone" label="Contact telephone" />
+                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.contactName} />
+                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.contactEmail} />
+                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.contactTelephone} />
 
                     <h2>Related link</h2>
                     <a>Add a related link</a>
@@ -173,12 +196,12 @@ export class DatasetMetadataController extends Component {
     }
 }
 
-DatasetMetadataController.propTypes = propTypes;
+metadataController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
         
     }
 }
-export default connect(mapStateToProps)(DatasetMetadataController);
+export default connect(mapStateToProps)(metadataController);
 
