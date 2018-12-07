@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
+import uuid from 'uuid/v4';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
@@ -12,6 +13,7 @@ import date from '../../../utilities/date'
 import Input from '../../../components/Input';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import DatasetVersionsController from '../versions/DatasetVersionsController';
+import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
 
 
 const propTypes = {
@@ -40,7 +42,20 @@ export class metadataController extends Component {
                 version: "",
                 releaseDate: "",
                 nextReleaseDate: "",
-                notices: [],
+                notices: [
+                    {
+                        id: 0,
+                        date: "Jan 2019",
+                        description: "A notice",
+                        type: "alert",
+                    },
+                    {
+                        id: 1,
+                        date: "Feb 2019",
+                        description: "Another notice damn it",
+                        type: "alert",
+                    },
+                ],
                 dimensions: [],
             }
         }
@@ -74,12 +89,29 @@ export class metadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contact[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                relatedLinks: dataset.relatedDatasets || [],
+                //relatedLinks: this.mapRelatedLinksToState(dataset.relatedDatasets) || [],
                 releaseFrequency: dataset.release_frequency || "",
             }
             return {...this.state.metadata, ...mappedDataset}
         } catch (error) {
             console.error(error)
+        }
+    }
+
+    mapRelatedLinksToState = (relatedLinks) => {
+        try {
+            return relatedLinks.map((link, index) => {
+                return {
+                    id: index,
+                    type: link.title,
+                    date: null,
+                    description: link.description,
+                    href: link.href,
+                    title: link.title
+                }
+            })
+        } catch(error) {
+            console.error("Error mapping related links to state", error)
         }
     }
 
@@ -98,7 +130,7 @@ export class metadataController extends Component {
                 version: version.version,
                 releaseDate: version.release_date || "",
                 nextReleaseDate: version.next_release || "",
-                notices: version.alerts || [],
+                //notices: version.alerts || [],
                 dimensions: version.dimensions || [],
             }
             return {...this.state.metadata, ...mappedVersion}
@@ -107,18 +139,26 @@ export class metadataController extends Component {
         }
     }
 
-    handleFieldOnChange = (event) => {
-        console.log(event.target.name)
-        const fieldName = event.target.name;
-        const value = event.target.value;
-        console.log("FIELD NAME =>", fieldName, "VALUE =>", value)
+    mapNoticesToState = (notices) => {
+        try {
+            return notices.map((notice, index) => {
+                return {
+                    id: notice,
+                    type: notice.type,
+                    date: notice.date,
+                    description: notice.description
+                }
+            })
+        } catch(error) {
+            console.error("Error mapping notice to state", error)
+        }
     }
 
     handleStringInputChange = (event) => {
         const fieldName = event.target.name;
         const value = event.target.value;
         const newMetadataState = {...this.state.metadata, [fieldName]: value};
-        this.setState({metadata: newMetadataState})
+        this.setState({metadata: newMetadataState});
     }
 
     handleDateInputChange = (event) => {
@@ -127,7 +167,30 @@ export class metadataController extends Component {
         const ISODate = new Date(value).toISOString();
         const newMetadataState = {...this.state.metadata, [fieldName]: ISODate};
         console.log(newMetadataState)
-        this.setState({metadata: newMetadataState})
+        this.setState({metadata: newMetadataState});
+    }
+
+    handleSimpleEditableListAdd = (addedField, stateFieldName) => {
+        console.log(addedField, stateFieldName);
+        //const newMetadataState = {...this.state.metadata, [stateFieldName]: newState};
+        //this.setState({metadata: newMetadataState});
+    }
+
+    handleSimpleEditableListEdit = (editedField, stateFieldName) => {
+        console.log(editedField, stateFieldName);
+        this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${editedField.id}`));
+        //const newMetadataState = {...this.state.metadata, [stateFieldName]: newState};
+        //this.setState({metadata: newMetadataState});
+    }
+
+    handleSimpleEditableListEditSuccess = (thing) => {
+        console.log(thing)
+    }
+
+    handleSimpleEditableListDelete = (deletedField, stateFieldName) => {
+        const newFieldState = this.state.metadata[stateFieldName].filter(item => item.id !== deletedField.id)
+        const newMetadataState = {...this.state.metadata, [stateFieldName]: newFieldState};
+        this.setState({metadata: newMetadataState});
     }
 
     handleBackButton = () => {
@@ -136,6 +199,13 @@ export class metadataController extends Component {
     }
 
     render() {
+        const child = React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+                data: this.state.metdata[this.props.routeParams.metadataField][this.props.routeParams.metadataItemID],
+                handleSucessClick: this.handleSimpleEditableListSuccess,
+                handleCancelClick: this.handleSimpleEditableListCancel
+            })
+        })
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-6 margin-bottom--4">
@@ -156,8 +226,14 @@ export class metadataController extends Component {
                     <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.handleStringInputChange} value={this.state.metadata.releaseFrequency}/>
 
                     <h2>Notices</h2>
-                    <p>Add an alert, correction, change summary or usage note.</p>
-                    <a>Add a notice</a>
+                    <p className="margin-bottom--1">Add an alert, correction, change summary or usage note.</p>
+                    <SimpleEditableList addText={"Add a new notice"} 
+                        fields={this.state.metadata.notices} 
+                        editingStateFieldName="notices"
+                        handleAddClick={this.handleSimpleEditableListAdd}
+                        handleEditClick={this.handleSimpleEditableListEdit}
+                        handleDeleteClick={this.handleSimpleEditableListDelete}
+                    />
                     
                     <h2 className="margin-top--1">About</h2>
                     <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
@@ -183,14 +259,21 @@ export class metadataController extends Component {
                     <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.contactTelephone} />
 
                     <h2>Related link</h2>
-                    <a>Add a related link</a>
+                    <SimpleEditableList addText={"Add a related link"} 
+                        fields={this.state.metadata.relatedLinks} 
+                        editingStateFieldName="relatedLinks"
+                        handleAddClick={this.handleSimpleEditableListAdd}
+                        handleEditClick={this.handleSimpleEditableListEdit}
+                        handleDeleteClick={this.handleSimpleEditableListDelete}
+                    />
 
                     <div className="margin-top--2">
                     <button className="btn btn--primary margin-right--1">Save</button>
                     <button className="btn btn--positive margin-right--1">Save and submit for review</button>
                     <Link to="/preview">Preview</Link>
                     </div>
-               </div>
+                </div>
+                {child}
             </div>
         )
     }
