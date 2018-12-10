@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
 
 const propTypes = {
-    // title: PropTypes.string.isRequired,
-    // id: PropTypes.string.isRequired,
-    // url: PropTypes.string.isRequired,
-    // details: PropTypes.arrayOf(PropTypes.string)
+    field: PropTypes.shape({
+        type: PropTypes.string,
+        title: PropTypes.string,
+        description: PropTypes.string
+    }),
+    handleEditClick: PropTypes.func.isRequired,
+    handleDeleteClick: PropTypes.func.isRequired
 }
 
 export default class SimpleEditableListItemItem extends Component {
