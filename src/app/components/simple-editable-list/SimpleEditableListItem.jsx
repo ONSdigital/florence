@@ -25,16 +25,14 @@ export default class SimpleEditableListItemItem extends Component {
     render() {
         return (
             <li className="simple-select-list__item grid">
-                <div className="grid__col-lg-3">
-                    <p>{this.props.field.type}</p>
-                </div>
-                <div className="grid__col-lg-7">
+                <div className="grid__col-lg-10">
+                    <p className="font-weight--600">{this.props.field.type || this.props.field.title}</p>
                     <p>{this.props.field.description}</p>
                 </div>
                 <div className="grid__col-lg-2">
                     <p style={{"textAlign": "right"}}>
-                        <span className="btn--link" onClick={this.handleEditClick}>Edit</span> | 
-                        <span className="btn--link" onClick={this.handleDeleteClick}>Delete</span>
+                        <button type="button" className="btn btn--link" onClick={this.handleEditClick}>Edit</button> | 
+                        <button type="button" className="btn btn--link" onClick={this.handleDeleteClick}>Delete</button>
                     </p>  
                 </div>
 
