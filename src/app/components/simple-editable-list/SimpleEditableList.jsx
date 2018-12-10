@@ -35,6 +35,9 @@ export default class SimpleEditableList extends Component {
     }
 
     render() {
+        if (!this.props.fields.length) {
+            return null
+        }
         return (
             <div>
             <ul className="list list--neutral simple-select-list">
