@@ -35,25 +35,24 @@ export default class SimpleEditableList extends Component {
     }
 
     render() {
-        if (!this.props.fields.length) {
-            return null
-        }
         return (
             <div>
-            <ul className="list list--neutral simple-select-list">
-                { 
-                    this.props.fields.map((field, index) => {
-                        return (
-                            <SimpleEditableListItem key={`${this.editingStateFieldName}-${index}`} 
-                                field={field} 
-                                handleEditClick={this.handleEditClick}
-                                handleDeleteClick={this.handleDeleteClick}
-                            />
-                        )
-                    })   
-                }
-            </ul>
-            <button type="button" className="btn btn--link margin-top--1" onClick={this.handleAddClick}>{this.props.addText ? this.props.addText : "Add a new item"}</button>
+                {this.props.fields.length ?
+                    <ul className="list list--neutral simple-select-list">
+                        { 
+                            this.props.fields.map((field, index) => {
+                                return (
+                                    <SimpleEditableListItem key={`${this.editingStateFieldName}-${index}`} 
+                                        field={field} 
+                                        handleEditClick={this.handleEditClick}
+                                        handleDeleteClick={this.handleDeleteClick}
+                                    />
+                                )
+                            })   
+                        }
+                    </ul>
+                : null }
+            <button type="button" className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")} onClick={this.handleAddClick}>{this.props.addText ? this.props.addText : "Add a new item"}</button>
             </div>
         )
     }
