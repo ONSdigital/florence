@@ -22,8 +22,8 @@ export default class SimpleEditableList extends Component {
         super(props);
     }
 
-    handleAddClick = (addedField) => {
-        this.props.handleAddClick(addedField, this.this.props.editingStateFieldName)
+    handleAddClick = () => {
+        this.props.handleAddClick(this.props.editingStateFieldName)
     }
 
     handleEditClick = (editedField) => {
@@ -51,7 +51,7 @@ export default class SimpleEditableList extends Component {
                     })   
                 }
             </ul>
-            <a>{this.props.addText ? this.props.addText : "Add a new item"}</a>
+            <button type="button" className="btn btn--link margin-top--1" onClick={this.handleAddClick}>{this.props.addText ? this.props.addText : "Add a new item"}</button>
             </div>
         )
     }
