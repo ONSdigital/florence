@@ -15,7 +15,18 @@ import SimpleEditableList from '../../../components/simple-editable-list/SimpleE
 
 
 const propTypes = {
-
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired
+    }),
+    params: PropTypes.shape({
+        datasetID: PropTypes.string.isRequired,
+        editionID: PropTypes.string.isRequired,
+        versionID: PropTypes.string.isRequired,
+        metadataField: PropTypes.string,
+        metadataItemID: PropTypes.string
+    }),
+    children: PropTypes.element,
+    dispatch: PropTypes.func.isRequired
 }
 
 export class DatasetMetadataController extends Component {
@@ -70,9 +81,9 @@ export class DatasetMetadataController extends Component {
     }
 
     componentWillMount() {
-        const datasetID = this.props.routeParams.datasetID;
-        const editionID = this.props.routeParams.editionID;
-        const versionID = this.props.routeParams.versionID; 
+        const datasetID = this.props.params.datasetID;
+        const editionID = this.props.params.editionID;
+        const versionID = this.props.params.versionID; 
         this.getDataset(datasetID)
         this.getVersion(datasetID, editionID, versionID)
     }
@@ -307,7 +318,7 @@ export class DatasetMetadataController extends Component {
                     <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
 
                     <h2>Dimensions</h2>
-                    {this.state.metadata.dimensions.map((dimension, index) => {
+                    {this.state.metadata.dimensions.map(dimension => {
                         return (
                             <div key={`dimension-${dimension.id}`}>
                             <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.handleDimensionNameChange} />
