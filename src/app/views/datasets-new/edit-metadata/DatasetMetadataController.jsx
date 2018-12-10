@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import uuid from 'uuid/v4';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
