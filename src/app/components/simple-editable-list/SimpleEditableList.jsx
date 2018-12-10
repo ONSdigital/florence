@@ -43,7 +43,6 @@ export default class SimpleEditableList extends Component {
                         return (
                             <SimpleEditableListItem key={`${this.editingStateFieldName}-${index}`} 
                                 field={field} 
-                                onChange={this.props.onChange}
                                 handleEditClick={this.handleEditClick}
                                 handleDeleteClick={this.handleDeleteClick}
                             />
