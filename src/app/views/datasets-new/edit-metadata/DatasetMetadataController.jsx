@@ -12,7 +12,6 @@ import date from '../../../utilities/date'
 
 import Input from '../../../components/Input';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
-import DatasetVersionsController from '../versions/DatasetVersionsController';
 import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
 
 
@@ -20,7 +19,7 @@ const propTypes = {
 
 }
 
-export class metadataController extends Component {
+export class DatasetMetadataController extends Component {
     constructor(props) {
         super(props);
 
@@ -36,7 +35,16 @@ export class metadataController extends Component {
                 contactName: "",
                 contactEmail: "",
                 contactTelephone: "",
-                relatedLinks: [],
+                relatedLinks: [
+                    {
+                        id: 0,
+                        date: null,
+                        description: "Google is a search engine",
+                        type: "Google UK",
+                        title: "Google UK",
+                        href: "http://www.google.co.uk",
+                    },
+                ],
                 releaseFrequency: "",
                 edition: "",
                 version: "",
@@ -71,7 +79,7 @@ export class metadataController extends Component {
     }
 
     getDataset = (datasetID) => {
-        this.setState({isGettingmetadata: true})
+        this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
             this.setState({metadata: this.mapDatasetToState(dataset), isGettingDatasetMetadata: false})
         })
@@ -89,7 +97,7 @@ export class metadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contact[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                //relatedLinks: this.mapRelatedLinksToState(dataset.relatedDatasets) || [],
+                //relatedLinks: dataset.relatedDatasets ? this.mapRelatedLinksToState(dataset.relatedDatasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
             }
             return {...this.state.metadata, ...mappedDataset}
@@ -116,7 +124,7 @@ export class metadataController extends Component {
     }
 
     getVersion = (datasetID, editionID, versionID) => {
-        this.setState({isGettingmetadata: true})
+        this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
             this.setState({metadata: this.mapVersionToState(version), isGettingVersionMetadata: false});
         })
@@ -130,7 +138,7 @@ export class metadataController extends Component {
                 version: version.version,
                 releaseDate: version.release_date || "",
                 nextReleaseDate: version.next_release || "",
-                //notices: version.alerts || [],
+                //notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
             }
             return {...this.state.metadata, ...mappedVersion}
@@ -143,7 +151,7 @@ export class metadataController extends Component {
         try {
             return notices.map((notice, index) => {
                 return {
-                    id: notice,
+                    id: index,
                     type: notice.type,
                     date: notice.date,
                     description: notice.description
@@ -154,37 +162,62 @@ export class metadataController extends Component {
         }
     }
 
-    handleStringInputChange = (event) => {
+    handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
         const newMetadataState = {...this.state.metadata, [fieldName]: value};
         this.setState({metadata: newMetadataState});
     }
 
-    handleDateInputChange = (event) => {
+    handleDateInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
         const ISODate = new Date(value).toISOString();
         const newMetadataState = {...this.state.metadata, [fieldName]: ISODate};
-        console.log(newMetadataState)
         this.setState({metadata: newMetadataState});
     }
 
-    handleSimpleEditableListAdd = (addedField, stateFieldName) => {
-        console.log(addedField, stateFieldName);
-        //const newMetadataState = {...this.state.metadata, [stateFieldName]: newState};
-        //this.setState({metadata: newMetadataState});
+    handleNationalStaticticChange = event => {
+        const value = event.value === "true" ? true : false;
+        const newMetadataState = {
+            ...this.state.metadata,
+            nationalStatistic: value
+        };
+        this.setState({metadata: newMetadataState});
+    }
+
+    handleDimensionNameChange = event => {
+        const value = event.target.value;
+        const dimensionID = event.target.name.substring(16);
+        const newDimensionMetadata = this.state.metadata.dimensions.map(dimension => {
+            if (dimension.id === dimensionID) {
+                dimension.name = value;
+            }
+            return dimension;
+        })
+        const newMetadataState = {...this.state.metadata, dimensions: newDimensionMetadata};
+        this.setState({metadata: newMetadataState});
+    }
+
+    handleDimensioDescriptionChange = event => {
+        const value = event.target.value;
+        const dimensionID = event.target.name.substring(22);
+        const newDimensionMetadata = this.state.metadata.dimensions.map(dimension => {
+            if (dimension.id === dimensionID) {
+                dimension.description = value;
+            }
+            return dimension;
+        })
+        const newMetadataState = {...this.state.metadata, dimensions: newDimensionMetadata};
+        this.setState({metadata: newMetadataState});
+    }
+
+    handleSimpleEditableListAdd = (stateFieldName) => {
+        this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${this.state.metadata[stateFieldName].length}`));
     }
 
     handleSimpleEditableListEdit = (editedField, stateFieldName) => {
-        console.log(editedField, stateFieldName);
         this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${editedField.id}`));
-        //const newMetadataState = {...this.state.metadata, [stateFieldName]: newState};
-        //this.setState({metadata: newMetadataState});
-    }
-
-    handleSimpleEditableListEditSuccess = (thing) => {
-        console.log(thing)
     }
 
     handleSimpleEditableListDelete = (deletedField, stateFieldName) => {
@@ -193,19 +226,55 @@ export class metadataController extends Component {
         this.setState({metadata: newMetadataState});
     }
 
+    handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
+        let newMetadataState;
+        if (newField.id === null) {
+            newMetadataState = this.addMetadataField(newField, stateFieldName)
+        } else {
+            newMetadataState = this.updateMetadataField(newField, stateFieldName)
+        }
+        this.setState({metadata: newMetadataState});
+        this.props.dispatch(push(url.resolve("../../../")));
+    }
+
+    addMetadataField = (newField, stateFieldName) => {
+        const newFieldState = [...this.state.metadata[stateFieldName]];
+        newField.id = newFieldState.length;
+        newFieldState.push(newField);
+        return {...this.state.metadata, [stateFieldName]: newFieldState};
+    }
+
+    updateMetadataField = (updatedField, stateFieldName) => {
+        const newFieldState = this.state.metadata[stateFieldName].map(field => {
+            if (field.id === updatedField.id) {
+                return updatedField
+            }
+            return field
+        })
+        return {...this.state.metadata, [stateFieldName]: newFieldState};
+    }
+
+    handleSimpleEditableListEditCancel = () => {
+        this.props.dispatch(push(url.resolve("../../../")));
+    }
+
     handleBackButton = () => {
         const previousUrl = url.resolve("../../");
         this.props.dispatch(push(previousUrl));
     }
 
-    render() {
-        const child = React.Children.map(this.props.children, child => {
+    renderModal = () => {
+        const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
-                data: this.state.metdata[this.props.routeParams.metadataField][this.props.routeParams.metadataItemID],
-                handleSucessClick: this.handleSimpleEditableListSuccess,
-                handleCancelClick: this.handleSimpleEditableListCancel
+                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+                handleSucessClick: this.handleSimpleEditableListEditSuccess,
+                handleCancelClick: this.handleSimpleEditableListEditCancel
             })
         })
+        return (modal)
+    }
+
+    render() {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-6 margin-bottom--4">
@@ -239,11 +308,11 @@ export class metadataController extends Component {
                     <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
 
                     <h2>Dimensions</h2>
-                    {this.state.metadata.dimensions.map((dimension, i) => {
+                    {this.state.metadata.dimensions.map((dimension, index) => {
                         return (
-                            <div key={`dimension-${i}`}>
-                            <Input id={`dimension-title-${i}`} label="Title" value={dimension.name}/>
-                            <Input id={`dimension-description-${i}`} label="Description" type="textarea" value={dimension.description} />
+                            <div key={`dimension-${dimension.id}`}>
+                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.handleDimensionNameChange} />
+                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.handleDimensionDescriptionChange}/>
                             </div>
                         )
                     })} 
@@ -251,7 +320,15 @@ export class metadataController extends Component {
                     <h2>Meta</h2>
                     <Input id="keywords" label="Keywords" value={this.state.metadata.keywords.join(", ")}/>
                     <Input id="licence" label="Licence" onChange={this.handleStringInputChange} value={this.state.metadata.licence}/>
-                    {/* <RadioGroup id="national-statistic" /> */}
+                    <RadioGroup groupName="national-statistic" 
+                        radioData={[
+                            {id: "national-statistic-yes", value: "true", label: "Yes"},
+                            {id: "national-statistic-no", value: "false", label: "No"}]}
+                        selectedValue={this.state.metadata.nationalStatistic.toString()}
+                        onChange={this.handleNationalStaticticChange}
+                        inline={true}
+                        legend={"National Statistic"}
+                    /> 
 
                     <h2>Contact details</h2>
                     <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.contactName} />
@@ -268,23 +345,24 @@ export class metadataController extends Component {
                     />
 
                     <div className="margin-top--2">
-                    <button className="btn btn--primary margin-right--1">Save</button>
-                    <button className="btn btn--positive margin-right--1">Save and submit for review</button>
+                    <button type="button" className="btn btn--primary margin-right--1">Save</button>
+                    <button type="button" className="btn btn--positive margin-right--1">Save and submit for review</button>
                     <Link to="/preview">Preview</Link>
                     </div>
                 </div>
-                {child}
+                
+                {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
             </div>
         )
     }
 }
 
-metadataController.propTypes = propTypes;
+DatasetMetadataController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
         
     }
 }
-export default connect(mapStateToProps)(metadataController);
+export default connect(mapStateToProps)(DatasetMetadataController);
 
