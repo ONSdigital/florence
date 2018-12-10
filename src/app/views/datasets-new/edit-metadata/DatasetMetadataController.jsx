@@ -36,6 +36,9 @@ export class DatasetMetadataController extends Component {
         this.state = {
             isGettingDatasetMetadata: false,
             isGettingVersionMetadata: false,
+            isSaving: false,
+            datasetIsInCollection: false,
+            versionIsInCollection: false, 
             metadata: {
                 title: "",
                 summary: "",
@@ -91,7 +94,8 @@ export class DatasetMetadataController extends Component {
     getDataset = (datasetID) => {
         this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
-            this.setState({metadata: this.mapDatasetToState(dataset), isGettingDatasetMetadata: false})
+            const mappedDataset = this.mapDatasetToState(dataset)
+            this.setState({metadata: mappedDataset.metadata, isGettingDatasetMetadata: false, datasetIsInCollection: mappedDataset.collection})
         })
     }
 
@@ -110,7 +114,7 @@ export class DatasetMetadataController extends Component {
                 //relatedLinks: dataset.relatedDatasets ? this.mapRelatedLinksToState(dataset.relatedDatasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
             }
-            return {...this.state.metadata, ...mappedDataset}
+            return {metadata: {...this.state.metadata, ...mappedDataset}, collection: dataset.collection_id || false}
         } catch (error) {
             console.error(error)
         }
@@ -136,7 +140,8 @@ export class DatasetMetadataController extends Component {
     getVersion = (datasetID, editionID, versionID) => {
         this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
-            this.setState({metadata: this.mapVersionToState(version), isGettingVersionMetadata: false});
+            const mappedVersion = this.mapVersionToState(version)
+            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection});
         })
     }
 
@@ -151,7 +156,7 @@ export class DatasetMetadataController extends Component {
                 //notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
             }
-            return {...this.state.metadata, ...mappedVersion}
+            return {metadata: {...this.state.metadata, ...mappedVersion}, collection: version.collection_id || false }
         } catch (error) {
             console.error(error)
         }
@@ -273,6 +278,15 @@ export class DatasetMetadataController extends Component {
         this.props.dispatch(push(previousUrl));
     }
 
+    handleSave = () => {
+        this.setState({isSaving: true});
+        // const datasetBody = this.mapDatasetToPutBody();
+        // const versionBody = this.mapVersionToPutBody();
+        const datasetIsInCollection = this.state.datasetIsInCollection;
+        const versionIsInCollection = this.state.versionIsInCollection;
+    
+    }
+
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
@@ -355,7 +369,7 @@ export class DatasetMetadataController extends Component {
                     />
 
                     <div className="margin-top--2">
-                    <button type="button" className="btn btn--primary margin-right--1">Save</button>
+                    <button type="button" className="btn btn--primary margin-right--1" onClick={this.handleSave}>Save</button>
                     <button type="button" className="btn btn--positive margin-right--1">Save and submit for review</button>
                     <Link to="/preview">Preview</Link>
                     </div>
