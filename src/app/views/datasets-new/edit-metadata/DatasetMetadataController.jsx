@@ -63,6 +63,7 @@ export class DatasetMetadataController extends Component {
                 version: "",
                 releaseDate: "",
                 nextReleaseDate: "",
+                unitOfMeasure: "",
                 notices: [
                     {
                         id: 0,
@@ -113,6 +114,7 @@ export class DatasetMetadataController extends Component {
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
                 //relatedLinks: dataset.relatedDatasets ? this.mapRelatedLinksToState(dataset.relatedDatasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
+                unitOfMeasure: dataset.unit_of_measure || "",
             }
             return {metadata: {...this.state.metadata, ...mappedDataset}, collection: dataset.collection_id || false}
         } catch (error) {
@@ -330,6 +332,7 @@ export class DatasetMetadataController extends Component {
                     
                     <h2 className="margin-top--1">About</h2>
                     <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
+                    <Input id="dataset-unit-of-measure" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure}/>
 
                     <h2>Dimensions</h2>
                     {this.state.metadata.dimensions.map(dimension => {
