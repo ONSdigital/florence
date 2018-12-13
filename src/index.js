@@ -33,6 +33,7 @@ import SelectableTest from './SelectableTest';
 import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
+import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -86,7 +87,9 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/datasets`} component={ userIsAuthenticated(SelectADataset) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID`} component={ userIsAuthenticated(DatasetEditionsController) }/>
                             <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID`} component={ userIsAuthenticated(DatasetVersionsController) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID/versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }/>
+                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID/versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
+                                <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID/versions/:versionID/edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                            </Route>
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
