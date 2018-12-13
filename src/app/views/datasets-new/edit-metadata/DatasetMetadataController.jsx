@@ -445,6 +445,7 @@ export class DatasetMetadataController extends Component {
                         handleAddClick={this.handleSimpleEditableListAdd}
                         handleEditClick={this.handleSimpleEditableListEdit}
                         handleDeleteClick={this.handleSimpleEditableListDelete}
+                        disableActions={this.state.isSaving}
                     />
                     
                     <h2 className="margin-top--1">About</h2>
@@ -486,6 +487,7 @@ export class DatasetMetadataController extends Component {
                         handleAddClick={this.handleSimpleEditableListAdd}
                         handleEditClick={this.handleSimpleEditableListEdit}
                         handleDeleteClick={this.handleSimpleEditableListDelete}
+                        disableActions={this.state.isSaving}
                     />
 
                     <div className="margin-top--2">
