@@ -33,7 +33,6 @@ export default class RadioGroup extends Component {
         const radioData = this.props.radioData;
         const groupName = this.props.groupName;
         const selectedValue = this.props.selectedValue;
-        console.log("RADIO GROUP =>", this.props.disabled)
 
         return (
             <fieldset className="fieldset">
