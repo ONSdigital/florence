@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import SimpleEditableListItem from './SimpleEditableListItem';
 
-
 const propTypes = {
     fields: PropTypes.arrayOf(PropTypes.shape({
         type: PropTypes.string.isRequired,
@@ -14,7 +13,8 @@ const propTypes = {
     showLoadingState: PropTypes.bool,
     handleAddClick: PropTypes.func.isRequired,
     handleEditClick: PropTypes.func.isRequired,
-    handleDeleteClick: PropTypes.func.isRequired
+    handleDeleteClick: PropTypes.func.isRequired,
+    disableActions: PropTypes.bool
 }
 
 export default class SimpleEditableList extends Component {
@@ -46,13 +46,18 @@ export default class SimpleEditableList extends Component {
                                         field={field} 
                                         handleEditClick={this.handleEditClick}
                                         handleDeleteClick={this.handleDeleteClick}
+                                        disabled={this.props.disableActions}
                                     />
                                 )
                             })   
                         }
                     </ul>
                 : null }
-            <button type="button" className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")} onClick={this.handleAddClick}>{this.props.addText ? this.props.addText : "Add a new item"}</button>
+            <button type="button" 
+                className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")} 
+                onClick={this.handleAddClick}
+                disabled={this.props.disableActions}>
+                {this.props.addText ? this.props.addText : "Add a new item"}</button>
             </div>
         )
     }
