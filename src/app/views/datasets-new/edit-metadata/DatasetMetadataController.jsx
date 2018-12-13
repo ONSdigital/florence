@@ -52,36 +52,14 @@ export class DatasetMetadataController extends Component {
                 contactName: "",
                 contactEmail: "",
                 contactTelephone: "",
-                relatedLinks: [
-                    {
-                        id: 0,
-                        date: null,
-                        description: "Google is a search engine",
-                        type: "Google UK",
-                        title: "Google UK",
-                        href: "http://www.google.co.uk",
-                    },
-                ],
+                relatedLinks: [],
                 releaseFrequency: "",
                 edition: "",
                 version: "",
                 releaseDate: "",
                 nextReleaseDate: "",
                 unitOfMeasure: "",
-                notices: [
-                    {
-                        id: 0,
-                        date: "Jan 2019",
-                        description: "A notice",
-                        type: "alert",
-                    },
-                    {
-                        id: 1,
-                        date: "Feb 2019",
-                        description: "Another notice damn it",
-                        type: "alert",
-                    },
-                ],
+                notices: [],
                 dimensions: [],
             }
         }
@@ -116,7 +94,7 @@ export class DatasetMetadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contacts[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                //relatedLinks: dataset.relatedDatasets ? this.mapRelatedLinksToState(dataset.relatedDatasets) : [],
+                relatedLinks: dataset.related_datasets ? this.mapRelatedLinksToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release || "",
@@ -160,7 +138,7 @@ export class DatasetMetadataController extends Component {
                 edition: version.edition,
                 version: version.version,
                 releaseDate: version.release_date || "",
-                //notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
+                notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
             }
             return {metadata: {...this.state.metadata, ...mappedVersion}, collection: version.collection_id || false, instanceID: version.id }
