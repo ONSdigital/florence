@@ -44,7 +44,6 @@ export default class RadioButton extends Component {
     }
 
     render() {
-        console.log("RADIO BUTTON =>", this.props.disabled)
         return (
             <div className={"radio" + (this.props.inline ? " radio--inline" : "")}>
                 <input
