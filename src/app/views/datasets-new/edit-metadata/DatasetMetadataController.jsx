@@ -358,7 +358,7 @@ export class DatasetMetadataController extends Component {
     mapVersionToPutBody = () => {
         return {
             release_date: this.state.metadata.releaseDate,
-            dimensions: this.state.metadata.dimensions
+            alerts: this.state.metadata.notices
         }
     }
 
