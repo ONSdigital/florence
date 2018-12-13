@@ -5,8 +5,10 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router';
 
 import datasets from '../../../utilities/api-clients/datasets';
+import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
 import url from '../../../utilities/url'
+import log, {eventTypes} from '../../../utilities/log'
 import date from '../../../utilities/date'
 
 import Input from '../../../components/Input';
@@ -39,6 +41,8 @@ export class DatasetMetadataController extends Component {
             isSaving: false,
             datasetIsInCollection: false,
             versionIsInCollection: false, 
+            instanceID: "",
+            dimensionsUpdated: false,
             metadata: {
                 title: "",
                 summary: "",
@@ -102,19 +106,20 @@ export class DatasetMetadataController extends Component {
 
     mapDatasetToState = datasetResponse => {
         try {
-            const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
+            const dataset = datasetResponse.next || datasetResponse.current || datasetResponse;
             const mappedDataset = {
                 title: dataset.title,
                 summary: dataset.description,
                 keywords: dataset.keywords,
                 nationalStatistic: dataset.national_statistic,
-                licence: dataset.licence || "", 
+                licence: dataset.license || "", 
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
-                contactEmail: dataset.contacts[0].email ? dataset.contact[0].email : "",
+                contactEmail: dataset.contacts[0].email ? dataset.contacts[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
                 //relatedLinks: dataset.relatedDatasets ? this.mapRelatedLinksToState(dataset.relatedDatasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
+                nextReleaseDate: dataset.next_release || "",
             }
             return {metadata: {...this.state.metadata, ...mappedDataset}, collection: dataset.collection_id || false}
         } catch (error) {
@@ -143,22 +148,22 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
             const mappedVersion = this.mapVersionToState(version)
-            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection});
+            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection, instanceID: mappedVersion.instanceID});
         })
     }
 
     mapVersionToState = versionResponse => {
+        console.log(versionResponse);
         try {
             const version = versionResponse.current || versionResponse.next || versionResponse;
             const mappedVersion =  {
                 edition: version.edition,
                 version: version.version,
                 releaseDate: version.release_date || "",
-                nextReleaseDate: version.next_release || "",
                 //notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
             }
-            return {metadata: {...this.state.metadata, ...mappedVersion}, collection: version.collection_id || false }
+            return {metadata: {...this.state.metadata, ...mappedVersion}, collection: version.collection_id || false, instanceID: version.id }
         } catch (error) {
             console.error(error)
         }
@@ -213,10 +218,10 @@ export class DatasetMetadataController extends Component {
             return dimension;
         })
         const newMetadataState = {...this.state.metadata, dimensions: newDimensionMetadata};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, dimensionsUpdated: true});
     }
 
-    handleDimensioDescriptionChange = event => {
+    handleDimensionDescriptionChange = event => {
         const value = event.target.value;
         const dimensionID = event.target.name.substring(22);
         const newDimensionMetadata = this.state.metadata.dimensions.map(dimension => {
@@ -226,7 +231,7 @@ export class DatasetMetadataController extends Component {
             return dimension;
         })
         const newMetadataState = {...this.state.metadata, dimensions: newDimensionMetadata};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, dimensionsUpdated: true});
     }
 
     handleSimpleEditableListAdd = (stateFieldName) => {
@@ -280,13 +285,148 @@ export class DatasetMetadataController extends Component {
         this.props.dispatch(push(previousUrl));
     }
 
-    handleSave = () => {
+    handleSave = async() => {
         this.setState({isSaving: true});
-        // const datasetBody = this.mapDatasetToPutBody();
-        // const versionBody = this.mapVersionToPutBody();
         const datasetIsInCollection = this.state.datasetIsInCollection;
         const versionIsInCollection = this.state.versionIsInCollection;
-    
+        const dimensionsUpdated = this.state.dimensionsUpdated;
+        const collectionID = this.props.params.collectionID;
+        const datasetID = this.props.params.datasetID;
+        const editionID = this.props.params.editionID;
+        const versionID = this.props.params.versionID;
+        const instanceID = this.state.instanceID;
+        const datasetBody = this.mapDatasetToPutBody();
+        const versionBody = this.mapVersionToPutBody();     
+
+        let datasetToCollectionError;
+        if (!datasetIsInCollection) {
+            datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
+        }
+        if (datasetToCollectionError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
+            return;
+        }
+
+        let versionToCollectionError;
+        if (!versionIsInCollection) {
+            versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
+        }
+        if (versionToCollectionError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
+            return
+        }
+
+        const saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
+        if (saveDatasetError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+            return
+        }
+
+        const saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
+        if (saveVersionError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+            return
+        }
+
+        if (dimensionsUpdated) {
+            const saveDimensionsError = await this.saveDimensionChanges(instanceID, this.state.metadata.dimensions);
+            if (saveDimensionsError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+                return
+            }
+        }
+
+        this.setState({isSaving: false});
+        notifications.add({
+            type: "positive",
+            message: `${this.state.metadata.title} saved!`,
+            isDismissable: true
+        })
+    }
+
+    handleOnSaveError = (message) => {
+        notifications.add({
+            type: "warning",
+            message: `${message}. You can try again by pressing save.`,
+            isDismissable: true
+        })
+    }
+
+    mapDatasetToPutBody = () => {
+        return {
+            id: this.props.params.datasetID,
+            title: this.state.metadata.title,
+            description: this.state.metadata.summary,
+            keywords: this.state.metadata.keywords,
+            national_statistic: this.state.metadata.nationalStatistic,
+            license: this.state.metadata.licence, 
+            related_datasets: this.state.metadata.relatedLinks,
+            release_frequency: this.state.metadata.releaseFrequency,
+            contacts: [{
+                name: this.state.metadata.contactName,
+                email: this.state.metadata.contactEmail,
+                telephone: this.state.metadata.contactTelephone
+            }],
+            next_release: this.state.metadata.nextReleaseDate,
+            unit_of_measure: this.state.metadata.unitOfMeasure
+        }
+    }
+
+    mapVersionToPutBody = () => {
+        return {
+            release_date: this.state.metadata.releaseDate,
+            dimensions: this.state.metadata.dimensions
+        }
+    }
+
+    addDatasetToCollection = (collectionID, datasetID) => {
+        return collections.addDataset(collectionID, datasetID)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
+                return error;
+            });
+    }
+
+    addVersionToCollection = (collectionID, datasetID, editionID, versionID) => {
+        return collections.addDatasetVersion(collectionID, datasetID, editionID, versionID) 
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error adding version '${datasetID}/${editionID}/${versionID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                console.error(`Error adding version '${datasetID}/${editionID}/${versionID}' to collection '${this.props.params.collectionID}'`, error);
+                return error;
+            });
+    }
+
+    saveDatasetChanges = (datasetID, metadata) => {
+        return datasets.updateDatasetMetadata(datasetID, metadata)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error saving dataset '${datasetID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
+                console.error(`Error saving dataset '${datasetID}' changes to dataset API '${this.props.params.collectionID}'`, error);
+                return error;
+            });
+    }
+
+    saveVersionChanges = (datasetID, editionID, versionID, metadata) => {
+        return datasets.updateVersionMetadata(datasetID, editionID, versionID, metadata)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error saving version '${datasetID}/${editionID}/${versionID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
+                console.error(`Error saving version '${datasetID}/${editionID}/${versionID}' changes to dataset API '${this.props.params.collectionID}'`, error);
+                return error;
+            })
+    }
+
+    saveDimensionChanges = (instanceID, dimensions) => {
+        return datasets.updateInstanceDimensions(instanceID, dimensions)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error saving dimensions on instance '${instanceID}' to dataset API. Error: ${JSON.stringify(error)}`});
+                console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
+                return error;
+            })
     }
 
     renderModal = () => {
@@ -331,8 +471,8 @@ export class DatasetMetadataController extends Component {
                     />
                     
                     <h2 className="margin-top--1">About</h2>
-                    <Input id="dataset-summary" label="Summary" type="textarea" value={this.state.metadata.summary}/>
-                    <Input id="dataset-unit-of-measure" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure}/>
+                    <Input id="summary" label="Summary" type="textarea" value={this.state.metadata.summary} onChange={this.handleStringInputChange}/>
+                    <Input id="unit-of-measure" name="unit" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure} onChange={this.handleStringInputChange}/>
 
                     <h2>Dimensions</h2>
                     {this.state.metadata.dimensions.map(dimension => {
@@ -358,9 +498,9 @@ export class DatasetMetadataController extends Component {
                     /> 
 
                     <h2>Contact details</h2>
-                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.contactName} />
-                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.contactEmail} />
-                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.contactTelephone} />
+                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.metadata.contactName} />
+                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.metadata.contactEmail} />
+                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.metadata.contactTelephone} />
 
                     <h2>Related link</h2>
                     <SimpleEditableList addText={"Add a related link"} 
