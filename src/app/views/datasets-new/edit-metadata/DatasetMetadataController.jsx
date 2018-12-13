@@ -430,12 +430,12 @@ export class DatasetMetadataController extends Component {
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.state.metadata.version ? this.state.metadata.version : "loading..."}</p>
 
                     <h2>Title</h2>
-                    <Input id="title" value={this.state.metadata.title} onChange={this.handleStringInputChange}/>
+                    <Input id="title" value={this.state.metadata.title} onChange={this.handleStringInputChange} disabled={this.state.isSaving}/>
 
                     <h2>Release dates</h2>
-                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.releaseDate && date.format(this.state.metadata.releaseDate, "yyyy-mm-dd")}/>
-                    <Input id="next-release" name="nextReleaseDate" label="Next release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.nextReleaseDate && date.format(this.state.metadata.nextReleaseDate, "yyyy-mm-dd")}/>
-                    <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.handleStringInputChange} value={this.state.metadata.releaseFrequency}/>
+                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.releaseDate && date.format(this.state.metadata.releaseDate, "yyyy-mm-dd")} disabled={this.state.isSaving}/>
+                    <Input id="next-release" name="nextReleaseDate" label="Next release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.nextReleaseDate && date.format(this.state.metadata.nextReleaseDate, "yyyy-mm-dd")} disabled={this.state.isSaving}/>
+                    <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.handleStringInputChange} value={this.state.metadata.releaseFrequency} disabled={this.state.isSaving}/>
 
                     <h2>Notices</h2>
                     <p className="margin-bottom--1">Add an alert, correction, change summary or usage note.</p>
@@ -448,22 +448,22 @@ export class DatasetMetadataController extends Component {
                     />
                     
                     <h2 className="margin-top--1">About</h2>
-                    <Input id="summary" label="Summary" type="textarea" value={this.state.metadata.summary} onChange={this.handleStringInputChange}/>
-                    <Input id="unit-of-measure" name="unit" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure} onChange={this.handleStringInputChange}/>
+                    <Input id="summary" label="Summary" type="textarea" value={this.state.metadata.summary} onChange={this.handleStringInputChange} disabled={this.state.isSaving}/>
+                    <Input id="unit-of-measure" name="unit" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure} onChange={this.handleStringInputChange}disabled={this.state.isSaving}/>
 
                     <h2>Dimensions</h2>
                     {this.state.metadata.dimensions.map(dimension => {
                         return (
                             <div key={`dimension-${dimension.id}`}>
-                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.handleDimensionNameChange} />
-                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.handleDimensionDescriptionChange}/>
+                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.handleDimensionNameChange} disabled={this.state.isSaving}/>
+                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.handleDimensionDescriptionChange} disabled={this.state.isSaving}/>
                             </div>
                         )
                     })} 
 
                     <h2>Meta</h2>
-                    <Input id="keywords" label="Keywords" value={this.state.metadata.keywords.join(", ")}/>
-                    <Input id="licence" label="Licence" onChange={this.handleStringInputChange} value={this.state.metadata.licence}/>
+                    <Input id="keywords" label="Keywords" value={this.state.metadata.keywords.join(", ")} disabled={this.state.isSaving}/>
+                    <Input id="licence" label="Licence" onChange={this.handleStringInputChange} value={this.state.metadata.licence} disabled={this.state.isSaving}/>
                     <RadioGroup groupName="national-statistic" 
                         radioData={[
                             {id: "national-statistic-yes", value: "true", label: "Yes"},
@@ -475,9 +475,9 @@ export class DatasetMetadataController extends Component {
                     /> 
 
                     <h2>Contact details</h2>
-                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.metadata.contactName} />
-                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.metadata.contactEmail} />
-                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.metadata.contactTelephone} />
+                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.metadata.contactName} disabled={this.state.isSaving}/>
+                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.metadata.contactEmail} disabled={this.state.isSaving}/>
+                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.metadata.contactTelephone} disabled={this.state.isSaving}/>
 
                     <h2>Related link</h2>
                     <SimpleEditableList addText={"Add a related link"} 
