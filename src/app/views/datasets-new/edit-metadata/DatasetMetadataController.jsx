@@ -131,7 +131,6 @@ export class DatasetMetadataController extends Component {
     }
 
     mapVersionToState = versionResponse => {
-        console.log(versionResponse);
         try {
             const version = versionResponse.current || versionResponse.next || versionResponse;
             const mappedVersion =  {
