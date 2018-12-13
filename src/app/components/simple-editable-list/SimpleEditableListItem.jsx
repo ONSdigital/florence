@@ -33,8 +33,8 @@ export default class SimpleEditableListItemItem extends Component {
                 </div>
                 <div className="grid__col-lg-2">
                     <p style={{"textAlign": "right"}}>
-                        <button type="button" className="btn btn--link" onClick={this.handleEditClick}>Edit</button> | 
-                        <button type="button" className="btn btn--link" onClick={this.handleDeleteClick}>Delete</button>
+                        <button type="button" className="btn btn--link" onClick={this.handleEditClick} disabled={this.props.disabled}>Edit</button> | 
+                        <button type="button" className="btn btn--link" onClick={this.handleDeleteClick} disabled={this.props.disabled}>Delete</button>
                     </p>  
                 </div>
 
