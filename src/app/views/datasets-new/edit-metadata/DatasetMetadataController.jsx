@@ -21,6 +21,7 @@ const propTypes = {
         pathname: PropTypes.string.isRequired
     }),
     params: PropTypes.shape({
+        collectionID: PropTypes.string.isRequired,
         datasetID: PropTypes.string.isRequired,
         editionID: PropTypes.string.isRequired,
         versionID: PropTypes.string.isRequired,
@@ -473,6 +474,7 @@ export class DatasetMetadataController extends Component {
                         onChange={this.handleNationalStaticticChange}
                         inline={true}
                         legend={"National Statistic"}
+                        disabled={this.state.isSaving}
                     /> 
 
                     <h2>Contact details</h2>
