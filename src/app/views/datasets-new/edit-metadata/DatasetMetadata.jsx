@@ -87,9 +87,10 @@ class DatasetMetadata extends Component {
                     />
 
                     <div className="margin-top--2">
-                    <button type="button" className="btn btn--primary margin-right--1" onClick={this.props.handleSave}>Save</button>
-                    <button type="button" className="btn btn--positive margin-right--1">Save and submit for review</button>
+                    <button type="button" className="btn btn--primary margin-right--1" onClick={this.props.handleSave} disabled={this.props.isSaving}>Save</button>
+                    <button type="button" className="btn btn--positive margin-right--1" disabled={this.props.isSaving}>Save and submit for review</button>
                     <Link to="/preview">Preview</Link>
+                    {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                     </div>
                 </div>
         );
