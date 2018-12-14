@@ -2,15 +2,15 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
 import url from '../../../utilities/url'
 import log, {eventTypes} from '../../../utilities/log'
-import date from '../../../utilities/date'
 
+
+import DatasetMetadata from './DatasetMetadata';
 import Input from '../../../components/Input';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
@@ -421,83 +421,22 @@ export class DatasetMetadataController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6 margin-bottom--4">
-                    <div className="margin-top--2">
-                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
-                    </div>
-                    <h1 className="margin-top--1 margin-bottom--1">Edit metadata</h1>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.metadata.title ? this.state.metadata.title : "loading..."}</p>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.state.metadata.edition ? this.state.metadata.edition : "loading..."}</p>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.state.metadata.version ? this.state.metadata.version : "loading..."}</p>
-
-                    <h2>Title</h2>
-                    <Input id="title" value={this.state.metadata.title} onChange={this.handleStringInputChange} disabled={this.state.isSaving}/>
-
-                    <h2>Release dates</h2>
-                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.releaseDate && date.format(this.state.metadata.releaseDate, "yyyy-mm-dd")} disabled={this.state.isSaving}/>
-                    <Input id="next-release" name="nextReleaseDate" label="Next release date" type="date" onChange={this.handleDateInputChange} value={this.state.metadata.nextReleaseDate && date.format(this.state.metadata.nextReleaseDate, "yyyy-mm-dd")} disabled={this.state.isSaving}/>
-                    <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.handleStringInputChange} value={this.state.metadata.releaseFrequency} disabled={this.state.isSaving}/>
-
-                    <h2>Notices</h2>
-                    <p className="margin-bottom--1">Add an alert, correction, change summary or usage note.</p>
-                    <SimpleEditableList addText={"Add a new notice"} 
-                        fields={this.state.metadata.notices} 
-                        editingStateFieldName="notices"
-                        handleAddClick={this.handleSimpleEditableListAdd}
-                        handleEditClick={this.handleSimpleEditableListEdit}
-                        handleDeleteClick={this.handleSimpleEditableListDelete}
-                        disableActions={this.state.isSaving}
-                    />
-                    
-                    <h2 className="margin-top--1">About</h2>
-                    <Input id="summary" label="Summary" type="textarea" value={this.state.metadata.summary} onChange={this.handleStringInputChange} disabled={this.state.isSaving}/>
-                    <Input id="unit-of-measure" name="unit" label="Unit of measure" type="input" value={this.state.metadata.unitOfMeasure} onChange={this.handleStringInputChange}disabled={this.state.isSaving}/>
-
-                    <h2>Dimensions</h2>
-                    {this.state.metadata.dimensions.map(dimension => {
-                        return (
-                            <div key={`dimension-${dimension.id}`}>
-                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.handleDimensionNameChange} disabled={this.state.isSaving}/>
-                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.handleDimensionDescriptionChange} disabled={this.state.isSaving}/>
-                            </div>
-                        )
-                    })} 
-
-                    <h2>Meta</h2>
-                    <Input id="keywords" label="Keywords" value={this.state.metadata.keywords.join(", ")} disabled={this.state.isSaving}/>
-                    <Input id="licence" label="Licence" onChange={this.handleStringInputChange} value={this.state.metadata.licence} disabled={this.state.isSaving}/>
-                    <RadioGroup groupName="national-statistic" 
-                        radioData={[
-                            {id: "national-statistic-yes", value: "true", label: "Yes"},
-                            {id: "national-statistic-no", value: "false", label: "No"}]}
-                        selectedValue={this.state.metadata.nationalStatistic.toString()}
-                        onChange={this.handleNationalStaticticChange}
-                        inline={true}
-                        legend={"National Statistic"}
-                        disabled={this.state.isSaving}
-                    /> 
-
-                    <h2>Contact details</h2>
-                    <Input id="contact-name" name="contactName" label="Contact name" onChange={this.handleStringInputChange} value={this.state.metadata.contactName} disabled={this.state.isSaving}/>
-                    <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.handleStringInputChange} value={this.state.metadata.contactEmail} disabled={this.state.isSaving}/>
-                    <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.handleStringInputChange} value={this.state.metadata.contactTelephone} disabled={this.state.isSaving}/>
-
-                    <h2>Related link</h2>
-                    <SimpleEditableList addText={"Add a related link"} 
-                        fields={this.state.metadata.relatedLinks} 
-                        editingStateFieldName="relatedLinks"
-                        handleAddClick={this.handleSimpleEditableListAdd}
-                        handleEditClick={this.handleSimpleEditableListEdit}
-                        handleDeleteClick={this.handleSimpleEditableListDelete}
-                        disableActions={this.state.isSaving}
-                    />
-
-                    <div className="margin-top--2">
-                    <button type="button" className="btn btn--primary margin-right--1" onClick={this.handleSave}>Save</button>
-                    <button type="button" className="btn btn--positive margin-right--1">Save and submit for review</button>
-                    <Link to="/preview">Preview</Link>
-                    </div>
-                </div>
+                <DatasetMetadata metadata={this.state.metadata} 
+                    handleBackButton={this.handleBackButton}
+                    handleDateInputChange={this.handleDateInputChange}
+                    handleStringInputChange={this.handleStringInputChange}
+                    handleDimensionNameChange={this.handleDimensionNameChange}
+                    handleDimensionDescriptionChange={this.handleDimensionDescriptionChange}
+                    handleNationalStaticticChange={this.handleNationalStaticticChange}
+                    handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
+                    handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
+                    handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
+                    handleSimpleEditableListEditCancel={this.handleSimpleEditableListEditCancel}
+                    handleSimpleEditableListEditSuccess={this.handleSimpleEditableListEditSuccess}
+                    handleSave={this.handleSave}
+                    isSaving={this.state.isSaving}
+                    isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata}
+                />
                 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
             </div>
