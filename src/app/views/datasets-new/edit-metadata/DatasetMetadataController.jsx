@@ -431,8 +431,6 @@ export class DatasetMetadataController extends Component {
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
-                    handleSimpleEditableListEditCancel={this.handleSimpleEditableListEditCancel}
-                    handleSimpleEditableListEditSuccess={this.handleSimpleEditableListEditSuccess}
                     handleSave={this.handleSave}
                     isSaving={this.state.isSaving}
                     isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata}
