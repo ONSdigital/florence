@@ -41,7 +41,8 @@ export class DatasetMetadataController extends Component {
             isGettingVersionMetadata: false,
             isSaving: false,
             datasetIsInCollection: false,
-            versionIsInCollection: false, 
+            versionIsInCollection: false,
+            versionIsPublished: false, 
             instanceID: "",
             dimensionsUpdated: false,
             metadata: {
@@ -141,7 +142,12 @@ export class DatasetMetadataController extends Component {
                 notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
             }
-            return {metadata: {...this.state.metadata, ...mappedVersion}, collection: version.collection_id || false, instanceID: version.id }
+            return {
+                metadata: {...this.state.metadata, ...mappedVersion}, 
+                collection: version.collection_id || false, 
+                instanceID: version.id,
+                versionIsPublished: version.state && "published" 
+            }
         } catch (error) {
             console.error(error)
         }
