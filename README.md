@@ -48,10 +48,14 @@ There are other ONS digital applications that you'll need to run to allow Floren
 
 #### Optional (for developing Florence)
 
-3. Install [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/)
-4. Watch for JS, CSS and other source file changes
+- Install [NodeJS](https://nodejs.org/en/) and [NPM](https://www.npmjs.com/)
+- Watch for JS, CSS and other source file changes
 ```
 make watch-src
+```
+- Update JS, CSS and other source file changes
+```
+make node-modules 
 ```
 
 ### Configuration
