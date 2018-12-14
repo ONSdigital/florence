@@ -28,7 +28,7 @@ class DatasetMetadata extends Component {
                     <Input id="title" value={this.props.metadata.title} onChange={this.props.handleStringInputChange} disabled={this.props.isSaving || this.props.isGettingData}/>
 
                     <h2>Release dates</h2>
-                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.props.handleDateInputChange} value={this.props.metadata.releaseDate && date.format(this.props.metadata.releaseDate, "yyyy-mm-dd")} disabled={this.props.isSaving || this.props.isGettingData}/>
+                    <Input id="release-date" name="releaseDate" label="Release date" type="date" onChange={this.props.handleDateInputChange} value={this.props.metadata.releaseDate && date.format(this.props.metadata.releaseDate, "yyyy-mm-dd")} disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}/>
                     <Input id="next-release" name="nextReleaseDate" label="Next release date" type="date" onChange={this.props.handleDateInputChange} value={this.props.metadata.nextReleaseDate && date.format(this.props.metadata.nextReleaseDate, "yyyy-mm-dd")} disabled={this.props.isSaving || this.props.isGettingData}/>
                     <Input id="release-frequency" name="releaseFrequency" label="Release frequency" onChange={this.props.handleStringInputChange} value={this.props.metadata.releaseFrequency} disabled={this.props.isSaving || this.props.isGettingData}/>
 
@@ -51,8 +51,8 @@ class DatasetMetadata extends Component {
                     {this.props.metadata.dimensions.map(dimension => {
                         return (
                             <div key={`dimension-${dimension.id}`}>
-                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.props.handleDimensionNameChange} disabled={this.props.isSaving || this.props.isGettingData}/>
-                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.props.handleDimensionDescriptionChange} disabled={this.props.isSaving || this.props.isGettingData}/>
+                            <Input id={`dimension-title-${dimension.id}`} data-dimension-id={dimension.id} label="Title" value={dimension.name} onChange={this.props.handleDimensionNameChange} disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}/>
+                            <Input id={`dimension-description-${dimension.id}`} label="Description" type="textarea" value={dimension.description} onChange={this.props.handleDimensionDescriptionChange} disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}/>
                             </div>
                         )
                     })} 
@@ -76,7 +76,7 @@ class DatasetMetadata extends Component {
                     <Input id="contact-email" name="contactEmail" label="Contact email" onChange={this.props.handleStringInputChange} value={this.props.metadata.contactEmail} disabled={this.props.isSaving || this.props.isGettingData}/>
                     <Input id="contact-telephone" name="contactTelephone" label="Contact telephone" onChange={this.props.handleStringInputChange} value={this.props.metadata.contactTelephone} disabled={this.props.isSaving || this.props.isGettingData}/>
 
-                    <h2>Related link</h2>
+                    <h2>Related links</h2>
                     <SimpleEditableList addText={"Add a related link"} 
                         fields={this.props.metadata.relatedLinks} 
                         editingStateFieldName="relatedLinks"

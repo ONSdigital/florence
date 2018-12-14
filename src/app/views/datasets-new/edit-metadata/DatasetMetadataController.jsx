@@ -128,13 +128,12 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
             const mappedVersion = this.mapVersionToState(version)
-            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection, instanceID: mappedVersion.instanceID});
+            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection, instanceID: mappedVersion.instanceID, versionIsPublished: mappedVersion.versionIsPublished});
         })
     }
 
-    mapVersionToState = versionResponse => {
+    mapVersionToState = version => {
         try {
-            const version = versionResponse.current || versionResponse.next || versionResponse;
             const mappedVersion =  {
                 edition: version.edition,
                 version: version.version,
@@ -146,7 +145,7 @@ export class DatasetMetadataController extends Component {
                 metadata: {...this.state.metadata, ...mappedVersion}, 
                 collection: version.collection_id || false, 
                 instanceID: version.id,
-                versionIsPublished: version.state && "published" 
+                versionIsPublished: version.state === "published" 
             }
         } catch (error) {
             console.error(error)
@@ -439,6 +438,8 @@ export class DatasetMetadataController extends Component {
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSave={this.handleSave}
                     isSaving={this.state.isSaving}
+                    versionIsInCollection={this.state.versionIsInCollection}
+                    versionIsPublished={this.state.versionIsPublished}
                     isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata}
                 />
                 
