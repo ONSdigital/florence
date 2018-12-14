@@ -121,7 +121,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         $('#nav--workspace__welsh').on('click', function () {
             Florence.globalVars.welsh = Florence.globalVars.welsh === false ? true : false;
-            createWorkspace(Florence.globalVars.pagePath, collectionId, 'browse');
+            createWorkspace(Florence.globalVars.pagePath, collectionId, 'browse', collectionData);
         });
 
         $('.workspace-menu').on('click', '.btn-browse-create', function () {
