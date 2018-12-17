@@ -56,10 +56,11 @@ export default class RadioButton extends Component {
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
                     onChange={this.handleChange}
+                    disabled={this.props.disabled}
                 />
 
                 <label
-                    className={"radio__label" + (this.props.checked ? " radio__label--selected" : "") + (this.state.focused ? " radio__label--focused" : "")}
+                    className={"radio__label" + (this.props.checked ? " radio__label--selected" : "") + (this.state.focused ? " radio__label--focused" : "") + (this.props.disabled ? " radio__label--disabled" : "")}
                     htmlFor={this.props.id}>{this.props.label}
                 </label>
             </div>
