@@ -71,8 +71,8 @@ class DatasetMetadata extends Component {
                     
                     <h2 className="margin-top--1">About</h2>
                     <Input id="summary" 
-                        label="Summary" type="textarea" v
-                        alue={this.props.metadata.summary} 
+                        label="Summary" type="textarea" 
+                        value={this.props.metadata.summary} 
                         onChange={this.props.handleStringInputChange} 
                         disabled={this.props.isSaving || this.props.isGettingData}
                     />
