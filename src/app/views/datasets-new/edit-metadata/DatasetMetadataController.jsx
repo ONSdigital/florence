@@ -9,11 +9,7 @@ import notifications from '../../../utilities/notifications';
 import url from '../../../utilities/url'
 import log, {eventTypes} from '../../../utilities/log'
 
-
 import DatasetMetadata from './DatasetMetadata';
-import Input from '../../../components/Input';
-import RadioGroup from '../../../components/radio-buttons/RadioGroup';
-import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
 
 
 const propTypes = {
