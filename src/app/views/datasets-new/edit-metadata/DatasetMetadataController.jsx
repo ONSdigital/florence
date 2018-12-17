@@ -143,7 +143,6 @@ export class DatasetMetadataController extends Component {
         console.log(version)
         try {
             const mappedVersion =  {
-                jon: jones.name,
                 edition: version.edition,
                 version: version.version,
                 releaseDate: version.release_date || "",
