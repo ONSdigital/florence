@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
 import url from '../../utilities/url';
-import log, {eventTypes} from '../../../utilities/log';
+import log, {eventTypes} from '../../utilities/log';
 
 import SimpleSelectableList from '../../components/simple-selectable-list/SimpleSelectableList';
 import Input from '../../components/Input';
