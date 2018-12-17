@@ -1,9 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
+
 import url from '../../../utilities/url'
 import notifications from '../../../utilities/notifications'
 import datasets from '../../../utilities/api-clients/datasets'
+
+import Preview from '../../../components/preview/Preview'
+import Iframe from '../../../components/iframe/Iframe';
 
 const propTypes = {
     
@@ -95,30 +100,28 @@ export class PreviewController extends Component {
 
     render() {
         return (
+            <div>
             <div className="grid grid--justify-center">
                 <div className="grid__col-6 margin-bottom--1">
                     <div className="margin-top--2">
-                        &#9664; <button type="button" className="btn btn--link font-size--16" onClick={this.handleBackButton}>Back</button>
+                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Preview</h1>
-                    <div className="font-size--18"><span className="font-weight--600">Dataset: </span>{this.state.datasetTitle}</div>
-                    <div className="font-size--18"><span className="font-weight--600">Edition: </span>{this.state.edition}</div>
-                    <div className="font-size--18"><span className="font-weight--600">Version: </span>{this.state.version}</div>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.title ? this.state.title : "loading..."}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.props.params.editionID}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.props.params.versionID}</p>
                </div>
-               <iframe src={window.location.origin + "/datasets/" + this.state.datasetID + "/editions/" + this.state.edition + "/versions/" + this.state.version} title="ONS website preview" className="iframe--preview" width="100%" height="600px"></iframe>
-               {this.props.isLoadingPreview && 
-                    <div className="grid grid--align-content-center grid--full-height grid--direction-column grid--justify-center grid--align-center">
-                        <p className="font-size--16 font-weight--600 margin-bottom--1">Loading preview</p>
-                        <div className="loader loader--dark loader--centre loader--large"></div>
-                    </div>
-                }
+            </div>
+            <div className="preview--half preview--borders">
+                <Iframe path={`/datasets/${this.props.params.datasetID}/editions/${this.props.params.editionID}/versions/${this.props.params.versionID}`}/>
+            </div>
+            <div className="grid grid--justify-center">
                 <div className="grid__col-6">
-                {/*for grid__col child width 100% */}
-                <div className="margin-top--1 margin-bottom--1">
-                    <a type="button" className="btn btn--positive margin-right--1" href={window.location.origin + "/florence/collections/" + this.state.collectionID}>Continue</a>
-                    <button type="button" className="btn" onClick={this.handleBackButton}>Go back</button>
+                    <div className="margin-top--1 margin-bottom--1">
+                        <Link className="btn btn--positive margin-right--1" to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}>Continue</Link>
+                    </div>
                 </div>
-                </div>
+            </div>
             </div>
         )
     }
