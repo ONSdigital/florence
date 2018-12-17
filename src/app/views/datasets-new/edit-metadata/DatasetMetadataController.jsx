@@ -6,11 +6,10 @@ import PropTypes from 'prop-types';
 import datasets from '../../../utilities/api-clients/datasets';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
-import url from '../../../utilities/url'
-import log, {eventTypes} from '../../../utilities/log'
+import url from '../../../utilities/url';
+import log, {eventTypes} from '../../../utilities/log';
 
 import DatasetMetadata from './DatasetMetadata';
-
 
 const propTypes = {
     location: PropTypes.shape({
@@ -97,9 +96,18 @@ export class DatasetMetadataController extends Component {
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release || "",
             }
-            return {metadata: {...this.state.metadata, ...mappedDataset}, collection: dataset.collection_id || false}
+            return {
+                metadata: {...this.state.metadata, ...mappedDataset}, 
+                collection: dataset.collection_id || false
+            }
         } catch (error) {
-            console.error(error)
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping dataset '${datasetResponse.id}' to to state. \n ${error}`});
+            notifications.add({
+                type: "warning",
+                message: `An unexpected error occurred when trying to get dataset '${datasetResponse.id}'. Try refreshing the page`,
+                isDismissable: true
+            });
+            console.error(`Error mapping dataset '${datasetResponse.id}' to to state. \n ${error}`)
         }
     }
 
@@ -116,7 +124,10 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            console.error("Error mapping related links to state", error)
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping related links to state \n ${error}`});
+            // throw an error to let parent mapper catch and display notification
+            // this will prevent the page loading with half loaded/mapped data
+            throw new Error(`Error mapping related links to state \n ${error}`);
         }
     }
 
@@ -129,8 +140,10 @@ export class DatasetMetadataController extends Component {
     }
 
     mapVersionToState = version => {
+        console.log(version)
         try {
             const mappedVersion =  {
+                jon: jones.name,
                 edition: version.edition,
                 version: version.version,
                 releaseDate: version.release_date || "",
@@ -144,7 +157,13 @@ export class DatasetMetadataController extends Component {
                 versionIsPublished: version.state === "published" 
             }
         } catch (error) {
-            console.error(error)
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping version '${version.version || version.id}' to to state. \n ${error}`});
+            notifications.add({
+                type: "warning",
+                message: `An unexpected error occurred when trying to get version '${version.version || version.id}'. Try refreshing the page`,
+                isDismissable: true
+            });
+            console.error(`Error mapping dataset '${version.version || version.id}' to to state. \n ${error}`)
         }
     }
 
@@ -159,7 +178,10 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            console.error("Error mapping notice to state", error)
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping notices to state \n ${error}`});
+            // throw an error to let parent mapper catch and display notification
+            // this will prevent the page loading with half loaded/mapped data
+            throw new Error(`Error mapping notices to state \n ${error}`);
         }
     }
 
