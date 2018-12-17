@@ -85,20 +85,21 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
 
-                            <Route path={`${rootPath}/collections/:collectionID/datasets`} >
-                                <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
-                                <Route path=':datasetID'>
-                                    <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
-                                    <Route path='editions/:editionID'>
-                                        <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
-                                        <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
-                                            <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                            {config.enableDatasetImport === true &&
+                                <Route path={`${rootPath}/collections/:collectionID/datasets`} >
+                                    <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
+                                    <Route path=':datasetID'>
+                                        <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
+                                        <Route path='editions/:editionID'>
+                                            <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
+                                            <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
+                                                <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                                            </Route>
                                         </Route>
                                     </Route>
                                 </Route>
-                            </Route>
+                            }
 
-                            
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
