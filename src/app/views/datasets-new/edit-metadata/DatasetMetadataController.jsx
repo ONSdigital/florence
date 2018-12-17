@@ -140,7 +140,6 @@ export class DatasetMetadataController extends Component {
     }
 
     mapVersionToState = version => {
-        console.log(version)
         try {
             const mappedVersion =  {
                 edition: version.edition,
