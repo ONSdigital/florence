@@ -5,7 +5,8 @@ import PropTypes from 'prop-types';
 
 import datasets from '../../utilities/api-clients/datasets';
 import notifications from '../../utilities/notifications';
-import url from '../../utilities/url'
+import url from '../../utilities/url';
+import log, {eventTypes} from '../../utilities/log';
 
 import SimpleSelectableList from '../../components/simple-selectable-list/SimpleSelectableList';
 import Input from '../../components/Input';
@@ -129,9 +130,10 @@ export class DatasetsController extends Component {
                 }
             })
         } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping datasets to to state. \n ${error}`});
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get dataset, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message: "An unexpected error occurred when trying to get datasets, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             }
             notifications.add(notification);

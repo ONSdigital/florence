@@ -2317,6 +2317,10 @@ details {
       opacity: 1; }
     .radio__label--focused:before {
       box-shadow: 0 0 0 4px #ffbf47; }
+    .radio__label--disabled:before {
+      border-color: #AEA99C; }
+    .radio__label--disabled:after {
+      border-color: #CCCCCB; }
 
 .checkbox {
   position: relative; }

@@ -30,10 +30,11 @@ import './scss/main.scss';
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
-import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
+//import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
-import NewPreviewController from './app/views/datasets-new/preview/PreviewController';
+import DatasetPreviewController from './app/views/datasets-new/preview/PreviewController';
+import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -84,11 +85,25 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets`} component={ userIsAuthenticated(SelectADataset) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID`} component={ userIsAuthenticated(DatasetEditionsController) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:edition/versions/:version/new-preview`} component={ userIsAuthenticated(NewPreviewController) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID`} component={ userIsAuthenticated(DatasetVersionsController) }/>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets/:datasetID/editions/:editionID/versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }/>
+
+                            {config.enableDatasetImport === true &&
+                                <Route path={`${rootPath}/collections/:collectionID/datasets`} >
+                                    <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
+                                    <Route path=':datasetID'>
+                                        <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
+                                        <Route path='editions/:editionID'>
+                                            <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
+                                            <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
+                                                <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                                                <Route path='preview'>
+                                                    <IndexRoute component={ userIsAuthenticated(DatasetPreviewController) }/>
+                                                </Route>
+                                            </Route>
+                                        </Route>
+                                    </Route>
+                                </Route>
+                            }
+
                             <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
