@@ -10,7 +10,7 @@ import date from '../../../utilities/date'
 import SimpleSelectableList from '../../../components/simple-selectable-list/SimpleSelectableList';
 
 const propTypes = {
-    routeParams: PropTypes.shape({
+    params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired
     }).isRequired,
     location: PropTypes.shape({
@@ -41,8 +41,8 @@ export class DatasetVersionsController extends Component {
     }
 
     async componentWillMount() {
-        const datasetID = this.props.routeParams.datasetID;
-        const editionID = this.props.routeParams.editionID;
+        const datasetID = this.props.params.datasetID;
+        const editionID = this.props.params.editionID;
 
         this.getAllVersions(datasetID, editionID);
         this.getDataset(datasetID);
