@@ -133,7 +133,7 @@ export class DatasetsController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping datasets to to state. \n ${error}`});
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get dataset, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message: "An unexpected error occurred when trying to get datasets, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             }
             notifications.add(notification);
