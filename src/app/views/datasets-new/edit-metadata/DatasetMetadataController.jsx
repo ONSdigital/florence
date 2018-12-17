@@ -290,6 +290,7 @@ export class DatasetMetadataController extends Component {
         const datasetIsInCollection = this.state.datasetIsInCollection;
         const versionIsInCollection = this.state.versionIsInCollection;
         const dimensionsUpdated = this.state.dimensionsUpdated;
+        const versionIsPublished = this.state.versionIsPublished;
         const collectionID = this.props.params.collectionID;
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
@@ -299,7 +300,7 @@ export class DatasetMetadataController extends Component {
         const versionBody = this.mapVersionToPutBody();     
 
         let datasetToCollectionError;
-        if (!datasetIsInCollection) {
+        if (!datasetIsInCollection && (datasetIsInCollection !== this.props.params.collectionID)) {
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
         }
         if (datasetToCollectionError) {
@@ -325,7 +326,10 @@ export class DatasetMetadataController extends Component {
             return
         }
 
-        const saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
+        let saveVersionError;
+        if (!versionIsPublished) {
+            saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
+        }
         if (saveVersionError) {
             this.setState({isSaving: false});
             this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
