@@ -95,10 +95,8 @@ class Index extends Component {
                                             <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
                                             <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
                                                 <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
-                                                <Route path='preview'>
-                                                    <IndexRoute component={ userIsAuthenticated(DatasetPreviewController) }/>
-                                                </Route>
                                             </Route>
+                                            <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                         </Route>
                                     </Route>
                                 </Route>
