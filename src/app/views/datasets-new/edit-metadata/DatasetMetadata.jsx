@@ -9,7 +9,38 @@ import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
 
 const propTypes = {
-
+    metadata: PropTypes.shape({
+        title: PropTypes.string,
+        summary: PropTypes.string,
+        keywords: PropTypes.array,
+        nationalStatistic: PropTypes.bool,
+        licence: PropTypes.string,
+        contactName: PropTypes.string,
+        contactEmail: PropTypes.string,
+        contactTelephone: PropTypes.string,
+        relatedLinks: PropTypes.array,
+        releaseFrequency: PropTypes.string,
+        edition: PropTypes.string,
+        version: PropTypes.string,
+        releaseDate: PropTypes.string,
+        nextReleaseDate: PropTypes.string,
+        unitOfMeasure: PropTypes.string,
+        notices: PropTypes.array,
+        dimensions: PropTypes.array,
+    }).isRequired,
+    handleBackButton: PropTypes.func.isRequired,
+    handleDateInputChange: PropTypes.func.isRequired,
+    handleStringInputChange: PropTypes.func.isRequired,
+    handleDimensionNameChange: PropTypes.func.isRequired,
+    handleDimensionDescriptionChange: PropTypes.func.isRequired,
+    handleNationalStaticticChange: PropTypes.func.isRequired,
+    handleSimpleEditableListAdd: PropTypes.func.isRequired,
+    handleSimpleEditableListDelete: PropTypes.func.isRequired,
+    handleSimpleEditableListEdit: PropTypes.func.isRequired,
+    handleSave: PropTypes.func.isRequired,
+    isSaving: PropTypes.bool.isRequired,
+    versionIsPublished: PropTypes.bool.isRequired,
+    isGettingData: PropTypes.bool.isRequired
 }
 
 class DatasetMetadata extends Component {
