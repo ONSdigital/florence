@@ -11,7 +11,8 @@ import SimpleSelectableList from '../../../components/simple-selectable-list/Sim
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
+        editionID: PropTypes.string.isRequired
     }).isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired
@@ -206,5 +207,5 @@ export class DatasetVersionsController extends Component {
 
 DatasetVersionsController.propTypes = propTypes;
 
-export default (DatasetVersionsController);
+export default DatasetVersionsController;
 
