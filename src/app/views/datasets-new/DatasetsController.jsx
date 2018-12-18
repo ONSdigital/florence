@@ -12,7 +12,10 @@ import SimpleSelectableList from '../../components/simple-selectable-list/Simple
 import Input from '../../components/Input';
 
 const propTypes = {
-
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired
+    }).isRequired
 }
 
 export class DatasetsController extends Component {
