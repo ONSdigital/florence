@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
@@ -165,10 +164,5 @@ export class DatasetsController extends Component {
 
 DatasetsController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        
-    }
-}
-export default connect(mapStateToProps)(DatasetsController);
+export default DatasetsController;
 
