@@ -35,7 +35,7 @@ export class PreviewController extends Component {
 
     getDataset = datasetID => {
         this.setState({isFetchingDataset: true});
-        return datasets.get(datasetID + "101839").then(datatset => {
+        return datasets.get(datasetID).then(datatset => {
             this.setState({isFetchingDataset: false, dataset: this.mapDatasetToState(datatset)});
         })
         .catch(error => {
