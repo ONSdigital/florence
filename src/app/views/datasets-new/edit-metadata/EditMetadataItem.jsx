@@ -8,7 +8,19 @@ import Input from '../../../components/Input';
 import Select from '../../../components/Select';
 
 const propTypes = {
-
+    params: PropTypes.shape({
+        metadataField: PropTypes.string.isRequired
+    }),
+    data: PropTypes.shape({
+        id: PropTypes.string,
+        type: PropTypes.string,
+        description: PropTypes.string,
+        href: PropTypes.string,
+        date: PropTypes.string,
+        title: PropTypes.string
+    }),
+    handleSuccessClick: PropTypes.func.isRequired,
+    handleCancelClick: PropTypes.func.isRequired
 }
 
 export default class EditMetadatItem extends Component {
@@ -26,7 +38,7 @@ export default class EditMetadatItem extends Component {
     }
 
     handleSuccessClick = () => {
-        this.props.handleSucessClick(this.state, this.props.params.metadataField);
+        this.props.handleSuccessClick(this.state, this.props.params.metadataField);
     }
 
     handleInputChange = (event) => {
