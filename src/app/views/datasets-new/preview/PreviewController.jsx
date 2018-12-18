@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import PropTypes from 'prop-types';
@@ -135,10 +134,4 @@ export class PreviewController extends Component {
 
 PreviewController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        
-    }
-}
-
-export default connect(mapStateToProps)(PreviewController);
+export default PreviewController;
