@@ -8,7 +8,8 @@ const propTypes = {
     group: PropTypes.string.isRequired,
     onChange: PropTypes.func,
     checked: PropTypes.bool,
-    inline: PropTypes.bool
+    inline: PropTypes.bool,
+    disabled: PropTypes.bool
 };
 
 export default class RadioButton extends Component {
