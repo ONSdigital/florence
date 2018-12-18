@@ -8,7 +8,8 @@ const propTypes = {
         description: PropTypes.string
     }),
     handleEditClick: PropTypes.func.isRequired,
-    handleDeleteClick: PropTypes.func.isRequired
+    handleDeleteClick: PropTypes.func.isRequired,
+    disabled: PropTypes.bool.isRequired
 }
 
 export default class SimpleEditableListItemItem extends Component {
