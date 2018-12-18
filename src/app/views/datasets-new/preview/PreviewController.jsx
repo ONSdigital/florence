@@ -7,7 +7,6 @@ import url from '../../../utilities/url'
 import notifications from '../../../utilities/notifications'
 import datasets from '../../../utilities/api-clients/datasets'
 
-import Preview from '../../../components/preview/Preview'
 import Iframe from '../../../components/iframe/Iframe';
 
 const propTypes = {
@@ -19,35 +18,19 @@ export class PreviewController extends Component {
         super(props);
 
         this.state = {
-            isLoadingPreview: false,
-            errorFetchingDataset: false,
-            collectionID: "",
-            datasetID: "",
-            datasetTitle: "",
-            edition: "",
-            version: ""
+            isGettingDataset: false,
+            dataset: {}
         }
-
     }
     
-    async componentWillMount() {
-        const getDatasetresponse = await this.getDataset(this.props.params.datasetID) 
-
-        this.setState({
-            collectionID: this.props.params.collectionID,
-            datasetID: this.props.params.datasetID,
-            datasetTitle: getDatasetresponse.title,
-            edition: this.props.params.edition,
-            version: this.props.params.version
-        });
+    componentWillMount() {
+        this.getDataset(this.props.params.datasetID);
     }
 
-    async getDataset(datasetID) {
-        this.state.isLoadingPreview = true
-        return await datasets.get(datasetID)
-        .then(response => {
-            this.setState({isLoadingPreview: false});
-            return response.current || response.next
+    getDataset = datasetID => {
+        this.setState({isGettingDataset: true});
+        datasets.get(datasetID).then(response => {
+            this.setState({isGettingDataset: false, dataset: this.mapDatasetToState(response)});
         })
         .catch(error => {
             switch(error.status) {
@@ -87,10 +70,26 @@ export class PreviewController extends Component {
                     notifications.add(notification);
                 }
             }
-            this.state.errorFetchingDataset = true
-            this.state.isLoadingPreview = false
+            this.setState({isGettingDataset: false});
             console.error(`Error fetching dataset ID '${this.props.params.datasetID}'`, error);
         })
+    }
+
+    mapDatasetToState = datasetResponse => {
+        try {
+            const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
+            return {
+                title: dataset.title
+            }
+        } catch (error) {
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting dataset details to state:\n", error);
+        }
     }
 
     handleBackButton = () => {
@@ -107,7 +106,7 @@ export class PreviewController extends Component {
                         &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Preview</h1>
-                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.title ? this.state.title : "loading..."}</p>
+                    <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."}</p>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.props.params.editionID}</p>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Version</span>: {this.props.params.versionID}</p>
                </div>
