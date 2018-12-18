@@ -436,7 +436,7 @@ export class DatasetMetadataController extends Component {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
                 data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
-                handleSucessClick: this.handleSimpleEditableListEditSuccess,
+                handleSuccessClick: this.handleSimpleEditableListEditSuccess,
                 handleCancelClick: this.handleSimpleEditableListEditCancel
             })
         })
