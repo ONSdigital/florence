@@ -24,7 +24,7 @@ export class PreviewController extends Component {
         super(props);
 
         this.state = {
-            isGettingDataset: false,
+            isFetchingDataset: false,
             dataset: {}
         }
     }
@@ -34,9 +34,9 @@ export class PreviewController extends Component {
     }
 
     getDataset = datasetID => {
-        this.setState({isGettingDataset: true});
-        datasets.get(datasetID).then(response => {
-            this.setState({isGettingDataset: false, dataset: this.mapDatasetToState(response)});
+        this.setState({isFetchingDataset: true});
+        return datasets.get(datasetID + "101839").then(datatset => {
+            this.setState({isFetchingDataset: false, dataset: this.mapDatasetToState(datatset)});
         })
         .catch(error => {
             switch(error.status) {
@@ -76,7 +76,7 @@ export class PreviewController extends Component {
                     notifications.add(notification);
                 }
             }
-            this.setState({isGettingDataset: false});
+            this.setState({isFetchingDataset: false});
             console.error(`Error fetching dataset ID '${this.props.params.datasetID}'`, error);
         })
     }
