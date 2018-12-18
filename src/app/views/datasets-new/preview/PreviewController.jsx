@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
+import PropTypes from 'prop-types';
 
 import url from '../../../utilities/url'
 import notifications from '../../../utilities/notifications'
@@ -10,7 +11,13 @@ import datasets from '../../../utilities/api-clients/datasets'
 import Iframe from '../../../components/iframe/Iframe';
 
 const propTypes = {
-    
+    params: PropTypes.shape({
+        collectionID: PropTypes.string.isRequired,
+        datasetID: PropTypes.string.isRequired,
+        editionID: PropTypes.string.isRequired,
+        versionID: PropTypes.string.isRequired,
+    }),
+    dispatch: PropTypes.func.isRequired
 }
 
 export class PreviewController extends Component {
