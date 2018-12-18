@@ -14,29 +14,29 @@ jest.mock('../../../utilities/log', () => {
 
 jest.mock('../../../utilities/notifications', () => {
     return {
-        add: jest.fn(() => {}),
-        remove: () => {}
+        add: jest.fn((notification) => { mockNotifications.push(notification) }),
+        remove: () => { }
     }
 });
 
 jest.mock('../../../utilities/api-clients/datasets', () => {
     return {
         get: jest.fn(() => {
-            return Promise.resolve(mockedDatasets);
+            return Promise.resolve(mockedDataset);
         }),
     }
 });
 
-const mockedDatasets = {
+const mockedDataset = {
     "id": "test-dataset",
-    "next": {
+    "current": {
         "collection_id": "1234567890",
         "id": "test-dataset",
         "title": "Test Dataset"
     },
 };
 
-let dispatchedActions = [];
+let dispatchedActions, mockNotifications = [];
 
 const defaultProps = {
     dispatch: event => {
@@ -44,7 +44,7 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/mockCollection/datasets/test-dataset/editions/time-series/versions/1/new-preview"
+        pathname: "florence/collections/mockCollection/datasets/test-dataset/editions/time-series/versions/1/preview"
     },
     params: {
         collectionID: "mockCollection",
@@ -58,33 +58,44 @@ const component = shallow(
     <PreviewController {...defaultProps} />
 );
 
-describe("Get datasets", () => {
-    it("Geting Dataset Title", async () => {
-        await component.instance().getDataset('datasetID');
-        expect(component.state('datasetTitle')).toBe("Test Dataset");
+beforeEach(() => {
+    mockNotifications = []
+})
+
+describe("Calling getDataset", () => {
+
+    it("updates isFetchingDataset state to show it's fetching data for all datasets", () => {
+        expect(component.state('isFetchingDataset')).toBe(false);
+
+        // Tests that state is set correctly before asynchronous requests have finished
+        component.instance().getDataset(mockedDataset.id);
+        expect(component.state('isFetchingDataset')).toBe(true);
+    })
+
+    it("updates isFetchingDatasets state to show it has fetched data for all datasets", async () => {
+        // Tests that state is set correctly after asynchronous requests were successful
+        await component.instance().getDataset(mockedDataset.id);
+        expect(component.state('isFetchingDataset')).toBe(false);
     });
-    it("Updateing isLoadingPreview", async () => {
-        expect(component.state('isLoadingPreview')).toBe(false);
-        component.instance().getDataset('datasetID');
-        expect(component.state('isLoadingPreview')).toBe(true);
-        await component.instance().getDataset('datasetID');
-        expect(component.state('isLoadingPreview')).toBe(false);
+
+    it("updates isFetchingDatasets state correctly on failure to fetch data for all datasets", async () => {
+        datasets.get.mockImplementationOnce(() => (
+            Promise.reject({ status: 500 })
+        ));
+        await component.instance().getDataset(mockedDataset.id);
+        expect(component.state('isFetchingDataset')).toBe(false);
+    });
+
+    it("Errors cause notification", async () => {
+        datasets.get.mockImplementationOnce(() => (
+            Promise.reject({ status: 404 })
+        ));
+        await component.instance().getDataset(mockedDataset.id);
+        expect(mockNotifications.length).toBe(1);
     });
 });
 
-describe("correct data on completed", () => {
-    it("Preview is Loaded", async () => {
-        const expectedValue = {
-            collectionID: defaultProps.params.collectionID,
-            datasetID: defaultProps.params.datasetID,
-            datasetTitle: "Test Dataset",
-            edition: defaultProps.params.edition,
-            version: defaultProps.params.version,
-            errorFetchingDataset: false,
-            isLoadingPreview: false,
-        }
-        await component.instance().componentWillMount();
-        expect(component.instance().state).toEqual(expectedValue);
-        console.log(component.instance().state);
-    });
-});
+test("Mapping dataset to state", () => {
+    const mappedDataset = component.instance().mapDatasetToState(mockedDataset);
+    expect(mappedDataset).toMatchObject({ title: mockedDataset.current.title });
+})
