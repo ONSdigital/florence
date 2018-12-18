@@ -177,7 +177,7 @@ class DatasetMetadata extends Component {
                             className="btn btn--positive margin-right--1" 
                             disabled={this.props.isSaving || this.props.isGettingData}>Save and submit for review
                         </button>
-                        <Link to="/preview">Preview</Link>
+                        <Link to={`${window.location.pathname}/preview`}>Preview</Link>
                         {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                     </div>
                 </div>
