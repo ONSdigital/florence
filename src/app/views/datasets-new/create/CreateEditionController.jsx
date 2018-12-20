@@ -101,7 +101,7 @@ class CreateEditionController extends Component {
                 isDismissable: true
             }
             notifications.add(notification);
-            console.error("Error getting dataset details to state:\n", error);
+            console.error("Error mapping dataset details to state:\n", error);
         }
     }
 
@@ -109,6 +109,56 @@ class CreateEditionController extends Component {
         this.setState({isFetchingEditions: true});
         return recipes.getAll().then(recipes => {
             this.setState({isFetchingEditions: false, editions: this.mapEditionsToState(recipes.items)});
+        }).catch(error => {
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case("UNEXPECTED_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error has occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get a list of datasets.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error getting editions from recipe API:\n`, error);
+            this.setState({isFetchingEditions: false})
         })
     }
 
@@ -119,7 +169,13 @@ class CreateEditionController extends Component {
             })
             return this.filterEditionsListFromRecipe(recipe);
         } catch (error) {
-            console.error(error);
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get editions. Try refreshing the page",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting dataset details to state:\n", error);
         }
     }
 
@@ -132,9 +188,14 @@ class CreateEditionController extends Component {
                 }
             })
             return editionsList;
-        }
-        catch (error) {
-            console.error(error);
+        } catch (error) {
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get editions. Try refreshing the page",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting dataset details to state:\n", error);
         }
     }
 
