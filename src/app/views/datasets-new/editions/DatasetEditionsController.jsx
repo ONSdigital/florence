@@ -32,7 +32,7 @@ export class DatasetEditionsController extends Component {
                 {
                     title: "Create new edition", 
                     id: "create-new-edition",
-                    url:  this.props.location.pathname + "/instances",
+                    url:  this.props.location.pathname + "/editions",
                 }
             ],
             isFetchingEditionsAndVersions: false
