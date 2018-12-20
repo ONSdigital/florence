@@ -165,6 +165,13 @@ export default class datasets {
             });
     }
 
+    static getCompletedInstancesForDataset(datasetID) {
+        return http.get(`/dataset/instances?dataset=${datasetID}&state=completed`)
+            .then(response => {
+                return response;
+            });
+    }
+
     static getCompletedInstances() {
          return http.get(`/dataset/instances?state=completed`)
              .then(response => {
