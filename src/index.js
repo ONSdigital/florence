@@ -16,6 +16,7 @@ import DatasetEditionsController from './app/views/datasets-new/editions/Dataset
 import DatasetVersionsController from './app/views/datasets-new/versions/DatasetVersionsController';
 import DatasetMetadataController from './app/views/datasets-new/edit-metadata/DatasetMetadataController';
 import CreateVersionController from './app/views/datasets-new/create/CreateVersionController';
+import CreateEditionController from './app/views/datasets-new/create/CreateEditionController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
@@ -91,6 +92,7 @@ class Index extends Component {
                                     <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
                                     <Route path=':datasetID'>
                                         <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
+                                        <Route path={`editions`} component={ userIsAuthenticated(CreateEditionController) }/>
                                         <Route path='editions/:editionID'>
                                             <Route path={`instances`} component={ userIsAuthenticated(CreateVersionController) }/>
                                             <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
