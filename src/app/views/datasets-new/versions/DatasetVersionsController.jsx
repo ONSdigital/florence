@@ -166,21 +166,27 @@ export class DatasetVersionsController extends Component {
 
     mapDatasetVersionsToState = versions => {
         try {
-            const versionsList =  versions.map((version, index) => {
-                const latest = (index + 1) === versions.length ? "(latest)" : null;
+            const versionsList =  versions.map(version => {
+                const published = version.state === "published" ? "(published)" : null;
                 return {
                     id: version.id,
-                    title: `Version: ${version.version} ${latest ? latest : ""}`,
+                    title: `Version: ${version.version} ${published ? published : ""}`,
                     url: this.props.location.pathname + "/versions/" + version.version,
+                    version: version.version,
                     details: [
                         `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`
                     ]
                 }    
             });
+            versionsList.sort((this.sortByVersionNumber))
             return versionsList.reverse();
         } catch(error) {
             console.error(error);
         }
+    }
+
+    sortByVersionNumber = (a ,b) => {
+        return a.version - b.version;
     }
     
     handleBackButton = () => {
