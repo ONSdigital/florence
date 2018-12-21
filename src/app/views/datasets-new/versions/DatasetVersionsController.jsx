@@ -174,7 +174,7 @@ export class DatasetVersionsController extends Component {
                     url: this.props.location.pathname + "/versions/" + version.version,
                     version: version.version,
                     details: [
-                        `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`
+                        `Release date: ${version.release_date ? date.format(version.release_date, "dd mmmm yyyy") : "Not yet set"}`
                     ]
                 }    
             });
