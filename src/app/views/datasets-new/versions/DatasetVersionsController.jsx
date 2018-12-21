@@ -180,8 +180,14 @@ export class DatasetVersionsController extends Component {
             });
             versionsList.sort((this.sortByVersionNumber))
             return versionsList.reverse();
-        } catch(error) {
-            console.error(error);
+        } catch (error) {
+            const notification = {
+                type: "warning",
+                message: "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
+                isDismissable: true
+            }
+            notifications.add(notification);
+            console.error("Error getting mapping versions to state:\n", error);
         }
     }
 
