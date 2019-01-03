@@ -7,11 +7,14 @@ import notifications from '../../../utilities/notifications';
 import date from '../../../utilities/date';
 import url from '../../../utilities/url';
 
-import SimpleSelectableList from '../../../components/simple-selectable-list/SimpleSelectableList';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 
 const propTypes = {
-
+    params: PropTypes.shape({
+        datasetID: PropTypes.string.isRequired,
+        editionID: PropTypes.string.isRequired
+    }),
+    dispatch: PropTypes.func.isRequired
 }
 
 class CreateVersionController extends Component {
