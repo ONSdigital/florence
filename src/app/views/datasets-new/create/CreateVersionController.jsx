@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
-import { goBack } from 'react-router-redux';
+import { push, goBack } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import date from '../../../utilities/date';
+import url from '../../../utilities/url';
 
 import SimpleSelectableList from '../../../components/simple-selectable-list/SimpleSelectableList';
+import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 
 const propTypes = {
 
@@ -22,7 +24,9 @@ class CreateVersionController extends Component {
             isFetchingEdition: false,
             edition: {},
             isFetchingInstances: false,
-            instances: []
+            instances: [],
+            selectedInstance: null,
+            isSaving: false
         }
 
     }
@@ -152,12 +156,10 @@ class CreateVersionController extends Component {
             const instancesList = instances.map((instance, index) => {
                 const latest = (index + 1) === instances.length ? "(latest)" : null;
                 return {
-                    title: `New data ${latest ? latest : ""}`,
                     id: instance.id,
-                    url: instance.id,
-                    details: [
-                        `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`
-                    ]
+                    value: instance.id,
+                    label: `New data ${latest ? latest : ""}`,
+                    details: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`,
                 }
             });
             return instancesList.reverse();
@@ -170,6 +172,81 @@ class CreateVersionController extends Component {
             notifications.add(notification);
             console.error("Error getting mapping instances to state:\n", error);
         }
+    }
+
+    handleSelectedInstanceChange = event => {
+        const selectedInstance = event.value;
+        this.setState({selectedInstance: selectedInstance})
+    }
+
+    handleCreateClick = () => {
+        // this.props.dispatch(push("/florence/collections/testcollection2-7ac12132dbf52fca9a5b63c334916bbc4b1f0e4248054ae1a1152bcc54ddec48/datasets/cpih01/editions/time-series/versions/3"));
+        this.setState({isSaving: true});
+        datasets.confirmEditionAndCreateVersion(this.state.selectedInstance, this.props.params.editionID).then(response => {
+            this.setState({isSaving: false});
+            const versionID = response.version;
+            const versionURL = `${url.resolve("../")}/versions/${versionID}`;
+            this.props.dispatch(push(versionURL));
+        }).catch(error => {
+            console.error(`Error create version:\n`, error);
+            this.setState({isSaving: false});
+            switch (error.status) {
+                case(401): {
+                    // handled by request utility function
+                    break;
+                }
+                case(400): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again`,
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(403): {
+                    const notification = {
+                        type: 'neutral',
+                        message: `Unable to create version because you do not have the correct permissions`,
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(404): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Unable to create version because this version couldn't be found`,
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case('FETCH_ERR'): {
+                    const notification = {
+                        type: 'warning',
+                        message: `Unable to create version due to a network issue. Please check your internet connection and try again`,
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: 'warning',
+                        message: `Unable to create version due to an unexpected error`,
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+        })
     }
 
     handleBackButton = () => {
@@ -186,7 +263,26 @@ class CreateVersionController extends Component {
                     <h1 className="margin-top--1 margin-bottom--1">Attach new data</h1>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."}</p>
                     <p className="margin-bottom--1 font-size--18"><span className="font-weight--600">Edition</span>: {this.state.edition.title ? this.state.edition.title : "loading..."}</p>
-                    <SimpleSelectableList rows={this.state.instances} showLoadingState={this.state.isFetchingInstances}/>
+
+                    {this.state.instances.length ? 
+                        <RadioGroup groupName="create-versions-instances" 
+                            radioData={this.state.instances}
+                            selectedValue={this.state.selectedInstance}
+                            onChange={this.handleSelectedInstanceChange}
+                            legend={"New data"}
+                            disabled={this.state.isSaving || this.state.isFetchingInstances}
+                        /> 
+                    : 
+                        <p className="margin-bottom--1">No instances avialable for this edition</p>
+                    }
+
+                    <div className="grid__col-2">
+                        <button type="button" 
+                                className="btn btn--primary" 
+                                disabled={!this.state.selectedInstance}
+                                onClick={this.handleCreateClick}
+                            >Create version</button>
+                    </div>
                </div>
             </div>
         );
