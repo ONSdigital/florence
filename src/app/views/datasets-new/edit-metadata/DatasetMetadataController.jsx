@@ -33,10 +33,13 @@ export class DatasetMetadataController extends Component {
         this.state = {
             isGettingDatasetMetadata: false,
             isGettingVersionMetadata: false,
+            isGettingCollectionData: false,
             isSaving: false,
             datasetIsInCollection: false,
             versionIsInCollection: false,
-            versionIsPublished: false, 
+            versionIsPublished: false,
+            versionCollectionState: "",
+            lastEditedBy: "", 
             instanceID: "",
             dimensionsUpdated: false,
             metadata: {
@@ -134,7 +137,14 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
             const mappedVersion = this.mapVersionToState(version)
-            this.setState({metadata: mappedVersion.metadata, isGettingVersionMetadata: false, versionIsInCollection: mappedVersion.collection, instanceID: mappedVersion.instanceID, versionIsPublished: mappedVersion.versionIsPublished});
+            if (mappedVersion.collection) {
+                this.getAndUpdateReviewStateData();
+            }
+            this.setState({metadata: mappedVersion.metadata, 
+                isGettingVersionMetadata: false, 
+                versionIsInCollection: mappedVersion.collection, 
+                instanceID: mappedVersion.instanceID, 
+                versionIsPublished: mappedVersion.versionIsPublished});
         })
     }
 
@@ -179,6 +189,44 @@ export class DatasetMetadataController extends Component {
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping notices to state \n ${error}`);
+        }
+    }
+
+    getAndUpdateReviewStateData = () => {
+        this.setState({isGettingCollectionData: true});
+        collections.get(this.props.params.collectionID).then(collection => {
+            const versionCollectionState = this.mapVersionCollectionStateToState(collection.datasetVersions)
+            this.setState({isGettingCollectionData: false, 
+                lastEditedBy: versionCollectionState.lastEditedBy, 
+                versionCollectionState: versionCollectionState.reviewState
+            });
+        })
+    }
+
+    mapVersionCollectionStateToState = (versions) => {
+        try {
+            const version = versions.find(datasetVersion => {
+                return (
+                    datasetVersion.id === this.props.params.datasetID && 
+                    datasetVersion.edition === this.props.params.editionID &&
+                    datasetVersion.version === this.props.params.versionID
+                )
+            });
+            if (!version) {
+                this.setState({isFetchingCollectionData: false});
+                return;
+            } 
+
+            //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress"
+            return {lastEditedBy: version.lastEditedBy, reviewState: version.state.charAt(0).toLowerCase() + version.state.slice(1)}
+        } catch (error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping version collection state to to state. \n ${error}`});
+            notifications.add({
+                type: "warning",
+                message: `An unexpected error occurred when trying to get information about this versions collection state'. Try refreshing the page`,
+                isDismissable: true
+            });
+            console.error(`Error mapping version collection state to to state. \n ${error}`)
         }
     }
 
