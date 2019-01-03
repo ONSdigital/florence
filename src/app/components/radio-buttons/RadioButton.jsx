@@ -9,7 +9,8 @@ const propTypes = {
     onChange: PropTypes.func,
     checked: PropTypes.bool,
     inline: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
+    subLabel: PropTypes.string
 };
 
 export default class RadioButton extends Component {
@@ -64,7 +65,7 @@ export default class RadioButton extends Component {
                 <label
                     className={"radio__label" + (this.props.checked ? " radio__label--selected" : "") + (this.state.focused ? " radio__label--focused" : "") + (this.props.disabled ? " radio__label--disabled" : "")}
                     htmlFor={this.props.id}>
-                    {this.props.label} {this.props.details ? <br/> : null} {this.props.details ? this.props.details : null}
+                    {this.props.label} {this.props.subLabel ? <br/> : null} {this.props.subLabel ? this.props.subLabel : null}
                 </label>
             </div>
         )
