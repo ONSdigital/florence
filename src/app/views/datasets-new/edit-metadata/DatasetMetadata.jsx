@@ -21,7 +21,7 @@ const propTypes = {
         relatedLinks: PropTypes.array,
         releaseFrequency: PropTypes.string,
         edition: PropTypes.string,
-        version: PropTypes.string,
+        version: PropTypes.number,
         releaseDate: PropTypes.string,
         nextReleaseDate: PropTypes.string,
         unitOfMeasure: PropTypes.string,
