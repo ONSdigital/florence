@@ -32,9 +32,10 @@ import './scss/main.scss';
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
-import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
+//import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
+import DatasetPreviewController from './app/views/datasets-new/preview/PreviewController';
 import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
 
 const config = window.getEnv();
@@ -99,6 +100,7 @@ class Index extends Component {
                                             <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
                                                 <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
                                             </Route>
+                                            <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                         </Route>
                                     </Route>
                                 </Route>
