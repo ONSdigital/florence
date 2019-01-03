@@ -7,6 +7,10 @@ jest.mock("../utilities/url", () => ({
     resolve: url => `/florence${url}`
 }));
 
+jest.mock('../utilities/log', () => {
+    // do nothing
+});
+
 jest.mock("../utilities/auth", () => ({
     isAuthenticated: jest.fn(() => true),
     isAdminOrEditor: jest.fn(() => true)
