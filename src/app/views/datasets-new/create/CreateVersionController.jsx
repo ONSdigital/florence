@@ -159,7 +159,7 @@ class CreateVersionController extends Component {
                     id: instance.id,
                     value: instance.id,
                     label: `New data ${latest ? latest : ""}`,
-                    details: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`,
+                    subLabel: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`,
                 }
             });
             return instancesList.reverse();
@@ -180,7 +180,6 @@ class CreateVersionController extends Component {
     }
 
     handleCreateClick = () => {
-        // this.props.dispatch(push("/florence/collections/testcollection2-7ac12132dbf52fca9a5b63c334916bbc4b1f0e4248054ae1a1152bcc54ddec48/datasets/cpih01/editions/time-series/versions/3"));
         this.setState({isSaving: true});
         datasets.confirmEditionAndCreateVersion(this.state.selectedInstance, this.props.params.editionID).then(response => {
             this.setState({isSaving: false});

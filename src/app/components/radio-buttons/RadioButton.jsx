@@ -45,6 +45,7 @@ export default class RadioButton extends Component {
     }
 
     render() {
+
         return (
             <div className={"radio" + (this.props.inline ? " radio--inline" : "")}>
                 <input
@@ -62,7 +63,8 @@ export default class RadioButton extends Component {
 
                 <label
                     className={"radio__label" + (this.props.checked ? " radio__label--selected" : "") + (this.state.focused ? " radio__label--focused" : "") + (this.props.disabled ? " radio__label--disabled" : "")}
-                    htmlFor={this.props.id}>{this.props.label}
+                    htmlFor={this.props.id}>
+                    {this.props.label} {this.props.details ? <br/> : null} {this.props.details ? this.props.details : null}
                 </label>
             </div>
         )
