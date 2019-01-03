@@ -120,7 +120,6 @@ export class NavBar extends Component {
     render() {
         //const regex = new RegExp(`${this.props.rootPath}/collections/.*/preview`, "g");
         const regex = new RegExp(`${this.props.rootPath}/collections/[\\w|-]*/preview`, "g");
-        console.log(this.props.location.pathname)
         const isViewingPreview = regex.test(this.props.location.pathname);
         return (
             <ul className="global-nav__list">
