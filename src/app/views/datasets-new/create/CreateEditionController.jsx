@@ -10,7 +10,13 @@ import url from '../../../utilities/url';
 import Select from '../../../components/Select';
 
 const propTypes = {
-
+    params: PropTypes.shape({
+        datasetID: PropTypes.string.isRequired
+    }),
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired
+    })
 }
 
 class CreateEditionController extends Component {
