@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 
 import datasets from '../../../utilities/api-clients/datasets';
 import recipes from '../../../utilities/api-clients/recipes';
+import notifications from '../../../utilities/notifications';
 import url from '../../../utilities/url';
 
 import Select from '../../../components/Select';
