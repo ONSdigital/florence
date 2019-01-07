@@ -54,7 +54,7 @@ export class DatasetMetadataController extends Component {
                 relatedLinks: [],
                 releaseFrequency: "",
                 edition: "",
-                version: "",
+                version: 0,
                 releaseDate: "",
                 nextReleaseDate: "",
                 unitOfMeasure: "",
@@ -331,7 +331,7 @@ export class DatasetMetadataController extends Component {
         this.props.dispatch(push(previousUrl));
     }
 
-    handleSave = async() => {
+    handleSave = async(isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({isSaving: true});
         const datasetIsInCollection = this.state.datasetIsInCollection;
         const versionIsInCollection = this.state.versionIsInCollection;
@@ -391,12 +391,46 @@ export class DatasetMetadataController extends Component {
             }
         }
 
+        if (isSubmittingForReview) {
+            console.log("SUBMIT FOR REVIEW")
+            const submitDatasetForReviewError = await this.submitDatasetForReview(collectionID, datasetID);
+            const submitVersionForReviewError = await this.submitVersionForReview(collectionID, datasetID, editionID, versionID);
+            if (submitDatasetForReviewError || submitVersionForReviewError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+                return
+            }
+        }
+
+        if (isMarkingAsReviewed) {
+            console.log("MARKING AS REVIEWED")
+            const markDatasetAsReviewedError = await this.markDatasetAsReviewed(collectionID, datasetID);
+            const markVersionAsReviewedError = await this.markVersionAsReviewed(collectionID, datasetID, editionID, versionID);
+            if (markDatasetAsReviewedError || markVersionAsReviewedError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+                return
+            }
+        }
+
         this.setState({isSaving: false});
         notifications.add({
             type: "positive",
             message: `${this.state.metadata.title} saved!`,
             isDismissable: true
         })
+    }
+
+    handleSaveClick = () => {
+        this.handleSave(false, false);
+    }
+
+    handleSubmitForReviewClick = () => {
+        this.handleSave(true, false);
+    }
+
+    handleMarkAsReviewedClick = () => {
+        this.handleSave(false, true);
     }
 
     handleOnSaveError = (message) => {
@@ -446,8 +480,8 @@ export class DatasetMetadataController extends Component {
     addVersionToCollection = (collectionID, datasetID, editionID, versionID) => {
         return collections.addDatasetVersion(collectionID, datasetID, editionID, versionID) 
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error adding version '${datasetID}/${editionID}/${versionID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
-                console.error(`Error adding version '${datasetID}/${editionID}/${versionID}' to collection '${this.props.params.collectionID}'`, error);
+                log.add(eventTypes.requestFailed, {message: `Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                console.error(`Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`, error);
                 return error;
             });
     }
@@ -464,8 +498,8 @@ export class DatasetMetadataController extends Component {
     saveVersionChanges = (datasetID, editionID, versionID, metadata) => {
         return datasets.updateVersionMetadata(datasetID, editionID, versionID, metadata)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error saving version '${datasetID}/${editionID}/${versionID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
-                console.error(`Error saving version '${datasetID}/${editionID}/${versionID}' changes to dataset API '${this.props.params.collectionID}'`, error);
+                log.add(eventTypes.requestFailed, {message: `Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
+                console.error(`Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`, error);
                 return error;
             })
     }
@@ -475,6 +509,42 @@ export class DatasetMetadataController extends Component {
             .catch(error => {
                 log.add(eventTypes.requestFailed, {message: `Error saving dimensions on instance '${instanceID}' to dataset API. Error: ${JSON.stringify(error)}`});
                 console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
+                return error;
+            })
+    }
+
+    submitDatasetForReview = (collectionID, datasetID) => {
+        return collections.setDatasetStatusToComplete(collectionID, datasetID)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error submitting dataset '${datasetID}' for review. Error: ${JSON.stringify(error)}`});
+                console.error(`Error submitting dataset '${datasetID}' for review. Error:`, error);
+                return error;
+            })
+    }
+
+    markDatasetAsReviewed = (collectionID, datasetID) => {
+        return collections.setDatasetStatusToReviewed(collectionID, datasetID)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                console.error(`Error marking dataset '${datasetID}' as reviewed. Error:`, error);
+                return error;
+            })
+    }
+
+    submitVersionForReview = (collectionID, datasetID, editionID, versionID) => {
+        return collections.setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
+                return error;
+            })
+    }
+
+    markVersionAsReviewed = (collectionID, datasetID, editionID, versionID) => {
+        return collections.setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID)
+            .catch(error => {
+                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
                 return error;
             })
     }
@@ -503,10 +573,14 @@ export class DatasetMetadataController extends Component {
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
-                    handleSave={this.handleSave}
+                    handleSave={this.handleSaveClick}
                     isSaving={this.state.isSaving}
                     versionIsPublished={this.state.versionIsPublished}
-                    isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata}
+                    isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
+                    lastEditedBy={this.state.lastEditedBy}
+                    versionCollectionState={this.state.versionCollectionState}
+                    handleSubmitForReviewClick={this.handleSubmitForReviewClick}
+                    handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                 />
                 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
