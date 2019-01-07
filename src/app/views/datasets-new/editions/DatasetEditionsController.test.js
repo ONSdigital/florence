@@ -181,6 +181,8 @@ describe("Calling getDataset", () => {
 
 describe("Calling getEditions", () => {
     it("returns mapped editions", async() => {
+        //gets dataset title and stores in state
+        component.setState({ dataset: { title: mockedDataset.current.title } })
         const editions = await component.instance().getEditions(mockedDataset.id);
         expect(editions[0]).toMatchObject(
             

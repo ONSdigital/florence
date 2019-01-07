@@ -3,7 +3,7 @@ import { DatasetVersionsController } from './DatasetVersionsController';
 import { shallow, mount } from 'enzyme';
 import datasets from '../../../utilities/api-clients/datasets';
 
-//console.error = () => { };
+console.error = () => { };
 
 jest.mock('../../../utilities/log', () => {
     return {
@@ -155,15 +155,6 @@ describe("Get edition", () => {
         await component.instance().getEdition(mockedDataset.id, mockedEdition.id);
         expect(component.state('isFetchingEdition')).toBe(false);
     });
-
-    // it("errors cause notification", async () => {
-    //     datasets.get.mockImplementationOnce(() => (
-    //         Promise.reject({ status: 404 })
-    //     ));
-    //     await component.instance().getEdition(mockedDataset.id, mockedEdition.id);
-    //     expect(mockNotifications.length).toBe(1);
-    // });
-
 });
 
 describe("Get all versions", () => {
@@ -188,14 +179,6 @@ describe("Get all versions", () => {
         await component.instance().getAllVersions(mockedDataset.id, mockedEdition.id);
         expect(component.state('isFetchingVersions')).toBe(false);
     });
-
-    // it("errors cause notification", async () => {
-    //     datasets.get.mockImplementationOnce(() => (
-    //         Promise.reject({ status: 404 })
-    //     ));
-    //     await component.instance().getAllVersions(mockedDataset.id, mockedEdition.id);
-    //     expect(mockNotifications.length).toBe(1);
-    // });
 });
 
 
@@ -213,7 +196,7 @@ test("Mapping version to state", () => {
     const mappedVersions = component.instance().mapDatasetVersionsToState(mockedVersions.items);
     expect(mappedVersions[0]).toMatchObject({
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55", 
-        title: "Version: 2 (latest)", 
+        title: "Version: 2 (published)", 
         url: "florence/collections/12345/datasets/6789/versions/2",
         details: [
             "Release date: 07 September 2018"], 
