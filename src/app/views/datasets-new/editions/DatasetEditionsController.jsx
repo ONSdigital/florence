@@ -190,16 +190,17 @@ export class DatasetEditionsController extends Component {
 
     mapDatasetEditionsToView = editions => {
         try {
-            return editions.map(edition => {
+            return editions.map(editionItem => {
+                const edition = editionItem.current || editionItem.next || editionItem;
                 return {
                     title: this.state.dataset.title, 
-                    id: edition.current.edition,
-                    url:  this.props.location.pathname + "/editions/" + edition.current.edition,
+                    id: edition.edition,
+                    url:  this.props.location.pathname + "/editions/" + edition.edition,
                     details: [
-                        "Edition: " + edition.current.edition,
+                        "Edition: " + edition.edition,
                         "Release date: loading..."
                     ],
-                    latestVersion: edition.current.links.latest_version.id
+                    latestVersion: edition.links.latest_version.id
                 }
             })
         } catch (error) {
