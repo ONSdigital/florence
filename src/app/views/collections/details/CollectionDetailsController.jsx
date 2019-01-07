@@ -322,7 +322,7 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionPageEditClick(page, state) {
         if (page.type === "dataset_details") {
-            const newURL = url.resolve(`/datasets/${page.id}/metadata?collection=${this.props.collectionID}`);
+            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/datasets/${page.id}`);
             const dataset = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_details") {
                     return false;
@@ -339,7 +339,7 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(`/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}/metadata?collection=${this.props.collectionID}`);
+            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`);
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
