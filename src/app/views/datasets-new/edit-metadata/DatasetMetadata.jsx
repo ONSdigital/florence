@@ -42,7 +42,12 @@ const propTypes = {
     handleSave: PropTypes.func.isRequired,
     isSaving: PropTypes.bool.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
-    isGettingData: PropTypes.bool.isRequired
+    isGettingData: PropTypes.bool.isRequired,
+    versionCollectionState: PropTypes.string,
+    userEmail: PropTypes.string.isRequired,
+    lastEditedBy: PropTypes.string.isRequired,
+    handleSubmitForReviewClick: PropTypes.func.isRequired,
+    handleMarkAsReviewedClick: PropTypes.func.isRequired
 }
 
 class DatasetMetadata extends Component {
