@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
+import { connect } from 'react-redux';
 
 import date from '../../../utilities/date'
 
 import Input from '../../../components/Input';
 import RadioGroup from '../../../components/radio-buttons/RadioGroup';
 import SimpleEditableList from '../../../components/simple-editable-list/SimpleEditableList';
+import DatasetReviewActions from './DatasetReviewActions';
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -204,10 +206,15 @@ class DatasetMetadata extends Component {
                             onClick={this.props.handleSave} 
                             disabled={this.props.isSaving || this.props.isGettingData}>Save
                         </button>
-                        <button type="button" 
-                            className="btn btn--positive margin-right--1" 
-                            disabled={this.props.isSaving || this.props.isGettingData}>Save and submit for review
-                        </button>
+                        <DatasetReviewActions 
+                            disabled={this.props.isSaving || this.props.isGettingData}
+                            includeSaveLabels={true}
+                            reviewState={this.props.versionCollectionState}
+                            userEmail={this.props.userEmail}
+                            lastEditedBy={this.props.lastEditedBy}
+                            onSubmit={this.props.handleSubmitForReviewClick}
+                            onApprove={this.props.handleMarkAsReviewedClick}
+                        />
                         <Link to={`${window.location.pathname}/preview`}>Preview</Link>
                         {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                     </div>
@@ -218,4 +225,10 @@ class DatasetMetadata extends Component {
 
 DatasetMetadata.propTypes = propTypes;
 
-export default DatasetMetadata;
+function mapStateToProps(state) {
+    return {
+      userEmail: state.state.user.email
+    }
+}
+
+export default connect(mapStateToProps)(DatasetMetadata);
