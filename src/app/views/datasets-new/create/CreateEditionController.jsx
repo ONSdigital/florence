@@ -239,7 +239,7 @@ class CreateEditionController extends Component {
                             onChange={this.handleEditionSelection}
                         />
                         <button type="button" 
-                            className="btn btn--primary" 
+                            className="btn btn--positive" 
                             disabled={!this.state.selectedEdition}
                             onClick={this.handleCreateClick}
                         >Create edition</button>

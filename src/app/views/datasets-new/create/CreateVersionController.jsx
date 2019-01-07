@@ -280,7 +280,7 @@ class CreateVersionController extends Component {
 
                     <div className="grid__col-2">
                         <button type="button" 
-                                className="btn btn--primary" 
+                                className="btn btn--positive" 
                                 disabled={!this.state.selectedInstance}
                                 onClick={this.handleCreateClick}
                             >Create version</button>
