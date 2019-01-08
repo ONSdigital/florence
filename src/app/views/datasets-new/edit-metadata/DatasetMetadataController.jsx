@@ -195,11 +195,13 @@ export class DatasetMetadataController extends Component {
     getAndUpdateReviewStateData = () => {
         this.setState({isGettingCollectionData: true});
         collections.get(this.props.params.collectionID).then(collection => {
-            const versionCollectionState = this.mapVersionCollectionStateToState(collection.datasetVersions)
-            this.setState({isGettingCollectionData: false, 
-                lastEditedBy: versionCollectionState.lastEditedBy, 
-                versionCollectionState: versionCollectionState.reviewState
-            });
+            if (collection.datasetVersions.length) {
+                const versionCollectionState = this.mapVersionCollectionStateToState(collection.datasetVersions)
+                this.setState({isGettingCollectionData: false, 
+                    lastEditedBy: versionCollectionState.lastEditedBy, 
+                    versionCollectionState: versionCollectionState.reviewState
+                });
+            }
         })
     }
 
@@ -392,7 +394,6 @@ export class DatasetMetadataController extends Component {
         }
 
         if (isSubmittingForReview) {
-            console.log("SUBMIT FOR REVIEW")
             const submitDatasetForReviewError = await this.submitDatasetForReview(collectionID, datasetID);
             const submitVersionForReviewError = await this.submitVersionForReview(collectionID, datasetID, editionID, versionID);
             if (submitDatasetForReviewError || submitVersionForReviewError) {
@@ -403,7 +404,6 @@ export class DatasetMetadataController extends Component {
         }
 
         if (isMarkingAsReviewed) {
-            console.log("MARKING AS REVIEWED")
             const markDatasetAsReviewedError = await this.markDatasetAsReviewed(collectionID, datasetID);
             const markVersionAsReviewedError = await this.markVersionAsReviewed(collectionID, datasetID, editionID, versionID);
             if (markDatasetAsReviewedError || markVersionAsReviewedError) {
