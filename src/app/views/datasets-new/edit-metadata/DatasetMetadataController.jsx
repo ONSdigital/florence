@@ -362,7 +362,7 @@ export class DatasetMetadataController extends Component {
         }
         if (saveVersionError) {
             this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+            this.handleOnSaveError(`There was a problem saving your changes to this version`)
             return
         }
 
@@ -382,7 +382,7 @@ export class DatasetMetadataController extends Component {
         }
         if (versionToCollectionError) {
             this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
+            this.handleOnSaveError(`There was a problem adding this version to your collection`)
             return
         }
 
