@@ -202,6 +202,7 @@ export class DatasetMetadataController extends Component {
                     versionCollectionState: versionCollectionState.reviewState
                 });
             }
+            this.setState({isGettingCollectionData: false});
         })
     }
 
