@@ -345,7 +345,24 @@ export class DatasetMetadataController extends Component {
         const versionID = this.props.params.versionID;
         const instanceID = this.state.instanceID;
         const datasetBody = this.mapDatasetToPutBody();
-        const versionBody = this.mapVersionToPutBody();     
+        const versionBody = this.mapVersionToPutBody();  
+        
+        const saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
+        if (saveDatasetError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+            return
+        }
+
+        let saveVersionError;
+        if (!versionIsPublished) {
+            saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
+        }
+        if (saveVersionError) {
+            this.setState({isSaving: false});
+            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+            return
+        }
 
         let datasetToCollectionError;
         if (!datasetIsInCollection && (datasetIsInCollection !== this.props.params.collectionID)) {
@@ -364,23 +381,6 @@ export class DatasetMetadataController extends Component {
         if (versionToCollectionError) {
             this.setState({isSaving: false});
             this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
-            return
-        }
-
-        const saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
-        if (saveDatasetError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
-            return
-        }
-
-        let saveVersionError;
-        if (!versionIsPublished) {
-            saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
-        }
-        if (saveVersionError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
             return
         }
 
