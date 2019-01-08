@@ -38,7 +38,7 @@ export class DatasetMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
-            versionCollectionState: "",
+            datasetCollectionState: "",
             lastEditedBy: "", 
             instanceID: "",
             dimensionsUpdated: false,
@@ -76,8 +76,14 @@ export class DatasetMetadataController extends Component {
     getDataset = (datasetID) => {
         this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
-            const mappedDataset = this.mapDatasetToState(dataset)
-            this.setState({metadata: mappedDataset.metadata, isGettingDatasetMetadata: false, datasetIsInCollection: mappedDataset.collection})
+            const mappedDataset = this.mapDatasetToState(dataset);
+            if (mappedDataset.collection) {
+                this.getAndUpdateReviewStateData();
+            }
+            this.setState({metadata: mappedDataset.metadata, 
+                isGettingDatasetMetadata: false, 
+                datasetIsInCollection: mappedDataset.collection
+            })
         })
     }
 
@@ -137,9 +143,6 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingVersionMetadata: true})
         datasets.getVersion(datasetID, editionID, versionID).then(version => {
             const mappedVersion = this.mapVersionToState(version)
-            if (mappedVersion.collection) {
-                this.getAndUpdateReviewStateData();
-            }
             this.setState({metadata: mappedVersion.metadata, 
                 isGettingVersionMetadata: false, 
                 versionIsInCollection: mappedVersion.collection, 
@@ -193,35 +196,33 @@ export class DatasetMetadataController extends Component {
     }
 
     getAndUpdateReviewStateData = () => {
+        console.log("called")
         this.setState({isGettingCollectionData: true});
         collections.get(this.props.params.collectionID).then(collection => {
-            if (collection.datasetVersions.length) {
-                const versionCollectionState = this.mapVersionCollectionStateToState(collection.datasetVersions)
+            console.log(collection)
+            if (collection.datasets.length) {
+                const datasetCollectionState = this.mapDatasetCollectionStateToState(collection.datasets)
+                console.log(datasetCollectionState)
                 this.setState({isGettingCollectionData: false, 
-                    lastEditedBy: versionCollectionState.lastEditedBy, 
-                    versionCollectionState: versionCollectionState.reviewState
+                    lastEditedBy: datasetCollectionState.lastEditedBy, 
+                    datasetCollectionState: datasetCollectionState.reviewState
                 });
             }
             this.setState({isGettingCollectionData: false});
         })
     }
 
-    mapVersionCollectionStateToState = (versions) => {
+    mapDatasetCollectionStateToState = (datasets) => {
+        console.log(datasets)
         try {
-            const version = versions.find(datasetVersion => {
+            const dataset = datasets.find(dataset => {
                 return (
-                    datasetVersion.id === this.props.params.datasetID && 
-                    datasetVersion.edition === this.props.params.editionID &&
-                    datasetVersion.version === this.props.params.versionID
+                    dataset.id === this.props.params.datasetID
                 )
             });
-            if (!version) {
-                this.setState({isFetchingCollectionData: false});
-                return;
-            } 
 
             //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress"
-            return {lastEditedBy: version.lastEditedBy, reviewState: version.state.charAt(0).toLowerCase() + version.state.slice(1)}
+            return {lastEditedBy: dataset.lastEditedBy, reviewState: dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1)}
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping version collection state to to state. \n ${error}`});
             notifications.add({
@@ -579,7 +580,7 @@ export class DatasetMetadataController extends Component {
                     versionIsPublished={this.state.versionIsPublished}
                     isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
                     lastEditedBy={this.state.lastEditedBy}
-                    versionCollectionState={this.state.versionCollectionState}
+                    datasetCollectionState={this.state.datasetCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                 />

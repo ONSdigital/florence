@@ -43,7 +43,7 @@ const propTypes = {
     isSaving: PropTypes.bool.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
     isGettingData: PropTypes.bool.isRequired,
-    versionCollectionState: PropTypes.string,
+    datasetCollectionState: PropTypes.string,
     userEmail: PropTypes.string.isRequired,
     lastEditedBy: PropTypes.string.isRequired,
     handleSubmitForReviewClick: PropTypes.func.isRequired,
@@ -214,7 +214,7 @@ class DatasetMetadata extends Component {
                         <DatasetReviewActions 
                             disabled={this.props.isSaving || this.props.isGettingData}
                             includeSaveLabels={true}
-                            reviewState={this.props.versionCollectionState}
+                            reviewState={this.props.datasetCollectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
                             onSubmit={this.props.handleSubmitForReviewClick}
