@@ -196,13 +196,10 @@ export class DatasetMetadataController extends Component {
     }
 
     getAndUpdateReviewStateData = () => {
-        console.log("called")
         this.setState({isGettingCollectionData: true});
         collections.get(this.props.params.collectionID).then(collection => {
-            console.log(collection)
             if (collection.datasets.length) {
                 const datasetCollectionState = this.mapDatasetCollectionStateToState(collection.datasets)
-                console.log(datasetCollectionState)
                 this.setState({isGettingCollectionData: false, 
                     lastEditedBy: datasetCollectionState.lastEditedBy, 
                     datasetCollectionState: datasetCollectionState.reviewState
@@ -213,7 +210,6 @@ export class DatasetMetadataController extends Component {
     }
 
     mapDatasetCollectionStateToState = (datasets) => {
-        console.log(datasets)
         try {
             const dataset = datasets.find(dataset => {
                 return (
