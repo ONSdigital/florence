@@ -471,6 +471,8 @@ export class DatasetMetadataController extends Component {
             national_statistic: this.state.metadata.nationalStatistic,
             license: this.state.metadata.licence, 
             related_datasets: this.state.metadata.relatedDatasets,
+            publications: this.state.metadata.relatedPublications,
+            methodologies: this.state.metadata.relatedMethodologies,
             release_frequency: this.state.metadata.releaseFrequency,
             contacts: [{
                 name: this.state.metadata.contactName,
