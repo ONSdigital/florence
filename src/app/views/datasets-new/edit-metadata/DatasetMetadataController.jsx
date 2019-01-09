@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
+import date from '../../../utilities/date'
 import datasets from '../../../utilities/api-clients/datasets';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
@@ -51,7 +52,9 @@ export class DatasetMetadataController extends Component {
                 contactName: "",
                 contactEmail: "",
                 contactTelephone: "",
-                relatedLinks: [],
+                relatedDatasets: [],
+                relatedPublications: [],
+                relatedMethodologies: [],
                 releaseFrequency: "",
                 edition: "",
                 version: 0,
@@ -99,7 +102,7 @@ export class DatasetMetadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contacts[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                relatedLinks: dataset.related_datasets ? this.mapRelatedLinksToState(dataset.related_datasets) : [],
+                relatedDatasets: dataset.related_datasets ? this.maprelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release || "",
@@ -119,16 +122,16 @@ export class DatasetMetadataController extends Component {
         }
     }
 
-    mapRelatedLinksToState = (relatedLinks) => {
+    maprelatedDatasetsToState = (relatedDatasets) => {
         try {
-            return relatedLinks.map((link, index) => {
+            return relatedDatasets.map((link, index) => {
                 return {
                     id: index,
-                    type: link.title,
-                    date: null,
                     description: link.description,
                     href: link.href,
-                    title: link.title
+                    title: link.title,
+                    simpleListHeading: link.title,
+                    simpleListDescription: link.description,
                 }
             })
         } catch(error) {
@@ -184,7 +187,9 @@ export class DatasetMetadataController extends Component {
                     id: index,
                     type: notice.type,
                     date: notice.date,
-                    description: notice.description
+                    description: notice.description,
+                    simpleListHeading: `${notice.type} (${date.format(notice.date, "dd mmmm yyyy")})`,
+                    simpleListDescription: notice.description,
                 }
             })
         } catch(error) {
@@ -309,7 +314,13 @@ export class DatasetMetadataController extends Component {
         const newFieldState = [...this.state.metadata[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        return {...this.state.metadata, [stateFieldName]: newFieldState};
+        let mappedNewFieldState;
+        if (stateFieldName === "notices") {
+            mappedNewFieldState = this.mapNoticesToState(newFieldState);
+        } else {
+            mappedNewFieldState = this.maprelatedDatasetsToState(newFieldState);
+        }
+        return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
     }
 
     updateMetadataField = (updatedField, stateFieldName) => {
@@ -318,8 +329,14 @@ export class DatasetMetadataController extends Component {
                 return updatedField
             }
             return field
-        })
-        return {...this.state.metadata, [stateFieldName]: newFieldState};
+        });
+        let mappedNewFieldState;
+        if (stateFieldName === "notices") {
+            mappedNewFieldState = this.mapNoticesToState(newFieldState);
+        } else {
+            mappedNewFieldState = this.maprelatedDatasetsToState(newFieldState);
+        }
+        return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
     }
 
     handleSimpleEditableListEditCancel = () => {
@@ -453,7 +470,7 @@ export class DatasetMetadataController extends Component {
             keywords: this.state.metadata.keywords,
             national_statistic: this.state.metadata.nationalStatistic,
             license: this.state.metadata.licence, 
-            related_datasets: this.state.metadata.relatedLinks,
+            related_datasets: this.state.metadata.relatedDatasets,
             release_frequency: this.state.metadata.releaseFrequency,
             contacts: [{
                 name: this.state.metadata.contactName,
