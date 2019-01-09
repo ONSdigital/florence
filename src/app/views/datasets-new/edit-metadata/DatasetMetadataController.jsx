@@ -377,7 +377,7 @@ export class DatasetMetadataController extends Component {
         }
 
         let versionToCollectionError;
-        if (!versionIsInCollection) {
+        if (!versionIsInCollection || !versionIsPublished) {
             versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
         }
         if (versionToCollectionError) {
@@ -397,7 +397,10 @@ export class DatasetMetadataController extends Component {
 
         if (isSubmittingForReview) {
             const submitDatasetForReviewError = await this.submitDatasetForReview(collectionID, datasetID);
-            const submitVersionForReviewError = await this.submitVersionForReview(collectionID, datasetID, editionID, versionID);
+            let submitVersionForReviewError = false;
+            if (!versionIsPublished) {
+                submitVersionForReviewError = await this.submitVersionForReview(collectionID, datasetID, editionID, versionID);
+            }
             if (submitDatasetForReviewError || submitVersionForReviewError) {
                 this.setState({isSaving: false});
                 this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
@@ -407,7 +410,10 @@ export class DatasetMetadataController extends Component {
 
         if (isMarkingAsReviewed) {
             const markDatasetAsReviewedError = await this.markDatasetAsReviewed(collectionID, datasetID);
-            const markVersionAsReviewedError = await this.markVersionAsReviewed(collectionID, datasetID, editionID, versionID);
+            let markVersionAsReviewedError = false;
+            if (!versionIsPublished) {
+                markVersionAsReviewedError = await this.markVersionAsReviewed(collectionID, datasetID, editionID, versionID);
+            }
             if (markDatasetAsReviewedError || markVersionAsReviewedError) {
                 this.setState({isSaving: false});
                 this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
