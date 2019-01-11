@@ -63,6 +63,8 @@ export class DatasetMetadataController extends Component {
                 unitOfMeasure: "",
                 notices: [],
                 dimensions: [],
+                usageNotes: [],
+                latestChanges: []
             }
         }
 
@@ -102,7 +104,7 @@ export class DatasetMetadataController extends Component {
                 contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
                 contactEmail: dataset.contacts[0].email ? dataset.contacts[0].email : "",
                 contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
-                relatedDatasets: dataset.related_datasets ? this.maprelatedDatasetsToState(dataset.related_datasets) : [],
+                relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release || "",
@@ -122,7 +124,7 @@ export class DatasetMetadataController extends Component {
         }
     }
 
-    maprelatedDatasetsToState = (relatedDatasets) => {
+    mapRelatedDatasetsToState = (relatedDatasets) => {
         try {
             return relatedDatasets.map((link, index) => {
                 return {
@@ -162,6 +164,8 @@ export class DatasetMetadataController extends Component {
                 releaseDate: version.release_date || "",
                 notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
+                usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes) : [],
+                latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes) : []
             }
             return {
                 metadata: {...this.state.metadata, ...mappedVersion}, 
@@ -197,6 +201,44 @@ export class DatasetMetadataController extends Component {
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping notices to state \n ${error}`);
+        }
+    }
+
+    mapUsageNotesToState = (usageNotes) => {
+        try {
+            return usageNotes.map((note, index) => {
+                return {
+                    id: index,
+                    title: note.title,
+                    note: note.note,
+                    simpleListHeading: note.title,
+                    simpleListDescription: note.note,
+                }
+            })
+        } catch(error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping usage notes to state \n ${error}`});
+            // throw an error to let parent mapper catch and display notification
+            // this will prevent the page loading with half loaded/mapped data
+            throw new Error(`Error mapping usage notes to state \n ${error}`);
+        }
+    }
+
+    mapLatestChangesToState = (latestChanges) => {
+        try {
+            return latestChanges.map((latestChange, index) => {
+                return {
+                    id: index,
+                    title: latestChange.title,
+                    description: latestChange.description,
+                    simpleListHeading: latestChange.title,
+                    simpleListDescription: latestChange.description,
+                }
+            })
+        } catch(error) {
+            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping latest changes to state \n ${error}`});
+            // throw an error to let parent mapper catch and display notification
+            // this will prevent the page loading with half loaded/mapped data
+            throw new Error(`Error mapping latest changes to state \n ${error}`);
         }
     }
 
@@ -318,7 +360,7 @@ export class DatasetMetadataController extends Component {
         if (stateFieldName === "notices") {
             mappedNewFieldState = this.mapNoticesToState(newFieldState);
         } else {
-            mappedNewFieldState = this.maprelatedDatasetsToState(newFieldState);
+            mappedNewFieldState = this.mapRelatedDatasetsToState(newFieldState);
         }
         return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
     }
@@ -334,7 +376,7 @@ export class DatasetMetadataController extends Component {
         if (stateFieldName === "notices") {
             mappedNewFieldState = this.mapNoticesToState(newFieldState);
         } else {
-            mappedNewFieldState = this.maprelatedDatasetsToState(newFieldState);
+            mappedNewFieldState = this.mapRelatedDatasetsToState(newFieldState);
         }
         return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
     }
@@ -379,6 +421,15 @@ export class DatasetMetadataController extends Component {
             return
         }
 
+        if (dimensionsUpdated) {
+            const saveDimensionsError = await this.saveDimensionChanges(instanceID, this.state.metadata.dimensions);
+            if (saveDimensionsError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
+                return
+            }
+        }
+
         let datasetToCollectionError;
         if (!datasetIsInCollection && (datasetIsInCollection !== this.props.params.collectionID)) {
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
@@ -397,15 +448,6 @@ export class DatasetMetadataController extends Component {
             this.setState({isSaving: false});
             this.handleOnSaveError(`There was a problem adding this version to your collection`)
             return
-        }
-
-        if (dimensionsUpdated) {
-            const saveDimensionsError = await this.saveDimensionChanges(instanceID, this.state.metadata.dimensions);
-            if (saveDimensionsError) {
-                this.setState({isSaving: false});
-                this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
-                return
-            }
         }
 
         if (isSubmittingForReview) {
@@ -487,7 +529,9 @@ export class DatasetMetadataController extends Component {
     mapVersionToPutBody = () => {
         return {
             release_date: this.state.metadata.releaseDate,
-            alerts: this.state.metadata.notices
+            alerts: this.state.metadata.notices,
+            usage_notes: this.state.metadata.usageNotes,
+            lastest_changes: this.state.metadata.latestChanges
         }
     }
 

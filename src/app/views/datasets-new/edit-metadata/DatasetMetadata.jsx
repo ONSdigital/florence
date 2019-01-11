@@ -20,7 +20,9 @@ const propTypes = {
         contactName: PropTypes.string,
         contactEmail: PropTypes.string,
         contactTelephone: PropTypes.string,
-        relatedLinks: PropTypes.array,
+        relatedDatasets: PropTypes.array,
+        relatedPublications: PropTypes.array,
+        relatedMethodologies: PropTypes.array,
         releaseFrequency: PropTypes.string,
         edition: PropTypes.string,
         version: PropTypes.number,
@@ -29,6 +31,9 @@ const propTypes = {
         unitOfMeasure: PropTypes.string,
         notices: PropTypes.array,
         dimensions: PropTypes.array,
+        qmi: PropTypes.string,
+        latestChanges: PropTypes.array,
+        usageNotes: PropTypes.array
     }).isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleDateInputChange: PropTypes.func.isRequired,
@@ -159,6 +164,18 @@ class DatasetMetadata extends Component {
                         disabled={this.props.isSaving || this.props.isGettingData}
                     />
 
+                    <h3>Usage notes</h3>
+                    <div className="margin-bottom--1">
+                        <SimpleEditableList addText={"Add a usage note"} 
+                            fields={this.props.metadata.usageNotes} 
+                            editingStateFieldName="usageNotes"
+                            handleAddClick={this.props.handleSimpleEditableListAdd}
+                            handleEditClick={this.props.handleSimpleEditableListEdit}
+                            handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                            disableActions={this.props.isSaving || this.props.isGettingData}
+                        />
+                    </div>
+
                     <RadioGroup groupName="national-statistic" 
                         radioData={[
                             {id: "national-statistic-yes", value: "true", label: "Yes"},
@@ -196,9 +213,48 @@ class DatasetMetadata extends Component {
                     />
 
                     <h2>Related links</h2>
-                    <SimpleEditableList addText={"Add a related link"} 
-                        fields={this.props.metadata.relatedLinks} 
-                        editingStateFieldName="relatedLinks"
+                    <h3>Datasts</h3>
+                    <SimpleEditableList addText={"Add a dataset"} 
+                        fields={this.props.metadata.relatedDatasets} 
+                        editingStateFieldName="relatedDatasets"
+                        handleAddClick={this.props.handleSimpleEditableListAdd}
+                        handleEditClick={this.props.handleSimpleEditableListEdit}
+                        handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                        disableActions={this.props.isSaving || this.props.isGettingData}
+                    />
+
+                    <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
+                    <SimpleEditableList addText={"Add a publication"} 
+                        fields={this.props.metadata.relatedPublications} 
+                        editingStateFieldName="relatedPublications"
+                        handleAddClick={this.props.handleSimpleEditableListAdd}
+                        handleEditClick={this.props.handleSimpleEditableListEdit}
+                        handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                        disableActions={this.props.isSaving || this.props.isGettingData}
+                    />
+
+                    <h3 className="margin-top--1">Quality and methodology information</h3>
+                    <Input id="qmi" 
+                        label="QMI URL" 
+                        onChange={this.props.handleStringInputChange} 
+                        value={this.props.metadata.qmi} 
+                        disabled={this.props.isSaving || this.props.isGettingData}
+                    />
+
+                    <h3>Methodologies</h3>
+                    <SimpleEditableList addText={"Add a methodology"} 
+                        fields={this.props.metadata.relatedMethodologies} 
+                        editingStateFieldName="relatedMethodologies"
+                        handleAddClick={this.props.handleSimpleEditableListAdd}
+                        handleEditClick={this.props.handleSimpleEditableListEdit}
+                        handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                        disableActions={this.props.isSaving || this.props.isGettingData}
+                    />
+
+                    <h2 className="margin-top--1">What's changed</h2>
+                    <SimpleEditableList addText={"Add a change"} 
+                        fields={this.props.metadata.latestChanges} 
+                        editingStateFieldName="latestChanges"
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
