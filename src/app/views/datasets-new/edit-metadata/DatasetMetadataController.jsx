@@ -43,6 +43,8 @@ export class DatasetMetadataController extends Component {
             lastEditedBy: "", 
             instanceID: "",
             dimensionsUpdated: false,
+            datasetMetadataHasChanges: false,
+            versionMetadataHasChanges: false,
             metadata: {
                 title: "",
                 summary: "",
@@ -281,7 +283,10 @@ export class DatasetMetadataController extends Component {
         const fieldName = event.target.name;
         const value = event.target.value;
         const newMetadataState = {...this.state.metadata, [fieldName]: value};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, 
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName), 
+            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+        });
     }
 
     handleDateInputChange = event => {
@@ -289,7 +294,10 @@ export class DatasetMetadataController extends Component {
         const value = event.target.value;
         const ISODate = new Date(value).toISOString();
         const newMetadataState = {...this.state.metadata, [fieldName]: ISODate};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, 
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName), 
+            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+        });
     }
 
     handleNationalStaticticChange = event => {
@@ -298,7 +306,7 @@ export class DatasetMetadataController extends Component {
             ...this.state.metadata,
             nationalStatistic: value
         };
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, datasetMetadataHasChanges: true});
     }
 
     handleDimensionNameChange = event => {
@@ -348,7 +356,10 @@ export class DatasetMetadataController extends Component {
         } else {
             newMetadataState = this.updateMetadataField(newField, stateFieldName)
         }
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState, 
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName), 
+            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+        });
         this.props.dispatch(push(url.resolve("../../../")));
     }
 
@@ -401,6 +412,45 @@ export class DatasetMetadataController extends Component {
 
     handleSimpleEditableListEditCancel = () => {
         this.props.dispatch(push(url.resolve("../../../")));
+    }
+
+    datasetMetadataHasChanges = (fieldName) => {
+        if (fieldName === "title" ||
+            fieldName === "summary" ||
+            fieldName === "keywords" ||
+            fieldName === "nationalStatistic" ||
+            fieldName === "licence" ||
+            fieldName === "contactName" ||
+            fieldName === "contactEmail" ||
+            fieldName === "contactTelephone" ||
+            fieldName === "relatedDatasets" ||
+            fieldName === "relatedPublication" ||
+            fieldName === "relatedMethodologies" ||
+            fieldName === "releaseFrequency" ||
+            fieldName === "unitOfMeasure" ||
+            fieldName === "nextReleaseDate") {
+                return true;
+        }
+        return false;
+    }
+
+    versionMetadataHasChanges = (fieldName) => {
+        if (fieldName === "releaseDate" ||
+            fieldName === "notices" ||
+            fieldName === "usageNotes" ||
+            fieldName === "latestChanges" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "" ||
+            fieldName === "") {
+            return true;
+        }
+        return false;
     }
 
     handleBackButton = () => {
