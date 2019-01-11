@@ -459,12 +459,19 @@ export class DatasetMetadataController extends Component {
     }
 
     handleSave = async(isSubmittingForReview, isMarkingAsReviewed) => {
+        if (!datasetMetadataHasChanges && !versionMetadataHasChanges) {
+            console.warn("No changes to save");
+            return;
+        }
+
         this.setState({isSaving: true});
         const datasetIsInCollection = this.state.datasetIsInCollection;
         const versionIsInCollection = this.state.versionIsInCollection;
         const dimensionsUpdated = this.state.dimensionsUpdated;
         const versionIsPublished = this.state.versionIsPublished;
         const doNotAddToCollection = isSubmittingForReview || isMarkingAsReviewed;
+        const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
+        const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
         const collectionID = this.props.params.collectionID;
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
@@ -473,7 +480,10 @@ export class DatasetMetadataController extends Component {
         const datasetBody = this.mapDatasetToPutBody();
         const versionBody = this.mapVersionToPutBody();  
         
-        const saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
+        let saveDatasetError;
+        if (datasetMetadataHasChanges) {
+            saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
+        }
         if (saveDatasetError) {
             this.setState({isSaving: false});
             this.handleOnSaveError(`There was a problem saving your changes to this dataset`)
@@ -481,7 +491,7 @@ export class DatasetMetadataController extends Component {
         }
 
         let saveVersionError;
-        if (!versionIsPublished) {
+        if (versionMetadataHasChanges) {
             saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
         }
         if (saveVersionError) {
