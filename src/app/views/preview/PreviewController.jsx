@@ -52,7 +52,9 @@ export class PreviewController extends Component {
 
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID).then(collection => {
-            const pages = [...collection.inProgress, ...collection.complete, ...collection.reviewed];
+            const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
+            const datasetPages = [...collection.datasetVersions, ...collection.datasets];
+            const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
             const collectionPreview = {collectionID, name: collection.name, pages};
             this.props.dispatch(addPreviewCollection(collectionPreview));
             if (!this.props.workingOn || !this.props.workingOn.name) {
@@ -85,6 +87,17 @@ export class PreviewController extends Component {
             notifications.add(notification);
             console.error(`Error fetching ${collectionID}:\n`, error);
         });
+    }
+
+    mapDatasetPages(datasetPages) {
+        return datasetPages.map(page => {
+            return {
+                description: {
+                    title: page.title || {},
+                },
+                uri: "/datasets/" + page.id
+            }
+        })
     }
 
     fetchCollection(collectionID) {
