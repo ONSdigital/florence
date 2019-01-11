@@ -269,7 +269,6 @@ class DatasetMetadata extends Component {
                         </button>
                         <DatasetReviewActions 
                             disabled={this.props.isSaving || this.props.isGettingData}
-                            includeSaveLabels={true}
                             reviewState={this.props.datasetCollectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
