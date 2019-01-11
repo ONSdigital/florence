@@ -356,12 +356,7 @@ export class DatasetMetadataController extends Component {
         const newFieldState = [...this.state.metadata[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        let mappedNewFieldState;
-        if (stateFieldName === "notices") {
-            mappedNewFieldState = this.mapNoticesToState(newFieldState);
-        } else {
-            mappedNewFieldState = this.mapRelatedDatasetsToState(newFieldState);
-        }
+        const mappedNewFieldState = this.mapMetadataFieldToState(newFieldState, stateFieldName)
         return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
     }
 
@@ -372,13 +367,36 @@ export class DatasetMetadataController extends Component {
             }
             return field
         });
-        let mappedNewFieldState;
-        if (stateFieldName === "notices") {
-            mappedNewFieldState = this.mapNoticesToState(newFieldState);
-        } else {
-            mappedNewFieldState = this.mapRelatedDatasetsToState(newFieldState);
-        }
+        const mappedNewFieldState = this.mapMetadataFieldToState(newFieldState, stateFieldName)
         return {...this.state.metadata, [stateFieldName]: mappedNewFieldState};
+    }
+
+    mapMetadataFieldToState = (newState, stateFieldName) => {
+        switch (stateFieldName) {
+            case ("notices"): {
+                return this.mapNoticesToState(newState);
+            }
+            case("relatedDatasets"):
+            case("relatedPublications"):
+            case("relatedMethodologies"): {
+                return this.mapRelatedDatasetsToState(newState);
+            }
+            case ("usageNotes"): {
+                return this.mapUsageNotesToState(newState);
+            }
+            case ("latestChanges"): {
+                return this.mapLatestChangesToState(newState);
+            }
+            default: {
+                log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping metadata field to state. Unknown field name '${stateFieldName}'`});
+                notifications.add({
+                    type: "warning",
+                    message: `An when adding metadata item, changes or additions won't be save. Refresh the page and try again`,
+                    isDismissable: true
+                });
+                console.error(`Error mapping metadata field to state. Unknown field name '${stateFieldName}'`)
+            }
+        }
     }
 
     handleSimpleEditableListEditCancel = () => {
