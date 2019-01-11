@@ -3,9 +3,8 @@ import PropTypes from 'prop-types';
 
 const propTypes = {
     field: PropTypes.shape({
-        type: PropTypes.string,
-        title: PropTypes.string,
-        description: PropTypes.string
+        simpleListHeading: PropTypes.string.isRequired,
+        simpleListDescription: PropTypes.string
     }),
     handleEditClick: PropTypes.func.isRequired,
     handleDeleteClick: PropTypes.func.isRequired,
@@ -29,8 +28,8 @@ export default class SimpleEditableListItemItem extends Component {
         return (
             <li className="simple-select-list__item grid">
                 <div className="grid__col-lg-10">
-                    <p className="font-weight--600">{this.props.field.type || this.props.field.title}</p>
-                    <p>{this.props.field.description}</p>
+                    <p className="font-weight--600">{this.props.field.simpleListHeading}</p>
+                    <p>{this.props.field.simpleListDescription}</p>
                 </div>
                 <div className="grid__col-lg-2">
                     <p style={{"textAlign": "right"}}>
