@@ -5,8 +5,8 @@ import SimpleEditableListItem from './SimpleEditableListItem';
 
 const propTypes = {
     fields: PropTypes.arrayOf(PropTypes.shape({
-        type: PropTypes.string.isRequired,
-        description: PropTypes.string.isRequired
+        simpleListHeading: PropTypes.string.isRequired,
+        simpleListDescription: PropTypes.string
     })).isRequired,
     editingStateFieldName: PropTypes.string.isRequired,
     addText: PropTypes.string,
