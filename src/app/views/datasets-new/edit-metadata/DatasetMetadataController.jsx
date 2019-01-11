@@ -459,6 +459,9 @@ export class DatasetMetadataController extends Component {
     }
 
     handleSave = async(isSubmittingForReview, isMarkingAsReviewed) => {
+        const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
+        const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
+
         if (!datasetMetadataHasChanges && !versionMetadataHasChanges) {
             console.warn("No changes to save");
             return;
@@ -470,8 +473,6 @@ export class DatasetMetadataController extends Component {
         const dimensionsUpdated = this.state.dimensionsUpdated;
         const versionIsPublished = this.state.versionIsPublished;
         const doNotAddToCollection = isSubmittingForReview || isMarkingAsReviewed;
-        const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
-        const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
         const collectionID = this.props.params.collectionID;
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
