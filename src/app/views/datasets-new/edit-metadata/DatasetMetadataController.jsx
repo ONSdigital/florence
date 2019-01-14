@@ -61,8 +61,14 @@ export class DatasetMetadataController extends Component {
                 releaseFrequency: "",
                 edition: "",
                 version: 0,
-                releaseDate: "",
-                nextReleaseDate: "",
+                releaseDate: {
+                    value: "",
+                    error: ""
+                },
+                nextReleaseDate: {
+                    value: "",
+                    error: ""
+                },
                 unitOfMeasure: "",
                 notices: [],
                 dimensions: [],
@@ -85,7 +91,7 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
             const mappedDataset = this.mapDatasetToState(dataset);
-            if (mappedDataset !== this.props.params.collectionID) {
+            if (mappedDataset.collection && mappedDataset.collection !== this.props.params.collectionID) {
                 this.setState({disableScreen: true});
                 notifications.add({
                     type: "neutral",
@@ -118,7 +124,7 @@ export class DatasetMetadataController extends Component {
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
-                nextReleaseDate: dataset.next_release || "",
+                nextReleaseDate: {value: dataset.next_release || "", error: ""}
             }
             return {
                 metadata: {...this.state.metadata, ...mappedDataset}, 
@@ -172,7 +178,7 @@ export class DatasetMetadataController extends Component {
             const mappedVersion =  {
                 edition: version.edition,
                 version: version.version,
-                releaseDate: version.release_date || "",
+                releaseDate: {value: version.release_date || "", error: ""},
                 notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
                 dimensions: version.dimensions || [],
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes) : [],
@@ -302,7 +308,7 @@ export class DatasetMetadataController extends Component {
         const fieldName = event.target.name;
         const value = event.target.value;
         const ISODate = new Date(value).toISOString();
-        const newMetadataState = {...this.state.metadata, [fieldName]: ISODate};
+        const newMetadataState = {...this.state.metadata, [fieldName]: {value: ISODate, error: ""}};
         this.setState({metadata: newMetadataState, 
             datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName), 
             versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
@@ -468,6 +474,15 @@ export class DatasetMetadataController extends Component {
     }
 
     handleSave = async(isSubmittingForReview, isMarkingAsReviewed) => {
+        if (!this.state.metadata.releaseDate.value) {
+            const newReleaseDateState = {value: "", error: "You must set a release date"};
+            console.log(newReleaseDateState);
+            const newMetadataState = {...this.state.metadata, releaseDate: newReleaseDateState};
+            this.setState({metadata: newMetadataState});
+            window.scrollTo(0,0);
+            return;
+        }
+
         const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
         const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
 
@@ -612,14 +627,14 @@ export class DatasetMetadataController extends Component {
                 email: this.state.metadata.contactEmail,
                 telephone: this.state.metadata.contactTelephone
             }],
-            next_release: this.state.metadata.nextReleaseDate,
+            next_release: this.state.metadata.nextReleaseDate.value,
             unit_of_measure: this.state.metadata.unitOfMeasure
         }
     }
 
     mapVersionToPutBody = () => {
         return {
-            release_date: this.state.metadata.releaseDate,
+            release_date: this.state.metadata.releaseDate.value,
             alerts: this.state.metadata.notices,
             usage_notes: this.state.metadata.usageNotes,
             lastest_changes: this.state.metadata.latestChanges
