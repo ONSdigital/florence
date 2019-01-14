@@ -45,14 +45,13 @@ const propTypes = {
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
-    isSaving: PropTypes.bool.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
-    isGettingData: PropTypes.bool.isRequired,
     datasetCollectionState: PropTypes.string,
     userEmail: PropTypes.string.isRequired,
     lastEditedBy: PropTypes.string.isRequired,
     handleSubmitForReviewClick: PropTypes.func.isRequired,
-    handleMarkAsReviewedClick: PropTypes.func.isRequired
+    handleMarkAsReviewedClick: PropTypes.func.isRequired,
+    disableForm: PropTypes.bool.isRequired
 }
 
 class DatasetMetadata extends Component {
@@ -71,7 +70,7 @@ class DatasetMetadata extends Component {
                     <Input id="title" 
                         value={this.props.metadata.title} 
                         onChange={this.props.handleStringInputChange} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h2>Release dates</h2>
@@ -81,7 +80,7 @@ class DatasetMetadata extends Component {
                         type="date" 
                         onChange={this.props.handleDateInputChange} 
                         value={this.props.metadata.releaseDate && date.format(this.props.metadata.releaseDate, "yyyy-mm-dd")} 
-                        disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}
+                        disabled={this.props.disableForm || this.props.versionIsPublished}
                     />
 
                     <Input id="next-release" 
@@ -90,7 +89,7 @@ class DatasetMetadata extends Component {
                         type="date" 
                         onChange={this.props.handleDateInputChange} 
                         value={this.props.metadata.nextReleaseDate && date.format(this.props.metadata.nextReleaseDate, "yyyy-mm-dd")} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <Input id="release-frequency" 
@@ -98,7 +97,7 @@ class DatasetMetadata extends Component {
                         label="Release frequency" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.releaseFrequency} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h2>Notices</h2>
@@ -109,7 +108,7 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.isSaving || this.props.isGettingData}
+                        disableActions={this.props.disableForm}
                     />
                     
                     <h2 className="margin-top--1">About</h2>
@@ -117,7 +116,7 @@ class DatasetMetadata extends Component {
                         label="Summary" type="textarea" 
                         value={this.props.metadata.summary} 
                         onChange={this.props.handleStringInputChange} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <Input id="unit-of-measure" 
@@ -126,7 +125,7 @@ class DatasetMetadata extends Component {
                         type="input" 
                         value={this.props.metadata.unitOfMeasure} 
                         onChange={this.props.handleStringInputChange} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h2>Dimensions</h2>
@@ -137,14 +136,14 @@ class DatasetMetadata extends Component {
                                     label="Title" 
                                     value={dimension.name} 
                                     onChange={this.props.handleDimensionNameChange} 
-                                    disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}
+                                    disabled={this.props.disableForm || this.props.versionIsPublished}
                                 />
                                 <Input id={`dimension-description-${dimension.id}`} 
                                     label="Description" 
                                     type="textarea" 
                                     value={dimension.description} 
                                     onChange={this.props.handleDimensionDescriptionChange} 
-                                    disabled={this.props.isSaving || this.props.isGettingData || this.props.versionIsPublished}
+                                    disabled={this.props.disableForm || this.props.versionIsPublished}
                                 />
                             </div>
                         )
@@ -154,14 +153,14 @@ class DatasetMetadata extends Component {
                     <Input id="keywords" 
                         label="Keywords" 
                         value={this.props.metadata.keywords.join(", ")} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <Input id="licence" 
                         label="Licence" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.licence} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h3>Usage notes</h3>
@@ -172,7 +171,7 @@ class DatasetMetadata extends Component {
                             handleAddClick={this.props.handleSimpleEditableListAdd}
                             handleEditClick={this.props.handleSimpleEditableListEdit}
                             handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                            disableActions={this.props.isSaving || this.props.isGettingData}
+                            disableActions={this.props.disableForm}
                         />
                     </div>
 
@@ -184,7 +183,7 @@ class DatasetMetadata extends Component {
                         onChange={this.props.handleNationalStaticticChange}
                         inline={true}
                         legend={"National Statistic"}
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     /> 
 
                     <h2>Contact details</h2>
@@ -193,7 +192,7 @@ class DatasetMetadata extends Component {
                         label="Contact name" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.contactName} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <Input id="contact-email" 
@@ -201,7 +200,7 @@ class DatasetMetadata extends Component {
                         label="Contact email" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.contactEmail} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <Input id="contact-telephone" 
@@ -209,7 +208,7 @@ class DatasetMetadata extends Component {
                         label="Contact telephone" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.contactTelephone} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h2>Related links</h2>
@@ -220,7 +219,7 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.isSaving || this.props.isGettingData}
+                        disableActions={this.props.disableForm}
                     />
 
                     <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
@@ -230,7 +229,7 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.isSaving || this.props.isGettingData}
+                        disableActions={this.props.disableForm}
                     />
 
                     <h3 className="margin-top--1">Quality and methodology information</h3>
@@ -238,7 +237,7 @@ class DatasetMetadata extends Component {
                         label="QMI URL" 
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.qmi} 
-                        disabled={this.props.isSaving || this.props.isGettingData}
+                        disabled={this.props.disableForm}
                     />
 
                     <h3>Methodologies</h3>
@@ -248,7 +247,7 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.isSaving || this.props.isGettingData}
+                        disableActions={this.props.disableForm}
                     />
 
                     <h2 className="margin-top--1">What's changed</h2>
@@ -258,17 +257,17 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.isSaving || this.props.isGettingData}
+                        disableActions={this.props.disableForm}
                     />
 
                     <div className="margin-top--2">
                         <button type="button" 
                             className="btn btn--primary margin-right--1" 
                             onClick={this.props.handleSave} 
-                            disabled={this.props.isSaving || this.props.isGettingData}>Save
+                            disabled={this.props.disableForm}>Save
                         </button>
                         <DatasetReviewActions 
-                            disabled={this.props.isSaving || this.props.isGettingData}
+                            disabled={this.props.disableForm}
                             reviewState={this.props.datasetCollectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
@@ -287,7 +286,7 @@ DatasetMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-      userEmail: state.state.user.email
+        userEmail: state.state.user.email
     }
 }
 

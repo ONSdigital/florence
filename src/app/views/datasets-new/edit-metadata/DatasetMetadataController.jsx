@@ -32,6 +32,7 @@ export class DatasetMetadataController extends Component {
         super(props);
 
         this.state = {
+            disableScreen: false,
             isGettingDatasetMetadata: false,
             isGettingVersionMetadata: false,
             isGettingCollectionData: false,
@@ -84,6 +85,14 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
             const mappedDataset = this.mapDatasetToState(dataset);
+            if (mappedDataset !== this.props.params.collectionID) {
+                this.setState({disableScreen: true});
+                notifications.add({
+                    type: "neutral",
+                    message: `This dataset is in another collection.`,
+                    isDismissable: true
+                });
+            }
             if (mappedDataset.collection) {
                 this.getAndUpdateReviewStateData();
             }
@@ -723,10 +732,9 @@ export class DatasetMetadataController extends Component {
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSave={this.handleSaveClick}
-                    isSaving={this.state.isSaving}
                     versionIsPublished={this.state.versionIsPublished}
-                    isGettingData={this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
                     lastEditedBy={this.state.lastEditedBy}
+                    disableForm={this.state.disableScreen || this.state.isSaving || this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
                     datasetCollectionState={this.state.datasetCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
