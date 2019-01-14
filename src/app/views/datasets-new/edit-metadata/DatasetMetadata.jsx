@@ -26,8 +26,14 @@ const propTypes = {
         releaseFrequency: PropTypes.string,
         edition: PropTypes.string,
         version: PropTypes.number,
-        releaseDate: PropTypes.string,
-        nextReleaseDate: PropTypes.string,
+        releaseDate: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string
+        }),
+        nextReleaseDate: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string
+        }),
         unitOfMeasure: PropTypes.string,
         notices: PropTypes.array,
         dimensions: PropTypes.array,
@@ -79,8 +85,9 @@ class DatasetMetadata extends Component {
                         label="Release date" 
                         type="date" 
                         onChange={this.props.handleDateInputChange} 
-                        value={this.props.metadata.releaseDate && date.format(this.props.metadata.releaseDate, "yyyy-mm-dd")} 
+                        value={this.props.metadata.releaseDate.value && date.format(this.props.metadata.releaseDate.value, "yyyy-mm-dd")} 
                         disabled={this.props.disableForm || this.props.versionIsPublished}
+                        error={this.props.metadata.releaseDate.error}
                     />
 
                     <Input id="next-release" 
@@ -88,8 +95,9 @@ class DatasetMetadata extends Component {
                         label="Next release date" 
                         type="date" 
                         onChange={this.props.handleDateInputChange} 
-                        value={this.props.metadata.nextReleaseDate && date.format(this.props.metadata.nextReleaseDate, "yyyy-mm-dd")} 
+                        value={this.props.metadata.nextReleaseDate.value && date.format(this.props.metadata.nextReleaseDate.value, "yyyy-mm-dd")} 
                         disabled={this.props.disableForm}
+                        error={this.props.metadata.nextReleaseDate.error}
                     />
 
                     <Input id="release-frequency" 
