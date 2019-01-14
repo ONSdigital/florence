@@ -366,8 +366,8 @@ export class DatasetMetadataController extends Component {
             newMetadataState = this.updateMetadataField(newField, stateFieldName)
         }
         this.setState({metadata: newMetadataState, 
-            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName), 
-            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(stateFieldName), 
+            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName)
         });
         this.props.dispatch(push(url.resolve("../../../")));
     }
