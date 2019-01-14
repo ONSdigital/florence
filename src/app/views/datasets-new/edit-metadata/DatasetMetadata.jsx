@@ -57,7 +57,8 @@ const propTypes = {
     lastEditedBy: PropTypes.string.isRequired,
     handleSubmitForReviewClick: PropTypes.func.isRequired,
     handleMarkAsReviewedClick: PropTypes.func.isRequired,
-    disableForm: PropTypes.bool.isRequired
+    disableForm: PropTypes.bool.isRequired,
+    isSaving: PropTypes.bool
 }
 
 class DatasetMetadata extends Component {
