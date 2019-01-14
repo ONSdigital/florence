@@ -91,7 +91,7 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingDatasetMetadata: true})
         datasets.get(datasetID).then(dataset => {
             const mappedDataset = this.mapDatasetToState(dataset);
-            if (mappedDataset.collection && mappedDataset.collection !== this.props.params.collectionID) {
+            if (mappedDataset.state === "associated" && mappedDataset.collection !== this.props.params.collectionID) {
                 this.setState({disableScreen: true});
                 notifications.add({
                     type: "neutral",
@@ -128,7 +128,8 @@ export class DatasetMetadataController extends Component {
             }
             return {
                 metadata: {...this.state.metadata, ...mappedDataset}, 
-                collection: dataset.collection_id || false
+                collection: dataset.collection_id || false,
+                state: dataset.state
             }
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping dataset '${datasetResponse.id}' to to state. \n ${error}`});
