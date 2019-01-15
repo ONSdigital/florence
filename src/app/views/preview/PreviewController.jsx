@@ -55,6 +55,14 @@ export class PreviewController extends Component {
             const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
             const datasetPages = [...collection.datasetVersions, ...collection.datasets];
             const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+            console.log("nonDatasetPages");
+            console.log(nonDatasetPages);
+            console.log("datasetPages");
+            console.log(datasetPages);
+            console.log("datasetPages uri");
+            console.log(new URL(datasetPages[0].uri).pathname);
+            console.log("pages");
+            console.log(pages);
             const collectionPreview = {collectionID, name: collection.name, pages};
             this.props.dispatch(addPreviewCollection(collectionPreview));
             if (!this.props.workingOn || !this.props.workingOn.name) {
@@ -90,14 +98,19 @@ export class PreviewController extends Component {
     }
 
     mapDatasetPages(datasetPages) {
-        return datasetPages.map(page => {
-            return {
-                description: {
-                    title: page.title || {},
-                },
-                uri: "/datasets/" + page.id
-            }
-        })
+        try {
+            return datasetPages.map(page => {
+                return {
+                    uri: new URL(datasetPages[0].uri).pathname,
+                    description: {
+                        title: page.title || {},
+                        edition: "version " + page.version || undefined,
+                    }
+                }
+            })
+        } catch (error) {
+            console.error(`Error maping dataset pages :\n`, error);
+        }
     }
 
     fetchCollection(collectionID) {
