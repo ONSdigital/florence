@@ -55,14 +55,6 @@ export class PreviewController extends Component {
             const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
             const datasetPages = [...collection.datasetVersions, ...collection.datasets];
             const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
-            console.log("nonDatasetPages");
-            console.log(nonDatasetPages);
-            console.log("datasetPages");
-            console.log(datasetPages);
-            console.log("datasetPages uri");
-            console.log(new URL(datasetPages[0].uri).pathname);
-            console.log("pages");
-            console.log(pages);
             const collectionPreview = {collectionID, name: collection.name, pages};
             this.props.dispatch(addPreviewCollection(collectionPreview));
             if (!this.props.workingOn || !this.props.workingOn.name) {
