@@ -8,6 +8,7 @@ import Drawer from '../../../components/drawer/Drawer';
 import CollectionDetails, {pagePropTypes, deletedPagePropTypes} from './CollectionDetails';
 import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
+import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
 import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection, updateWorkingOn, updateActiveDatasetReviewState, updateActiveVersionReviewState} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
@@ -320,9 +321,15 @@ export class CollectionDetailsController extends Component {
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     }
 
-    handleCollectionPageEditClick(page, state) {
+    async handleCollectionPageEditClick(page, state) {
         if (page.type === "dataset_details") {
-            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/datasets/${page.id}`);
+            // This is a horrible hack to get the latest version url. 
+            // This could possibly be given to us from Zebedee.
+            // It's here to minimise requests on loading the apge, so we only make a request
+            // if the button is clicked, but it's not the ideal lace for it.
+            const datasetURL = await datasets.getLatestVersionURL(page.id);
+            let newURL = url.resolve(`/collections/${this.props.activeCollection.id}${datasetURL}`);
+
             const dataset = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_details") {
                     return false;
