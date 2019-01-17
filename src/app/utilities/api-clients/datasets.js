@@ -2,8 +2,7 @@ import http from '../http';
 import url from '../url'
 
 export default class datasets {
-
-    static get(datasetID) {
+    static get = (datasetID) => {
 
         return http.get(`/dataset/datasets/${datasetID}`)
             .then(response => {
@@ -91,6 +90,16 @@ export default class datasets {
             const latestVersion = await http.get(`/dataset${latestVersionURL}`).catch(error => reject(error));
             resolve(latestVersion);
         });
+    }
+
+    static getLatestVersionURL = async(datasetID) => {
+        const datasetURL = `/dataset/datasets/${datasetID}`;
+        return http.get(datasetURL)
+            .then(response => {
+                const dataset = response.next || response.current || response;
+                return new URL(dataset.links.latest_version.href).pathname
+            })
+            .catch(error => error);
     }
 
     static getVersionDimensions(datasetID, edition, version) {
