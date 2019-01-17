@@ -40,6 +40,7 @@ export class DatasetMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
+            datasetState: "",
             datasetCollectionState: "",
             lastEditedBy: "", 
             instanceID: "",
@@ -104,7 +105,8 @@ export class DatasetMetadataController extends Component {
             }
             this.setState({metadata: mappedDataset.metadata, 
                 isGettingDatasetMetadata: false, 
-                datasetIsInCollection: mappedDataset.collection
+                datasetIsInCollection: mappedDataset.collection,
+                datasetState: mappedDataset.state
             })
         })
     }
@@ -484,25 +486,23 @@ export class DatasetMetadataController extends Component {
             return;
         }
 
-        const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
-        const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
-
-        if (!datasetMetadataHasChanges && !versionMetadataHasChanges) {
-            console.warn("No changes to save");
-            return;
-        }
-
         this.setState({isSaving: true});
-        const datasetIsInCollection = this.state.datasetIsInCollection;
-        const versionIsInCollection = this.state.versionIsInCollection;
-        const dimensionsUpdated = this.state.dimensionsUpdated;
-        const versionIsPublished = this.state.versionIsPublished;
-        const doNotAddToCollection = isSubmittingForReview || isMarkingAsReviewed;
         const collectionID = this.props.params.collectionID;
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         const instanceID = this.state.instanceID;
+        const datasetIsInCollection = this.state.datasetIsInCollection;
+        const versionIsInCollection = this.state.versionIsInCollection;
+        const dimensionsUpdated = this.state.dimensionsUpdated;
+        const versionIsPublished = this.state.versionIsPublished;
+        const datasetState = this.state.datasetState;
+        const addDatasetToCollection = (!isSubmittingForReview || !isMarkingAsReviewed) && 
+            (!datasetIsInCollection || datasetState !== "associated") &&
+            (datasetIsInCollection !== collectionID);
+        const addVersionToCollection = (!isSubmittingForReview || !isMarkingAsReviewed) && !versionIsInCollection;
+        const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
+        const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
         const datasetBody = this.mapDatasetToPutBody();
         const versionBody = this.mapVersionToPutBody();  
         
@@ -536,7 +536,7 @@ export class DatasetMetadataController extends Component {
         }
 
         let datasetToCollectionError;
-        if (!datasetIsInCollection && (datasetIsInCollection !== this.props.params.collectionID)) {
+        if (addDatasetToCollection) {
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
             this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"})
         }
@@ -547,7 +547,7 @@ export class DatasetMetadataController extends Component {
         }
 
         let versionToCollectionError;
-        if (!versionIsInCollection && doNotAddToCollection) {
+        if (addVersionToCollection) {
             versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
             this.setState({versionIsInCollection: collectionID})
         }
