@@ -203,10 +203,6 @@ export class DatasetUploadsController extends Component {
                   </div>
                   <div className="grid__col-5 margin-top--5">
                     <h2 className="margin-bottom--1">In progress</h2>
-                      <Definition
-                          title="What does the status mean?"
-                          content="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec ut quam felis."
-                      />
                     <div className="margin-bottom--2">
                         {this.state.isFetchingData &&
                             <div className="grid--align-self-start">
