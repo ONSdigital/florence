@@ -188,7 +188,7 @@ class DatasetMetadata extends Component {
                         radioData={[
                             {id: "national-statistic-yes", value: "true", label: "Yes"},
                             {id: "national-statistic-no", value: "false", label: "No"}]}
-                        selectedValue={this.props.metadata.nationalStatistic.toString()}
+                        selectedValue={this.props.metadata.nationalStatistic ? this.props.metadata.nationalStatistic.toString() : "false"}
                         onChange={this.props.handleNationalStaticticChange}
                         inline={true}
                         legend={"National Statistic"}
