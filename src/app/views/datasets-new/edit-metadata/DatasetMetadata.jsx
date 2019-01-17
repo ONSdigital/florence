@@ -161,7 +161,7 @@ class DatasetMetadata extends Component {
                     <h2>Meta</h2>
                     <Input id="keywords" 
                         label="Keywords" 
-                        value={this.props.metadata.keywords.join(", ")} 
+                        value={this.props.metadata.keywords ? this.props.metadata.keywords.join(", ") : ""} 
                         disabled={this.props.disableForm}
                     />
 
