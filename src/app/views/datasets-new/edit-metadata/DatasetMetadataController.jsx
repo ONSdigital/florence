@@ -114,19 +114,22 @@ export class DatasetMetadataController extends Component {
     mapDatasetToState = datasetResponse => {
         try {
             const dataset = datasetResponse.next || datasetResponse.current || datasetResponse;
+            
             const mappedDataset = {
                 title: dataset.title,
                 summary: dataset.description,
                 keywords: dataset.keywords,
                 nationalStatistic: dataset.national_statistic,
                 licence: dataset.license || "", 
-                contactName: dataset.contacts[0].name ? dataset.contacts[0].name : "",
-                contactEmail: dataset.contacts[0].email ? dataset.contacts[0].email : "",
-                contactTelephone: dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "",
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: {value: dataset.next_release || "", error: ""}
+            }
+            if (dataset.contacts) {
+                mappedDataset.contactName = dataset.contacts[0].name ? dataset.contacts[0].name : "";
+                mappedDataset.contactEmail = dataset.contacts[0].email ? dataset.contacts[0].email : "";
+                mappedDataset.contactTelephone = dataset.contacts[0].telephone ? dataset.contacts[0].telephone : "";
             }
             return {
                 metadata: {...this.state.metadata, ...mappedDataset}, 
