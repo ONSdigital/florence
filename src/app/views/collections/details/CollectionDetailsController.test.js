@@ -414,6 +414,7 @@ describe("Clicking 'edit' for a page", () => {
         ...defaultProps,
         collectionID: "my-collection-12345",
         activeCollection: {
+            id: "my-collection-12345",
             inProgress: [{
                 type: "dataset_details",
                 id: "cpi",
@@ -437,10 +438,10 @@ describe("Clicking 'edit' for a page", () => {
 
     it("routes to the datasets screen for dataset/versions", () => {
         const datasetURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com"}, "inProgress");
-        expect(datasetURL).toBe("/florence/datasets/cpi/metadata?collection=my-collection-12345");
+        expect(datasetURL).toBe("/florence/collections/my-collection-12345/datasets/cpi");
 
         const versionURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_version", datasetID: "cpi", id:"cpi/editions/current/versions/2", uri:"/datasets/cpi/editions/current/versions/2", edition: "current", version: "2", lastEditedBy: "test.user@email.com"}, "complete");
-        expect(versionURL).toBe("/florence/datasets/cpi/editions/current/versions/2/metadata?collection=my-collection-12345");
+        expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2");
     });
 
     it("routes to the workspace for a non-dataset pages", () => {
