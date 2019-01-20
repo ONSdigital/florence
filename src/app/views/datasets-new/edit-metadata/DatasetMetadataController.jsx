@@ -121,7 +121,8 @@ export class DatasetMetadataController extends Component {
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
-                nextReleaseDate: dataset.next_release
+                nextReleaseDate: dataset.next_release,
+                qmi: dataset.qmi.href
             }
             if (dataset.contacts) {
                 mappedDataset.contactName = dataset.contacts[0].name ? dataset.contacts[0].name : "";
@@ -446,6 +447,7 @@ export class DatasetMetadataController extends Component {
             fieldName === "relatedMethodologies" ||
             fieldName === "releaseFrequency" ||
             fieldName === "unitOfMeasure" ||
+            fieldName === "qmi" ||
             fieldName === "nextReleaseDate") {
                 return true;
         }
@@ -613,6 +615,9 @@ export class DatasetMetadataController extends Component {
             related_datasets: this.state.metadata.relatedDatasets,
             publications: this.state.metadata.relatedPublications,
             methodologies: this.state.metadata.relatedMethodologies,
+            qmi: {
+                href: this.state.metadata.qmi
+            },
             release_frequency: this.state.metadata.releaseFrequency,
             contacts: [{
                 name: this.state.metadata.contactName,
