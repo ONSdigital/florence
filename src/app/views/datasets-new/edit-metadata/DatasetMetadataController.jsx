@@ -66,10 +66,7 @@ export class DatasetMetadataController extends Component {
                     value: "",
                     error: ""
                 },
-                nextReleaseDate: {
-                    value: "",
-                    error: ""
-                },
+                nextReleaseDate: "",
                 unitOfMeasure: "",
                 notices: [],
                 dimensions: [],
@@ -124,7 +121,7 @@ export class DatasetMetadataController extends Component {
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
-                nextReleaseDate: {value: dataset.next_release || "", error: ""}
+                nextReleaseDate: dataset.next_release
             }
             if (dataset.contacts) {
                 mappedDataset.contactName = dataset.contacts[0].name ? dataset.contacts[0].name : "";
@@ -459,16 +456,7 @@ export class DatasetMetadataController extends Component {
         if (fieldName === "releaseDate" ||
             fieldName === "notices" ||
             fieldName === "usageNotes" ||
-            fieldName === "latestChanges" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "" ||
-            fieldName === "") {
+            fieldName === "latestChanges") {
             return true;
         }
         return false;
@@ -631,7 +619,7 @@ export class DatasetMetadataController extends Component {
                 email: this.state.metadata.contactEmail,
                 telephone: this.state.metadata.contactTelephone
             }],
-            next_release: this.state.metadata.nextReleaseDate.value,
+            next_release: this.state.metadata.nextReleaseDate,
             unit_of_measure: this.state.metadata.unitOfMeasure
         }
     }
