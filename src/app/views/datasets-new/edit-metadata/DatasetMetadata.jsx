@@ -30,10 +30,7 @@ const propTypes = {
             value: PropTypes.string,
             error: PropTypes.string
         }),
-        nextReleaseDate: PropTypes.shape({
-            value: PropTypes.string,
-            error: PropTypes.string
-        }),
+        nextReleaseDate: PropTypes.string,
         unitOfMeasure: PropTypes.string,
         notices: PropTypes.array,
         dimensions: PropTypes.array,
