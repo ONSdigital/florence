@@ -272,7 +272,7 @@ class DatasetMetadata extends Component {
                             disabled={this.props.disableForm}>Save
                         </button>
                         <DatasetReviewActions 
-                            disabled={this.props.disableForm}
+                            disabled={this.props.disableForm || this.props.versionIsPublished}
                             reviewState={this.props.datasetCollectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
