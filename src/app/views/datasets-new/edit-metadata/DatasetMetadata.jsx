@@ -262,7 +262,7 @@ class DatasetMetadata extends Component {
                         handleAddClick={this.props.handleSimpleEditableListAdd}
                         handleEditClick={this.props.handleSimpleEditableListEdit}
                         handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.disableForm}
+                        disableActions={this.props.disableForm || this.props.versionIsPublished}
                     />
 
                     <div className="margin-top--2">
@@ -272,7 +272,7 @@ class DatasetMetadata extends Component {
                             disabled={this.props.disableForm}>Save
                         </button>
                         <DatasetReviewActions 
-                            disabled={this.props.disableForm || this.props.versionIsPublished}
+                            disabled={this.props.disableForm}
                             reviewState={this.props.datasetCollectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
