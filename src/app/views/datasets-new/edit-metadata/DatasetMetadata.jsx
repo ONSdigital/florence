@@ -94,9 +94,8 @@ class DatasetMetadata extends Component {
                     <Input id="next-release" 
                         name="nextReleaseDate" 
                         label="Next release date" 
-                        type="date" 
-                        onChange={this.props.handleDateInputChange} 
-                        value={this.props.metadata.nextReleaseDate.value && date.format(this.props.metadata.nextReleaseDate.value, "yyyy-mm-dd")} 
+                        onChange={this.props.handleStringInputChange} 
+                        value={this.props.metadata.nextReleaseDate} 
                         disabled={this.props.disableForm}
                         error={this.props.metadata.nextReleaseDate.error}
                     />
