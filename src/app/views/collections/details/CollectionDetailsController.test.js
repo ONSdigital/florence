@@ -31,6 +31,12 @@ jest.mock('../../../utilities/api-clients/collections', () => ({
     })
 }));
 
+jest.mock('../../../utilities/api-clients/datasets', () => ({
+    getLatestVersionURL: jest.fn(() => {
+        return Promise.resolve("/datasets/cpi/editions/current/versions/2")
+    })
+}));
+
 function setLocation(href) {
     Object.defineProperty(window.location, 'href', {
         writable: true,
@@ -436,16 +442,16 @@ describe("Clicking 'edit' for a page", () => {
         <CollectionDetailsController {...props} />
     )
 
-    it("routes to the datasets screen for dataset/versions", () => {
-        const datasetURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com"}, "inProgress");
-        expect(datasetURL).toBe("/florence/collections/my-collection-12345/datasets/cpi");
+    it("routes to the datasets screen for dataset/versions", async() => {
+        const datasetURL = await editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_details", id:"cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com"}, "inProgress");
+        expect(datasetURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2");
 
-        const versionURL = editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_version", datasetID: "cpi", id:"cpi/editions/current/versions/2", uri:"/datasets/cpi/editions/current/versions/2", edition: "current", version: "2", lastEditedBy: "test.user@email.com"}, "complete");
+        const versionURL = await editClickComponent.instance().handleCollectionPageEditClick({type: "dataset_version", datasetID: "cpi", id:"cpi/editions/current/versions/2", uri:"/datasets/cpi/editions/current/versions/2", edition: "current", version: "2", lastEditedBy: "test.user@email.com"}, "complete");
         expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2");
     });
 
-    it("routes to the workspace for a non-dataset pages", () => {
-        const pageURL = editClickComponent.instance().handleCollectionPageEditClick({type: "article", uri:"/economy/grossdomesticproductgdp/articles/ansarticle"});
+    it("routes to the workspace for a non-dataset pages", async() => {
+        const pageURL = await editClickComponent.instance().handleCollectionPageEditClick({type: "article", uri:"/economy/grossdomesticproductgdp/articles/ansarticle"});
         expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
     });
 });
