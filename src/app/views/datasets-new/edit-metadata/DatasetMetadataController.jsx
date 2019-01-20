@@ -118,7 +118,9 @@ export class DatasetMetadataController extends Component {
                 keywords: dataset.keywords,
                 nationalStatistic: dataset.national_statistic,
                 licence: dataset.license || "", 
-                relatedDatasets: dataset.related_datasets ? this.mapRelatedDatasetsToState(dataset.related_datasets) : [],
+                relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets) : [],
+                relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications) : [],
+                relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release,
@@ -145,7 +147,7 @@ export class DatasetMetadataController extends Component {
         }
     }
 
-    mapRelatedDatasetsToState = (relatedDatasets) => {
+    mapRelatedContentToState = (relatedDatasets) => {
         try {
             return relatedDatasets.map((link, index) => {
                 return {
@@ -409,7 +411,7 @@ export class DatasetMetadataController extends Component {
             case("relatedDatasets"):
             case("relatedPublications"):
             case("relatedMethodologies"): {
-                return this.mapRelatedDatasetsToState(newState);
+                return this.mapRelatedContentToState(newState);
             }
             case ("usageNotes"): {
                 return this.mapUsageNotesToState(newState);
