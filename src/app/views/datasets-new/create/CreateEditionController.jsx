@@ -19,7 +19,7 @@ const propTypes = {
     })
 }
 
-class CreateEditionController extends Component {
+export class CreateEditionController extends Component {
     constructor(props) {
         super(props);
 
@@ -42,6 +42,7 @@ class CreateEditionController extends Component {
         this.setState({isFetchingDataset: true});
         return datasets.get(datasetID).then(dataset => {
             this.setState({isFetchingDataset: false, dataset: this.mapDatasetToState(dataset)});
+            return this.mapDatasetToState(dataset)
         }).catch(error => {
             switch (error.status) {
                 case(404): {
@@ -116,6 +117,7 @@ class CreateEditionController extends Component {
         this.setState({isFetchingEditions: true});
         return recipes.getAll().then(recipes => {
             this.setState({isFetchingEditions: false, editions: this.mapEditionsToState(recipes.items)});
+            return this.mapEditionsToState(recipes.items);
         }).catch(error => {
             switch (error.status) {
                 case(404): {
@@ -173,7 +175,7 @@ class CreateEditionController extends Component {
         try {
             const recipe = recipeOutputs.find(recipeOutput => {
                 return recipeOutput.output_instances[0].dataset_id === this.props.params.datasetID
-            })
+            });
             return this.filterEditionsListFromRecipe(recipe);
         } catch (error) {
             const notification = {
