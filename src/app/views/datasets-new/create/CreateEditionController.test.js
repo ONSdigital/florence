@@ -27,16 +27,7 @@ jest.mock('../../../utilities/api-clients/datasets', () => {
         }),
         getEditions: jest.fn(() => {
             return Promise.resolve(mockedEditions);
-        }),
-        getVersion: jest.fn(() => {
-            return Promise.resolve(mockedVersions[0]);
-        }),
-        getAllVersions: jest.fn(() => {
-            return Promise.resolve(mockedVersions);
-        }),
-        getLatestVersionForEditions: jest.fn(() => {
-            return Promise.resolve(mockedVersions);
-        }),
+        })
     }
 });
 
@@ -87,46 +78,6 @@ const mockedEditions = {
         },
     ]
 };
-
-const mockedMappedEditions = [ 
-    { 
-        title: 'Test Dataset 1',
-        id: 'edition-1',
-        url: 'florence/collections/12345/datasets/6789/editions/edition-1',
-        details: [ 
-            'Edition: edition-1', 
-            'Release date: loading...' ],
-        latestVersion: '3' 
-    },
-    { 
-        title: 'Test Dataset 1',
-        id: 'edition-2',
-        url: 'florence/collections/12345/datasets/6789/editions/edition-2',
-        details: [ 
-            'Edition: edition-2', 
-            'Release date: loading...' ],
-        latestVersion: '12' 
-    } 
-]
-
-const mockedVersions = [
-    {
-        alerts: [],
-        edition: "edition-1",
-        id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
-        release_date: "2018-09-07T00:00:00.000Z",
-        state: "published",
-        version: 1
-    },
-    {
-        alerts: [],
-        edition: "edition-2",
-        id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
-        release_date: "2018-09-07T00:00:00.000Z",
-        state: "published",
-        version: 2
-    }
-]
 
 const mockedRecipeCall = {
     items: [
