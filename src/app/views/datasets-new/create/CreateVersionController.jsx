@@ -17,7 +17,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 }
 
-class CreateVersionController extends Component {
+export class CreateVersionController extends Component {
     constructor(props) {
         super(props);
 
@@ -47,6 +47,7 @@ class CreateVersionController extends Component {
         this.setState({isFetchingDataset: true});
         return datasets.get(datasetID).then(dataset => {
             this.setState({isFetchingDataset: false, dataset: this.mapDatasetToState(dataset)});
+            return this.mapDatasetToState(dataset);
         }).catch(error => {
             switch (error.status) {
                 case(404): {
@@ -121,6 +122,7 @@ class CreateVersionController extends Component {
         this.setState({isFetchingEdition: true});
         return datasets.getEdition(datasetID, editionID).then(edition => {
             this.setState({isFetchingEdition: false, edition: this.mapDatasetEditionToState(edition)});
+            return this.mapDatasetEditionToState(edition);
         }).catch(error => {
             console.error(error);
             this.setState({isFetchingEdition: false});
