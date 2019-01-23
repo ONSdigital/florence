@@ -1,25 +1,32 @@
 const path = require('path');
-const webpack = require('webpack');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
-    context: path.resolve(__dirname),
     entry: {
-        app: ['babel-regenerator-runtime', './index.js'],
+        app: ['./index.js'],
         tablebuilder: './tablebuilder/tablebuilder.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
         filename: 'js/[name].bundle.js',
     },
+    resolve: {
+        modules: [path.resolve(__dirname, 'src'), 'node_modules'],
+        extensions: ['.js', '.jsx']
+    },
+    devServer: {
+        contentBase: path.join(__dirname, 'src')
+    },
     module: {
-        loaders: [
+        rules: [
             {
-                test: /\.(js|jsx)?$/,
+                // this is so that we can compile any React,
+                // ES6 and above into normal ES5 syntax
+                test: /\.(js|jsx)$/,
+                // we do not want anything from node_modules to be compiled
                 exclude: /node_modules/,
-                loader: 'babel-loader'
+                use: ['babel-loader']
             },
             {
                 test: /\.(js|jsx)?$/,
@@ -27,30 +34,18 @@ module.exports = {
                 loader: 'eslint-loader'
             },
             {
-                test: /\.scss$/,
-                use: ExtractTextPlugin.extract({ 
-                    fallback: "style-loader", 
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: {sourceMap: isProduction}
-                        },
-                        {
-                            loader: "sass-loader",
-                            options: {sourceMap: isProduction}
-                        }
-                    ]
-                })
+                test: /\.(css|scss)$/,
+                use: [
+                    "style-loader", // creates style nodes from JS strings
+                    "css-loader", // translates CSS into CommonJS
+                    "sass-loader" // compiles Sass to CSS, using Node Sass by default
+                ]
             },
             {
-                test: /\.(png|woff|woff2|eot|ttf|svg)$/,
+                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
                 loader: 'url-loader?limit=100000'
             }
         ]
-    },
-    resolve: {
-        // implicitly tell babel to load jsx
-        extensions: ['.js', '.jsx']
     },
     plugins: [
         new CopyWebpackPlugin([
@@ -59,7 +54,9 @@ module.exports = {
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
         ]),
-        new ExtractTextPlugin("css/[name].css")
+        new MiniCssExtractPlugin({
+            filename: "[name].css"
+          })
     ],
     externals: {
         resumeablejs: "Resumable"
