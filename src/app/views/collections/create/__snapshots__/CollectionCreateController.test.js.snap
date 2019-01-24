@@ -17,18 +17,13 @@ exports[`Create collection form matches stored snapshot 1`] = `
         </label>
         
         <input
-          accept={undefined}
           autoFocus={false}
           className="input"
           disabled={false}
           id="collection-name"
-          max={undefined}
-          min={undefined}
           name="collection-name"
-          onBlur={undefined}
           onChange={[Function]}
           onFocus={[Function]}
-          placeholder={undefined}
           type="text"
           value=""
         />
@@ -181,7 +176,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
-              accept={undefined}
               autoFocus={false}
               className="input"
               disabled={false}
@@ -189,10 +183,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               max="2017-10-12"
               min="2017-10-12"
               name="publish-date"
-              onBlur={undefined}
               onChange={[Function]}
               onFocus={[Function]}
-              placeholder={undefined}
               type="date"
               value=""
             />
@@ -209,18 +201,13 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
-              accept={undefined}
               autoFocus={false}
               className="input"
               disabled={false}
               id="publish-time"
-              max={undefined}
-              min={undefined}
               name="publish-time"
-              onBlur={undefined}
               onChange={[Function]}
               onFocus={[Function]}
-              placeholder={undefined}
               type="time"
               value="09:30"
             />
