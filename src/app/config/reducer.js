@@ -16,6 +16,9 @@ import {
     UPDATE_WORKING_ON, 
     EMPTY_WORKING_ON, 
     UPDATE_TEAMS_IN_ACTIVE_COLLECTION,
+    UPDATE_ACTIVE_USER,
+    REMOVE_USER_FROM_ALL_USERS,
+    ADD_ALL_USERS,
     UPDATE_ACTIVE_DATASET_REVIEW_STATE, 
     UPDATE_ACTIVE_VERSION_REVIEW_STATE,
     UPDATE_ACTIVE_JOB,
@@ -164,6 +167,38 @@ export default function reducer(state = initialState, action) {
                 }
             }
         }
+        case (UPDATE_ACTIVE_USER): {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    active: {
+                        email: action.user.email,
+                        hasTemporaryPassword: action.user.hasTemporaryPassword,
+                        name: action.user.name,
+                        role: action.user.role
+                    }
+                }
+            }
+        }
+        case (ADD_ALL_USERS): {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    all: [...action.users]
+                }
+            }
+        }
+        case(REMOVE_USER_FROM_ALL_USERS): {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    all: state.users.all.filter(user => user.email !== action.userID)
+                }
+            }
+        }
         case ('UPDATE_ALL_TEAMS'): {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
@@ -179,13 +214,6 @@ export default function reducer(state = initialState, action) {
                     allIDsAndNames: action.allTeamIDsAndNames
                 }
             }
-        }
-        case ('UPDATE_USERS'): {
-            return Object.assign({}, state, {
-                teams: Object.assign({}, state.teams, {
-                    users: action.users
-                })
-            })
         }
         case ('UPDATE_ACTIVE_TEAM'): {
             return Object.assign({}, state, {
