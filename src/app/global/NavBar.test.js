@@ -3,6 +3,14 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router';
 import { NavBar } from './NavBar';
 
+jest.mock('../utilities/log.js', () => {
+    return {
+        add: function() {
+            // do nothing
+        }
+    }
+});
+
 jest.mock("../utilities/url", () => ({
     resolve: url => `/florence${url}`
 }));
