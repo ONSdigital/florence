@@ -87,6 +87,6 @@
     "path": "^0.12.7",
     "file-loader": "^3.0.1",
     "ts-loader": "^5.3.3",
-    "typescript": "^3.2.4",
+    "typescript": "^3.2.4"
   }
 }
