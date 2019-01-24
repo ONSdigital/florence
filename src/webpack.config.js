@@ -13,13 +13,18 @@ module.exports = {
     },
     resolve: {
         modules: [path.resolve(__dirname, 'src'), 'node_modules'],
-        extensions: ['.js', '.jsx']
+        extensions: ['.js', '.jsx', '.ts', '.tsx']
     },
     devServer: {
         contentBase: path.join(__dirname, 'src')
     },
     module: {
         rules: [
+            {
+                test: /\.(ts|tsx)$/,
+                exclude: /node_modules/,
+                loader: ['babel-loader','ts-loader']
+              },
             {
                 // this is so that we can compile any React,
                 // ES6 and above into normal ES5 syntax
