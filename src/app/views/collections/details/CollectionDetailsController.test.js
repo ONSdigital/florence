@@ -32,15 +32,6 @@ jest.mock('../../../utilities/api-clients/collections', () => ({
 }));
 
 function setLocation(href) {
-    // Object.defineProperty(window.location, 'href', {
-    //     writable: true,
-    //     value: href,
-    // });
-    // Object.defineProperty(window.location, 'pathname', {
-    //     writable: true,
-    //     value: href.substring(href.indexOf("/florence")),
-    // });
-
     jsdom.reconfigure({
         url: href
       });
