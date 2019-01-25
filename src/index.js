@@ -20,6 +20,7 @@ import VersionMetadata from './app/views/datasets/metadata/VersionMetadata';
 import Logs from './app/views/logs/Logs';
 
 import auth from './app/utilities/auth'
+import log, { Http, Auth } from './app/utilities/log.ts'
 
 import './scss/main.scss';
 
@@ -32,6 +33,12 @@ import PreviewController from './app/views/preview/PreviewController';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
+
+log.event("Test log 1")
+log.event("Test log 2", new Http("hello"));
+log.event("Test log 3", new Auth("hello"));
+// log.event("test log 4", "hello");
+// log.event("test log 5", "hello");
 
 const rootPath = store.getState().state.rootPath;
 
