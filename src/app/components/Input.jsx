@@ -16,6 +16,7 @@ const propTypes = {
     value: PropTypes.string,
     min: PropTypes.string,
     max: PropTypes.string,
+    allowAutoComplete: PropTypes.bool,
     placeholder: PropTypes.string
 };
 
@@ -61,7 +62,7 @@ export default class Input extends Component {
                 }
                 {
                     this.props.error ?
-                        <div className="error-msg">{this.props.error}</div>
+                        <div id={`input-error-${this.props.id}`} className="error-msg">{this.props.error}</div>
                         :
                         ""
                 }
@@ -81,6 +82,10 @@ export default class Input extends Component {
                         value={this.props.value}
                         min={this.props.min}
                         max={this.props.max}
+                        // setting autocomplete to "new-password" will/should tell Google this is a 
+                        //  "sign up form" type of input and not use the auto complete, more info:
+                        // https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
+                        autoComplete={!this.props.allowAutoComplete && "new-password"}
                     />
                 :
                     <textarea

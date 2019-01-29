@@ -4,10 +4,11 @@ import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
 import user from './utilities/api-clients/user';
-import log from './utilities/log';
+import log, { eventTypes } from './utilities/log';
 import ping from './utilities/api-clients/ping';
 
 import Notifications from './global/notifications/Notifications';
+import notifications from './utilities/notifications';
 
 const propTypes = {
     children: PropTypes.node,
@@ -45,6 +46,16 @@ class App extends Component {
                 user.getPermissions(email).then(userType => {
                     user.setUserState(userType);
                     this.setState({isCheckingAuthentication: false});
+                }).catch(error => {
+                    this.setState({isCheckingAuthentication: false});
+                    notifications.add({
+                        type: "warning",
+                        message: "Unable to start Florence due to an error getting your account's permissions. Please try refreshing Florence.",
+                        autoDismiss: 8000,
+                        isDismissable: true
+                    });
+                    log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting a user's permissions on startup: ${JSON.stringify(error)}`});
+                    console.error("Error getting a user's permissions on startup", error);
                 });
                 return;
             }
