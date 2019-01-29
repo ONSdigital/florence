@@ -1,4 +1,4 @@
-
+import websocket from './websocket.js';
 interface Loggable {
     attach(event: EventData): EventData,
 }
@@ -98,7 +98,9 @@ export default class log {
                 opt.attach(eventData)
             })
         }
-        console.log("LOG =>", eventData)
+        
+        websocket.send(`log:${JSON.stringify(event)}`);
+        return;
     }
     static http = (requestID: string, method: string, url: string, statusCode: number, startedAt: string, endedAt: string ): Http => {
         return new Http(requestID, method, url, statusCode, startedAt, endedAt);
