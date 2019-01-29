@@ -1,4 +1,4 @@
-import websocket from './websocket.js';
+import websocket from './websocket';
 interface Loggable {
     attach(event: EventData): EventData,
 }
@@ -12,7 +12,6 @@ type EventData = {
     //span_id: string,
     severity: number,
     http?: EventHttp,
-    auth?: EventAuth,
     data?: object,
     error?: EventError
 }
@@ -28,11 +27,6 @@ interface EventHttp {
     started_at: string,
     ended_at: string,
     duration: number
-}
-
-interface EventAuth {
-    identity: string,
-    identity_type: string
 }
 
 interface EventError {
@@ -54,10 +48,6 @@ interface Http {
     startedAt: string, 
     endedAt: string
 }
-interface Auth {
-    authEvent: EventAuth
-}
-
 interface FatalEvent {
     severity: number,
     error: Error
@@ -98,15 +88,12 @@ export default class log {
                 opt.attach(eventData)
             })
         }
-        
+
         websocket.send(`log:${JSON.stringify(event)}`);
         return;
     }
     static http = (requestID: string, method: string, url: string, statusCode: number, startedAt: string, endedAt: string ): Http => {
         return new Http(requestID, method, url, statusCode, startedAt, endedAt);
-    }
-    static auth = (authEvent: EventAuth): Auth => {
-        return new Auth(authEvent);
     }
     static data = (dataEvent: object): Data => {
         return new Data(dataEvent);
@@ -149,16 +136,6 @@ class Http implements Loggable {
             ended_at: this.endedAt,
             duration: duration
         }
-        return event;
-    }
-}
-
-class Auth implements Loggable {
-    constructor(authEvent: EventAuth) {
-        this.authEvent = authEvent;
-    }
-    attach = (event: EventData): EventData => {
-        event.auth = this.authEvent
         return event;
     }
 }
