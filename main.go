@@ -6,9 +6,7 @@ import (
 	"context"
 	"encoding/json"
 	"mime"
-	"net"
 	"net/http"
-	"net/http/httputil"
 	"net/url"
 	"os"
 	"os/signal"
@@ -52,16 +50,6 @@ func main() {
 	rc := healthcheck.New(cfg.RecipeAPIURL, "recipe-api")
 	ic := healthcheck.New(cfg.ImportAPIURL, "import-api")
 
-	/*
-		NOTE:
-		If there's any issues with this Florence server proxying redirects
-		from either Babbage or Zebedee then the code in the previous Java
-		Florence server might give some clues for a solution: https://github.com/ONSdigital/florence/blob/b13df0708b30493b98e9ce239103c59d7f409f98/src/main/java/com/github/onsdigital/florence/filter/Proxy.java#L125-L135
-
-		The code has purposefully not been included in this Go replacement
-		because we can't see what issue it's fixing and whether it's necessary.
-	*/
-
 	routerURL, err := url.Parse(cfg.RouterURL)
 	if err != nil {
 		log.Event(nil, "error parsing router URL", log.Error(err))
@@ -104,8 +92,6 @@ func main() {
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
-	router := pat.New()
-
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
 		vc, err = vault.CreateVaultClient(cfg.VaultToken, cfg.VaultAddr, 3)
@@ -120,6 +106,8 @@ func main() {
 		log.Event(nil, "error creating file uploader", log.Error(err))
 		os.Exit(1)
 	}
+
+	router := pat.New()
 
 	router.Path("/healthcheck").HandlerFunc(hc.Do)
 
@@ -356,33 +344,6 @@ func websocketHandler(w http.ResponseWriter, req *http.Request) {
 			log.Event(req.Context(), "unknown websocket event type", log.Data{"type": eventType, "data": string(eventData)})
 		}
 	}
-}
-
-// FIXME this is to fix go-ns reverse proxy replacing host name so that
-// babbage has correct values when using {{location.hostname}} in handlebars
-func createBabbageProxy(proxyURL *url.URL, directorFunc func(*http.Request)) http.Handler {
-	proxy := httputil.NewSingleHostReverseProxy(proxyURL)
-	director := proxy.Director
-	proxy.Transport = &http.Transport{
-		Proxy: http.ProxyFromEnvironment,
-		DialContext: (&net.Dialer{
-			Timeout:   5 * time.Second,
-			KeepAlive: 30 * time.Second,
-		}).DialContext,
-		MaxIdleConns:          100,
-		IdleConnTimeout:       90 * time.Second,
-		TLSHandshakeTimeout:   5 * time.Second,
-		ExpectContinueTimeout: 1 * time.Second,
-	}
-	proxy.Director = func(req *http.Request) {
-		director(req)
-		//req.Host = proxyURL.Host
-		if directorFunc != nil {
-			directorFunc(req)
-		}
-	}
-
-	return proxy
 }
 
 type florenceLogEvent struct {
