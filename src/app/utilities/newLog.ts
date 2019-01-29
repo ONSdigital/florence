@@ -71,12 +71,12 @@ interface Data {
     dataEvent: object
 }
 
-const client_loaded_at = new Date(window.performance.timing.navigationStart + window.performance.now()).toISOString();
+const client_loaded_at = new Date().toISOString();
 
 export default class log {
     static event = (event: string, ...opts: any[]): void => {
         const eventData: EventData = {
-            created_at: new Date(window.performance.timing.navigationStart + window.performance.now()).toISOString(),
+            created_at: new Date().toISOString(),
             namespace: "florence",
             event: event,
             client_loaded_at: client_loaded_at,
@@ -88,7 +88,7 @@ export default class log {
                 opt.attach(eventData)
             })
         }
-
+        console.log("LOG =>", eventData)
         websocket.send(`log:${JSON.stringify(event)}`);
         return;
     }
