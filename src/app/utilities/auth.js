@@ -12,6 +12,10 @@ export default class auth {
         return user.userType == 'ADMIN' || user.userType == 'EDITOR';
     }
 
+    static isAdmin(user) {
+        return user.userType === 'ADMIN';
+    }
+
     static canViewCollectionsDetails(user) {
         return user.userType == 'ADMIN' || user.userType == 'EDITOR';
     }

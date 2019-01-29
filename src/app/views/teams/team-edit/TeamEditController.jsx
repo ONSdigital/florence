@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 import PropTypes from 'prop-types';
 
-import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
+import { updateActiveTeamMembers, addAllUsers } from '../../../config/actions';
 import user from '../../../utilities/api-clients/user';
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
@@ -45,9 +45,9 @@ export class TeamEditController extends Component {
                 return this.props.members.indexOf(user.email) < 0
             });
             
-            this.props.dispatch(updateUsers(users));
+            this.props.dispatch(addAllUsers(users));
             this.setState({
-                editedUsers: editedUsers,
+                editedUsers,
                 updatingAllUsers: false
             });
         });
@@ -279,7 +279,7 @@ function mapStateToProps(state) {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
         rootPath: state.state.rootPath,
-        users: state.state.teams.users
+        users: state.state.users.all
     }
 }
 

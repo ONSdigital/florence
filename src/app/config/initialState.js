@@ -18,6 +18,10 @@ export const initialState = {
         allIDsAndNames: [],
         users: []
     },
+    users: {
+        active: {},
+        all: []
+    },
     datasets: {
         all: [],
         jobs: [],

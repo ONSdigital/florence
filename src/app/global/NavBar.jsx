@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import { userLoggedOut } from '../config/actions';
 import PropTypes from 'prop-types';
 
 import url from '../utilities/url'
 import cookies from '../utilities/cookies';
 import auth from '../utilities/auth';
 import PreviewNav from './PreviewNav';
+import user from '../utilities/api-clients/user';
 
 const propTypes = {
     config: PropTypes.shape({
@@ -31,14 +31,7 @@ export class NavBar extends Component {
     }
 
     handleLogoutClick() {
-        const accessTokenCookieRemoved = cookies.remove('access_token');
-        if (!accessTokenCookieRemoved) {
-            console.warn(`Error trying to remove 'access_token' cookie`);
-            return
-        }
-        cookies.remove('collection');
-        localStorage.removeItem("loggedInAs");
-        this.props.dispatch(userLoggedOut());
+        user.logOut();
     }
 
     renderWorkingOnItem() {
@@ -100,7 +93,7 @@ export class NavBar extends Component {
                         </li>
 
                         <li className="global-nav__item">
-                            <a className="global-nav__link" href="/florence/users-and-access">Users and access</a>
+                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">Users and access</Link>
                         </li>
 
                         <li className="global-nav__item">
