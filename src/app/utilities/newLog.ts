@@ -191,12 +191,18 @@ class InfoEvent implements Loggable {
 }
 
 function constructEventError(error: Error): EventError {
-    const splitStackTrace = error.stack.split('\n');
-    const stackTrace = splitStackTrace.map(line => {
-        return {
-            line: line.trim()
-        }
-    })
+    let stackTrace = [];
+    try {
+        const splitStackTrace = error.stack.split('\n');
+        stackTrace = splitStackTrace.map(line => {
+            return {
+                line: line.trim()
+            }
+        })
+    } catch (error) {
+        console.error(error)
+        stackTrace = error.stack;
+    }
     return {
         message: error.message,
         stack_trace: stackTrace
