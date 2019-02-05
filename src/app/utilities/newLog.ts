@@ -74,7 +74,7 @@ interface Data {
 const client_loaded_at = new Date().toISOString();
 
 export default class log {
-    static event = (event: string, ...opts: any[]): void => {
+    static event = (event: string, ...opts: any[]): EventData => {
         const eventData: EventData = {
             created_at: new Date().toISOString(),
             namespace: "florence",
@@ -89,8 +89,8 @@ export default class log {
             })
         }
         console.log("LOG =>", eventData)
-        websocket.send(`log:${JSON.stringify(event)}`);
-        return;
+        websocket.send(`log:${JSON.stringify(eventData)}`);
+        return eventData;
     }
     static http = (requestID: string, method: string, url: string, statusCode: number, startedAt: string, endedAt: string ): Http => {
         return new Http(requestID, method, url, statusCode, startedAt, endedAt);
