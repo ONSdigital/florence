@@ -7,7 +7,8 @@ import { updateUsers, updateActiveTeamMembers } from '../../../config/actions';
 import user from '../../../utilities/api-clients/user';
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
-import log, { eventTypes } from '../../../utilities/log';
+// import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/newLog.ts';
 
 import TeamEdit from './TeamEdit';
 
@@ -94,7 +95,7 @@ export class TeamEditController extends Component {
     }
 
     handleMembersChange(userAttributes) {
-        log.add(eventTypes.editedTeamMembers, {action: userAttributes.action, team: this.props.name, user: userAttributes.email})
+        log.event("Updateing user in team", log.data({"action": userAttributes.action, "team": this.props.name, "user": userAttributes.email}))
 
         const disabledUsers = [...this.state.disabledUsers, userAttributes.email];
         this.setState({disabledUsers});
@@ -113,8 +114,10 @@ export class TeamEditController extends Component {
                         editedUsers: this.sortUsers(editedUsers),
                         disabledUsers
                     });
+                    log.event(`successfully removed user from team`,log.data({"team": this.props.name, "user": userAttributes.email}));
                     this.props.dispatch(updateActiveTeamMembers(this.sortMembers(editedMembers)));
                 }).catch(error => {
+                    log.event(`Error removing user`,log.data({'status_code': error.status, "team": this.props.name, "user": userAttributes.email}), log.error(error));
                     const disabledUsers = [...this.state.disabledUsers];
                     disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
                     this.setState({disabledUsers});
@@ -161,6 +164,7 @@ export class TeamEditController extends Component {
                             break
                         }
                         default: {
+                            log.event(`Unhandled error removing user`,log.data({'status_code': error.status, "team": this.props.name, "user": userAttributes.email}), log.error(error));
                             const notification = {
                                 type: "warning",
                                 message: `An unexpected error occurred whilst trying to remove '${userAttributes.email}' from team '${this.props.name}'`,
@@ -186,8 +190,10 @@ export class TeamEditController extends Component {
                         editedUsers: this.sortUsers(editedUsers),
                         disabledUsers
                     });
+                    log.event(`successfully added user to team`,log.data({"team": this.props.name, "user": userAttributes.email}));
                     this.props.dispatch(updateActiveTeamMembers(this.sortMembers(editedMembers)));
                 }).catch(error => {
+                    log.event(`Error adding user`,log.data({'status_code': error.status, "team": this.props.name, "user": userAttributes.email}), log.error(error));
                     const disabledUsers = [...this.state.disabledUsers];
                     disabledUsers.splice(disabledUsers.indexOf(userAttributes.email), 1);
                     this.setState({disabledUsers});
@@ -234,6 +240,7 @@ export class TeamEditController extends Component {
                             break
                         }
                         default: {
+                            log.event(`Unhandled error creating user`,log.data({'status_code': error.status, "team": this.props.name, "user": userAttributes.email}), log.error(error));
                             const notification = {
                                 type: "warning",
                                 message: `An unexpected error occurred whilst trying to add '${userAttributes.email}' to team '${this.props.name}'`,
