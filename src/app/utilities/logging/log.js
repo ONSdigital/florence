@@ -84,7 +84,7 @@ class FatalEvent {
     }
     attach = (event) => {
         event.severity = 0
-        event.error = constructEventError(this.error)
+        event.error = this.error ? constructEventError(this.error) : {};
         return event;
     }
 }
@@ -95,7 +95,7 @@ class ErrorEvent {
     }
     attach = (event) => {
         event.severity = 1
-        event.error = constructEventError(this.error)
+        event.error = this.error ? constructEventError(this.error) : {};
         return event;
     }
 }
@@ -106,7 +106,7 @@ class WarnEvent   {
     }
     attach = (event) => {
         event.severity = 2
-        event.error = constructEventError(this.error)
+        event.error = this.error ? constructEventError(this.error) : {};
         return event;
     }
 }
