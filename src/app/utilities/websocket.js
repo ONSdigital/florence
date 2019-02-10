@@ -1,4 +1,4 @@
-import log, {eventTypes} from './log';
+import log from './logging/log';
 
 class Socket {
     constructor() {
@@ -25,11 +25,11 @@ class Socket {
                 this.socket.send(message);
             });
             
-            log.add(eventTypes.socketOpen);
+            log.event("Websocket opened")
         }
 
         this.socket.onerror = () => {
-            log.add(eventTypes.socketError);
+            log.event("Websocket error", log.error())
         }
 
         this.socket.onclose = () => {
