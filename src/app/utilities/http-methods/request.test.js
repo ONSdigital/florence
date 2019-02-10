@@ -1,23 +1,22 @@
 import request from './request';
 import 'isomorphic-fetch';
-import log from '../log';
+import log from '../logging/log';
 import { fail } from 'assert';
 
-jest.mock('../log', () => {
+jest.mock('../logging/log', () => {
     return {
-        add: jest.fn(() => {
+        event: jest.fn(() => {
             // do nothing
         }),
-        eventTypes: {
-            runtimeWarning: "RUNTIME_WARNING",
-            unexpectedRuntimeError: 'UNEXPECTED_RUNTIME_ERROR'
-        }
+        http: jest.fn(() => {}),
+        error: jest.fn(() => {})
+
     }
 })
-console.error = jest.fn();
+//console.error = jest.fn();
 
 beforeEach(() => {
-    log.add.mockClear();
+    log.event.mockClear();
     fetch.mockClear();
 });
 
@@ -161,14 +160,14 @@ test("GET request response without a 'content-type' header logs an error", async
         }
     );
 
-    let runtimeErrors = log.add.mock.calls.filter(call => {
+    let runtimeErrors = log.event.mock.calls.filter(call => {
         return call[0] === "UNEXPECTED_RUNTIME_ERROR"
     });
     expect(runtimeErrors.length).toBe(0);
     try {
         await request('GET', '/foobar');
     } catch (error) {
-        runtimeErrors = log.add.mock.calls.filter(call => {
+        runtimeErrors = log.event.mock.calls.filter(call => {
             return call[0] === "UNEXPECTED_RUNTIME_ERROR"
         });
         expect(runtimeErrors.length).toBe(1);
@@ -197,12 +196,13 @@ test("GET request response without an 'application/json' header logs a warning",
         }
     );
 
-    let runtimeWarnings = log.add.mock.calls.filter(call => {
+    let runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "RUNTIME_WARNING"
     });
     expect(runtimeWarnings.length).toBe(0);
     await request('GET', '/foobar');
-    runtimeWarnings = log.add.mock.calls.filter(call => {
+    console.log(log.event.mock.call);
+    runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "RUNTIME_WARNING"
     });
     expect(runtimeWarnings.length).toBe(1);
@@ -218,12 +218,12 @@ test("PUT request response without an 'application/json' header doesn't log a wa
         }
     );
 
-    let runtimeWarnings = log.add.mock.calls.filter(call => {
+    let runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "RUNTIME_WARNING"
     });
     expect(runtimeWarnings.length).toBe(0);
     await request('PUT', '/foobar');
-    runtimeWarnings = log.add.mock.calls.filter(call => {
+    runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "RUNTIME_WARNING"
     });
     expect(runtimeWarnings.length).toBe(0);
