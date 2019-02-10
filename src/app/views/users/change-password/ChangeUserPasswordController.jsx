@@ -8,7 +8,7 @@ import url from '../../../utilities/url';
 import ChangePasswordForm from '../../../components/change-password/ChangePasswordForm';
 import validatePassword from '../../../components/change-password/validatePassword';
 import user from '../../../utilities/api-clients/user';
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {
@@ -147,7 +147,7 @@ export class ChangeUserPasswordController extends Component {
                 }
             }
             console.error("Error changing a user's password", error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error changing a user's password: ${JSON.stringify(error)}`});
+            log.event("Error changing a user's password", log.error(error))
             notifications.add(notification);
         });
     }
