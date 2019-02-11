@@ -45,11 +45,11 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
         }
 
         const requestSentAt = new Date(Date.now()).toISOString();
-        log.event("Request sent", log.http(UID, method, URL, null, requestSentAt, null));
+        log.event("Request sent", log.http(UID, method, URL, requestSentAt));
 
         fetch(URI, fetchConfig).then(response => {
             const responseReceivedAt = new Date(Date.now()).toISOString();
-            log.event("Response received", log.http(UID, method, URL, response.status, requestSentAt, responseReceivedAt))
+            log.event("Response received", log.http(UID, method, URL, requestSentAt, response.status, responseReceivedAt))
 
             if (response.status >= 500) {
                 throw new HttpError(response);
@@ -157,7 +157,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             })();
         }).catch((fetchError = {message: "No error message given"}) => {
             const requestFailedAt = new Date(Date.now()).toISOString();
-            log.event("Request failed", log.http(UID, method, URL, fetchError.response.status, requestSentAt, requestFailedAt), log.error(fetchError))
+            log.event("Request failed", log.http(UID, method, URL, requestSentAt, fetchError.response.status, requestFailedAt), log.error(fetchError))
 
             if (willRetry) {
 
