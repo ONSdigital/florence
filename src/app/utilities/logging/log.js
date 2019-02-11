@@ -27,7 +27,6 @@ export default class log {
                 opt.attach(eventData)
             })
         }
-        console.log("LOG =>", eventData);
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
