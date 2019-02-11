@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow } from 'enzyme';
 import { ConfirmUserDeleteController } from './ConfirmUserDeleteController';
 import user from "../../../utilities/api-clients/user";
-import log from "../../../utilities/log";
+import log from "../../../utilities/logging/log";
 import notifications from '../../../utilities/notifications';
 
 console.error = () => {};
@@ -11,11 +11,10 @@ jest.mock('../../../utilities/notifications', () => ({
     add: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/log', () => ({
-    add: jest.fn(() => {}),
-    eventTypes: {
-        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR"
-    }
+
+jest.mock('../../../utilities/logging/log', () => ({
+    event: jest.fn(() => {}),
+    error: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/url', () => ({
@@ -117,7 +116,7 @@ describe("After successfully deleting a user", () => {
 describe("An error after trying to delete the user", () => {
 
     beforeEach(() => {
-        log.add.mockClear();
+        log.event.mockClear();
         notifications.add.mockClear();
     });
 
@@ -135,7 +134,7 @@ describe("An error after trying to delete the user", () => {
     });
     
     it("logs the error", async () => {
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         user.remove.mockImplementationOnce(() => Promise.reject({
             status: 404
         }));
@@ -143,9 +142,8 @@ describe("An error after trying to delete the user", () => {
             email: "foobar@email.com"
         });
         await component.instance().handleSubmit(mockEvent);
-        expect(log.add.mock.calls.length).toBe(1);
-        expect(log.add.mock.calls[0][0]).toBe("UNEXPECTED_RUNTIME_ERROR");
-        expect(log.add.mock.calls[0][1].message).toBe(`Error deleting user 'foobar@email.com': {"status":404}`);
+        expect(log.event.mock.calls.length).toBe(1);
+        expect(log.event.mock.calls[0][0]).toBe("Error deleting user 'foobar@email.com'");
     });
 
     it("returns an object with 'response' and 'error' properties", async () => {
