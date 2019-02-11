@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import url from '../../../utilities/url';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import Page from '../../../components/page/Page';
 import date from '../../../utilities/date';
 
@@ -113,7 +113,7 @@ export class CollectionDetails extends Component {
                 `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit));
+            log.event("Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit), log.error(error))
             console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
 
             if (lastEdit.email) {
