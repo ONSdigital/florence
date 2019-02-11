@@ -157,8 +157,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             })();
         }).catch((fetchError = {message: "No error message given"}) => {
             const requestFailedAt = new Date(Date.now()).toISOString();
-            log.event("Request failed", log.http(UID, method, URL, requestSentAt, fetchError.response.status, requestFailedAt), log.error(fetchError))
-
+            log.event("Request failed", log.http(UID, method, URL, requestSentAt, undefined, requestFailedAt), log.error(fetchError))
             if (willRetry) {
 
                 // retry post
