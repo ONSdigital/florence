@@ -2,7 +2,7 @@ import React from 'react';
 import { shallow, mount } from 'enzyme';
 import {UserDetailsController, mapStateToProps} from './UserDetailsController';
 import user from "../../../utilities/api-clients/user";
-import log from "../../../utilities/log";
+import log from "../../../utilities/logging/log";
 import notifications from '../../../utilities/notifications';
 
 console.error = () => {};
@@ -25,9 +25,13 @@ jest.mock('../../../utilities/notifications', () => ({
     add: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/log', () => ({
-    add: jest.fn(() => {}),
-    eventTypes: {}
+jest.mock('../../../utilities/websocket', () => ({
+    send: jest.fn(() => {})
+}));
+
+jest.mock('../../../utilities/logging/log', () => ({
+    event: jest.fn(() => {}),
+    error: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/auth', () => ({
@@ -54,7 +58,7 @@ beforeEach(() => {
         <UserDetailsController {...defaultProps} />
     );
     dispatchedActions = [];
-    log.add.mockClear();
+    log.event.mockClear();
     notifications.add.mockClear();
     user.get.mockClear();
     user.getPermissions.mockClear();
@@ -83,15 +87,15 @@ describe("Fetching the user", () => {
 
 describe("Error fetching the user", () => {
     beforeEach(() => {
-        log.add.mockClear();
+        log.event.mockClear();
         notifications.add.mockClear();
     });
 
     it("failure getting permissions is logged", async () => {
         user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().getUserPermissions();
-        expect(log.add.mock.calls.length).toBe(1);
+        expect(log.event.mock.calls.length).toBe(1);
     });
     
     it("user is notified when fetching permissions fails", async () => {
@@ -103,9 +107,9 @@ describe("Error fetching the user", () => {
 
     it("failure getting details is logged", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().getUserDetails();
-        expect(log.add.mock.calls.length).toBe(1);
+        expect(log.event.mock.calls.length).toBe(1);
     });
 
     it("user is notified when fetching details fails", async () => {
@@ -118,15 +122,15 @@ describe("Error fetching the user", () => {
     it("matching error statuses when getting details and permissions is logged", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
         user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
-        expect(log.add.mock.calls.length).toBe(2);
+        expect(log.event.mock.calls.length).toBe(2);
     });
 
     it("nothing is logged when getting details and permissions is successful", async () => {
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
     });
     
     it("user is not notified when getting details and permissions is successful", async () => {
@@ -146,9 +150,9 @@ describe("Error fetching the user", () => {
     it("different error statuses when getting details and permissions is logged", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
         user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 404}));
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
-        expect(log.add.mock.calls.length).toBe(2);
+        expect(log.event.mock.calls.length).toBe(2);
     });
     
     it("user is notified once when fetching details and permissions fails with a different status", async () => {
