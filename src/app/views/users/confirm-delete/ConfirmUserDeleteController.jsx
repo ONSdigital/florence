@@ -7,7 +7,7 @@ import Input from '../../../components/Input';
 import url from '../../../utilities/url';
 import { removeUserFromAllUsers } from '../../../config/actions';
 import user from '../../../utilities/api-clients/user';
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import notifications from '../../../utilities/notifications';
 
 const propTypes = {
@@ -47,7 +47,7 @@ export class ConfirmUserDeleteController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error deleting user '${userID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error deleting user '${userID}': ${JSON.stringify(error)}`});
+            log.event(`Error deleting user '${userID}'`, log.error(error))
             return {
                 response: null,
                 error
