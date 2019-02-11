@@ -1,8 +1,18 @@
+import { browserHistory } from 'react-router';
 import websocket from '../websocket';
 
 const client_loaded_at = new Date(Date.now()).toISOString();
 
 export default class log {
+
+    static initialise() {
+        this.event("App initialised");
+        browserHistory.listen(location => {
+            log.event("ROute change", log.data({...location}));
+        });
+    }
+
+
     static event = (event, ...opts) => {
         const eventData = {
             created_at: new Date(Date.now()).toISOString(),
@@ -17,6 +27,7 @@ export default class log {
                 opt.attach(eventData)
             })
         }
+        console.log("LOG =>", eventData);
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
