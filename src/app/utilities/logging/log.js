@@ -20,8 +20,8 @@ export default class log {
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
-    static http = (requestID, method, url, statusCode, startedAt, endedAt ) => {
-        return new Http(requestID, method, url, statusCode, startedAt, endedAt);
+    static http = (requestID, method, url, startedAt, statusCode, endedAt ) => {
+        return new Http(requestID, method, url, startedAt, statusCode, endedAt);
     }
     static data = dataEvent => {
         return new Data(dataEvent);
@@ -39,7 +39,7 @@ export default class log {
 }
 
 class Http {
-    constructor(requestID, method, url, statusCode, startedAt, endedAt) {
+    constructor(requestID, method, url, startedAt, statusCode, endedAt) {
         this.requestID = requestID,
         this.method = method,
         this.url = url,
@@ -50,19 +50,21 @@ class Http {
 
     attach = (event) => {
         const duration = Date.parse(this.endedAt) - Date.parse(this.startedAt);
-        const url = new URL(this.url)
-        event.trace_id = this.requestID
+        const url = new URL(this.url);
+        event.trace_id = this.requestID;
         event.http = {
             method: this.method,
-            path: url.pathname,
-            query: url.search,
-            scheme: url.protocol,
-            host: url.hostname,
-            port: url.port ? parseInt(url.port) : null,
+            // set url methods and duration to undefined so these are omitted 
+            // when JSON.strinify'ing them to send over the websocket
+            path: url.pathname ? url.pathname : undefined,
+            query: url.search ? url.search : undefined,
+            scheme: url.protocol ? url.protocol : undefined,
+            host: url.hostname ? url.hostname: undefined,
+            port: url.port ? parseInt(url.port) : undefined,
             status_code: this.statusCode,
             started_at: this.startedAt,
             ended_at: this.endedAt,
-            duration: duration
+            duration: duration ? duration : undefined
         }
         return event;
     }
