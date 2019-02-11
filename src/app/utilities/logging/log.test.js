@@ -31,7 +31,7 @@ const httpLogEvent = {
         query: '?search=test',
         scheme: 'http:',
         host: 'www.test.com',
-        port: null,
+        port: undefined,
         status_code: 200,
         started_at: '2017-10-06T13:45:28.975Z',
         ended_at: '2017-10-06T13:45:33.975Z',
@@ -80,7 +80,7 @@ describe("calling log.event", () => {
     });
 
     it("creates correct http log event", () => {
-        const logEvent = log.event(httpLogEvent.event, log.http("1234", "GET", testUrl, 200, currentDateISO, currentDateISOPlus5));
+        const logEvent = log.event(httpLogEvent.event, log.http("1234", "GET", testUrl, currentDateISO, 200, currentDateISOPlus5));
         expect(logEvent).toMatchObject(httpLogEvent)
     });
 
@@ -96,7 +96,7 @@ describe("calling log.event", () => {
 
     it("creates correct complex (HTTP, error and date) log event", () => {
         const logEvent = log.event(errorLogEvent.event, 
-            log.http("1234", "GET", testUrl, 200, currentDateISO, currentDateISOPlus5),
+            log.http("1234", "GET", testUrl, currentDateISO, 200, currentDateISOPlus5),
             log.error(mockError),
             log.data({"test": "test"})
         );
