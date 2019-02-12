@@ -465,7 +465,7 @@ export class CollectionCreateController extends Component {
         }
 
         if (error.body.message.includes("Cannot use this release")) {
-            log.event(`error creating collection: release is in another colelction`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value, release_name: this.state.newCollectionDetails.release.name, release_url: this.state.newCollectionDetails.release.uri}))
+            log.event(`error creating collection: release is in another collection`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value, release_name: this.state.newCollectionDetails.release.name, release_url: this.state.newCollectionDetails.release.uri}))
             const collectionRelease = {
                 ...this.state.newCollectionDetails.release,
                 errorMsg: "Release is already in use in another collection"
