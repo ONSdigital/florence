@@ -1,8 +1,21 @@
+import { browserHistory } from 'react-router';
 import websocket from '../websocket';
 
 const client_loaded_at = new Date(Date.now()).toISOString();
 
 export default class log {
+
+    static initialise() {
+        this.event("App initialised");
+        browserHistory.listen(location => {
+            log.event("Route change", log.data({...location}));
+        });
+    }
+
+    /**
+     * @param {string} event - tells us what event is being logged
+     * @param {*} opts - log method
+     */
     static event = (event, ...opts) => {
         const eventData = {
             created_at: new Date(Date.now()).toISOString(),
@@ -20,7 +33,17 @@ export default class log {
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
-    static http = (requestID, method, url, startedAt, statusCode, endedAt ) => {
+
+    /**
+     * @param {string} requestID - unique ID for request being made
+     * @param {string} method - HTTP request method
+     * @param {string} url - full URL of request
+     * @param {string} startedAt - ISOstring of time request started
+     * @param {number} statusCode 
+     * @param {string} endedAt - ISOstring time request finished
+     * @returns {Http} - class with attach method 
+     */
+    static http = (requestID, method, url, startedAt, statusCode, endedAt) => {
         return new Http(requestID, method, url, startedAt, statusCode, endedAt);
     }
     static data = dataEvent => {
@@ -36,6 +59,30 @@ export default class log {
         return new WarnEvent(error) 
     }
     static info = () => new InfoEvent()
+
+    /**
+     * 
+     * @param {number} skip - (Optional) start point of the items we'd like to receive
+     * @param {number} limit - (Optional) the number of items we'd like to receive
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
+     */
+    static getAll(skip, limit, requestTimestamp) {
+        return storage.getAll(skip, limit, requestTimestamp);
+    }
+
+    /**
+     * @returns {Promise} - Which resolves to am integer
+     */
+    static length() {
+        return storage.length();
+    }
+
+    /**
+     * @returns {Promise}
+     */
+    static removeAll() {
+        return storage.removeAll();
+    }
 }
 
 class Http {
