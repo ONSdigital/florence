@@ -116,7 +116,7 @@ class UsersCreateController extends Component {
         if (createdUser) {
             this.setState({newUser: this.blankNewUserDetails, isSubmitting: false});
             this.props.onCreateSuccess({name: newUser.username.value, email: newUser.email.value});
-            log.event(`successfully created user`,log.data({"user": newUser.email.value}));
+            log.event(`Successfully created user`,log.data({user: newUser.email.value}));
             return
         }
 
@@ -175,7 +175,7 @@ class UsersCreateController extends Component {
         return user.create(newUserDetails).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            log.event(`Error creating user`,log.data({'user': newUserDetails.email}), log.error(error));
+            log.event(`Error creating user`,log.data({user: newUserDetails.email}), log.error(error));
             switch(error.status) {
                 case(403): {
                     const notification = {
@@ -232,7 +232,7 @@ class UsersCreateController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error creating user`,log.data({'status_code': error.status, 'user': newUserDetails.email}), log.error(error));
+                    log.event(`Unhandled error creating user`,log.data({status_code: error.status, user: newUserDetails.email}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: "An unexpected error's occurred whilst trying to create a user.",
@@ -251,7 +251,7 @@ class UsersCreateController extends Component {
         return user.setPassword(newUserPassword).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            log.event(`Error seting user password`,log.data({'user': newUserPassword.email}), log.error(error));
+            log.event(`Error seting user password`,log.data({user: newUserPassword.email}), log.error(error));
             switch(error.status) {
                 case(403): {
                     const notification = {
@@ -299,7 +299,7 @@ class UsersCreateController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error seting user password`,log.data({'status_code': error.status, 'user': newUserPassword.email}), log.error(error));
+                    log.event(`Unhandled error seting user password`,log.data({status_code: error.status, user: newUserPassword.email}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: "An unexpected error's occurred whilst trying to set users' password.",
@@ -318,7 +318,7 @@ class UsersCreateController extends Component {
         return user.setPermissions(newUserPerrmissions).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            log.event(`Error seting user permissions`,log.data({'user': newUserPerrmissions.email}), log.error(error));
+            log.event(`Error seting user permissions`,log.data({user: newUserPerrmissions.email}), log.error(error));
             switch(error.status) {
                 case(403): {
                     const notification = {
@@ -366,7 +366,7 @@ class UsersCreateController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error seting user permissions`,log.data({'status_code': error.status, 'user': newUserPerrmissions.email}), log.error(error));
+                    log.event(`Unhandled error seting user permissions`,log.data({status_code: error.status, user: newUserPerrmissions.email}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: "An unexpected error's occurred whilst trying to set users' permission.",
@@ -385,7 +385,7 @@ class UsersCreateController extends Component {
         user.remove(email).then(response => {
             return {response: response, error: null};
         }).catch(error => {
-            log.event(`Error deleting errored user`,log.data({'user': email}), log.error(error));
+            log.event(`Error deleting errored user`,log.data({user: email}), log.error(error));
             notifications.add({
                 type: "warning",
                 message: "An error has occurred, the user has been created but will not work",

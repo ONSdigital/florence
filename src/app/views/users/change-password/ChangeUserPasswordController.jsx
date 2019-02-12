@@ -110,10 +110,10 @@ export class ChangeUserPasswordController extends Component {
                 autoDismiss: 7000,
                 message: "Password successfully changed"
             });
-            log.event(`successfully changed password of user`,log.data({"user": passwordUpdate.email}));
+            log.event(`Successfully changed password of user`,log.data({user: passwordUpdate.email}));
         }).catch(error => {
             this.setState({isSubmitting: false});
-            log.event(`Error changing password of user`,log.data({'user': passwordUpdate.email, "logged_in_user": this.props.loggedInUser.email, "is_admin": this.props.loggedInUser.isAdmin}), log.error(error));
+            log.event(`Error changing password of user`,log.data({user: passwordUpdate.email, logged_in_user: this.props.loggedInUser.email, is_admin: this.props.loggedInUser.isAdmin}), log.error(error));
 
             if (error.status === 401 && !this.props.loggedInUser.isAdmin) {
                 this.setState(state => ({
@@ -153,14 +153,12 @@ export class ChangeUserPasswordController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error changing password of user`,log.data({'user': passwordUpdate.email}), log.error(error));
+                    log.event(`Unhandled error changing password of user`,log.data({user: passwordUpdate.email}), log.error(error));
                     notification.message = "Unable to change user's password due to an unexpected error";
                     break;
                 }
             }
             console.error("Error changing a user's password", error);
-            console.error("Error changing a user's password2", error);
-            console.error("Error changing a user's password3", error);
             notifications.add(notification);
         });
     }
