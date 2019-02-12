@@ -47,7 +47,7 @@ export class ConfirmUserDeleteController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error deleting user '${userID}'`, error);
-            log.event("Error deleting user", log.error(error), log.data({user_id: UserID}))
+            log.event("Error deleting user", log.error(error), log.data({user_id: userID}))
             return {
                 response: null,
                 error
