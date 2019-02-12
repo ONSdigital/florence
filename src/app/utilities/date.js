@@ -36,7 +36,7 @@ export default class date {
             newDate.setFullYear(date.getFullYear() + extraYears);
         } catch (error) {
             newDate = date;
-            log.event(`"Error adding ${extraYears} year(s) to the date ${date}`, log.error(error))
+            log.event("Error adding year(s) to the date", log.error(error), log.data({extra_years: extraYears, date: date}))
             console.error("Error adding " + extraYears + "year(s) to the date " + date, error);
         }
 
