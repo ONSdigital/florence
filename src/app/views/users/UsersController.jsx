@@ -124,7 +124,7 @@ export class UsersController extends Component {
             }
             notifications.add(notification);
             console.error("Error mapping users to state: ", error);
-            log.event(`Error mapping users to state:\n${JSON.stringify(error)}`, log.error(error));
+            log.event(`Error mapping users to state`, log.error(error));
             return false;
         }
     }
