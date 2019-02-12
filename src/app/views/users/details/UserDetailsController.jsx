@@ -101,7 +101,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting user '${userID}'`, error);
-            log.event(`Error getting user '${userID}'`, log.error(error))
+            log.event("Error getting user", log.error(error), log.data({user_id: userID}))
             return {
                 response: null,
                 error
@@ -127,7 +127,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting permissions for '${userID}'`, error);
-            log.event(`Error getting permissions for '${userID}'`, log.error(error))
+            log.event("Error getting permissions", log.error(error), log.data({user_id: userID}))
             return {
                 response: null,
                 error
