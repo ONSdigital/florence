@@ -28,8 +28,8 @@ class Socket {
             log.event("Websocket opened")
         }
 
-        this.socket.onerror = () => {
-            log.event("Websocket error", log.error())
+        this.socket.onerror = (event) => {
+            log.event("Websocket error", log.error(), log.data({...event}))
         }
 
         this.socket.onclose = () => {
