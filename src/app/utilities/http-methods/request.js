@@ -95,7 +95,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 responseIsText = response.headers.get('content-type').match(/text\/plain/);
             } catch (error) {
                 console.error(`Error trying to parse content-type header`, error);
-                log.event("Error trying to parse content-type header", log.error(error))
+                log.event("Error trying to parse content-type header", log.error(error), log.data({header_content_type: response.headers.get('content-type')}))
                 
                 // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
                 // unless we just allow 204 responses to resolve, instead of reject with an error
@@ -109,7 +109,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             }
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
-                log.event(`Received request response for method '${method}' that didn't have the 'application/json' header`, log.warn());
+                log.event(`Received request response for method that didn't have the 'application/json' header`, log.warn(), log.data({method: method}));
             }
             
             // We've detected a text response so we should try to parse as text, not JSON
