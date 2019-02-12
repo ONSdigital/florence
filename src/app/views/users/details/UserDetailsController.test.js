@@ -121,11 +121,17 @@ describe("Error fetching the user", () => {
     });
 
     it("matching error statuses when getting details and permissions is logged", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({status: 404}));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 404}));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(2);
+        //Unhandled error
+        user.get.mockImplementationOnce(() => Promise.reject({status: undefined}));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: undefined}));
+        expect(log.event.mock.calls.length).toBe(2);
+        await component.instance().updateStateWithUser();
+        expect(log.event.mock.calls.length).toBe(5);
     });
 
     it("nothing is logged when getting details and permissions is successful", async () => {
@@ -149,11 +155,11 @@ describe("Error fetching the user", () => {
     });
 
     it("different error statuses when getting details and permissions is logged", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({status: 403}));
         user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 404}));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
-        expect(log.event.mock.calls.length).toBe(2);
+        expect(log.event.mock.calls.length).toBe(3);
     });
     
     it("user is notified once when fetching details and permissions fails with a different status", async () => {
