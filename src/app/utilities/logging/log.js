@@ -168,17 +168,19 @@ class InfoEvent   {
 }
 
 export function constructEventError(error) {
-    let stackTrace = [];
-    try {
-        const splitStackTrace = error.stack.split('\n');
-        stackTrace = splitStackTrace.map(line => {
-            return {
-                line: line.trim()
-            }
-        })
-    } catch (err) {
-        console.error(err)
-        stackTrace = error.stack;
+    let stackTrace = undefined;
+    if (error.stack) {
+        try {
+            const splitStackTrace = error.stack.split('\n');
+            stackTrace = splitStackTrace.map(line => {
+                return {
+                    line: line.trim()
+                }
+            })
+        } catch (err) {
+            console.error(err)
+            stackTrace = error.stack;
+        }
     }
     return {
         message: error.message,
