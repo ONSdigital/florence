@@ -119,7 +119,7 @@ export class TeamDeleteController extends Component {
                     break
                 }
                 default: {
-                    log.event(`Unhandled error whilst deleteing team's`,log.data({status_code: error.status, team: this.props.name, user: userAttributes.email}), log.error(error));
+                    log.event(`Unhandled error whilst deleteing team's`,log.data({status_code: error.status, team: this.props.name}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,
