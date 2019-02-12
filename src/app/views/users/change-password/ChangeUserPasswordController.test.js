@@ -17,6 +17,7 @@ jest.mock('../../../utilities/notifications', () => ({
 
 jest.mock('../../../utilities/logging/log', () => ({
     event: jest.fn(() => {}),
+    data: jest.fn(() => {}),
     error: jest.fn(() => {})
 }));
 
@@ -327,12 +328,20 @@ describe("Sending the request to change password", () => {
 
     it("errors are logged", async () => {
         user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 500
+            status: 404
         }));
 
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().handleSubmit(mockEvent);
         expect(log.event.mock.calls.length).toBe(1);
+
+        user.updatePassword.mockImplementationOnce(() => Promise.reject({
+            status: "undefined"
+        }));
+
+        expect(log.event.mock.calls.length).toBe(1);
+        await component.instance().handleSubmit(mockEvent);
+        expect(log.event.mock.calls.length).toBe(3);
     });
 
     it("user's are routed to the user details screen on success", async () => {
