@@ -7,7 +7,9 @@ console.error = () => {};
 
 jest.mock('../../utilities/logging/log', () => {
     return {
-        event: jest.fn(() => {})
+        event: jest.fn(() => {}),
+        data: jest.fn(() => {}),
+        error: jest.fn(() => {})
     }
 });
 
