@@ -31,7 +31,8 @@ jest.mock('../../../utilities/websocket', () => ({
 
 jest.mock('../../../utilities/logging/log', () => ({
     event: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
+    data: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/auth', () => ({

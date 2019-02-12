@@ -14,7 +14,8 @@ jest.mock('../../../utilities/notifications', () => ({
 
 jest.mock('../../../utilities/logging/log', () => ({
     event: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
+    data: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/url', () => ({
@@ -143,7 +144,7 @@ describe("An error after trying to delete the user", () => {
         });
         await component.instance().handleSubmit(mockEvent);
         expect(log.event.mock.calls.length).toBe(1);
-        expect(log.event.mock.calls[0][0]).toBe("Error deleting user 'foobar@email.com'");
+        expect(log.event.mock.calls[0][0]).toBe("Error deleting user");
     });
 
     it("returns an object with 'response' and 'error' properties", async () => {
