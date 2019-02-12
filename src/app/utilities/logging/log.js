@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import storage from '../storage';
 import websocket from '../websocket';
 
 const client_loaded_at = new Date(Date.now()).toISOString();
@@ -30,6 +31,7 @@ export default class log {
                 opt.attach(eventData)
             })
         }
+        storage.add(eventData);
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
