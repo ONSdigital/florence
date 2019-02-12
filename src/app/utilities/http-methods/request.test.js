@@ -8,6 +8,7 @@ jest.mock('../logging/log', () => {
         event: jest.fn(() => {
             // do nothing
         }),
+        data: jest.fn(() => {}),
         http: jest.fn(() => {}),
         error: jest.fn(() => {}),
         warn: jest.fn(() => {})
@@ -196,13 +197,15 @@ test("GET request response without an 'application/json' header logs a warning",
         }
     );
     let runtimeWarnings = log.event.mock.calls.filter(call => {
-        return call[0] === "RUNTIME_WARNING"
+        return call[0] === "Received request response for method that didn't have the 'application/json' header"
     });
     expect(runtimeWarnings.length).toBe(0);
     await request('GET', '/foobar');
+    console.log(log.event.mock.calls)
     runtimeWarnings = log.event.mock.calls.filter(call => {
-        return call[0] === "Received request response for method 'GET' that didn't have the 'application/json' header"
+        return call[0] === "Received request response for method that didn't have the 'application/json' header"
     });
+    
     expect(runtimeWarnings.length).toBe(1);
 });
 
