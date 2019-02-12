@@ -95,7 +95,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {   
+    renderLastEditText(lastEdit) {  
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
@@ -113,7 +113,7 @@ export class CollectionDetails extends Component {
                 `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
-            log.event("Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit), log.error(error))
+            log.event("Error parsing date for collection details 'page last edit' function", log.error(error), log.data({...lastEdit}))
             console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
 
             if (lastEdit.email) {
