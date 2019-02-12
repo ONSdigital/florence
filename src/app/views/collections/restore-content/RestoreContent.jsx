@@ -52,7 +52,7 @@ export class RestoreContent extends Component {
                 returnValue: {id: deletedContent.id.toString(), uri: deletedContent.uri, title: deletedContent.pageTitle, type: deletedContent.type, isMultiDelete: deletedContent.deletedFiles.length > 1 },
             }
         } catch (error) {
-            log.event("Error mapping deleted content", log.error(error), log.data({deletedContentId: deletedContent.id, deletedContentPageTitle: deletedContent.pageTitle}));
+            log.event("Error mapping deleted content", log.error(error), log.data({deleted_content_id: deletedContent.id, deleted_content_page_title: deletedContent.pageTitle}));
             console.error(`Error mapping deleted content (id: ${deletedContent.id}, title: ${deletedContent.pageTitle})to state. ${error}`);
         }
 

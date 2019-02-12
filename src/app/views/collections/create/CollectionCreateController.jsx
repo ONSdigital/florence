@@ -448,7 +448,7 @@ export class CollectionCreateController extends Component {
 
     handle409SubmitStatus(error) {
         if (error.body.message.includes("A collection with this name already exists")) {
-            log.event(`error creating collection: collection name already exists`, log.error(error), log.data({collectionName: this.state.newCollectionDetails.name.value}))
+            log.event(`error creating collection: collection name already exists`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value}))
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
                 errorMsg: "A collection with this name already exists"
@@ -465,7 +465,7 @@ export class CollectionCreateController extends Component {
         }
 
         if (error.body.message.includes("Cannot use this release")) {
-            log.event(`error creating collection: release is in another colelction`, log.error(error), log.data({collectionName: this.state.newCollectionDetails.name.value, releaseName: this.state.newCollectionDetails.release.name, releaseURL: this.state.newCollectionDetails.release.uri}))
+            log.event(`error creating collection: release is in another colelction`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value, release_name: this.state.newCollectionDetails.release.name, release_url: this.state.newCollectionDetails.release.uri}))
             const collectionRelease = {
                 ...this.state.newCollectionDetails.release,
                 errorMsg: "Release is already in use in another collection"
