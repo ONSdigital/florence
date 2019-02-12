@@ -8,7 +8,7 @@ export default class log {
     static initialise() {
         this.event("App initialised");
         browserHistory.listen(location => {
-            log.event("ROute change", log.data({...location}));
+            log.event("Route change", log.data({...location}));
         });
     }
 
