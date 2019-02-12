@@ -38,12 +38,12 @@ export default class log {
      * @param {string} requestID - unique ID for request being made
      * @param {string} method - HTTP request method
      * @param {string} url - full URL of request
-     * @param {string} startedAt - ISOstring of request start time
+     * @param {string} startedAt - ISOstring of time request started
      * @param {number} statusCode 
-     * @param {string} startedAt - ISOstring of request start time
+     * @param {string} endedAt - ISOstring time request finished
      * @returns {Http} - class with attach method 
      */
-    static http = (requestID, method, url, startedAt, statusCode, endedAt ) => {
+    static http = (requestID, method, url, startedAt, statusCode, endedAt) => {
         return new Http(requestID, method, url, startedAt, statusCode, endedAt);
     }
     static data = dataEvent => {
