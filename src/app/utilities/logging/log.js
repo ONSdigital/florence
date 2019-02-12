@@ -1,4 +1,5 @@
 import { browserHistory } from 'react-router';
+import storage from '../storage';
 import websocket from '../websocket';
 
 const client_loaded_at = new Date(Date.now()).toISOString();
@@ -30,6 +31,7 @@ export default class log {
                 opt.attach(eventData)
             })
         }
+        storage.add(eventData);
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     }
@@ -168,17 +170,19 @@ class InfoEvent   {
 }
 
 export function constructEventError(error) {
-    let stackTrace = [];
-    try {
-        const splitStackTrace = error.stack.split('\n');
-        stackTrace = splitStackTrace.map(line => {
-            return {
-                line: line.trim()
-            }
-        })
-    } catch (err) {
-        console.error(err)
-        stackTrace = error.stack;
+    let stackTrace = undefined;
+    if (error.stack) {
+        try {
+            const splitStackTrace = error.stack.split('\n');
+            stackTrace = splitStackTrace.map(line => {
+                return {
+                    line: line.trim()
+                }
+            })
+        } catch (err) {
+            console.error(err)
+            stackTrace = error.stack;
+        }
     }
     return {
         message: error.message,
