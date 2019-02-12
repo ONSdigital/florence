@@ -59,10 +59,6 @@ const exampleUnmappedPages = [
     }
 ]
 
-// beforeEach(() => {
-//     log.event.mockClear();
-// });
-
 describe("readablePublishDate returns correct display date when", () => {
     it("a collection has a publishDate and is set to manual publish", () => {
         const collection = {
