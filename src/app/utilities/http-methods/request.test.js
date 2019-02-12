@@ -201,7 +201,6 @@ test("GET request response without an 'application/json' header logs a warning",
     });
     expect(runtimeWarnings.length).toBe(0);
     await request('GET', '/foobar');
-    console.log(log.event.mock.calls)
     runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "Received request response for method that didn't have the 'application/json' header"
     });
