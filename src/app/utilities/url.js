@@ -38,7 +38,7 @@ export default class url {
 
         if (typeof path !== "string") {
             console.error("Unable to parse relative URL path because non-string type given");
-            log.event("Unable to parse relative URL path because non-string type given");
+            log.event("Unable to parse relative URL path because non-string type given", log.data({type: typeof path}));
             return location.pathname;
         }
 
