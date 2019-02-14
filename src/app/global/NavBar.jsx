@@ -118,7 +118,6 @@ export class NavBar extends Component {
     }
 
     render() {
-        //const regex = new RegExp(`${this.props.rootPath}/collections/.*/preview`, "g");
         const regex = new RegExp(`${this.props.rootPath}/collections/[\\w|-]*/preview`, "g");
         const isViewingPreview = regex.test(this.props.location.pathname);
         return (
