@@ -32,7 +32,7 @@ export default class SimpleEditableListItemItem extends Component {
                     <p>{this.props.field.simpleListDescription}</p>
                 </div>
                 <div className="grid__col-lg-2">
-                    <p style={{"textAlign": "right"}}>
+                    <p className="text-right">
                         <button type="button" className="btn btn--link" onClick={this.handleEditClick} disabled={this.props.disabled}>Edit</button> | 
                         <button type="button" className="btn btn--link" onClick={this.handleDeleteClick} disabled={this.props.disabled}>Delete</button>
                     </p>  
