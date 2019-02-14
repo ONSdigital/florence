@@ -79,15 +79,6 @@ export class DatasetsController extends Component {
                     notifications.add(notification);
                     break;
                 }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error has occurred whilst trying to get the submitted datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break
-                }
                 default: {
                     const notification = {
                         type: "warning",
