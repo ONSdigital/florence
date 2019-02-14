@@ -32,7 +32,6 @@ import './scss/main.scss';
 import { store, history } from './app/config/store';
 
 import SelectableTest from './SelectableTest';
-//import DatasetPreviewController from './app/views/datasets/preview/DatasetPreviewController';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
 import DatasetPreviewController from './app/views/datasets-new/preview/PreviewController';
