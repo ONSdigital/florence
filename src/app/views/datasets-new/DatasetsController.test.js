@@ -77,7 +77,6 @@ describe("On mount of the datasets controller screen", () => {
 
 describe("Calling getAllDatasets", () => {
     it("adds all datasets to state", async () => {
-        //expect(component.state().datasets.length).toBe(0)
         component.instance().getAllDatasets();
         expect(component.state().datasets.length).toBe(mockedAllDatasets.items.length);
     })
