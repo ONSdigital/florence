@@ -19,9 +19,9 @@ export default class log {
      */
     static event = (event, ...opts) => {
         const eventData = {
+            event: event,
             created_at: new Date(Date.now()).toISOString(),
             namespace: "florence",
-            event: event,
             client_loaded_at: client_loaded_at,
             severity: 3
         }
