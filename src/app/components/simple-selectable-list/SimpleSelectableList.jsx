@@ -16,8 +16,6 @@ const propTypes = {
 export default class SimpleSelectableList extends Component {
     constructor(props) {
         super(props);
-
-        //this.bindItemClick = this.bindItemClick.bind(this);
     }
 
     render() {
