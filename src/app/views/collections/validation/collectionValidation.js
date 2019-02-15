@@ -15,7 +15,7 @@ export default class collectionValidation {
         if (name.match(/[^a-zA-Z0-9 ]/)) {
             response = {
                 isValid: false,
-                errorMsg: "Collections must be a combination of letters and numbers the symbols are (" + name.replace(/[a-zA-Z0-9 ]/g, "") + ")."
+                errorMsg: "Collection names can only contain letters and numbers. (" + name.replace(/[a-zA-Z0-9 ]/g, "") + ") are not allowed."
             }
         }
 
