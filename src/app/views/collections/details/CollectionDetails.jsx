@@ -5,7 +5,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import url from '../../../utilities/url';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import Page from '../../../components/page/Page';
 import date from '../../../utilities/date';
 
@@ -95,7 +95,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {   
+    renderLastEditText(lastEdit) {  
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
@@ -113,7 +113,7 @@ export class CollectionDetails extends Component {
                 `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit));
+            log.event("Error parsing date for collection details 'page last edit' function", log.error(error), log.data({...lastEdit}))
             console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
 
             if (lastEdit.email) {

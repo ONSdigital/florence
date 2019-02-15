@@ -3,6 +3,12 @@ import { RestoreContent } from './RestoreContent';
 import { shallow } from 'enzyme';
 import notifications from '../../../utilities/notifications';
 
+jest.mock('../../../utilities/websocket', () => {
+    return {
+        send: jest.fn(() => {}),
+    }
+});
+
 jest.mock('../../../utilities/log', () => {
     return {
         add: function() {},
