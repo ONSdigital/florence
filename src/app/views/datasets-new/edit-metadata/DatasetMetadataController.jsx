@@ -50,7 +50,7 @@ export class DatasetMetadataController extends Component {
             metadata: {
                 title: "",
                 summary: "",
-                keywords: [],
+                keywords: "",
                 nationalStatistic: false,
                 licence: "",
                 contactName: "",
@@ -116,7 +116,7 @@ export class DatasetMetadataController extends Component {
             const mappedDataset = {
                 title: dataset.title,
                 summary: dataset.description,
-                keywords: dataset.keywords,
+                keywords: dataset.keywords ? (dataset.keywords.join()).replace(",", ", ") : [],
                 nationalStatistic: dataset.national_statistic,
                 licence: dataset.license || "", 
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets) : [],
@@ -612,7 +612,7 @@ export class DatasetMetadataController extends Component {
             id: this.props.params.datasetID,
             title: this.state.metadata.title,
             description: this.state.metadata.summary,
-            keywords: this.state.metadata.keywords,
+            keywords: this.state.metadata.keywords ? this.state.metadata.keywords.split(", ") : [],
             national_statistic: this.state.metadata.nationalStatistic,
             license: this.state.metadata.licence, 
             related_datasets: this.state.metadata.relatedDatasets,
