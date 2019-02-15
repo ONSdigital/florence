@@ -8,7 +8,7 @@ import Input from '../../../components/Input'
 import collections from '../../../utilities/api-clients/collections'
 import content from '../../../utilities/api-clients/content'
 import notifications from '../../../utilities/notifications';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 
 const propTypes = {
     activeCollection: PropTypes.object.isRequired,
@@ -52,7 +52,7 @@ export class RestoreContent extends Component {
                 returnValue: {id: deletedContent.id.toString(), uri: deletedContent.uri, title: deletedContent.pageTitle, type: deletedContent.type, isMultiDelete: deletedContent.deletedFiles.length > 1 },
             }
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, `Error mapping deleted content (id: ${deletedContent.id}, title: ${deletedContent.pageTitle})to state. ${error}`);
+            log.event("Error mapping deleted content", log.error(error), log.data({deleted_content_id: deletedContent.id, deleted_content_page_title: deletedContent.pageTitle}));
             console.error(`Error mapping deleted content (id: ${deletedContent.id}, title: ${deletedContent.pageTitle})to state. ${error}`);
         }
 
