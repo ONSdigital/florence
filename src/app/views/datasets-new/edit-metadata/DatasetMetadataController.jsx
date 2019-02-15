@@ -116,7 +116,7 @@ export class DatasetMetadataController extends Component {
             const mappedDataset = {
                 title: dataset.title,
                 summary: dataset.description,
-                keywords: dataset.keywords ? (dataset.keywords.join()).replace(",", ", ") : [],
+                keywords: dataset.keywords ? (dataset.keywords.join()).replace(",", ", ") : "",
                 nationalStatistic: dataset.national_statistic,
                 licence: dataset.license || "", 
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets) : [],
