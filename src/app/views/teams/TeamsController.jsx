@@ -246,6 +246,8 @@ export class TeamsController extends Component {
                     break;
                 }
             }
+
+            console.error("Error fetching all teams:\n", error);
         });
     }
 
@@ -309,6 +311,7 @@ export class TeamsController extends Component {
                     break;
                 }
             }
+            console.error(`Error fetching team '${teamName}':\n`, error);
         });
     }
 
