@@ -14,7 +14,7 @@ const propTypes = {
     metadata: PropTypes.shape({
         title: PropTypes.string,
         summary: PropTypes.string,
-        keywords: PropTypes.array,
+        keywords: PropTypes.string,
         nationalStatistic: PropTypes.bool,
         licence: PropTypes.string,
         contactName: PropTypes.string,
@@ -124,7 +124,7 @@ class DatasetMetadata extends Component {
                     />
 
                     <Input id="unit-of-measure" 
-                        name="unit" 
+                        name="unitOfMeasure" 
                         label="Unit of measure" 
                         type="input" 
                         value={this.props.metadata.unitOfMeasure} 
@@ -156,7 +156,8 @@ class DatasetMetadata extends Component {
                     <h2>Meta</h2>
                     <Input id="keywords" 
                         label="Keywords" 
-                        value={this.props.metadata.keywords ? this.props.metadata.keywords.join(", ") : ""} 
+                        value={this.props.metadata.keywords} 
+                        onChange={this.props.handleStringInputChange} 
                         disabled={this.props.disableForm}
                     />
 
