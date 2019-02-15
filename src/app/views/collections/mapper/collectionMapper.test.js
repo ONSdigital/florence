@@ -1,14 +1,18 @@
 import collectionMapper from "./collectionMapper";
-import log from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 
 console.error = () => {};
 
-jest.mock('../../../utilities/log', () => ({
-    add: jest.fn(() => {}),
-    eventTypes: {
-        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
-        runtimeWarning: "RUNTIME_WARNING"
+jest.mock('../../../utilities/websocket', () => {
+    return {
+        send: jest.fn(() => {}),
     }
+});
+
+jest.mock('../../../utilities/logging/log', () => ({
+    event: jest.fn(() => {}),
+    error: jest.fn(() => {}),
+    warn: jest.fn(() => {})
 }));
 
 const collectionData = {
@@ -54,10 +58,6 @@ const exampleUnmappedPages = [
         type: "taxonomy_landing_page"
     }
 ]
-
-beforeEach(() => {
-    log.add.mockClear();
-});
 
 describe("readablePublishDate returns correct display date when", () => {
     it("a collection has a publishDate and is set to manual publish", () => {
@@ -527,10 +527,10 @@ describe("Mapping a collections pages to state", () => {
             reviewed: [],
             complete: []
         };
-        const logCount = log.add.mock.calls.length;
+        const logCount = log.event.mock.calls.length;
         collectionMapper.pagesToCollectionState(brokenCollectionData);
-        expect(log.add.mock.calls.length).toBe(logCount+1);
-        expect(log.add.mock.calls[0][0]).toBe("UNEXPECTED_RUNTIME_ERROR");
+        expect(log.event.mock.calls.length).toBe(logCount+1);
+        expect(log.event.mock.calls[0][0]).toBe("Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null");
     });
     
     it("continues to map other pages even if one fails", () => {
