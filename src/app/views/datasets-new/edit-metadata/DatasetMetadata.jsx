@@ -94,7 +94,6 @@ class DatasetMetadata extends Component {
                         onChange={this.props.handleStringInputChange} 
                         value={this.props.metadata.nextReleaseDate} 
                         disabled={this.props.disableForm}
-                        error={this.props.metadata.nextReleaseDate.error}
                     />
 
                     <Input id="release-frequency" 
