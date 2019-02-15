@@ -71,7 +71,8 @@ export class DatasetMetadataController extends Component {
                 notices: [],
                 dimensions: [],
                 usageNotes: [],
-                latestChanges: []
+                latestChanges: [],
+                qmi: ""
             }
         }
 
@@ -124,7 +125,7 @@ export class DatasetMetadataController extends Component {
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release,
-                qmi: dataset.qmi.href
+                qmi: dataset.qmi ? dataset.qmi.href : ""
             }
             if (dataset.contacts) {
                 mappedDataset.contactName = dataset.contacts[0].name ? dataset.contacts[0].name : "";
