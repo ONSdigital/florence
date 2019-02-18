@@ -15,12 +15,12 @@ export default function redirectToMainScreen(screen) {
         return;
     }
 
-    if (screen.startsWith(`${rootPath}/teams`) || screen.startsWith(`${rootPath}/datasets`) || screen.startsWith(`${rootPath}/collections`)) {
+    if (screen.startsWith(`${rootPath}/teams`) || screen.startsWith(`${rootPath}/datasets`) || screen.startsWith(`${rootPath}/collections`) || screen.startsWith(`${rootPath}/users`)) {
         browserHistory.push(screen);
         return;
     }
 
-    if (screen === `${rootPath}/publishing-queue` || screen === `${rootPath}/reports` || screen === `${rootPath}/users-and-access` || screen === `${rootPath}/workspace`) {
+    if (screen === `${rootPath}/publishing-queue` || screen === `${rootPath}/reports` || screen === `${rootPath}/workspace`) {
         window.location.href = screen;
         return;
     }

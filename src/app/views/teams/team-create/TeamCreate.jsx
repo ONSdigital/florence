@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
-import Input from '../../../components/Input';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired
@@ -135,7 +134,7 @@ class TeamCreate extends Component {
 
     render() {
         return (
-            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit}>
+            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit} name="create-new-team">
                 {/* 
                 TODO: Swap this out for the Input component - we need the input to be controlled (but the Input component is currently uncontrolled) 
                 so that we can control it from this component when we need to clear it after submit. This relies on the collections screen refactoring to be merged in 

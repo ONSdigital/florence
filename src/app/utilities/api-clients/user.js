@@ -1,34 +1,36 @@
 import http from '../http';
 import { store } from '../../config/store';
-import { userLoggedIn, userLoggedOut } from '../../config/actions';
+import { userLoggedIn, userLoggedOut, reset } from '../../config/actions';
+import cookies from '../cookies';
 
 export default class user {
 
     static get(email) {
-        return http.get(`/zebedee/users?email=${email}`)
-            .then(response => {
-                return response;
-            }).catch(error => {
-                console.error(`Error getting user details for ${email}`, error);
-            })
+        return http.get(`/zebedee/users?email=${email}`);
     }
 
     static getAll() {
-        return http.get(`/zebedee/users`)
-            .then(response => {
-                return response;
-            }).catch(error => {
-                console.error(`Error getting all users`, error)
-            })
+        return http.get(`/zebedee/users`);
+    }
+
+    static create(body) {
+        return http.post(`/zebedee/users`, body);
+    }
+
+    static remove(email) {
+        return http.delete(`/zebedee/users?email=" + ${email}`);
+    }
+
+    static setPassword(body) {
+        return http.post(`/zebedee/password`, body);
+    }
+
+    static setPermissions(body) {
+        return http.post(`/zebedee/permission`, body);
     }
 
     static getPermissions(email) {
-        return http.get(`/zebedee/permission?email=${email}`)
-            .then(response => {
-                return response;
-            }).catch(error => {
-                console.error(`Error getting user permissions for ${email}`, error);
-        });
+        return http.get(`/zebedee/permission?email=${email}`, true, true);
     }
 
     static getOldUserType(user) {
@@ -44,14 +46,19 @@ export default class user {
         }
     }
 
+    static getUserRole(isAdmin, isEditor) {
+        let role = '';
+        if (isEditor) { role = 'EDITOR'}
+        if (isAdmin) { role = 'ADMIN'}
+        if (!isEditor && !isAdmin) { role = 'VIEWER'}
+        return role;
+    }
+
     static setUserState(user) {
         const email = user.email;
-        let userType = '';
-        if (user.editor) { userType = 'EDITOR'}
-        if (user.admin) { userType = 'ADMIN'}
-        if (!user.editor && !user.admin) { userType = 'VIEWER'}
+        const role = this.getUserRole(user.admin, user.editor);
         const isAdmin = !!user.admin;
-        store.dispatch(userLoggedIn(email, userType, isAdmin));
+        store.dispatch(userLoggedIn(email, role, isAdmin));
         localStorage.setItem("loggedInAs", email);
 
         // Store the user type in localStorage. Used in old Florence
@@ -60,14 +67,22 @@ export default class user {
     }
 
     static logOut() {
+        const accessTokenCookieRemoved = cookies.remove('access_token');
+        if (!accessTokenCookieRemoved) {
+            console.warn(`Error trying to remove 'access_token' cookie`);
+            return
+        }
+        if (cookies.get('collection')) {
+            cookies.remove('collection');
+        }
+        localStorage.removeItem("loggedInAs");
+        localStorage.removeItem('userType');
         store.dispatch(userLoggedOut());
+        store.dispatch(reset());
     }
 
     static updatePassword(body) {
-        return http.post('/zebedee/password', body)
-            .then(response => {
-                return response;
-            })
+        return http.post('/zebedee/password', body, undefined, true);
     }
 
 }

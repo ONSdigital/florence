@@ -61,6 +61,7 @@ exports[`Admin users have option to edit teams 1`] = `
       </h1>
       <form
         className="form "
+        name="create-new-team"
         onSubmit={[Function]}
       >
         <div
@@ -108,7 +109,9 @@ exports[`Admin users have option to edit teams 1`] = `
           <div
             className="grid__col-8 margin-top--3 margin-bottom--2"
           >
-            <h2>
+            <h2
+              id="team-name"
+            >
               Team 1
             </h2>
           </div>
@@ -283,6 +286,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
       </h1>
       <form
         className="form "
+        name="create-new-team"
         onSubmit={[Function]}
       >
         <div
@@ -330,7 +334,9 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
           <div
             className="grid__col-8 margin-top--3 margin-bottom--2"
           >
-            <h2>
+            <h2
+              id="team-name"
+            >
               Team 1
             </h2>
           </div>
