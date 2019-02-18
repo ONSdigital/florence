@@ -71,6 +71,7 @@ class UsersCreateController extends Component {
         const newUser = this.state.newUser
 
         if (!newUser.username.value.length) {
+            log.event(`Error creating user "no username"`, log.error());
             const usernameState = {
                 ...newUser.username,
                 error: "You must enter a username"
@@ -84,6 +85,7 @@ class UsersCreateController extends Component {
         }
 
         if (!newUser.email.value.length) {
+            log.event(`Error creating user "no email"`, log.error());
             const emailState = {
                 ...newUser.email,
                 error: "You must enter a email"
@@ -97,6 +99,7 @@ class UsersCreateController extends Component {
         }
 
         if (!newUser.password.value.length) {
+            log.event(`Error creating user "no password"`, log.error());
             const passwordState = {
                 ...newUser.password,
                 error: "You must enter a password"
