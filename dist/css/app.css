@@ -1678,6 +1678,17 @@ select {
     width: 100%;
     height: 100%;
     border-width: 0; }
+  .preview--half {
+    height: calc(65vh - 63px); }
+  .preview--borders {
+    border-top: 3px solid #D1D2D4;
+    border-bottom: 3px solid #D1D2D4; }
+
+.simple-select-list {
+  border-top: #D1D2D4 solid 1px; }
+  .simple-select-list__item {
+    border-bottom: #D1D2D4 solid 1px;
+    padding: 21px 0; }
 
 .card {
   background-color: #E7E8E9;
@@ -2092,6 +2103,11 @@ details {
     width: 100%;
     height: 100%;
     border-width: 0; }
+  .preview--half {
+    height: calc(65vh - 63px); }
+  .preview--borders {
+    border-top: 3px solid #D1D2D4;
+    border-bottom: 3px solid #D1D2D4; }
 
 .btn {
   font-family: 'Roboto Slab', serif;
@@ -2312,6 +2328,10 @@ details {
       opacity: 1; }
     .radio__label--focused:before {
       box-shadow: 0 0 0 4px #ffbf47; }
+    .radio__label--disabled:before {
+      border-color: #AEA99C; }
+    .radio__label--disabled:after {
+      border-color: #CCCCCB; }
 
 .checkbox {
   position: relative; }
@@ -2759,8 +2779,8 @@ details {
 .font-size--16 {
   font-size: 16px; }
 
-.font-weight--600 {
-  font-weight: 600; }
+.font-size--18 {
+  font-size: 18px; }
 
 .inline {
   display: inline; }

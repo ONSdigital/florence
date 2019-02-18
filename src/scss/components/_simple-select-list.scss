@@ -1,0 +1,9 @@
+.simple-select-list {
+
+    border-top: $iron-dark solid 1px;
+
+    &__item {
+        border-bottom: $iron-dark solid 1px;
+        padding: $lineheight 0;
+    }
+}

@@ -15,6 +15,7 @@ exports[`Radio button matches stored snapshot 1`] = `
     <input
       checked={true}
       className="radio__input selected"
+      disabled={undefined}
       id="test-radio1"
       name="test-group"
       onBlur={[Function]}
@@ -28,6 +29,8 @@ exports[`Radio button matches stored snapshot 1`] = `
       htmlFor="test-radio1"
     >
       Test radio 1
+       
+       
     </label>
   </div>
   <div
@@ -36,6 +39,7 @@ exports[`Radio button matches stored snapshot 1`] = `
     <input
       checked={false}
       className="radio__input"
+      disabled={undefined}
       id="test-radio2"
       name="test-group"
       onBlur={[Function]}
@@ -49,6 +53,8 @@ exports[`Radio button matches stored snapshot 1`] = `
       htmlFor="test-radio2"
     >
       Test radio 2
+       
+       
     </label>
   </div>
 </fieldset>
