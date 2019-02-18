@@ -14,7 +14,8 @@
     "collectCoverage": false,
     "globals": {
       "window": true
-    }
+    },
+    "testURL": "http://localhost"
   },
   "devDependencies": {
     "babel-jest": "^19.0.0",
@@ -70,6 +71,7 @@
     "react-redux": "^5.0.2",
     "react-router": "^3.0.2",
     "react-router-redux": "^4.0.7",
+    "react-transition-group": "^2.4.0",
     "redux": "^3.6.0",
     "redux-auth-wrapper": "^2.0.2",
     "redux-devtools-extension": "^2.13.2",

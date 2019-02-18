@@ -18,6 +18,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         
         <input
           accept={undefined}
+          autoComplete="new-password"
           autoFocus={false}
           className="input"
           disabled={false}
@@ -195,6 +196,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             
             <input
               accept={undefined}
+              autoComplete="new-password"
               autoFocus={false}
               className="input"
               disabled={false}
@@ -223,6 +225,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             
             <input
               accept={undefined}
+              autoComplete="new-password"
               autoFocus={false}
               className="input"
               disabled={false}

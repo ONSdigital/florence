@@ -43,9 +43,8 @@ export default class ChangePasswordForm extends Component {
                         }
                     </div>
                     <div className="modal__footer">
-                        <button className="btn btn--positive" onClick={this.props.formData.onSubmit} disabled={isSubmitting}>Update password</button>
-                        <button className="btn" onClick={this.props.formData.onCancel} disabled={isSubmitting}>Cancel</button>
-
+                        <button className="btn btn--positive" type="submit" onClick={this.props.formData.onSubmit} disabled={isSubmitting}>Update password</button>
+                        <button className="btn margin-left--1" type="button" onClick={this.props.formData.onCancel} disabled={isSubmitting}>Cancel</button>
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </div>
                 </form>

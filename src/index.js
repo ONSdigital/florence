@@ -17,6 +17,8 @@ import DatasetVersionsController from './app/views/datasets-new/versions/Dataset
 import DatasetMetadataController from './app/views/datasets-new/edit-metadata/DatasetMetadataController';
 import CreateVersionController from './app/views/datasets-new/create/CreateVersionController';
 import CreateEditionController from './app/views/datasets-new/create/CreateEditionController';
+import UsersController from './app/views/users/UsersController';
+import UserDetailsController from './app/views/users/details/UserDetailsController';
 import DatasetsController from './app/views/datasets/DatasetsController';
 import DatasetUploadsController from './app/views/uploads/dataset/DatasetUploadsController';
 import DatasetUploadDetails from './app/views/uploads/dataset/upload-details/DatasetUploadDetails';
@@ -36,6 +38,8 @@ import VersionPreviewController from './app/views/datasets/preview/VersionPrevie
 import PreviewController from './app/views/preview/PreviewController';
 import DatasetPreviewController from './app/views/datasets-new/preview/PreviewController';
 import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
+import ChangeUserPasswordController from './app/views/users/change-password/ChangeUserPasswordController';
+import ConfirmUserDeleteController from './app/views/users/confirm-delete/ConfirmUserDeleteController';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -59,7 +63,7 @@ const userisAdminOrEditor = connectedReduxRedirect({
     wrapperDisplayName: 'userisAdminOrEditor',
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
-})
+});
 
 class UnknownRoute extends Component {
     render() {
@@ -109,6 +113,12 @@ class Index extends Component {
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
                                     <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
+                                </Route>
+                            </Route>
+                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(UsersController)) }>
+                                <Route path=":userID" component={ userIsAuthenticated(userisAdminOrEditor(UserDetailsController)) }>
+                                    <Route path="change-password" component={userIsAuthenticated(userisAdminOrEditor(ChangeUserPasswordController))} />
+                                    <Route path="confirm-delete" component={userIsAuthenticated(userisAdminOrEditor(ConfirmUserDeleteController))} />
                                 </Route>
                             </Route>
                             {config.enableDatasetImport === true &&

@@ -3,10 +3,9 @@ import ScheduleByRelease from './ScheduleByRelease';
 import { shallow } from 'enzyme';
 import releases from '../../../utilities/api-clients/releases';
 
-jest.mock('../../../utilities/log', () => {
+jest.mock('../../../utilities/websocket', () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        send: jest.fn(() => {}),
     }
 });
 

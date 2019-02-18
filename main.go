@@ -141,7 +141,6 @@ func main() {
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
 	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
 	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
-	router.Path("/florence/users-and-access").HandlerFunc(legacyIndexFile(cfg))
 	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler)
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))

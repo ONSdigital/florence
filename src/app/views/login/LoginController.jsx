@@ -13,6 +13,7 @@ import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
+import log from '../../utilities/logging/log';
 
 
 const propTypes = {
@@ -61,6 +62,16 @@ export class LoginController extends Component {
             user.getPermissions(this.state.email.value).then(userType => {
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);
+            }).catch(error => {
+                this.setState({isSubmitting: false});
+                notifications.add({
+                    type: "warning",
+                    message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
+                    autoDismiss: 8000,
+                    isDismissable: true
+                });
+                log.event("Error getting a user's permissions on login", log.error(error));
+                console.error("Error getting a user's permissions on login", error);
             });
         }).catch(error => {
             if (error) {

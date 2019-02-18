@@ -13,10 +13,11 @@ jest.mock('../../../utilities/notifications', () => ({
     remove: jest.fn(() => {}),
 }));
 
-jest.mock('../../../utilities/log', () => ({
-    add: jest.fn(() => {}),
-    eventTypes: {}
-}));
+jest.mock('../../../utilities/websocket', () => {
+    return {
+        send: jest.fn(() => {}),
+    }
+});
 
 jest.mock('../../../utilities/cookies', () => ({
     add: jest.fn(() => {})

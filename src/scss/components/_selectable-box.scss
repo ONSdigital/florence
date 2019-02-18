@@ -31,6 +31,7 @@
     &__item {
         cursor: pointer;
         padding: $lineheight $gutter;
+        word-break: break-word;
 
         &:nth-child(even) {
             background-color: $iron;
