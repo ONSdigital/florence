@@ -218,7 +218,7 @@ export class CollectionEditController extends Component {
 
     handlePublishTypeChange(publishType) {
         if (publishType !== "manual" && publishType !== "scheduled") {
-            log.event(`Attempt to select a publish type (${publishType}) that isn't recognised`, log.warn())
+            log.event(`Attempt to select a publish type that isn't recognised`, log.warn(), log.data({publish_type: publishType}))
             console.warn("Attempt to select a publish type that isn't recognised: ", publishType);
             return;
         }
@@ -356,7 +356,7 @@ export class CollectionEditController extends Component {
                     break;
                 }
                 case(409): {
-                    log.event(`Attempt to rename collection to existing collection name: ${this.props.name} -> ${this.state.name.value}`, log.error(error))
+                    log.event("Attempt to rename collection to existing collection name", log.error(error), log.data({current_name: this.props.name, new_name: this.state.name.value}))
                     this.setState(state => ({
                         name: {
                             value: state.name.value,
@@ -376,7 +376,7 @@ export class CollectionEditController extends Component {
                     break;
                 }
             }
-            log.event(`Error saving collection details for collection: ${this.props.id}`, log.error(error));
+            log.event("Error saving collection details", log.error(error), log.data({collection_id: this.props.id}));
             console.error("Error saving collection details update", error);
         });
     }

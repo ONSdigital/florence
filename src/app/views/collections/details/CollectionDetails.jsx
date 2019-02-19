@@ -95,7 +95,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {   
+    renderLastEditText(lastEdit) {  
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
@@ -113,7 +113,7 @@ export class CollectionDetails extends Component {
                 `Last edit: ${lastEdit.email} (${formattedDate})`
             )
         } catch (error) {
-            log.event("Error parsing date for collection details 'page last edit' function. Last edit data: " + JSON.stringify(lastEdit), log.error(error))
+            log.event("Error parsing date for collection details 'page last edit' function", log.error(error), log.data({...lastEdit}))
             console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
 
             if (lastEdit.email) {
@@ -348,7 +348,7 @@ export class CollectionDetails extends Component {
                         <div>
                             <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
                             {this.props.enableDatasetImport &&
-                                <Link id="import-dataset-link" to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                                <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">Create/edit CMD dataset page</Link>
                             }
                             <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
                         </div>

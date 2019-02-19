@@ -19,9 +19,9 @@ export default class log {
      */
     static event = (event, ...opts) => {
         const eventData = {
+            event: event,
             created_at: new Date(Date.now()).toISOString(),
             namespace: "florence",
-            event: event,
             client_loaded_at: client_loaded_at,
             severity: 3
         }
@@ -105,15 +105,15 @@ class Http {
             method: this.method,
             // set url methods and duration to undefined so these are omitted 
             // when JSON.strinify'ing them to send over the websocket
-            path: url.pathname ? url.pathname : undefined,
-            query: url.search ? url.search : undefined,
-            scheme: url.protocol ? url.protocol : undefined,
-            host: url.hostname ? url.hostname: undefined,
+            path: url.pathname || undefined,
+            query: url.search || undefined,
+            scheme: url.protocol || undefined,
+            host: url.hostname || undefined,
             port: url.port ? parseInt(url.port) : undefined,
             status_code: this.statusCode,
             started_at: this.startedAt,
             ended_at: this.endedAt,
-            duration: duration ? duration : undefined
+            duration: duration || undefined
         }
         return event;
     }
@@ -135,7 +135,7 @@ class FatalEvent {
     }
     attach = (event) => {
         event.severity = 0
-        event.error = this.error ? constructEventError(this.error) : {};
+        event.error = this.error ? constructEventError(this.error) : undefined
         return event;
     }
 }
@@ -146,7 +146,7 @@ class ErrorEvent {
     }
     attach = (event) => {
         event.severity = 1
-        event.error = this.error ? constructEventError(this.error) : {};
+        event.error = this.error ? constructEventError(this.error) : undefined
         return event;
     }
 }
@@ -157,7 +157,7 @@ class WarnEvent   {
     }
     attach = (event) => {
         event.severity = 2
-        event.error = this.error ? constructEventError(this.error) : {};
+        event.error = this.error ? constructEventError(this.error) : undefined
         return event;
     }
 }
