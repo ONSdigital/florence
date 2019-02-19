@@ -13,7 +13,7 @@ import { errCodes } from '../../utilities/errorCodes'
 import user from '../../utilities/api-clients/user';
 import cookies from '../../utilities/cookies';
 import redirectToMainScreen from '../../utilities/redirectToMainScreen';
-import log, { eventTypes } from '../../utilities/log';
+import log from '../../utilities/logging/log';
 
 
 const propTypes = {
@@ -70,7 +70,7 @@ export class LoginController extends Component {
                     autoDismiss: 8000,
                     isDismissable: true
                 });
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting a user's permissions on login: ${JSON.stringify(error)}`});
+                log.event("Error getting a user's permissions on login", log.error(error));
                 console.error("Error getting a user's permissions on login", error);
             });
         }).catch(error => {
