@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import users from '../../utilities/api-clients/user';
 import notifications from '../../utilities/notifications';
-import log, {eventTypes} from '../../utilities/log';
+import log from '../../utilities/logging/log';
 import auth from '../../utilities/auth';
 
 import SelectableBox from '../../components/selectable-box-new/SelectableBox';
@@ -124,7 +124,7 @@ export class UsersController extends Component {
             }
             notifications.add(notification);
             console.error("Error mapping users to state: ", error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping users to state:\n${JSON.stringify(error)}`});
+            log.event(`Error mapping users to state:\n${JSON.stringify(error)}`, log.error(error));
             return false;
         }
     }

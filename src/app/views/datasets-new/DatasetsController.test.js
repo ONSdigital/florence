@@ -5,6 +5,13 @@ import datasets from '../../utilities/api-clients/datasets';
 
 console.error = () => {};
 
+jest.mock('../../utilities/logging/log', () => {
+    return {
+        event: function () { },
+    }
+});
+
+
 jest.mock('../../utilities/log', () => {
     return {
         add: function() {},

@@ -6,10 +6,9 @@ import recipes from '../../../utilities/api-clients/recipes';
 
 console.error = () => { };
 
-jest.mock('../../../utilities/log', () => {
+jest.mock('../../../utilities/logging/log', () => {
     return {
-        add: function () { },
-        eventTypes: {}
+        event: function () { },
     }
 });
 
