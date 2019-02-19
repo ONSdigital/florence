@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import SelectableBox from '../../../components/selectable-box-new/SelectableBox';
 import collections from '../../../utilities/api-clients/collections';
 import releases from '../../../utilities/api-clients/releases';
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import Input from '../../../components/Input';
 import date from '../../../utilities/date'
 import notifications from '../../../utilities/notifications'
@@ -81,7 +81,7 @@ export class ScheduleByRelease extends Component {
             }
 
             this.setState({isFetchingReleases: false});
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
+            log.event("Error fetching upcoming releases for 'scheduled by release' functionality", log.error(error))
             console.error("Error fetching upcoming releases for 'scheduled by release' functionality", error);
         });
     }
@@ -156,7 +156,7 @@ export class ScheduleByRelease extends Component {
             }
 
             this.setState({isFetchingSearchedReleases: false});
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching queried releases for 'schedule by release' functionality: " + JSON.stringify(error)});
+            log.event("Error fetching queried releases for 'schedule by release' functionality", log.error(error))
             console.error("Error fetching queried releases for 'schedule by release' functionality", error);
         });
     }
@@ -187,7 +187,7 @@ export class ScheduleByRelease extends Component {
             }
 
             this.setState({isFetchingExtraReleases: false});
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error fetching extra upcoming releases for 'scheduled by release' functionality: " + JSON.stringify(error)});
+            log.event("Error fetching extra upcoming releases for 'scheduled by release' functionality", log.error(error));
             console.error("Error fetching extra upcoming releases for 'scheduled by release' functionality", error);
         });
     }
