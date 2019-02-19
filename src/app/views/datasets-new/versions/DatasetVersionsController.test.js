@@ -5,12 +5,12 @@ import datasets from '../../../utilities/api-clients/datasets';
 
 console.error = () => { };
 
-jest.mock('../../../utilities/log', () => {
+jest.mock('../../../utilities/logging/log', () => {
     return {
-        add: function () { },
-        eventTypes: {}
+        event: function () { },
     }
 });
+
 
 jest.mock('../../../utilities/notifications', () => {
     return {
