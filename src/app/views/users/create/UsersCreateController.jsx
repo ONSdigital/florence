@@ -180,7 +180,7 @@ class UsersCreateController extends Component {
     mapUserDetailsPostBody = (user) => {
         return {
             name: user.username.value,
-            email: user.email.value.value
+            email: user.email.value
         }
     }
 
