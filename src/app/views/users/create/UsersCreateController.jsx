@@ -134,17 +134,42 @@ class UsersCreateController extends Component {
         
         const newUserDetailsResponse = await this.postNewUserDetails(newUserDetails);
         if (newUserDetailsResponse.error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping user details to PostBody",
+                isDismissable: true,
+            }
+            notifications.add(notification);
+            console.error("Error mapping user details to PostBody");
+            console.error(newUserDetailsResponse.error);
+            log.event(`Error mapping user details to PostBody`,log.data({username: newUserDetails.username  || null, user_email: newUserDetails.email || null}), log.error());
             return;
         }
 
         const newUserPasswordResponse = await this.postNewUserPassword(newUserPassword);
         if (newUserPasswordResponse.error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping user password to PostBody",
+                isDismissable: true,
+            }
+            notifications.add(notification);
+            console.error("Error mapping user password to PostBody");
+            log.event(`Error mapping user password to PostBody`,log.data({user_password: newUserPassword.password  || null, user_email: newUserPassword.email || null}), log.error());
             this.deleteErroredNewUser(newUser.email.value);
             return;
         }
 
         const newUserPerrmissionsResponse = await this.postNewUserPermissions(newUserPerrmissions);
         if (newUserPerrmissionsResponse.error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping user permissions to PostBody",
+                isDismissable: true,
+            }
+            notifications.add(notification);
+            console.error("Error mapping user permissions to PostBody");
+            log.event(`Error mapping user permissions to PostBody`,log.data({isAdmin: newUserPerrmissions.admin  || false, isEditor: newUserPerrmissions.editor || false, user_email: newUserPerrmissions.email || null}), log.error());
             this.deleteErroredNewUser(newUser.email.value);
             return
         }
@@ -155,7 +180,7 @@ class UsersCreateController extends Component {
     mapUserDetailsPostBody = (user) => {
         return {
             name: user.username.value,
-            email: user.email.value
+            email: user.email.value.value
         }
     }
 

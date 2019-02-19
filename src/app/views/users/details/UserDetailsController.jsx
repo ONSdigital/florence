@@ -136,12 +136,25 @@ export class UserDetailsController extends Component {
     }
 
     mapUserResponsesToState(userDetails, userPermissions) {
-        return {
-            name: userDetails ? userDetails.name : "",
-            email: userDetails ? userDetails.email || userPermissions.email : "",
-            role: userPermissions ? user.getUserRole(userPermissions.admin, userPermissions.editor) : "",
-            hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false
-        };
+        try {
+            return {
+                name: userDetails ? userDetails.name : "",
+                email: userDetails ? userDetails.email || userPermissions.email : "",
+                role: userPermissions ? user.getUserRole(userPermissions.admin, userPermissions.editor) : "",
+                hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false
+            }
+        } catch(error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping user details to state",
+                isDismissable: true,
+                autoDismiss: 3000
+            }
+            notifications.add(notification);
+            console.error("Error mapping user details to state: ", error);
+            log.event(`Error mapping user details to state`, log.error(error));
+            return false;
+        }
     }
 
     handleGetUserError(userDetailsError, userPermissionsError, userID) {
