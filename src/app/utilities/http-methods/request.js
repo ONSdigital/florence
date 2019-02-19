@@ -78,7 +78,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
             if (!response.ok) {
                 response.text().then(body => {
-                    reject({status: response.status, message: response.statusText, body: body ? JSON.parse(body) : null})
+                    reject({status: response.status, message: response.statusText, body: parseBodyAsJson(body)})
                 })
                 return; 
             }
@@ -201,4 +201,19 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
         });
     }
+
+    function parseBodyAsJson(body){
+        if (!body) {
+            return null;
+        }
+        try {
+            return JSON.parse(body);
+        } catch (error) {
+            console.warn(`Error parsing request body as JSON, returned body as ${typeof body}`)
+            return body;
+        }
+    }
+
 }
+
+

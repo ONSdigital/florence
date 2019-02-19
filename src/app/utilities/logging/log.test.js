@@ -22,9 +22,9 @@ const currentDateISOPlus5 = new Date(currentDatePlus5).toISOString();
 const testUrl = "http://www.test.com/?search=test";
 
 const simpleLogEvent = {
+    event: "A test log",
     created_at: currentDateISO,
     namespace: "florence",
-    event: "A test log",
     client_loaded_at: currentDateISO,
     severity: 3
 }
