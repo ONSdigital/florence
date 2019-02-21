@@ -138,7 +138,7 @@ class DatasetMetadata extends Component {
                             <div key={`dimension-${dimension.id}`}>
                                 <Input id={`dimension-title-${dimension.id}`} 
                                     label="Title" 
-                                    value={dimension.name} 
+                                    value={dimension.label ? dimension.label : dimension.name} 
                                     onChange={this.props.handleDimensionNameChange} 
                                     disabled={this.props.disableForm || this.props.versionIsPublished}
                                 />

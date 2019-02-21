@@ -336,7 +336,7 @@ export class DatasetMetadataController extends Component {
         const dimensionID = event.target.name.substring(16);
         const newDimensionMetadata = this.state.metadata.dimensions.map(dimension => {
             if (dimension.id === dimensionID) {
-                dimension.name = value;
+                dimension.label = value;
             }
             return dimension;
         })
@@ -502,7 +502,8 @@ export class DatasetMetadataController extends Component {
         const datasetBody = this.mapDatasetToPutBody();
         const versionBody = this.mapVersionToPutBody();  
         
-        let saveDatasetError;
+        
+        let saveDatasetError = false;
         if (datasetMetadataHasChanges) {
             saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
         }
@@ -512,7 +513,7 @@ export class DatasetMetadataController extends Component {
             return
         }
 
-        let saveVersionError;
+        let saveVersionError = false;
         if (versionMetadataHasChanges) {
             saveVersionError = await this.saveVersionChanges(datasetID, editionID, versionID, versionBody)
         }
@@ -531,7 +532,7 @@ export class DatasetMetadataController extends Component {
             }
         }
 
-        let datasetToCollectionError;
+        let datasetToCollectionError = false;
         if (addDatasetToCollection) {
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
             this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"})
@@ -542,7 +543,7 @@ export class DatasetMetadataController extends Component {
             return;
         }
 
-        let versionToCollectionError;
+        let versionToCollectionError = false;
         if (addVersionToCollection) {
             versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
             this.setState({versionIsInCollection: collectionID})
