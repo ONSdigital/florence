@@ -6,7 +6,7 @@ import { replace } from 'react-router-redux';
 import http from '../../utilities/http';
 import notifications from '../../utilities/notifications';
 import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage, updateWorkingOn, emptyWorkingOn } from '../../config/actions';
-import cookies from '../../utilities/cookies'
+import cookies from '../../utilities/cookies';
 
 import Iframe from '../../components/iframe/Iframe';
 
@@ -53,10 +53,14 @@ export class PreviewController extends Component {
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID).then(collection => {
             const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
-            const datasetPages = [...collection.datasetVersions, ...collection.datasets];
-            const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
-            const collectionPreview = {collectionID, name: collection.name, pages};
-            this.props.dispatch(addPreviewCollection(collectionPreview));
+            if (window.getEnv().enableDatasetImport == true) {
+                const datasetPages = [...collection.datasetVersions, ...collection.datasets];
+                const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+                this.props.dispatch(addPreviewCollection({collectionID, name: collection.name, pages}));
+            } else {
+                const pages = nonDatasetPages;
+                this.props.dispatch(addPreviewCollection({collectionID, name: collection.name, pages}));
+            }
             if (!this.props.workingOn || !this.props.workingOn.name) {
                 this.props.dispatch(updateWorkingOn(collectionID, collection.name));
             }
