@@ -3,8 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const isProduction = (process.env.NODE_ENV === 'production');
 
-console.log("IS PRODUCTION ==>", isProduction);
-
 module.exports = {
     entry: {
         app: ['./index.js'],
