@@ -1,6 +1,9 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const isProduction = (process.env.NODE_ENV === 'production');
+
+console.log("IS PRODUCTION ==>", isProduction);
 
 module.exports = {
     entry: {
@@ -34,12 +37,20 @@ module.exports = {
                 loader: 'eslint-loader'
             },
             {
-                test: /\.(css|scss)$/,
-                use: [
-                    "style-loader", // creates style nodes from JS strings
-                    "css-loader", // translates CSS into CommonJS
-                    "sass-loader" // compiles Sass to CSS, using Node Sass by default
-                ]
+                test: /\.scss$/,
+                use: ExtractTextPlugin.extract({ 
+                    fallback: "style-loader", 
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {sourceMap: isProduction}
+                        },
+                        {
+                            loader: "sass-loader",
+                            options: {sourceMap: isProduction}
+                        }
+                    ]
+                })
             },
             {
                 test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
@@ -54,9 +65,7 @@ module.exports = {
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
         ]),
-        new MiniCssExtractPlugin({
-            filename: "[name].css"
-          })
+        new ExtractTextPlugin("css/[name].css")
     ],
     externals: {
         resumeablejs: "Resumable"
