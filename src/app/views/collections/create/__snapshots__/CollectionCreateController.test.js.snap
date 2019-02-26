@@ -17,6 +17,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
         </label>
         
         <input
+          autoComplete="new-password"
           autoFocus={false}
           className="input"
           disabled={false}
@@ -45,6 +46,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             className="select"
             disabled={false}
             id="collection-teams"
+            name="collection-teams"
             onBlur={[Function]}
             onChange={[Function]}
             onFocus={[Function]}
@@ -88,6 +90,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
             htmlFor="scheduled-radio"
           >
             Scheduled publish
+             
+             
           </label>
         </div>
         <div
@@ -109,6 +113,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
             htmlFor="manual-radio"
           >
             Manual publish
+             
+             
           </label>
         </div>
       </fieldset>
@@ -140,6 +146,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               htmlFor="custom-radio"
             >
               Custom schedule
+               
+               
             </label>
           </div>
           <div
@@ -161,6 +169,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               htmlFor="calendar-radio"
             >
               Calendar entry schedule
+               
+               
             </label>
           </div>
         </fieldset>
@@ -176,6 +186,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
+              autoComplete="new-password"
               autoFocus={false}
               className="input"
               disabled={false}
@@ -201,6 +212,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
+              autoComplete="new-password"
               autoFocus={false}
               className="input"
               disabled={false}

@@ -4,18 +4,27 @@
             "presets": [
                 "@babel/preset-react", 
                 "@babel/env",
+            ],
+            "plugins": [
+                "@babel/plugin-proposal-class-properties"
             ]
         },
         "production": {
             "presets": [
                 "@babel/preset-react", 
                 ["@babel/env", { "modules": false, "targets": {"chrome": "70"}}],
+            ],
+            "plugins": [
+                "@babel/plugin-proposal-class-properties"
             ]
         },
         "development": {
             "presets": [
                 "@babel/preset-react", 
                 ["@babel/env", { "modules": false, "targets": {"chrome": "70"}}],
+            ],
+            "plugins": [
+                "@babel/plugin-proposal-class-properties"
             ]
         }
     }

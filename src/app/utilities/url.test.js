@@ -7,13 +7,10 @@ function setLocation(href) {
 }
 setLocation('http://publishing.onsdigital.co.uk/florence/datasets');
 
-jest.mock('../utilities/log', () => {
+jest.mock('../utilities/logging/log', () => {
     return {
-        add: function() {
+        event: function() {
             // do nothing
-        },
-        eventTypes: {
-            unexpectedRuntimeError: ""
         }
     }
 });
