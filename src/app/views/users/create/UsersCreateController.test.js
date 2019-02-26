@@ -3,7 +3,7 @@ import UsersCreateController from './UsersCreateController';
 import { shallow } from 'enzyme';
 import user from '../../../utilities/api-clients/user';
 
-// console.error = () => {};
+console.error = () => {};
 
 jest.mock('../../../utilities/logging/log', () => ({
     event: jest.fn(() => {}),
