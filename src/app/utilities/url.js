@@ -1,4 +1,4 @@
-import log, {eventTypes} from '../utilities/log';
+import log from '../utilities/logging/log';
 import notifications from './notifications';
 
 export default class url {
@@ -38,7 +38,7 @@ export default class url {
 
         if (typeof path !== "string") {
             console.error("Unable to parse relative URL path because non-string type given");
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to parse relative URL path because non-string type given"});
+            log.event("Unable to parse relative URL path because non-string type given", log.data({type: typeof path}));
             return location.pathname;
         }
 
@@ -73,7 +73,7 @@ export default class url {
                 message: `There was an unexpected error trying to resolve the path '${path}' ... ¯\\_(ツ)_/¯`
             };
             notifications.add(notification);
-            log.add(eventTypes.unexpectedRuntimeError, {message: error.message});
+            log.event("Error trying to parse relative URL", log.error(error))
             return;
         }
     }
