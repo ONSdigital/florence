@@ -154,7 +154,7 @@ class UsersCreateController extends Component {
             }
             notifications.add(notification);
             console.error("Error mapping user password to PostBody");
-            log.event(`Error mapping user password to PostBody`,log.data({user_password: newUserPassword.password || null, user_email: newUserPassword.email || null, message: newUserDetailsResponse.error.body.message}), log.error());
+            log.event(`Error mapping user password to PostBody`,log.data({user_password: newUserPassword.password || null, user_email: newUserPassword.email || null, message: newUserPasswordResponse.error.body.message}), log.error());
             this.deleteErroredNewUser(newUser.email.value);
             return;
         }
@@ -168,7 +168,7 @@ class UsersCreateController extends Component {
             }
             notifications.add(notification);
             console.error("Error mapping user permissions to PostBody");
-            log.event(`Error mapping user permissions to PostBody`,log.data({isAdmin: newUserPerrmissions.admin  || false, isEditor: newUserPerrmissions.editor || false, user_email: newUserPerrmissions.email || null, message: newUserDetailsResponse.error.body.message}), log.error());
+            log.event(`Error mapping user permissions to PostBody`,log.data({isAdmin: newUserPerrmissions.admin  || false, isEditor: newUserPerrmissions.editor || false, user_email: newUserPerrmissions.email || null, message: newUserPerrmissionsResponse.error.body.message}), log.error());
             this.deleteErroredNewUser(newUser.email.value);
             return
         }
