@@ -9,13 +9,13 @@
         "production": {
             "presets": [
                 "@babel/preset-react", 
-                ["@babel/env", { "modules": false, "targets": {"chrome": "58"}}],
+                ["@babel/env", { "modules": false, "targets": {"chrome": "70"}}],
             ]
         },
         "development": {
             "presets": [
                 "@babel/preset-react", 
-                ["@babel/env", { "modules": false, "targets": {"chrome": "58"}}],
+                ["@babel/env", { "modules": false, "targets": {"chrome": "70"}}],
             ]
         }
     }
