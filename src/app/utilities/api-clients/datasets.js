@@ -2,8 +2,7 @@ import http from '../http';
 import url from '../url'
 
 export default class datasets {
-
-    static get(datasetID) {
+    static get = (datasetID) => {
 
         return http.get(`/dataset/datasets/${datasetID}`)
             .then(response => {
@@ -26,11 +25,54 @@ export default class datasets {
              });
     }
 
+    static getEdition(datasetID, editionID) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${editionID}`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static getEditions(datasetID) {
+        return http.get(`/dataset/datasets/${datasetID}/editions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
     static getVersion(datasetID, edition, version) {
         return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`)
              .then(response => {
                  return response;
              });
+    }
+
+    static getVersions(datasetID, edition) {
+        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions`)
+             .then(response => {
+                 return response;
+             });
+    }
+
+    static getLatestVersionForEditions = async(datasetID, editionsList) => {
+        return new Promise(async (resolve, reject) => {
+            const versionFetches = editionsList.map(edition => {
+                return http.get(`/dataset/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`).then(response => {
+                    return response;
+                }).catch(error => {
+                    reject(error);
+                    return;
+                })
+            })
+
+            const allLatestVersions = await Promise.all(versionFetches).then(version => {
+                return version;
+            }).catch(error => {
+                console.error(error)
+                reject(error);
+                return;
+            })
+            resolve(allLatestVersions);
+        })
     }
 
     static getLatestVersion(datasetID) {
@@ -48,6 +90,16 @@ export default class datasets {
             const latestVersion = await http.get(`/dataset${latestVersionURL}`).catch(error => reject(error));
             resolve(latestVersion);
         });
+    }
+
+    static getLatestVersionURL = async(datasetID) => {
+        const datasetURL = `/dataset/datasets/${datasetID}`;
+        return http.get(datasetURL)
+            .then(response => {
+                const dataset = response.next || response.current || response;
+                return new URL(dataset.links.latest_version.href).pathname
+            })
+            .catch(error => error);
     }
 
     static getVersionDimensions(datasetID, edition, version) {
@@ -117,6 +169,13 @@ export default class datasets {
 
     static getAllInstances() {
         return http.get(`/dataset/instances`)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static getCompletedInstancesForDataset(datasetID) {
+        return http.get(`/dataset/instances?dataset=${datasetID}&state=completed`)
             .then(response => {
                 return response;
             });

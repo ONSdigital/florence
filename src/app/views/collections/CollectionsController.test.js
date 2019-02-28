@@ -7,6 +7,12 @@ import collections from '../../utilities/api-clients/collections';
 
 console.error = () => {};
 
+jest.mock('../../utilities/websocket', () => {
+    return {
+        send: jest.fn(() => {}),
+    }
+});
+
 jest.mock('../../utilities/log', () => {
     return {
         add: function() {},

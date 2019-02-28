@@ -11,13 +11,10 @@ jest.mock('../../utilities/notifications.js', () => {
     }
 });
 
-jest.mock('../../utilities/log.js', () => {
+jest.mock('../../utilities/websocket', () => {
     return {
-        add: function() {
+        send: function() {
             // do nothing
-        },
-        eventTypes: {
-            shownNotification: "SHOWN_NOTIFICATION"
         }
     }
 });

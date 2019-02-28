@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import collections from '../../../utilities/api-clients/collections';
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import CollectionCreate from './CollectionCreate';
 import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
@@ -318,7 +318,7 @@ export class CollectionCreateController extends Component {
                 releaseUri: this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
             }
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, "Error mapping new collection state to POST body" + JSON.stringify(error));
+            log.event("Error mapping new collection state to POST body", log.error(error));
             console.error("Error mapping new collection state to POST body" + error);
         }
     }
@@ -448,7 +448,7 @@ export class CollectionCreateController extends Component {
 
     handle409SubmitStatus(error) {
         if (error.body.message.includes("A collection with this name already exists")) {
-            log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a collection with an existing collection name: " + this.state.newCollectionDetails.name.value});
+            log.event(`error creating collection: collection name already exists`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value}))
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
                 errorMsg: "A collection with this name already exists"
@@ -465,7 +465,7 @@ export class CollectionCreateController extends Component {
         }
 
         if (error.body.message.includes("Cannot use this release")) {
-            log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to create a scheduled collection using a release that is in another collection. Release: " + this.state.newCollectionDetails.release.title});
+            log.event(`error creating collection: release is in another collection`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value, release_name: this.state.newCollectionDetails.release.name, release_url: this.state.newCollectionDetails.release.uri}))
             const collectionRelease = {
                 ...this.state.newCollectionDetails.release,
                 errorMsg: "Release is already in use in another collection"

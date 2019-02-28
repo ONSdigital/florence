@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
-import Input from '../../../components/Input';
+import log from '../../../utilities/logging/log';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired
@@ -52,7 +52,9 @@ class TeamCreate extends Component {
                 isAwaitingResponse: false
             });
             this.props.onCreateSuccess();
+            log.event(`successfully created team`,log.data({"team": newTeamName}));
         }).catch(error => {
+            log.event(`Error creating team`,log.data({'status_code': error.status, "team": newTeamName}), log.error(error));
             this.setState({isAwaitingResponse: false});
             switch(error.status) {
                 case(401): {
@@ -78,6 +80,13 @@ class TeamCreate extends Component {
                     break;
                 }
                 default: {
+                    log.event(`Unhandled error creating team`,log.data({'status_code': error.status, "team": newTeamName}), log.error(error));
+                    const input = Object.assign({}, this.state.input, {
+                        error: `An unexpected error has occured`
+                    });
+                    this.setState({
+                        input
+                    });
                     const notification = {
                         type: "warning",
                         message: `An unexpected error has occured whilst creating team '${newTeamName}'`,
@@ -135,7 +144,7 @@ class TeamCreate extends Component {
 
     render() {
         return (
-            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit}>
+            <form className={`form ${(this.state.input.error ? " form__input--error" : "")}`} onSubmit={this.handleSubmit} name="create-new-team">
                 {/* 
                 TODO: Swap this out for the Input component - we need the input to be controlled (but the Input component is currently uncontrolled) 
                 so that we can control it from this component when we need to clear it after submit. This relies on the collections screen refactoring to be merged in 

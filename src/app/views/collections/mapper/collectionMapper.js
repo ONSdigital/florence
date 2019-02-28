@@ -1,5 +1,5 @@
 import notifications from '../../../utilities/notifications';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import date from '../../../utilities/date';
 
 /**
@@ -50,7 +50,7 @@ export default class collectionMapper {
             }
             notifications.add(notification);
             console.error("Error mapping collections to component state: ", error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collections to component state:\n${JSON.stringify(error)}`});
+            log.event("Error mapping collections to component state", log.error(error))
             return false;
         }
     }
@@ -61,7 +61,7 @@ export default class collectionMapper {
             const canBeDeleted = this.collectionCanBeDeleted(collection);
             const mapPageToState = pagesArray => {
                 if (!pagesArray) {
-                    log.add(eventTypes.runtimeWarning, `Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null`);
+                    log.event("Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null", log.warn());
                     return null;
                 }
                 return pagesArray.map(page => {
@@ -78,7 +78,7 @@ export default class collectionMapper {
                             type: page.type
                         }
                     } catch (error) {
-                        log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping a page to Florence's state\n${JSON.stringify(error)}`});
+                        log.event("Error mapping a page to Florence's state", log.error(error));
                         console.error("Error mapping a page to Florence's state", error);
                     }
                     return updatedPage
@@ -99,7 +99,7 @@ export default class collectionMapper {
                 canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages)
             };
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collection GET response to Florence's state\n${JSON.stringify(error)}`});
+            log.event("Error mapping collection GET response to Florence's state", log.error(error));
             console.error("Error mapping collection GET response to Florence's state", error);
             return null;
         }
@@ -165,7 +165,7 @@ export default class collectionMapper {
     
             return {...collection, ...mapDatasets()};
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping collection datasets response to Florence's state\n${JSON.stringify(error)}`});
+            log.event("Error mapping collection datasets response to Florence's state", log.error(error));
             console.error("Error mapping collection datasets response to Florence's state", error);
             return null;
         }
