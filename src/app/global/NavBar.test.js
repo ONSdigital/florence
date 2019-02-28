@@ -3,9 +3,9 @@ import { shallow } from 'enzyme';
 import { Link } from 'react-router';
 import { NavBar } from './NavBar';
 
-jest.mock('../utilities/log.js', () => {
+jest.mock('../utilities/logging/log', () => {
     return {
-        add: function() {
+        event: function() {
             // do nothing
         }
     }

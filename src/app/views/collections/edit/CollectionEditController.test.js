@@ -8,10 +8,11 @@ import { UPDATE_ALL_TEAMS } from '../../../config/actions';
 console.error = () => {};
 console.warn = () => {};
 
-jest.mock('../../../utilities/log.js', () => ({
-    add: () => {},
-    eventTypes: {}
-}));
+jest.mock('../../../utilities/websocket', () => {
+    return {
+        send: jest.fn(() => {}),
+    }
+});
 
 jest.mock('../../../utilities/api-clients/teams.js', () => ({
     getAll: () => (Promise.resolve([

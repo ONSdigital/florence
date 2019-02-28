@@ -6,7 +6,7 @@ import { replace } from 'react-router-redux';
 import http from '../../utilities/http';
 import notifications from '../../utilities/notifications';
 import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage, updateWorkingOn, emptyWorkingOn } from '../../config/actions';
-import cookies from '../../utilities/cookies'
+import cookies from '../../utilities/cookies';
 
 import Iframe from '../../components/iframe/Iframe';
 
@@ -16,6 +16,7 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string
     }),
+    enableDatasetImport: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -52,9 +53,15 @@ export class PreviewController extends Component {
 
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID).then(collection => {
-            const pages = [...collection.inProgress, ...collection.complete, ...collection.reviewed];
-            const collectionPreview = {collectionID, name: collection.name, pages};
-            this.props.dispatch(addPreviewCollection(collectionPreview));
+            const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
+            if (this.props.enableDatasetImport) {
+                const datasetPages = [...collection.datasetVersions, ...collection.datasets];
+                const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+                this.props.dispatch(addPreviewCollection({collectionID, name: collection.name, pages}));
+            } else {
+                const pages = nonDatasetPages;
+                this.props.dispatch(addPreviewCollection({collectionID, name: collection.name, pages}));
+            }
             if (!this.props.workingOn || !this.props.workingOn.name) {
                 this.props.dispatch(updateWorkingOn(collectionID, collection.name));
             }
@@ -87,6 +94,22 @@ export class PreviewController extends Component {
         });
     }
 
+    mapDatasetPages(datasetPages) {
+        try {
+            return datasetPages.map(page => {
+                return {
+                    uri: new URL(page.uri).pathname,
+                    description: {
+                        title: page.title || {},
+                        edition: page.version ? "version " + page.version : null,
+                    }
+                }
+            })
+        } catch (error) {
+            console.error(`Error maping dataset pages :\n`, error);
+        }
+    }
+
     fetchCollection(collectionID) {
         return http.get(`/zebedee/collectionDetails/${collectionID}`, true, true)
     }
@@ -106,7 +129,8 @@ export function mapStateToProps(state) {
     return {
         selectedPageUri: state.state.preview.selectedPage,
         workingOn: state.state.global.workingOn,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        enableDatasetImport: state.state.config.enableDatasetImport
     }
 }
 
