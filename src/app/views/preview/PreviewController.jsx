@@ -97,10 +97,10 @@ export class PreviewController extends Component {
         try {
             return datasetPages.map(page => {
                 return {
-                    uri: new URL(datasetPages[0].uri).pathname,
+                    uri: new URL(page.uri).pathname,
                     description: {
                         title: page.title || {},
-                        edition: "version " + page.version || undefined,
+                        edition: page.version ? "version " + page.version : null,
                     }
                 }
             })
