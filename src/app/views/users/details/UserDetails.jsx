@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import {Link} from 'react-router';
 import PropTypes from 'prop-types';
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 
 const propTypes = {
     isVisible: PropTypes.bool,
@@ -43,13 +43,13 @@ export class UserDetails extends Component {
         }
 
         if (!this.props.role) {
-            log.add(eventTypes.runtimeWarning, {message: `Attempt to render role for user '${this.props.email}' but none passed in as prop`});
+            log.event(`Attempt to render role for user '${this.props.email}' but none passed in as prop`, log.warn());
             return (
                 <p id="user-role" className="margin-bottom--1">{this.props.name} has no permissions</p>
             )
         }
 
-        log.add(eventTypes.runtimeWarning, {message: `Attempt to render an unknown user role for '${this.props.email}': '${this.props.role}'`});
+        log.event(`Attempt to render an unknown user role for '${this.props.email}': '${this.props.role}'`, log.warn());
         return (
             <p id="user-role" className="margin-bottom--1">{this.props.name} is a <strong>{this.props.role}</strong> (unrecognised user type)</p>
         )
