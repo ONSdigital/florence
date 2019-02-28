@@ -7,9 +7,9 @@ import dateFormat from 'dateformat';
 import CollectionEdit from './CollectionEdit';
 import url from '../../../utilities/url';
 import teams from '../../../utilities/api-clients/teams';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import notifications from '../../../utilities/notifications';
-import { updateAllTeamIDsAndNames , updateAllTeams, updateActiveCollection, addAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection} from '../../../config/actions';
+import {updateAllTeams, updateActiveCollection, addAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection} from '../../../config/actions';
 import collectionValidation from '../validation/collectionValidation';
 import collections from '../../../utilities/api-clients/collections';
 import date from '../../../utilities/date';
@@ -101,7 +101,7 @@ export class CollectionEditController extends Component {
             this.props.dispatch(updateAllTeams(response));
         }).catch(error => {
             this.setState({isFetchingAllTeams: false});
-            log.add(eventTypes.unexpectedRuntimeError, "Error fetching or mapping all teams" + JSON.stringify(error));
+            log.event("Error fetching or mapping all teams", log.error(error))
             console.error("Error fetching or mapping all teams", error);
             
             if (error.status === "FETCH_ERR") {
@@ -218,7 +218,7 @@ export class CollectionEditController extends Component {
 
     handlePublishTypeChange(publishType) {
         if (publishType !== "manual" && publishType !== "scheduled") {
-            log.add(eventTypes.runtimeWarning, {message: "Attempt to select a publish type that isn't recognised: ", publishType});
+            log.event(`Attempt to select a publish type that isn't recognised`, log.warn(), log.data({publish_type: publishType}))
             console.warn("Attempt to select a publish type that isn't recognised: ", publishType);
             return;
         }
@@ -356,7 +356,7 @@ export class CollectionEditController extends Component {
                     break;
                 }
                 case(409): {
-                    log.add(eventTypes.runtimeWarning, {message: "409 response because there was an attempt to rename collection to existing collection name: " + this.props.name + "->" + this.state.name.value});
+                    log.event("Attempt to rename collection to existing collection name", log.error(error), log.data({current_name: this.props.name, new_name: this.state.name.value}))
                     this.setState(state => ({
                         name: {
                             value: state.name.value,
@@ -376,7 +376,7 @@ export class CollectionEditController extends Component {
                     break;
                 }
             }
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error saving collection details for collection " + this.props.id + ". Error: " + JSON.stringify(error)});
+            log.event("Error saving collection details", log.error(error), log.data({collection_id: this.props.id}));
             console.error("Error saving collection details update", error);
         });
     }
@@ -400,7 +400,7 @@ export class CollectionEditController extends Component {
                 return true;
             }
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error creating new publish date from string: " + error});
+            log.event("Error creating new publish date from string", log.error(error))
             console.error("Error creating new publish date from string: " + error);
             return false;
         }

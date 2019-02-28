@@ -7,6 +7,8 @@ export const ADD_ALL_COLLECTIONS = 'ADD_ALL_COLLECTIONS';
 export const MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS = 'MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS';
 export const DELETE_COLLECTION_FROM_ALL_COLLECTIONS = 'DELETE_COLLECTION_FROM_ALL_COLLECTIONS';
 export const UPDATE_ACTIVE_COLLECTION = 'UPDATE_ACTIVE_COLLECTION';
+export const RESET = 'RESET';
+
 export const UPDATE_PAGES_IN_ACTIVE_COLLECTION = 'UPDATE_PAGES_IN_ACTIVE_COLLECTION';
 export const UPDATE_TEAMS_IN_ACTIVE_COLLECTION = 'UPDATE_TEAMS_IN_ACTIVE_COLLECTION';
 export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
@@ -14,9 +16,12 @@ export const EMPTY_ACTIVE_COLLECTION = 'EMPTY_ACTIVE_COLLECTION';
 export const UPDATE_WORKING_ON = 'UPDATE_WORKING_ON';
 export const EMPTY_WORKING_ON = 'EMPTY_WORKING_ON'
 
+export const UPDATE_ACTIVE_USER = 'UPDATE_ACTIVE_USER';
+export const ADD_ALL_USERS = 'ADD_ALL_USERS';
+export const REMOVE_USER_FROM_ALL_USERS = 'REMOVE_USER_FROM_ALL_USERS';
+
 export const UPDATE_ALL_TEAMS = 'UPDATE_ALL_TEAMS';
 export const UPDATE_ALL_TEAM_IDS_AND_NAMES = 'UPDATE_ALL_TEAM_IDS_AND_NAMES';
-export const UPDATE_USERS = 'UPDATE_USERS';
 export const UPDATE_ACTIVE_TEAM = 'UPDATE_ACTIVE_TEAM';
 export const UPDATE_ACTIVE_TEAM_MEMBERS = 'UPDATE_ACTIVE_TEAM_MEMBERS';
 
@@ -129,10 +134,24 @@ export function emptyWorkingOn() {
     }
 }
 
-export function updateUsers(users) {
+export function updateActiveUser(user) {
     return {
-        type: UPDATE_USERS,
-        users: users
+        type: UPDATE_ACTIVE_USER,
+        user
+    }
+}
+
+export function addAllUsers(users) {
+    return {
+        type: ADD_ALL_USERS,
+        users
+    }
+}
+
+export function removeUserFromAllUsers(userID) {
+    return {
+        type: REMOVE_USER_FROM_ALL_USERS,
+        userID
     }
 }
 

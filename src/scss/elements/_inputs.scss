@@ -194,6 +194,15 @@
                 box-shadow: 0 0 0 4px $focus;
             }
         }
+
+        &--disabled {
+            &:before {
+                border-color: $nappa;
+            }
+            &:after {
+                border-color: $quill-grey;
+            }
+        }
     }
 }
 .checkbox {

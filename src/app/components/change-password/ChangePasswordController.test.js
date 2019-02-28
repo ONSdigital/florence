@@ -37,12 +37,12 @@ const formEvent = {
 
 const passwordToShort = {
     value: "test",
-    errorMsg: "Passphrases must contain 4 words, separated by spaces"
+    errorMsg: "Passwords must contain four words, separated by spaces"
 };
 
 const notValidPassPhrase = {
     value: "notaValidPassPhrase",
-    errorMsg: "Passphrases must contain 4 words, separated by spaces"
+    errorMsg: "Passwords must contain four words, separated by spaces"
 };
 
 const props = {
