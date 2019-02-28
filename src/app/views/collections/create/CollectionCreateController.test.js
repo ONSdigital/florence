@@ -2,6 +2,7 @@ import React from 'react';
 import { CollectionCreateController } from './CollectionCreateController';
 import { mount, shallow } from 'enzyme';
 import renderer from 'react-test-renderer';
+import websocket from '../../../utilities/websocket'
 
 jest.mock('../../../utilities/notifications', () => {
     return {
@@ -25,12 +26,9 @@ jest.mock('../../../utilities/date', () => {
     }
 });
 
-jest.mock('../../../utilities/log', () => {
+jest.mock('../../../utilities/websocket', () => {
     return {
-        add: function() {
-            //
-        },
-        eventTypes: {}
+        send: jest.fn(() => {}),
     }
 });
 

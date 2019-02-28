@@ -12,6 +12,7 @@ import {
 import teams from '../../utilities/api-clients/teams';
 import url from '../../utilities/url';
 import notifications from '../../utilities/notifications';
+import log from '../../utilities/logging/log';
 
 import SelectableBoxController from '../../components/selectable-box/SelectableBoxController';
 import Drawer from '../../components/drawer/Drawer';
@@ -201,6 +202,7 @@ export class TeamsController extends Component {
                 }
             }
         }).catch(error => {
+            log.event(`Error fetching teams`,log.data({status_code: error.status}), log.error(error));
             switch(error.status) {
                 case(401): {
                     // This is handled by the request function, so do nothing here
@@ -233,6 +235,16 @@ export class TeamsController extends Component {
                     notifications.add(notification);
                     break;
                 }
+                default: {
+                    log.event(`Unhandled error fetching teams`,log.data({status_code: error.status}), log.error(error));
+                    const notification = {
+                        type: "warning",
+                        message: "There's been an error fetching the teams. You may only be able to see previously loaded information.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
             }
 
             console.error("Error fetching all teams:\n", error);
@@ -250,6 +262,7 @@ export class TeamsController extends Component {
             this.props.dispatch(updateActiveTeamMembers(team.members));
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
+            log.event(`Error fetching members of team`,log.data({status_code: error.status, team: teamName}), log.error(error));
             switch(error.status) {
                 case(404): {
                     const notification = {
@@ -282,6 +295,16 @@ export class TeamsController extends Component {
                     const notification = {
                         type: "warning",
                         message: `There's been a network error whilst trying to get the members for the team '${teamName}'`,
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    log.event(`Unhandled error fetching team`,log.data({status_code: error.status, team: teamName}), log.error(error));
+                    const notification = {
+                        type: "warning",
+                        message: "There's been an error fetching the members of team '${teamName}'",
                         isDismissable: true
                     }
                     notifications.add(notification);
