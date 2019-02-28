@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import teams from '../../../utilities/api-clients/teams';
 import { updateAllTeams } from '../../../config/actions';
 import notifications from '../../../utilities/notifications';
+import log from '../../../utilities/logging/log';
 
 import TeamDeleteForm from './TeamDeleteForm';
 
@@ -55,6 +56,7 @@ export class TeamDeleteController extends Component {
     handleFormSubmit(event) {
         event.preventDefault()
         if (this.state.input.value !== this.props.name) {
+            log.event(`error deleting team. The team name provided doesn't match the one user is trying to delete`, log.data({user_inputted_value: this.state.input.value, team: this.props.name}));
             const input = Object.assign({}, this.state.input, {
                error: "The team name you've provided doesn't match the one you're trying to delete" 
             });
@@ -71,7 +73,9 @@ export class TeamDeleteController extends Component {
             })
             this.props.dispatch(updateAllTeams(newTeams));
             this.props.onDeleteSuccess();
+            log.event(`successfully deleted team`,log.data({team: this.props.name}));
         }).catch(error => {
+            log.event(`Error deleting team`,log.data({status_code: error.status, team: this.props.name}), log.error(error));
             this.setState({formIsPosting: false});
             switch(error.status) {
                 case(401): {
@@ -115,6 +119,7 @@ export class TeamDeleteController extends Component {
                     break
                 }
                 default: {
+                    log.event(`Unhandled error whilst deleteing team's`,log.data({status_code: error.status, team: this.props.name}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,

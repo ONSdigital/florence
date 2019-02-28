@@ -8,7 +8,7 @@ import Drawer from '../../../components/drawer/Drawer';
 import UserDetails from './UserDetails';
 import url from "../../../utilities/url";
 import user from "../../../utilities/api-clients/user";
-import log, { eventTypes } from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 import notifications from '../../../utilities/notifications';
 import { updateActiveUser } from '../../../config/actions';
 import auth from '../../../utilities/auth';
@@ -101,7 +101,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting user '${userID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting user '${userID}': ${JSON.stringify(error)}`});
+            log.event(`Error getting user '${userID}'`, log.error(error))
             return {
                 response: null,
                 error
@@ -127,7 +127,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting permissions for '${userID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting permissions for '${userID}': ${JSON.stringify(error)}`});
+            log.event(`Error getting permissions for '${userID}'`, log.error(error))
             return {
                 response: null,
                 error
