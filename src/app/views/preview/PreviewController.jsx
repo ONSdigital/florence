@@ -16,6 +16,7 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string
     }),
+    enableDatasetImport: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
@@ -53,7 +54,7 @@ export class PreviewController extends Component {
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID).then(collection => {
             const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed]
-            if (window.getEnv().enableDatasetImport == true) {
+            if (this.props.enableDatasetImport) {
                 const datasetPages = [...collection.datasetVersions, ...collection.datasets];
                 const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
                 this.props.dispatch(addPreviewCollection({collectionID, name: collection.name, pages}));
@@ -128,7 +129,8 @@ export function mapStateToProps(state) {
     return {
         selectedPageUri: state.state.preview.selectedPage,
         workingOn: state.state.global.workingOn,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        enableDatasetImport: state.state.config.enableDatasetImport
     }
 }
 
