@@ -49,6 +49,12 @@ export const REMOVE_PREVIEW_COLLECTION = "REMOVE_PREVIEW_COLLECTION";
 export const UPDATE_PREVIEW_SELECTED_PAGE = "UPDATE_PREVIEW_SELECTED_PAGE";
 export const REMOVE_PREVIEW_SELECTED_PAGE = "REMOVE_PREVIEW_SELECTED_PAGE";
 
+export function reset() {	
+    return {	    
+        type: RESET
+    }
+}
+
 export function setConfig(config) {
     return {
         type: SET_CONFIG,
