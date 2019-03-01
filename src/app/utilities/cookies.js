@@ -25,6 +25,7 @@ export default class cookies {
         }
         if (!domain) {
             domain = location.hostname;
+            console.log(domain)
         }
 
         document.cookie = `${name}=${value};path=${path};domain=${domain}`;
@@ -54,7 +55,8 @@ export default class cookies {
             console.error(`Unable to find '${name}' cookie`);
             return false; 
         }
-        document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+        document.cookie = `${name}=;path=/;domain=${location.hostname};expires=Thu, 01 Jan 1970 00:00:01 GMT;'`
+        //document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         console.log(`Removed cookie: '${name}'`);
         return true;
     }
