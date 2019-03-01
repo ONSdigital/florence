@@ -25,7 +25,6 @@ export default class cookies {
         }
         if (!domain) {
             domain = location.hostname;
-            console.log(domain)
         }
 
         document.cookie = `${name}=${value};path=${path};domain=${domain}`;
