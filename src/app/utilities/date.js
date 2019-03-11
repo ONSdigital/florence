@@ -1,6 +1,6 @@
 
 import dateFormat from 'dateformat';
-import log, {eventTypes} from './log'
+import log from './logging/log'
 
 export default class date {
 
@@ -36,7 +36,7 @@ export default class date {
             newDate.setFullYear(date.getFullYear() + extraYears);
         } catch (error) {
             newDate = date;
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Error adding " + extraYears + " year(s) to the date " + date + ". Error: " + JSON.stringify(error)})
+            log.event("Error adding year(s) to the date", log.error(error), log.data({extra_years: extraYears, date: date}))
             console.error("Error adding " + extraYears + "year(s) to the date " + date, error);
         }
 

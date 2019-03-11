@@ -10,6 +10,21 @@ jest.mock('../../../utilities/notifications.js', () => {
     }
 });
 
+jest.mock('../../../utilities/logging/log', () => {
+    return {
+        event: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        data: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        error: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        
+    }
+});
+
 jest.mock('../../../utilities/api-clients/teams.js', () => (
     {
         remove: jest.fn(() => {
