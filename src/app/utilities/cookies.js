@@ -55,7 +55,6 @@ export default class cookies {
             return false; 
         }
         document.cookie = `${name}=;path=/;domain=${location.hostname};expires=Thu, 01 Jan 1970 00:00:01 GMT;'`
-        //document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
         console.log(`Removed cookie: '${name}'`);
         return true;
     }
