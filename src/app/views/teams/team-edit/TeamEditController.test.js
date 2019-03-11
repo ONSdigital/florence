@@ -9,24 +9,20 @@ jest.mock('../../../utilities/notifications.js', () => (
     )}
 ));
 
-jest.mock('../../../utilities/log.js', () => (
-    {
-        add: jest.fn().mockImplementation(() => {
-            console.log('Log added');
-        }
-    )}
-));
-
-jest.mock('../../../utilities/log.js', () => (
-    {
-        add: jest.fn().mockImplementation(() => {
+jest.mock('../../../utilities/logging/log', () => {
+    return {
+        event: jest.fn().mockImplementation(() => {
             // do nothing
         }),
-        eventTypes: {
-            editedTeamMembers: ""
-        }
+        data: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        error: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        
     }
-));
+});
 
 jest.mock('../../../utilities/api-clients/user.js', () => (
     {

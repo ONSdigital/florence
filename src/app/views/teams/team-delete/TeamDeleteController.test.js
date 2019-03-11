@@ -10,14 +10,18 @@ jest.mock('../../../utilities/notifications.js', () => {
     }
 });
 
-jest.mock('../../../utilities/log.js', () => {
+jest.mock('../../../utilities/logging/log', () => {
     return {
-        add: function() {
+        event: jest.fn().mockImplementation(() => {
             // do nothing
-        },
-        eventTypes: {
-            shownNotification: "SHOWN_NOTIFICATION"
-        }
+        }),
+        data: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        error: jest.fn().mockImplementation(() => {
+            // do nothing
+        }),
+        
     }
 });
 
