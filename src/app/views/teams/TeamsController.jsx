@@ -202,7 +202,7 @@ export class TeamsController extends Component {
                 }
             }
         }).catch(error => {
-            log.event(`Error fetching teams`,log.data({'status_code': error.status}), log.error(error));
+            log.event(`Error fetching teams`,log.data({status_code: error.status}), log.error(error));
             switch(error.status) {
                 case(401): {
                     // This is handled by the request function, so do nothing here
@@ -236,7 +236,7 @@ export class TeamsController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error fetching teams`,log.data({'status_code': error.status}), log.error(error));
+                    log.event(`Unhandled error fetching teams`,log.data({status_code: error.status}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: "There's been an error fetching the teams. You may only be able to see previously loaded information.",
@@ -246,6 +246,8 @@ export class TeamsController extends Component {
                     break;
                 }
             }
+
+            console.error("Error fetching all teams:\n", error);
         });
     }
 
@@ -260,7 +262,7 @@ export class TeamsController extends Component {
             this.props.dispatch(updateActiveTeamMembers(team.members));
             this.setState({isUpdatingTeamMembers: false});
         }).catch(error => {
-            log.event(`Error fetching members of team`,log.data({'status_code': error.status, "team": teamName}), log.error(error));
+            log.event(`Error fetching members of team`,log.data({status_code: error.status, team: teamName}), log.error(error));
             switch(error.status) {
                 case(404): {
                     const notification = {
@@ -299,7 +301,7 @@ export class TeamsController extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error fetching team`,log.data({'status_code': error.status, "team": teamName}), log.error(error));
+                    log.event(`Unhandled error fetching team`,log.data({status_code: error.status, team: teamName}), log.error(error));
                     const notification = {
                         type: "warning",
                         message: "There's been an error fetching the members of team '${teamName}'",
@@ -309,6 +311,7 @@ export class TeamsController extends Component {
                     break;
                 }
             }
+            console.error(`Error fetching team '${teamName}':\n`, error);
         });
     }
 

@@ -29,10 +29,16 @@ import {
     EMPTY_ACTIVE_VERSION, 
     EMPTY_ACTIVE_INSTANCE,
     UPDATE_ACTIVE_DATASET_COLLECTION_ID,
+    RESET
 } from './actions';
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
+        case (RESET): {
+            return {
+                ...initialState
+            }
+        }
         case (SET_CONFIG): {
             return {
                 ...state,
