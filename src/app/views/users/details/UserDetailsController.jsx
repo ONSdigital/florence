@@ -101,7 +101,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting user '${userID}'`, error);
-            log.event("Error getting user", log.error(error), log.data({user_id: userID}))
+            log.event(`Error getting user`,log.data({user: userID}), log.error(error))
             return {
                 response: null,
                 error
@@ -127,7 +127,7 @@ export class UserDetailsController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error getting permissions for '${userID}'`, error);
-            log.event("Error getting permissions", log.error(error), log.data({user_id: userID}))
+            log.event(`Error getting permissions for user`,log.data({user: userID}), log.error(error))
             return {
                 response: null,
                 error
@@ -136,15 +136,28 @@ export class UserDetailsController extends Component {
     }
 
     mapUserResponsesToState(userDetails, userPermissions) {
-        return {
-            name: userDetails ? userDetails.name : "",
-            email: userDetails ? userDetails.email || userPermissions.email : "",
-            role: userPermissions ? user.getUserRole(userPermissions.admin, userPermissions.editor) : "",
-            hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false
-        };
+        try {
+            return {
+                name: userDetails ? userDetails.name : "",
+                email: userDetails ? userDetails.email || userPermissions.email : "",
+                role: userPermissions ? user.getUserRole(userPermissions.admin, userPermissions.editor) : "",
+                hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false
+            }
+        } catch(error) {
+            const notification = {
+                type: "warning",
+                message: "Error mapping user details to state",
+                isDismissable: true,
+                autoDismiss: 3000
+            }
+            notifications.add(notification);
+            console.error("Error mapping user details to state: ", error);
+            log.event(`Error mapping user details to state`, log.error(error));
+            return false;
+        }
     }
 
-    handleGetUserError(userDetailsError, userPermissionsError) {
+    handleGetUserError(userDetailsError, userPermissionsError, userID) {
         const bothErrored = userDetailsError && userPermissionsError;
         const haveMatchingStatus = bothErrored ? (userDetailsError.status === userPermissionsError.status) : false;
         let notification = {
@@ -172,7 +185,12 @@ export class UserDetailsController extends Component {
                     notification.message = `Unable to get user's details due to a network error, please check your connection and try again`;
                     break;
                 }
+                case("UNEXPECTED_ERR"): {
+                    notification.message = `Unable to get user's details due to an unexpected error`;
+                    break;
+                }
                 default: {
+                    log.event(`Unhandled error geting user's details`,log.data({user: userID, logged_in_user: this.props.loggedInUser.email, status_code: userDetailsError.status}), log.error());
                     notification.message = `Unable to get user's details due to an unexpected error`;
                 }
             }
@@ -181,6 +199,7 @@ export class UserDetailsController extends Component {
         }
 
         if (bothErrored && !haveMatchingStatus) {
+            log.event(`Unexpected error geting user's details`,log.data({user: userID, logged_in_user: this.props.loggedInUser.email}), log.error());
             notification.message = `Unable to get user's details due to an unexpected error`;
             notifications.add(notification);
             return;
@@ -206,7 +225,12 @@ export class UserDetailsController extends Component {
                     notification.message = `Unable to get all of the user's details due to a network error, please check your connection and try again`;
                     break;
                 }
+                case("UNEXPECTED_ERR"): {
+                    notification.message = `Unable to get all of the user's details due to an unexpected error`;
+                    break;
+                }
                 default: {
+                    log.event(`Unhandled error geting user's details`,log.data({user: userID, logged_in_user: this.props.loggedInUser.email}), log.error());
                     notification.message = `Unable to get all of the user's details due to an unexpected error`;
                 }
             }

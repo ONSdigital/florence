@@ -14,8 +14,8 @@ jest.mock('../../../utilities/notifications', () => ({
 
 jest.mock('../../../utilities/logging/log', () => ({
     event: jest.fn(() => {}),
-    error: jest.fn(() => {}),
-    data: jest.fn(() => {})
+    data: jest.fn(() => {}),
+    error: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/url', () => ({

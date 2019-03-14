@@ -12,21 +12,14 @@ exports[`Input without type renders a text input 1`] = `
   </label>
   
   <input
-    accept={undefined}
     autoComplete="new-password"
     autoFocus={false}
     className="input"
     disabled={false}
     id="test-input"
-    max={undefined}
-    min={undefined}
     name="test-input"
-    onBlur={undefined}
-    onChange={undefined}
     onFocus={[Function]}
-    placeholder={undefined}
     type="text"
-    value={undefined}
   />
   
 </div>
@@ -44,21 +37,14 @@ exports[`Password prop creates a password input 1`] = `
   </label>
   
   <input
-    accept={undefined}
     autoComplete="new-password"
     autoFocus={false}
     className="input input--show-hide"
     disabled={false}
     id="test-password-input"
-    max={undefined}
-    min={undefined}
     name="test-password-input"
-    onBlur={undefined}
-    onChange={undefined}
     onFocus={[Function]}
-    placeholder={undefined}
     type="password"
-    value={undefined}
   />
   <span
     className="btn btn--password"

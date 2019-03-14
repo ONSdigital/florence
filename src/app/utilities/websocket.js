@@ -1,4 +1,4 @@
-import log, {eventTypes} from './log';
+import log from './logging/log';
 
 class Socket {
     constructor() {
@@ -25,11 +25,11 @@ class Socket {
                 this.socket.send(message);
             });
             
-            log.add(eventTypes.socketOpen);
+            log.event("Websocket opened")
         }
 
-        this.socket.onerror = () => {
-            log.add(eventTypes.socketError);
+        this.socket.onerror = (event) => {
+            log.event("Websocket error", log.error(), log.data({...event}))
         }
 
         this.socket.onclose = () => {
@@ -62,7 +62,7 @@ class Socket {
 
         if (this.buffer.size >= 50) {
             console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
-            log.add(eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
+            //log.add(eventTypes.socketBufferFull); // This has to be excluded from being sent to the server or else we'll have an infinite loop
             return;
         }
 
