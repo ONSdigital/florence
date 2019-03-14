@@ -7,7 +7,6 @@ exports[`Radio button matches stored snapshot 1`] = `
   <input
     checked={false}
     className="radio__input"
-    disabled={undefined}
     id="test-radio"
     name="test-group"
     onBlur={[Function]}
