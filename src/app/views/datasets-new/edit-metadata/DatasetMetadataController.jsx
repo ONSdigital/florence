@@ -176,7 +176,14 @@ export class DatasetMetadataController extends Component {
                 isGettingVersionMetadata: false, 
                 versionIsInCollection: mappedVersion.collection, 
                 instanceID: mappedVersion.instanceID, 
-                versionIsPublished: mappedVersion.versionIsPublished});
+                versionIsPublished: mappedVersion.versionIsPublished
+            });
+
+            // if version state is edition-confirmed load in dimensions  
+            // labels and descriptions from last published version
+            if (version.state === "edition-confirmed") {
+                this.getPreviousVersionDimensions(datasetID)
+            }
         })
     }
 
@@ -264,6 +271,14 @@ export class DatasetMetadataController extends Component {
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping latest changes to state \n ${error}`);
         }
+    }
+
+    getPreviousVersionDimensions = (datasetID) => {
+        datasets.getLatestVersion(datasetID).then(previousVersion => {
+            console.log(previousVersion);
+            const metadata = {...this.state.metadata, dimensions: previousVersion.dimensions}
+            this.setState({metadata: metadata});
+        });
     }
 
     getAndUpdateReviewStateData = () => {
