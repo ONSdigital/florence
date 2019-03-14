@@ -348,7 +348,7 @@ export class CollectionDetails extends Component {
                         <div>
                             <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
                             {this.props.enableDatasetImport &&
-                                <Link id="import-dataset-link" to={url.resolve("/datasets") + "?collection=" + this.props.id} className="btn btn--primary btn--margin-left">Add imported dataset</Link>
+                                <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">Create/edit CMD dataset page</Link>
                             }
                             <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
                         </div>

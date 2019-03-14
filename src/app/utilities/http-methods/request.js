@@ -1,5 +1,5 @@
 import { HttpError } from './error';
-import log, { eventTypes } from '../log';
+import log from '../logging/log';
 import uuid from 'uuid/v4';
 import user from '../api-clients/user';
 import notifications from '../notifications';
@@ -28,13 +28,8 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
     function tryFetch(resolve, reject, URI, willRetry, body) {
         const UID = uuid();
-        const logEventPayload = {
-            method: method,
-            requestID: UID,
-            willRetry,
-            retryCount,
-            URI
-        };
+        const URL = window.location.origin + URI;
+        
         const fetchConfig = {
             method,
             credentials: "include",
@@ -49,12 +44,12 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             fetchConfig.body = JSON.stringify(body || {});
         }
 
-        log.add(eventTypes.requestSent, {...logEventPayload});
+        const requestSentAt = new Date(Date.now()).toISOString();
+        log.event("Request sent", log.http(UID, method, URL, requestSentAt));
 
         fetch(URI, fetchConfig).then(response => {
-            logEventPayload.status = response.status;
-            logEventPayload.message = response.message;
-            log.add(eventTypes.requestReceived, logEventPayload);
+            const responseReceivedAt = new Date(Date.now()).toISOString();
+            log.event("Response received", log.http(UID, method, URL, requestSentAt, response.status, responseReceivedAt))
 
             if (response.status >= 500) {
                 throw new HttpError(response);
@@ -83,7 +78,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
             if (!response.ok) {
                 response.text().then(body => {
-                    reject({status: response.status, message: response.statusText, body: body ? JSON.parse(body) : null})
+                    reject({status: response.status, message: response.statusText, body: parseBodyAsJson(body)})
                 })
                 return; 
             }
@@ -92,8 +87,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 resolve({status: response.status, message: response.statusText})
                 return;
             }
-            
-            logEventPayload.status = 200;
 
             let responseIsJSON = false;
             let responseIsText = false;
@@ -102,7 +95,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 responseIsText = response.headers.get('content-type').match(/text\/plain/);
             } catch (error) {
                 console.error(`Error trying to parse content-type header`, error);
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error trying to parse content-type header: ${JSON.stringify(error)}`});
+                log.event("Error trying to parse content-type header", log.error(error), log.data({header_content_type: response.headers.get('content-type')}))
                 
                 // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
                 // unless we just allow 204 responses to resolve, instead of reject with an error
@@ -116,7 +109,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             }
             
             if (!responseIsJSON && method !== "POST" && method !== "PUT") {
-                log.add(eventTypes.runtimeWarning, {message: `Received request response for method '${method}' that didn't have the 'application/json' header`});
+                log.event(`Received request response for method that didn't have the 'application/json' header`, log.warn(), log.data({method: method}));
             }
             
             // We've detected a text response so we should try to parse as text, not JSON
@@ -127,7 +120,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         resolve(text);
                     } catch (error) {
                         console.error("Error trying to parse request body as text: ", error);
-                        log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse text response from request but unable to. Error message: ' + error);
+                        log.event("Error trying to parse request body as text", log.error(error))
     
                         if (method === "POST" || method === "PUT") {
                             resolve();
@@ -155,7 +148,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     }
 
                     console.error("Error trying to parse request body as JSON: ", error);
-                    log.add(eventTypes.unexpectedRuntimeError, 'Attempt to parse JSON response from request but unable to. Error message: ' + error);
+                    log.event("Error trying to parse request body as JSON", log.error(error));
 
                     // We're trying to get data at this point and the body can't be parsed
                     // which means this request is a failure and the promise should be rejected
@@ -163,9 +156,8 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 }
             })();
         }).catch((fetchError = {message: "No error message given"}) => {
-            logEventPayload.message = fetchError.message;
-            log.add(eventTypes.requestFailed, logEventPayload);
-
+            const requestFailedAt = new Date(Date.now()).toISOString();
+            log.event("Request failed", log.http(UID, method, URL, requestSentAt, undefined, requestFailedAt), log.error(fetchError))
             if (willRetry) {
 
                 // retry post
@@ -209,4 +201,19 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
         });
     }
+
+    function parseBodyAsJson(body){
+        if (!body) {
+            return null;
+        }
+        try {
+            return JSON.parse(body);
+        } catch (error) {
+            console.warn(`Error parsing request body as JSON, returned body as ${typeof body}`)
+            return body;
+        }
+    }
+
 }
+
+

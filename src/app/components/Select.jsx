@@ -11,6 +11,7 @@ const propTypes = {
             disabled: PropTypes.bool
         })
     ).isRequired,
+    name: PropTypes.string,
     selectedOption: PropTypes.string,
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
@@ -48,6 +49,7 @@ class Select extends Component {
                     <select
                         className="select"
                         id={this.props.id}
+                        name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
                         onFocus={this.handleFocus}
