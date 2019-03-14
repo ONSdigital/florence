@@ -27,8 +27,8 @@ describe("Validating the collection name", () => {
     });
     
     // TODO these should probably be written in a string sanitise function, which is not done yet
-    it("trims whitespace from the beginning and end of the name")
-    it("replaces double whitespace with single whitespace from the within the name")
+    // it("trims whitespace from the beginning and end of the name")
+    // it("replaces double whitespace with single whitespace from the within the name")
 });
 
 describe("Validating the collection publish date", () => {

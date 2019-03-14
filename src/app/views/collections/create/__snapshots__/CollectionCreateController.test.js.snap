@@ -17,19 +17,14 @@ exports[`Create collection form matches stored snapshot 1`] = `
         </label>
         
         <input
-          accept={undefined}
           autoComplete="new-password"
           autoFocus={false}
           className="input"
           disabled={false}
           id="collection-name"
-          max={undefined}
-          min={undefined}
           name="collection-name"
-          onBlur={undefined}
           onChange={[Function]}
           onFocus={[Function]}
-          placeholder={undefined}
           type="text"
           value=""
         />
@@ -82,7 +77,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
           <input
             checked={true}
             className="radio__input selected"
-            disabled={undefined}
             id="scheduled-radio"
             name="release-type"
             onBlur={[Function]}
@@ -106,7 +100,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
           <input
             checked={false}
             className="radio__input"
-            disabled={undefined}
             id="manual-radio"
             name="release-type"
             onBlur={[Function]}
@@ -140,7 +133,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
             <input
               checked={true}
               className="radio__input selected"
-              disabled={undefined}
               id="custom-radio"
               name="schedule-type"
               onBlur={[Function]}
@@ -164,7 +156,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
             <input
               checked={false}
               className="radio__input"
-              disabled={undefined}
               id="calendar-radio"
               name="schedule-type"
               onBlur={[Function]}
@@ -195,7 +186,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
-              accept={undefined}
               autoComplete="new-password"
               autoFocus={false}
               className="input"
@@ -204,10 +194,8 @@ exports[`Create collection form matches stored snapshot 1`] = `
               max="2017-10-12"
               min="2017-10-12"
               name="publish-date"
-              onBlur={undefined}
               onChange={[Function]}
               onFocus={[Function]}
-              placeholder={undefined}
               type="date"
               value=""
             />
@@ -224,19 +212,14 @@ exports[`Create collection form matches stored snapshot 1`] = `
             </label>
             
             <input
-              accept={undefined}
               autoComplete="new-password"
               autoFocus={false}
               className="input"
               disabled={false}
               id="publish-time"
-              max={undefined}
-              min={undefined}
               name="publish-time"
-              onBlur={undefined}
               onChange={[Function]}
               onFocus={[Function]}
-              placeholder={undefined}
               type="time"
               value="09:30"
             />
