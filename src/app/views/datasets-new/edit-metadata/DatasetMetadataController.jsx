@@ -275,7 +275,6 @@ export class DatasetMetadataController extends Component {
 
     getPreviousVersionDimensions = (datasetID) => {
         datasets.getLatestVersion(datasetID).then(previousVersion => {
-            console.log(previousVersion);
             const metadata = {...this.state.metadata, dimensions: previousVersion.dimensions}
             this.setState({metadata: metadata});
         });
