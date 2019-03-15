@@ -737,7 +737,7 @@ export class DatasetMetadataController extends Component {
     saveDimensionChanges = (instanceID, dimensions) => {
         return datasets.updateInstanceDimensions(instanceID, dimensions)
             .catch(error => {
-                log.event("Error saving dimensions on instance to dataset API", logData({instanceID: instanceID}), log.error(error));
+                log.event("Error saving dimensions on instance to dataset API", log.data({instanceID: instanceID}), log.error(error));
                 console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
                 return error;
             })
