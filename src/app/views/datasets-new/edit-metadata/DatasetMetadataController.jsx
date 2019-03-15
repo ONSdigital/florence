@@ -274,10 +274,12 @@ export class DatasetMetadataController extends Component {
     }
 
     getPreviousVersionDimensions = (datasetID) => {
+        log.event("getting dimensions from last published version", log.data(datasetID))
         datasets.getLatestVersion(datasetID).then(previousVersion => {
             const metadata = {...this.state.metadata, dimensions: previousVersion.dimensions}
             this.setState({metadata: metadata});
         }).catch(error => {
+            log.event("error getting dimensions from last published version", log.data(datasetID), log.error(error))
             switch (error.status) {
                 case(404): {
                     const notification = {
