@@ -277,6 +277,46 @@ export class DatasetMetadataController extends Component {
         datasets.getLatestVersion(datasetID).then(previousVersion => {
             const metadata = {...this.state.metadata, dimensions: previousVersion.dimensions}
             this.setState({metadata: metadata});
+        }).catch(error => {
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "Unable to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error getting latest published version):\n`, error);
         });
     }
 
