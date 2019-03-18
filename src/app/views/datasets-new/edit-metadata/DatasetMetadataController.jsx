@@ -181,7 +181,7 @@ export class DatasetMetadataController extends Component {
 
             // if version state is edition-confirmed load in dimensions  
             // labels and descriptions from last published version
-            if (version.state === "edition-confirmed") {
+            if ("edition-confirmed" === version.state) {
                 this.getPreviousVersionDimensions(datasetID)
             }
         })
