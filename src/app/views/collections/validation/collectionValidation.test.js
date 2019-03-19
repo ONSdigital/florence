@@ -10,6 +10,10 @@ describe("Validating the collection name", () => {
         expect(collectionValidation.name("   ").isValid).toBe(false);
     });
 
+    it("returns 'false' if the collection name contains symbol", () => {
+        expect(collectionValidation.name("My-collection@$").isValid).toBe(false);
+    });
+
     it("returns an error message if the collection name isn't valid", () => {
         expect(collectionValidation.name("").errorMsg).toBeTruthy();
     });

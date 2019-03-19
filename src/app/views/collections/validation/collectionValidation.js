@@ -7,17 +7,27 @@
 export default class collectionValidation {
 
     static name(name) {
+        let response = {
+            isValid: true,
+            errorMsg: ""
+        }
+
+        if (name.match(/[^a-zA-Z0-9 ]/)) {
+            response = {
+                isValid: false,
+                errorMsg: "Collection names can only contain letters and numbers. (" + name.replace(/[a-zA-Z0-9 ]/g, "") + ") are not allowed."
+            }
+        }
+
+
         if (!name || name.match(/^\s*$/)) {
-            return {
+            response = {
                 isValid: false,
                 errorMsg: "Collections must be given a name"
             }
         }
 
-        return {
-            isValid: true,
-            errorMsg: ""
-        };
+        return response
     }
 
     static date(date) {
