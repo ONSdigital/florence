@@ -43,7 +43,7 @@ export class UserDetails extends Component {
         }
 
         if (!this.props.role) {
-            log.event(`Attempted to render role for user but none passed in as prop`, log.warn(), log.data({user: this.props.email}));
+            log.event("Attempted to render role for user but none passed in as prop", log.warn(), log.data({user: this.props.email}));
             return (
                 <p id="user-role" className="margin-bottom--1">{this.props.name} has no permissions</p>
             )
