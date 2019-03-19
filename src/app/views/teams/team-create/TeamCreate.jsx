@@ -52,9 +52,9 @@ class TeamCreate extends Component {
                 isAwaitingResponse: false
             });
             this.props.onCreateSuccess();
-            log.event(`successfully created team`,log.data({"team": newTeamName}));
+            log.event(`Successfully created team`,log.data({team: newTeamName}));
         }).catch(error => {
-            log.event(`Error creating team`,log.data({'status_code': error.status, "team": newTeamName}), log.error(error));
+            log.event(`Error creating team`,log.data({status_code: error.status, team: newTeamName}), log.error(error));
             this.setState({isAwaitingResponse: false});
             switch(error.status) {
                 case(401): {
@@ -80,7 +80,7 @@ class TeamCreate extends Component {
                     break;
                 }
                 default: {
-                    log.event(`Unhandled error creating team`,log.data({'status_code': error.status, "team": newTeamName}), log.error(error));
+                    log.event(`Unhandled error creating team`,log.data({status_code: error.status, team: newTeamName}), log.error(error));
                     const input = Object.assign({}, this.state.input, {
                         error: `An unexpected error has occured`
                     });

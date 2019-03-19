@@ -37,7 +37,8 @@
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5",
-    "replace-in-file": "^3.1.1"
+    "replace-in-file": "^3.1.1",
+    "request": "^2.88.0"
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
