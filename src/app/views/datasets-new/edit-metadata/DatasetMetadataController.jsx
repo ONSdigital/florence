@@ -7,7 +7,7 @@ import datasets from '../../../utilities/api-clients/datasets';
 import collections from '../../../utilities/api-clients/collections';
 import notifications from '../../../utilities/notifications';
 import url from '../../../utilities/url';
-import log, {eventTypes} from '../../../utilities/log';
+import log from '../../../utilities/logging/log';
 
 import DatasetMetadata from './DatasetMetadata';
 
@@ -119,9 +119,9 @@ export class DatasetMetadataController extends Component {
                 keywords: dataset.keywords ? (dataset.keywords.join()).replace(",", ", ") : "",
                 nationalStatistic: dataset.national_statistic,
                 licence: dataset.license || "", 
-                relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets) : [],
-                relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications) : [],
-                relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies) : [],
+                relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets, datasetResponse.id) : [],
+                relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications, datasetResponse.id) : [],
+                relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, datasetResponse.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release,
@@ -138,7 +138,7 @@ export class DatasetMetadataController extends Component {
                 state: dataset.state
             }
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping dataset '${datasetResponse.id}' to to state. \n ${error}`});
+            log.event("Error mapping dataset to state", log.data({datasetID: datasetResponse.id}), log.error(error))
             notifications.add({
                 type: "warning",
                 message: `An unexpected error occurred when trying to get dataset '${datasetResponse.id}'. Try refreshing the page`,
@@ -148,7 +148,7 @@ export class DatasetMetadataController extends Component {
         }
     }
 
-    mapRelatedContentToState = (relatedDatasets) => {
+    mapRelatedContentToState = (relatedDatasets, datasetID) => {
         try {
             return relatedDatasets.map((link, index) => {
                 return {
@@ -161,7 +161,7 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping related links to state \n ${error}`});
+            log.event("Error mapping related links to state", log.data({datasetID: datasetID}), log.error(error))
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping related links to state \n ${error}`);
@@ -176,7 +176,14 @@ export class DatasetMetadataController extends Component {
                 isGettingVersionMetadata: false, 
                 versionIsInCollection: mappedVersion.collection, 
                 instanceID: mappedVersion.instanceID, 
-                versionIsPublished: mappedVersion.versionIsPublished});
+                versionIsPublished: mappedVersion.versionIsPublished
+            });
+
+            // if version state is edition-confirmed load in dimensions  
+            // labels and descriptions from last published version
+            if ("edition-confirmed" === version.state) {
+                this.getPreviousVersionDimensions(datasetID)
+            }
         })
     }
 
@@ -186,10 +193,10 @@ export class DatasetMetadataController extends Component {
                 edition: version.edition,
                 version: version.version,
                 releaseDate: {value: version.release_date || "", error: ""},
-                notices: version.alerts ? this.mapNoticesToState(version.alerts) : [],
+                notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
                 dimensions: version.dimensions || [],
-                usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes) : [],
-                latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes) : []
+                usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
+                latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : []
             }
             return {
                 metadata: {...this.state.metadata, ...mappedVersion}, 
@@ -198,7 +205,7 @@ export class DatasetMetadataController extends Component {
                 versionIsPublished: version.state === "published" 
             }
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping version '${version.version || version.id}' to to state. \n ${error}`});
+            log.event("Error mapping version to state", log.data({versionID: version.version || version.id}), log.error(error))
             notifications.add({
                 type: "warning",
                 message: `An unexpected error occurred when trying to get version '${version.version || version.id}'. Try refreshing the page`,
@@ -208,7 +215,7 @@ export class DatasetMetadataController extends Component {
         }
     }
 
-    mapNoticesToState = (notices) => {
+    mapNoticesToState = (notices, versionID) => {
         try {
             return notices.map((notice, index) => {
                 return {
@@ -221,14 +228,14 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping notices to state \n ${error}`});
+            log.event("Error mapping notices to state", log.data({versionID: versionID}), log.error(error))
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping notices to state \n ${error}`);
         }
     }
 
-    mapUsageNotesToState = (usageNotes) => {
+    mapUsageNotesToState = (usageNotes, versionID) => {
         try {
             return usageNotes.map((note, index) => {
                 return {
@@ -240,14 +247,14 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping usage notes to state \n ${error}`});
+            log.event("Error mapping usage notes to state", log.data({versionID: versionID}), log.error(error))
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping usage notes to state \n ${error}`);
         }
     }
 
-    mapLatestChangesToState = (latestChanges) => {
+    mapLatestChangesToState = (latestChanges, versionID) => {
         try {
             return latestChanges.map((latestChange, index) => {
                 return {
@@ -259,11 +266,60 @@ export class DatasetMetadataController extends Component {
                 }
             })
         } catch(error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping latest changes to state \n ${error}`});
+            log.event("Error mapping usage notes to state", log.data({versionID: versionID}), log.error(error))
             // throw an error to let parent mapper catch and display notification
             // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping latest changes to state \n ${error}`);
         }
+    }
+
+    getPreviousVersionDimensions = (datasetID) => {
+        log.event("getting dimensions from last published version", log.data(datasetID))
+        datasets.getLatestVersion(datasetID).then(previousVersion => {
+            const metadata = {...this.state.metadata, dimensions: previousVersion.dimensions}
+            this.setState({metadata: metadata});
+        }).catch(error => {
+            log.event("error getting dimensions from last published version", log.data(datasetID), log.error(error))
+            switch (error.status) {
+                case(404): {
+                    const notification = {
+                        "type": "warning",
+                        "message": "Unable to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("RESPONSE_ERR"):{
+                    const notification = {
+                        "type": "warning",
+                        "message": "An error's occurred whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification)
+                    break;
+                }
+                case("FETCH_ERR"): {
+                    const notification = {
+                        type: "warning",
+                        message: "There's been a network error whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    const notification = {
+                        type: "warning",
+                        message: "An unexpected error's occurred whilst trying to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                        isDismissable: true
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error(`Error getting latest published version):\n`, error);
+        });
     }
 
     getAndUpdateReviewStateData = () => {
@@ -291,7 +347,7 @@ export class DatasetMetadataController extends Component {
             //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress"
             return {lastEditedBy: dataset.lastEditedBy, reviewState: dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1)}
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping version collection state to to state. \n ${error}`});
+            log.event("Error mapping version collection state to component state", log.error(error))
             notifications.add({
                 type: "warning",
                 message: `An unexpected error occurred when trying to get information about this versions collection state'. Try refreshing the page`,
@@ -421,7 +477,7 @@ export class DatasetMetadataController extends Component {
                 return this.mapLatestChangesToState(newState);
             }
             default: {
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Error mapping metadata field to state. Unknown field name '${stateFieldName}'`});
+                log.event("Error mapping metadata field to state. Unknown field name.", log.data({fieldName: stateFieldName}), log.error())
                 notifications.add({
                     type: "warning",
                     message: `An when adding metadata item, changes or additions won't be save. Refresh the page and try again`,
@@ -645,7 +701,7 @@ export class DatasetMetadataController extends Component {
     addDatasetToCollection = (collectionID, datasetID) => {
         return collections.addDataset(collectionID, datasetID)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                log.event("Error adding dataset to collection", log.data({collectionID: collectionID, datasetID: datasetID}, log.erro(error)))
                 console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
                 return error;
             });
@@ -654,7 +710,7 @@ export class DatasetMetadataController extends Component {
     addVersionToCollection = (collectionID, datasetID, editionID, versionID) => {
         return collections.addDatasetVersion(collectionID, datasetID, editionID, versionID) 
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'. Error: ${JSON.stringify(error)}`});
+                log.event("Error adding version to collection", log.data({collectionID: collectionID, version: `${datasetID}/editions/${editionID}/versions/${versionID}`}), log.error(error))
                 console.error(`Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`, error);
                 return error;
             });
@@ -663,7 +719,7 @@ export class DatasetMetadataController extends Component {
     saveDatasetChanges = (datasetID, metadata) => {
         return datasets.updateDatasetMetadata(datasetID, metadata)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error saving dataset '${datasetID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
+                log.event("Error saving dataset changes to dataset API", log.data({datasetID: datasetID}), log.error(error));
                 console.error(`Error saving dataset '${datasetID}' changes to dataset API '${this.props.params.collectionID}'`, error);
                 return error;
             });
@@ -672,7 +728,7 @@ export class DatasetMetadataController extends Component {
     saveVersionChanges = (datasetID, editionID, versionID, metadata) => {
         return datasets.updateVersionMetadata(datasetID, editionID, versionID, metadata)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API. Error: ${JSON.stringify(error)}`});
+                log.event("Error saving version changes to dataset API", log.data({version: `${datasetID}/editions/${editionID}/versions/${versionID}`}), log.error(error));
                 console.error(`Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`, error);
                 return error;
             })
@@ -681,7 +737,7 @@ export class DatasetMetadataController extends Component {
     saveDimensionChanges = (instanceID, dimensions) => {
         return datasets.updateInstanceDimensions(instanceID, dimensions)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error saving dimensions on instance '${instanceID}' to dataset API. Error: ${JSON.stringify(error)}`});
+                log.event("Error saving dimensions on instance to dataset API", log.data({instanceID: instanceID}), log.error(error));
                 console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
                 return error;
             })
@@ -690,7 +746,7 @@ export class DatasetMetadataController extends Component {
     submitDatasetForReview = (collectionID, datasetID) => {
         return collections.setDatasetStatusToComplete(collectionID, datasetID)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error submitting dataset '${datasetID}' for review. Error: ${JSON.stringify(error)}`});
+                log.event("Error submitting dataset for review", log.data({collectionID: collectionID, datasetID: datasetID}), log.error(error));
                 console.error(`Error submitting dataset '${datasetID}' for review. Error:`, error);
                 return error;
             })
@@ -699,7 +755,7 @@ export class DatasetMetadataController extends Component {
     markDatasetAsReviewed = (collectionID, datasetID) => {
         return collections.setDatasetStatusToReviewed(collectionID, datasetID)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                log.event("Error marking dataset as reviewed", log.data({collectionID: collectionID, datasetID: datasetID}), log.error(error));
                 console.error(`Error marking dataset '${datasetID}' as reviewed. Error:`, error);
                 return error;
             })
@@ -708,7 +764,7 @@ export class DatasetMetadataController extends Component {
     submitVersionForReview = (collectionID, datasetID, editionID, versionID) => {
         return collections.setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                log.event("Error submitting version for review", log.data({collectionID: collectionID, version: `${datasetID}/editions/${editionID}/versions/${versionID}`}), log.error(error));
                 console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
                 return error;
             })
@@ -717,7 +773,7 @@ export class DatasetMetadataController extends Component {
     markVersionAsReviewed = (collectionID, datasetID, editionID, versionID) => {
         return collections.setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID)
             .catch(error => {
-                log.add(eventTypes.requestFailed, {message: `Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error: ${JSON.stringify(error)}`});
+                log.event("Error marking version as reviewed", log.data({collectionID: collectionID, version: `${datasetID}/editions/${editionID}/versions/${versionID}`}), log.error(error));
                 console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
                 return error;
             })
