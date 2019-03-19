@@ -54,6 +54,14 @@ const mockedAllDatasets = {
             "title": "Test Datatset 2"
           }
         },
+        {
+            "id": "test-dataset-3",
+            "current": {
+              "collection_id": "1234567890",
+              "id": "test-dataset-3",
+              "title": ""
+            }
+          },
       ]
     };
 
@@ -126,9 +134,15 @@ describe("Mapping datasets to state", () => {
                 id: mockedAllDatasets.items[1].current.id,
                 url: defaultProps.location.pathname + "/" + mockedAllDatasets.items[1].current.id
             },
+            {
+                title: mockedAllDatasets.items[2].current.id, 
+                id: mockedAllDatasets.items[2].current.id,
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets.items[2].current.id
+            },
         ]
         const returnValue = component.instance().mapDatasetsToState(mockedAllDatasets.items);
         expect(returnValue[0]).toMatchObject(expectedValue[0]);
         expect(returnValue[1]).toMatchObject(expectedValue[1]);
+        expect(returnValue[2]).toMatchObject(expectedValue[2]);
     })
 });
