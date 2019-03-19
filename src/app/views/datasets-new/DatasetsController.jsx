@@ -117,7 +117,7 @@ export class DatasetsController extends Component {
             return datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
                 return {
-                    title: dataset.title, 
+                    title: dataset.title || dataset.id, 
                     id: dataset.id,
                     url: this.props.location.pathname + "/" + dataset.id
                 }
