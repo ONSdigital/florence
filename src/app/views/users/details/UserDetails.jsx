@@ -43,13 +43,13 @@ export class UserDetails extends Component {
         }
 
         if (!this.props.role) {
-            log.event(`Attempt to render role for user '${this.props.email}' but none passed in as prop`, log.warn());
+            log.event("Attempted to render role for user but none passed in as prop",  log.warn(), log.data({user: this.props.email}));
             return (
                 <p id="user-role" className="margin-bottom--1">{this.props.name} has no permissions</p>
             )
         }
 
-        log.event(`Attempt to render an unknown user role for '${this.props.email}': '${this.props.role}'`, log.warn());
+        log.event("Attempted to render an unknown user role",  log.warn(), log.data({user: this.props.email, role: this.props.role}));
         return (
             <p id="user-role" className="margin-bottom--1">{this.props.name} is a <strong>{this.props.role}</strong> (unrecognised user type)</p>
         )
