@@ -47,7 +47,7 @@ export class ConfirmUserDeleteController extends Component {
             }).catch(error => reject(error));
         }).catch(error => {
             console.error(`Error deleting user '${userID}'`, error);
-            log.event("Error deleting user",log.data({user: userID, logged_in_user: this.props.loggedInUser.email}), log.error(error))
+            log.event("Error deleting user", log.data({user: userID, logged_in_user: this.props.loggedInUser.email}), log.error(error))
             return {
                 response: null,
                 error
@@ -80,7 +80,7 @@ export class ConfirmUserDeleteController extends Component {
                 break;
             }
             default: {
-                log.event("Unhandled error deleting user",log.data({user: this.props.params.userID, logged_in_user: this.props.loggedInUser.email}), log.error(error));
+                log.event("Unhandled error deleting user", log.data({user: this.props.params.userID, logged_in_user: this.props.loggedInUser.email}), log.error(error));
                 notification.message = `Unable to delete user due to an unexpected error`;
                 break;
             }
@@ -128,7 +128,7 @@ export class ConfirmUserDeleteController extends Component {
             return;
         }
 
-        log.event("Successfully deleted user",log.data({user: userID, logged_in_user: this.props.loggedInUser.email}));
+        log.event("Successfully deleted user", log.data({user: userID, logged_in_user: this.props.loggedInUser.email}));
         notifications.add({
             type: "positive",
             message: "User successfully deleted",
