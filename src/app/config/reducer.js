@@ -36,7 +36,8 @@ export default function reducer(state = initialState, action) {
     switch (action.type) {
         case (RESET): {
             return {
-                ...initialState
+                ...initialState,
+                config: state.config
             }
         }
         case (SET_CONFIG): {
