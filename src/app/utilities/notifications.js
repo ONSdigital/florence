@@ -1,6 +1,6 @@
 import { addNotification, removeNotification, toggleNotificationVisibility } from '../config/actions';
 import { store } from '../config/store';
-import log, { eventTypes } from './log';
+import log from './logging/log';
 
 import uuid from 'uuid/v4';
 
@@ -49,7 +49,7 @@ export default class notifications {
             });
         }
 
-        log.add(eventTypes.shownNotification, {type: config.type, message: config.message});
+        log.event("Notification shown", log.data({type: config.type, message: config.message}));
 
         store.dispatch(addNotification(config));
         
