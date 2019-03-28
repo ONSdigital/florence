@@ -10,6 +10,10 @@ describe("Validating the collection name", () => {
         expect(collectionValidation.name("   ").isValid).toBe(false);
     });
 
+    it("returns 'false' if the collection name contains symbol", () => {
+        expect(collectionValidation.name("My-collection@$").isValid).toBe(false);
+    });
+
     it("returns an error message if the collection name isn't valid", () => {
         expect(collectionValidation.name("").errorMsg).toBeTruthy();
     });
@@ -23,8 +27,8 @@ describe("Validating the collection name", () => {
     });
     
     // TODO these should probably be written in a string sanitise function, which is not done yet
-    it("trims whitespace from the beginning and end of the name")
-    it("replaces double whitespace with single whitespace from the within the name")
+    // it("trims whitespace from the beginning and end of the name")
+    // it("replaces double whitespace with single whitespace from the within the name")
 });
 
 describe("Validating the collection publish date", () => {
