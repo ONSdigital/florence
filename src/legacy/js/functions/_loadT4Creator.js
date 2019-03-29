@@ -68,7 +68,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             );
             creatorDatePicker();
         }
-        if(!isInheriting) {
+        if (!isInheriting) {
             $('.btn-page-create').before(
                 '<p class="create-publishing-error">Creating a publication here will create a new series.</p>'
             )
@@ -124,12 +124,15 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             } else if (!pageData.description.edition && !releaseDateManual) {
                 releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
             }
-
-            if (!releaseDate) {
-                pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
-            } else {
-                pageData.description.releaseDate = releaseDate;
+            var articleNoReleaseDate = ((pageData.type === "article") && ($('#releaseDate').val() === ''))
+            if (!articleNoReleaseDate) {
+                if (!releaseDate) {
+                    pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
+                } else {
+                    pageData.description.releaseDate = releaseDate;
+                }
             }
+
             if (isInheriting) {
                 pageData.description.nationalStatistic = natStat;
                 pageData.description.contact.name = contactName;
@@ -157,7 +160,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 e.preventDefault();
                 conditions = false;
             }
-            if (!pageData.description.releaseDate) {
+            if (!pageData.description.releaseDate && pageData.type !== 'article') {
                 sweetAlert('Release date can not be empty');
                 $('.select-wrap').remove();
                 $('#edition-div').remove();
