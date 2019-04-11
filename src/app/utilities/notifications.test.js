@@ -19,14 +19,12 @@ jest.mock('../config/store', () => (
     }
 ))
 
-jest.mock('./log', () => {
+jest.mock('./logging/log', () => {
     return {
-        add: function() {
+        event: function() {
             // do nothing
         },
-        eventTypes: {
-            shownNotification: "SHOWN_NOTIFICATION"
-        }
+        data: function() {}
     }
 })
 

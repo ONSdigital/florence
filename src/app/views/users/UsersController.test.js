@@ -5,10 +5,11 @@ import user from '../../utilities/api-clients/user';
 
 console.error = () => {};
 
-jest.mock('../../utilities/log', () => {
+jest.mock('../../utilities/logging/log', () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        event: jest.fn(() => {}),
+        data: jest.fn(() => {}),
+        error: jest.fn(() => {})
     }
 });
 

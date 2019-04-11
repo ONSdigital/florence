@@ -132,6 +132,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                         });
                     } else if (datasetId !== downloadTitle) {
                         // Throw error to user if file name and dataset ID don't match
+                        console.error("File name doesn't match dataset ID. \n File name is: '" + downloadTitle + "' and dataset ID is: '" + datasetId + "'.")
                         sweetAlert({
                             title: "Warning",
                             text: "CSDB filename must match the dataset's ID",

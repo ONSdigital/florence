@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 
 import { hasValidAuthToken } from './utilities/hasValidAuthToken';
 import user from './utilities/api-clients/user';
-import log, { eventTypes } from './utilities/log';
+import log from './utilities/logging/log';
 import ping from './utilities/api-clients/ping';
 
 import Notifications from './global/notifications/Notifications';
@@ -38,7 +38,8 @@ class App extends Component {
             if (isValid) {
                 const email = localStorage.getItem("loggedInAs");
                 if (!email) {
-                    //FIXME This leaves the loading spinner on screen forever - we need to either display a message, retry or do something else more graceful?
+                    user.logOut();
+                    this.setState({isCheckingAuthentication: false});
                     console.warn(`Unable to find item 'loggedInAs' from local storage`);
                     return;
                 }
@@ -54,7 +55,7 @@ class App extends Component {
                         autoDismiss: 8000,
                         isDismissable: true
                     });
-                    log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting a user's permissions on startup: ${JSON.stringify(error)}`});
+                    log.event("Error getting a user's permissions on startup", log.error(error));
                     console.error("Error getting a user's permissions on startup", error);
                 });
                 return;

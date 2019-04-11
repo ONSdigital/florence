@@ -1,28 +1,16 @@
 import url from './url';
 
 function setLocation(href) {
-    Object.defineProperty(window.location, 'href', {
-        writable: true,
-        value: href,
-    });
-    Object.defineProperty(window.location, 'pathname', {
-        writable: true,
-        value: href.substring(href.indexOf("/florence")),
-    });
-    Object.defineProperty(window.location, 'search', {
-        writable: true,
-        value: href.substring(href.indexOf("?") >= 0 ? href.indexOf("?") : href.length),
-    });
+    jsdom.reconfigure({
+        url: href
+      });
 }
 setLocation('http://publishing.onsdigital.co.uk/florence/datasets');
 
-jest.mock('../utilities/log', () => {
+jest.mock('../utilities/logging/log', () => {
     return {
-        add: function() {
+        event: function() {
             // do nothing
-        },
-        eventTypes: {
-            unexpectedRuntimeError: ""
         }
     }
 });

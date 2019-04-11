@@ -1,4 +1,5 @@
 window.fetch = require('jest-fetch-mock');
+import "regenerator-runtime/runtime";
 
 // Mock the Date object and allows us to use Date.now() and get a consistent date back
 const mockedCurrentDate = new Date("2017-10-06T13:45:28.975Z");
