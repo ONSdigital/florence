@@ -2,20 +2,23 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 import { shallow } from 'enzyme';
 import user from "../../../utilities/api-clients/user";
-import log from "../../../utilities/log";
+import log from "../../../utilities/logging/log";
 import notifications from '../../../utilities/notifications';
 import { ChangeUserPasswordController, mapStateToProps } from './ChangeUserPasswordController';
 import validatePassword from '../../../components/change-password/validatePassword';
+
+jest.mock('../../../utilities/websocket', () => ({
+    send: jest.fn(() => {})
+}));
 
 jest.mock('../../../utilities/notifications', () => ({
     add: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/log', () => ({
-    add: jest.fn(() => {}),
-    eventTypes: {
-        unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR"
-    }
+jest.mock('../../../utilities/logging/log', () => ({
+    event: jest.fn(() => {}),
+    data: jest.fn(() => {}),
+    error: jest.fn(() => {})
 }));
 
 jest.mock('../../../utilities/url', () => ({
@@ -267,7 +270,7 @@ describe("Sending the request to change password", () => {
         user.logOut.mockClear()
         user.updatePassword.mockClear()
         notifications.add.mockClear();
-        log.add.mockClear();
+        log.event.mockClear();
     });
 
     const publisherComponent = shallow(
@@ -325,12 +328,20 @@ describe("Sending the request to change password", () => {
 
     it("errors are logged", async () => {
         user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 500
+            status: 404
         }));
 
-        expect(log.add.mock.calls.length).toBe(0);
+        expect(log.event.mock.calls.length).toBe(0);
         await component.instance().handleSubmit(mockEvent);
-        expect(log.add.mock.calls.length).toBe(1);
+        expect(log.event.mock.calls.length).toBe(1);
+
+        user.updatePassword.mockImplementationOnce(() => Promise.reject({
+            status: "undefined"
+        }));
+
+        expect(log.event.mock.calls.length).toBe(1);
+        await component.instance().handleSubmit(mockEvent);
+        expect(log.event.mock.calls.length).toBe(3);
     });
 
     it("user's are routed to the user details screen on success", async () => {

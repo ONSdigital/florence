@@ -7,11 +7,9 @@ exports[`Renders a select element when override is false 1`] = `
   <div>
     <label
       className="form__label"
-      htmlFor={undefined}
     />
     <select
       className="select"
-      id={undefined}
       onChange={[Function]}
     >
       <option>
@@ -38,11 +36,9 @@ exports[`Renders an input element when override is true 1`] = `
   <div>
     <label
       className="form__label"
-      htmlFor={undefined}
     />
     <input
       className="input"
-      id={undefined}
       onChange={[Function]}
       type="text"
     />

@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 
 import teams from '../../../utilities/api-clients/teams';
 import notifications from '../../../utilities/notifications';
+import log from '../../../utilities/logging/log';
 
 const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired
@@ -51,7 +52,9 @@ class TeamCreate extends Component {
                 isAwaitingResponse: false
             });
             this.props.onCreateSuccess();
+            log.event(`Successfully created team`,log.data({team: newTeamName}));
         }).catch(error => {
+            log.event(`Error creating team`,log.data({status_code: error.status, team: newTeamName}), log.error(error));
             this.setState({isAwaitingResponse: false});
             switch(error.status) {
                 case(401): {
@@ -77,6 +80,13 @@ class TeamCreate extends Component {
                     break;
                 }
                 default: {
+                    log.event(`Unhandled error creating team`,log.data({status_code: error.status, team: newTeamName}), log.error(error));
+                    const input = Object.assign({}, this.state.input, {
+                        error: `An unexpected error has occured`
+                    });
+                    this.setState({
+                        input
+                    });
                     const notification = {
                         type: "warning",
                         message: `An unexpected error has occured whilst creating team '${newTeamName}'`,
