@@ -237,6 +237,12 @@
 			"revisionTime": "2018-02-06T00:49:27Z"
 		},
 		{
+			"checksumSHA1": "BxH9xJUqczhpL57gfKZe2/VlBHY=",
+			"path": "github.com/fatih/color",
+			"revision": "3f9d52f7176a6927daacff70a3e8d1dc2025c53e",
+			"revisionTime": "2018-10-10T23:13:11Z"
+		},
+		{
 			"checksumSHA1": "5BP5xofo0GoFi6FtgqFFbmHyUKI=",
 			"origin": "github.com/ONSdigital/go-ns/vendor/github.com/fatih/structs",
 			"path": "github.com/fatih/structs",
@@ -530,6 +536,12 @@
 			"path": "golang.org/x/net/context",
 			"revision": "a8b9294777976932365dabb6640cf1468d95c70f",
 			"revisionTime": "2017-11-29T19:21:16Z"
+		},
+		{
+			"checksumSHA1": "aFpql3G+Nw8zkzfqLWQJNZC8pu0=",
+			"path": "golang.org/x/net/context/ctxhttp",
+			"revision": "eb5bcb51f2a31c7d5141d810b70815c05d9c9146",
+			"revisionTime": "2019-04-03T01:06:53Z"
 		},
 		{
 			"checksumSHA1": "uL4gYOb0zwNKV0/2r/Wt8r3mwvE=",
