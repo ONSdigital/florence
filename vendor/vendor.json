@@ -39,6 +39,12 @@
 			"revisionTime": "2018-07-05T11:25:05Z"
 		},
 		{
+			"checksumSHA1": "L4B1AA6AKWscHCZc02qk2SQU65k=",
+			"path": "github.com/ONSdigital/go-ns/rchttp",
+			"revision": "839d0debca2e7c02c424eb8ff104f557903eca85",
+			"revisionTime": "2019-03-10T19:32:27Z"
+		},
+		{
 			"checksumSHA1": "fNK6TphZnEr8vXAbOX4KUek7Esc=",
 			"path": "github.com/ONSdigital/go-ns/server",
 			"revision": "f9f2dc9176fd865788bcc4feab902b50f133f81c",
@@ -417,6 +423,12 @@
 			"path": "github.com/hashicorp/vault/helper/strutil",
 			"revision": "eaba996247f653ef275b4e28b3f61333730ba5c1",
 			"revisionTime": "2018-03-20T11:15:25Z"
+		},
+		{
+			"checksumSHA1": "+HUsIuEnSLik8Jrrw9MDdxmhT5c=",
+			"path": "github.com/hokaccha/go-prettyjson",
+			"revision": "f579f869bbfea48a61fbea09207cadd1aaeceb83",
+			"revisionTime": "2018-09-20T04:03:06Z"
 		},
 		{
 			"checksumSHA1": "Adg9cGxAPUBM/TQa7ukfYEoZJAA=",
