@@ -46710,7 +46710,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
     });
 
     function submitFormHandler(parentUrl, title, isInheriting) {
-
+        
         $('.edition').append(
             '<div id="edition-div">' +
             '  <label for="edition">Edition</label>' +
@@ -46726,10 +46726,11 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             );
             creatorDatePicker();
         }
-        if(!isInheriting) {
+        
+        if (!isInheriting) {
             $('.btn-page-create').before(
                 '<p class="create-publishing-error">Creating a publication here will create a new series.</p>'
-            )
+            );
         }
         if (title) {
             pageTitle = title;
@@ -46782,12 +46783,12 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             } else if (!pageData.description.edition && !releaseDateManual) {
                 releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
             }
-
             if (!releaseDate) {
                 pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
             } else {
                 pageData.description.releaseDate = releaseDate;
             }
+
             if (isInheriting) {
                 pageData.description.nationalStatistic = natStat;
                 pageData.description.contact.name = contactName;
@@ -46913,6 +46914,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 "alerts": [],
                 "versions": [],
                 "isPrototypeArticle": false,
+                "isReleaseDateEnabled": true,
                 type: pageType
             };
         }
@@ -51919,6 +51921,7 @@ function articleEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
+  setNeutralArticleOptions();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -51987,10 +51990,20 @@ function articleEditor(collectionId, data) {
 
   $("#articleType-checkbox").click(function () {
       data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+      if (data.isPrototypeArticle) {
+        $("#releaseDateEnabled-checkbox").attr('disabled', false);
+        // if neutral article then release date might have been disabled or enabled already, so set it to its true value
+        $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
+      }
+      else {
+        $("#releaseDateEnabled-checkbox").attr('disabled', true);
+        // If not a neutral article then release date is enabled
+        $("#releaseDateEnabled-checkbox").attr('checked', true);
+      }
   });
-
-    $("#articleType-checkbox").click(function () {
-        data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+    
+    $("#releaseDateEnabled-checkbox").click(function () {
+      data.isReleaseDateEnabled = $("#releaseDateEnabled-checkbox").prop('checked');
     });
 
     $('#neutral-article-image-upload-submit').click(function() {
@@ -52119,6 +52132,20 @@ function articleEditor(collectionId, data) {
     data.pdfTable = newFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
+  }
+
+  function setNeutralArticleOptions () {
+    if (data.isPrototypeArticle) {
+      $("#releaseDateEnabled-checkbox").attr('disabled', false);
+      // if neutral article then release date might have been disabled or enabled already, so set it to its true value
+      $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
+    }
+    else {
+      $("#releaseDateEnabled-checkbox").attr('disabled', true);
+      // If not a neutral article then release date is enabled
+      $("#releaseDateEnabled-checkbox").attr('checked', true);
+
+    }
   }
 }
 

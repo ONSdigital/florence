@@ -19,12 +19,24 @@
                                           id="edition">{{this.description.edition}}</textarea>
                             </label>
                         </div>
+
+                        {{#unless this.isPrototypeArticle}}
                         <div class="release-date">
                             <label for="releaseDate">Release date
                                 <input id="releaseDate" type="text" placeholder="Day month year"
                                        value="{{this.description.releaseDate}}"/>
                             </label>
                         </div>
+                        {{else}}
+                        {{#if this.isReleaseDateEnabled}}
+                        <div class="release-date">
+                            <label for="releaseDate">Release date
+                                <input id="releaseDate" type="text" placeholder="Day month year"
+                                       value="{{this.description.releaseDate}}"/>
+                            </label>
+                        </div>
+                        {{/if}}
+                        {{/unless}}
                         <div class="next-p">
                             <label for="nextRelease">Next release
                                 <textarea class="auto-size" type="text"
@@ -78,6 +90,16 @@
                                 <label for="articleType-checkbox">Neutral article</label>
                                 <input id="articleType-checkbox" type="checkbox" name="articleType" {{#if this.isPrototypeArticle}}checked{{/if}}/>
                             </div>
+                            <div id="releaseDateEnabled">
+                                <label for="releaseDateEnabled-checkbox">Release date enabled</label>
+                                <input id="releaseDateEnabled-checkbox" type="checkbox" name="releaseDateEnabled" 
+                                {{#unless this.isPrototypeArticle}}
+                                {{else}}
+                                    {{#if this.isReleaseDateEnabled}}
+                                        checked
+                                    {{/if}}/>
+                                {{/unless}}
+                            </div>
 
                             {{#if this.isPrototypeArticle}}
                                 {{#unless imageUri}}
@@ -95,6 +117,7 @@
                                     <button id="neutral-article-image-upload-delete" class="btn btn--warning margin-top--0" type="submit" value="Upload image">Delete image</button>
                                 {{/unless}}
                             {{/if}}
+
                         </div>
                     </div>
                 </div>
