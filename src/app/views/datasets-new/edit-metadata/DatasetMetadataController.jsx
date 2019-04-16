@@ -701,7 +701,7 @@ export class DatasetMetadataController extends Component {
     addDatasetToCollection = (collectionID, datasetID) => {
         return collections.addDataset(collectionID, datasetID)
             .catch(error => {
-                log.event("Error adding dataset to collection", log.data({collectionID: collectionID, datasetID: datasetID}, log.erro(error)))
+                log.event("Error adding dataset to collection", log.data({collectionID: collectionID, datasetID: datasetID}, log.error(error)))
                 console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
                 return error;
             });
