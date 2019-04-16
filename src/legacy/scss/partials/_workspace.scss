@@ -66,6 +66,16 @@
             margin-left: 0;
             width: 100%;
         }
+        
+        #enable-release-date-label {
+            width: 36%;
+        }
+
+        #release-date-enabled-checkbox {
+            width: auto;
+            margin-left: 45%;
+            margin-top: 7%;
+        }
     }
 
     &-edit {
@@ -371,6 +381,8 @@
 
             #natStat label,
             #natStat input,
+            #releaseDateEnabled label,
+            #releaseDateEnabled input,
             #articleType label,
             #articleType input {
                 display: inline-block;

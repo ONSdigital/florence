@@ -52,7 +52,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
     });
 
     function submitFormHandler(parentUrl, title, isInheriting) {
-
+        
         $('.edition').append(
             '<div id="edition-div">' +
             '  <label for="edition">Edition</label>' +
@@ -68,10 +68,11 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             );
             creatorDatePicker();
         }
-        if(!isInheriting) {
+        
+        if (!isInheriting) {
             $('.btn-page-create').before(
                 '<p class="create-publishing-error">Creating a publication here will create a new series.</p>'
-            )
+            );
         }
         if (title) {
             pageTitle = title;
@@ -124,12 +125,12 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             } else if (!pageData.description.edition && !releaseDateManual) {
                 releaseUri = $.datepicker.formatDate('yy-mm-dd', new Date(releaseDate));
             }
-
             if (!releaseDate) {
                 pageData.description.releaseDate = new Date($('#releaseDate').val()).toISOString();
             } else {
                 pageData.description.releaseDate = releaseDate;
             }
+
             if (isInheriting) {
                 pageData.description.nationalStatistic = natStat;
                 pageData.description.contact.name = contactName;
@@ -255,6 +256,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 "alerts": [],
                 "versions": [],
                 "isPrototypeArticle": false,
+                "isReleaseDateEnabled": true,
                 type: pageType
             };
         }
