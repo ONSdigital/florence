@@ -46816,7 +46816,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
                 e.preventDefault();
                 conditions = false;
             }
-            if (!pageData.description.releaseDate) {
+            if (!pageData.description.releaseDate && pageData.type !== 'article') {
                 sweetAlert('Release date can not be empty');
                 $('.select-wrap').remove();
                 $('#edition-div').remove();
