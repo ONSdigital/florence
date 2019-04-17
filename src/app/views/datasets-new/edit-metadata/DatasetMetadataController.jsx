@@ -588,26 +588,28 @@ export class DatasetMetadataController extends Component {
             }
         }
 
-        let datasetToCollectionError = false;
         if (addDatasetToCollection) {
+            let datasetToCollectionError = false;
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
-            this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"})
-        }
-        if (datasetToCollectionError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
-            return;
+            if (datasetToCollectionError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
+                return;
+            } else {
+                this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"});
+            }
         }
 
-        let versionToCollectionError = false;
         if (addVersionToCollection) {
+            let versionToCollectionError = false;
             versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
-            this.setState({versionIsInCollection: collectionID})
-        }
-        if (versionToCollectionError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem adding this version to your collection`)
-            return
+            if (versionToCollectionError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem adding this version to your collection`)
+                return
+            } else {
+                this.setState({versionIsInCollection: collectionID})
+            }
         }
 
         if (isSubmittingForReview) {
