@@ -376,9 +376,11 @@ export class CollectionDetailsController extends Component {
         if (pageType === "dataset_details") {
             const datasetID = uri.split("/")[2];
             const pendingVersionDeleteURL = collections.getURLForVersionInCollection(datasetID, [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete])
-            pendingDeletedPages = pendingDeletedPages.filter(pageURI => {
-                return pageURI !== pendingVersionDeleteURL;
-            })
+            if (pendingVersionDeleteURL) {
+                pendingDeletedPages = pendingDeletedPages.filter(pageURI => {
+                    return pageURI !== pendingVersionDeleteURL;
+                })
+            }
         }
         this.setState(() => ({
             pendingDeletedPages: pendingDeletedPages
