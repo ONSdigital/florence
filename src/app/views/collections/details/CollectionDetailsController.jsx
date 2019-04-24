@@ -369,12 +369,21 @@ export class CollectionDetailsController extends Component {
         return newURL //return the URL so that we can test that the correct route is being used
     }
 
-    handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID) {
-        this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages].filter(pageURI => {
-                return pageURI !== uri;
+    handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID, pageType) {
+        let pendingDeletedPages = this.state.pendingDeletedPages.filter(pageURI => {
+            return pageURI !== uri;
+        });
+        if (pageType === "dataset_details") {
+            const datasetID = uri.split("/")[2];
+            const pendingVersionDeleteURL = collections.getURLForVersionInCollection(datasetID, [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete])
+            pendingDeletedPages = pendingDeletedPages.filter(pageURI => {
+                return pageURI !== pendingVersionDeleteURL;
             })
-        }));
+        }
+        this.setState(() => ({
+            pendingDeletedPages: pendingDeletedPages
+            })
+        );
         const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${uri}`;
         this.props.dispatch(push(pageRoute));
         window.clearTimeout(deleteTimer);
@@ -385,18 +394,25 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionPageDeleteClick(deletedPage, state) {
         const collectionID = this.props.collectionID;
-        this.setState(state => ({
-            pendingDeletedPages: [...state.pendingDeletedPages, deletedPage.uri]
+        const collectionContent = [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete];
+        const pendingDeletes = [...this.state.pendingDeletedPages, deletedPage.uri];
+        let pendingVersionDeleteURL;
+        if (deletedPage.type === "dataset_details") {
+            pendingVersionDeleteURL = collections.getURLForVersionInCollection(deletedPage.id, collectionContent)
+            pendingDeletes.push(pendingVersionDeleteURL);
+        }
+        this.setState(() => ({
+            pendingDeletedPages: pendingDeletes
         }));
         const collectionURL = location.pathname.replace(`#${deletedPage.uri}`, "");
         this.props.dispatch(push(collectionURL));
 
         const deletePageRequest = () => {
             if (deletedPage.type === "dataset_details") {
-                return collections.removeDataset(collectionID, deletedPage.uri);
+                return collections.removeDataset(collectionID, deletedPage.id, collectionContent);
             }
             if (deletedPage.type === "dataset_version") {
-                return collections.removeDatasetVersion(collectionID, deletedPage.uri, deletedPage.edition, deletedPage.version);
+                return collections.removeDatasetVersion(collectionID, deletedPage.datasetID, deletedPage.edition, deletedPage.version);
             }
             if (this.props.enableDatasetImport) {
                 return collections.deletePageIncludingDatasetImport(collectionID, deletedPage.uri);    
@@ -414,7 +430,8 @@ export class CollectionDetailsController extends Component {
                     [state]: pages
                 };
                 
-                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri);
+                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri)
+                    .filter(pendingVersionDelete => pendingVersionDelete !== pendingVersionDeleteURL);
                 this.setState({
                     pendingDeletedPages: updatedPendingDeletes
                 });
@@ -424,7 +441,8 @@ export class CollectionDetailsController extends Component {
                 this.props.dispatch(updatePagesInActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
             }).catch(error => {
-                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri);
+                const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri)
+                    .filter(pendingVersionDelete => pendingVersionDelete !== pendingVersionDeleteURL);
                 this.setState({
                     pendingDeletedPages: updatedPendingDeletes
                 });
@@ -437,7 +455,7 @@ export class CollectionDetailsController extends Component {
         const deletePageTimer = setTimeout(triggerPageDelete, 6000);
 
         const undoPageDelete = () => {
-            this.handleCollectionPageDeleteUndo(deletePageTimer, deletedPage.uri, notificationID);
+            this.handleCollectionPageDeleteUndo(deletePageTimer, deletedPage.uri, notificationID, deletedPage.type);
         };
 
         const handleNotificationClose = () => {
