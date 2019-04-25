@@ -18,6 +18,7 @@ import Modal from "../../../components/Modal";
 import RestoreContent from "../restore-content/RestoreContent";
 import url from '../../../utilities/url';
 import auth from '../../../utilities/auth';
+import log from '../../../utilities/logging/log';
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -370,6 +371,7 @@ export class CollectionDetailsController extends Component {
     }
 
     handleCollectionPageDeleteUndo(deleteTimer, uri, notificationID, pageType) {
+        log.event("undo delete page from collection", log.data({url: uri, type: pageType}));
         let pendingDeletedPages = this.state.pendingDeletedPages.filter(pageURI => {
             return pageURI !== uri;
         });
@@ -395,13 +397,17 @@ export class CollectionDetailsController extends Component {
     }
 
     handleCollectionPageDeleteClick(deletedPage, state) {
+        log.event("deleting page from collection", log.data({url: deletedPage.uri, title: deletedPage.title, type: deletedPage.type}));
         const collectionID = this.props.collectionID;
         const collectionContent = [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete];
         const pendingDeletes = [...this.state.pendingDeletedPages, deletedPage.uri];
         let pendingVersionDeleteURL;
         if (deletedPage.type === "dataset_details") {
             pendingVersionDeleteURL = collections.getURLForVersionInCollection(deletedPage.id, collectionContent)
-            pendingDeletes.push(pendingVersionDeleteURL);
+            if (pendingVersionDeleteURL) {
+                pendingDeletes.push(pendingVersionDeleteURL);
+                log.event("deleting related dataset version from collection", log.data({versionURL: pendingVersionDeleteURL}))
+            }
         }
         this.setState(() => ({
             pendingDeletedPages: pendingDeletes
@@ -442,6 +448,7 @@ export class CollectionDetailsController extends Component {
                 updatedCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedCollection);
                 this.props.dispatch(updatePagesInActiveCollection(updatedCollection));
                 window.clearTimeout(deletePageTimer);
+                log.event("deleted page from collection", log.data({url: deletedPage.uri, title: deletedPage.title, type: deletedPage.type}));
             }).catch(error => {
                 const updatedPendingDeletes = this.state.pendingDeletedPages.filter(pendingDelete => pendingDelete !== deletedPage.uri)
                     .filter(pendingVersionDelete => pendingVersionDelete !== pendingVersionDeleteURL);
@@ -450,6 +457,7 @@ export class CollectionDetailsController extends Component {
                 });
                 window.clearTimeout(deletePageTimer);
                 collectionDetailsErrorNotifications.deletePage(error, deletedPage.title, this.props.collectionID);
+                log.event("error deleting page from collection", log.data({url: deletedPage.uri, title: deletedPage.title, type: deletedPage.type}), log.error(error));
                 console.error("Error deleting page from a collection: ", error);
             });
         }
