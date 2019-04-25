@@ -9,7 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/ONSdigital/go-ns/log"
+	"github.com/ONSdigital/log.go/log"
 	"github.com/ONSdigital/s3crypto"
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -101,7 +101,7 @@ type Uploader struct {
 // CheckUploaded checks to see if a chunk has been uploaded
 func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error parsing form", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -109,7 +109,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 	resum := new(Resumable)
 
 	if err := schema.NewDecoder().Decode(resum, req.Form); err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error decoding form", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -120,7 +120,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	listMultiOutput, err := u.client.ListMultipartUploads(listMultiInput)
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error fetching multipart upload list", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -133,7 +133,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if len(uploadID) == 0 {
-		log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+		log.Event(req.Context(), "chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -146,7 +146,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	output, err := u.client.ListParts(input)
 	if err != nil {
-		log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+		log.Event(req.Context(), "chunk number verification error", log.Error(err), log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
@@ -159,13 +159,13 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	for _, part := range parts {
 		if *part.PartNumber == int64(resum.ChunkNumber) {
-			log.Debug("chunk number already uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName, "identifier": resum.Identifier})
+			log.Event(req.Context(), "chunk number already uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName, "identifier": resum.Identifier})
 			w.WriteHeader(http.StatusOK)
 			return
 		}
 	}
 
-	log.Debug("chunk number not uploaded", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+	log.Event(req.Context(), "chunk number failed to upload", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 	w.WriteHeader(http.StatusNotFound)
 }
 
@@ -189,23 +189,23 @@ func (u *Uploader) completeUpload(w http.ResponseWriter, req *http.Request, resu
 			Bucket: &u.bucketName,
 		}
 
-		log.Debug("going to attempt to complete", log.Data{"complete": completeInput})
+		log.Event(req.Context(), "going to attempt to complete", log.Data{"complete": completeInput})
 
 		_, err := u.client.CompleteMultipartUpload(completeInput)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error completing upload", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
-		log.Trace("uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
+		log.Event(req.Context(), "uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
 	}
 }
 
 // Upload handles the uploading a file to AWS s3
 func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error parsing form", log.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -213,14 +213,14 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	resum := new(Resumable)
 
 	if err := schema.NewDecoder().Decode(resum, req.Form); err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error decoding form", log.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	content, _, err := req.FormFile("file")
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error getting file from form", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -229,7 +229,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	b, err := ioutil.ReadAll(content)
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error reading file", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -240,7 +240,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	listMultiOutput, err := u.client.ListMultipartUploads(listMultiInput)
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error fetching multipart list", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -262,7 +262,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 			psk := createPSK()
 
 			if err := u.vaultClient.WriteKey(vaultPath, vaultKey, hex.EncodeToString(psk)); err != nil {
-				log.ErrorR(req, err, nil)
+				log.Event(req.Context(), "error writing key to vault", log.Error(err))
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
@@ -279,7 +279,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 		createMultiOutput, err := u.client.CreateMultipartUpload(createMultiInput)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error creating multipart upload", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -302,33 +302,33 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	if u.vaultClient != nil {
 		pskStr, err := u.vaultClient.ReadKey(vaultPath, vaultKey)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error reading key from vault", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 		psk, err := hex.DecodeString(pskStr)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error decoding key", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 
 		_, err = u.client.UploadPartWithPSK(uploadPartInput, psk)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error uploading with psk", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	} else {
 		_, err = u.client.UploadPart(uploadPartInput)
 		if err != nil {
-			log.ErrorR(req, err, nil)
+			log.Event(req.Context(), "error uploading part", log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
 	}
 
-	log.Info("chunk accepted", log.Data{
+	log.Event(req.Context(), "chunk accepted", log.Data{
 		"chunk_number": resum.ChunkNumber,
 		"max_chunks":   resum.TotalChunks,
 		"file_name":    resum.FileName,
@@ -342,7 +342,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	output, err := u.client.ListParts(input)
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error listing parts", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -368,7 +368,7 @@ func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 
 	b, err := json.Marshal(body)
 	if err != nil {
-		log.ErrorR(req, err, nil)
+		log.Event(req.Context(), "error marshalling json", log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
