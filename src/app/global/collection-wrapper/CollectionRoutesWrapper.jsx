@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
@@ -9,12 +9,22 @@ import log from '../../utilities/logging/log'
 import collections from '../../utilities/api-clients/collections'
 import notifications from '../../utilities/notifications'
 
-const propTypes = {};
+const propTypes = {
+    params: PropTypes.shape({
+        collectionID: PropTypes.string.isRequired,
+    }),
+    dispatch: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired,
+    }),
+    rootPath: PropTypes.string.isRequired,
+    workingOn: PropTypes.shape.isRequired,
+    children: PropTypes.element
+};
 
 export class CollectionRoutesWrapper extends Component {
 
     componentDidMount = () => {
-        console.log(this.props);
         const collectionID = this.props.params.collectionID
         if (!collectionID) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`))
@@ -98,6 +108,8 @@ export class CollectionRoutesWrapper extends Component {
         )
     }
 }
+
+CollectionRoutesWrapper.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
