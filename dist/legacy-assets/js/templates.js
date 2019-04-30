@@ -2153,9 +2153,9 @@ templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,
     var stack1;
 
   return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "/>\n";
+    + "                                ";
 },"10":function(depth0,helpers,partials,data) {
-    return "                                        checked\n                                    ";
+    return "                                        checked\n";
 },"12":function(depth0,helpers,partials,data) {
     var stack1;
 
@@ -2197,7 +2197,7 @@ templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "/>\n                            </div>\n                            <div id=\"releaseDateEnabled\">\n                                <label for=\"releaseDateEnabled-checkbox\">Release date enabled</label>\n                                <input id=\"releaseDateEnabled-checkbox\" type=\"checkbox\" name=\"releaseDateEnabled\" \n"
     + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"unless","hash":{},"fn":this.program(7, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "")
-    + "                            </div>\n\n"
+    + "/>\n                            </div>\n\n"
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div id=\"section\"></div>\n\n            <div id=\"tab\"></div>\n\n            <div id=\"charts\"></div>\n\n            <div id=\"tables\"></div>\n\n            <div id=\"equations\"></div>\n\n            <div id=\"images\"></div>\n\n            <div id=\"document\"></div>\n\n            <div id=\"data\"></div>\n\n            <div id=\"topics\"></div>\n\n            <div id=\"link\"></div>\n\n            <div id=\"qmi\"></div>\n\n            <div id=\"methodology\"></div>\n\n            <div id=\"pdf\"></div>\n\n            <div id=\"correction\"></div>\n\n            <div id=\"alert\"></div>\n\n        </div>\n\n        <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
