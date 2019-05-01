@@ -127,10 +127,10 @@ export function emptyActiveCollection() {
     }
 }
 
-export function updateWorkingOn(id, name, url, collection) {
+export function updateWorkingOn(id, name, url, collection, error) {
     return {
         type: UPDATE_WORKING_ON,
-        workingOn: {id, name, url, collection}
+        workingOn: {id, name, url, collection, error}
     }
 }
 
