@@ -99,18 +99,33 @@ describe("Calling getCollectionDetails", () => {
 });
 
 describe("Mapping collection to working on state", () => {
-    it("returns the correct object", () => {
+
+    beforeEach(() => {
+        log.event.mockClear();
+        log.data.mockClear();
+        log.error.mockClear();
+    });
+
+    it("returns the correct object on success", () => {
         const mappedObject = component.instance().mapCollectionResponseToWorkingOnState(mockedCollection);
         expect(mappedObject).toMatchObject({
             id: 'test-collection-1',
             name: 'Test Collection',
-            url: '/florence/collections/test-collection-1'
+            url: '/florence/collections/test-collection-1',
+            error: false
         });
     });
 
+    it("returns the correct object on error", () => {
+        const mappedObject = component.instance().mapCollectionResponseToWorkingOnState();
+        expect(mappedObject).toMatchObject({
+            error: true
+        });
+    })
+
     it("logs on error", () => {
         component.instance().mapCollectionResponseToWorkingOnState();
-        expect(log.event.mock.calls.length).toBe(1);
+        expect(log.event.mock.calls.length).toBe(2);
         expect(log.data.mock.calls.length).toBe(1);
         expect(log.error.mock.calls.length).toBe(1);
     });

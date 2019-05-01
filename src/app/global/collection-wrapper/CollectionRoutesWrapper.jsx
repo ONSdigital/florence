@@ -36,12 +36,10 @@ export class CollectionRoutesWrapper extends Component {
         this.getCollectionDetails(collectionID);
     }
 
-    getCollectionDetails = (collectionID) => {
+    getCollectionDetails = collectionID => {
         return collections.get(collectionID).then(response => {
             const workingOn = this.mapCollectionResponseToWorkingOnState(response);
-            if (workingOn) {
-                this.props.dispatch(updateWorkingOn(workingOn.id, workingOn.name, workingOn.url, response));
-            }
+            this.props.dispatch(updateWorkingOn(workingOn.id, workingOn.name, workingOn.url, response, workingOn.error));
         }).catch(error => {
             switch(error.status) {
                 case(401): {
@@ -90,18 +88,29 @@ export class CollectionRoutesWrapper extends Component {
         })
     }
 
-    mapCollectionResponseToWorkingOnState = (collection) => {
+    mapCollectionResponseToWorkingOnState = collection => {
+        log.event("collection response to 'working on' state");
         try {
             return {
                 id: collection.id,
                 name: collection.name,
-                url: `${this.props.rootPath}/collections/${collection.id}`
+                url: `${this.props.rootPath}/collections/${collection.id}`,
+                error: false
             }
         } catch (error) {
             log.event("error mapping collection response to 'working on' state", log.error(error), 
                 log.data({collectionID: this.props.params.collectionID, url: this.props.location.pathname})
             );
             console.error("Error mapping collection response to 'working on' state", error);
+            const notification = {
+                type: 'warning',
+                message: "An unexpected error occurred whilst getting details about this collection, please refresh the page",
+                autoDismiss: 5000
+            };
+            notifications.add(notification);
+            return {
+                error: true
+            }
         }
     }
 
