@@ -1,7 +1,7 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { replace } from 'react-router-redux';
 
 import { updateWorkingOn } from '../../config/actions'
 
@@ -18,7 +18,7 @@ const propTypes = {
         pathname: PropTypes.string.isRequired,
     }),
     rootPath: PropTypes.string.isRequired,
-    workingOn: PropTypes.shape.isRequired,
+    workingOn: PropTypes.shape(),
     children: PropTypes.element
 };
 
@@ -27,13 +27,17 @@ export class CollectionRoutesWrapper extends Component {
     componentDidMount = () => {
         const collectionID = this.props.params.collectionID
         if (!collectionID) {
-            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+            this.props.dispatch(replace(`${this.props.rootPath}/collections`));
             return;
         }
         if (this.props.workingOn) {
             return;
         }
-        collections.get(collectionID).then(response => {
+        this.getCollectionDetails(collectionID);
+    }
+
+    getCollectionDetails = (collectionID) => {
+        return collections.get(collectionID).then(response => {
             const workingOn = this.mapCollectionResponseToWorkingOnState(response);
             if (workingOn) {
                 this.props.dispatch(updateWorkingOn(workingOn.id, workingOn.name, workingOn.url, response));
@@ -51,7 +55,7 @@ export class CollectionRoutesWrapper extends Component {
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                    this.props.dispatch(replace(`${this.props.rootPath}/collections`));
                     break;
                 }
                 case(403): {
@@ -61,7 +65,7 @@ export class CollectionRoutesWrapper extends Component {
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                    this.props.dispatch(replace(`${this.props.rootPath}/collections`));
                     break;
                 }
                 case('FETCH_ERR'): {
