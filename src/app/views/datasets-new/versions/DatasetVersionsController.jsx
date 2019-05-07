@@ -30,15 +30,8 @@ export class DatasetVersionsController extends Component {
             isFetchingEdition: false,
             edition: {},
             isFetchingVersions: false,
-            versions: [
-                {
-                    title: "Create new version", 
-                    id: "create-new-version",
-                    url:  this.props.location.pathname + "/instances",
-                }
-            ]
+            versions: []
         }
-
     }
 
     async componentWillMount() {
@@ -120,7 +113,7 @@ export class DatasetVersionsController extends Component {
         this.setState({isFetchingEdition: true});
         return datasets.getEdition(datasetID, editionID).then(edition => {
             this.setState({isFetchingEdition: false, edition: this.mapDatasetEditionToState(edition)});
-            return this.mapDatasetEditionToState(edition)
+            return this.mapDatasetEditionToState(edition);
         }).catch(error => {
             console.error(error);
             this.setState({isFetchingEdition: false});
@@ -147,12 +140,30 @@ export class DatasetVersionsController extends Component {
     getAllVersions = (datasetID, editions) => {
         this.setState({isFetchingVersions: true});
         return datasets.getVersions(datasetID, editions).then(versions => {
-            this.setState({isFetchingVersions: false, versions: [...this.state.versions, ...this.mapDatasetVersionsToState(versions.items)]});
+            const versionsList = this.buildVersionsList(versions.items);
+            this.setState({isFetchingVersions: false, versions: versionsList});
             return this.mapDatasetVersionsToState(versions.items);
         }).catch(error => {
-            console.error(error)
+            console.error(error);
             this.setState({isFetchingVersions: false});
         })
+    }
+
+    buildVersionsList = versions => {
+        const versionList =this.mapDatasetVersionsToState(versions);
+        const includesUnpublishedVersion = versions.find(version => {
+            return version.state === "published";
+        });
+        versionList.unshift({
+            title: "Create new version", 
+            id: "create-new-version",
+            url:  this.props.location.pathname + "/instances",
+            details: [
+                includesUnpublishedVersion ? "A version for this edition already exists in a collection" : null,
+            ],
+            disabled: includesUnpublishedVersion ? true : false,
+        });
+        return versionList;
     }
 
     mapDatasetVersionsToState = versions => {
@@ -170,7 +181,7 @@ export class DatasetVersionsController extends Component {
                 }    
             });
             versionsList.sort((this.sortByVersionNumber))
-            return versionsList.reverse();
+            return versionsList.reverse();   
         } catch (error) {
             const notification = {
                 type: "warning",
