@@ -10,7 +10,10 @@ import CollectionEditController from '../edit/CollectionEditController';
 import collections from '../../../utilities/api-clients/collections';
 import datasets from '../../../utilities/api-clients/datasets';
 import notifications from '../../../utilities/notifications';
-import {updateActiveCollection, emptyActiveCollection, addAllCollections, markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection, updateWorkingOn, updateActiveDatasetReviewState, updateActiveVersionReviewState} from '../../../config/actions'
+import {updateActiveCollection, emptyActiveCollection, addAllCollections, 
+        markCollectionForDeleteFromAllCollections, updatePagesInActiveCollection, 
+        updateTeamsInActiveCollection, updateWorkingOn, updateActiveDatasetReviewState, 
+        updateActiveVersionReviewState} from '../../../config/actions'
 import cookies from '../../../utilities/cookies'
 import collectionDetailsErrorNotifications from './collectionDetailsErrorNotifications'
 import collectionMapper from "../mapper/collectionMapper";
@@ -377,7 +380,11 @@ export class CollectionDetailsController extends Component {
         });
         if (pageType === "dataset_details") {
             const datasetID = uri.split("/")[2];
-            const pendingVersionDeleteURL = collections.getURLForVersionInCollection(datasetID, [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete])
+            const pendingVersionDeleteURL = collections.getURLForVersionInCollection(datasetID, 
+                [...this.props.activeCollection.inProgress, 
+                 ...this.props.activeCollection.reviewed, 
+                 ...this.props.activeCollection.complete]
+            )
             if (pendingVersionDeleteURL) {
                 pendingDeletedPages = pendingDeletedPages.filter(pageURI => {
                     return pageURI !== pendingVersionDeleteURL;
