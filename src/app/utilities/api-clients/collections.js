@@ -73,6 +73,16 @@ export default class collections {
             });
     }
 
+    static getVersionsInCollectionByDatasetID(datasetID, collectionContent) {
+        return collectionContent.find(page => {
+            return page.type === "dataset_version" && page.datasetID === datasetID;
+        })
+    }
+
+    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true);
+    }
+
     static removeDataset(collectionID, datasetID, collectionContent) {
         const versionInCollection = this.getVersionsInCollectionByDatasetID(datasetID, collectionContent);
         if (!versionInCollection) {
@@ -102,12 +112,8 @@ export default class collections {
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
     }
 
-    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
-        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
-    }
-
     static async checkContentIsInCollection(pageURI) {
-        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`)
+        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`);
     }
 
     static getInProgressContent(collectionID) {
@@ -117,16 +123,10 @@ export default class collections {
             })
     }
 
-    static getVersionsInCollectionByDatasetID(datasetID, collectionContent) {
-        return collectionContent.find(page => {
-            return page.type === "dataset_version" && page.datasetID === datasetID;
-        })
-    }
-
     static getURLForVersionInCollection(datasetID, collectionContent) {
         const version = this.getVersionsInCollectionByDatasetID(datasetID, collectionContent);
         if (!version) {
-            return
+            return null;
         }
         const versionURL = `/datasets/${datasetID}/editions/${version.edition}/versions/${version.version}`
         return versionURL;
