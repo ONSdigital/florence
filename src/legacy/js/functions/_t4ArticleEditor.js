@@ -14,6 +14,7 @@ function articleEditor(collectionId, data) {
   getActiveTab = Florence.globalVars.activeTab;
   accordion(getActiveTab);
   getLastPosition();
+  setNeutralArticleOptions();
 
   // Metadata edition and saving
   $("#title").on('input', function () {
@@ -82,10 +83,20 @@ function articleEditor(collectionId, data) {
 
   $("#articleType-checkbox").click(function () {
       data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+      if (data.isPrototypeArticle) {
+        $("#releaseDateEnabled-checkbox").attr('disabled', false);
+        // if neutral article then release date might have been disabled or enabled already, so set it to its true value
+        $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
+      }
+      else {
+        $("#releaseDateEnabled-checkbox").attr('disabled', true);
+        // If not a neutral article then release date is enabled
+        $("#releaseDateEnabled-checkbox").attr('checked', true);
+      }
   });
-
-    $("#articleType-checkbox").click(function () {
-        data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+    
+    $("#releaseDateEnabled-checkbox").click(function () {
+      data.isReleaseDateEnabled = $("#releaseDateEnabled-checkbox").prop('checked');
     });
 
     $('#neutral-article-image-upload-submit').click(function() {
@@ -214,6 +225,20 @@ function articleEditor(collectionId, data) {
     data.pdfTable = newFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
+  }
+
+  function setNeutralArticleOptions () {
+    if (data.isPrototypeArticle) {
+      $("#releaseDateEnabled-checkbox").attr('disabled', false);
+      // if neutral article then release date might have been disabled or enabled already, so set it to its true value
+      $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
+    }
+    else {
+      $("#releaseDateEnabled-checkbox").attr('disabled', true);
+      // If not a neutral article then release date is enabled
+      $("#releaseDateEnabled-checkbox").attr('checked', true);
+
+    }
   }
 }
 
