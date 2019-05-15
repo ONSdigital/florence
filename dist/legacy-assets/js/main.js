@@ -50670,6 +50670,14 @@ function setShortcuts(field, callback) {
             return opts.inverse(this);
     });
 
+    // If two strings don't match
+    Handlebars.registerHelper('if_null', function (a, opts) {
+        if (a == null || a == "null")
+            return opts.fn(this);
+        else
+            return opts.inverse(this);
+    });
+
     Handlebars.registerHelper('comma_separated_list', function (array) {
         var asString = "";
 
