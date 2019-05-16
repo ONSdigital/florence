@@ -152,7 +152,7 @@ export class DatasetVersionsController extends Component {
     buildVersionsList = versions => {
         const versionList =this.mapDatasetVersionsToState(versions);
         const includesUnpublishedVersion = versions.find(version => {
-            return version.state === "published";
+            return version.state === "edition-confirmed";
         });
         versionList.unshift({
             title: "Create new version", 
