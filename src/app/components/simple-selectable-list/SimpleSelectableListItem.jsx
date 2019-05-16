@@ -16,7 +16,6 @@ export default class SimpleSelectableListItem extends Component {
     }
 
     render() {
-        console.log(this.props)
         const details = this.props.details || [];
         return (
             <li className="simple-select-list__item">
