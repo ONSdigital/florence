@@ -40,7 +40,7 @@ export class DatasetVersionsController extends Component {
 
         this.getAllVersions(datasetID, editionID);
         this.getDataset(datasetID);
-        this.getEdition(datasetID, editionID)
+        this.getEdition(datasetID, editionID);
     }
 
     getDataset = datasetID => {
@@ -181,7 +181,7 @@ export class DatasetVersionsController extends Component {
                 }    
             });
             versionsList.sort((this.sortByVersionNumber))
-            return versionsList.reverse();   
+            return versionsList.reverse();
         } catch (error) {
             const notification = {
                 type: "warning",
