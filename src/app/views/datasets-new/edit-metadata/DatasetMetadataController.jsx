@@ -512,7 +512,7 @@ export class DatasetMetadataController extends Component {
             fieldName === "nextReleaseDate") {
                 return true;
         }
-        return false;
+        return this.state.datasetMetadataHasChanges;
     }
 
     versionMetadataHasChanges = (fieldName) => {
@@ -522,7 +522,7 @@ export class DatasetMetadataController extends Component {
             fieldName === "latestChanges") {
             return true;
         }
-        return false;
+        return this.state.versionMetadataHasChanges;
     }
 
     handleBackButton = () => {
@@ -823,4 +823,5 @@ export class DatasetMetadataController extends Component {
 DatasetMetadataController.propTypes = propTypes;
 
 export default DatasetMetadataController;
+
 
