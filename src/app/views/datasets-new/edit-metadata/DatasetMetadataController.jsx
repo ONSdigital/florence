@@ -41,9 +41,9 @@ export class DatasetMetadataController extends Component {
             versionIsInCollection: false,
             versionIsPublished: false,
             datasetState: "",
-            datasetCollectionState: null,
-            versionCollectionState: null,
-            lastEditedBy: null, 
+            datasetCollectionState: "",
+            versionCollectionState: "",
+            lastEditedBy: "", 
             instanceID: "",
             dimensionsUpdated: false,
             datasetMetadataHasChanges: false,
@@ -836,7 +836,7 @@ export class DatasetMetadataController extends Component {
                     versionIsPublished={this.state.versionIsPublished}
                     lastEditedBy={this.state.lastEditedBy}
                     disableForm={this.state.disableScreen || this.state.isSaving || this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
-                    collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState :this.state.versionCollectionState}
+                    collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState : this.state.versionCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                 />
