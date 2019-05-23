@@ -49,7 +49,7 @@ const propTypes = {
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
-    collectionState: PropTypes.string,
+    collectionState: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     lastEditedBy: PropTypes.string,
     handleSubmitForReviewClick: PropTypes.func.isRequired,
