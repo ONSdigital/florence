@@ -49,7 +49,7 @@ export class CollectionRoutesWrapper extends Component {
                 case(404): {
                     const notification = {
                         type: 'neutral',
-                        message: "Collection couldn't be found so you've been redirected to the collections screen",
+                        message: "The collection couldn't be found so you've been redirected to the collections screen",
                         autoDismiss: 5000
                     };
                     notifications.add(notification);
@@ -101,7 +101,7 @@ export class CollectionRoutesWrapper extends Component {
             log.event("error mapping collection response to 'working on' state", log.error(error), 
                 log.data({collectionID: this.props.params.collectionID, url: this.props.location.pathname})
             );
-            console.error("Error mapping collection response to 'working on' state", error);
+            console.error("error mapping collection response to 'working on' state", error);
             const notification = {
                 type: 'warning',
                 message: "An unexpected error occurred whilst getting details about this collection, please refresh the page",
