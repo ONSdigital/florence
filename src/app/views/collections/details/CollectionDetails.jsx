@@ -140,14 +140,22 @@ export class CollectionDetails extends Component {
         return (
             <li key={pageID} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}>
                 <div className="expandable-item__header">
-                    <Page type={page.type} title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")} isActive={isActivePage} />
+                    <Page type={page.type} 
+                        title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")} 
+                        isActive={isActivePage} />
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">{state === "complete" ?  "Review" : "Edit"}</button>
-                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button" disabled={page.type === "dataset_details" || page.type === "dataset_version"}>Delete</button>
+                    <button className="btn btn--primary" 
+                            onClick={handleEditClick} 
+                            type="button">{state === "complete" ?  "Review" : "Edit"}
+                    </button>
+                    <button className="btn btn--warning btn--margin-left" 
+                            onClick={handleDeleteClick} 
+                            type="button">Delete
+                    </button>
                 </div>
             </li>
         )
