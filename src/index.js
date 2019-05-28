@@ -40,6 +40,7 @@ import DatasetPreviewController from './app/views/datasets-new/preview/PreviewCo
 import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
 import ChangeUserPasswordController from './app/views/users/change-password/ChangeUserPasswordController';
 import ConfirmUserDeleteController from './app/views/users/confirm-delete/ConfirmUserDeleteController';
+import CollectionRoutesWrapper from './app/global/collection-wrapper/CollectionRoutesWrapper';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -92,18 +93,20 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
 
                             {config.enableDatasetImport === true &&
-                                <Route path={`${rootPath}/collections/:collectionID/datasets`} >
-                                    <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
-                                    <Route path=':datasetID'>
-                                        <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
-                                        <Route path={`editions`} component={ userIsAuthenticated(CreateEditionController) }/>
-                                        <Route path='editions/:editionID'>
-                                            <Route path={`instances`} component={ userIsAuthenticated(CreateVersionController) }/>
-                                            <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
-                                            <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
-                                                <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                                <Route component={ CollectionRoutesWrapper }>
+                                    <Route path={`${rootPath}/collections/:collectionID/datasets`} >
+                                        <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
+                                        <Route path=':datasetID'>
+                                            <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
+                                            <Route path={`editions`} component={ userIsAuthenticated(CreateEditionController) }/>
+                                            <Route path='editions/:editionID'>
+                                                <Route path={`instances`} component={ userIsAuthenticated(CreateVersionController) }/>
+                                                <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
+                                                <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
+                                                    <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                                                </Route>
+                                                <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                             </Route>
-                                            <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                         </Route>
                                     </Route>
                                 </Route>
