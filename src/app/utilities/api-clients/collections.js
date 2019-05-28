@@ -73,12 +73,25 @@ export default class collections {
             });
     }
 
-    static removeDataset(collectionID, datasetID) {
-        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}`);
-        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true)
-        //     .then(response => {
-        //         return response;
-        //     });
+    static getVersionsInCollectionByDatasetID(datasetID, collectionContent) {
+        return collectionContent.find(page => {
+            return page.type === "dataset_version" && page.datasetID === datasetID;
+        })
+    }
+
+    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
+        return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true);
+    }
+
+    static removeDataset(collectionID, datasetID, collectionContent) {
+        const versionInCollection = this.getVersionsInCollectionByDatasetID(datasetID, collectionContent);
+        if (!versionInCollection) {
+            return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true);
+        } else {
+            return this.removeDatasetVersion(collectionID, datasetID, versionInCollection.edition, versionInCollection.version).then(() => {
+                return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, true);
+            });
+        }
     }
 
     static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
@@ -99,16 +112,8 @@ export default class collections {
         return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
     }
 
-    static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
-        console.log(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`);
-        // return http.delete(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, true)
-        //     .then(response => {
-        //         return response;
-        //     });
-    }
-
     static async checkContentIsInCollection(pageURI) {
-        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`)
+        return http.get(`/zebedee/checkcollectionsforuri?uri=${pageURI}`);
     }
 
     static getInProgressContent(collectionID) {
@@ -116,6 +121,15 @@ export default class collections {
             .then(response => {
                 return response.inProgress;
             })
+    }
+
+    static getURLForVersionInCollection(datasetID, collectionContent) {
+        const version = this.getVersionsInCollectionByDatasetID(datasetID, collectionContent);
+        if (!version) {
+            return null;
+        }
+        const versionURL = `/datasets/${datasetID}/editions/${version.edition}/versions/${version.version}`
+        return versionURL;
     }
 
 }
