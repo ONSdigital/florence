@@ -5,5 +5,9 @@
     &__item {
         border-bottom: $iron-dark solid 1px;
         padding: $lineheight 0;
+
+        &--disabled {
+            color: $dusty-grey;
+        }
     }
 }
