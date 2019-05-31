@@ -217,7 +217,7 @@ class DatasetMetadata extends Component {
                     />
 
                     <h2>Related links</h2>
-                    <h3>Datasts</h3>
+                    <h3>Datasets</h3>
                     <SimpleEditableList addText={"Add a dataset"} 
                         fields={this.props.metadata.relatedDatasets} 
                         editingStateFieldName="relatedDatasets"
