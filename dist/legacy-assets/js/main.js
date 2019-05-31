@@ -50670,9 +50670,9 @@ function setShortcuts(field, callback) {
             return opts.inverse(this);
     });
 
-    // If two strings don't match
-    Handlebars.registerHelper('if_null', function (a, opts) {
-        if (a == null || a == "null")
+    // Check if value is null
+    Handlebars.registerHelper('if_null', function (value, opts) {
+        if (value == null || value == "null")
             return opts.fn(this);
         else
             return opts.inverse(this);
