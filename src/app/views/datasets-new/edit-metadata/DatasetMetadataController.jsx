@@ -452,7 +452,9 @@ export class DatasetMetadataController extends Component {
     handleSimpleEditableListDelete = (deletedField, stateFieldName) => {
         const newFieldState = this.state.metadata[stateFieldName].filter(item => item.id !== deletedField.id)
         const newMetadataState = {...this.state.metadata, [stateFieldName]: newFieldState};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState,
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(stateFieldName),
+            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName)});
     }
 
     handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
@@ -585,7 +587,6 @@ export class DatasetMetadataController extends Component {
         const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
         const datasetBody = this.mapDatasetToPutBody();
         const versionBody = this.mapVersionToPutBody();  
-        
         
         let saveDatasetError = false;
         if (datasetMetadataHasChanges) {
