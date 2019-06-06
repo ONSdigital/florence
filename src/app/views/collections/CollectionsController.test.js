@@ -323,13 +323,8 @@ describe("mapStateToProps function", () => {
     });
 });
 
-describe("Viewer user types are able to see all collections, even completed", () => {
-
-    it("ensure complete unpublished collections are visible to viewers", async () => {
-        expect(mockedAllCollections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
-        await viewerComponent.instance().componentWillMount();
-        expect(dispatchedActions[0].collections.length).toBe(mockedAllCollections.length);
-        expect(dispatchedActions[0].collections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
-
-    });
+test("Viewer user types are able to see all collections, even completed", async () => {
+    await viewerComponent.instance().fetchCollections();
+    expect(dispatchedActions[0].collections.length).toBe(mockedAllCollections.length);
+    expect(dispatchedActions[0].collections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
 });
