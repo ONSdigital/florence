@@ -147,6 +147,15 @@ const component = shallow(
     <CollectionsController {...defaultProps} />
 );
 
+let viewerProps = Object.assign({}, defaultProps);
+viewerProps.user.userType = "VIEWER";
+
+const viewerComponent = shallow(
+    <CollectionsController {...viewerProps} />
+);
+
+
+
 beforeEach(() => {
     // Reset our record of the dispatched actions, so now to break future tests
     dispatchedActions = [];
@@ -186,6 +195,7 @@ describe("On mount of the collections screen", () => {
         await component.instance().componentWillMount();
         expect(dispatchedActions[0].collections.length).toBe(mockedAllCollections.length-1);
         expect(dispatchedActions[0].collections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(false);
+
     });
 });
 
@@ -310,5 +320,16 @@ describe("mapStateToProps function", () => {
     
     it("returns the application's root path", () => {
         expect(mappedProps.rootPath).toBe("/florence");
+    });
+});
+
+describe("Viewer user types are able to see all collections, even completed", () => {
+
+    it("ensure complete unpublished collections are visible to viewers", async () => {
+        expect(mockedAllCollections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
+        await viewerComponent.instance().componentWillMount();
+        expect(dispatchedActions[0].collections.length).toBe(mockedAllCollections.length);
+        expect(dispatchedActions[0].collections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
+
     });
 });
