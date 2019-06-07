@@ -73,10 +73,11 @@ export class CollectionsController extends Component {
         // the catch block properly (using 'await') and the test gets executed before the catch
         // block has been run
         return collections.getAll().then(collections => {
-            const allCollections = collections.filter(collection => {
+            const allCollectionsVisible = this.isViewer ? collections : collections.filter(collection => {
                 return collection.approvalStatus !== "COMPLETE";
-            }).map(collection => {
-                return collectionMapper.collectionResponseToState(collection)
+            })
+            const allCollections = allCollectionsVisible.map(collection => {
+                return collectionMapper.collectionResponseToState(collection);
             });
             this.props.dispatch(addAllCollections(allCollections));
             this.setState({isFetchingCollections: false});
