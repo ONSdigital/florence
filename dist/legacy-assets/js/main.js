@@ -50670,6 +50670,14 @@ function setShortcuts(field, callback) {
             return opts.inverse(this);
     });
 
+    // Check if value is null
+    Handlebars.registerHelper('if_null', function (value, opts) {
+        if (value == null || value == "null")
+            return opts.fn(this);
+        else
+            return opts.inverse(this);
+    });
+
     Handlebars.registerHelper('comma_separated_list', function (array) {
         var asString = "";
 

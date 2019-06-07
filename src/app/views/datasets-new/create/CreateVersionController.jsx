@@ -202,7 +202,7 @@ export class CreateVersionController extends Component {
                 case(400): {
                     const notification = {
                         type: 'warning',
-                        message: `Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again`,
+                        message: "Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again",
                         isDismissable: true,
                         autoDismiss: 10000
                     }
@@ -212,7 +212,7 @@ export class CreateVersionController extends Component {
                 case(403): {
                     const notification = {
                         type: 'neutral',
-                        message: `Unable to create version because you do not have the correct permissions`,
+                        message: "Unable to create version because you do not have the correct permissions",
                         isDismissable: true,
                         autoDismiss: 10000
                     }
@@ -222,7 +222,17 @@ export class CreateVersionController extends Component {
                 case(404): {
                     const notification = {
                         type: 'warning',
-                        message: `Unable to create version because this version couldn't be found`,
+                        message: "Unable to create version because this version couldn't be found",
+                        isDismissable: true,
+                        autoDismiss: 10000
+                    }
+                    notifications.add(notification);
+                    break;
+                }
+                case(409): {
+                    const notification = {
+                        type: 'warning',
+                        message: "Unable to create version because a version already exists in this collection",
                         isDismissable: true,
                         autoDismiss: 10000
                     }
@@ -232,7 +242,7 @@ export class CreateVersionController extends Component {
                 case('FETCH_ERR'): {
                     const notification = {
                         type: 'warning',
-                        message: `Unable to create version due to a network issue. Please check your internet connection and try again`,
+                        message: "Unable to create version due to a network issue. Please check your internet connection and try again",
                         isDismissable: true,
                         autoDismiss: 10000
                     }
@@ -242,7 +252,7 @@ export class CreateVersionController extends Component {
                 default: {
                     const notification = {
                         type: 'warning',
-                        message: `Unable to create version due to an unexpected error`,
+                        message: "Unable to create version due to an unexpected error",
                         isDismissable: true,
                         autoDismiss: 10000
                     }
