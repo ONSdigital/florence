@@ -47947,6 +47947,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                       "corrections": [],
                       "relatedDatasets": [],
                       "relatedDocuments": [],
+                      "relatedFilterableDatasets": [],
                       "relatedMethodology": [],
                       "relatedMethodologyArticle": [],
                       "topics": [],
@@ -49648,6 +49649,8 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
+    } else if (idField === 'filterable-dataset') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'filterable-datasets'};
     } else if (idField === 'highlighted-content') {
         dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
     }else {
@@ -49873,6 +49876,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     initialiseField();
                 }
                 else if ((field === 'relatedDatasets' || field === 'datasets') && (page.type === 'dataset' || page.type === 'timeseries_dataset')) {
+                    initialiseField();
+                }
+                else if ((field === 'relatedFilterableDatasets') && (page.type === 'dataset_landing_page')) {
                     initialiseField();
                 }
                 else if (field === 'relatedArticles' && (page.type === 'article' || page.type === 'article_download' || page.type === 'compendium_landing_page')) {
@@ -50365,6 +50371,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedFilterableDatasets', 'filterable-dataset');
         renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
