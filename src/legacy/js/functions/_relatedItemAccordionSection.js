@@ -48,6 +48,8 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
+    } else if (idField === 'filterable-dataset') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'filterable-datasets'};
     } else if (idField === 'highlighted-content') {
         dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
     }else {
@@ -156,7 +158,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         var viewModel = {hasLatest: false}; //Set to true if 'latest' checkbox should show
         var latestCheck; //Populated with true/false later to check state of checkbox
 
-        if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
+        if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights' || idField === 'filterable-datasets') {
             viewModel = {hasLatest: true};
         }
 
@@ -273,6 +275,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     initialiseField();
                 }
                 else if ((field === 'relatedDatasets' || field === 'datasets') && (page.type === 'dataset' || page.type === 'timeseries_dataset')) {
+                    initialiseField();
+                }
+                else if ((field === 'relatedFilterableDatasets') && (page.type === 'dataset_landing_page')) {
                     initialiseField();
                 }
                 else if (field === 'relatedArticles' && (page.type === 'article' || page.type === 'article_download' || page.type === 'compendium_landing_page')) {
