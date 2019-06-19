@@ -7,7 +7,6 @@
  */
 
 function renderExternalLinkAccordionSection(collectionId, data, field, idField) {
-    console.log(collectionId, data, field, idField);
     var list = data[field];
     var dataTemplate = {list: list, idField: idField};
     var html = templates.editorLinks(dataTemplate);
