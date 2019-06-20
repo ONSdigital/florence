@@ -43038,6 +43038,7 @@ function isDevOrSandpit () {
  */
 
 function renderExternalLinkAccordionSection(collectionId, data, field, idField) {
+    console.log(collectionId, data, field, idField);
     var list = data[field];
     var dataTemplate = {list: list, idField: idField};
     var html = templates.editorLinks(dataTemplate);
@@ -43049,6 +43050,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         $('#' + idField + '-edit_' + index).click(function () {
             var uri = data[field][index].uri;
             var title = data[field][index].title;
+            if (idField === "filterable-dataset") {
+                addFilteredDatasetLink('edit', uri, index);
+                return;
+            }
             addEditLinksModal('edit', uri, title, index);
         });
 
@@ -43085,6 +43090,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
     $('#add-' + idField).click(function () {
         var position = $(".workspace-edit").scrollTop();
         Florence.globalVars.pagePos = position + 300;
+        if (idField === "filterable-dataset") {
+            addFilteredDatasetLink();
+            return;
+        }
         addEditLinksModal();
     });
 
@@ -43127,7 +43136,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
             data[field] = [];
         }
 
-        var linkData = {title: title, uri: uri};
+        var linkData = {title: title, uri: uri, showTitleField: true};
 
         var modal = templates.linkExternalModal(linkData);
         $('.workspace-menu').append(modal);
@@ -43160,6 +43169,44 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
             $('.modal').remove();
         });
 
+    }
+
+    function addFilteredDatasetLink(mode, uri, index) {
+        var uri = uri;
+
+        if (!data[field]) {
+            data[field] = [];
+        }
+
+        var linkData = {uri: uri, showTitleField: false};
+        var modal = templates.linkExternalModal(linkData);
+        $('.workspace-menu').append(modal);
+
+        $('#uri-input').change(function () {
+            uri = $('#uri-input').val();
+        });
+
+        $('.btn-uri-get').off().click(function () {
+            try {
+                var parsedURL = new URL(uri)
+            }
+            catch(error) {
+                sweetAlert("That doesn't look like a valid URL. Plese include all parts of the URL e.g. 'http://', 'www', etc.");
+                console.error("Error parsing URL \n", error)
+                return;
+            }
+            if (mode == 'edit') {
+                data[field][index].uri = parsedURL.pathname;
+            } else {
+                data[field].push({uri: parsedURL.pathname});
+            }
+            saveLink(collectionId, data.uri, data, field, idField);
+            $('.modal').remove();
+        });
+
+        $('.btn-uri-cancel').off().click(function () {
+            $('.modal').remove();
+        });
     }
 }
 
@@ -47947,6 +47994,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                       "corrections": [],
                       "relatedDatasets": [],
                       "relatedDocuments": [],
+                      "relatedFilterableDatasets": [],
                       "relatedMethodology": [],
                       "relatedMethodologyArticle": [],
                       "topics": [],
@@ -49648,6 +49696,8 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
     } else if (idField === 'link') {
         dataTemplate = {list: list, idField: idField, idPlural: 'links'};
+    } else if (idField === 'filterable-dataset') {
+        dataTemplate = {list: list, idField: idField, idPlural: 'filterable-datasets'};
     } else if (idField === 'highlighted-content') {
         dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
     }else {
@@ -49756,7 +49806,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         var viewModel = {hasLatest: false}; //Set to true if 'latest' checkbox should show
         var latestCheck; //Populated with true/false later to check state of checkbox
 
-        if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights') {
+        if (idField === 'article' || idField === 'bulletin' || idField === 'articles' || idField === 'bulletins' || idField === 'document' || idField === 'highlights' || idField === 'filterable-datasets') {
             viewModel = {hasLatest: true};
         }
 
@@ -49873,6 +49923,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                     initialiseField();
                 }
                 else if ((field === 'relatedDatasets' || field === 'datasets') && (page.type === 'dataset' || page.type === 'timeseries_dataset')) {
+                    initialiseField();
+                }
+                else if ((field === 'relatedFilterableDatasets') && (page.type === 'dataset_landing_page')) {
                     initialiseField();
                 }
                 else if (field === 'relatedArticles' && (page.type === 'article' || page.type === 'article_download' || page.type === 'compendium_landing_page')) {
@@ -50365,6 +50418,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'relatedFilterableDatasets', 'filterable-dataset');
         renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
