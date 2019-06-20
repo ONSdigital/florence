@@ -18,6 +18,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
         $('#' + idField + '-edit_' + index).click(function () {
             var uri = data[field][index].uri;
             var title = data[field][index].title;
+            if (idField === "filterable-dataset") {
+                addFilteredDatasetLink('edit', uri, index);
+                return;
+            }
             addEditLinksModal('edit', uri, title, index);
         });
 
@@ -54,6 +58,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
     $('#add-' + idField).click(function () {
         var position = $(".workspace-edit").scrollTop();
         Florence.globalVars.pagePos = position + 300;
+        if (idField === "filterable-dataset") {
+            addFilteredDatasetLink();
+            return;
+        }
         addEditLinksModal();
     });
 
@@ -96,7 +104,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
             data[field] = [];
         }
 
-        var linkData = {title: title, uri: uri};
+        var linkData = {title: title, uri: uri, showTitleField: true};
 
         var modal = templates.linkExternalModal(linkData);
         $('.workspace-menu').append(modal);
@@ -129,6 +137,44 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
             $('.modal').remove();
         });
 
+    }
+
+    function addFilteredDatasetLink(mode, uri, index) {
+        var uri = uri;
+
+        if (!data[field]) {
+            data[field] = [];
+        }
+
+        var linkData = {uri: uri, showTitleField: false};
+        var modal = templates.linkExternalModal(linkData);
+        $('.workspace-menu').append(modal);
+
+        $('#uri-input').change(function () {
+            uri = $('#uri-input').val();
+        });
+
+        $('.btn-uri-get').off().click(function () {
+            try {
+                var parsedURL = new URL(uri)
+            }
+            catch(error) {
+                sweetAlert("That doesn't look like a valid URL. Please include all parts of the URL e.g. 'https://', 'www', etc.");
+                console.error("Error parsing URL \n", error)
+                return;
+            }
+            if (mode == 'edit') {
+                data[field][index].uri = parsedURL.pathname;
+            } else {
+                data[field].push({uri: parsedURL.pathname});
+            }
+            saveLink(collectionId, data.uri, data, field, idField);
+            $('.modal').remove();
+        });
+
+        $('.btn-uri-cancel').off().click(function () {
+            $('.modal').remove();
+        });
     }
 }
 
