@@ -1,14 +1,13 @@
-import { addNotification, removeNotification, toggleNotificationVisibility } from '../config/actions';
-import { store } from '../config/store';
-import log from './logging/log';
+import { addNotification, removeNotification, toggleNotificationVisibility } from "../config/actions";
+import { store } from "../config/store";
+import log from "./logging/log";
 
-import uuid from 'uuid/v4';
+import uuid from "uuid/v4";
 
 export default class notifications {
-
     /**
      * Updates state with new notification
-     * @param {object} configuration of notification , as follows: 
+     * @param {object} configuration of notification , as follows:
      * {
      *      type [oneOf(["neutral", "warning"])]
      *      message [String]
@@ -31,7 +30,7 @@ export default class notifications {
             buttons: notification.buttons || [],
             isVisible: false,
             isDismissable: notification.isDismissable != null ? notification.isDismissable : true
-        }
+        };
 
         if (notification.autoDismiss && notification.autoDismiss > 0) {
             const timer = window.setTimeout(() => {
@@ -44,15 +43,15 @@ export default class notifications {
             config.buttons.push({
                 text: "Close",
                 onClick: function() {
-                    notifications.remove(config.id)
+                    notifications.remove(config.id);
                 }
             });
         }
 
-        log.event("Notification shown", log.data({type: config.type, message: config.message}));
+        log.event("Notification shown", log.data({ type: config.type, message: config.message }));
 
         store.dispatch(addNotification(config));
-        
+
         // Set a timeout so browser doesn't try to render component without the animation
         const animationTimer = window.setTimeout(() => {
             store.dispatch(toggleNotificationVisibility(config.id));
@@ -64,7 +63,7 @@ export default class notifications {
 
     /**
      * Removes notification from state
-     * @param {string} notificationID 
+     * @param {string} notificationID
      */
     static remove(notificationID) {
         store.dispatch(toggleNotificationVisibility(notificationID));
@@ -75,5 +74,4 @@ export default class notifications {
             window.clearTimeout(animationTimer);
         }, 50);
     }
-
 }

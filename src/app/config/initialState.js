@@ -4,8 +4,8 @@ export const initialState = {
     },
     user: {
         isAuthenticated: false,
-        email: '',
-        userType: '',
+        email: "",
+        userType: "",
         isAdmin: false
     },
     global: {

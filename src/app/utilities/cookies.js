@@ -1,9 +1,8 @@
 export default class cookies {
-
     static getAll() {
-        const cookies = document.cookie.split(';');
+        const cookies = document.cookie.split(";");
         const cookiesObject = {};
-        
+
         cookies.forEach(cookie => {
             const parts = cookie.split("=");
             cookiesObject[parts[0].trim()] = parts[1];
@@ -12,7 +11,7 @@ export default class cookies {
     }
 
     static add(name, value, path, domain) {
-        if (!name || typeof name !== 'string') {
+        if (!name || typeof name !== "string") {
             console.error(`cookie.add() requires a cookie name (type=string) as an argument`);
             return false;
         }
@@ -21,7 +20,7 @@ export default class cookies {
             return false;
         }
         if (!path) {
-            path = `/`
+            path = `/`;
         }
         if (!domain) {
             domain = location.hostname;
@@ -31,7 +30,7 @@ export default class cookies {
     }
 
     static get(name) {
-        if (!name || typeof name !== 'string') {
+        if (!name || typeof name !== "string") {
             console.error(`cookie.get() requires a cookie name (type=string) as an argument`);
             return false;
         }
@@ -39,22 +38,22 @@ export default class cookies {
         const cookie = allCookies[name];
 
         if (!cookie) {
-            return false; 
+            return false;
         }
 
         return cookie;
     }
 
     static remove(name) {
-        if (!name || typeof name !== 'string') {
+        if (!name || typeof name !== "string") {
             console.error(`cookie.get() requires a cookie name (type=string) as an argument`);
             return false;
         }
         if (!this.get(name)) {
             console.error(`Unable to find '${name}' cookie`);
-            return false; 
+            return false;
         }
-        document.cookie = `${name}=;path=/;domain=${location.hostname};expires=Thu, 01 Jan 1970 00:00:01 GMT;'`
+        document.cookie = `${name}=;path=/;domain=${location.hostname};expires=Thu, 01 Jan 1970 00:00:01 GMT;'`;
         console.log(`Removed cookie: '${name}'`);
         return true;
     }

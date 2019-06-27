@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     field: PropTypes.shape({
@@ -9,7 +9,7 @@ const propTypes = {
     handleEditClick: PropTypes.func.isRequired,
     handleDeleteClick: PropTypes.func.isRequired,
     disabled: PropTypes.bool.isRequired
-}
+};
 
 export default class SimpleEditableListItemItem extends Component {
     constructor(props) {
@@ -17,12 +17,12 @@ export default class SimpleEditableListItemItem extends Component {
     }
 
     handleEditClick = () => {
-        this.props.handleEditClick(this.props.field)
-    }
+        this.props.handleEditClick(this.props.field);
+    };
 
     handleDeleteClick = () => {
-        this.props.handleDeleteClick(this.props.field)
-    }
+        this.props.handleDeleteClick(this.props.field);
+    };
 
     render() {
         return (
@@ -33,13 +33,17 @@ export default class SimpleEditableListItemItem extends Component {
                 </div>
                 <div className="grid__col-lg-2">
                     <p className="text-right">
-                        <button type="button" className="btn btn--link" onClick={this.handleEditClick} disabled={this.props.disabled}>Edit</button> | 
-                        <button type="button" className="btn btn--link" onClick={this.handleDeleteClick} disabled={this.props.disabled}>Delete</button>
-                    </p>  
+                        <button type="button" className="btn btn--link" onClick={this.handleEditClick} disabled={this.props.disabled}>
+                            Edit
+                        </button>{" "}
+                        |
+                        <button type="button" className="btn btn--link" onClick={this.handleDeleteClick} disabled={this.props.disabled}>
+                            Delete
+                        </button>
+                    </p>
                 </div>
-
             </li>
-        )
+        );
     }
 }
 

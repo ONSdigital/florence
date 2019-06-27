@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
 
 const propTypes = {
     title: PropTypes.string.isRequired,
@@ -8,7 +8,7 @@ const propTypes = {
     url: PropTypes.string.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
     disabled: PropTypes.disabled
-}
+};
 
 export default class SimpleSelectableListItem extends Component {
     constructor(props) {
@@ -19,16 +19,18 @@ export default class SimpleSelectableListItem extends Component {
         const details = this.props.details || [];
         return (
             <li className="simple-select-list__item">
-                { this.props.disabled ? 
-                    <h2 className="simple-select-list__item--disabled">{this.props.title}</h2> 
-                : 
-                    <Link to={this.props.url}><h2>{this.props.title}</h2></Link> 
-                }
+                {this.props.disabled ? (
+                    <h2 className="simple-select-list__item--disabled">{this.props.title}</h2>
+                ) : (
+                    <Link to={this.props.url}>
+                        <h2>{this.props.title}</h2>
+                    </Link>
+                )}
                 {details.map((detail, i) => {
-                    return <p key={`detail-${i}`}>{detail}</p>
+                    return <p key={`detail-${i}`}>{detail}</p>;
                 })}
             </li>
-        )
+        );
     }
 }
 

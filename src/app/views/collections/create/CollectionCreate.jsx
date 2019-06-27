@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Input from '../../../components/Input';
-import Select from '../../../components/Select';
-import SelectedItemList from '../../../components/selected-items/SelectedItemList'
-import RadioGroup from '../../../components/radio-buttons/RadioGroup';
-import Modal from '../../../components/Modal';
-import ScheduleByRelease from '../schedule-by-release/ScheduleByRelease';
-import date from '../../../utilities/date';
+import Input from "../../../components/Input";
+import Select from "../../../components/Select";
+import SelectedItemList from "../../../components/selected-items/SelectedItemList";
+import RadioGroup from "../../../components/radio-buttons/RadioGroup";
+import Modal from "../../../components/Modal";
+import ScheduleByRelease from "../schedule-by-release/ScheduleByRelease";
+import date from "../../../utilities/date";
 
 const propTypes = {
     newCollectionDetails: PropTypes.shape({
@@ -18,7 +18,7 @@ const propTypes = {
         pendingDeletes: PropTypes.array.isRequired,
         teams: PropTypes.array.isRequired,
         release: PropTypes.object.isRequired,
-        scheduleType: PropTypes.string.isRequired,
+        scheduleType: PropTypes.string.isRequired
     }).isRequired,
     handleCollectionNameChange: PropTypes.func.isRequired,
     handleTeamSelection: PropTypes.func.isRequired,
@@ -29,10 +29,12 @@ const propTypes = {
     handleSelectRelease: PropTypes.func.isRequired,
     handleCloseRelease: PropTypes.func.isRequired,
     hasTeams: PropTypes.bool.isRequired,
-    allTeams: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-    })),
+    allTeams: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+        })
+    ),
     handleScheduleTypeChange: PropTypes.func.isRequired,
     handlePublishTimeChange: PropTypes.func.isRequired,
     handlePublishDateChange: PropTypes.func.isRequired,
@@ -40,7 +42,7 @@ const propTypes = {
     showScheduleByRelease: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired
-}
+};
 
 class CollectionCreate extends Component {
     constructor(props) {
@@ -49,8 +51,17 @@ class CollectionCreate extends Component {
 
     renderScheduleOptions() {
         const scheduleOptionsRadioData = [
-            {id: "custom-radio", value: "custom-schedule", label: "Custom schedule"},
-            {id: "calendar-radio", value: "calender-entry-schedule", label: "Calendar entry schedule"} ];
+            {
+                id: "custom-radio",
+                value: "custom-schedule",
+                label: "Custom schedule"
+            },
+            {
+                id: "calendar-radio",
+                value: "calender-entry-schedule",
+                label: "Calendar entry schedule"
+            }
+        ];
 
         return (
             <div>
@@ -63,7 +74,7 @@ class CollectionCreate extends Component {
                     inline={true}
                 />
 
-                {this.props.showCustomScheduleOptions ?
+                {this.props.showCustomScheduleOptions ? (
                     <div>
                         <Input
                             id="publish-date"
@@ -85,37 +96,40 @@ class CollectionCreate extends Component {
                             error={this.props.newCollectionDetails.publishTime.errorMsg}
                         />
                     </div>
-                    : 
+                ) : (
                     <div>
                         <div className="margin-bottom--1">
-                        {this.props.newCollectionDetails.release ?
-                            <div>
-                                <p>Selected release: </p>
-                                <p className="font-weight--600 colour--night-shadz">
-                                    {this.props.newCollectionDetails.release.errorMsg}
-                                </p>
-                                <p className="font-weight--600">
-                                    {this.props.newCollectionDetails.release.isProvisional && "[Not finalised] "}
-                                    {this.props.newCollectionDetails.release.title}
-                                </p>
-                            </div>
-                            :
-                            <p>No release selected</p>
-                        }
+                            {this.props.newCollectionDetails.release ? (
+                                <div>
+                                    <p>Selected release: </p>
+                                    <p className="font-weight--600 colour--night-shadz">{this.props.newCollectionDetails.release.errorMsg}</p>
+                                    <p className="font-weight--600">
+                                        {this.props.newCollectionDetails.release.isProvisional && "[Not finalised] "}
+                                        {this.props.newCollectionDetails.release.title}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p>No release selected</p>
+                            )}
                         </div>
                         <button type="button" onClick={this.props.handleAddRelease} className="btn btn--primary margin-bottom--2 ">
                             Select {this.props.newCollectionDetails.release.uri && "different "}a calendar entry
                         </button>
                     </div>
-                }
+                )}
             </div>
-        )
+        );
     }
 
     render() {
         const releaseTypeRadioData = [
-            {id: "scheduled-radio", value: "scheduled", label: "Scheduled publish"},
-            {id: "manual-radio", value: "manual", label: "Manual publish"} ];
+            {
+                id: "scheduled-radio",
+                value: "scheduled",
+                label: "Scheduled publish"
+            },
+            { id: "manual-radio", value: "manual", label: "Manual publish" }
+        ];
 
         return (
             <div>
@@ -138,10 +152,7 @@ class CollectionCreate extends Component {
                         onChange={this.props.handleTeamSelection}
                     />
 
-                    {this.props.newCollectionDetails.teams ?
-                        <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam}/>
-                        : ""
-                    }
+                    {this.props.newCollectionDetails.teams ? <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam} /> : ""}
 
                     <RadioGroup
                         groupName="release-type"
@@ -152,20 +163,19 @@ class CollectionCreate extends Component {
                         inline={true}
                     />
 
-                    {this.props.showScheduleOptions ? this.renderScheduleOptions() : "" }
+                    {this.props.showScheduleOptions ? this.renderScheduleOptions() : ""}
 
                     <button type="submit" className="btn btn--positive margin-top--1" disabled={this.props.isSubmitting}>
                         Create collection
                     </button>
 
                     {this.props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
-
                 </form>
-                {this.props.showScheduleByRelease &&
+                {this.props.showScheduleByRelease && (
                     <Modal sizeClass="grid__col-8">
                         <ScheduleByRelease onClose={this.props.handleCloseRelease} onSubmit={this.props.handleSelectRelease} />
                     </Modal>
-                }
+                )}
             </div>
         );
     }

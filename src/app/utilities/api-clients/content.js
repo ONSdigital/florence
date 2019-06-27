@@ -1,7 +1,6 @@
-import http from '../http';
+import http from "../http";
 
 export default class content {
-
     static getAllDeleted() {
         return http.get(`/zebedee/deletedContent`);
     }
@@ -9,6 +8,4 @@ export default class content {
     static restoreDeleted(deletedContentId, collectionId) {
         return http.post(`/zebedee/deletedcontent/${deletedContentId}?collectionid=${collectionId}`);
     }
-
-
 }

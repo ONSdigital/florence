@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import DefaultLog from './DefaultLog';
+import DefaultLog from "./DefaultLog";
 
 const propTypes = {
     children: PropTypes.node,
@@ -13,7 +13,7 @@ const propTypes = {
         pathname: PropTypes.string,
         search: PropTypes.string
     })
-}
+};
 
 class RouteLog extends Component {
     constructor(props) {
@@ -23,9 +23,12 @@ class RouteLog extends Component {
     render() {
         return (
             <DefaultLog {...this.props}>
-                <div>Routed to: {this.props.payload.pathname}{this.props.payload.search}</div>
+                <div>
+                    Routed to: {this.props.payload.pathname}
+                    {this.props.payload.search}
+                </div>
             </DefaultLog>
-        )
+        );
     }
 }
 
