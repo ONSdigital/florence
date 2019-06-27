@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     id: PropTypes.string,
@@ -17,7 +17,7 @@ class Checkbox extends Component {
         this.state = {
             isFocused: false,
             value: false
-        }
+        };
 
         this.handleFocus = this.handleFocus.bind(this);
         this.handleChange = this.handleChange.bind(this);
@@ -36,17 +36,17 @@ class Checkbox extends Component {
     }
 
     handleFocus() {
-        this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true })
+        this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
     }
 
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                {this.props.error &&
-                    <div className="error-msg">{this.props.error}</div>
-                }
+                {this.props.error && <div className="error-msg">{this.props.error}</div>}
                 <div className="checkbox">
-                    <input className="checkbox__input" type="checkbox"
+                    <input
+                        className="checkbox__input"
+                        type="checkbox"
                         checked={this.state.value}
                         onChange={this.handleChange}
                         onFocus={this.handleFocus}
@@ -59,7 +59,7 @@ class Checkbox extends Component {
                     </label>
                 </div>
             </div>
-        )
+        );
     }
 }
 

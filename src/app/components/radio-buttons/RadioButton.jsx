@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -38,15 +38,14 @@ export default class RadioButton extends Component {
     }
 
     handleFocus() {
-        this.setState({focused: true});
+        this.setState({ focused: true });
     }
 
     handleBlur() {
-        this.setState({focused: false});
+        this.setState({ focused: false });
     }
 
     render() {
-
         return (
             <div className={"radio" + (this.props.inline ? " radio--inline" : "")}>
                 <input
@@ -55,7 +54,7 @@ export default class RadioButton extends Component {
                     name={this.props.group}
                     checked={this.props.checked}
                     value={this.props.value}
-                    id={this.props.id} 
+                    id={this.props.id}
                     onFocus={this.handleFocus}
                     onBlur={this.handleBlur}
                     onChange={this.handleChange}
@@ -63,12 +62,17 @@ export default class RadioButton extends Component {
                 />
 
                 <label
-                    className={"radio__label" + (this.props.checked ? " radio__label--selected" : "") + (this.state.focused ? " radio__label--focused" : "") + (this.props.disabled ? " radio__label--disabled" : "")}
+                    className={
+                        "radio__label" +
+                        (this.props.checked ? " radio__label--selected" : "") +
+                        (this.state.focused ? " radio__label--focused" : "") +
+                        (this.props.disabled ? " radio__label--disabled" : "")
+                    }
                     htmlFor={this.props.id}>
-                    {this.props.label} {this.props.subLabel ? <br/> : null} {this.props.subLabel ? this.props.subLabel : null}
+                    {this.props.label} {this.props.subLabel ? <br /> : null} {this.props.subLabel ? this.props.subLabel : null}
                 </label>
             </div>
-        )
+        );
     }
 }
 

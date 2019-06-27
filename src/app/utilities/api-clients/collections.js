@@ -1,23 +1,20 @@
-import http from '../http';
+import http from "../http";
 
 export default class collections {
-
     static get(collectionID) {
-        return http.get(`/zebedee/collectionDetails/${collectionID}`)
+        return http.get(`/zebedee/collectionDetails/${collectionID}`);
     }
-    
+
     static getAll() {
-        return http.get(`/zebedee/collections`)
-            .then(response => {
-                return response;
-            })
+        return http.get(`/zebedee/collections`).then(response => {
+            return response;
+        });
     }
 
     static create(body) {
-        return http.post(`/zebedee/collection`, body)
-            .then(response => {
-                return response;
-            })
+        return http.post(`/zebedee/collection`, body).then(response => {
+            return response;
+        });
     }
 
     static approve(collectionID) {
@@ -50,33 +47,30 @@ export default class collections {
     }
 
     static addDataset(collectionID, datasetID) {
-        const body = {state: "InProgress"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        const body = { state: "InProgress" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body, true).then(response => {
+            return response;
+        });
     }
 
     static setDatasetStatusToComplete(collectionID, datasetID) {
-        const body = {state: "Complete"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        const body = { state: "Complete" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body, true).then(response => {
+            return response;
+        });
     }
 
     static setDatasetStatusToReviewed(collectionID, datasetID) {
-        const body = {state: "Reviewed"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        const body = { state: "Reviewed" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}`, body, true).then(response => {
+            return response;
+        });
     }
 
     static getVersionsInCollectionByDatasetID(datasetID, collectionContent) {
         return collectionContent.find(page => {
             return page.type === "dataset_version" && page.datasetID === datasetID;
-        })
+        });
     }
 
     static removeDatasetVersion(collectionID, datasetID, editionID, versionID) {
@@ -95,21 +89,20 @@ export default class collections {
     }
 
     static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "InProgress"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true)
-            .then(response => {
-                return response;
-            });
+        const body = { state: "InProgress" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
+            return response;
+        });
     }
 
     static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "Complete"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
+        const body = { state: "Complete" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true);
     }
 
     static setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID) {
-        const body = {state: "Reviewed"};
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body , true);
+        const body = { state: "Reviewed" };
+        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true);
     }
 
     static async checkContentIsInCollection(pageURI) {
@@ -117,10 +110,9 @@ export default class collections {
     }
 
     static getInProgressContent(collectionID) {
-        return http.get(`/zebedee/collectionDetails/${collectionID}`)
-            .then(response => {
-                return response.inProgress;
-            })
+        return http.get(`/zebedee/collectionDetails/${collectionID}`).then(response => {
+            return response.inProgress;
+        });
     }
 
     static getURLForVersionInCollection(datasetID, collectionContent) {
@@ -128,8 +120,7 @@ export default class collections {
         if (!version) {
             return null;
         }
-        const versionURL = `/datasets/${datasetID}/editions/${version.edition}/versions/${version.version}`
+        const versionURL = `/datasets/${datasetID}/editions/${version.edition}/versions/${version.version}`;
         return versionURL;
     }
-
 }

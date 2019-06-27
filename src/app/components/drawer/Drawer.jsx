@@ -1,16 +1,16 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     isVisible: PropTypes.bool,
     isAnimatable: PropTypes.bool,
     handleTransitionEnd: PropTypes.func,
     children: PropTypes.node
-}
+};
 
 const defaultProps = {
     handleTransitionEnd: () => {}
-}
+};
 
 class Drawer extends Component {
     constructor(props) {
@@ -28,25 +28,25 @@ class Drawer extends Component {
 
     handleTransitionEnd() {
         this.props.handleTransitionEnd();
-        this.setState({hasFinishedAnimation: true});
+        this.setState({ hasFinishedAnimation: true });
     }
 
     addAnimationClasses() {
         const classes = [];
 
         if (this.props.isAnimatable) {
-            classes.push('animatable');
+            classes.push("animatable");
         }
-        
+
         if (this.props.isVisible) {
-            classes.push('visible');
+            classes.push("visible");
         }
 
         if (this.state.hasFinishedAnimation) {
-            classes.push('animation-finished');
+            classes.push("animation-finished");
         }
 
-        return classes.join(' ');
+        return classes.join(" ");
     }
 
     render() {
@@ -54,7 +54,7 @@ class Drawer extends Component {
             <div className={`drawer ${this.addAnimationClasses()}`} onTransitionEnd={this.handleTransitionEnd}>
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 

@@ -1,54 +1,54 @@
-import { initialState } from './initialState';
+import { initialState } from "./initialState";
 
 import {
     SET_CONFIG,
-    UPDATE_ACTIVE_COLLECTION, 
-    EMPTY_ACTIVE_COLLECTION, 
-    UPDATE_ALL_TEAM_IDS_AND_NAMES , 
-    ADD_ALL_COLLECTIONS, 
-    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS, 
-    DELETE_COLLECTION_FROM_ALL_COLLECTIONS, 
-    UPDATE_PAGES_IN_ACTIVE_COLLECTION, 
-    ADD_PREVIEW_COLLECTION, 
-    REMOVE_PREVIEW_COLLECTION, 
-    UPDATE_PREVIEW_SELECTED_PAGE, 
-    REMOVE_PREVIEW_SELECTED_PAGE, 
-    UPDATE_WORKING_ON, 
-    EMPTY_WORKING_ON, 
+    UPDATE_ACTIVE_COLLECTION,
+    EMPTY_ACTIVE_COLLECTION,
+    UPDATE_ALL_TEAM_IDS_AND_NAMES,
+    ADD_ALL_COLLECTIONS,
+    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
+    DELETE_COLLECTION_FROM_ALL_COLLECTIONS,
+    UPDATE_PAGES_IN_ACTIVE_COLLECTION,
+    ADD_PREVIEW_COLLECTION,
+    REMOVE_PREVIEW_COLLECTION,
+    UPDATE_PREVIEW_SELECTED_PAGE,
+    REMOVE_PREVIEW_SELECTED_PAGE,
+    UPDATE_WORKING_ON,
+    EMPTY_WORKING_ON,
     UPDATE_TEAMS_IN_ACTIVE_COLLECTION,
     UPDATE_ACTIVE_USER,
     REMOVE_USER_FROM_ALL_USERS,
     ADD_ALL_USERS,
-    UPDATE_ACTIVE_DATASET_REVIEW_STATE, 
+    UPDATE_ACTIVE_DATASET_REVIEW_STATE,
     UPDATE_ACTIVE_VERSION_REVIEW_STATE,
     UPDATE_ACTIVE_JOB,
     UPDATE_ACTIVE_DATASET,
     UPDATE_ACTIVE_INSTANCE,
-    UPDATE_ACTIVE_VERSION, 
-    EMPTY_ACTIVE_DATASET, 
-    EMPTY_ACTIVE_VERSION, 
+    UPDATE_ACTIVE_VERSION,
+    EMPTY_ACTIVE_DATASET,
+    EMPTY_ACTIVE_VERSION,
     EMPTY_ACTIVE_INSTANCE,
     UPDATE_ACTIVE_DATASET_COLLECTION_ID,
     RESET
-} from './actions';
+} from "./actions";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case (RESET): {
+        case RESET: {
             return {
                 ...initialState,
                 config: state.config
-            }
+            };
         }
-        case (SET_CONFIG): {
+        case SET_CONFIG: {
             return {
                 ...state,
                 config: {
                     enableDatasetImport: action.config.enableDatasetImport
                 }
-            }
+            };
         }
-        case ('USER_LOGGED_IN'): {
+        case "USER_LOGGED_IN": {
             return Object.assign({}, state, {
                 user: Object.assign({}, state.user, {
                     isAuthenticated: true,
@@ -56,26 +56,26 @@ export default function reducer(state = initialState, action) {
                     userType: action.userType,
                     isAdmin: action.isAdmin
                 })
-            })
+            });
         }
-        case ('USER_LOGGED_OUT'): {
+        case "USER_LOGGED_OUT": {
             return Object.assign({}, state, {
                 user: Object.assign({}, state.user, {
                     isAuthenticated: false
                 })
-            })
+            });
         }
-        case (ADD_ALL_COLLECTIONS): {
+        case ADD_ALL_COLLECTIONS: {
             return {
                 ...state,
                 collections: {
                     ...state.collections,
                     all: action.collections
                 }
-            }
+            };
         }
-        case (MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS): {
-            let toDelete = {...state.collections.toDelete};
+        case MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
+            let toDelete = { ...state.collections.toDelete };
             toDelete[action.collectionID] = null;
             return {
                 ...state,
@@ -83,14 +83,14 @@ export default function reducer(state = initialState, action) {
                     ...state.collections,
                     toDelete
                 }
-            }
+            };
         }
-        case (DELETE_COLLECTION_FROM_ALL_COLLECTIONS): {
-            const toDelete = {...state.collections.toDelete};
+        case DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
+            const toDelete = { ...state.collections.toDelete };
             delete toDelete[action.collectionID];
 
             const all = state.collections.all.filter(collection => collection.id !== action.collectionID);
-            
+
             return {
                 ...state,
                 collections: {
@@ -98,9 +98,9 @@ export default function reducer(state = initialState, action) {
                     all,
                     toDelete
                 }
-            }
+            };
         }
-        case (UPDATE_ACTIVE_COLLECTION): {
+        case UPDATE_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -109,16 +109,16 @@ export default function reducer(state = initialState, action) {
                         id: action.collection.id,
                         name: action.collection.name,
                         publishDate: action.collection.publishDate,
-                        status: {...action.collection.status},
+                        status: { ...action.collection.status },
                         type: action.collection.type,
                         isForcedManualType: action.collection.isForcedManualType,
                         canBeApproved: action.collection.canBeApproved,
                         canBeDeleted: action.collection.canBeDeleted
                     }
                 }
-            }
+            };
         }
-        case (UPDATE_PAGES_IN_ACTIVE_COLLECTION): {
+        case UPDATE_PAGES_IN_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -133,9 +133,9 @@ export default function reducer(state = initialState, action) {
                         canBeDeleted: action.collection.canBeDeleted
                     }
                 }
-            }
+            };
         }
-        case(UPDATE_TEAMS_IN_ACTIVE_COLLECTION): {
+        case UPDATE_TEAMS_IN_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -145,36 +145,36 @@ export default function reducer(state = initialState, action) {
                         teams: action.teams
                     }
                 }
-            }
+            };
         }
-        case (EMPTY_ACTIVE_COLLECTION): {
+        case EMPTY_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
                     ...state.collections,
                     active: null
                 }
-            }
+            };
         }
-        case(UPDATE_WORKING_ON): {
+        case UPDATE_WORKING_ON: {
             return {
                 ...state,
                 global: {
                     ...state.global,
-                    workingOn: {...action.workingOn}
+                    workingOn: { ...action.workingOn }
                 }
-            }
+            };
         }
-        case(EMPTY_WORKING_ON): {
+        case EMPTY_WORKING_ON: {
             return {
-            ...state,
-            global: {
-                ...state.global,
-                workingOn: null
+                ...state,
+                global: {
+                    ...state.global,
+                    workingOn: null
                 }
-            }
+            };
         }
-        case (UPDATE_ACTIVE_USER): {
+        case UPDATE_ACTIVE_USER: {
             return {
                 ...state,
                 users: {
@@ -186,59 +186,59 @@ export default function reducer(state = initialState, action) {
                         role: action.user.role
                     }
                 }
-            }
+            };
         }
-        case (ADD_ALL_USERS): {
+        case ADD_ALL_USERS: {
             return {
                 ...state,
                 users: {
                     ...state.users,
                     all: [...action.users]
                 }
-            }
+            };
         }
-        case(REMOVE_USER_FROM_ALL_USERS): {
+        case REMOVE_USER_FROM_ALL_USERS: {
             return {
                 ...state,
                 users: {
                     ...state.users,
                     all: state.users.all.filter(user => user.email !== action.userID)
                 }
-            }
+            };
         }
-        case ('UPDATE_ALL_TEAMS'): {
+        case "UPDATE_ALL_TEAMS": {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     all: action.allTeams
                 })
-            })
+            });
         }
-        case (UPDATE_ALL_TEAM_IDS_AND_NAMES): {
+        case UPDATE_ALL_TEAM_IDS_AND_NAMES: {
             return {
                 ...state,
                 teams: {
                     ...state.teams,
                     allIDsAndNames: action.allTeamIDsAndNames
                 }
-            }
+            };
         }
-        case ('UPDATE_ACTIVE_TEAM'): {
+        case "UPDATE_ACTIVE_TEAM": {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     active: action.activeTeam
                 })
-            })
+            });
         }
-        case ('UPDATE_ACTIVE_TEAM_MEMBERS'): {
+        case "UPDATE_ACTIVE_TEAM_MEMBERS": {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     active: Object.assign({}, state.teams.active, {
                         members: action.members
                     })
                 })
-            })
+            });
         }
-        case (UPDATE_ACTIVE_INSTANCE): {
+        case UPDATE_ACTIVE_INSTANCE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -246,7 +246,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (EMPTY_ACTIVE_INSTANCE): {
+        case EMPTY_ACTIVE_INSTANCE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -254,7 +254,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_VERSION): {
+        case UPDATE_ACTIVE_VERSION: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -265,7 +265,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_VERSION_REVIEW_STATE): {
+        case UPDATE_ACTIVE_VERSION_REVIEW_STATE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -277,7 +277,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (EMPTY_ACTIVE_VERSION): {
+        case EMPTY_ACTIVE_VERSION: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -285,7 +285,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_JOB): {
+        case UPDATE_ACTIVE_JOB: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -293,7 +293,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (EMPTY_ACTIVE_DATASET): {
+        case EMPTY_ACTIVE_DATASET: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -301,7 +301,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_DATASET): {
+        case UPDATE_ACTIVE_DATASET: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -312,7 +312,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_DATASET_REVIEW_STATE): {
+        case UPDATE_ACTIVE_DATASET_REVIEW_STATE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -324,7 +324,7 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case (UPDATE_ACTIVE_DATASET_COLLECTION_ID): {
+        case UPDATE_ACTIVE_DATASET_COLLECTION_ID: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -335,51 +335,48 @@ export default function reducer(state = initialState, action) {
                 }
             });
         }
-        case ('UPDATE_ALL_DATASETS'): {
+        case "UPDATE_ALL_DATASETS": {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     all: action.allDatasets
                 })
-            })
+            });
         }
-        case ('UPDATE_ALL_RECIPES'): {
+        case "UPDATE_ALL_RECIPES": {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
                     recipes: action.allRecipes
                 }
-            })
+            });
         }
-        case ('UPDATE_ALL_JOBS'): {
+        case "UPDATE_ALL_JOBS": {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     jobs: action.allJobs
                 })
-            })
+            });
         }
-        case ('ADD_NEW_JOB'): {
+        case "ADD_NEW_JOB": {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
-                    jobs: [
-                        ...state.datasets.jobs,
-                        action.job
-                    ]
+                    jobs: [...state.datasets.jobs, action.job]
                 })
-            })
+            });
         }
-        case ('ADD_NOTIFICATION'): {
+        case "ADD_NOTIFICATION": {
             return Object.assign({}, state, {
                 notifications: [...state.notifications, action.notification]
-            })
+            });
         }
-        case ('REMOVE_NOTIFICATION'): {
+        case "REMOVE_NOTIFICATION": {
             return Object.assign({}, state, {
                 notifications: state.notifications.filter(notification => {
-                    return notification.id !== action.notificationID
+                    return notification.id !== action.notificationID;
                 })
-            })
+            });
         }
-        case ('TOGGLE_NOTIFICATION_VISIBILITY'): {
+        case "TOGGLE_NOTIFICATION_VISIBILITY": {
             return Object.assign({}, state, {
                 notifications: state.notifications.map(notification => {
                     if (notification.id !== action.notificationID) {
@@ -388,42 +385,42 @@ export default function reducer(state = initialState, action) {
                     notification.isVisible = !notification.isVisible;
                     return notification;
                 })
-            })
+            });
         }
-        case (ADD_PREVIEW_COLLECTION): {
+        case ADD_PREVIEW_COLLECTION: {
             return {
                 ...state,
                 preview: {
                     ...state.preview,
                     ...action.preview
                 }
-            }
+            };
         }
-        case(REMOVE_PREVIEW_COLLECTION): {
+        case REMOVE_PREVIEW_COLLECTION: {
             return {
                 ...state,
                 preview: {
                     selectedPage: null
                 }
-            }
+            };
         }
-        case (UPDATE_PREVIEW_SELECTED_PAGE): {
+        case UPDATE_PREVIEW_SELECTED_PAGE: {
             return {
                 ...state,
                 preview: {
                     ...state.preview,
                     selectedPage: action.selectedPage
                 }
-            }
+            };
         }
-        case (REMOVE_PREVIEW_SELECTED_PAGE): {
+        case REMOVE_PREVIEW_SELECTED_PAGE: {
             return {
                 ...state,
                 preview: {
                     ...state.preview,
                     selectedPage: null
                 }
-            }
+            };
         }
         default: {
             break;

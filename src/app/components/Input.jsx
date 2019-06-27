@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -43,30 +43,33 @@ export default class Input extends Component {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-            type: this.state.type === 'text' ? 'password' : 'text'
-        })
+            type: this.state.type === "text" ? "password" : "text"
+        });
     }
 
     moveCaretToEnd(event) {
         // Move caret to the end of the value on input focus
         const val = event.target.value;
-        event.target.value = '';
+        event.target.value = "";
         event.target.value = val;
     }
 
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
-                { !this.props.inline &&
-                    <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
-                }
-                {
-                    this.props.error ?
-                        <div id={`input-error-${this.props.id}`} className="error-msg">{this.props.error}</div>
-                        :
-                        ""
-                }
-                {this.props.type !== "textarea" ?
+                {!this.props.inline && (
+                    <label className="form__label" htmlFor={this.props.id}>
+                        {this.props.label}
+                    </label>
+                )}
+                {this.props.error ? (
+                    <div id={`input-error-${this.props.id}`} className="error-msg">
+                        {this.props.error}
+                    </div>
+                ) : (
+                    ""
+                )}
+                {this.props.type !== "textarea" ? (
                     <input
                         id={this.props.id}
                         type={this.state.type}
@@ -82,12 +85,12 @@ export default class Input extends Component {
                         value={this.props.value}
                         min={this.props.min}
                         max={this.props.max}
-                        // setting autocomplete to "new-password" will/should tell Google this is a 
+                        // setting autocomplete to "new-password" will/should tell Google this is a
                         //  "sign up form" type of input and not use the auto complete, more info:
                         // https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
                         autoComplete={!this.props.allowAutoComplete && "new-password"}
                     />
-                :
+                ) : (
                     <textarea
                         id={this.props.id}
                         className="input input__textarea"
@@ -97,18 +100,17 @@ export default class Input extends Component {
                         onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
-                        value={this.props.value}
-                    >
-                    </textarea>
-                }
-                {
-                    this.state.displayShowHide ?
-                        <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">{this.state.type === 'text' ? 'Hide' : 'Show'}</span>
-                        :
-                        ""
-                }
+                        value={this.props.value}></textarea>
+                )}
+                {this.state.displayShowHide ? (
+                    <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">
+                        {this.state.type === "text" ? "Hide" : "Show"}
+                    </span>
+                ) : (
+                    ""
+                )}
             </div>
-        )
+        );
     }
 }
 

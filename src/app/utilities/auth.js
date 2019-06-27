@@ -1,22 +1,21 @@
 export default class auth {
-
     static isAuthenticated(user) {
-        return user.isAuthenticated
+        return user.isAuthenticated;
     }
 
     static isViewer(user) {
-        return user.userType == 'VIEWER';
+        return user.userType == "VIEWER";
     }
 
     static isAdminOrEditor(user) {
-        return user.userType == 'ADMIN' || user.userType == 'EDITOR';
+        return user.userType == "ADMIN" || user.userType == "EDITOR";
     }
 
     static isAdmin(user) {
-        return user.userType === 'ADMIN';
+        return user.userType === "ADMIN";
     }
 
     static canViewCollectionsDetails(user) {
-        return user.userType == 'ADMIN' || user.userType == 'EDITOR';
+        return user.userType == "ADMIN" || user.userType == "EDITOR";
     }
 }

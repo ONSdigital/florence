@@ -1,4 +1,4 @@
-import log from './logging/log';
+import log from "./logging/log";
 
 class Socket {
     constructor() {
@@ -11,10 +11,10 @@ class Socket {
     }
 
     open() {
-        const protocol = (location.protocol.replace(/^http/, 'ws'));
+        const protocol = location.protocol.replace(/^http/, "ws");
         this.socket = new WebSocket(`${protocol}${location.host}/florence/websocket`);
         console.info("Trying to open websocket...");
-        
+
         this.socket.onopen = () => {
             console.info("Websocket has been opened");
 
@@ -24,13 +24,13 @@ class Socket {
                 // in that instance we would break the loop (which can't be done in a forEach easily)
                 this.socket.send(message);
             });
-            
-            log.event("Websocket opened")
-        }
 
-        this.socket.onerror = (event) => {
-            log.event("Websocket error", log.error(), log.data({...event}))
-        }
+            log.event("Websocket opened");
+        };
+
+        this.socket.onerror = event => {
+            log.event("Websocket error", log.error(), log.data({ ...event }));
+        };
 
         this.socket.onclose = () => {
             console.info("Websocket has been closed");
@@ -45,7 +45,7 @@ class Socket {
                 // Ref: https://stackoverflow.com/questions/2130241/pass-correct-this-context-to-settimeout-callback
                 this.open();
             }, this.openDelay);
-        }
+        };
 
         this.socket.onmessage = message => {
             message = JSON.parse(message.data);
@@ -53,12 +53,12 @@ class Socket {
                 return;
             }
             this.buffer.delete(parseInt(message.payload));
-        }
+        };
     }
 
     send(message) {
         this.messageCounter++;
-        message = `${this.messageCounter}:${message}`
+        message = `${this.messageCounter}:${message}`;
 
         if (this.buffer.size >= 50) {
             console.warn(`Websocket buffer has reached it's limit, so message will not be sent to server. Message: \n`, message);
@@ -67,7 +67,7 @@ class Socket {
         }
 
         this.buffer.set(this.messageCounter, message);
-        
+
         if (this.socket.readyState === 1) {
             this.socket.send(message);
         }

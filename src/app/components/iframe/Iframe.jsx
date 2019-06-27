@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     path: PropTypes.string,
@@ -37,9 +37,7 @@ export default class Iframe extends Component {
     }
 
     render() {
-        return (
-            <iframe id="iframe" className="preview__iframe" src={this.props.path}></iframe>
-        )
+        return <iframe id="iframe" className="preview__iframe" src={this.props.path}></iframe>;
     }
 }
 
