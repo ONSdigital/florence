@@ -42,6 +42,7 @@ export class DatasetMetadataController extends Component {
             versionIsPublished: false,
             datasetState: "",
             datasetCollectionState: "",
+            versionCollectionState: "",
             lastEditedBy: "", 
             instanceID: "",
             dimensionsUpdated: false,
@@ -326,34 +327,61 @@ export class DatasetMetadataController extends Component {
         this.setState({isGettingCollectionData: true});
         collections.get(this.props.params.collectionID).then(collection => {
             if (collection.datasets.length) {
-                const datasetCollectionState = this.mapDatasetCollectionStateToState(collection.datasets)
+                const datasetCollectionState = collection.datasets.length ? this.mapDatasetCollectionStateToState(collection.datasets) : null;
+                const versionCollectionState = collection.datasetVersions.length ? this.mapVersionCollectionStateToState(collection.datasetVersions) : null;
                 this.setState({isGettingCollectionData: false, 
-                    lastEditedBy: datasetCollectionState.lastEditedBy, 
-                    datasetCollectionState: datasetCollectionState.reviewState
+                    lastEditedBy: versionCollectionState.lastEditedBy, 
+                    datasetCollectionState: datasetCollectionState.reviewState,
+                    versionCollectionState: versionCollectionState.reviewState
                 });
             }
             this.setState({isGettingCollectionData: false});
         })
     }
 
-    mapDatasetCollectionStateToState = (datasets) => {
+    mapDatasetCollectionStateToState = datasets => {
         try {
             const dataset = datasets.find(dataset => {
-                return (
-                    dataset.id === this.props.params.datasetID
-                )
+                return dataset.id === this.props.params.datasetID;
             });
+
+            if (!dataset) {
+                return {lastEditedBy: null, reviewState: null};
+            }
 
             //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress"
             return {lastEditedBy: dataset.lastEditedBy, reviewState: dataset.state.charAt(0).toLowerCase() + dataset.state.slice(1)}
         } catch (error) {
-            log.event("Error mapping version collection state to component state", log.error(error))
+            log.event("Error mapping dataset collection state to component state", log.error(error));
+            notifications.add({
+                type: "warning",
+                message: `An unexpected error occurred when trying to get information about this datasets collection state'. Try refreshing the page`,
+                isDismissable: true
+            });
+            console.error(`Error mapping dataset collection state to to state. \n ${error}`);
+        }
+    }
+
+    mapVersionCollectionStateToState = versions => {
+        try {
+            const version = versions.find(version => {
+                return version.version === this.props.params.versionID && version.edition === this.props.params.editionID;
+            });
+            
+            if (!version) {
+                return {lastEditedBy: null, reviewState: null};
+            }
+
+            //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress"
+            return {lastEditedBy: version.lastEditedBy, reviewState: version.state.charAt(0).toLowerCase() + version.state.slice(1)}
+        } catch (error) {
+            log.event("Error mapping version collection state to component state", log.error(error));
             notifications.add({
                 type: "warning",
                 message: `An unexpected error occurred when trying to get information about this versions collection state'. Try refreshing the page`,
                 isDismissable: true
             });
-            console.error(`Error mapping version collection state to to state. \n ${error}`)
+            console.error(`Error mapping version collection state to to state. \n ${error}`);
         }
     }
 
@@ -424,7 +452,9 @@ export class DatasetMetadataController extends Component {
     handleSimpleEditableListDelete = (deletedField, stateFieldName) => {
         const newFieldState = this.state.metadata[stateFieldName].filter(item => item.id !== deletedField.id)
         const newMetadataState = {...this.state.metadata, [stateFieldName]: newFieldState};
-        this.setState({metadata: newMetadataState});
+        this.setState({metadata: newMetadataState,
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(stateFieldName),
+            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName)});
     }
 
     handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
@@ -558,7 +588,6 @@ export class DatasetMetadataController extends Component {
         const datasetBody = this.mapDatasetToPutBody();
         const versionBody = this.mapVersionToPutBody();  
         
-        
         let saveDatasetError = false;
         if (datasetMetadataHasChanges) {
             saveDatasetError = await this.saveDatasetChanges(datasetID, datasetBody)
@@ -588,26 +617,28 @@ export class DatasetMetadataController extends Component {
             }
         }
 
-        let datasetToCollectionError = false;
         if (addDatasetToCollection) {
+            let datasetToCollectionError = false;
             datasetToCollectionError = await this.addDatasetToCollection(collectionID, datasetID);
-            this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"})
-        }
-        if (datasetToCollectionError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
-            return;
+            if (datasetToCollectionError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem adding this dataset to your collection`)
+                return;
+            } else {
+                this.setState({datasetIsInCollection: collectionID, datasetCollectionState: "inProgress"});
+            }
         }
 
-        let versionToCollectionError = false;
         if (addVersionToCollection) {
+            let versionToCollectionError = false;
             versionToCollectionError = await this.addVersionToCollection(collectionID, datasetID, editionID, versionID);
-            this.setState({versionIsInCollection: collectionID})
-        }
-        if (versionToCollectionError) {
-            this.setState({isSaving: false});
-            this.handleOnSaveError(`There was a problem adding this version to your collection`)
-            return
+            if (versionToCollectionError) {
+                this.setState({isSaving: false});
+                this.handleOnSaveError(`There was a problem adding this version to your collection`)
+                return
+            } else {
+                this.setState({versionIsInCollection: collectionID})
+            }
         }
 
         if (isSubmittingForReview) {
@@ -701,7 +732,7 @@ export class DatasetMetadataController extends Component {
     addDatasetToCollection = (collectionID, datasetID) => {
         return collections.addDataset(collectionID, datasetID)
             .catch(error => {
-                log.event("Error adding dataset to collection", log.data({collectionID: collectionID, datasetID: datasetID}, log.erro(error)))
+                log.event("Error adding dataset to collection", log.data({collectionID: collectionID, datasetID: datasetID}, log.error(error)))
                 console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
                 return error;
             });
@@ -808,7 +839,7 @@ export class DatasetMetadataController extends Component {
                     versionIsPublished={this.state.versionIsPublished}
                     lastEditedBy={this.state.lastEditedBy}
                     disableForm={this.state.disableScreen || this.state.isSaving || this.state.isGettingDatasetMetadata || this.state.isGettingVersionMetadata || this.state.isGettingCollectionData}
-                    datasetCollectionState={this.state.datasetCollectionState}
+                    collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState : this.state.versionCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                 />
@@ -822,5 +853,4 @@ export class DatasetMetadataController extends Component {
 DatasetMetadataController.propTypes = propTypes;
 
 export default DatasetMetadataController;
-
 
