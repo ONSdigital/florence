@@ -90,7 +90,8 @@ class DatasetUploadMetadata extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
+                            message:
+                                "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -171,7 +172,8 @@ class DatasetUploadMetadata extends Component {
                     case 400: {
                         const notification = {
                             type: "warning",
-                            message: "There was a problem with the data you tried to submit. Please check the information, fix any errors and try again.",
+                            message:
+                                "There was a problem with the data you tried to submit. Please check the information, fix any errors and try again.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -207,7 +209,8 @@ class DatasetUploadMetadata extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to submit to the publishing team. Please check you internet connection and try again.",
+                            message:
+                                "There's been a network error whilst trying to submit to the publishing team. Please check you internet connection and try again.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -251,7 +254,13 @@ class DatasetUploadMetadata extends Component {
                         <form onSubmit={this.handleFormSubmit}>
                             <p className="margin-bottom--1">Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}</p>
                             <div className="grid__col-6">
-                                <Select id="editions" label="Edition" contents={this.mapEditionsToSelect()} onChange={this.handleEditionChange} error={this.state.editionError} />
+                                <Select
+                                    id="editions"
+                                    label="Edition"
+                                    contents={this.mapEditionsToSelect()}
+                                    onChange={this.handleEditionChange}
+                                    error={this.state.editionError}
+                                />
                             </div>
                             <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
                                 Submit to publishing

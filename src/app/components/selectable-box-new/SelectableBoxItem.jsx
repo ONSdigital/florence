@@ -53,8 +53,11 @@ export default class SelectableBoxItem extends Component {
         return (
             <li
                 id={this.props.id}
-                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${status.neutral ? " neutral" : ""} ${status.warning ? " warning" : ""}`}
-                onClick={this.bindClick}>
+                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${status.neutral ? " neutral" : ""} ${
+                    status.warning ? " warning" : ""
+                }`}
+                onClick={this.bindClick}
+            >
                 <div className="grid">{this.renderColumns()}</div>
             </li>
         );

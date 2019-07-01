@@ -89,7 +89,11 @@ class TeamDetails extends Component {
                         <div className="grid__col-8 margin-top--1 margin-bottom--1">
                             <div>
                                 {this.props.userIsAdmin && (
-                                    <button className="btn btn--warning btn--margin-right" disabled={this.props.isReadOnly} onClick={this.props.onDelete}>
+                                    <button
+                                        className="btn btn--warning btn--margin-right"
+                                        disabled={this.props.isReadOnly}
+                                        onClick={this.props.onDelete}
+                                    >
                                         Delete team
                                     </button>
                                 )}

@@ -152,7 +152,11 @@ class CollectionCreate extends Component {
                         onChange={this.props.handleTeamSelection}
                     />
 
-                    {this.props.newCollectionDetails.teams ? <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam} /> : ""}
+                    {this.props.newCollectionDetails.teams ? (
+                        <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam} />
+                    ) : (
+                        ""
+                    )}
 
                     <RadioGroup
                         groupName="release-type"

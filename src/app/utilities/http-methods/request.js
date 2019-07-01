@@ -131,7 +131,11 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 }
 
                 if (!responseIsJSON && method !== "POST" && method !== "PUT") {
-                    log.event(`Received request response for method that didn't have the 'application/json' header`, log.warn(), log.data({ method: method }));
+                    log.event(
+                        `Received request response for method that didn't have the 'application/json' header`,
+                        log.warn(),
+                        log.data({ method: method })
+                    );
                 }
 
                 // We've detected a text response so we should try to parse as text, not JSON

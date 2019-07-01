@@ -11,7 +11,13 @@ import notifications from "../../../utilities/notifications";
  * @returns {boolean} - Whether there were errors or not;
  */
 
-export default function handleMetadataSaveErrors(metadataUpdateFailure = {}, collectionUpdateFailure = {}, isSubmittingForReview, isMarkingAsReviewed, collectionID) {
+export default function handleMetadataSaveErrors(
+    metadataUpdateFailure = {},
+    collectionUpdateFailure = {},
+    isSubmittingForReview,
+    isMarkingAsReviewed,
+    collectionID
+) {
     if (collectionUpdateFailure.status === 401 || metadataUpdateFailure.status === 401) {
         // Handled by utility request function
         return true;

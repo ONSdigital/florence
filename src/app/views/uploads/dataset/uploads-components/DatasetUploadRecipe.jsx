@@ -29,7 +29,12 @@ class DatasetItem extends Component {
                 {this.props.dataset.alias}
                 <div>
                     {this.props.isLoading && <span className="loader loader--dark"></span>}
-                    <button className="btn btn--primary" data-recipe-id={this.props.dataset.id} onClick={this.props.onNewVersionClick} disabled={this.props.isLoading}>
+                    <button
+                        className="btn btn--primary"
+                        data-recipe-id={this.props.dataset.id}
+                        onClick={this.props.onNewVersionClick}
+                        disabled={this.props.isLoading}
+                    >
                         Upload new version
                     </button>
                 </div>

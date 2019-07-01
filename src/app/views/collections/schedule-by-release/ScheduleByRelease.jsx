@@ -224,8 +224,8 @@ export class ScheduleByRelease extends Component {
 
         return (
             <p className="margin-bottom--1">
-                Showing <span className="font-weight--600">{this.state.numberOfReleases}</span> release{this.state.numberOfReleases > 1 && "s"} matching the term '
-                <span className="font-weight--600">{this.state.searchQuery}</span>'
+                Showing <span className="font-weight--600">{this.state.numberOfReleases}</span> release{this.state.numberOfReleases > 1 && "s"}{" "}
+                matching the term '<span className="font-weight--600">{this.state.searchQuery}</span>'
             </p>
         );
     }
@@ -289,7 +289,12 @@ export class ScheduleByRelease extends Component {
                         <h1 className="modal__title margin-top--2">Select a calendar entry</h1>
                     </div>
                     <div className="grid__col-4">
-                        <Input id="search-releases" disabled={this.state.isFetchingReleases} onChange={this.handleSearch} label="Search by release name" />
+                        <Input
+                            id="search-releases"
+                            disabled={this.state.isFetchingReleases}
+                            onChange={this.handleSearch}
+                            label="Search by release name"
+                        />
                     </div>
                 </div>
                 <div className="modal__body grid__col-12">
@@ -306,7 +311,12 @@ export class ScheduleByRelease extends Component {
                         <div className="grid grid--justify-space-between margin-top--1">
                             <div>
                                 {this.state.numberOfPages !== this.state.currentPage && (
-                                    <button className="btn btn--primary" type="button" onClick={this.loadMoreReleases} disabled={this.state.isFetchingExtraReleases}>
+                                    <button
+                                        className="btn btn--primary"
+                                        type="button"
+                                        onClick={this.loadMoreReleases}
+                                        disabled={this.state.isFetchingExtraReleases}
+                                    >
                                         Show more releases
                                     </button>
                                 )}
@@ -330,7 +340,12 @@ export class ScheduleByRelease extends Component {
                 </div>
                 <div className="modal__footer grid__col-12">
                     <div>
-                        <button className="btn btn--positive margin-right--1" type="button" disabled={this.shouldSubmitBeDisabled()} onClick={this.handleSubmit}>
+                        <button
+                            className="btn btn--positive margin-right--1"
+                            type="button"
+                            disabled={this.shouldSubmitBeDisabled()}
+                            onClick={this.handleSubmit}
+                        >
                             Submit
                         </button>
                         <button className="btn" type="button" onClick={this.props.onClose}>

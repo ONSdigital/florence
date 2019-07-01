@@ -55,7 +55,12 @@ class AlertView extends Component {
                             label="Description"
                             onChange={this.props.description.onChange}
                         />
-                        <Checkbox id="alert-is-correction" onChange={this.props.isCorrection.onChange} isChecked={this.props.isCorrection.value} label="Correction" />
+                        <Checkbox
+                            id="alert-is-correction"
+                            onChange={this.props.isCorrection.onChange}
+                            isChecked={this.props.isCorrection.value}
+                            label="Correction"
+                        />
                     </div>
                     <div className="modal__footer">
                         <button className="btn btn--primary" type="submit">

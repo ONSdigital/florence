@@ -116,7 +116,10 @@ export class CollectionDetailsController extends Component {
             this.setState({ isRestoringContent: true });
         }
 
-        if (this.props.routes[this.props.routes.length - 1].path === "restore-content" && nextProps.routes[nextProps.routes.length - 1].path !== "restore-content") {
+        if (
+            this.props.routes[this.props.routes.length - 1].path === "restore-content" &&
+            nextProps.routes[nextProps.routes.length - 1].path !== "restore-content"
+        ) {
             this.setState({ isRestoringContent: false });
         }
 
@@ -377,7 +380,9 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`);
+            const newURL = url.resolve(
+                `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`
+            );
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
@@ -439,7 +444,11 @@ export class CollectionDetailsController extends Component {
             })
         );
         const collectionID = this.props.collectionID;
-        const collectionContent = [...this.props.activeCollection.inProgress, ...this.props.activeCollection.reviewed, ...this.props.activeCollection.complete];
+        const collectionContent = [
+            ...this.props.activeCollection.inProgress,
+            ...this.props.activeCollection.reviewed,
+            ...this.props.activeCollection.complete
+        ];
         const pendingDeletes = [...this.state.pendingDeletedPages, deletedPage.uri];
         let pendingVersionDeleteURL;
         if (deletedPage.type === "dataset_details") {
@@ -621,7 +630,10 @@ export class CollectionDetailsController extends Component {
                 {...this.props.activeCollection}
                 enableDatasetImport={this.props.enableDatasetImport}
                 activePageURI={this.props.activePageURI}
-                inProgress={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection["inProgress"], this.state.pendingDeletedPages)}
+                inProgress={collectionMapper.pagesExcludingPendingDeletedPages(
+                    this.props.activeCollection["inProgress"],
+                    this.state.pendingDeletedPages
+                )}
                 complete={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection["complete"], this.state.pendingDeletedPages)}
                 reviewed={collectionMapper.pagesExcludingPendingDeletedPages(this.props.activeCollection["reviewed"], this.state.pendingDeletedPages)}
                 onClose={this.handleDrawerCloseClick}
@@ -646,7 +658,11 @@ export class CollectionDetailsController extends Component {
     render() {
         return (
             <div>
-                <Drawer isVisible={this.state.drawerIsVisible} isAnimatable={this.state.drawerIsAnimatable} handleTransitionEnd={this.handleDrawerTransitionEnd}>
+                <Drawer
+                    isVisible={this.state.drawerIsVisible}
+                    isAnimatable={this.state.drawerIsAnimatable}
+                    handleTransitionEnd={this.handleDrawerTransitionEnd}
+                >
                     {this.props.collectionID && !this.props.activeCollection && this.renderLoadingCollectionDetails()}
                     {this.props.activeCollection && !this.state.isEditingCollection && this.renderCollectionDetails()}
                     {this.props.activeCollection && this.state.isEditingCollection && this.renderEditCollection()}

@@ -9,7 +9,13 @@ import url from "../../../utilities/url";
 import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
-import { updateAllTeams, updateActiveCollection, addAllCollections, updatePagesInActiveCollection, updateTeamsInActiveCollection } from "../../../config/actions";
+import {
+    updateAllTeams,
+    updateActiveCollection,
+    addAllCollections,
+    updatePagesInActiveCollection,
+    updateTeamsInActiveCollection
+} from "../../../config/actions";
 import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
@@ -442,7 +448,8 @@ export class CollectionEditController extends Component {
         }
 
         if (this.publishDateHasChanged(state)) {
-            body.publishDate = state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value).toISOString() : "";
+            body.publishDate =
+                state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value).toISOString() : "";
         }
 
         return body;

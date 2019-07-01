@@ -292,7 +292,8 @@ export class DatasetMetadataController extends Component {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: "Unable to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
+                            message:
+                                "Unable to get last published version. Dimension data will not have auto populated. You can try refreshing the page.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -338,7 +339,9 @@ export class DatasetMetadataController extends Component {
         collections.get(this.props.params.collectionID).then(collection => {
             if (collection.datasets.length) {
                 const datasetCollectionState = collection.datasets.length ? this.mapDatasetCollectionStateToState(collection.datasets) : null;
-                const versionCollectionState = collection.datasetVersions.length ? this.mapVersionCollectionStateToState(collection.datasetVersions) : null;
+                const versionCollectionState = collection.datasetVersions.length
+                    ? this.mapVersionCollectionStateToState(collection.datasetVersions)
+                    : null;
                 this.setState({
                     isGettingCollectionData: false,
                     lastEditedBy: versionCollectionState.lastEditedBy,
@@ -628,7 +631,9 @@ export class DatasetMetadataController extends Component {
         const versionIsPublished = this.state.versionIsPublished;
         const datasetState = this.state.datasetState;
         const addDatasetToCollection =
-            (!isSubmittingForReview || !isMarkingAsReviewed) && (!datasetIsInCollection || datasetState !== "associated") && datasetIsInCollection !== collectionID;
+            (!isSubmittingForReview || !isMarkingAsReviewed) &&
+            (!datasetIsInCollection || datasetState !== "associated") &&
+            datasetIsInCollection !== collectionID;
         const addVersionToCollection = (!isSubmittingForReview || !isMarkingAsReviewed) && !versionIsInCollection;
         const datasetMetadataHasChanges = this.state.datasetMetadataHasChanges;
         const versionMetadataHasChanges = this.state.versionMetadataHasChanges;
@@ -799,7 +804,10 @@ export class DatasetMetadataController extends Component {
                 }),
                 log.error(error)
             );
-            console.error(`Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`, error);
+            console.error(
+                `Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`,
+                error
+            );
             return error;
         });
     };
@@ -821,7 +829,10 @@ export class DatasetMetadataController extends Component {
                 }),
                 log.error(error)
             );
-            console.error(`Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`, error);
+            console.error(
+                `Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`,
+                error
+            );
             return error;
         });
     };

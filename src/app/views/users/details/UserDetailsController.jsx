@@ -297,7 +297,8 @@ export class UserDetailsController extends Component {
                     onExited={this.handleTransitionExited}
                     addEndListener={(node, done) => {
                         node.addEventListener("transitionend", done, false);
-                    }}>
+                    }}
+                >
                     <Drawer isVisible={this.state.isVisible} isAnimatable={this.state.isAnimatable}>
                         <UserDetails
                             key={this.props.params.userID}

@@ -103,7 +103,10 @@ class Index extends Component {
                                                 <Route path={`instances`} component={userIsAuthenticated(CreateVersionController)} />
                                                 <IndexRoute component={userIsAuthenticated(DatasetVersionsController)} />
                                                 <Route path={`versions/:versionID`} component={userIsAuthenticated(DatasetMetadataController)}>
-                                                    <Route path={`edit/:metadataField/:metadataItemID`} component={userIsAuthenticated(EditMetadataItem)} />
+                                                    <Route
+                                                        path={`edit/:metadataField/:metadataItemID`}
+                                                        component={userIsAuthenticated(EditMetadataItem)}
+                                                    />
                                                 </Route>
                                                 <Route path="versions/:versionID/preview" component={userIsAuthenticated(DatasetPreviewController)} />
                                             </Route>
@@ -120,7 +123,10 @@ class Index extends Component {
                             </Route>
                             <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersController))}>
                                 <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
-                                    <Route path="change-password" component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))} />
+                                    <Route
+                                        path="change-password"
+                                        component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))}
+                                    />
                                     <Route path="confirm-delete" component={userIsAuthenticated(userIsAdminOrEditor(ConfirmUserDeleteController))} />
                                 </Route>
                             </Route>
@@ -145,11 +151,17 @@ class Index extends Component {
                                             <Route path="editions/:edition/versions/:version">
                                                 <IndexRedirect to="metadata" />
                                                 <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(VersionMetadata))} />
-                                                <Route path="preview" component={userIsAuthenticated(userIsAdminOrEditor(VersionPreviewController))} />
+                                                <Route
+                                                    path="preview"
+                                                    component={userIsAuthenticated(userIsAdminOrEditor(VersionPreviewController))}
+                                                />
                                             </Route>
                                             <Route path="instances">
                                                 <IndexRedirect to={`${rootPath}/datasets`} />
-                                                <Route path=":instanceID/metadata" component={userIsAuthenticated(userIsAdminOrEditor(VersionMetadata))} />
+                                                <Route
+                                                    path=":instanceID/metadata"
+                                                    component={userIsAuthenticated(userIsAdminOrEditor(VersionMetadata))}
+                                                />
                                             </Route>
                                         </Route>
                                     </Route>

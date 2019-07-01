@@ -75,7 +75,8 @@ export class DatasetUploadsController extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
+                            message:
+                                "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         };
                         notifications.add(notification);

@@ -156,7 +156,8 @@ export class ChangeUserPasswordController extends Component {
                         break;
                     }
                     case "FETCH_ERR": {
-                        notification.message = "Unable to changes user's password due to a network error. Please check your connection and try again.";
+                        notification.message =
+                            "Unable to changes user's password due to a network error. Please check your connection and try again.";
                         break;
                     }
                     case "UNEXPECTED_ERR": {

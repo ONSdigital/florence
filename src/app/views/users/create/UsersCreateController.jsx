@@ -498,7 +498,14 @@ class UsersCreateController extends Component {
                         value={this.state.newUser.username.value}
                         error={this.state.newUser.username.error}
                     />
-                    <Input id="email" label="Email" type="email" onChange={this.handleInputChange} value={this.state.newUser.email.value} error={this.state.newUser.email.error} />
+                    <Input
+                        id="email"
+                        label="Email"
+                        type="email"
+                        onChange={this.handleInputChange}
+                        value={this.state.newUser.email.value}
+                        error={this.state.newUser.email.error}
+                    />
                     <Input
                         id="password"
                         label="Password"

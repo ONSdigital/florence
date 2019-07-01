@@ -26,7 +26,14 @@ export default class SelectableBoxController extends Component {
         return (
             <ul className="selectable-box__list">
                 {this.props.items.map((item, index) => {
-                    return <SelectableBoxItem key={index} {...item} isSelected={this.props.activeItem && item.id === this.props.activeItem.id} handleClick={this.bindItemClick} />;
+                    return (
+                        <SelectableBoxItem
+                            key={index}
+                            {...item}
+                            isSelected={this.props.activeItem && item.id === this.props.activeItem.id}
+                            handleClick={this.bindItemClick}
+                        />
+                    );
                 })}
             </ul>
         );
@@ -39,7 +46,11 @@ export default class SelectableBoxController extends Component {
                     {this.props.heading}
                     {this.props.isUpdating && <span className="selectable-box__status loader" />}
                 </h2>
-                {this.props.items.length > 0 ? this.renderList() : <p className="margin-top--1 margin-right--1 margin-bottom--1 margin-left--1">No items to display</p>}
+                {this.props.items.length > 0 ? (
+                    this.renderList()
+                ) : (
+                    <p className="margin-top--1 margin-right--1 margin-bottom--1 margin-left--1">No items to display</p>
+                )}
             </div>
         );
     }

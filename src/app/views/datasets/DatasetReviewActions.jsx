@@ -19,7 +19,13 @@ class DatasetReviewActions extends Component {
 
     renderSubmit() {
         return (
-            <button id="submit-for-review" type="button" onClick={this.props.onSubmit} disabled={this.props.areDisabled} className="btn btn--positive">
+            <button
+                id="submit-for-review"
+                type="button"
+                onClick={this.props.onSubmit}
+                disabled={this.props.areDisabled}
+                className="btn btn--positive"
+            >
                 {this.props.includeSaveLabels ? "Save and submit for review" : "Submit for review"}
             </button>
         );
@@ -27,7 +33,13 @@ class DatasetReviewActions extends Component {
 
     renderApprove() {
         return (
-            <button id="mark-as-reviewed" type="button" onClick={this.props.onApprove} disabled={this.props.areDisabled} className="btn btn--positive">
+            <button
+                id="mark-as-reviewed"
+                type="button"
+                onClick={this.props.onApprove}
+                disabled={this.props.areDisabled}
+                className="btn btn--positive"
+            >
                 {this.props.includeSaveLabels ? "Save and submit for approval" : "Submit for approval"}
             </button>
         );

@@ -108,7 +108,8 @@ export class DatasetVersionsController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
@@ -142,7 +143,8 @@ export class DatasetVersionsController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
@@ -200,7 +202,8 @@ export class DatasetVersionsController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);

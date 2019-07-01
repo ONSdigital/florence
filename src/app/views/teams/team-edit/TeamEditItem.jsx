@@ -31,7 +31,8 @@ class TeamEditItem extends Component {
                     className={`btn ${this.props.action === "add" ? "btn--positive" : ""}`}
                     disabled={this.props.isDisabled}
                     data-email={this.props.email}
-                    data-action={this.props.action}>
+                    data-action={this.props.action}
+                >
                     {this.props.action === "add" ? "Add" : "Remove"}
                 </button>
             </li>
