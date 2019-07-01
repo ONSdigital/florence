@@ -47,7 +47,15 @@ export default class Preview extends Component {
     }
 
     render() {
-        return <iframe style={{ display: this.returnHiddenValue() }} id="iframe" className="preview__iframe" src={this.props.path} onLoad={this.props.onLoad}></iframe>;
+        return (
+            <iframe
+                style={{ display: this.returnHiddenValue() }}
+                id="iframe"
+                className="preview__iframe"
+                src={this.props.path}
+                onLoad={this.props.onLoad}
+            ></iframe>
+        );
     }
 }
 

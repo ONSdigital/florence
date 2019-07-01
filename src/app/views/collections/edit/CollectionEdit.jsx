@@ -134,7 +134,13 @@ class CollectionEdit extends Component {
                 <div className="drawer__body">
                     <div className="grid grid--justify-space-around">
                         <form className="form grid__col-8 margin-top--1" onSubmit={this.handleSave}>
-                            <Input id="collection-edit-name" label="Name" value={this.props.name} error={this.props.nameErrorMsg} onChange={this.handleNameChange} />
+                            <Input
+                                id="collection-edit-name"
+                                label="Name"
+                                value={this.props.name}
+                                error={this.props.nameErrorMsg}
+                                onChange={this.handleNameChange}
+                            />
                             <Select
                                 id="collection-edit-teams"
                                 label="Select a team(s) that can view this collection"
@@ -187,7 +193,12 @@ class CollectionEdit extends Component {
                                 <button disabled={this.props.isSavingEdits} className="btn btn--positive" type="button" onClick={this.handleSave}>
                                     Save and return
                                 </button>
-                                <button disabled={this.props.isSavingEdits} className="btn btn--margin-left" type="button" onClick={this.props.onCancel}>
+                                <button
+                                    disabled={this.props.isSavingEdits}
+                                    className="btn btn--margin-left"
+                                    type="button"
+                                    onClick={this.props.onCancel}
+                                >
                                     Cancel
                                 </button>
                                 {this.props.isSavingEdits && (

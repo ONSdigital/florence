@@ -51,7 +51,8 @@ class Select extends Component {
                         (this.state.isFocused ? "select-wrap--focus" : "") +
                         (this.props.error ? "select-wrap--error" : "") +
                         (this.props.disabled ? "select-wrap--disabled" : "")
-                    }>
+                    }
+                >
                     <select
                         className="select"
                         id={this.props.id}
@@ -60,7 +61,8 @@ class Select extends Component {
                         onChange={this.props.onChange}
                         onFocus={this.handleFocus}
                         onBlur={this.handleFocus}
-                        value={this.props.selectedOption}>
+                        value={this.props.selectedOption}
+                    >
                         <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
                             return (

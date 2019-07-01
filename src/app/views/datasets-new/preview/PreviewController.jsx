@@ -95,7 +95,8 @@ export class PreviewController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
@@ -132,12 +133,17 @@ export class PreviewController extends Component {
                     </div>
                 </div>
                 <div className="preview--half preview--borders">
-                    <Iframe path={`/datasets/${this.props.params.datasetID}/editions/${this.props.params.editionID}/versions/${this.props.params.versionID}`} />
+                    <Iframe
+                        path={`/datasets/${this.props.params.datasetID}/editions/${this.props.params.editionID}/versions/${this.props.params.versionID}`}
+                    />
                 </div>
                 <div className="grid grid--justify-center">
                     <div className="grid__col-6">
                         <div className="margin-top--1 margin-bottom--1">
-                            <Link className="btn btn--positive margin-right--1" to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}>
+                            <Link
+                                className="btn btn--positive margin-right--1"
+                                to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}
+                            >
                                 Continue
                             </Link>
                         </div>

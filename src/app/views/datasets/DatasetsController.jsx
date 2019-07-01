@@ -112,7 +112,8 @@ class DatasetsController extends Component {
             .catch(error => {
                 const notification = {
                     type: "warning",
-                    message: "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
+                    message:
+                        "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
                     isDismissable: true
                 };
                 notifications.add(notification);
@@ -147,7 +148,14 @@ class DatasetsController extends Component {
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: this.handleInstanceURL(instance.state, activeCollectionID, datasetID, instance.id, instance.edition, instance.version),
+                            url: this.handleInstanceURL(
+                                instance.state,
+                                activeCollectionID,
+                                datasetID,
+                                instance.id,
+                                instance.edition,
+                                instance.version
+                            ),
                             status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections)
                         });
                     }

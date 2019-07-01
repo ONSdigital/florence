@@ -260,7 +260,11 @@ export class RestoreContent extends Component {
                     <SelectableBox
                         isUpdating={this.state.isGettingDeletedContent}
                         rows={this.state.filteredDeletedContent.length ? this.state.filteredDeletedContent : this.state.allDeletedContent}
-                        columns={[{ heading: "Deleted page and URI", width: "6" }, { heading: "No. of deleted pages", width: "3" }, { heading: "Date of delete", width: "3" }]}
+                        columns={[
+                            { heading: "Deleted page and URI", width: "6" },
+                            { heading: "No. of deleted pages", width: "3" },
+                            { heading: "Date of delete", width: "3" }
+                        ]}
                         handleItemClick={this.handleItemClick}
                         activeRowID={this.state.activeItem.id}
                     />
@@ -271,7 +275,11 @@ export class RestoreContent extends Component {
                             Close
                         </button>
 
-                        <button className="btn btn--primary" onClick={this.handleDoneClick} disabled={!this.state.activeItem.id || this.state.isRestoringDeletingContent}>
+                        <button
+                            className="btn btn--primary"
+                            onClick={this.handleDoneClick}
+                            disabled={!this.state.activeItem.id || this.state.isRestoringDeletingContent}
+                        >
                             Done
                         </button>
 

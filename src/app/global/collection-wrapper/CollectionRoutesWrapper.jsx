@@ -71,7 +71,8 @@ export class CollectionRoutesWrapper extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There was a network error whilst getting details about this collection, please check your connection and refresh the page",
+                            message:
+                                "There was a network error whilst getting details about this collection, please check your connection and refresh the page",
                             autoDismiss: 5000
                         };
                         notifications.add(notification);

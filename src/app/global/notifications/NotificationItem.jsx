@@ -27,9 +27,10 @@ class NotificationItem extends Component {
     render() {
         return (
             <li
-                className={`notifications__item ${this.props.isVisible ? "visible" : ""} ${this.props.type === "warning" ? "notifications__item--warning" : ""} ${
-                    this.props.type === "positive" ? "notifications__item--positive" : ""
-                }`}>
+                className={`notifications__item ${this.props.isVisible ? "visible" : ""} ${
+                    this.props.type === "warning" ? "notifications__item--warning" : ""
+                } ${this.props.type === "positive" ? "notifications__item--positive" : ""}`}
+            >
                 {this.props.message}
                 {this.props.buttons.map((button, index) => {
                     return (

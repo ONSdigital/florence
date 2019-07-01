@@ -72,8 +72,20 @@ export default class EditMetadatItem extends Component {
                             contents={[{ id: "alert", name: "Alert" }, { id: "correction", name: "Correction" }]}
                             onChange={this.handleSelectChange}
                         />
-                        <Input id="date" type="date" label="Date" value={this.state.date && date.format(this.state.date, "yyyy-mm-dd")} onChange={this.handleDateInputChange} />
-                        <Input id="description" type="textarea" label="Description" value={this.state.description} onChange={this.handleInputChange} />
+                        <Input
+                            id="date"
+                            type="date"
+                            label="Date"
+                            value={this.state.date && date.format(this.state.date, "yyyy-mm-dd")}
+                            onChange={this.handleDateInputChange}
+                        />
+                        <Input
+                            id="description"
+                            type="textarea"
+                            label="Description"
+                            value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
                     </div>
                 );
             }
@@ -84,7 +96,13 @@ export default class EditMetadatItem extends Component {
                     <div>
                         <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
                         <Input id="href" type="input" label="URL" value={this.state.href} onChange={this.handleInputChange} />
-                        <Input id="description" type="textarea" label="Description" value={this.state.description} onChange={this.handleInputChange} />
+                        <Input
+                            id="description"
+                            type="textarea"
+                            label="Description"
+                            value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
                     </div>
                 );
             }
@@ -93,7 +111,13 @@ export default class EditMetadatItem extends Component {
                 return (
                     <div>
                         <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
-                        <Input id="description" type="textarea" label="Description" value={this.state.description} onChange={this.handleInputChange} />
+                        <Input
+                            id="description"
+                            type="textarea"
+                            label="Description"
+                            value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
                     </div>
                 );
             }

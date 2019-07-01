@@ -58,7 +58,8 @@ export default class SimpleEditableList extends Component {
                     type="button"
                     className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")}
                     onClick={this.handleAddClick}
-                    disabled={this.props.disableActions}>
+                    disabled={this.props.disableActions}
+                >
                     {this.props.addText ? this.props.addText : "Add a new item"}
                 </button>
             </div>

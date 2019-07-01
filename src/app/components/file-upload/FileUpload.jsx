@@ -41,7 +41,8 @@ class FileUpload extends Component {
                                 className={"progress__bar" + (this.props.error ? " progress__bar--error" : "")}
                                 style={{
                                     width: (this.props.progress > 0 ? this.props.progress : 1) + "%"
-                                }}></div>
+                                }}
+                            ></div>
                         </div>
                         {this.props.error && (
                             <div>

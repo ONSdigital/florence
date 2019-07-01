@@ -122,7 +122,8 @@ export class CollectionCreateController extends Component {
                     case "UNEXPECTED_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
+                            message:
+                                "An unexpected error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -318,7 +319,8 @@ export class CollectionCreateController extends Component {
                     return team.name;
                 }),
                 collectionOwner: this.props.user.userType,
-                releaseUri: this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
+                releaseUri:
+                    this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
             };
         } catch (error) {
             log.event("Error mapping new collection state to POST body", log.error(error));

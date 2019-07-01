@@ -100,7 +100,8 @@ export default class Input extends Component {
                         onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline ? this.props.label : ""}
-                        value={this.props.value}></textarea>
+                        value={this.props.value}
+                    ></textarea>
                 )}
                 {this.state.displayShowHide ? (
                     <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">

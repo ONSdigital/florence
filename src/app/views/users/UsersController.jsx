@@ -80,7 +80,8 @@ export class UsersController extends Component {
                     case "UNEXPECTED_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                            message:
+                                "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -89,7 +90,8 @@ export class UsersController extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
+                            message:
+                                "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -99,7 +101,8 @@ export class UsersController extends Component {
                         log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                            message:
+                                "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
                             isDismissable: true
                         };
                         notifications.add(notification);

@@ -168,9 +168,21 @@ class DatasetMetadata extends Component {
                 })}
 
                 <h2>Meta</h2>
-                <Input id="keywords" label="Keywords" value={this.props.metadata.keywords} onChange={this.props.handleStringInputChange} disabled={this.props.disableForm} />
+                <Input
+                    id="keywords"
+                    label="Keywords"
+                    value={this.props.metadata.keywords}
+                    onChange={this.props.handleStringInputChange}
+                    disabled={this.props.disableForm}
+                />
 
-                <Input id="licence" label="Licence" onChange={this.props.handleStringInputChange} value={this.props.metadata.licence} disabled={this.props.disableForm} />
+                <Input
+                    id="licence"
+                    label="Licence"
+                    onChange={this.props.handleStringInputChange}
+                    value={this.props.metadata.licence}
+                    disabled={this.props.disableForm}
+                />
 
                 <h3>Usage notes</h3>
                 <div className="margin-bottom--1">
@@ -258,7 +270,13 @@ class DatasetMetadata extends Component {
                 />
 
                 <h3 className="margin-top--1">Quality and methodology information</h3>
-                <Input id="qmi" label="QMI URL" onChange={this.props.handleStringInputChange} value={this.props.metadata.qmi} disabled={this.props.disableForm} />
+                <Input
+                    id="qmi"
+                    label="QMI URL"
+                    onChange={this.props.handleStringInputChange}
+                    value={this.props.metadata.qmi}
+                    disabled={this.props.disableForm}
+                />
 
                 <h3>Methodologies</h3>
                 <SimpleEditableList
@@ -283,7 +301,12 @@ class DatasetMetadata extends Component {
                 />
 
                 <div className="margin-top--2">
-                    <button type="button" className="btn btn--primary margin-right--1" onClick={this.props.handleSave} disabled={this.props.disableForm}>
+                    <button
+                        type="button"
+                        className="btn btn--primary margin-right--1"
+                        onClick={this.props.handleSave}
+                        disabled={this.props.disableForm}
+                    >
                         Save
                     </button>
                     <DatasetReviewActions

@@ -87,7 +87,8 @@ class DatasetUploadController extends Component {
                         case "FETCH_ERR": {
                             const notification = {
                                 type: "warning",
-                                message: "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
+                                message:
+                                    "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
                                 isDismissable: true
                             };
                             notifications.add(notification);
@@ -310,7 +311,8 @@ class DatasetUploadController extends Component {
                     case 400: {
                         const notification = {
                             type: "warning",
-                            message: "There was an error when trying to add this file to your job. Please fix any errors and attempt to re-upload it.",
+                            message:
+                                "There was an error when trying to add this file to your job. Please fix any errors and attempt to re-upload it.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -355,7 +357,8 @@ class DatasetUploadController extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
+                            message:
+                                "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -460,11 +463,12 @@ class DatasetUploadController extends Component {
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any
-                        questions.
+                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
+                        submitted or if you have any questions.
                     </li>
                     <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is complete.
+                        The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is
+                        complete.
                     </li>
                 </ul>
             </div>
@@ -478,14 +482,18 @@ class DatasetUploadController extends Component {
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been submitted or if you have any
-                        questions.
+                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
+                        submitted or if you have any questions.
                     </li>
-                    <li className="list__item">The publishing team can prepare the dataset landing page which includes the files and associated metadata.</li>
+                    <li className="list__item">
+                        The publishing team can prepare the dataset landing page which includes the files and associated metadata.
+                    </li>
                 </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions
-                    {this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0 && <span> ({this.state.activeDataset.dimensions.length})</span>}
+                    {this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0 && (
+                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    )}
                 </h2>
                 <div className="margin-bottom--2">
                     {this.state.activeDataset.dimensions ? (

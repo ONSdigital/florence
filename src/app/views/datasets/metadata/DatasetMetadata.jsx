@@ -425,7 +425,11 @@ export class DatasetMetadata extends Component {
                 }
             }
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)
+                message:
+                    "Unable to update metadata screen with version's review/edit status in collection " +
+                    collectionID +
+                    ". Error: " +
+                    JSON.stringify(error)
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }
@@ -692,9 +696,9 @@ export class DatasetMetadata extends Component {
                 }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
             });
             console.error(
-                `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${
-                    this.props.collectionID
-                }'`,
+                `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${
+                    isMarkingAsReviewed ? "Reviewed" : ""
+                }' in collection '${this.props.collectionID}'`,
                 error
             );
             return error;
@@ -791,7 +795,11 @@ export class DatasetMetadata extends Component {
         const addToCollectionRequest = isAddingToCollection ? this.addDatasetToCollection(this.props.params.datasetID) : Promise.resolve();
         let addToCollectionError;
 
-        [metadataUpdateError, reviewStateUpdatesError, addToCollectionError] = [await metadataUpdateRequest, await reviewStateUpdatesRequest, await addToCollectionRequest];
+        [metadataUpdateError, reviewStateUpdatesError, addToCollectionError] = [
+            await metadataUpdateRequest,
+            await reviewStateUpdatesRequest,
+            await addToCollectionRequest
+        ];
 
         const newState = { isSavingData: false };
         if (!metadataUpdateError) {
@@ -799,7 +807,13 @@ export class DatasetMetadata extends Component {
         }
         this.setState(newState);
 
-        handleMetadataSaveErrors(metadataUpdateError, reviewStateUpdatesError || addToCollectionError, isSubmittingForReview, isMarkingAsReviewed, this.props.collectionID);
+        handleMetadataSaveErrors(
+            metadataUpdateError,
+            reviewStateUpdatesError || addToCollectionError,
+            isSubmittingForReview,
+            isMarkingAsReviewed,
+            this.props.collectionID
+        );
 
         if (!addToCollectionError && isAddingToCollection) {
             this.props.dispatch(updateActiveDatasetCollectionID(this.props.collectionID));
@@ -959,7 +973,8 @@ export class DatasetMetadata extends Component {
                                         className="btn btn--link"
                                         onClick={() => {
                                             this.handleAddRelatedClick("link");
-                                        }}>
+                                        }}
+                                    >
                                         {" "}
                                         Add related link
                                     </button>
@@ -979,7 +994,8 @@ export class DatasetMetadata extends Component {
                                         className="btn btn--link"
                                         onClick={() => {
                                             this.handleAddRelatedClick("bulletin");
-                                        }}>
+                                        }}
+                                    >
                                         {" "}
                                         Add document
                                     </button>
@@ -1010,7 +1026,8 @@ export class DatasetMetadata extends Component {
                                         className="btn btn--link"
                                         onClick={() => {
                                             this.handleAddRelatedClick("methodologies");
-                                        }}>
+                                        }}
+                                    >
                                         {" "}
                                         Add methodology
                                     </button>
@@ -1035,13 +1052,17 @@ export class DatasetMetadata extends Component {
                                     id="btn-save"
                                     type="submit"
                                     className="btn btn--primary margin-bottom--1"
-                                    disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>
+                                    disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}
+                                >
                                     Save
                                 </button>
                                 <span className="margin-left--1">{this.renderReviewActions()}</span>
                                 {this.state.isSavingData && <div className="loader loader--inline loader--dark margin-left--1"></div>}
                                 {this.state.latestVersion && (
-                                    <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>
+                                    <Link
+                                        className="margin-left--1"
+                                        to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}
+                                    >
                                         Preview
                                     </Link>
                                 )}
@@ -1077,7 +1098,10 @@ export class DatasetMetadata extends Component {
                                 <div className="modal__body">
                                     <p>You will lose any changes by going back without saving. </p>
                                     <br />
-                                    <p>Click "Continue" to lose changes and go back to the previous page or click "Cancel" to stay on the current page.</p>
+                                    <p>
+                                        Click "Continue" to lose changes and go back to the previous page or click "Cancel" to stay on the current
+                                        page.
+                                    </p>
                                 </div>
                                 <div className="modal__footer">
                                     <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>

@@ -215,7 +215,11 @@ class VersionPreviewController extends Component {
                 }
             }
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)
+                message:
+                    "Unable to update metadata screen with version's review/edit status in collection " +
+                    collectionID +
+                    ". Error: " +
+                    JSON.stringify(error)
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }

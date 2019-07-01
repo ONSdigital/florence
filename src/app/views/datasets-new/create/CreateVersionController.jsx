@@ -116,7 +116,8 @@ export class CreateVersionController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
@@ -150,7 +151,8 @@ export class CreateVersionController extends Component {
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                message:
+                    "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
@@ -223,7 +225,8 @@ export class CreateVersionController extends Component {
                     case 400: {
                         const notification = {
                             type: "warning",
-                            message: "Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again",
+                            message:
+                                "Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again",
                             isDismissable: true,
                             autoDismiss: 10000
                         };

@@ -88,7 +88,12 @@ export default class log {
 
 class Http {
     constructor(requestID, method, url, startedAt, statusCode, endedAt) {
-        (this.requestID = requestID), (this.method = method), (this.url = url), (this.statusCode = statusCode), (this.startedAt = startedAt), (this.endedAt = endedAt);
+        (this.requestID = requestID),
+            (this.method = method),
+            (this.url = url),
+            (this.statusCode = statusCode),
+            (this.startedAt = startedAt),
+            (this.endedAt = endedAt);
     }
 
     attach = event => {

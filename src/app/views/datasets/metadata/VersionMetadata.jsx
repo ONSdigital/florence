@@ -10,7 +10,14 @@ import notifications from "../../../utilities/notifications";
 import Select from "../../../components/Select";
 import Input from "../../../components/Input";
 import FormErrorSummary from "../../../components/form-error-summary/FormErrorSummary";
-import { updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState } from "../../../config/actions";
+import {
+    updateActiveInstance,
+    updateActiveVersion,
+    updateAllRecipes,
+    emptyActiveVersion,
+    emptyActiveInstance,
+    updateActiveVersionReviewState
+} from "../../../config/actions";
 import url from "../../../utilities/url";
 import CardList from "../../../components/CardList";
 import Modal from "../../../components/Modal";
@@ -254,7 +261,9 @@ export class VersionMetadata extends Component {
                     log.add(eventTypes.runtimeWarning, {
                         message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.props.collectionID}'`
                     });
-                    console.warn(`Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`);
+                    console.warn(
+                        `Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`
+                    );
                 }
 
                 this.setState({
@@ -363,7 +372,9 @@ export class VersionMetadata extends Component {
         try {
             const collection = await collections.get(collectionID);
             const version = collection.datasetVersions.find(datasetVersion => {
-                return datasetVersion.id === params.datasetID && datasetVersion.edition === params.edition && datasetVersion.version === params.version;
+                return (
+                    datasetVersion.id === params.datasetID && datasetVersion.edition === params.edition && datasetVersion.version === params.version
+                );
             });
             if (!version) {
                 this.setState({ isFetchingCollectionData: false });
@@ -412,7 +423,11 @@ export class VersionMetadata extends Component {
                 }
             }
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)
+                message:
+                    "Unable to update metadata screen with version's review/edit status in collection " +
+                    collectionID +
+                    ". Error: " +
+                    JSON.stringify(error)
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection " + collectionID, error);
         }
@@ -491,18 +506,21 @@ export class VersionMetadata extends Component {
         }
 
         return request(this.props.collectionID, datasetID, edition, version).catch(error => {
-            this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, error.status);
+            this.handleRequestError(
+                `submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`,
+                error.status
+            );
 
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete" : ""}${
-                    isMarkingAsReviewed ? "Reviewed" : ""
-                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+                message: `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${
+                    isSubmittingForReview ? "Complete" : ""
+                }${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
             });
 
             console.error(
-                `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete" : ""}${
-                    isMarkingAsReviewed ? "Reviewed" : ""
-                }' in collection '${this.props.collectionID}'`,
+                `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${
+                    isSubmittingForReview ? "Complete" : ""
+                }${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`,
                 error
             );
 
@@ -511,17 +529,19 @@ export class VersionMetadata extends Component {
     }
 
     updateVersionMetadata(datasetID, edition, version, body) {
-        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body).catch(error => {
-            this.handleRequestError("save version metadata updates", error.status);
+        return datasets
+            .updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
+            .catch(error => {
+                this.handleRequestError("save version metadata updates", error.status);
 
-            console.error(`Unable to save version metadata updates for '${this.state.versionID}'`, error);
+                console.error(`Unable to save version metadata updates for '${this.state.versionID}'`, error);
 
-            log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Unable to save version metadata updates for '${this.state.versionID}'. Error: ${JSON.stringify(error)}`
+                log.add(eventTypes.unexpectedRuntimeError, {
+                    message: `Unable to save version metadata updates for '${this.state.versionID}'. Error: ${JSON.stringify(error)}`
+                });
+
+                return error;
             });
-
-            return error;
-        });
     }
 
     updateDimensions(instanceID) {
@@ -574,7 +594,10 @@ export class VersionMetadata extends Component {
     addVersionToCollection(datasetID, edition, version) {
         return collections.addDatasetVersion(this.props.collectionID, datasetID, edition, version).catch(error => {
             this.handleRequestError("add version to this collection", error.status);
-            console.error(`Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`, error);
+            console.error(
+                `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`,
+                error
+            );
             log.add(eventTypes.unexpectedRuntimeError, {
                 message: `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${
                     this.props.collectionID
@@ -596,7 +619,10 @@ export class VersionMetadata extends Component {
                 await this.updateDimensions(this.props.params.instanceID)
             ];
             if (isUpdatingReviewState && createVersionErr) {
-                this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, undefined);
+                this.handleRequestError(
+                    `submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`,
+                    undefined
+                );
             }
             if (updateDimensionsErr && createVersionErr) {
                 this.setState({ isSavingData: false });
@@ -619,7 +645,13 @@ export class VersionMetadata extends Component {
             if (this.state.isInstance && !isUpdatingReviewState) {
                 const addToCollectionErr = await this.addVersionToCollection(datasetID, edition, version);
                 if (!addToCollectionErr) {
-                    this.props.dispatch(push(url.resolve(`/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`)));
+                    this.props.dispatch(
+                        push(
+                            url.resolve(
+                                `/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`
+                            )
+                        )
+                    );
                     return;
                 }
 
@@ -648,7 +680,9 @@ export class VersionMetadata extends Component {
         const version = this.props.params.version;
         const [updateVersionErr, updateReviewStateErr] = [
             await this.updateVersionMetadata(datasetID, edition, version, body),
-            isUpdatingReviewState ? await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed) : await Promise.resolve(),
+            isUpdatingReviewState
+                ? await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed)
+                : await Promise.resolve(),
             await this.updateDimensions(this.state.versionID)
         ];
 
@@ -1433,7 +1467,8 @@ export class VersionMetadata extends Component {
                                                 className="btn btn--link"
                                                 onClick={() => {
                                                     this.handleAddRelatedClick("alerts");
-                                                }}>
+                                                }}
+                                            >
                                                 Add an alert
                                             </button>
                                         </div>
@@ -1451,7 +1486,8 @@ export class VersionMetadata extends Component {
                                                 className="btn btn--link"
                                                 onClick={() => {
                                                     this.handleAddRelatedClick("changes", "Add a change");
-                                                }}>
+                                                }}
+                                            >
                                                 Add change
                                             </button>
                                         </div>
@@ -1470,7 +1506,8 @@ export class VersionMetadata extends Component {
                                             className="btn btn--link"
                                             onClick={() => {
                                                 this.handleAddRelatedClick("usageNotes", "Add a usage note");
-                                            }}>
+                                            }}
+                                        >
                                             Add usage note
                                         </button>
                                     </div>
@@ -1478,13 +1515,17 @@ export class VersionMetadata extends Component {
                                 <button
                                     type="submit"
                                     className="btn btn--primary margin-bottom--1"
-                                    disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>
+                                    disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}
+                                >
                                     Save
                                 </button>
                                 <span className="margin-left--1">{this.renderReviewActions()}</span>
                                 {this.state.isSavingData && <div className="loader loader--dark loader--inline margin-left--1"></div>}
                                 {!this.state.isInstance && (
-                                    <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>
+                                    <Link
+                                        className="margin-left--1"
+                                        to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}
+                                    >
                                         Preview
                                     </Link>
                                 )}

@@ -90,9 +90,11 @@ export default class collections {
 
     static addDatasetVersion(collectionID, datasetID, editionID, versionID) {
         const body = { state: "InProgress" };
-        return http.put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
-            return response;
-        });
+        return http
+            .put(`/zebedee/collections/${collectionID}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true)
+            .then(response => {
+                return response;
+            });
     }
 
     static setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID) {

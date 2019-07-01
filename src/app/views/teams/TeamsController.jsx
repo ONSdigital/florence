@@ -340,7 +340,8 @@ export class TeamsController extends Component {
             <Drawer
                 isVisible={this.props.activeTeam && this.props.activeTeam.id && !this.state.clearActiveTeam ? true : false}
                 isAnimatable={this.state.drawerIsAnimatable}
-                handleTransitionEnd={this.handleDrawerTransitionEnd}>
+                handleTransitionEnd={this.handleDrawerTransitionEnd}
+            >
                 {this.props.activeTeam && this.props.activeTeam.id ? (
                     <TeamDetails
                         {...this.props.activeTeam}

@@ -51,7 +51,13 @@ export class UsageNotesController extends Component {
                     </div>
                     <div className="modal__body">
                         <Input id="usage-note-title" label="Title" value={this.state.title} onChange={event => this.handleChange("title", event)} />
-                        <Input id="usage-note-description" label="Note" value={this.state.note} onChange={event => this.handleChange("note", event)} type="textarea" />
+                        <Input
+                            id="usage-note-description"
+                            label="Note"
+                            value={this.state.note}
+                            onChange={event => this.handleChange("note", event)}
+                            type="textarea"
+                        />
                     </div>
                     <div className="modal__footer">
                         <button className="btn btn--primary" type="submit">

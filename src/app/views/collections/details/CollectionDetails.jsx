@@ -132,7 +132,12 @@ export class CollectionDetails extends Component {
         };
 
         return (
-            <li key={pageID} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}>
+            <li
+                key={pageID}
+                onClick={handlePageClick}
+                data-page-state={state}
+                className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}
+            >
                 <div className="expandable-item__header">
                     <Page
                         type={page.type}
@@ -228,17 +233,23 @@ export class CollectionDetails extends Component {
         const handlePageClick = () => {
             this.props.onPageClick(deletedPage.root.uri);
         };
-        const deleteIsBeingCancelled = this.props.isCancellingDelete ? this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri : false;
+        const deleteIsBeingCancelled = this.props.isCancellingDelete
+            ? this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri
+            : false;
         return (
             <li
                 key={deletedPage.root.uri}
                 data-page-state="deletes"
                 onClick={handlePageClick}
-                className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
+                className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}
+            >
                 <div className="expandable-item__header">
                     <Page
                         type={deletedPage.root.type}
-                        title={deletedPage.root.description.title + (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")}
+                        title={
+                            deletedPage.root.description.title +
+                            (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")
+                        }
                         isActive={this.props.activePageURI === deletedPage.root.uri}
                     />
                 </div>
@@ -259,7 +270,8 @@ export class CollectionDetails extends Component {
                             className="btn btn--warning"
                             onClick={() => {
                                 this.props.onCancelPageDeleteClick(deletedPage.root.uri);
-                            }}>
+                            }}
+                        >
                             Cancel delete
                         </button>
                         {deletedPage.root.children && deletedPage.root.children.length > 0 && (
@@ -358,7 +370,8 @@ export class CollectionDetails extends Component {
                         <div>
                             <a
                                 href={url.resolve("/workspace") + "?collection=" + this.props.id}
-                                className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>
+                                className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}
+                            >
                                 Create/edit page
                             </a>
                             {this.props.enableDatasetImport && (
@@ -366,7 +379,11 @@ export class CollectionDetails extends Component {
                                     Create/edit CMD dataset page
                                 </Link>
                             )}
-                            <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>
+                            <button
+                                disabled={this.props.isLoadingNameAndDate}
+                                className="btn btn--margin-left"
+                                onClick={this.handleRestoreContentClick}
+                            >
                                 Restore page
                             </button>
                         </div>
@@ -396,7 +413,8 @@ export class CollectionDetails extends Component {
                     disabled={this.props.isLoadingDetails}
                     onClick={this.handleCollectionDeleteClick}
                     type="button"
-                    id="delete-collection">
+                    id="delete-collection"
+                >
                     Delete
                 </button>
             );
@@ -409,7 +427,8 @@ export class CollectionDetails extends Component {
                     disabled={this.props.isLoadingDetails || this.props.isApprovingCollection}
                     onClick={this.handleCollectionApproveClick}
                     type="button"
-                    id="approve-collection">
+                    id="approve-collection"
+                >
                     Approve
                 </button>
             );

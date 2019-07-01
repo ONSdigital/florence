@@ -34,7 +34,8 @@ export default class DoubleSelectableBoxItem extends Component {
                 className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.status.neutral ? " neutral" : ""} ${
                     this.props.status.warning ? " warning" : ""
                 }`}
-                onClick={this.bindClick}>
+                onClick={this.bindClick}
+            >
                 <div className="grid">
                     <div className="grid__col-6">
                         {this.props.selectableBox.firstColumn}
