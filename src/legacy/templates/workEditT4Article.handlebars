@@ -36,6 +36,14 @@
                             </label>
                         </div>
                         {{/if}}
+                        {{#if_null this.isReleaseDateEnabled}}
+                            <div class="release-date">
+                            <label for="releaseDate">Release date
+                                <input id="releaseDate" type="text" placeholder="Day month year"
+                                       value="{{this.description.releaseDate}}"/>
+                            </label>
+                        </div>
+                        {{/if_null}}
                         {{/unless}}
                         <div class="next-p">
                             <label for="nextRelease">Next release
@@ -98,6 +106,9 @@
                                     {{#if this.isReleaseDateEnabled}}
                                         checked
                                     {{/if}}
+                                    {{#if_null isReleaseDateEnabled}} {{!-- Does not exists --}}
+                                        checked
+                                    {{/if_null}}
                                 {{/unless}}/>
                             </div>
 

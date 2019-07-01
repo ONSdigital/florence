@@ -361,6 +361,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodologyArticle', 'methodology');
+        renderExternalLinkAccordionSection(collectionId, pageData, 'relatedFilterableDatasets', 'filterable-dataset');
         renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
         editTopics(collectionId, pageData, templateData, 'topics', 'topics');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');

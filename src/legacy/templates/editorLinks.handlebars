@@ -9,7 +9,7 @@
                 <div id="{{@index}}" class="edit-section__sortable-item">
                     <div class="edit-section__sortable-item--counter float-left">{{plus @index 1}}. </div>
                     <textarea style="display:none" id="{{../idField}}-uri_{{@index}}">{{uri}}</textarea>
-                    <span style="width:305px;max-width:305px;"><strong>{{title}}</strong><br /> {{uri}}</span>
+                    <span style="width:305px;max-width:305px;"><strong>{{#if title}}{{title}}{{else}}{{uri}}{{/if}}</strong><br /> {{#if title}}{{uri}}{{/if}}</span>
                     <button class="btn btn--primary btn-markdown-edit" id="{{../idField}}-edit_{{@index}}">Edit</button>
                     <button class="btn btn--warning btn-page-delete" id="{{../idField}}-delete_{{@index}}">Delete</button>
                 </div>
