@@ -49,9 +49,9 @@ const propTypes = {
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
-    datasetCollectionState: PropTypes.string,
+    collectionState: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
-    lastEditedBy: PropTypes.string.isRequired,
+    lastEditedBy: PropTypes.string,
     handleSubmitForReviewClick: PropTypes.func.isRequired,
     handleMarkAsReviewedClick: PropTypes.func.isRequired,
     disableForm: PropTypes.bool.isRequired,
@@ -217,7 +217,7 @@ class DatasetMetadata extends Component {
                     />
 
                     <h2>Related links</h2>
-                    <h3>Datasts</h3>
+                    <h3>Datasets</h3>
                     <SimpleEditableList addText={"Add a dataset"} 
                         fields={this.props.metadata.relatedDatasets} 
                         editingStateFieldName="relatedDatasets"
@@ -273,7 +273,7 @@ class DatasetMetadata extends Component {
                         </button>
                         <DatasetReviewActions 
                             disabled={this.props.disableForm}
-                            reviewState={this.props.datasetCollectionState}
+                            reviewState={this.props.collectionState}
                             userEmail={this.props.userEmail}
                             lastEditedBy={this.props.lastEditedBy}
                             onSubmit={this.props.handleSubmitForReviewClick}

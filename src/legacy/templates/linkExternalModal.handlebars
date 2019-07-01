@@ -4,8 +4,10 @@
             <div class='uri-input'>
                 <label for='uri-input' class='uri-input__label'>Add URL</label>
                 <input id='uri-input' placeholder='Enter URL' type='text' class='uri-input__input' value="{{uri}}">
-                <label for='uri-title' class='uri-input__label'>Add title</label>
-                <input id='uri-title' placeholder='Enter title' type='text' class='uri-input__input' value="{{title}}">
+                {{#if showTitleField}}
+                    <label for='uri-title' class='uri-input__label'>Add title</label>
+                    <input id='uri-title' placeholder='Enter title' type='text' class='uri-input__input' value="{{title}}">
+                {{/if}}
             </div>
             <div class='modal-nav'>
                 <button class='btn btn--primary btn-uri-get'>Save</button>

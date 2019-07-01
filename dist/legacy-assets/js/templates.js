@@ -1135,7 +1135,7 @@ templates['editorDownloadsWithSummary'] = template({"1":function(depth0,helpers,
     + "        </div>\n        <div class=\"text-center\">\n            <button class=\"btn btn--subtle btn-add-section\" id=\"add-file\">Add file</button>\n        </div>\n    </div>\n</div>";
 },"useData":true});
 templates['editorLinks'] = template({"1":function(depth0,helpers,partials,data,blockParams,depths) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression, alias4=this.lambda;
+    var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression, alias4=this.lambda;
 
   return "                <div id=\""
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
@@ -1148,9 +1148,9 @@ templates['editorLinks'] = template({"1":function(depth0,helpers,partials,data,b
     + "\">"
     + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
     + "</textarea>\n                    <span style=\"width:305px;max-width:305px;\"><strong>"
-    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":this.program(2, data, 0, blockParams, depths),"inverse":this.program(4, data, 0, blockParams, depths),"data":data})) != null ? stack1 : "")
     + "</strong><br /> "
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.title : depth0),{"name":"if","hash":{},"fn":this.program(4, data, 0, blockParams, depths),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "</span>\n                    <button class=\"btn btn--primary btn-markdown-edit\" id=\""
     + alias3(alias4((depths[1] != null ? depths[1].idField : depths[1]), depth0))
     + "-edit_"
@@ -1160,6 +1160,14 @@ templates['editorLinks'] = template({"1":function(depth0,helpers,partials,data,b
     + "-delete_"
     + alias3(((helper = (helper = helpers.index || (data && data.index)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"index","hash":{},"data":data}) : helper)))
     + "\">Delete</button>\n                </div>\n";
+},"2":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return this.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)));
+},"4":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return this.escapeExpression(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)));
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data,blockParams,depths) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
@@ -1336,14 +1344,20 @@ templates['imageBuilder'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":fu
 templates['importTsTitlesModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class='modal'>\n    <div class='modal-box'>\n        <form id=\"import-ts-form\">\n            <div class='uri-input'>\n                <label for='ts-file' class='uri-input__label'>Add .csv file</label>\n                <input id='ts-file' type='file' class='uri-input__input' title=\"Select a file and click Submit\" name=\"ts-file\">\n            </div>\n            <div class='modal-nav'>\n                <button type=\"submit\" class='btn btn--primary btn-modal-save'>Save</button>\n                <button class='btn btn-modal-cancel'>Cancel</button>\n            </div>\n        </form>\n    </div>\n</div>";
 },"useData":true});
-templates['linkExternalModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    var helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
+templates['linkExternalModal'] = template({"1":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "                    <label for='uri-title' class='uri-input__label'>Add title</label>\n                    <input id='uri-title' placeholder='Enter title' type='text' class='uri-input__input' value=\""
+    + this.escapeExpression(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
+    + "\">\n";
+},"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var stack1, helper;
 
   return "<div class='modal'>\n    <div class='modal-box'>\n        <form>\n            <div class='uri-input'>\n                <label for='uri-input' class='uri-input__label'>Add URL</label>\n                <input id='uri-input' placeholder='Enter URL' type='text' class='uri-input__input' value=\""
-    + alias3(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
-    + "\">\n                <label for='uri-title' class='uri-input__label'>Add title</label>\n                <input id='uri-title' placeholder='Enter title' type='text' class='uri-input__input' value=\""
-    + alias3(((helper = (helper = helpers.title || (depth0 != null ? depth0.title : depth0)) != null ? helper : alias1),(typeof helper === alias2 ? helper.call(depth0,{"name":"title","hash":{},"data":data}) : helper)))
-    + "\">\n            </div>\n            <div class='modal-nav'>\n                <button class='btn btn--primary btn-uri-get'>Save</button>\n                <button class='btn btn-uri-cancel'>Cancel</button>\n            </div>\n        </form>\n    </div>\n</div>";
+    + this.escapeExpression(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "\">\n"
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.showTitleField : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "            </div>\n            <div class='modal-nav'>\n                <button class='btn btn--primary btn-uri-get'>Save</button>\n                <button class='btn btn-uri-cancel'>Cancel</button>\n            </div>\n        </form>\n    </div>\n</div>";
 },"useData":true});
 templates['linkModal'] = template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     return "<div class='modal'>\n    <div class='modal-box'>\n        <div class='uri-input'>\n            <label for='uri-input' class='uri-input__label'>What type of link would you like to add?</label>\n        </div>\n        <button class='btn btn--primary btn-uri-browse' id=\"internal-link\">Internal</button>\n        <button class='btn btn--primary btn-uri-browse' id=\"external-link\">External</button>\n        <div class='modal-nav'>\n            <button class='btn btn-uri-cancel'>Cancel</button>\n        </div>\n    </div>\n</div>";
@@ -2144,25 +2158,36 @@ templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,
 },"3":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
-},"5":function(depth0,helpers,partials,data) {
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if","hash":{},"fn":this.program(1, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = (helpers.if_null || (depth0 && depth0.if_null) || helpers.helperMissing).call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if_null","hash":{},"fn":this.program(4, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "");
+},"4":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return "                            <div class=\"release-date\">\n                            <label for=\"releaseDate\">Release date\n                                <input id=\"releaseDate\" type=\"text\" placeholder=\"Day month year\"\n                                       value=\""
+    + this.escapeExpression(this.lambda(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.releaseDate : stack1), depth0))
+    + "\"/>\n                            </label>\n                        </div>\n";
+},"6":function(depth0,helpers,partials,data) {
     return "checked";
-},"7":function(depth0,helpers,partials,data) {
+},"8":function(depth0,helpers,partials,data) {
     return "";
-},"9":function(depth0,helpers,partials,data) {
-    var stack1;
-
-  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if","hash":{},"fn":this.program(10, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
-    + "                                ";
 },"10":function(depth0,helpers,partials,data) {
-    return "                                        checked\n";
-},"12":function(depth0,helpers,partials,data) {
     var stack1;
 
-  return ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.imageUri : depth0),{"name":"unless","hash":{},"fn":this.program(13, data, 0),"inverse":this.program(15, data, 0),"data":data})) != null ? stack1 : "");
+  return ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if","hash":{},"fn":this.program(11, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                                    "
+    + ((stack1 = (helpers.if_null || (depth0 && depth0.if_null) || helpers.helperMissing).call(depth0,(depth0 != null ? depth0.isReleaseDateEnabled : depth0),{"name":"if_null","hash":{},"fn":this.program(13, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + "                                ";
+},"11":function(depth0,helpers,partials,data) {
+    return "                                        checked\n";
 },"13":function(depth0,helpers,partials,data) {
-    return "                                <label for=\"neutral-article-image-upload\">Upload article image\n                                    <input style=\"color: #323232\" type=\"file\" id=\"neutral-article-image-upload\" accept=\".png, .jpg, .jpeg\">\n                                </label>\n\n                                <button id=\"neutral-article-image-upload-submit\" class=\"btn btn--primary margin-top--0\" type=\"submit\" value=\"Upload image\">Upload image</button>\n\n";
+    return " \n                                        checked\n";
 },"15":function(depth0,helpers,partials,data) {
+    var stack1;
+
+  return ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.imageUri : depth0),{"name":"unless","hash":{},"fn":this.program(16, data, 0),"inverse":this.program(18, data, 0),"data":data})) != null ? stack1 : "");
+},"16":function(depth0,helpers,partials,data) {
+    return "                                <label for=\"neutral-article-image-upload\">Upload article image\n                                    <input style=\"color: #323232\" type=\"file\" id=\"neutral-article-image-upload\" accept=\".png, .jpg, .jpeg\">\n                                </label>\n\n                                <button id=\"neutral-article-image-upload-submit\" class=\"btn btn--primary margin-top--0\" type=\"submit\" value=\"Upload image\">Upload image</button>\n\n";
+},"18":function(depth0,helpers,partials,data) {
     var helper;
 
   return "                                <div class=\"margin-left--1 margin-top--1\">\n                                    <p class=\"margin-left--0\">Image preview (not actual size)</p>\n                                    <img src=\"/resource?uri="
@@ -2188,17 +2213,17 @@ templates['workEditT4Article'] = template({"1":function(depth0,helpers,partials,
     + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"abstract-p\">\n                            <label for=\"abstract\">Abstract\n                                <textarea class=\"auto-size\" type=\"text\"\n                                          id=\"abstract\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1._abstract : stack1), depth0))
     + "</textarea>\n                            </label>\n                        </div>\n                        <div id=\"natStat\">\n                            <label for=\"natStat-checkbox\">National statistic</label>\n                            <input id=\"natStat-checkbox\" type=\"checkbox\" name=\"natStat\" "
-    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nationalStatistic : stack1),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.nationalStatistic : stack1),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "/>\n                        </div>\n                        <div>\n                            <label for=\"keywords\">Keywords\n                                <input name=\"tags\" id=\"keywords\" value=\""
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.keywords : stack1), depth0))
     + "\"\n                                       style=\"display: none;\">\n                            </label>\n                            <ul id=\"keywordsTag\"></ul>\n                        </div>\n                        <div>\n                            <label for=\"metaDescription\">Meta description\n                                <textarea class=\"auto-size\" type=\"text\"\n                                          id=\"metaDescription\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n                            </label>\n                        </div>\n\n                        <div style=\"background-color: #343B59; padding: 21px 0; margin: 0 21px;\">\n                            <div id=\"articleType\">\n                                <label for=\"articleType-checkbox\">Neutral article</label>\n                                <input id=\"articleType-checkbox\" type=\"checkbox\" name=\"articleType\" "
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(5, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(6, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "/>\n                            </div>\n                            <div id=\"releaseDateEnabled\">\n                                <label for=\"releaseDateEnabled-checkbox\">Release date enabled</label>\n                                <input id=\"releaseDateEnabled-checkbox\" type=\"checkbox\" name=\"releaseDateEnabled\" \n"
-    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"unless","hash":{},"fn":this.program(7, data, 0),"inverse":this.program(9, data, 0),"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.unless.call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"unless","hash":{},"fn":this.program(8, data, 0),"inverse":this.program(10, data, 0),"data":data})) != null ? stack1 : "")
     + "/>\n                            </div>\n\n"
-    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(12, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.isPrototypeArticle : depth0),{"name":"if","hash":{},"fn":this.program(15, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "\n                        </div>\n                    </div>\n                </div>\n            </div>\n\n            <div id=\"section\"></div>\n\n            <div id=\"tab\"></div>\n\n            <div id=\"charts\"></div>\n\n            <div id=\"tables\"></div>\n\n            <div id=\"equations\"></div>\n\n            <div id=\"images\"></div>\n\n            <div id=\"document\"></div>\n\n            <div id=\"data\"></div>\n\n            <div id=\"topics\"></div>\n\n            <div id=\"link\"></div>\n\n            <div id=\"qmi\"></div>\n\n            <div id=\"methodology\"></div>\n\n            <div id=\"pdf\"></div>\n\n            <div id=\"correction\"></div>\n\n            <div id=\"alert\"></div>\n\n        </div>\n\n        <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"            ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "        </nav>\n    </div>\n</section>";
@@ -2630,7 +2655,7 @@ templates['workEditT8LandingPage'] = template({"compiler":[6,">= 2.0.0-beta.1"],
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaDescription : stack1), depth0))
     + "</textarea>\n            </label>\n          </div>\n          <div>\n            <label for=\"metaCmd\">CMD meta data\n              <textarea class=\"auto-size\" type=\"text\" id=\"metaCmd\">"
     + alias2(alias1(((stack1 = (depth0 != null ? depth0.description : depth0)) != null ? stack1.metaCmd : stack1), depth0))
-    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"one\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Download options</h1>\n        <p>Title</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-edition\" class=\"edit-section__sortable\">\n          <div id=\"edition\"></div>\n        </div>\n        <div class=\"text-center\">\n          <button class=\"btn btn--subtle btn-add-section\" id=\"add-edition\">Add spreadsheet</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"dataset\"></div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"qmi\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"topics\"></div>\n\n    <div id=\"alert\"></div>\n\n      <div id=\"link\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
+    + "</textarea>\n            </label>\n          </div>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"one\"></div>\n\n    <div class=\"edit-section\">\n      <div class=\"edit-section__head\">\n        <h1>Download options</h1>\n        <p>Title</p>\n      </div>\n      <div class=\"edit-section__content\">\n        <div id=\"sortable-edition\" class=\"edit-section__sortable\">\n          <div id=\"edition\"></div>\n        </div>\n        <div class=\"text-center\">\n          <button class=\"btn btn--subtle btn-add-section\" id=\"add-edition\">Add spreadsheet</button>\n        </div>\n      </div>\n    </div>\n\n    <div id=\"dataset\"></div>\n\n    <div id=\"document\"></div>\n\n    <div id=\"qmi\"></div>\n\n    <div id=\"methodology\"></div>\n\n    <div id=\"topics\"></div>\n\n    <div id=\"filterable-dataset\"></div>\n\n    <div id=\"alert\"></div>\n\n    <div id=\"link\"></div>\n\n  </div>\n\n  <nav class=\"edit-nav\">\n"
     + ((stack1 = this.invokePartial(partials.editNav,depth0,{"name":"editNav","data":data,"indent":"    ","helpers":helpers,"partials":partials})) != null ? stack1 : "")
     + "  </nav>\n\n</section>\n";
 },"usePartial":true,"useData":true});

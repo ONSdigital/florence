@@ -37,9 +37,10 @@ import SelectableTest from './SelectableTest';
 import VersionPreviewController from './app/views/datasets/preview/VersionPreviewController';
 import PreviewController from './app/views/preview/PreviewController';
 import DatasetPreviewController from './app/views/datasets-new/preview/PreviewController';
-import EditMetadatItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
+import EditMetadataItem from './app/views/datasets-new/edit-metadata/EditMetadataItem';
 import ChangeUserPasswordController from './app/views/users/change-password/ChangeUserPasswordController';
 import ConfirmUserDeleteController from './app/views/users/confirm-delete/ConfirmUserDeleteController';
+import CollectionRoutesWrapper from './app/global/collection-wrapper/CollectionRoutesWrapper';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -55,12 +56,12 @@ const userIsAuthenticated = connectedReduxRedirect({
     redirectPath: `${rootPath}/login`
 });
 
-const userisAdminOrEditor = connectedReduxRedirect({
+const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
         return auth.isAdminOrEditor(state.state.user)
     },
     redirectAction: routerActions.replace,
-    wrapperDisplayName: 'userisAdminOrEditor',
+    wrapperDisplayName: 'userIsAdminOrEditor',
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
 });
@@ -92,33 +93,35 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={ userIsAuthenticated(PreviewController) }/>
 
                             {config.enableDatasetImport === true &&
-                                <Route path={`${rootPath}/collections/:collectionID/datasets`} >
-                                    <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
-                                    <Route path=':datasetID'>
-                                        <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
-                                        <Route path={`editions`} component={ userIsAuthenticated(CreateEditionController) }/>
-                                        <Route path='editions/:editionID'>
-                                            <Route path={`instances`} component={ userIsAuthenticated(CreateVersionController) }/>
-                                            <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
-                                            <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
-                                                <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadatItem) }/>
+                                <Route component={ CollectionRoutesWrapper }>
+                                    <Route path={`${rootPath}/collections/:collectionID/datasets`} >
+                                        <IndexRoute component={ userIsAuthenticated(SelectADataset) }/>
+                                        <Route path=':datasetID'>
+                                            <IndexRoute component={ userIsAuthenticated(DatasetEditionsController) }/>
+                                            <Route path={`editions`} component={ userIsAuthenticated(CreateEditionController) }/>
+                                            <Route path='editions/:editionID'>
+                                                <Route path={`instances`} component={ userIsAuthenticated(CreateVersionController) }/>
+                                                <IndexRoute component={ userIsAuthenticated(DatasetVersionsController) }/>
+                                                <Route path={`versions/:versionID`} component={ userIsAuthenticated(DatasetMetadataController) }>
+                                                    <Route path={`edit/:metadataField/:metadataItemID`} component={ userIsAuthenticated(EditMetadataItem) }/>
+                                                </Route>
+                                                <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                             </Route>
-                                            <Route path='versions/:versionID/preview' component={ userIsAuthenticated(DatasetPreviewController) }/>
                                         </Route>
                                     </Route>
                                 </Route>
                             }
 
-                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userisAdminOrEditor(TeamsController)) }>
+                            <Route path={`${rootPath}/teams`} component={ userIsAuthenticated(userIsAdminOrEditor(TeamsController)) }>
                                 <Route path=":team" component={ userIsAuthenticated(TeamsController) }>
                                     <Route path="edit" component={ userIsAuthenticated(TeamsController) }/>
                                     <Route path="delete" component={ userIsAuthenticated(TeamsController) }/>
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userisAdminOrEditor(UsersController)) }>
-                                <Route path=":userID" component={ userIsAuthenticated(userisAdminOrEditor(UserDetailsController)) }>
-                                    <Route path="change-password" component={userIsAuthenticated(userisAdminOrEditor(ChangeUserPasswordController))} />
-                                    <Route path="confirm-delete" component={userIsAuthenticated(userisAdminOrEditor(ConfirmUserDeleteController))} />
+                            <Route path={`${rootPath}/users`} component={ userIsAuthenticated(userIsAdminOrEditor(UsersController)) }>
+                                <Route path=":userID" component={ userIsAuthenticated(userIsAdminOrEditor(UserDetailsController)) }>
+                                    <Route path="change-password" component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))} />
+                                    <Route path="confirm-delete" component={userIsAuthenticated(userIsAdminOrEditor(ConfirmUserDeleteController))} />
                                 </Route>
                             </Route>
                             {config.enableDatasetImport === true &&
@@ -126,27 +129,27 @@ class Index extends Component {
                                     <Route path={`${rootPath}/uploads`}>
                                         <IndexRedirect to="data" />
                                         <Route path="data">
-                                            <IndexRoute component={userIsAuthenticated(userisAdminOrEditor(DatasetUploadsController))} />
+                                            <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadsController))} />
                                             <Route path=":jobID">
-                                                <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadDetails)) } />
-                                                <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetUploadMetadata)) } />
+                                                <IndexRoute component={ userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails)) } />
+                                                <Route path="metadata" component={ userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata)) } />
                                             </Route>
                                         </Route>
                                     </Route>
                                     <Route path={`${rootPath}/datasets`} >
-                                        <IndexRoute component={ userIsAuthenticated(userisAdminOrEditor(DatasetsController)) } />
+                                        <IndexRoute component={ userIsAuthenticated(userIsAdminOrEditor(DatasetsController)) } />
                                         <Route path=":datasetID">
                                             <IndexRedirect to={`${rootPath}/datasets`} />
-                                            <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(DatasetPreviewController)) } />
-                                            <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(DatasetMetadata)) } />
+                                            <Route path="preview" component={ userIsAuthenticated(userIsAdminOrEditor(DatasetPreviewController)) } />
+                                            <Route path="metadata" component={ userIsAuthenticated(userIsAdminOrEditor(DatasetMetadata)) } />
                                             <Route path="editions/:edition/versions/:version">
                                                 <IndexRedirect to="metadata"/>
-                                                <Route path="metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) }/>
-                                                <Route path="preview" component={ userIsAuthenticated(userisAdminOrEditor(VersionPreviewController)) } />
+                                                <Route path="metadata" component={ userIsAuthenticated(userIsAdminOrEditor(VersionMetadata)) }/>
+                                                <Route path="preview" component={ userIsAuthenticated(userIsAdminOrEditor(VersionPreviewController)) } />
                                             </Route>
                                             <Route path="instances">
                                                 <IndexRedirect to={`${rootPath}/datasets`}/>
-                                                <Route path=":instanceID/metadata" component={ userIsAuthenticated(userisAdminOrEditor(VersionMetadata)) } />
+                                                <Route path=":instanceID/metadata" component={ userIsAuthenticated(userIsAdminOrEditor(VersionMetadata)) } />
                                             </Route>
                                         </Route>
                                     </Route>
