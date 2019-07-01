@@ -67,8 +67,7 @@ module.exports = {
             extensions: [ ".js", ".jsx" ],  // Which file extensions to process.
             arrowParens: "avoid",           // Include parentheses around a sole arrow function parameter.
             bracketSpacing: true,           // Print spaces between brackets in object literals.
-            jsxBracketSameLine: true        // Put the > of a multi-line JSX element at the end of the last 
-                                            // line instead of being alone on the next line.
+            jsxBracketSameLine: false       // Put the > of a multi-line JSX element on a new line
         }),
         new CopyWebpackPlugin([
             { from: 'refactored.html', to: 'refactored.html' },
