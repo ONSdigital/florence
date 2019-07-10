@@ -365,7 +365,10 @@ export class DatasetMetadataController extends Component {
     mapVersionCollectionStateToState = versions => {
         try {
             const version = versions.find(version => {
-                return version.version === this.props.params.versionID && version.edition === this.props.params.editionID;
+                console.log(version)
+                return version.version === this.props.params.versionID && 
+                        version.edition === this.props.params.editionID && 
+                        version.id === this.props.params.datasetID;
             });
             
             if (!version) {
