@@ -33,7 +33,8 @@ exports[`Selectable table with values renders component with all values 1`] = `
         onClick={[Function]}
         style={Object {}}
       >
-         Edit dataset details
+         
+        Edit dataset details
       </a>
       <div>
         <div
