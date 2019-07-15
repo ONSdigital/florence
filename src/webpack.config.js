@@ -1,4 +1,5 @@
 const path = require('path');
+const prettierConfig = require('./prettier-config.json')
 const PrettierPlugin = require('prettier-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -58,17 +59,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new PrettierPlugin({
-            printWidth: 150,                // Specify the length of line that the printer will wrap on.
-            tabWidth: 4,                    // Specify the number of spaces per indentation-level.
-            useTabs: false,                 // Indent lines with tabs instead of spaces.
-            semi: true,                     // Print semicolons at the ends of statements.
-            encoding: 'utf-8',              // Which encoding scheme to use on files.
-            extensions: [ ".js", ".jsx" ],  // Which file extensions to process.
-            arrowParens: "avoid",           // Include parentheses around a sole arrow function parameter.
-            bracketSpacing: true,           // Print spaces between brackets in object literals.
-            jsxBracketSameLine: false       // Put the > of a multi-line JSX element on a new line
-        }),
+        new PrettierPlugin(prettierConfig),
         new CopyWebpackPlugin([
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
