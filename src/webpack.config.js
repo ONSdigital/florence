@@ -1,5 +1,5 @@
 const path = require('path');
-const prettierConfig = require('./prettier-config.json')
+const prettierrc = require('./prettierrc.json')
 const PrettierPlugin = require('prettier-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
@@ -59,7 +59,7 @@ module.exports = {
         ]
     },
     plugins: [
-        new PrettierPlugin(prettierConfig),
+        new PrettierPlugin(prettierrc),
         new CopyWebpackPlugin([
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
