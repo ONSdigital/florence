@@ -43038,7 +43038,6 @@ function isDevOrSandpit () {
  */
 
 function renderExternalLinkAccordionSection(collectionId, data, field, idField) {
-    console.log(collectionId, data, field, idField);
     var list = data[field];
     var dataTemplate = {list: list, idField: idField};
     var html = templates.editorLinks(dataTemplate);
@@ -43191,7 +43190,7 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
                 var parsedURL = new URL(uri)
             }
             catch(error) {
-                sweetAlert("That doesn't look like a valid URL. Plese include all parts of the URL e.g. 'http://', 'www', etc.");
+                sweetAlert("That doesn't look like a valid URL. Please include all parts of the URL e.g. 'https://', 'www', etc.");
                 console.error("Error parsing URL \n", error)
                 return;
             }
