@@ -199,7 +199,8 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
             if (!data[field]) {
                 data[field] = [];
             }
-            var modal = templates.linkExternalModal;
+            var linkData = {showTitleField: true};
+            var modal = templates.linkExternalModal(linkData);
             var uri, title;
             $('.modal').remove();
             $('.workspace-menu').append(modal);
