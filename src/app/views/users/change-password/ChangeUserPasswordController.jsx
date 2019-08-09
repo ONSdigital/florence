@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { push, replace } from 'react-router-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { push, replace } from "react-router-redux";
+import PropTypes from "prop-types";
 
-import Modal from '../../../components/Modal';
-import url from '../../../utilities/url';
-import ChangePasswordForm from '../../../components/change-password/ChangePasswordForm';
-import validatePassword from '../../../components/change-password/validatePassword';
-import user from '../../../utilities/api-clients/user';
-import log from '../../../utilities/logging/log';
-import notifications from '../../../utilities/notifications';
+import Modal from "../../../components/Modal";
+import url from "../../../utilities/url";
+import ChangePasswordForm from "../../../components/change-password/ChangePasswordForm";
+import validatePassword from "../../../components/change-password/validatePassword";
+import user from "../../../utilities/api-clients/user";
+import log from "../../../utilities/logging/log";
+import notifications from "../../../utilities/notifications";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -37,18 +37,18 @@ export class ChangeUserPasswordController extends Component {
                 error: ""
             },
             isSubmitting: false
-        }
+        };
     }
 
     componentWillMount() {
-        if (!this.props.loggedInUser.isAdmin && (this.props.params.userID !== this.props.loggedInUser.email)) {
-            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.params.userID}`))
+        if (!this.props.loggedInUser.isAdmin && this.props.params.userID !== this.props.loggedInUser.email) {
+            this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.params.userID}`));
         }
     }
 
     handleCancel = () => {
         this.props.dispatch(push(url.resolve("../")));
-    }
+    };
 
     handleInputChange = (value, property) => {
         if (!property) {
@@ -61,12 +61,12 @@ export class ChangeUserPasswordController extends Component {
                 error: ""
             }
         });
-    }
+    };
 
     handleSubmit = event => {
         event.preventDefault();
         let hasError = false;
-        let newState = {...this.state};
+        let newState = { ...this.state };
 
         if (!this.props.loggedInUser.isAdmin && !this.state.currentPassword.value) {
             newState = {
@@ -75,7 +75,7 @@ export class ChangeUserPasswordController extends Component {
                     ...newState.currentPassword,
                     error: "You must enter your current password"
                 }
-            }
+            };
             hasError = true;
         }
 
@@ -87,7 +87,7 @@ export class ChangeUserPasswordController extends Component {
                     ...newState.newPassword,
                     error: validatedPassword.error
                 }
-            }
+            };
             hasError = true;
         }
 
@@ -101,76 +101,90 @@ export class ChangeUserPasswordController extends Component {
             password: this.state.newPassword.value,
             email: this.props.params.userID
         };
-        this.setState({isSubmitting: true});
-        return user.updatePassword(passwordUpdate).then(() => {
-            this.props.dispatch(push(url.resolve("../")));
-            notifications.add({
-                type: "positive",
-                isDismissable: true,
-                autoDismiss: 7000,
-                message: "Password successfully changed"
-            });
-            log.event("Successfully changed password of user", log.data({user: passwordUpdate.email}));
-        }).catch(error => {
-            this.setState({isSubmitting: false});
-            log.event("Error changing password of user", log.data({user: passwordUpdate.email, logged_in_user: this.props.loggedInUser.email, is_admin: this.props.loggedInUser.isAdmin}), log.error(error));
+        this.setState({ isSubmitting: true });
+        return user
+            .updatePassword(passwordUpdate)
+            .then(() => {
+                this.props.dispatch(push(url.resolve("../")));
+                notifications.add({
+                    type: "positive",
+                    isDismissable: true,
+                    autoDismiss: 7000,
+                    message: "Password successfully changed"
+                });
+                log.event("Successfully changed password of user", log.data({ user: passwordUpdate.email }));
+            })
+            .catch(error => {
+                this.setState({ isSubmitting: false });
+                log.event(
+                    "Error changing password of user",
+                    log.data({
+                        user: passwordUpdate.email,
+                        logged_in_user: this.props.loggedInUser.email,
+                        is_admin: this.props.loggedInUser.isAdmin
+                    }),
+                    log.error(error)
+                );
 
-            if (error.status === 401 && !this.props.loggedInUser.isAdmin) {
-                this.setState(state => ({
-                    currentPassword: {
-                        ...state.currentPassword,
-                        error: "Incorrect password"
+                if (error.status === 401 && !this.props.loggedInUser.isAdmin) {
+                    this.setState(state => ({
+                        currentPassword: {
+                            ...state.currentPassword,
+                            error: "Incorrect password"
+                        }
+                    }));
+                    return;
+                }
+
+                if (error.status === 401 && this.props.loggedInUser.isAdmin) {
+                    user.logOut();
+                    return;
+                }
+
+                let notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    message: ""
+                };
+                switch (error.status) {
+                    case 403: {
+                        notification.message = "Unable to change user's password because you don't have permissions to do so";
+                        break;
                     }
-                }));
-                return;
-            }
-            
-            if (error.status === 401 && this.props.loggedInUser.isAdmin) {
-                user.logOut();
-                return;
-            }
-
-            let notification = {
-                type: "warning",
-                isDismissable: true,
-                message: ""
-            };
-            switch (error.status) {
-                case(403): {
-                    notification.message = "Unable to change user's password because you don't have permissions to do so";
-                    break;
+                    case 404: {
+                        notification.message = "Unable to change user's password because this user doesn't exist";
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        notification.message =
+                            "Unable to changes user's password due to a network error. Please check your connection and try again.";
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        notification.message = "Unable to change user's password due to an unexpected error";
+                        break;
+                    }
+                    default: {
+                        log.event("Unhandled error changing password of user", log.data({ user: passwordUpdate.email }), log.error(error));
+                        notification.message = "Unable to change user's password due to an unexpected error";
+                        break;
+                    }
                 }
-                case(404): {
-                    notification.message = "Unable to change user's password because this user doesn't exist";
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    notification.message = "Unable to changes user's password due to a network error. Please check your connection and try again."
-                    break;
-                }
-                case("UNEXPECTED_ERR"): {
-                    notification.message = "Unable to change user's password due to an unexpected error";
-                    break;
-                }
-                default: {
-                    log.event("Unhandled error changing password of user", log.data({user: passwordUpdate.email}), log.error(error));
-                    notification.message = "Unable to change user's password due to an unexpected error";
-                    break;
-                }
-            }
-            console.error("Error changing a user's password", error);
-            notifications.add(notification);
-        });
-    }
+                console.error("Error changing a user's password", error);
+                notifications.add(notification);
+            });
+    };
 
     formInputs = () => {
-        let inputs = [{
-            id: "new-password",
-            label: "New password",
-            type: "password",
-            onChange: e => this.handleInputChange(e.target.value, "newPassword"),
-            error: this.state.newPassword.error
-        }];
+        let inputs = [
+            {
+                id: "new-password",
+                label: "New password",
+                type: "password",
+                onChange: e => this.handleInputChange(e.target.value, "newPassword"),
+                error: this.state.newPassword.error
+            }
+        ];
 
         if (!this.props.loggedInUser.isAdmin) {
             inputs.splice(0, 0, {
@@ -183,7 +197,7 @@ export class ChangeUserPasswordController extends Component {
         }
 
         return inputs;
-    }
+    };
 
     render() {
         return (
@@ -197,7 +211,7 @@ export class ChangeUserPasswordController extends Component {
                     }}
                 />
             </Modal>
-        )
+        );
     }
 }
 
@@ -207,7 +221,7 @@ export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         loggedInUser: state.state.user
-    }
+    };
 }
 
 export default connect(mapStateToProps)(ChangeUserPasswordController);

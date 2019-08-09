@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
     id: PropTypes.any.isRequired,
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool
-}
+};
 
 export default class SelectableBoxItem extends Component {
     constructor(props) {
@@ -21,12 +21,10 @@ export default class SelectableBoxItem extends Component {
 
     render() {
         return (
-            <li 
-                id={this.props.id} 
-                className={`selectable-box__item ${this.props.isSelected ? "selected" : ""}`} 
-                onClick={this.bindClick}>{this.props.name}
+            <li id={this.props.id} className={`selectable-box__item ${this.props.isSelected ? "selected" : ""}`} onClick={this.bindClick}>
+                {this.props.name}
             </li>
-        )
+        );
     }
 }
 

@@ -1,12 +1,9 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     type: PropTypes.string,
-    title: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element
-    ]).isRequired,
+    title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
     isActive: PropTypes.bool
 };
 
@@ -16,11 +13,7 @@ export class Page extends Component {
     }
 
     render() {
-        return (
-            <div className={"page page--" + this.props.type + (this.props.isActive ? " active" : "")}>
-                {this.props.title}
-            </div>
-        )
+        return <div className={"page page--" + this.props.type + (this.props.isActive ? " active" : "")}>{this.props.title}</div>;
     }
 }
 

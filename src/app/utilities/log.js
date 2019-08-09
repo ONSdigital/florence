@@ -1,7 +1,7 @@
-import { browserHistory } from 'react-router';
-import uuid from 'uuid/v4';
-import websocket from './websocket';
-import storage from './storage';
+import { browserHistory } from "react-router";
+import uuid from "uuid/v4";
+import websocket from "./websocket";
+import storage from "./storage";
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -22,7 +22,7 @@ export const eventTypes = {
     socketError: "SOCKET_ERROR",
     unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
     runtimeWarning: "RUNTIME_WARNING"
-}
+};
 
 const instanceID = uuid();
 
@@ -30,14 +30,13 @@ const excludeFromServerLogs = [
     eventTypes.pingSent,
     eventTypes.pingReceived,
     eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
-]
+];
 
 export default class log {
-
     static initialise() {
         this.add(eventTypes.appInitialised);
         browserHistory.listen(location => {
-            log.add(eventTypes.changedRoute, {...location})
+            log.add(eventTypes.changedRoute, { ...location });
         });
     }
 
@@ -45,7 +44,7 @@ export default class log {
      * @param {string} eventType - tells us what event is being logged. Should be populated by a value from the eventTypes map
      * @param {*} payload - the data that is being logged
      */
-    static add(eventType, payload)  {
+    static add(eventType, payload) {
         const timestamp = new Date();
         const event = {
             type: eventType,
@@ -54,7 +53,7 @@ export default class log {
             created: timestamp.toISOString(),
             timestamp: timestamp.getTime(),
             payload: payload || null
-        }
+        };
 
         storage.add(event);
 
@@ -66,10 +65,10 @@ export default class log {
     }
 
     /**
-     * 
+     *
      * @param {number} skip - (Optional) start point of the items we'd like to receive
      * @param {number} limit - (Optional) the number of items we'd like to receive
-     * @param {number} requestTimestamp - (Optional) a Unix timestamp that 
+     * @param {number} requestTimestamp - (Optional) a Unix timestamp that
      */
     static getAll(skip, limit, requestTimestamp) {
         return storage.getAll(skip, limit, requestTimestamp);
