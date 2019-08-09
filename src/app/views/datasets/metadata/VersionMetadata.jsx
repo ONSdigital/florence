@@ -1,27 +1,34 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router';
-import { push } from 'react-router-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router";
+import { push } from "react-router-redux";
+import PropTypes from "prop-types";
 
-import datasets from '../../../utilities/api-clients/datasets';
-import recipes from '../../../utilities/api-clients/recipes';
-import notifications from '../../../utilities/notifications';
-import Select from '../../../components/Select';
-import Input from '../../../components/Input';
-import FormErrorSummary from '../../../components/form-error-summary/FormErrorSummary';
-import {updateActiveInstance, updateActiveVersion, updateAllRecipes, emptyActiveVersion, emptyActiveInstance, updateActiveVersionReviewState} from '../../../config/actions';
-import url from '../../../utilities/url'
-import CardList from '../../../components/CardList';
-import Modal from '../../../components/Modal';
-import uuid from 'uuid/v4';
-import RelatedContentForm from './related-content/RelatedContentForm';
-import log, {eventTypes} from '../../../utilities/log'
-import collections from '../../../utilities/api-clients/collections'
-import DatasetReviewActions from '../DatasetReviewActions'
-import AlertController from './alert/AlertController'
-import UsageNotesController from './usage-notes/UsageNotesController';
-import date from '../../../utilities/date'
+import datasets from "../../../utilities/api-clients/datasets";
+import recipes from "../../../utilities/api-clients/recipes";
+import notifications from "../../../utilities/notifications";
+import Select from "../../../components/Select";
+import Input from "../../../components/Input";
+import FormErrorSummary from "../../../components/form-error-summary/FormErrorSummary";
+import {
+    updateActiveInstance,
+    updateActiveVersion,
+    updateAllRecipes,
+    emptyActiveVersion,
+    emptyActiveInstance,
+    updateActiveVersionReviewState
+} from "../../../config/actions";
+import url from "../../../utilities/url";
+import CardList from "../../../components/CardList";
+import Modal from "../../../components/Modal";
+import uuid from "uuid/v4";
+import RelatedContentForm from "./related-content/RelatedContentForm";
+import log, { eventTypes } from "../../../utilities/log";
+import collections from "../../../utilities/api-clients/collections";
+import DatasetReviewActions from "../DatasetReviewActions";
+import AlertController from "./alert/AlertController";
+import UsageNotesController from "./usage-notes/UsageNotesController";
+import date from "../../../utilities/date";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -42,48 +49,56 @@ const propTypes = {
         edition: PropTypes.string,
         version: PropTypes.string
     }).isRequired,
-    recipes: PropTypes.arrayOf(PropTypes.shape({
-      output_instances: PropTypes.arrayOf(PropTypes.shape({
-        editions: PropTypes.arrayOf(PropTypes.string).isRequired,
-        id: PropTypes.string
-      })),
-    })),
+    recipes: PropTypes.arrayOf(
+        PropTypes.shape({
+            output_instances: PropTypes.arrayOf(
+                PropTypes.shape({
+                    editions: PropTypes.arrayOf(PropTypes.string).isRequired,
+                    id: PropTypes.string
+                })
+            )
+        })
+    ),
     dataset: PropTypes.shape({
-      title: PropTypes.string,
-      collection_id: PropTypes.string
+        title: PropTypes.string,
+        collection_id: PropTypes.string
     }),
     instance: PropTypes.shape({
-      edition: PropTypes.string,
-      version: PropTypes.number,
-      release_date: PropTypes.string,
-      state: PropTypes.string,
-      id: PropTypes.string,
-      usage_notes: PropTypes.arrayOf(PropTypes.shape({
-          note: PropTypes.string,
-          title: PropTypes.string
-      })),
-      dimensions: PropTypes.arrayOf(PropTypes.object),
-      alerts: PropTypes.arrayOf(PropTypes.object),
-      latest_changes: PropTypes.arrayOf(PropTypes.object)
+        edition: PropTypes.string,
+        version: PropTypes.number,
+        release_date: PropTypes.string,
+        state: PropTypes.string,
+        id: PropTypes.string,
+        usage_notes: PropTypes.arrayOf(
+            PropTypes.shape({
+                note: PropTypes.string,
+                title: PropTypes.string
+            })
+        ),
+        dimensions: PropTypes.arrayOf(PropTypes.object),
+        alerts: PropTypes.arrayOf(PropTypes.object),
+        latest_changes: PropTypes.arrayOf(PropTypes.object)
     }),
     version: PropTypes.shape({
-      edition: PropTypes.string,
-      state: PropTypes.string,
-      version: PropTypes.number,
-      dimensions: PropTypes.arrayOf(PropTypes.object),
-      release_date: PropTypes.string,
-      id: PropTypes.string,
-      usage_notes: PropTypes.arrayOf(PropTypes.shape({
-          note: PropTypes.string,
-          title: PropTypes.string
-      })),
-      alerts: PropTypes.arrayOf(PropTypes.object),
-      latest_changes: PropTypes.arrayOf(PropTypes.object),
-      lastEditedBy: PropTypes.string,
-      reviewState: PropTypes.string
+        edition: PropTypes.string,
+        state: PropTypes.string,
+        version: PropTypes.number,
+        dimensions: PropTypes.arrayOf(PropTypes.object),
+        release_date: PropTypes.string,
+        id: PropTypes.string,
+        usage_notes: PropTypes.arrayOf(
+            PropTypes.shape({
+                note: PropTypes.string,
+                title: PropTypes.string
+            })
+        ),
+        alerts: PropTypes.arrayOf(PropTypes.object),
+        latest_changes: PropTypes.arrayOf(PropTypes.object),
+        lastEditedBy: PropTypes.string,
+        reviewState: PropTypes.string
     }),
     isInstance: PropTypes.string
-}
+};
 
 export class VersionMetadata extends Component {
     constructor(props) {
@@ -114,7 +129,7 @@ export class VersionMetadata extends Component {
             checkboxInput: false,
             formErrors: [],
             usageNotes: []
-        }
+        };
 
         this.handleSelectChange = this.handleSelectChange.bind(this);
         this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
@@ -135,19 +150,14 @@ export class VersionMetadata extends Component {
     }
 
     componentWillMount() {
-
         this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
-  
+
         this.setState({
             isFetchingData: true,
             activeCollectionID: this.props.collectionID
         });
 
-        const getMetadata = [
-            Promise.resolve(),
-            Promise.resolve(),
-            Promise.resolve()
-        ];
+        const getMetadata = [Promise.resolve(), Promise.resolve(), Promise.resolve()];
 
         if (!this.props.collectionID) {
             this.setState({
@@ -158,11 +168,12 @@ export class VersionMetadata extends Component {
                 type: "neutral",
                 message: "You are not in a collection, so cannot edit this version.",
                 isDismissable: true
-            }
+            };
             notifications.add(notification);
-            log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view version (${this.props.params.datasetID}) without being in collection.`});
+            log.add(eventTypes.runtimeWarning, {
+                message: `Attempt to edit/view version (${this.props.params.datasetID}) without being in collection.`
+            });
             console.warn(`Attempt to edit/view version (${this.props.params.datasetID}) without being in collection.`);
-
         }
 
         if (!this.props.params.instanceID && this.props.collectionID) {
@@ -171,123 +182,128 @@ export class VersionMetadata extends Component {
 
         if (this.props.params.instanceID) {
             getMetadata[1] = datasets.getInstance(this.props.params.instanceID);
-            this.setState({isInstance: true});
+            this.setState({ isInstance: true });
         } else {
             getMetadata[1] = datasets.getVersion(this.props.params.datasetID, this.props.params.edition, this.props.params.version);
-            this.setState({isInstance: false});
+            this.setState({ isInstance: false });
         }
 
         getMetadata[0] = recipes.getAll();
         getMetadata[2] = datasets.get(this.props.params.datasetID);
 
-        Promise.all(getMetadata).then(responses => {
-            const dataset = responses[2].next || responses[2].current;
-            const version = responses[1];
-    
-            if (this.props.recipes.length === 0) {
-                this.props.dispatch(updateAllRecipes(responses[0].items));
-            }
+        Promise.all(getMetadata)
+            .then(responses => {
+                const dataset = responses[2].next || responses[2].current;
+                const version = responses[1];
 
-            if (this.props.params.instanceID) {
-                this.props.dispatch(updateActiveInstance(responses[1]));
-                this.setState({
-                    dimensions: this.props.instance.dimensions,
-                    edition: this.props.instance.edition,
-                });
-                this.populateDimensionInputs();
-            }
-
-            if (this.props.params.version) {
-                this.props.dispatch(updateActiveVersion(responses[1]));
-
-                let alerts = [];
-                if (this.props.version.alerts) {
-                    this.props.version.alerts.map(alert => {
-                        alert.key = uuid();
-                        alerts.push(alert);
-                    })
+                if (this.props.recipes.length === 0) {
+                    this.props.dispatch(updateAllRecipes(responses[0].items));
                 }
 
-                let changes = [];
-                if (this.props.version.latest_changes) {
-                    this.props.version.latest_changes.map(change => {
-                        change.key = uuid();
-                        changes.push(change);
-                    })
-                }
-                
-                let usageNotes = [];
-                if (this.props.version.usage_notes) {
-                    this.props.version.usage_notes.map(usageNote => {
-                        usageNote.key = uuid();
-                        usageNotes.push(usageNote);
-                    })
+                if (this.props.params.instanceID) {
+                    this.props.dispatch(updateActiveInstance(responses[1]));
+                    this.setState({
+                        dimensions: this.props.instance.dimensions,
+                        edition: this.props.instance.edition
+                    });
+                    this.populateDimensionInputs();
                 }
 
-                this.setState({
-                    dimensions: this.props.version.dimensions,
-                    edition: this.props.version.edition,
-                    state: this.props.version.state,
-                    versionID: this.props.version.id,
-                    alerts: alerts,
-                    changes: changes,
-                    releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : "",
-                    usageNotes
-                });
-            }
-            
-            if((this.props.collectionID && version.collection_id) && this.props.collectionID !== version.collection_id) {
-                this.setState({
-                    isReadOnly: true
-                });
-                const notification = {
-                    type: "neutral",
-                    message: "This dataset is already in a different collection, so can't be edited.",
-                    isDismissable: true
-                }
-                notifications.add(notification);
-                log.add(eventTypes.runtimeWarning, {message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.props.collectionID}'`});
-                console.warn(`Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`);
-            } 
+                if (this.props.params.version) {
+                    this.props.dispatch(updateActiveVersion(responses[1]));
 
-            this.setState({
-                title: dataset.title,
-                isFetchingData: false
-            });
-
-        }).catch(error => {
-            switch (error.status) {
-                case(403):{
-                    const notification = {
-                        "type": "neutral",
-                        "message": "You do not permission to access the metadata for this dataset",
-                        isDismissable: true
+                    let alerts = [];
+                    if (this.props.version.alerts) {
+                        this.props.version.alerts.map(alert => {
+                            alert.key = uuid();
+                            alerts.push(alert);
+                        });
                     }
-                    notifications.add(notification);
-                    break;
+
+                    let changes = [];
+                    if (this.props.version.latest_changes) {
+                        this.props.version.latest_changes.map(change => {
+                            change.key = uuid();
+                            changes.push(change);
+                        });
+                    }
+
+                    let usageNotes = [];
+                    if (this.props.version.usage_notes) {
+                        this.props.version.usage_notes.map(usageNote => {
+                            usageNote.key = uuid();
+                            usageNotes.push(usageNote);
+                        });
+                    }
+
+                    this.setState({
+                        dimensions: this.props.version.dimensions,
+                        edition: this.props.version.edition,
+                        state: this.props.version.state,
+                        versionID: this.props.version.id,
+                        alerts: alerts,
+                        changes: changes,
+                        releaseDate: this.props.version.release_date ? new Date(this.props.version.release_date) : "",
+                        usageNotes
+                    });
                 }
-                case (404): {
+
+                if (this.props.collectionID && version.collection_id && this.props.collectionID !== version.collection_id) {
+                    this.setState({
+                        isReadOnly: true
+                    });
                     const notification = {
-                        "type": "neutral",
-                        "message": `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
+                        type: "neutral",
+                        message: "This dataset is already in a different collection, so can't be edited.",
                         isDismissable: true
                     };
                     notifications.add(notification);
-                    this.props.dispatch(push(url.resolve("/datasets")));
-                    break;
+                    log.add(eventTypes.runtimeWarning, {
+                        message: `Attempt to edit/view dataset version that is already in collection 'dataset.collection_id' but current collection is '${this.props.collectionID}'`
+                    });
+                    console.warn(
+                        `Dataset version is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`
+                    );
                 }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get this dataset",
-                        isDismissable: true
+
+                this.setState({
+                    title: dataset.title,
+                    isFetchingData: false
+                });
+            })
+            .catch(error => {
+                switch (error.status) {
+                    case 403: {
+                        const notification = {
+                            type: "neutral",
+                            message: "You do not permission to access the metadata for this dataset",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
                     }
-                    notifications.add(notification);
-                    break;
+                    case 404: {
+                        const notification = {
+                            type: "neutral",
+                            message: `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        this.props.dispatch(push(url.resolve("/datasets")));
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get this dataset",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
                 }
-            }
-            console.error("Error has occurred:\n", error);
-        });
+                console.error("Error has occurred:\n", error);
+            });
     }
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -309,7 +325,7 @@ export class VersionMetadata extends Component {
         // Do not empty the active dataset data if we're going to the preview page, to save us GETting it again when we already have it in state.
         if (nextLocation.pathname === url.resolve("preview")) {
             action();
-            return;    
+            return;
         }
 
         if (this.state.isInstance) {
@@ -321,73 +337,76 @@ export class VersionMetadata extends Component {
     }
 
     populateDimensionInputs() {
-        this.setState({isFetchingDimensionsData: true});
-        datasets.getLatestVersion(this.props.params.datasetID).then(latestVersion => {
-            if (!latestVersion) {
-                this.setState({isFetchingDimensionsData: false});
-                return;
-            }
+        this.setState({ isFetchingDimensionsData: true });
+        datasets
+            .getLatestVersion(this.props.params.datasetID)
+            .then(latestVersion => {
+                if (!latestVersion) {
+                    this.setState({ isFetchingDimensionsData: false });
+                    return;
+                }
 
-            this.setState({
-                dimensions: latestVersion.dimensions.map(dimension => ({
-                    ...dimension,
-                    hasChanged: true
-                })),
-                isFetchingDimensionsData: false
+                this.setState({
+                    dimensions: latestVersion.dimensions.map(dimension => ({
+                        ...dimension,
+                        hasChanged: true
+                    })),
+                    isFetchingDimensionsData: false
+                });
+            })
+            .catch(error => {
+                this.setState({ isFetchingDimensionsData: false });
+                this.handleRequestError("auto-populate the dimension metadata", error.status);
+                console.error("Error getting latest published version to auto-populate dimensions inputs", error);
+                log.add(eventTypes.unexpectedRuntimeError, {
+                    message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`
+                });
             });
-        }).catch(error => {
-            this.setState({isFetchingDimensionsData: false});
-            this.handleRequestError("auto-populate the dimension metadata", error.status);
-            console.error("Error getting latest published version to auto-populate dimensions inputs", error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`});
-        });
     }
 
     async updateReviewStateData() {
-        this.setState({isFetchingCollectionData: true});
+        this.setState({ isFetchingCollectionData: true });
         const collectionID = this.props.collectionID;
         const params = this.props.params;
-        
+
         try {
             const collection = await collections.get(collectionID);
             const version = collection.datasetVersions.find(datasetVersion => {
                 return (
-                    datasetVersion.id === params.datasetID && 
-                    datasetVersion.edition === params.edition &&
-                    datasetVersion.version === params.version
-                )
+                    datasetVersion.id === params.datasetID && datasetVersion.edition === params.edition && datasetVersion.version === params.version
+                );
             });
             if (!version) {
-                this.setState({isFetchingCollectionData: false});
+                this.setState({ isFetchingCollectionData: false });
                 return;
             }
             const lastEditedBy = version.lastEditedBy;
             const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
             this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, reviewState));
-            this.setState({isFetchingCollectionData: false});
+            this.setState({ isFetchingCollectionData: false });
         } catch (error) {
             this.setState({
                 isFetchingCollectionData: false,
                 isReadOnly: true
             });
             switch (error.status) {
-                case (401): {
+                case 401: {
                     // handled by request utility function
                     break;
                 }
-                case (403): {
+                case 403: {
                     const notification = {
-                        "type": "neutral",
-                        "message": `You do not permission to get details for collection '${collectionID}'`,
+                        type: "neutral",
+                        message: `You do not permission to get details for collection '${collectionID}'`,
                         isDismissable: true
-                    }
+                    };
                     notifications.add(notification);
                     break;
                 }
-                case (404): {
+                case 404: {
                     const notification = {
-                        "type": "warning",
-                        "message": `Could not find collection '${collectionID}'`,
+                        type: "warning",
+                        message: `Could not find collection '${collectionID}'`,
                         isDismissable: true
                     };
                     notifications.add(notification);
@@ -398,69 +417,75 @@ export class VersionMetadata extends Component {
                         type: "warning",
                         message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
                         isDismissable: true
-                    }
+                    };
                     notifications.add(notification);
                     break;
                 }
             }
-            log.add(eventTypes.unexpectedRuntimeError, {message: "Unable to update metadata screen with version's review/edit status in collection " + collectionID + ". Error: " + JSON.stringify(error)});
+            log.add(eventTypes.unexpectedRuntimeError, {
+                message:
+                    "Unable to update metadata screen with version's review/edit status in collection " +
+                    collectionID +
+                    ". Error: " +
+                    JSON.stringify(error)
+            });
             console.error("Unable to update metadata screen with version's review/edit status in collection " + collectionID, error);
         }
     }
 
     handleRequestError(attemptedAction, status) {
         switch (status) {
-            case(401): {
+            case 401: {
                 // handled by request utility function
                 break;
             }
-            case(400): {
+            case 400: {
                 const notification = {
-                    type: 'warning',
+                    type: "warning",
                     message: `Unable to ${attemptedAction} due to invalid values being submitted. Please check your updates for any issues and try again`,
                     isDismissable: true,
                     autoDismiss: 10000
-                }
+                };
                 notifications.add(notification);
                 break;
             }
-            case(403): {
+            case 403: {
                 const notification = {
-                    type: 'neutral',
+                    type: "neutral",
                     message: `Unable to ${attemptedAction} because you do not have the correct permissions`,
                     isDismissable: true,
                     autoDismiss: 10000
-                }
+                };
                 notifications.add(notification);
                 break;
             }
-            case(404): {
+            case 404: {
                 const notification = {
-                    type: 'warning',
+                    type: "warning",
                     message: `Unable to ${attemptedAction} because this version couldn't be found`,
                     isDismissable: true,
                     autoDismiss: 10000
-                }
+                };
                 notifications.add(notification);
                 break;
             }
-            case('FETCH_ERR'): {
+            case "FETCH_ERR": {
                 const notification = {
-                    type: 'warning',
+                    type: "warning",
                     message: `Unable to ${attemptedAction} due to a network issue. Please check your internet connection and try again`,
                     isDismissable: true,
                     autoDismiss: 10000
-                }
+                };
                 notifications.add(notification);
                 break;
             }
             default: {
                 const notification = {
-                    type: 'warning',
+                    type: "warning",
                     message: `Unable to ${attemptedAction} due to an unexpected error`,
                     isDismissable: true,
                     autoDismiss: 10000
-                }
+                };
                 notifications.add(notification);
                 break;
             }
@@ -470,39 +495,53 @@ export class VersionMetadata extends Component {
     updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed) {
         let request = Promise.resolve();
 
-        this.setState({isSavingData: true});
+        this.setState({ isSavingData: true });
 
         if (isSubmittingForReview) {
             request = collections.setDatasetVersionStatusToComplete;
         }
-        
+
         if (isMarkingAsReviewed) {
             request = collections.setDatasetVersionStatusToReviewed;
         }
 
         return request(this.props.collectionID, datasetID, edition, version).catch(error => {
-            this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, error.status);
+            this.handleRequestError(
+                `submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`,
+                error.status
+            );
 
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete": ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            log.add(eventTypes.unexpectedRuntimeError, {
+                message: `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${
+                    isSubmittingForReview ? "Complete" : ""
+                }${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+            });
 
-            console.error(`Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${isSubmittingForReview ? "Complete": ""}${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`, error);
+            console.error(
+                `Error updating review state for version ${datasetID}/editions/${edition}/versions/${version} to '${
+                    isSubmittingForReview ? "Complete" : ""
+                }${isMarkingAsReviewed ? "Reviewed" : ""}' in collection '${this.props.collectionID}'`,
+                error
+            );
 
             return error;
         });
     }
 
     updateVersionMetadata(datasetID, edition, version, body) {
-        return datasets.updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
+        return datasets
+            .updateVersionMetadata(this.props.params.datasetID, this.props.params.edition, this.props.params.version, body)
             .catch(error => {
-                this.handleRequestError('save version metadata updates', error.status);
-                
+                this.handleRequestError("save version metadata updates", error.status);
+
                 console.error(`Unable to save version metadata updates for '${this.state.versionID}'`, error);
-                
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version metadata updates for '${this.state.versionID}'. Error: ${JSON.stringify(error)}`});
-                
+
+                log.add(eventTypes.unexpectedRuntimeError, {
+                    message: `Unable to save version metadata updates for '${this.state.versionID}'. Error: ${JSON.stringify(error)}`
+                });
+
                 return error;
             });
-
     }
 
     updateDimensions(instanceID) {
@@ -511,47 +550,59 @@ export class VersionMetadata extends Component {
             return Promise.resolve();
         }
 
-        return datasets.updateInstanceDimensions(instanceID, this.state.dimensions)
-            .catch(error => {
-                this.handleRequestError(`save updates to dimensions`, error.status);
+        return datasets.updateInstanceDimensions(instanceID, this.state.dimensions).catch(error => {
+            this.handleRequestError(`save updates to dimensions`, error.status);
 
-                console.error(`Unable to save version dimension updates for dimensions - '${instanceID}'`, error);
-                
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to save version dimension updates for dimensions - '${instanceID}'. Error: ${JSON.stringify(error)}`});
-                
-                return error;
-            })
+            console.error(`Unable to save version dimension updates for dimensions - '${instanceID}'`, error);
+
+            log.add(eventTypes.unexpectedRuntimeError, {
+                message: `Unable to save version dimension updates for dimensions - '${instanceID}'. Error: ${JSON.stringify(error)}`
+            });
+
+            return error;
+        });
     }
 
     confirmEditionAndCreateVersion(instanceID, selectedEdition, body) {
-        return datasets.confirmEditionAndCreateVersion(instanceID, selectedEdition, body)
-            .catch(error => {
-                this.handleRequestError('save version metadata updates', error.status);
-                
-                console.error(`Unable to confirm instance edition for '${instanceID}'`, error);
-                
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to confirm instance edition for '${instanceID}'. Error: ${JSON.stringify(error)}`});
-                
-                return error;
+        return datasets.confirmEditionAndCreateVersion(instanceID, selectedEdition, body).catch(error => {
+            this.handleRequestError("save version metadata updates", error.status);
+
+            console.error(`Unable to confirm instance edition for '${instanceID}'`, error);
+
+            log.add(eventTypes.unexpectedRuntimeError, {
+                message: `Unable to confirm instance edition for '${instanceID}'. Error: ${JSON.stringify(error)}`
             });
+
+            return error;
+        });
     }
 
     getNewVersion(instanceID) {
-        return datasets.getInstance(instanceID)
+        return datasets
+            .getInstance(instanceID)
             .then(response => [null, response])
             .catch(error => {
-                this.handleRequestError('get details for this version', error.status);
+                this.handleRequestError("get details for this version", error.status);
                 console.error(`Unable to get version '${this.state.versionID}'`, error);
-                log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to get version '${this.state.versionID}'. Error: ${JSON.stringify(error)}`});
-                [error, null]
+                log.add(eventTypes.unexpectedRuntimeError, {
+                    message: `Unable to get version '${this.state.versionID}'. Error: ${JSON.stringify(error)}`
+                });
+                [error, null];
             });
     }
 
     addVersionToCollection(datasetID, edition, version) {
         return collections.addDatasetVersion(this.props.collectionID, datasetID, edition, version).catch(error => {
-            this.handleRequestError('add version to this collection', error.status);
-            console.error(`Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`, error);
-            log.add(eventTypes.unexpectedRuntimeError, {message: `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`});
+            this.handleRequestError("add version to this collection", error.status);
+            console.error(
+                `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${this.props.collectionID}'`,
+                error
+            );
+            log.add(eventTypes.unexpectedRuntimeError, {
+                message: `Unable to add version 'datasets/${datasetID}/editions/${edition}/versions/${version}' to the collection '${
+                    this.props.collectionID
+                }'. Error: ${JSON.stringify(error)}`
+            });
             return error;
         });
     }
@@ -560,7 +611,7 @@ export class VersionMetadata extends Component {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         const datasetID = this.props.params.datasetID;
 
-        this.setState({isSavingData: true});
+        this.setState({ isSavingData: true });
 
         if (this.state.isInstance) {
             const [createVersionErr, updateDimensionsErr] = [
@@ -568,20 +619,23 @@ export class VersionMetadata extends Component {
                 await this.updateDimensions(this.props.params.instanceID)
             ];
             if (isUpdatingReviewState && createVersionErr) {
-                this.handleRequestError(`submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`, undefined);
+                this.handleRequestError(
+                    `submit version for ${isSubmittingForReview ? "review" : ""}${isMarkingAsReviewed ? "approval" : ""}`,
+                    undefined
+                );
             }
             if (updateDimensionsErr && createVersionErr) {
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
             if (createVersionErr) {
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
 
             const [newVersionError, newVersion] = await this.getNewVersion(this.props.params.instanceID);
             if (newVersionError) {
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
 
@@ -591,56 +645,64 @@ export class VersionMetadata extends Component {
             if (this.state.isInstance && !isUpdatingReviewState) {
                 const addToCollectionErr = await this.addVersionToCollection(datasetID, edition, version);
                 if (!addToCollectionErr) {
-                    this.props.dispatch(push(url.resolve(`/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`)));
+                    this.props.dispatch(
+                        push(
+                            url.resolve(
+                                `/datasets/${datasetID}/editions/${edition}/versions/${version}/metadata?collection=${this.props.collectionID}`
+                            )
+                        )
+                    );
                     return;
                 }
 
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
 
             if (!isUpdatingReviewState) {
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
 
             const updateReviewStateErr = await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed);
             if (updateReviewStateErr) {
                 console.log("updateReviewStateErr: " + updateReviewStateErr);
-                this.setState({isSavingData: false});
+                this.setState({ isSavingData: false });
                 return;
             }
 
-            this.setState({isSavingData: false});
+            this.setState({ isSavingData: false });
             this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
             return;
         }
-        
+
         const edition = this.props.params.edition;
         const version = this.props.params.version;
         const [updateVersionErr, updateReviewStateErr] = [
             await this.updateVersionMetadata(datasetID, edition, version, body),
-            isUpdatingReviewState ? await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed) : await Promise.resolve(),
+            isUpdatingReviewState
+                ? await this.updateVersionReviewState(datasetID, edition, version, isSubmittingForReview, isMarkingAsReviewed)
+                : await Promise.resolve(),
             await this.updateDimensions(this.state.versionID)
         ];
-        
+
         if (updateVersionErr) {
-            this.setState({isSavingData: false});
+            this.setState({ isSavingData: false });
             return;
         }
         if (updateReviewStateErr) {
-            this.setState({isSavingData: false});
+            this.setState({ isSavingData: false });
             return;
         }
 
-        this.setState({isSavingData: false});
+        this.setState({ isSavingData: false });
 
         if (isUpdatingReviewState) {
             this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
         }
     }
 
-    mapTypeContentsToCard(items, type){
+    mapTypeContentsToCard(items, type) {
         if (type === "usageNotes") {
             return items.map(item => ({
                 title: item.title,
@@ -651,57 +713,55 @@ export class VersionMetadata extends Component {
         return items.map(item => {
             return {
                 title: type === "alerts" ? date.format(item.date, "dddd, dd/mm/yyyy h:MMTT") : item.name,
-                id: item.key,
-            }
+                id: item.key
+            };
         });
     }
 
     mapEditionsToSelectOptions() {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.output_instances[0].dataset_id === this.props.params.datasetID;
-        })
+        });
 
         const editions = recipe.output_instances[0].editions;
-        return editions.map((edition) => {
-            return {id: edition, name: edition}
+        return editions.map(edition => {
+            return { id: edition, name: edition };
         });
-      }
-  
-      mapDimensionsToInputs(dimensions){
-        return (
-          dimensions.map(dimension => {
-            return (    
-              <div key={dimension.id}>
-                <Input
-                    value={dimension.label ? dimension.label : dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}                  
-                    id={dimension.name}
-                    name="dimension-name"
-                    label="Dimension title"
-                    onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
-                />
-                <Input
-                    value={dimension.description}                  
-                    type="textarea"
-                    id={dimension.name} 
-                    name="dimension-description"
-                    label="Learn more (optional)"
-                    onChange={this.handleInputChange}
-                    disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
-                />
-            </div>
-            )
-          })
-        )
-      }
-    
+    }
+
+    mapDimensionsToInputs(dimensions) {
+        return dimensions.map(dimension => {
+            return (
+                <div key={dimension.id}>
+                    <Input
+                        value={dimension.label ? dimension.label : dimension.name.charAt(0).toUpperCase() + dimension.name.slice(1)}
+                        id={dimension.name}
+                        name="dimension-name"
+                        label="Dimension title"
+                        onChange={this.handleInputChange}
+                        disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
+                    />
+                    <Input
+                        value={dimension.description}
+                        type="textarea"
+                        id={dimension.name}
+                        name="dimension-description"
+                        label="Learn more (optional)"
+                        onChange={this.handleInputChange}
+                        disabled={this.state.isReadOnly || this.state.isSavingData || this.state.isFetchingDimensionsData}
+                    />
+                </div>
+            );
+        });
+    }
+
     handleEditRelatedClick(type, key) {
         let newState = {
             showModal: true,
             modalType: type,
             editKey: key,
             hasChanges: true
-        }
+        };
         let relatedItem;
         if (type === "alerts") {
             relatedItem = this.state.alerts.find(alert => {
@@ -712,7 +772,7 @@ export class VersionMetadata extends Component {
                 titleInput: relatedItem.date,
                 descInput: relatedItem.description,
                 checkboxInput: true
-            }
+            };
         }
 
         if (type === "changes") {
@@ -723,9 +783,9 @@ export class VersionMetadata extends Component {
                 ...newState,
                 titleInput: relatedItem.name,
                 descInput: relatedItem.description
-            }
+            };
         }
-        
+
         if (type === "usageNotes") {
             relatedItem = this.state.usageNotes.find(usageNote => {
                 return usageNote.key === key;
@@ -734,12 +794,14 @@ export class VersionMetadata extends Component {
                 ...newState,
                 titleInput: relatedItem.title,
                 descInput: relatedItem.note
-            }
+            };
         }
 
         if (!relatedItem) {
             console.error("Unable to find data for content item:", type, key);
-            log.add(eventTypes.runtimeWarning, {message: `Unable to find data for content item. Type: '${type}', key: '${key}'`});
+            log.add(eventTypes.runtimeWarning, {
+                message: `Unable to find data for content item. Type: '${type}', key: '${key}'`
+            });
             return;
         }
 
@@ -749,7 +811,7 @@ export class VersionMetadata extends Component {
     handleDeleteRelatedClick(type, key) {
         function remove(items, key) {
             return items.filter(item => {
-                return item.key !== key
+                return item.key !== key;
             });
         }
 
@@ -768,7 +830,7 @@ export class VersionMetadata extends Component {
             });
             return;
         }
-        
+
         if (type === "usageNotes") {
             this.setState({
                 usageNotes: remove(this.state.usageNotes, key),
@@ -779,10 +841,9 @@ export class VersionMetadata extends Component {
 
         console.warn("Attempt to remove a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
-     }
+    }
 
-
-     editRelatedLink(type, key) {
+    editRelatedLink(type, key) {
         const edit = items => {
             return items.map(item => {
                 if (item.key !== key) {
@@ -795,7 +856,7 @@ export class VersionMetadata extends Component {
                         description: this.state.descInput,
                         type: "alert",
                         hasChanged: true
-                    }
+                    };
                 }
                 if (type === "changes") {
                     return {
@@ -804,10 +865,10 @@ export class VersionMetadata extends Component {
                         description: this.state.descInput,
                         type: "summary of changes",
                         hasChanged: true
-                    }
+                    };
                 }
             });
-        }
+        };
         if (type === "alerts") {
             this.setState({
                 alerts: edit(this.state.alerts, key),
@@ -825,18 +886,18 @@ export class VersionMetadata extends Component {
 
         console.warn("Attempt to edit a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
-     }
+    }
 
     handleBackButton() {
         if (this.state.hasChanges) {
-            this.setState({showModal: true});
+            this.setState({ showModal: true });
             return;
         }
 
         const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
         this.props.dispatch(push(URL));
     }
-    
+
     handleRelatedContentCancel() {
         this.setState({
             showModal: false,
@@ -862,27 +923,27 @@ export class VersionMetadata extends Component {
         const id = target.id;
 
         if (name === "add-related-content-title") {
-            this.setState({titleInput: value});
-            if(this.state.titleError != null) {
-                this.setState({titleError: null})
+            this.setState({ titleInput: value });
+            if (this.state.titleError != null) {
+                this.setState({ titleError: null });
             }
         } else if (name === "add-related-content-desc") {
-            this.setState({descInput: value});
-            if(this.state.descError != null) {
-                this.setState({descError: null})
+            this.setState({ descInput: value });
+            if (this.state.descError != null) {
+                this.setState({ descError: null });
             }
         } else if (name === "dimension-name") {
             let dimensionLabel;
             dimensionLabel = this.state.dimensions.map(dimension => {
-                if (dimension.name === id){
+                if (dimension.name === id) {
                     return {
                         ...dimension,
                         label: value,
                         hasChanged: true
-                    }
+                    };
                 }
 
-                return dimension
+                return dimension;
             });
             this.setState({
                 dimensions: dimensionLabel
@@ -890,15 +951,15 @@ export class VersionMetadata extends Component {
         } else if (name === "dimension-description") {
             let dimensionDesc;
             dimensionDesc = this.state.dimensions.map(dimension => {
-                if (dimension.name === id){
+                if (dimension.name === id) {
                     return {
                         ...dimension,
                         description: value,
                         hasChanged: true
-                    }
+                    };
                 }
 
-                return dimension
+                return dimension;
             });
             this.setState({
                 dimensions: dimensionDesc
@@ -907,19 +968,20 @@ export class VersionMetadata extends Component {
             this.setState({
                 [name]: value
             });
-
         }
 
         if (!this.state.hasChanges) {
-            this.setState({hasChanges: true});
+            this.setState({ hasChanges: true });
         }
-     }
+    }
 
     handleSelectChange(event) {
         const target = event.target;
         const id = target.id;
         let value = target.value;
-        if (value === "default-option") {value = ""}
+        if (value === "default-option") {
+            value = "";
+        }
         this.setState({
             [id]: value,
             hasChanges: true
@@ -939,13 +1001,13 @@ export class VersionMetadata extends Component {
     handleRelatedContentSubmit(event) {
         event.preventDefault();
 
-        if(this.state.titleInput == "" || this.state.descInput == ""){
-            if(this.state.titleInput == ""){
+        if (this.state.titleInput == "" || this.state.descInput == "") {
+            if (this.state.titleInput == "") {
                 this.setState({
                     titleError: "You must provide a value"
                 });
             }
-            if (this.state.descInput == ""){
+            if (this.state.descInput == "") {
                 this.setState({
                     descError: "You must provide a description"
                 });
@@ -955,17 +1017,29 @@ export class VersionMetadata extends Component {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("alerts", this.state.editKey);
                 } else {
-                    const alerts = this.state.alerts.concat({date: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "alert"});
-                    this.setState({alerts: alerts});
+                    const alerts = this.state.alerts.concat({
+                        date: this.state.titleInput,
+                        description: this.state.descInput,
+                        key: uuid(),
+                        hasChanged: true,
+                        type: "alert"
+                    });
+                    this.setState({ alerts: alerts });
                 }
             } else if (this.state.modalType === "changes") {
                 if (this.state.editKey != "") {
                     this.editRelatedLink("changes", this.state.editKey);
                 } else {
-                    const changes = this.state.changes.concat({name: this.state.titleInput, description: this.state.descInput, key: uuid(), hasChanged:true, type: "summary of changes"});
-                    this.setState({changes: changes});
+                    const changes = this.state.changes.concat({
+                        name: this.state.titleInput,
+                        description: this.state.descInput,
+                        key: uuid(),
+                        hasChanged: true,
+                        type: "summary of changes"
+                    });
+                    this.setState({ changes: changes });
                 }
-            } 
+            }
 
             this.setState({
                 showModal: false,
@@ -987,18 +1061,20 @@ export class VersionMetadata extends Component {
             descInput: "",
             checkboxInput: false,
             hasChanges: true
-        }
+        };
 
-        // No existing usage notes so we just add our new one into state - stops any runtime errors if we set 
+        // No existing usage notes so we just add our new one into state - stops any runtime errors if we set
         // 'usageNotes' to null or undefined anywhere (because `.some()` would fail later)
         if (!this.state.usageNotes || this.state.usageNotes.length === 0) {
-            const usageNotes = [{
-                key: newUsageNote.id,
-                title: newUsageNote.title,
-                note: newUsageNote.note,
-                hasChanged: true,
-                type: "usageNotes"
-            }];
+            const usageNotes = [
+                {
+                    key: newUsageNote.id,
+                    title: newUsageNote.title,
+                    note: newUsageNote.note,
+                    hasChanged: true,
+                    type: "usageNotes"
+                }
+            ];
             this.setState({
                 ...newState,
                 usageNotes
@@ -1007,7 +1083,7 @@ export class VersionMetadata extends Component {
         }
 
         const isExistingUsageNote = this.state.usageNotes.some(usageNote => usageNote.key === newUsageNote.id);
-        
+
         if (isExistingUsageNote) {
             const usageNotes = this.state.usageNotes.map(usageNote => {
                 if (usageNote.key !== newUsageNote.id) {
@@ -1019,7 +1095,7 @@ export class VersionMetadata extends Component {
                     title: newUsageNote.title,
                     note: newUsageNote.note,
                     type: "usageNotes"
-                }
+                };
             });
 
             this.setState({
@@ -1037,14 +1113,14 @@ export class VersionMetadata extends Component {
             note: newUsageNote.note,
             hasChanged: true,
             type: "usageNotes"
-        })
+        });
 
         this.setState({
             ...newState,
             usageNotes
         });
     }
-     
+
     handleAlertSave(newAlert) {
         const newState = {
             showModal: false,
@@ -1054,18 +1130,20 @@ export class VersionMetadata extends Component {
             descInput: "",
             checkboxInput: false,
             hasChanges: true
-        }
+        };
 
-        // No existing alerts so we just add our new one into state - stops any runtime errors if we set 
+        // No existing alerts so we just add our new one into state - stops any runtime errors if we set
         // 'alerts' to null or undefined anywhere (because `.some()` would fail later)
         if (!this.state.alerts || this.state.alerts.length === 0) {
-            const alerts = [{
-                key: newAlert.id,
-                date: newAlert.date,
-                description: newAlert.description,
-                hasChanged: true,
-                type: newAlert.isCorrection ? "correction" : ""
-            }];
+            const alerts = [
+                {
+                    key: newAlert.id,
+                    date: newAlert.date,
+                    description: newAlert.description,
+                    hasChanged: true,
+                    type: newAlert.isCorrection ? "correction" : ""
+                }
+            ];
             this.setState({
                 ...newState,
                 alerts
@@ -1074,7 +1152,7 @@ export class VersionMetadata extends Component {
         }
 
         const isExistingAlert = this.state.alerts.some(alert => alert.key === newAlert.id);
-        
+
         if (isExistingAlert) {
             const alerts = this.state.alerts.map(alert => {
                 if (alert.key !== newAlert.id) {
@@ -1086,12 +1164,12 @@ export class VersionMetadata extends Component {
                     date: newAlert.date,
                     description: newAlert.description,
                     type: newAlert.isCorrection ? "correction" : ""
-                }
+                };
             });
 
             this.setState({
                 ...newState,
-                alerts,
+                alerts
             });
 
             return;
@@ -1104,18 +1182,18 @@ export class VersionMetadata extends Component {
             description: newAlert.description,
             hasChanged: true,
             type: newAlert.isCorrection ? "correction" : ""
-        })
+        });
 
         this.setState({
             ...newState,
             alerts
         });
     }
-    
+
     addErrorToSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
             return error === errorMsg;
-        })
+        });
 
         if (errorAlreadyInSummary) {
             return arr;
@@ -1123,11 +1201,11 @@ export class VersionMetadata extends Component {
 
         return [...arr, errorMsg];
     }
-    
+
     removeErrorFromSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
             return error === errorMsg;
-        })
+        });
 
         if (errorAlreadyInSummary) {
             const filteredArr = arr.filter(error => {
@@ -1141,7 +1219,7 @@ export class VersionMetadata extends Component {
 
     handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
         event.preventDefault();
-        
+
         let haveError = false;
         let formErrors = this.state.formErrors;
 
@@ -1187,7 +1265,7 @@ export class VersionMetadata extends Component {
                 alerts: alerts,
                 latest_changes: changes,
                 usage_notes: this.state.usageNotes
-            }
+            };
             if (this.state.releaseDate) {
                 instanceMetadata.release_date = this.state.releaseDate.toISOString();
             }
@@ -1196,12 +1274,16 @@ export class VersionMetadata extends Component {
         }
 
         if (!this.state.isInstance && !haveError) {
-            this.updateInstanceVersion({
-                release_date: this.state.releaseDate.toISOString(),
-                alerts: alerts,
-                latest_changes: changes,
-                usage_notes: this.state.usageNotes
-            }, isSubmittingForReview, isMarkingAsReviewed);
+            this.updateInstanceVersion(
+                {
+                    release_date: this.state.releaseDate.toISOString(),
+                    alerts: alerts,
+                    latest_changes: changes,
+                    usage_notes: this.state.usageNotes
+                },
+                isSubmittingForReview,
+                isMarkingAsReviewed
+            );
         }
     }
 
@@ -1232,9 +1314,9 @@ export class VersionMetadata extends Component {
                 lastEditedBy={instanceOrVersionData.lastEditedBy}
                 onSubmit={this.handleSaveAndSubmitForReview}
                 onApprove={this.handleSaveAndMarkAsReviewed}
-                notInCollectionYet={!instanceOrVersionData.collection_id}     
+                notInCollectionYet={!instanceOrVersionData.collection_id}
             />
-        )
+        );
     }
 
     renderModal() {
@@ -1252,19 +1334,19 @@ export class VersionMetadata extends Component {
                     onCancel={this.handleRelatedContentCancel}
                     id={this.state.editKey}
                 />
-            )
+            );
         }
-        
+
         if (this.state.modalType === "usageNotes") {
             return (
-                <UsageNotesController 
+                <UsageNotesController
                     title={this.state.titleInput}
                     note={this.state.descInput}
                     onSave={this.handleUsageNoteSave}
                     onCancel={this.handleRelatedContentCancel}
                     id={this.state.editKey}
                 />
-            )
+            );
         }
 
         if (this.state.modalType) {
@@ -1286,7 +1368,7 @@ export class VersionMetadata extends Component {
                         requiresURL={false}
                     />
                 </Modal>
-            )
+            );
         }
 
         return (
@@ -1296,17 +1378,21 @@ export class VersionMetadata extends Component {
                         <h2>Warning!</h2>
                     </div>
                     <div className="modal__body">
-                        <p>You will lose any changes by going back without saving. </p><br/>
-                        <p>Click "Continue" to lose changes and go back to the previous page or
-                            click "Cancel" to stay on the current page.</p>
+                        <p>You will lose any changes by going back without saving. </p>
+                        <br />
+                        <p>Click "Continue" to lose changes and go back to the previous page or click "Cancel" to stay on the current page.</p>
                     </div>
                     <div className="modal__footer">
-                    <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>Continue</button>
-                    <button type="button" className="btn" onClick={this.handleRelatedContentCancel}>Cancel</button>
+                        <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleModalSubmit}>
+                            Continue
+                        </button>
+                        <button type="button" className="btn" onClick={this.handleRelatedContentCancel}>
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </Modal>
-        )
+        );
     }
 
     render() {
@@ -1314,101 +1400,142 @@ export class VersionMetadata extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-xs-10 grid__col-md-6 grid__col-lg-4">
                     <div className="margin-top--2">
-                        &#9664; <button type="button" className="btn btn--link" onClick={this.handleBackButton}>Back</button>
+                        &#9664;{" "}
+                        <button type="button" className="btn btn--link" onClick={this.handleBackButton}>
+                            Back
+                        </button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Metadata</h1>
                     <p>This information is specific to this new data and can be updated each time new data is added.</p>
-                      {this.state.isFetchingData ?
+                    {this.state.isFetchingData ? (
                         <div className="margin-top--2">
                             <div className="loader loader--dark"></div>
                         </div>
-                      :
-                      <div className="padding-bottom--2">
-                        <h2 className="margin-top--1">{this.state.title || this.props.params.datasetID + " (title not available)"}</h2>
+                    ) : (
+                        <div className="padding-bottom--2">
+                            <h2 className="margin-top--1">{this.state.title || this.props.params.datasetID + " (title not available)"}</h2>
 
-                        <FormErrorSummary errors={this.state.formErrors} />
+                            <FormErrorSummary errors={this.state.formErrors} />
 
-                        <form onSubmit={this.handleSave}>
-                          <div className="margin-bottom--2">
-                            <div className="grid__col-6">
-                              <Select
-                                  id="edition"
-                                  label="Edition"
-                                  contents={this.mapEditionsToSelectOptions()}
-                                  onChange={this.handleSelectChange}
-                                  error={this.state.editionError}
-                                  selectedOption={this.state.edition}
-                                  disabled={this.state.isReadOnly || this.state.isSavingData}
-                              />
-                              <Input
-                                    id="release_date"
-                                    label="Release date"
-                                    type="date"
-                                    value={this.state.releaseDate && this.state.releaseDate.toISOString().substring(0, 10)}
-                                    onChange={this.handleReleaseDateChange}
-                                    error={this.state.releaseDateError}
-                                    selectedOption={this.state.edition}
-                                    disabled={this.state.isReadOnly || this.state.isSavingData}
-                              />
-                            </div>
-                            <div className="grid grid--justify-space-between">
-                                <h2 className="inline-block"> In this dataset </h2>
-                                <div><button onClick={this.populateDimensionInputs} className="btn btn--primary margin-left--1" type="button">Fill from latest version</button></div>
-                            </div>
-                            {this.mapDimensionsToInputs(this.state.dimensions)}
-                            <div className="margin-bottom--1">
-                                <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
-                                <p>The information below can change with each edition/version.</p>
-                                <div className="margin-bottom--1">
-                                    <h3 className="margin-top--1 margin-bottom--1">Alerts and corrections</h3>
-                                    <CardList
-                                        contents={this.mapTypeContentsToCard(this.state.alerts, "alerts")}
-                                        type="alerts"
-                                        onEdit={this.handleEditRelatedClick}
-                                        onDelete={this.handleDeleteRelatedClick}
-                                        disabled={this.state.isReadOnly || this.state.isSavingData}
-                                    />
-                                    <button disabled={this.state.isReadOnly || this.state.isSavingData} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("alerts")}}>Add an alert</button>
+                            <form onSubmit={this.handleSave}>
+                                <div className="margin-bottom--2">
+                                    <div className="grid__col-6">
+                                        <Select
+                                            id="edition"
+                                            label="Edition"
+                                            contents={this.mapEditionsToSelectOptions()}
+                                            onChange={this.handleSelectChange}
+                                            error={this.state.editionError}
+                                            selectedOption={this.state.edition}
+                                            disabled={this.state.isReadOnly || this.state.isSavingData}
+                                        />
+                                        <Input
+                                            id="release_date"
+                                            label="Release date"
+                                            type="date"
+                                            value={this.state.releaseDate && this.state.releaseDate.toISOString().substring(0, 10)}
+                                            onChange={this.handleReleaseDateChange}
+                                            error={this.state.releaseDateError}
+                                            selectedOption={this.state.edition}
+                                            disabled={this.state.isReadOnly || this.state.isSavingData}
+                                        />
+                                    </div>
+                                    <div className="grid grid--justify-space-between">
+                                        <h2 className="inline-block"> In this dataset </h2>
+                                        <div>
+                                            <button onClick={this.populateDimensionInputs} className="btn btn--primary margin-left--1" type="button">
+                                                Fill from latest version
+                                            </button>
+                                        </div>
+                                    </div>
+                                    {this.mapDimensionsToInputs(this.state.dimensions)}
+                                    <div className="margin-bottom--1">
+                                        <h2 className="margin-top--2 margin-bottom--1">What's changed</h2>
+                                        <p>The information below can change with each edition/version.</p>
+                                        <div className="margin-bottom--1">
+                                            <h3 className="margin-top--1 margin-bottom--1">Alerts and corrections</h3>
+                                            <CardList
+                                                contents={this.mapTypeContentsToCard(this.state.alerts, "alerts")}
+                                                type="alerts"
+                                                onEdit={this.handleEditRelatedClick}
+                                                onDelete={this.handleDeleteRelatedClick}
+                                                disabled={this.state.isReadOnly || this.state.isSavingData}
+                                            />
+                                            <button
+                                                disabled={this.state.isReadOnly || this.state.isSavingData}
+                                                type="button"
+                                                className="btn btn--link"
+                                                onClick={() => {
+                                                    this.handleAddRelatedClick("alerts");
+                                                }}
+                                            >
+                                                Add an alert
+                                            </button>
+                                        </div>
+                                        <div className="margin-bottom--1">
+                                            <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
+                                            <CardList
+                                                contents={this.mapTypeContentsToCard(this.state.changes, "changes")}
+                                                type="changes"
+                                                onEdit={this.handleEditRelatedClick}
+                                                onDelete={this.handleDeleteRelatedClick}
+                                            />
+                                            <button
+                                                disabled={this.state.isSavingData || this.state.isReadOnly}
+                                                type="button"
+                                                className="btn btn--link"
+                                                onClick={() => {
+                                                    this.handleAddRelatedClick("changes", "Add a change");
+                                                }}
+                                            >
+                                                Add change
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className="margin-bottom--1">
+                                        <h2 className="margin-top--2 margin-bottom--1">Usage notes</h2>
+                                        <CardList
+                                            contents={this.mapTypeContentsToCard(this.state.usageNotes, "usageNotes")}
+                                            type="usageNotes"
+                                            onEdit={this.handleEditRelatedClick}
+                                            onDelete={this.handleDeleteRelatedClick}
+                                        />
+                                        <button
+                                            disabled={this.state.isSavingData || this.state.isReadOnly}
+                                            type="button"
+                                            className="btn btn--link"
+                                            onClick={() => {
+                                                this.handleAddRelatedClick("usageNotes", "Add a usage note");
+                                            }}
+                                        >
+                                            Add usage note
+                                        </button>
+                                    </div>
                                 </div>
-                                <div className="margin-bottom--1">
-                                    <h3 className="margin-top--1 margin-bottom--1">Summary of changes</h3>
-                                    <CardList
-                                        contents={this.mapTypeContentsToCard(this.state.changes, "changes")}
-                                        type="changes"
-                                        onEdit={this.handleEditRelatedClick}
-                                        onDelete={this.handleDeleteRelatedClick}
-                                    />
-                                    <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("changes", "Add a change")}}>Add change</button>
-                                </div>
-                            </div>
-                            <div className="margin-bottom--1">
-                                <h2 className="margin-top--2 margin-bottom--1">Usage notes</h2>
-                                <CardList
-                                    contents={this.mapTypeContentsToCard(this.state.usageNotes, "usageNotes")}
-                                    type="usageNotes"
-                                    onEdit={this.handleEditRelatedClick}
-                                    onDelete={this.handleDeleteRelatedClick}
-                                />
-                                <button disabled={this.state.isSavingData || this.state.isReadOnly} type="button" className="btn btn--link" onClick={() => {this.handleAddRelatedClick("usageNotes", "Add a usage note")}}>Add usage note</button>
-                            </div>
-                          </div>
-                          <button type="submit" className="btn btn--primary margin-bottom--1" disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}>Save</button>
-                          <span className="margin-left--1">
-                            {this.renderReviewActions()}
-                          </span>
-                          {this.state.isSavingData &&
-                            <div className="loader loader--dark loader--inline margin-left--1"></div>
-                          }
-                          {!this.state.isInstance &&
-                            <Link className="margin-left--1" to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}>Preview</Link>
-                            }
-                        </form>
-                      </div>
-                    }
+                                <button
+                                    type="submit"
+                                    className="btn btn--primary margin-bottom--1"
+                                    disabled={this.state.isReadOnly || this.state.isFetchingCollectionData || this.state.isSavingData}
+                                >
+                                    Save
+                                </button>
+                                <span className="margin-left--1">{this.renderReviewActions()}</span>
+                                {this.state.isSavingData && <div className="loader loader--dark loader--inline margin-left--1"></div>}
+                                {!this.state.isInstance && (
+                                    <Link
+                                        className="margin-left--1"
+                                        to={url.resolve(`preview?collection=${this.props.collectionID}`, !this.props.collectionID)}
+                                    >
+                                        Preview
+                                    </Link>
+                                )}
+                            </form>
+                        </div>
+                    )}
                 </div>
                 {this.state.showModal === true && this.renderModal()}
             </div>
-        )
+        );
     }
 }
 
@@ -1416,14 +1543,14 @@ VersionMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-      rootPath: state.state.rootPath,
-      userEmail: state.state.user.email,
-      collectionID: state.routing.locationBeforeTransitions.query.collection,
-      instance: state.state.datasets.activeInstance,
-      version: state.state.datasets.activeVersion,
-      recipes: state.state.datasets.recipes,
-      dataset: state.state.datasets.activeDataset
-    }
+        rootPath: state.state.rootPath,
+        userEmail: state.state.user.email,
+        collectionID: state.routing.locationBeforeTransitions.query.collection,
+        instance: state.state.datasets.activeInstance,
+        version: state.state.datasets.activeVersion,
+        recipes: state.state.datasets.recipes,
+        dataset: state.state.datasets.activeDataset
+    };
 }
 
 export default connect(mapStateToProps)(VersionMetadata);

@@ -1,9 +1,9 @@
-import { browserHistory } from 'react-router';
-import { store } from '../config/store';
+import { browserHistory } from "react-router";
+import { store } from "../config/store";
 
 /**
  * Redirects to one of the main views in Florence - chooses whether it needs to redirect to old Florence or route within the new application
- * 
+ *
  * @param {string} - The path of the view that we want to redirect to
  */
 
@@ -15,7 +15,12 @@ export default function redirectToMainScreen(screen) {
         return;
     }
 
-    if (screen.startsWith(`${rootPath}/teams`) || screen.startsWith(`${rootPath}/datasets`) || screen.startsWith(`${rootPath}/collections`) || screen.startsWith(`${rootPath}/users`)) {
+    if (
+        screen.startsWith(`${rootPath}/teams`) ||
+        screen.startsWith(`${rootPath}/datasets`) ||
+        screen.startsWith(`${rootPath}/collections`) ||
+        screen.startsWith(`${rootPath}/users`)
+    ) {
         browserHistory.push(screen);
         return;
     }

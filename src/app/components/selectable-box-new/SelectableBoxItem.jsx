@@ -1,16 +1,15 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     id: PropTypes.any.isRequired,
-    columns: PropTypes.arrayOf(PropTypes.shape({
-        heading: PropTypes.string.isRequired,
-        width: PropTypes.string.isRequired
-    })).isRequired,
-    columnValues: PropTypes.arrayOf(PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element
-    ])),
+    columns: PropTypes.arrayOf(
+        PropTypes.shape({
+            heading: PropTypes.string.isRequired,
+            width: PropTypes.string.isRequired
+        })
+    ).isRequired,
+    columnValues: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element])),
     handleClick: PropTypes.func.isRequired,
     isSelected: PropTypes.bool,
     returnValue: PropTypes.object.isRequired,
@@ -18,9 +17,9 @@ const propTypes = {
         neutral: PropTypes.bool,
         warning: PropTypes.bool,
         success: PropTypes.bool,
-        message: PropTypes.string,
-    }),
-}
+        message: PropTypes.string
+    })
+};
 
 export default class SelectableBoxItem extends Component {
     constructor(props) {
@@ -42,11 +41,11 @@ export default class SelectableBoxItem extends Component {
                 <div key={`${this.props.id}-col-${i}`} className={`grid__col-${this.props.columns[i].width}`}>
                     {this.props.columnValues[i]}
 
-                    {status.message && isFirstColumn ? <strong>{status.message}</strong> : ''}
+                    {status.message && isFirstColumn ? <strong>{status.message}</strong> : ""}
                 </div>
-            )
+            );
         }
-        return columns
+        return columns;
     }
 
     render() {
@@ -54,13 +53,14 @@ export default class SelectableBoxItem extends Component {
         return (
             <li
                 id={this.props.id}
-                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${status.neutral ? " neutral" : ""} ${status.warning ? " warning" : ""}`}
-                onClick={this.bindClick}>
-                <div className="grid">
-                    {this.renderColumns()}
-                </div>
+                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${status.neutral ? " neutral" : ""} ${
+                    status.warning ? " warning" : ""
+                }`}
+                onClick={this.bindClick}
+            >
+                <div className="grid">{this.renderColumns()}</div>
             </li>
-        )
+        );
     }
 }
 

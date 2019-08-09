@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import DefaultLog from './DefaultLog';
+import DefaultLog from "./DefaultLog";
 
 const propTypes = {
     children: PropTypes.node,
@@ -17,7 +17,7 @@ const propTypes = {
         retryCount: PropTypes.number,
         willRetry: PropTypes.bool
     })
-}
+};
 
 class RouteLog extends Component {
     constructor(props) {
@@ -27,20 +27,12 @@ class RouteLog extends Component {
     render() {
         return (
             <DefaultLog {...this.props}>
-                {this.props.payload.URI &&
-                    <div>URI: {this.props.payload.URI}</div>
-                }
-                {this.props.payload.method &&
-                    <div>Method: {this.props.payload.method}</div>
-                }
-                {this.props.payload.status &&
-                    <div>Status: {this.props.payload.status}</div>
-                }
-                {this.props.payload.message &&
-                    <div>Message: {this.props.payload.message}</div>
-                }
+                {this.props.payload.URI && <div>URI: {this.props.payload.URI}</div>}
+                {this.props.payload.method && <div>Method: {this.props.payload.method}</div>}
+                {this.props.payload.status && <div>Status: {this.props.payload.status}</div>}
+                {this.props.payload.message && <div>Message: {this.props.payload.message}</div>}
             </DefaultLog>
-        )
+        );
     }
 }
 

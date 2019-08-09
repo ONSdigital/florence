@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Input from '../../../components/Input';
+import Input from "../../../components/Input";
 
 const propTypes = {
     input: PropTypes.shape({
@@ -13,7 +13,7 @@ const propTypes = {
     onCancel: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
     onFormInput: PropTypes.func.isRequired
-}
+};
 
 class TeamDeleteForm extends Component {
     constructor(props) {
@@ -28,7 +28,7 @@ class TeamDeleteForm extends Component {
                 </div>
                 <div className="modal__body">
                     <div className="form__input">
-                        <Input 
+                        <Input
                             type="text"
                             label="Confirm the name of the team you'd like to delete"
                             id="team-name"
@@ -39,14 +39,16 @@ class TeamDeleteForm extends Component {
                     </div>
                 </div>
                 <div className="modal__footer">
-                    <button disabled={this.props.isPosting} className={"btn btn--warning btn--margin-right"}>Delete</button>
-                    <button type="button" disabled={this.props.isPosting} className="btn" onClick={this.props.onCancel}>Cancel</button>
-                    {this.props.isPosting && 
-                        <div className="loader"></div>
-                    }
+                    <button disabled={this.props.isPosting} className={"btn btn--warning btn--margin-right"}>
+                        Delete
+                    </button>
+                    <button type="button" disabled={this.props.isPosting} className="btn" onClick={this.props.onCancel}>
+                        Cancel
+                    </button>
+                    {this.props.isPosting && <div className="loader"></div>}
                 </div>
             </form>
-        )
+        );
     }
 }
 

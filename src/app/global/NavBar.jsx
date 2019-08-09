@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { Link } from "react-router";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import url from '../utilities/url'
-import cookies from '../utilities/cookies';
-import auth from '../utilities/auth';
-import PreviewNav from './PreviewNav';
-import user from '../utilities/api-clients/user';
+import url from "../utilities/url";
+import cookies from "../utilities/cookies";
+import auth from "../utilities/auth";
+import PreviewNav from "./PreviewNav";
+import user from "../utilities/api-clients/user";
 
 const propTypes = {
     config: PropTypes.shape({
@@ -21,7 +21,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired
-}
+};
 
 export class NavBar extends Component {
     constructor(props) {
@@ -36,11 +36,11 @@ export class NavBar extends Component {
 
     renderWorkingOnItem() {
         const workingOn = this.props.workingOn || {};
-        const showWorkingOn = workingOn.id;    
+        const showWorkingOn = workingOn.id;
         if (!showWorkingOn) {
-            return
+            return;
         }
-        
+
         const route = this.props.location.pathname;
         if (route.indexOf(`/datasets`) >= 0 || route.indexOf(`/preview`) >= 0) {
             return (
@@ -48,66 +48,80 @@ export class NavBar extends Component {
                 <li className="global-nav__item global-nav__item--working-on">
                     <Link to={url.resolve(`/collections/${this.props.workingOn.id}`)} className="global-nav__link selected">
                         Working on:&nbsp;
-                        {this.props.workingOn.name || 
+                        {this.props.workingOn.name || (
                             <div className="margin-left--1 inline-block">
                                 <div className="loader loader--inline loader--small"></div>
                             </div>
-                        }
+                        )}
                     </Link>
                 </li>
-            )
+            );
         }
     }
 
     renderNavItems() {
-        if(!auth.isAuthenticated(this.props.user)) {
+        if (!auth.isAuthenticated(this.props.user)) {
             return (
                 <li className="global-nav__item">
-                    <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">Login</Link>
+                    <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
+                        Login
+                    </Link>
                 </li>
-            )
+            );
         }
 
         const rootPath = this.props.rootPath;
         return (
             <span>
-                { this.renderWorkingOnItem() }
+                {this.renderWorkingOnItem()}
                 <li className="global-nav__item">
-                    <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">Collections</Link>
+                    <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">
+                        Collections
+                    </Link>
                 </li>
-                {auth.isAdminOrEditor(this.props.user) ?
+                {auth.isAdminOrEditor(this.props.user) ? (
                     <span>
-                        {this.props.config.enableDatasetImport &&
+                        {this.props.config.enableDatasetImport && (
                             <li className="global-nav__item">
                                 <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
                                     Datasets
                                 </Link>
                             </li>
-                        }
+                        )}
                         <li className="global-nav__item">
-                            <a className="global-nav__link" href="/florence/publishing-queue">Publishing queue</a>
+                            <a className="global-nav__link" href="/florence/publishing-queue">
+                                Publishing queue
+                            </a>
                         </li>
 
                         <li className="global-nav__item">
-                            <a className="global-nav__link" href="/florence/reports">Reports</a>
+                            <a className="global-nav__link" href="/florence/reports">
+                                Reports
+                            </a>
                         </li>
 
                         <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">Users and access</Link>
+                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                Users and access
+                            </Link>
                         </li>
 
                         <li className="global-nav__item">
-                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">Teams</Link>
+                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
+                                Teams
+                            </Link>
                         </li>
                     </span>
-                : "" }
+                ) : (
+                    ""
+                )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={this.handleLogoutClick} className="global-nav__link">
                         Logout
                     </Link>
                 </li>
             </span>
-        )
+        );
     }
 
     render() {
@@ -118,9 +132,8 @@ export class NavBar extends Component {
                 {isViewingPreview && <PreviewNav />}
                 {this.renderNavItems()}
             </ul>
-        )
+        );
     }
-
 }
 
 function mapStateToProps(state) {
@@ -133,7 +146,7 @@ function mapStateToProps(state) {
         rootPath,
         workingOn,
         config: state.state.config
-    }
+    };
 }
 
 NavBar.propTypes = propTypes;

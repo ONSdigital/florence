@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Input from '../../../../components/Input';
+import Input from "../../../../components/Input";
 
 const propTypes = {
     formTitle: PropTypes.string,
@@ -16,12 +16,12 @@ const propTypes = {
     onCancel: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
     onFormInput: PropTypes.func.isRequired,
-    titleError:PropTypes.string,
-    urlError:PropTypes.string,
-    descError:PropTypes.string,
-    requiresDescription:PropTypes.bool,
-    requiresURL:PropTypes.bool
-}
+    titleError: PropTypes.string,
+    urlError: PropTypes.string,
+    descError: PropTypes.string,
+    requiresDescription: PropTypes.bool,
+    requiresURL: PropTypes.bool
+};
 
 class RelatedContentForm extends Component {
     constructor(props) {
@@ -35,7 +35,7 @@ class RelatedContentForm extends Component {
             urlInput: "",
             descLabel: "",
             descInput: ""
-        }
+        };
     }
 
     componentWillMount() {
@@ -47,7 +47,7 @@ class RelatedContentForm extends Component {
                 titleLabel: this.props.titleLabel,
                 urlLabel: this.props.urlLabel,
                 descLabel: this.props.descLabel,
-                formTitle: this.props.formTitle               
+                formTitle: this.props.formTitle
             });
         }
     }
@@ -59,18 +59,18 @@ class RelatedContentForm extends Component {
                     <h2>{this.props.formTitle}:</h2>
                 </div>
                 <div className="modal__body">
-                      <Input
-                            type="text"
-                            label={this.props.titleLabel}
-                            id="add-related-content-title"
-                            name="add-related-content-title"
-                            error={this.props.titleError}
-                            onChange={this.props.onFormInput}
-                            onCancel={this.props.onCancel}
-                            isFocused={true}
-                            value={this.props.titleInput}
-                        />
-                        {this.props.requiresURL &&
+                    <Input
+                        type="text"
+                        label={this.props.titleLabel}
+                        id="add-related-content-title"
+                        name="add-related-content-title"
+                        error={this.props.titleError}
+                        onChange={this.props.onFormInput}
+                        onCancel={this.props.onCancel}
+                        isFocused={true}
+                        value={this.props.titleInput}
+                    />
+                    {this.props.requiresURL && (
                         <Input
                             type="text"
                             label={this.props.urlLabel}
@@ -81,8 +81,8 @@ class RelatedContentForm extends Component {
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                         />
-                        }
-                        {this.props.requiresDescription &&
+                    )}
+                    {this.props.requiresDescription && (
                         <Input
                             type="textarea"
                             label={this.props.descLabel}
@@ -93,17 +93,19 @@ class RelatedContentForm extends Component {
                             onChange={this.props.onFormInput}
                             onCancel={this.props.onCancel}
                         />
-                         }
-                    </div>
-                    <div className="modal__footer">
-                    <button disabled={this.props.isPosting} className={"btn btn--primary btn--margin-right"}>Add</button>
-                    <button type="button" disabled={this.props.isPosting} className="btn" onClick={this.props.onCancel}>Cancel</button>
-                    {this.props.isPosting &&
-                        <div className="loader"></div>
-                    }
+                    )}
+                </div>
+                <div className="modal__footer">
+                    <button disabled={this.props.isPosting} className={"btn btn--primary btn--margin-right"}>
+                        Add
+                    </button>
+                    <button type="button" disabled={this.props.isPosting} className="btn" onClick={this.props.onCancel}>
+                        Cancel
+                    </button>
+                    {this.props.isPosting && <div className="loader"></div>}
                 </div>
             </form>
-        )
+        );
     }
 }
 

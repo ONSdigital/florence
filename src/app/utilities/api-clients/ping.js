@@ -1,4 +1,4 @@
-import uuid from 'uuid/v4';
+import uuid from "uuid/v4";
 
 export default function ping() {
     /* 
@@ -10,17 +10,20 @@ export default function ping() {
         credentials: "include",
         method: "POST",
         body: JSON.stringify({})
-    }
-   
-    return fetch('/zebedee/ping', fetchConfig).then(response => {
-        if (!response.ok) {
-            throw response;
-        }
-        return response.json();
-    }).then(response => {
-        return response;
-    }).catch(error => {
-        console.error(error)
-        return Promise.reject(error);
-    })
+    };
+
+    return fetch("/zebedee/ping", fetchConfig)
+        .then(response => {
+            if (!response.ok) {
+                throw response;
+            }
+            return response.json();
+        })
+        .then(response => {
+            return response;
+        })
+        .catch(error => {
+            console.error(error);
+            return Promise.reject(error);
+        });
 }

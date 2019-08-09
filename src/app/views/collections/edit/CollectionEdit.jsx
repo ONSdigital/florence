@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import dateFormat from 'dateformat';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import dateFormat from "dateformat";
 
-import Input from '../../../components/Input';
-import Select from '../../../components/Select';
-import SelectedItemList from '../../../components/selected-items/SelectedItemList';
-import RadioGroup from '../../../components/radio-buttons/RadioGroup';
-import date from '../../../utilities/date';
+import Input from "../../../components/Input";
+import Select from "../../../components/Select";
+import SelectedItemList from "../../../components/selected-items/SelectedItemList";
+import RadioGroup from "../../../components/radio-buttons/RadioGroup";
+import date from "../../../utilities/date";
 
 const propTypes = {
     originalName: PropTypes.string,
@@ -24,14 +24,18 @@ const propTypes = {
     publishDateErrorMsg: PropTypes.string,
     publishTime: PropTypes.string,
     publishTimeErrorMsg: PropTypes.string,
-    teams: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-    })),
-    allTeams: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-    })),
+    teams: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+        })
+    ),
+    allTeams: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+        })
+    ),
     publishType: PropTypes.string.isRequired,
     originalPublishType: PropTypes.string.isRequired,
     originalPublishDate: PropTypes.string.isRequired,
@@ -44,8 +48,12 @@ class CollectionEdit extends Component {
         super(props);
 
         this.publishTypeRadioButtons = [
-            {id: "edit-type-schedule", value: "scheduled", label: "Scheduled"},
-            {id: "edit-type-manual", value: "manual", label: "Manual"}
+            {
+                id: "edit-type-schedule",
+                value: "scheduled",
+                label: "Scheduled"
+            },
+            { id: "edit-type-manual", value: "manual", label: "Manual" }
         ];
 
         this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");
@@ -63,7 +71,7 @@ class CollectionEdit extends Component {
     handleTeamSelection(event) {
         this.props.onTeamSelect(event.target.value);
     }
-    
+
     handleTeamRemove(team) {
         this.props.onRemoveTeam(team.id);
     }
@@ -95,23 +103,19 @@ class CollectionEdit extends Component {
         }
 
         if (this.props.originalPublishType === "manual") {
-            return <p>Manual publish</p>
+            return <p>Manual publish</p>;
         }
 
         if (this.props.originalPublishType === "scheduled" && this.props.originalPublishDate) {
-            return (
-                <p>Publish date: {this.props.originalPublishDate}</p>
-            )
+            return <p>Publish date: {this.props.originalPublishDate}</p>;
         }
 
         if (this.props.originalPublishType === "scheduled" && !this.props.originalPublishDate) {
-            return (
-                <p>Publish date: no publish date available</p>
-            )
+            return <p>Publish date: no publish date available</p>;
         }
     }
 
-    render () {
+    render() {
         return (
             <div className="drawer__container">
                 <div className="drawer__heading">
@@ -145,7 +149,7 @@ class CollectionEdit extends Component {
                                 selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
                             />
-                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove}/>
+                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove} />
                             <RadioGroup
                                 groupName="collection-edit-type"
                                 radioData={this.publishTypeRadioButtons}
@@ -154,7 +158,7 @@ class CollectionEdit extends Component {
                                 legend="Publish type"
                                 inline={true}
                             />
-                            {this.props.publishType === "scheduled" && 
+                            {this.props.publishType === "scheduled" && (
                                 <span>
                                     <Input
                                         type="date"
@@ -175,10 +179,10 @@ class CollectionEdit extends Component {
                                         onChange={this.handlePublishTimeChange}
                                     />
                                 </span>
-                            }
-                            
+                            )}
+
                             {/* Without this hidden submit input the form doesn't submit on enter consistently */}
-                            <input type="submit" hidden={true}/>
+                            <input type="submit" hidden={true} />
                         </form>
                     </div>
                 </div>
@@ -186,19 +190,28 @@ class CollectionEdit extends Component {
                     <div className="grid grid--justify-space-around">
                         <div className="grid__col-8 margin-top--1 margin-bottom--1">
                             <div>
-                                <button disabled={this.props.isSavingEdits} className="btn btn--positive" type="button" onClick={this.handleSave}>Save and return</button>
-                                <button disabled={this.props.isSavingEdits} className="btn btn--margin-left" type="button" onClick={this.props.onCancel}>Cancel</button>
-                                {this.props.isSavingEdits &&
+                                <button disabled={this.props.isSavingEdits} className="btn btn--positive" type="button" onClick={this.handleSave}>
+                                    Save and return
+                                </button>
+                                <button
+                                    disabled={this.props.isSavingEdits}
+                                    className="btn btn--margin-left"
+                                    type="button"
+                                    onClick={this.props.onCancel}
+                                >
+                                    Cancel
+                                </button>
+                                {this.props.isSavingEdits && (
                                     <div className="inline-block">
                                         <div className="form__loader loader"></div>
                                     </div>
-                                }
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

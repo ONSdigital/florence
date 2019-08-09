@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import NavBar from './NavBar';
+import NavBar from "./NavBar";
 
 const propTypes = {
     children: PropTypes.node.isRequired,
@@ -16,7 +16,7 @@ export default class Layout extends Component {
                 <NavBar location={this.props.location} />
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     id: PropTypes.string,
@@ -20,7 +20,7 @@ const propTypes = {
 };
 
 const defaultProps = {
-    disabled: false,
+    disabled: false
 };
 
 class Select extends Component {
@@ -35,17 +35,24 @@ class Select extends Component {
     }
 
     handleFocus() {
-        this.state.isFocused ? this.setState({isFocused: false}) : this.setState({isFocused: true})
+        this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
     }
 
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
-                {this.props.error &&
-                    <div className="error-msg">{this.props.error}</div>
-                }
-                <div className={"select-wrap " + (this.state.isFocused ? "select-wrap--focus" : "") + (this.props.error ? "select-wrap--error" : "") + (this.props.disabled ? "select-wrap--disabled" : "")}>
+                <label className="form__label" htmlFor={this.props.id}>
+                    {this.props.label}
+                </label>
+                {this.props.error && <div className="error-msg">{this.props.error}</div>}
+                <div
+                    className={
+                        "select-wrap " +
+                        (this.state.isFocused ? "select-wrap--focus" : "") +
+                        (this.props.error ? "select-wrap--error" : "") +
+                        (this.props.disabled ? "select-wrap--disabled" : "")
+                    }
+                >
                     <select
                         className="select"
                         id={this.props.id}
@@ -58,12 +65,16 @@ class Select extends Component {
                     >
                         <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
                         {this.props.contents.map((item, index) => {
-                            return <option disabled={item.disabled} key={index} value={item.id}>{item.name}</option>
+                            return (
+                                <option disabled={item.disabled} key={index} value={item.id}>
+                                    {item.name}
+                                </option>
+                            );
                         })}
                     </select>
                 </div>
             </div>
-        )
+        );
     }
 }
 

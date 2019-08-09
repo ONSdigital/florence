@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import SelectableTableController from './selectable-table/SelectableTableController';
-import datasets from '../../utilities/api-clients/datasets';
-import collections from '../../utilities/api-clients/collections';
-import notifications from '../../utilities/notifications';
-import recipes from '../../utilities/api-clients/recipes';
-import {updateAllRecipes, updateAllDatasets} from '../../config/actions'
+import SelectableTableController from "./selectable-table/SelectableTableController";
+import datasets from "../../utilities/api-clients/datasets";
+import collections from "../../utilities/api-clients/collections";
+import notifications from "../../utilities/notifications";
+import recipes from "../../utilities/api-clients/recipes";
+import { updateAllRecipes, updateAllDatasets } from "../../config/actions";
 
-import url from '../../utilities/url'
+import url from "../../utilities/url";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    collectionID: PropTypes.string.isRequired,
-}
+    collectionID: PropTypes.string.isRequired
+};
 
 class DatasetsController extends Component {
     constructor(props) {
@@ -31,106 +31,107 @@ class DatasetsController extends Component {
     }
 
     componentWillMount() {
-        this.setState({isFetchingDatasets: true});
- 
-        const fetches = [
-            datasets.getNewVersionsAndCompletedInstances(),
-            datasets.getAll(),
-            collections.getAll()
-        ]
-        Promise.all(fetches).then(responses => {
-            this.setState({
-                isFetchingDatasets: false,
-                collections: responses[2],
-                tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
-            }); 
-            this.props.dispatch(updateAllDatasets(responses[1].items));
-        }).catch(error => {
-            switch (error.status) {
-                case(403):{
-                    const notification = {
-                        "type": "neutral",
-                        "message": "You do not permission to view submitted datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification)
-                    break;
-                }
-                case(404):{
-                    const notification = {
-                        "type": "warning",
-                        "message": "No API route available to get all submitted datasets",
-                        isDismissable: true
-                    }
-                    notifications.add(notification)
-                    break;
-                }
-                case("RESPONSE_ERR"):{
-                    const notification = {
-                        "type": "warning",
-                        "message": "An error's occurred whilst trying to get the submitted datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification)
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error has occurred whilst trying to get the submitted datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            this.setState({isFetchingData: false});
-        });
+        this.setState({ isFetchingDatasets: true });
 
-        recipes.getAll().then(allRecipes => {
-            this.props.dispatch(updateAllRecipes(allRecipes.items));
-        }).catch(error => {
-            const notification = {
-                type: "warning",
-                message: "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
-                isDismissable: true
-            }
-            notifications.add(notification);
-            console.error("Error getting dataset recipes:\n", error);
-        });
+        const fetches = [datasets.getNewVersionsAndCompletedInstances(), datasets.getAll(), collections.getAll()];
+        Promise.all(fetches)
+            .then(responses => {
+                this.setState({
+                    isFetchingDatasets: false,
+                    collections: responses[2],
+                    tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
+                });
+                this.props.dispatch(updateAllDatasets(responses[1].items));
+            })
+            .catch(error => {
+                switch (error.status) {
+                    case 403: {
+                        const notification = {
+                            type: "neutral",
+                            message: "You do not permission to view submitted datasets.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case 404: {
+                        const notification = {
+                            type: "warning",
+                            message: "No API route available to get all submitted datasets",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "RESPONSE_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "An error's occurred whilst trying to get the submitted datasets.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error has occurred whilst trying to get the submitted datasets.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                this.setState({ isFetchingData: false });
+            });
 
+        recipes
+            .getAll()
+            .then(allRecipes => {
+                this.props.dispatch(updateAllRecipes(allRecipes.items));
+            })
+            .catch(error => {
+                const notification = {
+                    type: "warning",
+                    message:
+                        "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
+                    isDismissable: true
+                };
+                notifications.add(notification);
+                console.error("Error getting dataset recipes:\n", error);
+            });
     }
 
     handleInstanceStatusMessage(state, collectionID, collections) {
-        if (state === "completed" || state === "edition-confirmed"){
-            return "New"
+        if (state === "completed" || state === "edition-confirmed") {
+            return "New";
         }
 
         if (state === "associated") {
             const collection = collections.find(collection => {
                 return collection.id === collectionID;
             });
-            return collection ? "In collection: " + collection.name : "In an unrecognised collection"
+            return collection ? "In collection: " + collection.name : "In an unrecognised collection";
         }
-
     }
 
     mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
@@ -147,7 +148,14 @@ class DatasetsController extends Component {
                             isInstance: !(instance.edition && instance.version),
                             edition: instance.edition || "-",
                             version: instance.version || "-",
-                            url: this.handleInstanceURL(instance.state, activeCollectionID, datasetID,instance.id, instance.edition, instance.version),
+                            url: this.handleInstanceURL(
+                                instance.state,
+                                activeCollectionID,
+                                datasetID,
+                                instance.id,
+                                instance.edition,
+                                instance.version
+                            ),
                             status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections)
                         });
                     }
@@ -158,7 +166,7 @@ class DatasetsController extends Component {
                     id: dataset.id,
                     instances: datasetInstances,
                     datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + collectionParameter
-                }
+                };
             });
             return values;
         } catch (error) {
@@ -172,14 +180,14 @@ class DatasetsController extends Component {
         }
     }
 
-    handleInstanceURL(state, collection, dataset, instance, edition, version){
+    handleInstanceURL(state, collection, dataset, instance, edition, version) {
         let urlPath = "";
-        if(state === "completed"){
-            urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`)
+        if (state === "completed") {
+            urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`);
         } else {
-            urlPath = url.resolve(`datasets/${dataset}/editions/${edition}/versions/${version}/metadata`)
+            urlPath = url.resolve(`datasets/${dataset}/editions/${edition}/versions/${version}/metadata`);
         }
-        if(collection){
+        if (collection) {
             urlPath = urlPath + "?collection=" + collection;
         }
         return urlPath;
@@ -194,12 +202,10 @@ class DatasetsController extends Component {
                             <h1>Select a dataset</h1>
                         </li>
                     </ul>
-                    <SelectableTableController
-                        values={this.state.tableValues}
-                    />
-               </div>
+                    <SelectableTableController values={this.state.tableValues} />
+                </div>
             </div>
-        )
+        );
     }
 }
 
@@ -209,7 +215,6 @@ function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         collectionID: state.routing.locationBeforeTransitions.query.collection
-    }
+    };
 }
 export default connect(mapStateToProps)(DatasetsController);
-
