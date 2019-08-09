@@ -39,7 +39,7 @@ test-npm:
 	cd src; npm install && npm run test
 
 test-pretty:
-        prettier --check "src/app/**/*.js"
+	prettier --check "src/app/**/*.js"
 
 node-modules:
 	cd src; npm install
