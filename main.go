@@ -18,6 +18,7 @@ import (
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/healthcheck"
 	"github.com/ONSdigital/florence/upload"
+	"github.com/ONSdigital/go-ns/common"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
 	hc "github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/server"
@@ -272,8 +273,12 @@ func zebedeeDirector(req *http.Request) {
 }
 
 func director(req *http.Request) {
-	if c, err := req.Cookie(`access_token`); err == nil && len(c.Value) > 0 {
-		req.Header.Set(`X-Florence-Token`, c.Value)
+	if accessTokenCookie, err := req.Cookie(`access_token`); err == nil && len(accessTokenCookie.Value) > 0 {
+		req.Header.Set(`X-Florence-Token`, accessTokenCookie.Value)
+	}
+
+	if colletionCookie, err := req.Cookie(common.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
+		req.Header.Set(common.CollectionIDHeaderKey, colletionCookie.Value)
 	}
 }
 
