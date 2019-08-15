@@ -273,8 +273,8 @@ func zebedeeDirector(req *http.Request) {
 }
 
 func director(req *http.Request) {
-	if accessTokenCookie, err := req.Cookie(`access_token`); err == nil && len(accessTokenCookie.Value) > 0 {
-		req.Header.Set(`X-Florence-Token`, accessTokenCookie.Value)
+	if accessTokenCookie, err := req.Cookie(common.FlorenceCookieKey); err == nil && len(accessTokenCookie.Value) > 0 {
+		req.Header.Set(common.FlorenceHeaderKey, accessTokenCookie.Value)
 	}
 
 	if colletionCookie, err := req.Cookie(common.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
