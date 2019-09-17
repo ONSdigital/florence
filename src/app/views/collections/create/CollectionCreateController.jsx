@@ -1,24 +1,26 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
-import collections from '../../../utilities/api-clients/collections';
-import teams from '../../../utilities/api-clients/teams';
-import notifications from '../../../utilities/notifications';
-import log from '../../../utilities/logging/log';
-import CollectionCreate from './CollectionCreate';
-import { updateAllTeamIDsAndNames, updateAllTeams } from '../../../config/actions';
-import collectionValidation from '../validation/collectionValidation';
+import collections from "../../../utilities/api-clients/collections";
+import teams from "../../../utilities/api-clients/teams";
+import notifications from "../../../utilities/notifications";
+import log from "../../../utilities/logging/log";
+import CollectionCreate from "./CollectionCreate";
+import { updateAllTeamIDsAndNames, updateAllTeams } from "../../../config/actions";
+import collectionValidation from "../validation/collectionValidation";
 
 const propTypes = {
     user: PropTypes.shape({
-        userType: PropTypes.string.isRequired,
+        userType: PropTypes.string.isRequired
     }).isRequired,
     onSuccess: PropTypes.func.isRequired,
-    allTeams: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
-    })),
+    allTeams: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired
+        })
+    ),
     dispatch: PropTypes.func.isRequired
 };
 
@@ -50,14 +52,13 @@ export class CollectionCreateController extends Component {
                     isProvisional: null,
                     errorMsg: ""
                 },
-                scheduleType: "custom-schedule",
+                scheduleType: "custom-schedule"
             },
             isGettingTeams: true,
             isSubmitting: false,
             showScheduleByRelease: false,
             updatedAllTeams: null
         };
-
 
         this.blankNewCollectionDetails = this.state.newCollectionDetails;
 
@@ -79,64 +80,68 @@ export class CollectionCreateController extends Component {
     }
 
     getAllTeams() {
-        teams.getAll().then(teams => {
-            if (teams.length === 0) {
-                const notification = {
-                    "type": "warning",
-                    "message": "Failed to get teams. You should be able to add teams after creating the collection or you can try refreshing",
-                    isDismissable: true
-                };
-                notifications.add(notification);
-                this.setState({ isGettingTeams: false });
-                return
-            }
-            const allTeams = teams.map(team => {
-                return {id: team.id.toString(), name: team.name}
-            });
-            this.setState({
-                isGettingTeams: false
-            });
-            this.props.dispatch(updateAllTeamIDsAndNames(allTeams));
-            
-            // Not needed for this screen but keeps teams array up-to-date for the teams screen
-            this.props.dispatch(updateAllTeams(teams));
-        }).catch(error => {
-            switch(error.status) {
-                case(401): {
-                    // This is handled by the request function, so do nothing here
-                    break;
-                }
-                case("RESPONSE_ERR"): {
+        teams
+            .getAll()
+            .then(teams => {
+                if (teams.length === 0) {
                     const notification = {
                         type: "warning",
-                        message: "An error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
+                        message: "Failed to get teams. You should be able to add teams after creating the collection or you can try refreshing",
                         isDismissable: true
-                    }
+                    };
                     notifications.add(notification);
-                    break;
+                    this.setState({ isGettingTeams: false });
+                    return;
                 }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to get teams. Try refresh the page",
-                        isDismissable: true
-                    }
-                    notifications.add(notification);
-                    break;
-                }
-            }
+                const allTeams = teams.map(team => {
+                    return { id: team.id.toString(), name: team.name };
+                });
+                this.setState({
+                    isGettingTeams: false
+                });
+                this.props.dispatch(updateAllTeamIDsAndNames(allTeams));
 
-            console.error("Error fetching all teams:\n", error);
-        });
+                // Not needed for this screen but keeps teams array up-to-date for the teams screen
+                this.props.dispatch(updateAllTeams(teams));
+            })
+            .catch(error => {
+                switch (error.status) {
+                    case 401: {
+                        // This is handled by the request function, so do nothing here
+                        break;
+                    }
+                    case "RESPONSE_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "An error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "An unexpected error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "There's been a network error whilst trying to get teams. Try refresh the page",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+
+                console.error("Error fetching all teams:\n", error);
+            });
     }
 
     handleCollectionNameChange(event) {
@@ -149,7 +154,7 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             name: collectionName
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({ newCollectionDetails: newCollectionDetails });
     }
 
     handleTeamSelection(event) {
@@ -176,10 +181,10 @@ export class CollectionCreateController extends Component {
                 return {
                     ...team,
                     disabled: true
-                }
+                };
             }
             return team;
-        })
+        });
 
         const teams = [...this.state.newCollectionDetails.teams, selectedTeam];
 
@@ -195,14 +200,14 @@ export class CollectionCreateController extends Component {
 
     handleRemoveTeam(teamToRemove) {
         const updatedTeams = this.state.newCollectionDetails.teams.filter(team => {
-            return team.id !== teamToRemove.id
+            return team.id !== teamToRemove.id;
         });
         const updatedAllTeams = this.state.updatedAllTeams.map(team => {
             if (team.id === teamToRemove.id) {
                 return {
                     ...team,
                     disabled: false
-                }
+                };
             }
             return team;
         });
@@ -212,7 +217,7 @@ export class CollectionCreateController extends Component {
             teams: updatedTeams
         };
         this.setState({
-            newCollectionDetails, 
+            newCollectionDetails,
             updatedAllTeams
         });
     }
@@ -228,7 +233,7 @@ export class CollectionCreateController extends Component {
                 errorMsg: ""
             }
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({ newCollectionDetails: newCollectionDetails });
     }
 
     handleScheduleTypeChange(event) {
@@ -236,7 +241,7 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             scheduleType: event.value
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({ newCollectionDetails: newCollectionDetails });
     }
 
     handlePublishDateChange(event) {
@@ -249,7 +254,7 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             publishDate: publishDate
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
+        this.setState({ newCollectionDetails: newCollectionDetails });
     }
 
     handlePublishTimeChange(event) {
@@ -262,13 +267,12 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             publishTime: publishTime
         };
-        this.setState({newCollectionDetails: newCollectionDetails});
-
+        this.setState({ newCollectionDetails: newCollectionDetails });
     }
 
     handleAddRelease(event) {
         event.preventDefault();
-        this.setState({showScheduleByRelease: true});
+        this.setState({ showScheduleByRelease: true });
     }
 
     handleSelectRelease(release) {
@@ -288,11 +292,11 @@ export class CollectionCreateController extends Component {
     }
 
     handleCloseRelease() {
-        this.setState({showScheduleByRelease: false});
+        this.setState({ showScheduleByRelease: false });
     }
 
     makePublishDate() {
-        if (this.state.newCollectionDetails.type !== 'scheduled') {
+        if (this.state.newCollectionDetails.type !== "scheduled") {
             return null;
         }
 
@@ -302,7 +306,7 @@ export class CollectionCreateController extends Component {
 
         const date = this.state.newCollectionDetails.publishDate.value;
         const time = this.state.newCollectionDetails.publishTime.value;
-        return (new Date(date + " " + time).toISOString());
+        return new Date(date + " " + time).toISOString();
     }
 
     mapStateToPostBody() {
@@ -315,8 +319,9 @@ export class CollectionCreateController extends Component {
                     return team.name;
                 }),
                 collectionOwner: this.props.user.userType,
-                releaseUri: this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
-            }
+                releaseUri:
+                    this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
+            };
         } catch (error) {
             log.event("Error mapping new collection state to POST body", log.error(error));
             console.error("Error mapping new collection state to POST body" + error);
@@ -325,7 +330,7 @@ export class CollectionCreateController extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        this.setState({isSubmitting: true});
+        this.setState({ isSubmitting: true });
 
         let hasError = false;
         let newCollectionDetails = this.state.newCollectionDetails;
@@ -351,7 +356,7 @@ export class CollectionCreateController extends Component {
                     value: this.state.newCollectionDetails.publishDate.value,
                     errorMsg: validatedDate.errorMsg
                 };
-    
+
                 newCollectionDetails = {
                     ...newCollectionDetails,
                     publishDate: collectionDate
@@ -367,7 +372,7 @@ export class CollectionCreateController extends Component {
                     value: this.state.newCollectionDetails.publishTime.value,
                     errorMsg: validatedTime.errorMsg
                 };
-    
+
                 newCollectionDetails = {
                     ...newCollectionDetails,
                     publishTime: collectionTime
@@ -388,7 +393,7 @@ export class CollectionCreateController extends Component {
                     ...release,
                     errorMsg: validatedRelease.errorMsg
                 };
-    
+
                 newCollectionDetails = {
                     ...newCollectionDetails,
                     release: collectionRelease
@@ -409,46 +414,59 @@ export class CollectionCreateController extends Component {
             return;
         }
 
-        collections.create(this.mapStateToPostBody()).then(response => {
-            this.setState({ newCollectionDetails: this.blankNewCollectionDetails, isSubmitting: false, updatedAllTeams: null });
-            this.props.onSuccess(response);
-        }).catch(error => {
-            this.setState({isSubmitting: false});
-            switch(error.status) {
-                case(401): {
-                    // do nothing - this is handled by the request utility function
-                    break;
-                }
-                case(400): {
-                    const notification = {
-                        "type": "warning",
-                        "message": "There was an error creating the collection. Please check inputs and try again.",
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case (409): {
-                    this.handle409SubmitStatus(error);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error has occured whilst creating collection`,
-                        isDismissable: true
+        collections
+            .create(this.mapStateToPostBody())
+            .then(response => {
+                this.setState({
+                    newCollectionDetails: this.blankNewCollectionDetails,
+                    isSubmitting: false,
+                    updatedAllTeams: null
+                });
+                this.props.onSuccess(response);
+            })
+            .catch(error => {
+                this.setState({ isSubmitting: false });
+                switch (error.status) {
+                    case 401: {
+                        // do nothing - this is handled by the request utility function
+                        break;
                     }
-                    notifications.add(notification);
-                    break;
+                    case 400: {
+                        const notification = {
+                            type: "warning",
+                            message: "There was an error creating the collection. Please check inputs and try again.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case 409: {
+                        this.handle409SubmitStatus(error);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: `An unexpected error has occured whilst creating collection`,
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
                 }
-            }
-            console.error(error);
-        });
+                console.error(error);
+            });
     }
 
     handle409SubmitStatus(error) {
         if (error.body.message.includes("A collection with this name already exists")) {
-            log.event(`error creating collection: collection name already exists`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value}))
+            log.event(
+                `error creating collection: collection name already exists`,
+                log.error(error),
+                log.data({
+                    collection_name: this.state.newCollectionDetails.name.value
+                })
+            );
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
                 errorMsg: "A collection with this name already exists"
@@ -465,7 +483,15 @@ export class CollectionCreateController extends Component {
         }
 
         if (error.body.message.includes("Cannot use this release")) {
-            log.event(`error creating collection: release is in another collection`, log.error(error), log.data({collection_name: this.state.newCollectionDetails.name.value, release_name: this.state.newCollectionDetails.release.name, release_url: this.state.newCollectionDetails.release.uri}))
+            log.event(
+                `error creating collection: release is in another collection`,
+                log.error(error),
+                log.data({
+                    collection_name: this.state.newCollectionDetails.name.value,
+                    release_name: this.state.newCollectionDetails.release.name,
+                    release_url: this.state.newCollectionDetails.release.uri
+                })
+            );
             const collectionRelease = {
                 ...this.state.newCollectionDetails.release,
                 errorMsg: "Release is already in use in another collection"
@@ -482,10 +508,10 @@ export class CollectionCreateController extends Component {
         }
     }
 
-    render () {
+    render() {
         return (
             <div>
-                <CollectionCreate 
+                <CollectionCreate
                     newCollectionDetails={this.state.newCollectionDetails}
                     handleCollectionNameChange={this.handleCollectionNameChange}
                     handleTeamSelection={this.handleTeamSelection}
@@ -506,7 +532,7 @@ export class CollectionCreateController extends Component {
                     isSubmitting={this.state.isSubmitting}
                 />
             </div>
-        )
+        );
     }
 }
 
@@ -515,8 +541,7 @@ CollectionCreateController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         allTeams: state.state.teams.allIDsAndNames
-    }
+    };
 }
 
 export default connect(mapStateToProps)(CollectionCreateController);
-

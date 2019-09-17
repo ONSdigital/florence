@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import date from '../../../../utilities/date'
-import AlertView from './AlertView'
-import uuid from 'uuid/v4';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import date from "../../../../utilities/date";
+import AlertView from "./AlertView";
+import uuid from "uuid/v4";
 
 const propTypes = {
     date: PropTypes.string,
@@ -28,7 +28,7 @@ class AlertController extends Component {
                 errorMsg: ""
             },
             newID: "",
-            newIsCorrectionBoolean: null,
+            newIsCorrectionBoolean: null
         };
 
         this.maximumAlertDate = date.format(date.addYear(10), "yyyy-mm-dd");
@@ -41,7 +41,7 @@ class AlertController extends Component {
 
     componentWillMount() {
         if (!this.props.id) {
-            this.setState({newID: uuid()});
+            this.setState({ newID: uuid() });
         }
 
         if (this.props.date) {
@@ -74,15 +74,15 @@ class AlertController extends Component {
         this.setState({
             newDescription: {
                 value: event.target.value || "",
-                errorMsg: "",
+                errorMsg: ""
             }
         });
     }
-    
+
     handleIsCorrectionChange(isCorrection) {
-        this.setState({newIsCorrectionBoolean: isCorrection});
+        this.setState({ newIsCorrectionBoolean: isCorrection });
     }
-    
+
     handleSave(event) {
         event.preventDefault();
         let hasError = false;
@@ -93,7 +93,7 @@ class AlertController extends Component {
                 ...newState,
                 newDate: {
                     ...this.state.newDate,
-                    errorMsg: "A date and time must be chosen",
+                    errorMsg: "A date and time must be chosen"
                 }
             };
             hasError = true;
@@ -104,7 +104,7 @@ class AlertController extends Component {
                 ...newState,
                 newDescription: {
                     ...this.state.newDescription,
-                    errorMsg: "An alert must have a description",
+                    errorMsg: "An alert must have a description"
                 }
             };
             hasError = true;
@@ -118,7 +118,7 @@ class AlertController extends Component {
         let isCorrection = this.props.isCorrection || false;
 
         if (this.state.newIsCorrectionBoolean !== null) {
-            isCorrection = this.state.newIsCorrectionBoolean
+            isCorrection = this.state.newIsCorrectionBoolean;
         }
 
         const alert = {
@@ -126,7 +126,7 @@ class AlertController extends Component {
             date: new Date(this.state.newDate.value || this.state.currentDate).toISOString(),
             isCorrection,
             id: this.props.id || this.state.newID
-        }
+        };
         this.props.onSave(alert);
     }
 
@@ -149,9 +149,9 @@ class AlertController extends Component {
                 }}
                 onSave={this.handleSave}
                 onCancel={this.props.onCancel}
-                isEditing={(Boolean(this.props.date) || Boolean(this.props.description))}
+                isEditing={Boolean(this.props.date) || Boolean(this.props.description)}
             />
-        )
+        );
     }
 }
 

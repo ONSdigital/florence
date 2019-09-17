@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
-import { Link } from 'react-router';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { push } from "react-router-redux";
+import { Link } from "react-router";
+import PropTypes from "prop-types";
 
-import DefaultLog from './log-components/DefaultLog';
-import RouteLog from './log-components/RouteLog';
-import RequestLog from './log-components/RequestLog';
-import Notification from './log-components/NotificationLog';
-import RuntimeErrorLog from './log-components/RuntimeErrorLog'
-import log, { eventTypes } from '../../utilities/log';
+import DefaultLog from "./log-components/DefaultLog";
+import RouteLog from "./log-components/RouteLog";
+import RequestLog from "./log-components/RequestLog";
+import Notification from "./log-components/NotificationLog";
+import RuntimeErrorLog from "./log-components/RuntimeErrorLog";
+import log, { eventTypes } from "../../utilities/log";
 
 const propTypes = {
     location: PropTypes.shape({
@@ -18,7 +18,7 @@ const propTypes = {
     }).isRequired,
     page: PropTypes.string,
     dispatch: PropTypes.func.isRequired
-}
+};
 
 class Logs extends Component {
     constructor(props) {
@@ -43,17 +43,17 @@ class Logs extends Component {
                     ...this.props.location.query,
                     timestamp: this.state.logsTimestamp
                 }
-            }
+            };
             this.props.dispatch(push(location));
         }
 
-        this.setState({isFetchingLogs: true});
+        this.setState({ isFetchingLogs: true });
         log.length().then(count => {
-            this.setState({logCount: count});
+            this.setState({ logCount: count });
             // TODO fix blank page when you go directly to a page number when there aren't enough pages for that to have any data
             // we should be redirecting them to just '/logs' instead
             if (this.props.page && this.props.page !== "1") {
-                log.getAll(((this.props.page-1)*10), this.state.pageSize, this.state.logsTimestamp).then(logRange => {
+                log.getAll((this.props.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
                         logs: logRange
@@ -82,9 +82,8 @@ class Logs extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
-
         if (this.props.page !== nextProps.page && nextProps.page === "1") {
-            this.setState({isFetchingLogs: true});
+            this.setState({ isFetchingLogs: true });
             log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
@@ -95,8 +94,8 @@ class Logs extends Component {
         }
 
         if (this.props.page !== nextProps.page) {
-            this.setState({isFetchingLogs: true});
-            log.getAll(((nextProps.page-1)*10), this.state.pageSize, this.state.logsTimestamp).then(logRange => {
+            this.setState({ isFetchingLogs: true });
+            log.getAll((nextProps.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
                     logs: logRange
@@ -127,88 +126,71 @@ class Logs extends Component {
             eventTypes.passwordChangeError,
             eventTypes.unexpectedRuntimeError,
             eventTypes.socketBufferFull
-        ]
+        ];
         const mapUniqueLogTypesToComponents = {};
         mapUniqueLogTypesToComponents[eventTypes.changedRoute] = RouteLog;
         mapUniqueLogTypesToComponents[eventTypes.shownNotification] = Notification;
         mapUniqueLogTypesToComponents[eventTypes.shownWarning] = Notification;
-        mapUniqueLogTypesToComponents[eventTypes.pingFailed] = RequestLog
-        mapUniqueLogTypesToComponents[eventTypes.requestSent] = RequestLog
-        mapUniqueLogTypesToComponents[eventTypes.requestReceived] = RequestLog
-        mapUniqueLogTypesToComponents[eventTypes.requestFailed] = RequestLog
-        mapUniqueLogTypesToComponents[eventTypes.unexpectedRuntimeError] = RuntimeErrorLog
-        
+        mapUniqueLogTypesToComponents[eventTypes.pingFailed] = RequestLog;
+        mapUniqueLogTypesToComponents[eventTypes.requestSent] = RequestLog;
+        mapUniqueLogTypesToComponents[eventTypes.requestReceived] = RequestLog;
+        mapUniqueLogTypesToComponents[eventTypes.requestFailed] = RequestLog;
+        mapUniqueLogTypesToComponents[eventTypes.unexpectedRuntimeError] = RuntimeErrorLog;
+
         if (mapUniqueLogTypesToComponents[log.type]) {
             const UniqueLogComponent = mapUniqueLogTypesToComponents[log.type];
-            return (
-                <UniqueLogComponent key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />
-            )
+            return <UniqueLogComponent key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />;
         }
 
-        return <DefaultLog key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />
+        return <DefaultLog key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />;
     }
 
     renderPagination() {
-        const pageCount = Math.ceil(this.state.logCount/10);
+        const pageCount = Math.ceil(this.state.logCount / 10);
         const pagination = [...Array(pageCount)];
         const pageNumbers = pagination.map((_, index) => {
             return (
                 <li className="pagination__item" key={index}>
-                    {this.renderPageLink(index+1)}
+                    {this.renderPageLink(index + 1)}
                 </li>
-            )
+            );
         });
 
-        return (
-            <ul className="pagination">
-                {pageNumbers}
-            </ul>
-        )
+        return <ul className="pagination">{pageNumbers}</ul>;
     }
 
     renderPageLink(pageNumber) {
         if ((pageNumber === 1 && !this.props.page) || pageNumber === parseInt(this.props.page)) {
-            return (
-                <span className="pagination__link pagination__link--active">
-                    {pageNumber}
-                </span>
-            )
+            return <span className="pagination__link pagination__link--active">{pageNumber}</span>;
         }
 
         return (
-            <Link 
-                className="pagination__link" 
-                to={`${this.props.location.pathname}?page=${pageNumber}&timestamp=${this.state.logsTimestamp}`}
-            >
+            <Link className="pagination__link" to={`${this.props.location.pathname}?page=${pageNumber}&timestamp=${this.state.logsTimestamp}`}>
                 {pageNumber}
             </Link>
-        )
+        );
     }
 
     render() {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-4">
-                    {!this.state.isFetchingLogs ?
+                    {!this.state.isFetchingLogs ? (
                         <div className="logs">
                             {this.state.logs.map((log, index) => {
-                               return this.mapLogToComponent(log, index);
+                                return this.mapLogToComponent(log, index);
                             })}
-                            {this.state.logCount > 10 &&
-                                this.renderPagination()
-                            }
-                            {this.state.logCount === 0 &&
-                                <p>No logs to display</p>
-                            }
+                            {this.state.logCount > 10 && this.renderPagination()}
+                            {this.state.logCount === 0 && <p>No logs to display</p>}
                         </div>
-                    :
+                    ) : (
                         <div className="margin-top--2">
                             <div className="loader loader--dark"></div>
                         </div>
-                    }
+                    )}
                 </div>
             </div>
-        )
+        );
     }
 }
 
@@ -217,7 +199,7 @@ Logs.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         page: state.routing.locationBeforeTransitions.query.page
-    }
+    };
 }
 
 export default connect(mapStateToProps)(Logs);

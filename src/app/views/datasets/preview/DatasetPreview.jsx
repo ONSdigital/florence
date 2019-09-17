@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
-import PropTypes from 'prop-types';
-import Preview from '../../../components/preview/Preview';
-import DatasetReviewActions from '../DatasetReviewActions';
+import React, { Component } from "react";
+import { Link } from "react-router";
+import PropTypes from "prop-types";
+import Preview from "../../../components/preview/Preview";
+import DatasetReviewActions from "../DatasetReviewActions";
 
 const propTypes = {
     isReadOnly: PropTypes.bool,
@@ -20,8 +20,8 @@ const propTypes = {
     title: PropTypes.string.isRequired,
     backLinkPath: PropTypes.string.isRequired,
     onSubmitForReview: PropTypes.func,
-    onMarkAsReviewed: PropTypes.func,
-}
+    onMarkAsReviewed: PropTypes.func
+};
 
 class DatasetPreview extends Component {
     constructor(props) {
@@ -42,9 +42,9 @@ class DatasetPreview extends Component {
                 lastEditedBy={this.props.dataset.lastEditedBy}
                 onSubmit={this.props.onSubmitForReview}
                 onApprove={this.props.onMarkAsReviewed}
-                notInCollectionYet={!this.props.dataset.collection_id}     
+                notInCollectionYet={!this.props.dataset.collection_id}
             />
-        )
+        );
     }
 
     render() {
@@ -55,26 +55,20 @@ class DatasetPreview extends Component {
                         <form>
                             &#9664; <Link to={this.props.backLinkPath}>Back</Link>
                             <h2 className="inline-block margin-left--1">{this.props.title}</h2>
-                            <div>
-                                {this.renderReviewActions()}
-                            </div>
-                            {this.props.isSavingData &&
-                                <div className="loader loader--dark loader--centre margin-left--1"></div>
-                            }
+                            <div>{this.renderReviewActions()}</div>
+                            {this.props.isSavingData && <div className="loader loader--dark loader--centre margin-left--1"></div>}
                         </form>
                     </div>
                 </div>
-                {this.props.isLoadingPreview && 
+                {this.props.isLoadingPreview && (
                     <div className="grid grid--align-content-center grid--full-height grid--direction-column grid--justify-center grid--align-center">
                         <p className="font-size--16 font-weight--600 margin-bottom--1">Loading preview</p>
                         <div className="loader loader--dark loader--centre loader--large"></div>
                     </div>
-                }
-                {this.props.previewURL &&
-                    <Preview hidden={false} path={this.props.previewURL}/>
-                }
+                )}
+                {this.props.previewURL && <Preview hidden={false} path={this.props.previewURL} />}
             </div>
-        )
+        );
     }
 }
 

@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Modal from '../../../../components/Modal'
-import Input from '../../../../components/Input'
-import Checkbox from '../../../../components/Checkbox'
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import Modal from "../../../../components/Modal";
+import Input from "../../../../components/Input";
+import Checkbox from "../../../../components/Checkbox";
 
 const propTypes = {
     date: PropTypes.shape({
@@ -38,8 +38,8 @@ class AlertView extends Component {
                     </div>
                     <div className="modal__body">
                         <div className="grid__col-md-5 grid__col-sm-6 grid__col-sm-8">
-                            <Input 
-                                id="alert-date" 
+                            <Input
+                                id="alert-date"
                                 type="datetime-local"
                                 value={this.props.date.value}
                                 error={this.props.date.errorMsg}
@@ -55,7 +55,7 @@ class AlertView extends Component {
                             label="Description"
                             onChange={this.props.description.onChange}
                         />
-                        <Checkbox 
+                        <Checkbox
                             id="alert-is-correction"
                             onChange={this.props.isCorrection.onChange}
                             isChecked={this.props.isCorrection.value}
@@ -63,12 +63,16 @@ class AlertView extends Component {
                         />
                     </div>
                     <div className="modal__footer">
-                        <button className="btn btn--primary" type="submit">Save</button>
-                        <button className="btn margin-left--1" type="button" onClick={this.props.onCancel}>Cancel</button>
+                        <button className="btn btn--primary" type="submit">
+                            Save
+                        </button>
+                        <button className="btn margin-left--1" type="button" onClick={this.props.onCancel}>
+                            Cancel
+                        </button>
                     </div>
                 </form>
             </Modal>
-        )
+        );
     }
 }
 

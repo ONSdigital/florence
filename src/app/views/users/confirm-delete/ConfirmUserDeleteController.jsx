@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { push, replace } from 'react-router-redux';
-import PropTypes from 'prop-types';
-import Modal from  '../../../components/Modal';
-import Input from '../../../components/Input';
-import url from '../../../utilities/url';
-import { removeUserFromAllUsers } from '../../../config/actions';
-import user from '../../../utilities/api-clients/user';
-import log from '../../../utilities/logging/log';
-import notifications from '../../../utilities/notifications';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { push, replace } from "react-router-redux";
+import PropTypes from "prop-types";
+import Modal from "../../../components/Modal";
+import Input from "../../../components/Input";
+import url from "../../../utilities/url";
+import { removeUserFromAllUsers } from "../../../config/actions";
+import user from "../../../utilities/api-clients/user";
+import log from "../../../utilities/logging/log";
+import notifications from "../../../utilities/notifications";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -39,15 +39,24 @@ export class ConfirmUserDeleteController extends Component {
 
     deleteUser(userID) {
         return new Promise(async (resolve, reject) => {
-            user.remove(userID).then(response => {
-                resolve({
-                    response,
-                    error: null
-                });
-            }).catch(error => reject(error));
+            user.remove(userID)
+                .then(response => {
+                    resolve({
+                        response,
+                        error: null
+                    });
+                })
+                .catch(error => reject(error));
         }).catch(error => {
             console.error(`Error deleting user '${userID}'`, error);
-            log.event("Error deleting user", log.data({user: userID, logged_in_user: this.props.loggedInUser.email}), log.error(error))
+            log.event(
+                "Error deleting user",
+                log.data({
+                    user: userID,
+                    logged_in_user: this.props.loggedInUser.email
+                }),
+                log.error(error)
+            );
             return {
                 response: null,
                 error
@@ -61,44 +70,51 @@ export class ConfirmUserDeleteController extends Component {
             isDismissable: true,
             message: ``
         };
-        
+
         switch (error.status) {
-            case(401): {
+            case 401: {
                 // handled by utility 'request' function
                 break;
             }
-            case(403): {
+            case 403: {
                 notification.message = `Unable to delete user because you do not have permission to do so`;
                 break;
             }
-            case(404): {
+            case 404: {
                 notification.message = `Unable to delete user because it no longer exists`;
                 break;
             }
-            case('FETCH_ERR'): {
+            case "FETCH_ERR": {
                 notification.message = `Unable to delete user due to a network error. Check your connection and try again.`;
                 break;
             }
             default: {
-                log.event("Unhandled error deleting user", log.data({user: this.props.params.userID, logged_in_user: this.props.loggedInUser.email}), log.error(error));
+                log.event(
+                    "Unhandled error deleting user",
+                    log.data({
+                        user: this.props.params.userID,
+                        logged_in_user: this.props.loggedInUser.email
+                    }),
+                    log.error(error)
+                );
                 notification.message = `Unable to delete user due to an unexpected error`;
                 break;
             }
         }
-        
+
         notifications.add(notification);
     }
 
     handleClose = () => {
         this.props.dispatch(push(url.resolve("../")));
-    }
+    };
 
     handleChange = event => {
         this.setState({
             email: event.target.value,
             error: ""
         });
-    }
+    };
 
     handleSubmit = async event => {
         event.preventDefault();
@@ -119,16 +135,22 @@ export class ConfirmUserDeleteController extends Component {
             return;
         }
 
-        this.setState({isSavingDelete: true});
+        this.setState({ isSavingDelete: true });
         const response = await this.deleteUser(userID);
-        this.setState({isSavingDelete: false});
+        this.setState({ isSavingDelete: false });
 
         if (response.error) {
             this.handleDeleteUserError(response.error);
             return;
         }
 
-        log.event("Successfully deleted user", log.data({user: userID, logged_in_user: this.props.loggedInUser.email}));
+        log.event(
+            "Successfully deleted user",
+            log.data({
+                user: userID,
+                logged_in_user: this.props.loggedInUser.email
+            })
+        );
         notifications.add({
             type: "positive",
             message: "User successfully deleted",
@@ -137,7 +159,7 @@ export class ConfirmUserDeleteController extends Component {
         });
         this.props.dispatch(removeUserFromAllUsers(userID));
         this.props.dispatch(push(url.resolve("../../")));
-    }
+    };
 
     render() {
         return (
@@ -157,15 +179,17 @@ export class ConfirmUserDeleteController extends Component {
                         />
                     </div>
                     <div className="modal__footer">
-                        <button disabled={this.state.isSavingDelete} className="btn btn--warning" type="submit">Delete</button>
-                        <button disabled={this.state.isSavingDelete} className="btn margin-left--1" type="button" onClick={this.handleClose}>Cancel</button>
-                        {this.state.isSavingDelete && 
-                            <div className="form__loader loader loader--dark margin-left--1"></div>
-                        }
+                        <button disabled={this.state.isSavingDelete} className="btn btn--warning" type="submit">
+                            Delete
+                        </button>
+                        <button disabled={this.state.isSavingDelete} className="btn margin-left--1" type="button" onClick={this.handleClose}>
+                            Cancel
+                        </button>
+                        {this.state.isSavingDelete && <div className="form__loader loader loader--dark margin-left--1"></div>}
                     </div>
                 </form>
             </Modal>
-        )
+        );
     }
 }
 
@@ -174,7 +198,7 @@ ConfirmUserDeleteController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         loggedInUser: state.state.user
-    }
+    };
 }
 
 export default connect(mapStateToProps)(ConfirmUserDeleteController);

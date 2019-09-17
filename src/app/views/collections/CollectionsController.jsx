@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { push } from 'react-router-redux';
-import objectIsEmpty from 'is-empty-object';
-import CollectionCreateController from './create/CollectionCreateController';
-import {pagePropTypes} from './details/CollectionDetails';
-import collections from '../../utilities/api-clients/collections';
-import DoubleSelectableBoxController from '../../components/selectable-box/double-column/DoubleSelectableBoxController';
-import { emptyActiveCollection , addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn } from '../../config/actions';
-import notifications from '../../utilities/notifications';
-import CollectionDetailsController from './details/CollectionDetailsController';
-import collectionMapper from './mapper/collectionMapper';
-import cookies from '../../utilities/cookies'
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { push } from "react-router-redux";
+import objectIsEmpty from "is-empty-object";
+import CollectionCreateController from "./create/CollectionCreateController";
+import { pagePropTypes } from "./details/CollectionDetails";
+import collections from "../../utilities/api-clients/collections";
+import DoubleSelectableBoxController from "../../components/selectable-box/double-column/DoubleSelectableBoxController";
+import { emptyActiveCollection, addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn } from "../../config/actions";
+import notifications from "../../utilities/notifications";
+import CollectionDetailsController from "./details/CollectionDetailsController";
+import collectionMapper from "./mapper/collectionMapper";
+import cookies from "../../utilities/cookies";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -20,12 +20,12 @@ const propTypes = {
         collectionID: PropTypes.string
     }).isRequired,
     user: PropTypes.shape({
-        userType: PropTypes.string.isRequired,
+        userType: PropTypes.string.isRequired
     }).isRequired,
     collections: PropTypes.array,
     activeCollection: PropTypes.shape({
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
-        id: PropTypes.string.isRequired,
+        id: PropTypes.string.isRequired
     }),
     collectionsToDelete: PropTypes.object.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
@@ -34,7 +34,7 @@ const propTypes = {
 export class CollectionsController extends Component {
     constructor(props) {
         super(props);
-        
+
         this.state = {
             isFetchingCollections: false
         };
@@ -67,86 +67,95 @@ export class CollectionsController extends Component {
     }
 
     fetchCollections() {
-        this.setState({isFetchingCollections: true});
+        this.setState({ isFetchingCollections: true });
 
         // This Promise needs to be returned so that our tests pass, otherwise they don't detect
         // the catch block properly (using 'await') and the test gets executed before the catch
         // block has been run
-        return collections.getAll().then(collections => {
-            const allCollectionsVisible = this.isViewer ? collections : collections.filter(collection => {
-                return collection.approvalStatus !== "COMPLETE";
+        return collections
+            .getAll()
+            .then(collections => {
+                const allCollectionsVisible = this.isViewer
+                    ? collections
+                    : collections.filter(collection => {
+                          return collection.approvalStatus !== "COMPLETE";
+                      });
+                const allCollections = allCollectionsVisible.map(collection => {
+                    return collectionMapper.collectionResponseToState(collection);
+                });
+                this.props.dispatch(addAllCollections(allCollections));
+                this.setState({ isFetchingCollections: false });
             })
-            const allCollections = allCollectionsVisible.map(collection => {
-                return collectionMapper.collectionResponseToState(collection);
+            .catch(error => {
+                this.setState({ isFetchingCollections: false });
+                switch (error.status) {
+                    case 401: {
+                        // This is handled by the request function, so do nothing here
+                        break;
+                    }
+                    case 404: {
+                        const notification = {
+                            type: "warning",
+                            message: `No API route available to get collections.`,
+                            autoDismiss: 5000
+                        };
+                        notifications.add(notification);
+                        this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                        break;
+                    }
+                    case 403: {
+                        const notification = {
+                            type: "warning",
+                            message: `You don't have permissions to view collections`,
+                            autoDismiss: 5000
+                        };
+                        notifications.add(notification);
+                        this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                        break;
+                    }
+                    case "RESPONSE_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                console.error("Error fetching all collections:\n", error);
             });
-            this.props.dispatch(addAllCollections(allCollections));
-            this.setState({isFetchingCollections: false});
-        }).catch(error => {
-            this.setState({isFetchingCollections: false});
-            switch(error.status) {
-                case(401): {
-                    // This is handled by the request function, so do nothing here
-                    break;
-                }
-                case(404): {
-                    const notification = {
-                        type: 'warning',
-                        message: `No API route available to get collections.`,
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
-                    break;
-                }
-                case(403): {
-                    const notification = {
-                        type: 'warning',
-                        message: `You don't have permissions to view collections`,
-                        autoDismiss: 5000
-                    };
-                    notifications.add(notification);
-                    this.props.dispatch(push(`${this.props.rootPath}/collections`));
-                    break;
-                }
-                case("RESPONSE_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case("UNEXPECTED_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case("FETCH_ERR"): {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members",
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                        isDismissable: true
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            console.error("Error fetching all collections:\n", error);
-        });
     }
 
     removeCollectionFromState(collectionsToDelete) {
@@ -202,16 +211,16 @@ export class CollectionsController extends Component {
                             handleItemClick={this.handleCollectionSelection}
                         />
                     </div>
-                    {!this.isViewer && 
+                    {!this.isViewer && (
                         <div className="grid__col-4">
                             <h1 className="text-center">Create a collection</h1>
-                            <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess}  />
+                            <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess} />
                         </div>
-                    }
+                    )}
                 </div>
-                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes}/>
+                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes} />
             </div>
-        )
+        );
     }
 }
 
@@ -224,7 +233,7 @@ export function mapStateToProps(state) {
         activeCollection: state.state.collections.active,
         collectionsToDelete: state.state.collections.toDelete,
         rootPath: state.state.rootPath
-    }
+    };
 }
 
 export default connect(mapStateToProps)(CollectionsController);

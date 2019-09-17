@@ -3,7 +3,7 @@ export default function validatePassword(password) {
         return {
             isValid: false,
             error: "Passwords must contain four words and be at least 15 characters"
-        }
+        };
     }
 
     if (!password.match(/.+\s.+\s.+\s.+/)) {
@@ -13,7 +13,7 @@ export default function validatePassword(password) {
         };
     }
 
-    if (password.length <= 15 ) {
+    if (password.length <= 15) {
         return {
             isValid: false,
             error: "Passwords must contain at least 15 characters"
@@ -23,5 +23,5 @@ export default function validatePassword(password) {
     return {
         isValid: true,
         error: ""
-    }
+    };
 }
