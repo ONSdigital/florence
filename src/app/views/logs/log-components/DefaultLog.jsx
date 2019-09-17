@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import dateFormat from 'dateformat';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import dateFormat from "dateformat";
 
 const propTypes = {
     children: PropTypes.node,
@@ -9,7 +9,7 @@ const propTypes = {
     location: PropTypes.string.isRequired,
     instanceID: PropTypes.string.isRequired,
     isFailure: PropTypes.bool
-}
+};
 
 class DefaultLog extends Component {
     constructor(props) {
@@ -22,14 +22,14 @@ class DefaultLog extends Component {
         return (
             <div className={"log" + (this.props.isFailure ? " log--failure" : "")}>
                 <div className={"log__type" + (this.props.isFailure ? " log__type--failure" : "")}>
-                    {(this.props.type).replace("_", " ").toLowerCase()}
+                    {this.props.type.replace("_", " ").toLowerCase()}
                 </div>
                 <div className="log__date">Logged: {formattedDate}</div>
                 <div>Location: {this.props.location}</div>
                 <div>Session ID: {this.props.instanceID}</div>
                 {this.props.children}
             </div>
-        )
+        );
     }
 }
 

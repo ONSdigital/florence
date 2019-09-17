@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     email: PropTypes.string.isRequired,
     isDisabled: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
-    action: PropTypes.oneOf(['add', 'remove']).isRequired
-}
+    action: PropTypes.oneOf(["add", "remove"]).isRequired
+};
 
 class TeamEditItem extends Component {
     constructor(props) {
         super(props);
-        
+
         this.handleClick = this.handleClick.bind(this);
     }
 
@@ -23,12 +23,12 @@ class TeamEditItem extends Component {
     }
 
     render() {
-        return(
+        return (
             <li className={"add-remove__item"}>
                 <span className={`add-remove__item-title ${this.props.isDisabled ? "disabled" : ""}`}>{this.props.email}</span>
-                <button 
-                    onClick={this.handleClick} 
-                    className={`btn ${this.props.action === 'add' ? "btn--positive" : ""}`}
+                <button
+                    onClick={this.handleClick}
+                    className={`btn ${this.props.action === "add" ? "btn--positive" : ""}`}
                     disabled={this.props.isDisabled}
                     data-email={this.props.email}
                     data-action={this.props.action}
@@ -36,7 +36,7 @@ class TeamEditItem extends Component {
                     {this.props.action === "add" ? "Add" : "Remove"}
                 </button>
             </li>
-        )
+        );
     }
 }
 

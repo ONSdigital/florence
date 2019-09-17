@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import DefaultLog from './DefaultLog';
+import DefaultLog from "./DefaultLog";
 
 const propTypes = {
     children: PropTypes.node,
@@ -12,7 +12,7 @@ const propTypes = {
     payload: PropTypes.shape({
         message: PropTypes.string.isRequired
     }).isRequired
-}
+};
 
 class RuntimeErrorLog extends Component {
     constructor(props) {
@@ -24,7 +24,7 @@ class RuntimeErrorLog extends Component {
             <DefaultLog {...this.props}>
                 <div>Error message: {this.props.payload.message}</div>
             </DefaultLog>
-        )
+        );
     }
 }
 

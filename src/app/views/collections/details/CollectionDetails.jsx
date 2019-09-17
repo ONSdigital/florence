@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router';
-import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
+import { connect } from "react-redux";
+import { push } from "react-router-redux";
 
-import url from '../../../utilities/url';
-import log from '../../../utilities/logging/log';
-import Page from '../../../components/page/Page';
-import date from '../../../utilities/date';
+import url from "../../../utilities/url";
+import log from "../../../utilities/logging/log";
+import Page from "../../../components/page/Page";
+import date from "../../../utilities/date";
 
 export const pagePropTypes = {
     lastEdit: PropTypes.shape({
@@ -19,7 +19,7 @@ export const pagePropTypes = {
     edition: PropTypes.string,
     version: PropTypes.string,
     type: PropTypes.string
-}
+};
 
 export const deletedPagePropTypes = PropTypes.shape({
     uri: PropTypes.string.isRequired,
@@ -55,20 +55,16 @@ const propTypes = {
     isApprovingCollection: PropTypes.bool,
     canBeDeleted: PropTypes.bool,
     canBeApproved: PropTypes.bool,
-    inProgress: PropTypes.arrayOf(PropTypes.shape(
-        pagePropTypes
-    )),
-    complete: PropTypes.arrayOf(PropTypes.shape(
-        pagePropTypes
-    )),
-    reviewed: PropTypes.arrayOf(PropTypes.shape(
-        pagePropTypes
-    )),
-    deletes: PropTypes.arrayOf(PropTypes.shape({
-        user: PropTypes.string.isRequired,
-        root: deletedPagePropTypes,
-        totalDeletes: PropTypes.number.isRequired
-    })),
+    inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+    complete: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+    reviewed: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
+    deletes: PropTypes.arrayOf(
+        PropTypes.shape({
+            user: PropTypes.string.isRequired,
+            root: deletedPagePropTypes,
+            totalDeletes: PropTypes.number.isRequired
+        })
+    ),
     status: PropTypes.shape({
         neutral: PropTypes.bool,
         warning: PropTypes.bool
@@ -95,7 +91,7 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     }
 
-    renderLastEditText(lastEdit) {  
+    renderLastEditText(lastEdit) {
         try {
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
@@ -104,16 +100,14 @@ export class CollectionDetails extends Component {
             if (!lastEdit.date || typeof lastEdit.date !== "string") {
                 return `Last edit: ${lastEdit.email} (date not available)`;
             }
-            
+
             const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
             if (!lastEdit.email || typeof lastEdit.email !== "string") {
                 return `Last edit: email not available (${formattedDate})`;
             }
-            return (
-                `Last edit: ${lastEdit.email} (${formattedDate})`
-            )
+            return `Last edit: ${lastEdit.email} (${formattedDate})`;
         } catch (error) {
-            log.event("Error parsing date for collection details 'page last edit' function", log.error(error), log.data({...lastEdit}))
+            log.event("Error parsing date for collection details 'page last edit' function", log.error(error), log.data({ ...lastEdit }));
             console.error("Error parsing date for collection details 'page last edit' function. Last edit data: ", lastEdit);
 
             if (lastEdit.email) {
@@ -129,53 +123,54 @@ export class CollectionDetails extends Component {
         const isActivePage = pageID && this.props.activePageURI === pageID;
         const handlePageClick = () => {
             this.props.onPageClick(pageID);
-        }
+        };
         const handleEditClick = () => {
             this.props.onEditPageClick(page, state);
-        }
+        };
         const handleDeleteClick = () => {
             this.props.onDeletePageClick(page, state);
-        }
+        };
 
         return (
-            <li key={pageID} onClick={handlePageClick} data-page-state={state} className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}>
+            <li
+                key={pageID}
+                onClick={handlePageClick}
+                data-page-state={state}
+                className={"list__item list__item--expandable" + (isActivePage ? " active" : "")}
+            >
                 <div className="expandable-item__header">
-                    <Page type={page.type} 
-                        title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")} 
-                        isActive={isActivePage} />
+                    <Page
+                        type={page.type}
+                        title={page.title + (page.edition ? ": " + page.edition : "") + (page.version ? " (version " + page.version + ")" : "")}
+                        isActive={isActivePage}
+                    />
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page.lastEdit)}</p>
                     </div>
-                    <button className="btn btn--primary" 
-                            onClick={handleEditClick} 
-                            type="button">{state === "complete" ?  "Review" : "Edit"}
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button">
+                        {state === "complete" ? "Review" : "Edit"}
                     </button>
-                    <button className="btn btn--warning btn--margin-left" 
-                            onClick={handleDeleteClick} 
-                            type="button">Delete
+                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">
+                        Delete
                     </button>
                 </div>
             </li>
-        )
+        );
     }
 
     renderPagesList(pages) {
-        return (
-            <ul className="list list--neutral margin-bottom--1">
-                {pages}
-            </ul>
-        )
+        return <ul className="list list--neutral margin-bottom--1">{pages}</ul>;
     }
 
     renderInProgress() {
         if (!this.props.inProgress) {
-            return <p className="margin-bottom--2">Error rendering in progress pages</p>
+            return <p className="margin-bottom--2">Error rendering in progress pages</p>;
         }
 
         if (this.props.inProgress.length === 0) {
-            return <p className="margin-bottom--2">No pages in progress</p>
+            return <p className="margin-bottom--2">No pages in progress</p>;
         }
 
         const pages = this.props.inProgress.map(page => {
@@ -183,14 +178,14 @@ export class CollectionDetails extends Component {
         });
         return this.renderPagesList(pages);
     }
-    
+
     renderWaitingReview() {
         if (!this.props.complete) {
-            return <p className="margin-bottom--2">Error rendering pages awaiting review</p>
+            return <p className="margin-bottom--2">Error rendering pages awaiting review</p>;
         }
 
         if (this.props.complete.length === 0) {
-            return <p className="margin-bottom--2">No pages awaiting review</p>
+            return <p className="margin-bottom--2">No pages awaiting review</p>;
         }
 
         const pages = this.props.complete.map(page => {
@@ -198,14 +193,14 @@ export class CollectionDetails extends Component {
         });
         return this.renderPagesList(pages);
     }
-    
+
     renderReviewed() {
         if (!this.props.reviewed) {
-            return <p className="margin-bottom--2">Error rendering reviewed pages</p>
+            return <p className="margin-bottom--2">Error rendering reviewed pages</p>;
         }
 
         if (this.props.reviewed.length === 0) {
-            return <p className="margin-bottom--2">No reviewed pages</p>
+            return <p className="margin-bottom--2">No reviewed pages</p>;
         }
 
         const pages = this.props.reviewed.map(page => {
@@ -218,35 +213,68 @@ export class CollectionDetails extends Component {
         let title = deletedChildPage.description.title + (deletedChildPage.description.edition ? ": " + deletedChildPage.description.edition : "");
         return (
             <li key={deletedChildPage.uri} className="margin-bottom--1">
-                <Page type={deletedChildPage.type} title={<p>{title}<br/><a href={deletedChildPage.uri} target="_blank">{deletedChildPage.uri}</a></p>} />
+                <Page
+                    type={deletedChildPage.type}
+                    title={
+                        <p>
+                            {title}
+                            <br />
+                            <a href={deletedChildPage.uri} target="_blank">
+                                {deletedChildPage.uri}
+                            </a>
+                        </p>
+                    }
+                />
             </li>
-        )
+        );
     }
 
     renderDeletetedPageItem(deletedPage) {
         const handlePageClick = () => {
             this.props.onPageClick(deletedPage.root.uri);
         };
-        const deleteIsBeingCancelled = this.props.isCancellingDelete ? (this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri) : false;
+        const deleteIsBeingCancelled = this.props.isCancellingDelete
+            ? this.props.isCancellingDelete.value && this.props.isCancellingDelete.uri === deletedPage.root.uri
+            : false;
         return (
-            <li key={deletedPage.root.uri} data-page-state="deletes" onClick={handlePageClick} className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}>
+            <li
+                key={deletedPage.root.uri}
+                data-page-state="deletes"
+                onClick={handlePageClick}
+                className={"list__item list__item--expandable" + (this.props.activePageURI === deletedPage.root.uri ? " active" : "")}
+            >
                 <div className="expandable-item__header">
-                    <Page 
-                        type={deletedPage.root.type} 
-                        title={deletedPage.root.description.title + (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")} 
-                        isActive={this.props.activePageURI === deletedPage.root.uri} 
+                    <Page
+                        type={deletedPage.root.type}
+                        title={
+                            deletedPage.root.description.title +
+                            (deletedPage.root.description.edition ? ": " + deletedPage.root.description.edition : "")
+                        }
+                        isActive={this.props.activePageURI === deletedPage.root.uri}
                     />
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-left--2 margin-bottom--1">
-                        {deleteIsBeingCancelled &&
-                            <p className="font-weight--600">Cancelling delete in progress</p>
-                        }
+                        {deleteIsBeingCancelled && <p className="font-weight--600">Cancelling delete in progress</p>}
                         <p>Deleted by: {deletedPage.user}</p>
-                        <p>Path: <a href={deletedPage.root.uri} target="_blank">{deletedPage.root.uri}</a></p>
+                        <p>
+                            Path:{" "}
+                            <a href={deletedPage.root.uri} target="_blank">
+                                {deletedPage.root.uri}
+                            </a>
+                        </p>
                         <p className="margin-bottom--1">Total deletes: {deletedPage.totalDeletes}</p>
-                        <button disabled={deleteIsBeingCancelled} type="button" className="btn btn--warning" onClick={() => {this.props.onCancelPageDeleteClick(deletedPage.root.uri)}}>Cancel delete</button>
-                        {(deletedPage.root.children && deletedPage.root.children.length > 0) &&
+                        <button
+                            disabled={deleteIsBeingCancelled}
+                            type="button"
+                            className="btn btn--warning"
+                            onClick={() => {
+                                this.props.onCancelPageDeleteClick(deletedPage.root.uri);
+                            }}
+                        >
+                            Cancel delete
+                        </button>
+                        {deletedPage.root.children && deletedPage.root.children.length > 0 && (
                             <div>
                                 <h4 className="margin-top--1 margin-bottom--1">Sub-pages included in this delete:</h4>
                                 <ul className="list--neutral">
@@ -255,19 +283,17 @@ export class CollectionDetails extends Component {
                                     })}
                                 </ul>
                             </div>
-                        }
+                        )}
                     </div>
                 </div>
             </li>
-        )
+        );
     }
 
     renderDeleted() {
-        return (
-            this.props.deletes.map(deletedPage => {
-                return this.renderDeletetedPageItem(deletedPage)
-            })
-        )
+        return this.props.deletes.map(deletedPage => {
+            return this.renderDeletetedPageItem(deletedPage);
+        });
     }
 
     statePageCount(state) {
@@ -286,28 +312,20 @@ export class CollectionDetails extends Component {
 
     renderPageStateHeading(state) {
         switch (state) {
-            case("inProgress"): {
-                return (
-                    this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " in progress"
-                );
+            case "inProgress": {
+                return this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " in progress";
             }
-            case("complete"): {
-                return (
-                    this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " awaiting review"
-                );
+            case "complete": {
+                return this.statePageCount(state) + " " + this.renderPluralisedPageText(state) + " awaiting review";
             }
-            case("reviewed"): {
-                return (
-                    this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText(state)
-                );
+            case "reviewed": {
+                return this.statePageCount(state) + " reviewed " + this.renderPluralisedPageText(state);
             }
-            case("deletes"): {
+            case "deletes": {
                 if (!this.props.deletes || this.props.deletes.length === 0) {
                     return;
                 }
-                return (
-                    this.statePageCount(state) + " " + (this.props.deletes.length > 1 ? "deletes" : "delete")
-                );
+                return this.statePageCount(state) + " " + (this.props.deletes.length > 1 ? "deletes" : "delete");
             }
         }
     }
@@ -321,24 +339,20 @@ export class CollectionDetails extends Component {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
                     <div className="grid grid--justify-space-around">
-                        <div className="grid__col-8">
-                            Preparing collection for the publishing queue
-                        </div>
+                        <div className="grid__col-8">Preparing collection for the publishing queue</div>
                     </div>
                 </div>
-            )
+            );
         }
-        
+
         if (this.props.status.warning) {
             return (
                 <div className="drawer__banner drawer__banner--dark drawer__banner--large">
                     <div className="grid grid--justify-space-around">
-                        <div className="grid__col-8">
-                            Error whilst preparing this collection for the publishing queue
-                        </div>
+                        <div className="grid__col-8">Error whilst preparing this collection for the publishing queue</div>
                     </div>
                 </div>
-            )
+            );
         }
 
         return;
@@ -354,16 +368,29 @@ export class CollectionDetails extends Component {
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
                         <div>
-                            <a href={url.resolve("/workspace") + "?collection=" + this.props.id} className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}>Create/edit page</a>
-                            {this.props.enableDatasetImport &&
-                                <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">Create/edit CMD dataset page</Link>
-                            }
-                            <button disabled={this.props.isLoadingNameAndDate} className="btn btn--margin-left" onClick={this.handleRestoreContentClick}>Restore page</button>
+                            <a
+                                href={url.resolve("/workspace") + "?collection=" + this.props.id}
+                                className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}
+                            >
+                                Create/edit page
+                            </a>
+                            {this.props.enableDatasetImport && (
+                                <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">
+                                    Create/edit CMD dataset page
+                                </Link>
+                            )}
+                            <button
+                                disabled={this.props.isLoadingNameAndDate}
+                                className="btn btn--margin-left"
+                                onClick={this.handleRestoreContentClick}
+                            >
+                                Restore page
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 
     handleRestoreContentClick() {
@@ -381,14 +408,30 @@ export class CollectionDetails extends Component {
 
         if (this.props.canBeDeleted) {
             return (
-                <button className="btn btn--warning btn--margin-right" disabled={this.props.isLoadingDetails} onClick={this.handleCollectionDeleteClick} type="button" id="delete-collection">Delete</button>
-            )
+                <button
+                    className="btn btn--warning btn--margin-right"
+                    disabled={this.props.isLoadingDetails}
+                    onClick={this.handleCollectionDeleteClick}
+                    type="button"
+                    id="delete-collection"
+                >
+                    Delete
+                </button>
+            );
         }
-        
+
         if (this.props.canBeApproved) {
             return (
-                <button className="btn btn--positive btn--margin-right" disabled={this.props.isLoadingDetails || this.props.isApprovingCollection} onClick={this.handleCollectionApproveClick} type="button" id="approve-collection">Approve</button>
-            )   
+                <button
+                    className="btn btn--positive btn--margin-right"
+                    disabled={this.props.isLoadingDetails || this.props.isApprovingCollection}
+                    onClick={this.handleCollectionApproveClick}
+                    type="button"
+                    id="approve-collection"
+                >
+                    Approve
+                </button>
+            );
         }
     }
 
@@ -398,19 +441,15 @@ export class CollectionDetails extends Component {
         }
 
         if (this.props.type === "manual") {
-            return <p>Manual publish</p>
+            return <p>Manual publish</p>;
         }
 
         if (this.props.type === "scheduled" && this.props.publishDate) {
-            return (
-                <p>Publish date: {date.format(this.props.publishDate, "dddd, d mmmm yyyy h:MMTT")}</p>
-            )
+            return <p>Publish date: {date.format(this.props.publishDate, "dddd, d mmmm yyyy h:MMTT")}</p>;
         }
 
         if (this.props.type === "scheduled" && !this.props.publishDate) {
-            return (
-                <p>Publish date: no publish date available</p>
-            )
+            return <p>Publish date: no publish date available</p>;
         }
     }
 
@@ -423,15 +462,13 @@ export class CollectionDetails extends Component {
                             <div className="grid grid--justify-space-between grid--align-end margin-top--3 margin-bottom--2">
                                 <div>
                                     <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
-                                    {this.props.isLoadingNameAndDate ? 
-                                        <p>Loading...</p>
-                                    :
-                                        this.renderPublishDate()
-                                    }
+                                    {this.props.isLoadingNameAndDate ? <p>Loading...</p> : this.renderPublishDate()}
                                 </div>
-                                {!this.props.isLoadingNameAndDate &&
-                                    <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">Edit</Link>
-                                }
+                                {!this.props.isLoadingNameAndDate && (
+                                    <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">
+                                        Edit
+                                    </Link>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -440,27 +477,27 @@ export class CollectionDetails extends Component {
                 {this.renderCollectionPageActions()}
                 <div className="drawer__body">
                     <div className="grid grid--justify-space-around">
-                        {this.props.isLoadingDetails ?
+                        {this.props.isLoadingDetails ? (
                             <div className="grid grid--align-center margin-top--4">
                                 <div className="loader loader--large loader--dark"></div>
                             </div>
-                            :
+                        ) : (
                             <div className="grid__col-8 margin-top--2">
-                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('inProgress')}</h3>
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading("inProgress")}</h3>
                                 {this.renderInProgress()}
-                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('complete')}</h3>
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading("complete")}</h3>
                                 {this.renderWaitingReview()}
-                                <h3 className="margin-bottom--1">{this.renderPageStateHeading('reviewed')}</h3>
+                                <h3 className="margin-bottom--1">{this.renderPageStateHeading("reviewed")}</h3>
                                 {this.renderReviewed()}
-                                
-                                {(this.props.deletes && this.props.deletes.length > 0) &&
+
+                                {this.props.deletes && this.props.deletes.length > 0 && (
                                     <div>
-                                        <h3 className="margin-bottom--1">{this.renderPageStateHeading('deletes')}</h3>
+                                        <h3 className="margin-bottom--1">{this.renderPageStateHeading("deletes")}</h3>
                                         {this.renderDeleted()}
                                     </div>
-                                }
+                                )}
                             </div>
-                        }
+                        )}
                     </div>
                 </div>
                 <div className="drawer__footer">
@@ -468,18 +505,20 @@ export class CollectionDetails extends Component {
                         <div className="grid__col-8 margin-top--1 margin-bottom--1">
                             <div>
                                 {this.renderCollectionActions()}
-                                <button className="btn" onClick={this.props.onClose} type="button">Close</button>
-                                {this.props.isApprovingCollection &&
+                                <button className="btn" onClick={this.props.onClose} type="button">
+                                    Close
+                                </button>
+                                {this.props.isApprovingCollection && (
                                     <div className="inline-block margin-left--1">
                                         <div className="loader loader--inline"></div>
                                     </div>
-                                }
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        )
+        );
     }
 }
 

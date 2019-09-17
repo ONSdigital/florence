@@ -1,5 +1,5 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     dataset: PropTypes.shape({
@@ -8,7 +8,7 @@ const propTypes = {
     }),
     onNewVersionClick: PropTypes.func.isRequired,
     isLoading: PropTypes.bool
-}
+};
 
 class DatasetItem extends Component {
     constructor(props) {
@@ -28,11 +28,9 @@ class DatasetItem extends Component {
             <li className="list__item list__item--separated grid grid--justify-space-between" key={this.props.dataset.id}>
                 {this.props.dataset.alias}
                 <div>
-                    {this.props.isLoading &&
-                        <span className="loader loader--dark"></span>
-                    }
-                    <button 
-                        className="btn btn--primary" 
+                    {this.props.isLoading && <span className="loader loader--dark"></span>}
+                    <button
+                        className="btn btn--primary"
                         data-recipe-id={this.props.dataset.id}
                         onClick={this.props.onNewVersionClick}
                         disabled={this.props.isLoading}
@@ -41,7 +39,7 @@ class DatasetItem extends Component {
                     </button>
                 </div>
             </li>
-        )
+        );
     }
 }
 

@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const defaultProps = {
     marginBottom: "margin-bottom--1"
@@ -18,13 +18,15 @@ class Definition extends Component {
 
     render() {
         return (
-          <details className={this.props.marginBottom}>
-             <summary><span className="summary">{this.props.title}</span></summary>
-             <div className="panel">
-                <p>{this.props.content}</p>
-             </div>
-          </details>
-        )
+            <details className={this.props.marginBottom}>
+                <summary>
+                    <span className="summary">{this.props.title}</span>
+                </summary>
+                <div className="panel">
+                    <p>{this.props.content}</p>
+                </div>
+            </details>
+        );
     }
 }
 

@@ -1,10 +1,9 @@
-import http from '../http';
-import { store } from '../../config/store';
-import { userLoggedIn, userLoggedOut, reset } from '../../config/actions';
-import cookies from '../cookies';
+import http from "../http";
+import { store } from "../../config/store";
+import { userLoggedIn, userLoggedOut, reset } from "../../config/actions";
+import cookies from "../cookies";
 
 export default class user {
-
     static get(email) {
         return http.get(`/zebedee/users?email=${email}`);
     }
@@ -47,10 +46,16 @@ export default class user {
     }
 
     static getUserRole(isAdmin, isEditor) {
-        let role = '';
-        if (isEditor) { role = 'EDITOR'}
-        if (isAdmin) { role = 'ADMIN'}
-        if (!isEditor && !isAdmin) { role = 'VIEWER'}
+        let role = "";
+        if (isEditor) {
+            role = "EDITOR";
+        }
+        if (isAdmin) {
+            role = "ADMIN";
+        }
+        if (!isEditor && !isAdmin) {
+            role = "VIEWER";
+        }
         return role;
     }
 
@@ -67,22 +72,21 @@ export default class user {
     }
 
     static logOut() {
-        const accessTokenCookieRemoved = cookies.remove('access_token');
+        const accessTokenCookieRemoved = cookies.remove("access_token");
         if (!accessTokenCookieRemoved) {
             console.warn(`Error trying to remove 'access_token' cookie`);
-            return
+            return;
         }
-        if (cookies.get('collection')) {
-            cookies.remove('collection');
+        if (cookies.get("collection")) {
+            cookies.remove("collection");
         }
         localStorage.removeItem("loggedInAs");
-        localStorage.removeItem('userType');
+        localStorage.removeItem("userType");
         store.dispatch(userLoggedOut());
         store.dispatch(reset());
     }
 
     static updatePassword(body) {
-        return http.post('/zebedee/password', body, undefined, true);
+        return http.post("/zebedee/password", body, undefined, true);
     }
-
 }

@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
-import Input from '../../components/Input';
+import Input from "../../components/Input";
 
 const propTypes = {
     formData: PropTypes.shape({
-        inputs: PropTypes.arrayOf(PropTypes.shape({
-            id: PropTypes.string,
-            label: PropTypes.string,
-            type: PropTypes.string,
-            onChange: PropTypes.func,
-            error: PropTypes.string
-        })),
+        inputs: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.string,
+                label: PropTypes.string,
+                type: PropTypes.string,
+                onChange: PropTypes.func,
+                error: PropTypes.string
+            })
+        ),
         onSubmit: PropTypes.func,
         isSubmitting: PropTypes.bool
     })
-}
+};
 
 export default class LoginForm extends Component {
-
     constructor(props) {
         super(props);
     }
@@ -33,23 +34,19 @@ export default class LoginForm extends Component {
                     <h1 className="text-center">Login</h1>
 
                     <form className="form" onSubmit={this.props.formData.onSubmit}>
-
-                        {
-                            inputs.map((input, index) => {
-                                return <Input key={index} {...input} disabled={isSubmitting} allowAutoComplete={true}/>
-                            })
-                        }
+                        {inputs.map((input, index) => {
+                            return <Input key={index} {...input} disabled={isSubmitting} allowAutoComplete={true} />;
+                        })}
 
                         <button type="submit" className="btn btn--primary margin-top--1" disabled={isSubmitting}>
                             Log in
                         </button>
 
-
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </form>
                 </div>
             </div>
-        )
+        );
     }
 }
 
