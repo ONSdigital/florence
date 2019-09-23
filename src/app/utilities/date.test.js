@@ -1,7 +1,7 @@
 import date from "./date";
 
-jest.mock('../utilities/logging/log', () => ({
-    event: () => {},
+jest.mock("../utilities/logging/log", () => ({
+    event: () => {}
 }));
 
 test("Getting the current date and time works correctly", () => {
@@ -23,15 +23,15 @@ describe("Adding to a date", () => {
     it("adds a single year when the default date is used", () => {
         expect(date.addYear(1)).toEqual(new Date("2018-10-06T13:45:28.975Z"));
     });
-    
+
     it("adds multiple years correctly when the default date is used", () => {
         expect(date.addYear(5)).toEqual(new Date("2022-10-06T13:45:28.975Z"));
     });
-    
+
     it("adds a single year for a custom date correctly", () => {
         expect(date.addYear(1, customDate)).toEqual(new Date("2019-01-14T09:35:13.000Z"));
     });
-    
+
     it("adds multiple years for a custom date correctly", () => {
         expect(date.addYear(5, customDate)).toEqual(new Date("2023-01-14T09:35:13.000Z"));
     });
@@ -54,7 +54,7 @@ describe("Formatting a date", () => {
     it("returns a string of just the time of a passed in date", () => {
         expect(date.format(mockedDate, "h:MM:ss")).toBe("2:02:30");
     });
-    
+
     it("returns a string of just the date of a passed in date", () => {
         expect(date.format(mockedDate, "yyyy/mm/dd")).toBe("2018/01/10");
     });

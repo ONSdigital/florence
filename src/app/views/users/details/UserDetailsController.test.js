@@ -1,42 +1,48 @@
-import React from 'react';
-import { shallow, mount } from 'enzyme';
-import {UserDetailsController, mapStateToProps} from './UserDetailsController';
+import React from "react";
+import { shallow, mount } from "enzyme";
+import { UserDetailsController, mapStateToProps } from "./UserDetailsController";
 import user from "../../../utilities/api-clients/user";
 import log from "../../../utilities/logging/log";
-import notifications from '../../../utilities/notifications';
+import notifications from "../../../utilities/notifications";
 
 console.error = () => {};
 
 jest.mock("../../../utilities/api-clients/user", () => ({
-    get: jest.fn().mockImplementation(() => Promise.resolve({
-        email: "foo@bar.com",
-        name: "Foo Bar",
-        temporaryPassword: false
-    })),
-    getPermissions: jest.fn().mockImplementation(email => Promise.resolve({
-        email,
-        admin: false,
-        editor: true
-    })),
+    get: jest.fn().mockImplementation(() =>
+        Promise.resolve({
+            email: "foo@bar.com",
+            name: "Foo Bar",
+            temporaryPassword: false
+        })
+    ),
+    getPermissions: jest.fn().mockImplementation(email =>
+        Promise.resolve({
+            email,
+            admin: false,
+            editor: true
+        })
+    ),
     getUserRole: jest.fn(() => "PUBLISHER")
 }));
 
-jest.mock('../../../utilities/notifications', () => ({
+jest.mock("../../../utilities/notifications", () => ({
     add: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/websocket', () => ({
+jest.mock("../../../utilities/websocket", () => ({
     send: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/logging/log', () => ({
+jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
     error: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/auth', () => ({
-    isAdmin: jest.fn(() => {return true}),
+jest.mock("../../../utilities/auth", () => ({
+    isAdmin: jest.fn(() => {
+        return true;
+    })
 }));
 
 let dispatchedActions = [];
@@ -48,16 +54,12 @@ const defaultProps = {
     activeUser: {},
     loggedInUser: {},
     rootPath: "/florence"
-}
+};
 
-let component = shallow(
-    <UserDetailsController {...defaultProps} />
-);
+let component = shallow(<UserDetailsController {...defaultProps} />);
 
 beforeEach(() => {
-    component = shallow(
-        <UserDetailsController {...defaultProps} />
-    );
+    component = shallow(<UserDetailsController {...defaultProps} />);
     dispatchedActions = [];
     log.event.mockClear();
     notifications.add.mockClear();
@@ -66,7 +68,6 @@ beforeEach(() => {
 });
 
 describe("Fetching the user", () => {
-
     it("request to get details returns an object of an error and response", async () => {
         const response = await component.instance().getUserDetails();
         expect(response).toHaveProperty("response");
@@ -93,42 +94,42 @@ describe("Error fetching the user", () => {
     });
 
     it("failure getting permissions is logged", async () => {
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().getUserPermissions();
         expect(log.event.mock.calls.length).toBe(1);
     });
-    
+
     it("user is notified when fetching permissions fails", async () => {
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
     });
 
     it("failure getting details is logged", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().getUserDetails();
         expect(log.event.mock.calls.length).toBe(1);
     });
 
     it("user is notified when fetching details fails", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
     });
 
     it("matching error statuses when getting details and permissions is logged", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 404}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 404}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(2);
         //Unhandled error
-        user.get.mockImplementationOnce(() => Promise.reject({status: undefined}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: undefined}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: undefined }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: undefined }));
         expect(log.event.mock.calls.length).toBe(2);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(5);
@@ -139,7 +140,7 @@ describe("Error fetching the user", () => {
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(0);
     });
-    
+
     it("user is not notified when getting details and permissions is successful", async () => {
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
@@ -147,24 +148,24 @@ describe("Error fetching the user", () => {
     });
 
     it("user is notified once when fetching details and permissions fails with the same status", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
     });
 
     it("different error statuses when getting details and permissions is logged", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 403}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 404}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 403 }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(3);
     });
-    
+
     it("user is notified once when fetching details and permissions fails with a different status", async () => {
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -172,23 +173,22 @@ describe("Error fetching the user", () => {
 });
 
 describe("Updating the 'active user' in state", () => {
-
     it("updates the component state to show it is loading whilst the user is being fetched", () => {
-        expect(component.state('isFetchingUser')).toBe(false);
+        expect(component.state("isFetchingUser")).toBe(false);
         component.instance().updateStateWithUser();
-        expect(component.state('isFetchingUser')).toBe(true);
+        expect(component.state("isFetchingUser")).toBe(true);
     });
 
     it("reverts the component state to show it's finished loading after the user has been fetched", async () => {
-        expect(component.state('isFetchingUser')).toBe(false);
+        expect(component.state("isFetchingUser")).toBe(false);
         await component.instance().updateStateWithUser();
-        expect(component.state('isFetchingUser')).toBe(false);
+        expect(component.state("isFetchingUser")).toBe(false);
     });
 
     it("doesn't try to update state with active user if requests fail", async () => {
         const dispatchedActionsFromMount = dispatchedActions;
-        user.get.mockImplementationOnce(() => Promise.reject({status: 500}));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({status: 500}));
+        user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().updateStateWithUser();
         expect(dispatchedActions.length).toBe(dispatchedActionsFromMount.length);
     });
@@ -196,34 +196,38 @@ describe("Updating the 'active user' in state", () => {
 
 describe("After the component updates", () => {
     // We need a fully mounted component so that we can access and alter the userID
-    // parameter prop that is passed in from the router. 'shallow()' only doesn't 
+    // parameter prop that is passed in from the router. 'shallow()' only doesn't
     // allow access to these props.
-    const mountedComponent = mount(
-        <UserDetailsController {...defaultProps} />
-    )
+    const mountedComponent = mount(<UserDetailsController {...defaultProps} />);
 
     beforeEach(() => {
-        mountedComponent.setProps({params: {
-            userID: defaultProps.params.userID
-        }});
+        mountedComponent.setProps({
+            params: {
+                userID: defaultProps.params.userID
+            }
+        });
     });
 
     it("fetches new user's details", () => {
         const noOfDetailsRequests = user.get.mock.calls.length;
         const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
-        mountedComponent.setProps({params: {
-            userID: "foo2@bar.com"
-        }});
-        expect(user.get.mock.calls.length).toBe(noOfDetailsRequests+1);
-        expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests+1);
+        mountedComponent.setProps({
+            params: {
+                userID: "foo2@bar.com"
+            }
+        });
+        expect(user.get.mock.calls.length).toBe(noOfDetailsRequests + 1);
+        expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests + 1);
     });
 
     it("does nothing if user ID is the same", () => {
         const noOfDetailsRequests = user.get.mock.calls.length;
         const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
-        mountedComponent.setProps({params: {
-            userID: "foo@bar.com"
-        }});
+        mountedComponent.setProps({
+            params: {
+                userID: "foo@bar.com"
+            }
+        });
         expect(user.get.mock.calls.length).toBe(noOfDetailsRequests);
         expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests);
     });
@@ -231,7 +235,7 @@ describe("After the component updates", () => {
 
 describe("Mapping API response to state", () => {
     const userDetailsResponse = {
-        adminOptions: {rawJson: false},
+        adminOptions: { rawJson: false },
         email: "foo@bar.com",
         inactive: false,
         lastAdmin: "florence@magicroundabout.ons.gov.uk",
@@ -263,12 +267,12 @@ describe("Mapping API response to state", () => {
         const emptyUserPermissionsResponse = {
             ...userPermissionsResponse,
             email: ""
-        }
+        };
         const mappedToState = component.instance().mapUserResponsesToState(emptyUserDetailsResponse, emptyUserPermissionsResponse);
         expect(mappedToState.email).toBe("");
         expect(mappedToState.name).toBe("");
     });
-    
+
     it("uses 'email' from permissions response if it isn't defined in the details response", () => {
         const emptyUserDetailsResponse = {
             ...userDetailsResponse,
@@ -298,24 +302,20 @@ describe("Drawer on mount", () => {
             arrivedByRedirect: false,
             previousPathname: ""
         };
-        const alternativeComponent = shallow(
-            <UserDetailsController {...props} />
-        );
+        const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
-        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+        expect(alternativeComponent.state("isAnimatable")).toBe(false);
     });
-    
+
     it("doesn't animate when routing directly to the user details screen from another screen", () => {
         const props = {
             ...defaultProps,
             arrivedByRedirect: false,
             previousPathname: "/florence/teams/team-12345"
         };
-        const alternativeComponent = shallow(
-            <UserDetailsController {...props} />
-        );
+        const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
-        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+        expect(alternativeComponent.state("isAnimatable")).toBe(false);
     });
 
     it("doesn't animate when a user is redirected from '/users' to the details screen", () => {
@@ -324,11 +324,9 @@ describe("Drawer on mount", () => {
             arrivedByRedirect: true,
             previousPathname: "/florence/users"
         };
-        const alternativeComponent = shallow(
-            <UserDetailsController {...props} />
-        );
+        const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
-        expect(alternativeComponent.state('isAnimatable')).toBe(false);
+        expect(alternativeComponent.state("isAnimatable")).toBe(false);
     });
 
     it("animates when a user routes to a user's details from '/users'", () => {
@@ -337,11 +335,9 @@ describe("Drawer on mount", () => {
             arrivedByRedirect: false,
             previousPathname: "/florence/users"
         };
-        const alternativeComponent = shallow(
-            <UserDetailsController {...props} />
-        );
+        const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
-        expect(alternativeComponent.state('isAnimatable')).toBe(true);
+        expect(alternativeComponent.state("isAnimatable")).toBe(true);
     });
 });
 
@@ -373,7 +369,7 @@ describe("Mapping state to component props", () => {
             role: "PUBLISHER"
         });
     });
-    
+
     it("includes routing 'previousPathname'", () => {
         expect(mapStateToProps(state).previousPathname).toBe("/florence/users");
     });
@@ -390,7 +386,7 @@ describe("Mapping state to component props", () => {
             }
         };
         expect(mapStateToProps(redirectedState).arrivedByRedirect).toBe(true);
-        
+
         const pushedState = {
             ...state,
             routing: {
@@ -402,7 +398,7 @@ describe("Mapping state to component props", () => {
             }
         };
         expect(mapStateToProps(pushedState).arrivedByRedirect).toBe(false);
-        
+
         const poppedState = {
             ...state,
             routing: {

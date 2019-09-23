@@ -1,38 +1,41 @@
-import React from 'react';
-import { CollectionRoutesWrapper } from './CollectionRoutesWrapper';
-import { shallow } from 'enzyme';
+import React from "react";
+import { CollectionRoutesWrapper } from "./CollectionRoutesWrapper";
+import { shallow } from "enzyme";
 
-import log from '../../utilities/logging/log';
-import collections from '../../utilities/api-clients/collections';
+import log from "../../utilities/logging/log";
+import collections from "../../utilities/api-clients/collections";
 
 console.error = () => {};
 
-jest.mock('../../utilities/logging/log', () => {
+jest.mock("../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
         data: jest.fn(() => {}),
         error: jest.fn(() => {})
-    }
+    };
 });
 
-jest.mock('../../utilities/notifications', () => {
+jest.mock("../../utilities/notifications", () => {
     return {
-        add: jest.fn(event => {mockedNotifications.push(event)})
-    }
+        add: jest.fn(event => {
+            mockedNotifications.push(event);
+        })
+    };
 });
 
-jest.mock('../../utilities/api-clients/collections', () => ({
+jest.mock("../../utilities/api-clients/collections", () => ({
     get: jest.fn(() => {
-        return Promise.resolve(mockedCollection)
+        return Promise.resolve(mockedCollection);
     })
 }));
 
 const mockedCollection = {
     id: "test-collection-1",
     name: "Test Collection"
-}
+};
 
-let dispatchedActions, mockedNotifications = [];
+let dispatchedActions,
+    mockedNotifications = [];
 
 const defaultProps = {
     dispatch: event => {
@@ -47,14 +50,11 @@ const defaultProps = {
     }
 };
 
-const component = shallow(
-    <CollectionRoutesWrapper {...defaultProps} />
-);
+const component = shallow(<CollectionRoutesWrapper {...defaultProps} />);
 
 describe("Calling getCollectionDetails", () => {
-
     beforeEach(() => {
-        dispatchedActions =[];
+        dispatchedActions = [];
         mockedNotifications = [];
     });
 
@@ -68,9 +68,7 @@ describe("Calling getCollectionDetails", () => {
     });
 
     it("on 404 error, redirects to collections page", async () => {
-        collections.get.mockImplementationOnce(() => (
-            Promise.reject({ status: 404 })
-        ));
+        collections.get.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await component.instance().getCollectionDetails(mockedCollection.id);
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
         expect(dispatchedActions[0].payload.method).toBe("replace");
@@ -79,9 +77,7 @@ describe("Calling getCollectionDetails", () => {
     });
 
     it("on 403 error, redirects to collections page", async () => {
-        collections.get.mockImplementationOnce(() => (
-            Promise.reject({ status: 403 })
-        ));
+        collections.get.mockImplementationOnce(() => Promise.reject({ status: 403 }));
         await component.instance().getCollectionDetails(mockedCollection.id);
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
         expect(dispatchedActions[0].payload.method).toBe("replace");
@@ -90,16 +86,13 @@ describe("Calling getCollectionDetails", () => {
     });
 
     it("on error, shows notification", async () => {
-        collections.get.mockImplementationOnce(() => (
-            Promise.reject({ status: 500 })
-        ));
+        collections.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().getCollectionDetails(mockedCollection.id);
         expect(mockedNotifications.length).toBe(1);
     });
 });
 
 describe("Mapping collection to working on state", () => {
-
     beforeEach(() => {
         log.event.mockClear();
         log.data.mockClear();
@@ -109,9 +102,9 @@ describe("Mapping collection to working on state", () => {
     it("returns the correct object on success", () => {
         const mappedObject = component.instance().mapCollectionResponseToWorkingOnState(mockedCollection);
         expect(mappedObject).toMatchObject({
-            id: 'test-collection-1',
-            name: 'Test Collection',
-            url: '/florence/collections/test-collection-1',
+            id: "test-collection-1",
+            name: "Test Collection",
+            url: "/florence/collections/test-collection-1",
             error: false
         });
     });
@@ -121,7 +114,7 @@ describe("Mapping collection to working on state", () => {
         expect(mappedObject).toMatchObject({
             error: true
         });
-    })
+    });
 
     it("logs on error", () => {
         component.instance().mapCollectionResponseToWorkingOnState();
@@ -129,6 +122,4 @@ describe("Mapping collection to working on state", () => {
         expect(log.data.mock.calls.length).toBe(1);
         expect(log.error.mock.calls.length).toBe(1);
     });
-
-})
-
+});

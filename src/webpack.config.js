@@ -1,5 +1,5 @@
 const path = require('path');
-const prettierrc = require('./prettierrc.json')
+const prettierrc = require('./prettierrc.json');
 const PrettierPlugin = require('prettier-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");

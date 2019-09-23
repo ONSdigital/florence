@@ -1,14 +1,14 @@
-import React from 'react';
-import SelectableTableController from './SelectableTableController.jsx';
-import renderer from 'react-test-renderer';
+import React from "react";
+import SelectableTableController from "./SelectableTableController.jsx";
+import renderer from "react-test-renderer";
 
-jest.mock('../../../utilities/url', () => {
+jest.mock("../../../utilities/url", () => {
     return {
         resolve: function() {
             //
         },
         parent: function() {}
-    }
+    };
 });
 
 const values = [
@@ -27,14 +27,10 @@ const values = [
         id: "meeeeeh",
         status: "completed"
     }
-]
+];
 
-test('Selectable table with values renders component with all values', () => {
-    const component = renderer.create(
-        <SelectableTableController 
-            values={values}
-        />
-    );
+test("Selectable table with values renders component with all values", () => {
+    const component = renderer.create(<SelectableTableController values={values} />);
 
     expect(component.toJSON()).toMatchSnapshot();
 });

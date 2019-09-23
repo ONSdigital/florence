@@ -1,27 +1,27 @@
-import React from 'react';
-import renderer from 'react-test-renderer';
-import { shallow } from 'enzyme';
+import React from "react";
+import renderer from "react-test-renderer";
+import { shallow } from "enzyme";
 import user from "../../../utilities/api-clients/user";
 import log from "../../../utilities/logging/log";
-import notifications from '../../../utilities/notifications';
-import { ChangeUserPasswordController, mapStateToProps } from './ChangeUserPasswordController';
-import validatePassword from '../../../components/change-password/validatePassword';
+import notifications from "../../../utilities/notifications";
+import { ChangeUserPasswordController, mapStateToProps } from "./ChangeUserPasswordController";
+import validatePassword from "../../../components/change-password/validatePassword";
 
-jest.mock('../../../utilities/websocket', () => ({
+jest.mock("../../../utilities/websocket", () => ({
     send: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/notifications', () => ({
+jest.mock("../../../utilities/notifications", () => ({
     add: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/logging/log', () => ({
+jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
     error: jest.fn(() => {})
 }));
 
-jest.mock('../../../utilities/url', () => ({
+jest.mock("../../../utilities/url", () => ({
     resolve: jest.fn(string => string)
 }));
 
@@ -30,10 +30,12 @@ jest.mock("../../../utilities/api-clients/user", () => ({
     logOut: jest.fn().mockImplementation(() => {})
 }));
 
-jest.mock("../../../components/change-password/validatePassword", () => jest.fn(() => ({
-    isValid: true,
-    error: null
-})));
+jest.mock("../../../components/change-password/validatePassword", () =>
+    jest.fn(() => ({
+        isValid: true,
+        error: null
+    }))
+);
 
 console.error = () => {};
 console.warn = () => {};
@@ -62,7 +64,7 @@ const adminProps = {
         ...defaultProps.loggedInUser,
         isAdmin: true
     }
-}
+};
 const mockEvent = {
     preventDefault: () => {}
 };
@@ -75,10 +77,8 @@ describe("Publisher changing their own password", () => {
     let publisherComponent;
 
     beforeEach(() => {
-        publisherComponent = shallow(
-            <ChangeUserPasswordController {...publisherProps} />
-        )
-        user.updatePassword.mockClear();    
+        publisherComponent = shallow(<ChangeUserPasswordController {...publisherProps} />);
+        user.updatePassword.mockClear();
         validatePassword.mockClear();
     });
 
@@ -88,16 +88,21 @@ describe("Publisher changing their own password", () => {
         expect(inputs[0].id).toBe("current-password");
         expect(inputs[1].id).toBe("new-password");
     });
-    
+
     it("renders inputs with the 'handleInputChange' function bound", () => {
         publisherComponent.instance().handleInputChange = jest.fn(() => {});
         const inputs = publisherComponent.instance().formInputs();
         expect(inputs.length).toBe(2);
         expect(publisherComponent.instance().handleInputChange.mock.calls.length).toBe(0);
         inputs.forEach((input, index) => {
-            input.onChange({target:{
-                value: `a mocked value (${index})`
-            }}, input.id);
+            input.onChange(
+                {
+                    target: {
+                        value: `a mocked value (${index})`
+                    }
+                },
+                input.id
+            );
         });
         const mockedHandlerCalls = publisherComponent.instance().handleInputChange.mock.calls;
         expect(mockedHandlerCalls.length).toBe(2);
@@ -108,9 +113,9 @@ describe("Publisher changing their own password", () => {
     });
 
     it("validates that the current password isn't left empty", () => {
-        expect(publisherComponent.state('currentPassword').error).toBe("");
+        expect(publisherComponent.state("currentPassword").error).toBe("");
         publisherComponent.instance().handleSubmit(mockEvent);
-        expect(publisherComponent.state('currentPassword').error).toBe("You must enter your current password");
+        expect(publisherComponent.state("currentPassword").error).toBe("You must enter your current password");
     });
 
     it("validates that the new password is valid", () => {
@@ -141,7 +146,7 @@ describe("Publisher changing their own password", () => {
         publisherComponent.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(1);
     });
-    
+
     it("doesn't send the request when current password and new password aren't valid", () => {
         validatePassword.mockImplementationOnce(() => ({
             isValid: false,
@@ -161,7 +166,7 @@ describe("Publisher changing their own password", () => {
         publisherComponent.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(0);
     });
-    
+
     it("doesn't send the request when current password isn't valid", () => {
         publisherComponent.setState({
             newPassword: {
@@ -177,7 +182,7 @@ describe("Publisher changing their own password", () => {
         publisherComponent.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(0);
     });
-    
+
     it("doesn't send the request when new password isn't valid", () => {
         validatePassword.mockImplementationOnce(() => ({
             isValid: false,
@@ -203,10 +208,8 @@ describe("Admin changing a user's password", () => {
     let adminComponent;
 
     beforeEach(() => {
-        adminComponent = shallow(
-            <ChangeUserPasswordController {...adminProps} />
-        );
-        user.updatePassword.mockClear();    
+        adminComponent = shallow(<ChangeUserPasswordController {...adminProps} />);
+        user.updatePassword.mockClear();
         validatePassword.mockClear();
     });
 
@@ -217,10 +220,10 @@ describe("Admin changing a user's password", () => {
     });
 
     it("doesn't attempt to validate a currentPassword value", () => {
-        expect(adminComponent.state('currentPassword').value).toBe("");
-        expect(adminComponent.state('currentPassword').error).toBe("");
+        expect(adminComponent.state("currentPassword").value).toBe("");
+        expect(adminComponent.state("currentPassword").error).toBe("");
         adminComponent.instance().handleSubmit(mockEvent);
-        expect(adminComponent.state('currentPassword').error).toBe("");
+        expect(adminComponent.state("currentPassword").error).toBe("");
     });
 
     it("validates that the new password is valid", () => {
@@ -263,27 +266,23 @@ describe("Sending the request to change password", () => {
     let component;
 
     beforeEach(() => {
-        component = shallow(
-            <ChangeUserPasswordController {...adminProps} />
-        )
+        component = shallow(<ChangeUserPasswordController {...adminProps} />);
         dispatchedActions = [];
-        user.logOut.mockClear()
-        user.updatePassword.mockClear()
+        user.logOut.mockClear();
+        user.updatePassword.mockClear();
         notifications.add.mockClear();
         log.event.mockClear();
     });
 
-    const publisherComponent = shallow(
-        <ChangeUserPasswordController {...publisherProps}/>
-    );
-    const adminComponent = shallow(
-        <ChangeUserPasswordController {...adminProps} />
-    );
+    const publisherComponent = shallow(<ChangeUserPasswordController {...publisherProps} />);
+    const adminComponent = shallow(<ChangeUserPasswordController {...adminProps} />);
 
     it("publishers see an inline error message if the current password is wrong (401 response)", async () => {
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 401
-        }));
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: 401
+            })
+        );
         publisherComponent.setState({
             currentPassword: {
                 value: "bad password",
@@ -298,14 +297,16 @@ describe("Sending the request to change password", () => {
         expect(user.updatePassword.mock.calls.length).toBe(0);
         await publisherComponent.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(1);
-        expect(publisherComponent.state('currentPassword').value).toBe("bad password");
-        expect(publisherComponent.state('currentPassword').error).toBe("Incorrect password");
+        expect(publisherComponent.state("currentPassword").value).toBe("bad password");
+        expect(publisherComponent.state("currentPassword").error).toBe("Incorrect password");
     });
 
     it("admins are logged out if they receive a 401 response", async () => {
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 401
-        }));
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: 401
+            })
+        );
 
         expect(user.logOut.mock.calls.length).toBe(0);
         expect(notifications.add.mock.calls.length).toBe(0);
@@ -315,10 +316,12 @@ describe("Sending the request to change password", () => {
     });
 
     it("user's are notified if the request errors", async () => {
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 500
-        }));
-        
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: 500
+            })
+        );
+
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().handleSubmit(mockEvent);
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -327,17 +330,21 @@ describe("Sending the request to change password", () => {
     });
 
     it("errors are logged", async () => {
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 404
-        }));
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: 404
+            })
+        );
 
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().handleSubmit(mockEvent);
         expect(log.event.mock.calls.length).toBe(1);
 
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: "undefined"
-        }));
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: "undefined"
+            })
+        );
 
         expect(log.event.mock.calls.length).toBe(1);
         await component.instance().handleSubmit(mockEvent);
@@ -362,19 +369,21 @@ describe("Sending the request to change password", () => {
     });
 
     it("component's state is updated to reflect that the request is being sent", () => {
-        expect(component.state('isSubmitting')).toBe(false);
+        expect(component.state("isSubmitting")).toBe(false);
         component.instance().handleSubmit(mockEvent);
-        expect(component.state('isSubmitting')).toBe(true);
+        expect(component.state("isSubmitting")).toBe(true);
     });
-    
-    it("component's state is updated to reflect that the request has finished with an error", async () => {
-        user.updatePassword.mockImplementationOnce(() => Promise.reject({
-            status: 500
-        }));
 
-        expect(component.state('isSubmitting')).toBe(false);
+    it("component's state is updated to reflect that the request has finished with an error", async () => {
+        user.updatePassword.mockImplementationOnce(() =>
+            Promise.reject({
+                status: 500
+            })
+        );
+
+        expect(component.state("isSubmitting")).toBe(false);
         await component.instance().handleSubmit(mockEvent);
-        expect(component.state('isSubmitting')).toBe(false);
+        expect(component.state("isSubmitting")).toBe(false);
     });
 
     it("when a publisher the component's state is mapped to the request bodies expected structure", () => {
@@ -392,7 +401,7 @@ describe("Sending the request to change password", () => {
         expect(user.updatePassword.mock.calls.length).toBe(0);
         component.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(1);
-        
+
         const requestBody = user.updatePassword.mock.calls[0][0];
         expect(requestBody).toEqual({
             oldPassword: "current password is correct",
@@ -428,15 +437,13 @@ describe("Sending the request to change password", () => {
 });
 
 describe("Change password form props", () => {
-    const component = shallow(
-        <ChangeUserPasswordController {...defaultProps} />
-    );
+    const component = shallow(<ChangeUserPasswordController {...defaultProps} />);
 
     component.instance().formInputs = () => "form inputs function";
     component.instance().handleSubmit = () => "handle submit function";
     component.instance().handleCancel = () => "handle close function";
 
-    const getFormData = component => component.instance().render().props.children.props
+    const getFormData = component => component.instance().render().props.children.props;
 
     it("runs this.formInputs() for the 'inputs' prop", () => {
         expect(getFormData(component).formData.inputs).toBe("form inputs function");
@@ -459,9 +466,7 @@ describe("Change password form props", () => {
 });
 
 describe("On close", () => {
-    const component = shallow(
-        <ChangeUserPasswordController {...defaultProps} />
-    );
+    const component = shallow(<ChangeUserPasswordController {...defaultProps} />);
 
     it("user's are routed to the user's details screen", () => {
         expect(dispatchedActions.length).toBe(0);
@@ -474,16 +479,14 @@ describe("On close", () => {
 });
 
 describe("On input change component state updates", () => {
-    const component = shallow(
-        <ChangeUserPasswordController {...defaultProps} />
-    );
+    const component = shallow(<ChangeUserPasswordController {...defaultProps} />);
 
     it("the 'current password' value updates", () => {
-        expect(component.state('currentPassword').value).toBe("");
+        expect(component.state("currentPassword").value).toBe("");
         component.instance().handleInputChange("a current password value", "currentPassword");
-        expect(component.state('currentPassword').value).toBe("a current password value");
+        expect(component.state("currentPassword").value).toBe("a current password value");
     });
-    
+
     it("'current password' inline errors are removed", () => {
         component.setState({
             currentPassword: {
@@ -491,15 +494,15 @@ describe("On input change component state updates", () => {
                 error: "An inline error"
             }
         });
-        expect(component.state('currentPassword').error).toBe("An inline error");
+        expect(component.state("currentPassword").error).toBe("An inline error");
         component.instance().handleInputChange("a current password value", "currentPassword");
-        expect(component.state('currentPassword').error).toBe("");
+        expect(component.state("currentPassword").error).toBe("");
     });
 
     it("the newPassword value state updates", () => {
-        expect(component.state('newPassword').value).toBe("");
+        expect(component.state("newPassword").value).toBe("");
         component.instance().handleInputChange("a new password value", "newPassword");
-        expect(component.state('newPassword').value).toBe("a new password value");
+        expect(component.state("newPassword").value).toBe("a new password value");
     });
 
     it("'new password' inline errors are removed", () => {
@@ -509,9 +512,9 @@ describe("On input change component state updates", () => {
                 error: "An inline error"
             }
         });
-        expect(component.state('newPassword').error).toBe("An inline error");
+        expect(component.state("newPassword").error).toBe("An inline error");
         component.instance().handleInputChange("a new password value", "newPassword");
-        expect(component.state('newPassword').error).toBe("");
+        expect(component.state("newPassword").error).toBe("");
     });
 
     it("doesn't update state if there is no 'property' passed to the method", () => {
@@ -522,13 +525,14 @@ describe("On input change component state updates", () => {
 });
 
 describe("Mapping state to props", () => {
-
     it("logged in user details from state are mapped to 'loggedInUser' prop", () => {
-        const state = {state: {
-            user: {
-                isAdmin: true
+        const state = {
+            state: {
+                user: {
+                    isAdmin: true
+                }
             }
-        }};
+        };
         const mappedProps = mapStateToProps(state);
         expect(mappedProps.loggedInUser).toBeTruthy();
         expect(mappedProps.loggedInUser.isAdmin).toBe(true);
