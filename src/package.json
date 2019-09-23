@@ -34,6 +34,7 @@
     "jest-environment-jsdom-global": "^1.1.0",
     "jest-fetch-mock": "^2.1.0",
     "jest-mock-now": "^1.2.1",
+    "prettier": "^1.18.2",
     "prettier-webpack-plugin": "^1.2.0",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^15.5.4",
@@ -44,14 +45,15 @@
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
-    "watch-refactored": "node ./node_modules/webpack/bin/webpack.js -d --watch",
+    "watch-refactored": "npm run prettier-cli node ./node_modules/webpack/bin/webpack.js -d --watch",
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
-    "build-refactored": "NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
+    "build-refactored": "npm run prettier-cli; NODE_ENV=production node ./node_modules/webpack/bin/webpack.js -p",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "test": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --no-cache",
     "test-watch": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
-    "prettier-test": "prettier --log-level \"error\" --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\""
+    "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
+    "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\""
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
@@ -76,7 +78,6 @@
     "minimongo": "^5.1.2",
     "node-sass": "^4.11.0",
     "path": "^0.12.7",
-    "prettier": "^1.18.2",
     "react": "^15.6.2",
     "react-dom": "^15.6.2",
     "react-redux": "^5.1.1",
