@@ -23,9 +23,10 @@
     "babel-jest": "^24.1.0",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
-    "eslint": "^4.11.0",
+    "eslint": "^4.19.1",
+    "eslint-config-prettier": "^6.2.0",
     "eslint-loader": "^2.1.1",
-    "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-react": "^7.14.3",
     "extract-text-webpack-plugin": "^4.0.0-beta.0",
     "handsontable": "^0.35.1",
     "isomorphic-fetch": "^2.2.1",
@@ -52,7 +53,8 @@
     "test-watch": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
-    "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\""
+    "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
+    "eslint-check": "eslint -c ./.eslintrc.json --print-config ./app | eslint-config-prettier-check"
   },
   "dependencies": {
     "@babel/core": "^7.2.2",
