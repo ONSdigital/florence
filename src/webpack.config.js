@@ -1,6 +1,4 @@
 const path = require('path');
-const prettierrc = require('./prettierrc.json');
-const PrettierPlugin = require('prettier-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 const isProduction = (process.env.NODE_ENV === 'production');
@@ -59,7 +57,6 @@ module.exports = {
         ]
     },
     plugins: [
-        new PrettierPlugin(prettierrc),
         new CopyWebpackPlugin([
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },

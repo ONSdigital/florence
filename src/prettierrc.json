@@ -3,8 +3,6 @@
     "tabWidth": 4,
     "useTabs": false,
     "semi": true,
-    "encoding": "utf-8",
-    "extensions": [ ".js", ".jsx" ],
     "arrowParens": "avoid",
     "bracketSpacing": true,
     "jsxBracketSameLine": false
