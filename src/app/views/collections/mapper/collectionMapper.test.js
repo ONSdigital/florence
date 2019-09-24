@@ -1,30 +1,30 @@
 import collectionMapper from "./collectionMapper";
-import log from '../../../utilities/logging/log';
+import log from "../../../utilities/logging/log";
 
 console.error = () => {};
 
-jest.mock('../../../utilities/websocket', () => {
+jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {}),
-    }
+        send: jest.fn(() => {})
+    };
 });
 
-jest.mock('../../../utilities/logging/log', () => ({
+jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     error: jest.fn(() => {}),
     warn: jest.fn(() => {})
 }));
 
 const collectionData = {
-    "approvalStatus": "IN_PROGRESS",
-    "publishComplete": false,
-    "isEncrypted": false,
-    "collectionOwner": "PUBLISHING_SUPPORT",
-    "timeseriesImportFiles": [],
-    "id": "test-collection-12345",
-    "name": "Test collection",
-    "type": "manual",
-    "teams": ['cpi', 'cpih']
+    approvalStatus: "IN_PROGRESS",
+    publishComplete: false,
+    isEncrypted: false,
+    collectionOwner: "PUBLISHING_SUPPORT",
+    timeseriesImportFiles: [],
+    id: "test-collection-12345",
+    name: "Test collection",
+    type: "manual",
+    teams: ["cpi", "cpih"]
 };
 
 const mappedEmptyCollection = collectionMapper.collectionResponseToState({
@@ -44,7 +44,7 @@ const exampleUnmappedPages = [
         description: {
             title: "Environmental accounts"
         },
-        events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
+        events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
         type: "taxonomy_landing_page"
     },
     {
@@ -54,10 +54,10 @@ const exampleUnmappedPages = [
         description: {
             title: "Economy"
         },
-        events: [{email: "test@test.com", date: "2018-05-28T10:23:13.569Z"}],
+        events: [{ email: "test@test.com", date: "2018-05-28T10:23:13.569Z" }],
         type: "taxonomy_landing_page"
     }
-]
+];
 
 describe("readablePublishDate returns correct display date when", () => {
     it("a collection has a publishDate and is set to manual publish", () => {
@@ -106,7 +106,7 @@ describe("Mapping collection data to application state function", () => {
         expect(result.status.warning).toBe(false);
         expect(result.status.success).toBe(false);
     });
-    
+
     it("adds a message and status when publish preparation has failed", () => {
         const resultWithErrorStatus = collectionMapper.collectionResponseToState({
             ...collectionData,
@@ -117,7 +117,7 @@ describe("Mapping collection data to application state function", () => {
         expect(resultWithErrorStatus.status.neutral).toBe(false);
         expect(resultWithErrorStatus.status.success).toBe(false);
     });
-    
+
     it("adds a status with no message when publish preparation was successful", () => {
         const resultWithSuccessStatus = collectionMapper.collectionResponseToState({
             ...collectionData,
@@ -128,7 +128,7 @@ describe("Mapping collection data to application state function", () => {
         expect(resultWithSuccessStatus.status.warning).toBe(false);
         expect(resultWithSuccessStatus.status.neutral).toBe(false);
     });
-    
+
     it("no status message or state when publishing preparation is not in progress", () => {
         const resultWithNoStatus = collectionMapper.collectionResponseToState({
             ...collectionData,
@@ -155,7 +155,7 @@ describe("Mapping collection data to application state function", () => {
         expect(resultOfScheduledCollection.type).toBe("scheduled");
         expect(resultOfScheduledCollection.selectableBox.secondColumn).toBe("Thu, 31/05/2018 10:30AM");
     });
-    
+
     it("correctly sets the `type` and publish date for collections scheduled by a calendar entry", () => {
         const resultOfScheduledCollection = collectionMapper.collectionResponseToState({
             ...collectionData,
@@ -167,7 +167,7 @@ describe("Mapping collection data to application state function", () => {
         expect(resultOfScheduledCollection.type).toBe("scheduled");
         expect(resultOfScheduledCollection.release).toBe("/releases/myreleasemay2018");
     });
-    
+
     it("correctly sets the `type` and publish date for manual collections", () => {
         const resultOfManualCollection = collectionMapper.collectionResponseToState({
             ...collectionData,
@@ -186,7 +186,7 @@ describe("Mapping collection data to application state function", () => {
         });
         expect(resultOfOutdatedScheduledCollection.isForcedManualType).toBe(true);
     });
-    
+
     it("correctly sets `isForcedManualType` to `false`", () => {
         expect(result.isForcedManualType).toBe(false);
 
@@ -215,12 +215,12 @@ describe("Mapping collection data to application state function", () => {
                 {
                     id: 26,
                     name: "team1",
-                    members:  []
+                    members: []
                 },
                 {
                     id: 29,
                     name: "team3",
-                    members:  []
+                    members: []
                 }
             ]
         });
@@ -233,12 +233,11 @@ describe("Mapping collection data to application state function", () => {
                 id: "29",
                 name: "team3"
             }
-        ])
-    })
+        ]);
+    });
 });
 
 describe("Mapping collection data to approvable/deletable state", () => {
-
     it("can't be approved when a collection has not pages or deletes", () => {
         let canBeApproved = collectionMapper.pagesToCollectionState(mappedEmptyCollection).canBeApproved;
         expect(canBeApproved).toBe(false);
@@ -247,22 +246,26 @@ describe("Mapping collection data to approvable/deletable state", () => {
     it("can't be approved when pages are awaiting review or in progress", () => {
         let collection = {
             ...mappedEmptyCollection,
-            inProgress: [{
-                contentPath: "/economy/environmentalaccounts",
-                uri: "/economy/environmentalaccounts",
-                deleteMarker: false,
-                description: {
-                    title: "Environmental accounts"
-                },
-                events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
-                type: "taxonomy_landing_page"
-            }],
-            deletes: [{
-                root: {},
-                totalDeletes: 1,
-                user: "test@test.com"
-            }]
-        }
+            inProgress: [
+                {
+                    contentPath: "/economy/environmentalaccounts",
+                    uri: "/economy/environmentalaccounts",
+                    deleteMarker: false,
+                    description: {
+                        title: "Environmental accounts"
+                    },
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+                    type: "taxonomy_landing_page"
+                }
+            ],
+            deletes: [
+                {
+                    root: {},
+                    totalDeletes: 1,
+                    user: "test@test.com"
+                }
+            ]
+        };
 
         let canBeApproved = collectionMapper.pagesToCollectionState(collection).canBeApproved;
         expect(canBeApproved).toBe(false);
@@ -276,11 +279,13 @@ describe("Mapping collection data to approvable/deletable state", () => {
     it("can be approved when no pages are present but a delete is", () => {
         const collection = {
             ...mappedEmptyCollection,
-            deletes: [{
-                root: {},
-                totalDeletes: 1,
-                user: "test@test.com"
-            }]
+            deletes: [
+                {
+                    root: {},
+                    totalDeletes: 1,
+                    user: "test@test.com"
+                }
+            ]
         };
         const canBeApproved = collectionMapper.pagesToCollectionState(collection).canBeApproved;
         expect(canBeApproved).toBe(true);
@@ -289,16 +294,18 @@ describe("Mapping collection data to approvable/deletable state", () => {
     it("can be approved when all pages have been reviewed", () => {
         const collection = {
             ...mappedEmptyCollection,
-            reviewed: [{
-                contentPath: "/economy/environmentalaccounts",
-                uri: "/economy/environmentalaccounts",
-                deleteMarker: false,
-                description: {
-                    title: "Environmental accounts"
-                },
-                events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
-                type: "taxonomy_landing_page"
-            }]
+            reviewed: [
+                {
+                    contentPath: "/economy/environmentalaccounts",
+                    uri: "/economy/environmentalaccounts",
+                    deleteMarker: false,
+                    description: {
+                        title: "Environmental accounts"
+                    },
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         const canBeApproved = collectionMapper.pagesToCollectionState(collection).canBeApproved;
         expect(canBeApproved).toBe(true);
@@ -307,70 +314,78 @@ describe("Mapping collection data to approvable/deletable state", () => {
     it("can't be deleted when a page is in progress", () => {
         const collection = {
             ...mappedEmptyCollection,
-            inProgress: [{
-                contentPath: "/economy/environmentalaccounts",
-                uri: "/economy/environmentalaccounts",
-                deleteMarker: false,
-                description: {
-                    title: "Environmental accounts"
-                },
-                events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
-                type: "taxonomy_landing_page"
-            }]
+            inProgress: [
+                {
+                    contentPath: "/economy/environmentalaccounts",
+                    uri: "/economy/environmentalaccounts",
+                    deleteMarker: false,
+                    description: {
+                        title: "Environmental accounts"
+                    },
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         const canBeDeleted = collectionMapper.pagesToCollectionState(collection).canBeDeleted;
         expect(canBeDeleted).toBe(false);
     });
-    
+
     it("can't be deleted when a page is awaiting review", () => {
         let collection = {
             ...mappedEmptyCollection,
-            complete: [{
-                contentPath: "/economy/environmentalaccounts",
-                uri: "/economy/environmentalaccounts",
-                deleteMarker: false,
-                description: {
-                    title: "Environmental accounts"
-                },
-                events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
-                type: "taxonomy_landing_page"
-            }]
+            complete: [
+                {
+                    contentPath: "/economy/environmentalaccounts",
+                    uri: "/economy/environmentalaccounts",
+                    deleteMarker: false,
+                    description: {
+                        title: "Environmental accounts"
+                    },
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         let canBeDeleted = collectionMapper.pagesToCollectionState(collection).canBeDeleted;
         expect(canBeDeleted).toBe(false);
     });
-    
+
     it("can't be deleted when a page is reviewed", () => {
         let collection = {
             ...mappedEmptyCollection,
-            reviewed: [{
-                contentPath: "/economy/environmentalaccounts",
-                uri: "/economy/environmentalaccounts",
-                deleteMarker: false,
-                description: {
-                    title: "Environmental accounts"
-                },
-                events: [{email: "test@test.com", date: "2018-05-29T13:41:40.536Z"}],
-                type: "taxonomy_landing_page"
-            }]
+            reviewed: [
+                {
+                    contentPath: "/economy/environmentalaccounts",
+                    uri: "/economy/environmentalaccounts",
+                    deleteMarker: false,
+                    description: {
+                        title: "Environmental accounts"
+                    },
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         let canBeDeleted = collectionMapper.pagesToCollectionState(collection).canBeDeleted;
         expect(canBeDeleted).toBe(false);
     });
-    
+
     it("can't be deleted when any deletes are in the collection", () => {
         const collection = {
             ...mappedEmptyCollection,
-            deletes: [{
-                root: {},
-                totalDeletes: 1,
-                user: "test@test.com"
-            }]
+            deletes: [
+                {
+                    root: {},
+                    totalDeletes: 1,
+                    user: "test@test.com"
+                }
+            ]
         };
         const canBeDeleted = collectionMapper.pagesToCollectionState(collection).canBeDeleted;
         expect(canBeDeleted).toBe(false);
     });
-    
+
     it("can be deleted when no deletes are in the collection", () => {
         const canBeDeleted = collectionMapper.pagesToCollectionState(mappedEmptyCollection).canBeDeleted;
         expect(canBeDeleted).toBe(true);
@@ -379,16 +394,18 @@ describe("Mapping collection data to approvable/deletable state", () => {
     it("re-mapping collection metadata updates correctly", () => {
         const mappedCollection = {
             ...mappedEmptyCollection,
-            inProgress: [{
-                lastEdit: {
-                    email: "test@test.com",
-                    date: "2018-05-29T13:41:40.536Z"
-                },
-                title: "Economy",
-                edition: "",
-                uri: "/economy",
-                type: "taxonomy_landing_page"
-            }]
+            inProgress: [
+                {
+                    lastEdit: {
+                        email: "test@test.com",
+                        date: "2018-05-29T13:41:40.536Z"
+                    },
+                    title: "Economy",
+                    edition: "",
+                    uri: "/economy",
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         expect(mappedCollection.name).toBe("Test collection");
 
@@ -398,20 +415,22 @@ describe("Mapping collection data to approvable/deletable state", () => {
         });
         expect(remappedCollection.name).toBe("A new name");
     });
-    
+
     it("doesn't alter page data when re-mapping metadata in the collection", () => {
         const mappedCollection = {
             ...mappedEmptyCollection,
-            inProgress: [{
-                lastEdit: {
-                    email: "test@test.com",
-                    date: "2018-05-29T13:41:40.536Z"
-                },
-                title: "Economy",
-                edition: "",
-                uri: "/economy",
-                type: "taxonomy_landing_page"
-            }]
+            inProgress: [
+                {
+                    lastEdit: {
+                        email: "test@test.com",
+                        date: "2018-05-29T13:41:40.536Z"
+                    },
+                    title: "Economy",
+                    edition: "",
+                    uri: "/economy",
+                    type: "taxonomy_landing_page"
+                }
+            ]
         };
         expect(mappedCollection.name).toBe("Test collection");
 
@@ -424,7 +443,6 @@ describe("Mapping collection data to approvable/deletable state", () => {
 });
 
 describe("Mapping a collections pages to state", () => {
-    
     it("maps 'in progress' pages", () => {
         const mappedCollection = collectionMapper.pagesToCollectionState({
             ...collectionData,
@@ -435,7 +453,7 @@ describe("Mapping a collections pages to state", () => {
         expect(mappedCollection.inProgress[0].uri).toBe("/economy/environmentalaccounts");
         expect(mappedCollection.inProgress[1].uri).toBe("/economy");
     });
-    
+
     it("maps 'awaiting review' pages", () => {
         const mappedCollection = collectionMapper.pagesToCollectionState({
             ...collectionData,
@@ -446,7 +464,7 @@ describe("Mapping a collections pages to state", () => {
         expect(mappedCollection.complete[0].uri).toBe("/economy/environmentalaccounts");
         expect(mappedCollection.complete[1].uri).toBe("/economy");
     });
-    
+
     it("maps 'reviewed' pages", () => {
         const mappedCollection = collectionMapper.pagesToCollectionState({
             ...collectionData,
@@ -471,7 +489,7 @@ describe("Mapping a collections pages to state", () => {
                         title: "Second estimate of GDP",
                         edition: "October to December 2017"
                     },
-                    events: [{email: "test@test.com", date: "2018-05-29T13:42:23.909Z"}],
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:42:23.909Z" }],
                     type: "bulletin"
                 }
             ]
@@ -487,7 +505,7 @@ describe("Mapping a collections pages to state", () => {
             uri: "/economy/environmentalaccounts",
             type: "taxonomy_landing_page"
         });
-        
+
         expect(mappedCollection.reviewed[2]).toEqual({
             lastEdit: {
                 email: "test@test.com",
@@ -501,7 +519,7 @@ describe("Mapping a collections pages to state", () => {
     });
 
     it("doesn't throw an error when a page has no events", () => {
-        const pageWithoutEvents = {...exampleUnmappedPages[0]};
+        const pageWithoutEvents = { ...exampleUnmappedPages[0] };
         delete pageWithoutEvents.events;
         const mappedCollection = collectionMapper.pagesToCollectionState({
             ...collectionData,
@@ -519,25 +537,25 @@ describe("Mapping a collections pages to state", () => {
             type: "taxonomy_landing_page"
         });
     });
-    
+
     it("logs any errors caused by mapping a page", () => {
         const brokenCollectionData = {
             ...collectionData,
-            inProgress: [{uri: "/economy"}],
+            inProgress: [{ uri: "/economy" }],
             reviewed: [],
             complete: []
         };
         const logCount = log.event.mock.calls.length;
         collectionMapper.pagesToCollectionState(brokenCollectionData);
-        expect(log.event.mock.calls.length).toBe(logCount+1);
+        expect(log.event.mock.calls.length).toBe(logCount + 1);
         expect(log.event.mock.calls[0][0]).toBe("Collections pages array (e.g. inProgress) wasn't set, had to hardcode a default value of null");
     });
-    
+
     it("continues to map other pages even if one fails", () => {
         const brokenCollectionData = {
             ...collectionData,
-            inProgress: [{}, {...exampleUnmappedPages[0]}],
-            reviewed: [{...exampleUnmappedPages[1]}],
+            inProgress: [{}, { ...exampleUnmappedPages[0] }],
+            reviewed: [{ ...exampleUnmappedPages[1] }],
             complete: []
         };
         const expectedMappedInProgress = [
@@ -553,16 +571,18 @@ describe("Mapping a collections pages to state", () => {
                 type: "taxonomy_landing_page"
             }
         ];
-        const expectedMappedReviewed = [{
-            lastEdit: {
-                email: "test@test.com", 
-                date: "2018-05-28T10:23:13.569Z"
-            },
-            title: "Economy",
-            edition: "",
-            uri: "/economy",
-            type: "taxonomy_landing_page"
-        }];
+        const expectedMappedReviewed = [
+            {
+                lastEdit: {
+                    email: "test@test.com",
+                    date: "2018-05-28T10:23:13.569Z"
+                },
+                title: "Economy",
+                edition: "",
+                uri: "/economy",
+                type: "taxonomy_landing_page"
+            }
+        ];
 
         expect(collectionMapper.pagesToCollectionState(brokenCollectionData).inProgress).toMatchObject(expectedMappedInProgress);
         expect(collectionMapper.pagesToCollectionState(brokenCollectionData).complete).toMatchObject([]);
@@ -573,25 +593,25 @@ describe("Mapping a collections pages to state", () => {
 describe("Pages currently being deleted from a collection", () => {
     const exampleMappedPages = [
         {
-            lastEdit: {email: "test@test.com", date: "2018-05-29T13:41:40.536Z"},
-            title: 'Environmental accounts',
-            edition: '',
-            uri: '/economy/environmentalaccounts',
-            type: 'taxonomy_landing_page'
+            lastEdit: { email: "test@test.com", date: "2018-05-29T13:41:40.536Z" },
+            title: "Environmental accounts",
+            edition: "",
+            uri: "/economy/environmentalaccounts",
+            type: "taxonomy_landing_page"
         },
         {
-            lastEdit: {email: "test@test.com", date: "2018-05-28T10:23:13.569Z"},
-            title: 'Economy',
-            edition: '',
-            uri: '/economy',
-            type: 'taxonomy_landing_page'
+            lastEdit: { email: "test@test.com", date: "2018-05-28T10:23:13.569Z" },
+            title: "Economy",
+            edition: "",
+            uri: "/economy",
+            type: "taxonomy_landing_page"
         },
         {
-            lastEdit: {email: "test@test.com", date: "2018-05-29T13:42:23.909Z"},
-            title: 'Second estimate of GDP',
-            edition: 'October to December 2017',
-            uri: '/economy/grossdomesticproductgdp/bulletins/secondestimateofgdp/octobertodecember2017',
-            type: 'bulletin'
+            lastEdit: { email: "test@test.com", date: "2018-05-29T13:42:23.909Z" },
+            title: "Second estimate of GDP",
+            edition: "October to December 2017",
+            uri: "/economy/grossdomesticproductgdp/bulletins/secondestimateofgdp/octobertodecember2017",
+            type: "bulletin"
         }
     ];
 
@@ -623,5 +643,4 @@ describe("Pages currently being deleted from a collection", () => {
         expect(collectionMapper.pagesExcludingPendingDeletedPages(undefined, ["/economy"])).toBe(undefined);
         expect(collectionMapper.pagesExcludingPendingDeletedPages(null, ["/economy"])).toBe(undefined);
     });
-    
 });
