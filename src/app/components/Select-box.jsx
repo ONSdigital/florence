@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import PropTypes from 'prop-types';
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 const propTypes = {
     contents: PropTypes.array,
@@ -16,8 +16,8 @@ class Select extends Component {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.state = {
-            value:''
-        }
+            value: ""
+        };
     }
 
     handleChange(event) {
@@ -28,34 +28,28 @@ class Select extends Component {
     }
 
     render() {
-        const element = this.props.override
-            ? <div>
-                <label className="form__label" htmlFor={this.props.overrideId}>{this.props.overrideLabel}</label>
-                <input
-                    className="input"
-                    id={this.props.overrideId}
-                    type="text"
-                    onChange={this.handleChange} />
-            </div>
-            :
+        const element = this.props.override ? (
             <div>
-                <label className="form__label" htmlFor={this.props.id}>{this.props.label}</label>
-                <select
-                    className="select"
-                    id={this.props.id}
-                    onChange={this.handleChange}>
+                <label className="form__label" htmlFor={this.props.overrideId}>
+                    {this.props.overrideLabel}
+                </label>
+                <input className="input" id={this.props.overrideId} type="text" onChange={this.handleChange} />
+            </div>
+        ) : (
+            <div>
+                <label className="form__label" htmlFor={this.props.id}>
+                    {this.props.label}
+                </label>
+                <select className="select" id={this.props.id} onChange={this.handleChange}>
                     <option>Select</option>
                     {this.props.contents.map((list, index) => {
-                        return <option key={index}>{list}</option>
+                        return <option key={index}>{list}</option>;
                     })}
                 </select>
-            </div>;
-
-        return (
-            <div className="margin-bottom--2">
-                {element}
             </div>
-        )
+        );
+
+        return <div className="margin-bottom--2">{element}</div>;
     }
 }
 

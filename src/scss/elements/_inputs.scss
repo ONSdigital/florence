@@ -54,7 +54,6 @@
         height: $lineheight * 2;
         display: inline-block;
         width: 100%;
-        box-sizing: border-box;
         border: 3px solid $scarpa-flow;
         border-radius: 4px;
         background-color: $white;
@@ -152,6 +151,7 @@
         width: 38px;
         height: 38px;
         z-index: 0;
+        opacity: 0;
     }
 
     &__label {
