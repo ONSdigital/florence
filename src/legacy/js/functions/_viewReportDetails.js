@@ -8,7 +8,40 @@
 
 function viewReportDetails(collection, isPublished, $this) {
 
-    var details, reportDetails, published, events;
+    // Enum type of filterable data
+    const filterableReportType = {
+        'dataset': 0,
+        'datasetVersion': 1
+    };
+
+    // Retrieve all information for a specific type of filterable data report
+    function getFilterableReportData(filterableDataTypeToUse, fullDatasetCollectionData) {
+        let listOfReportData = [];
+
+        // Retrieve all mandatory information fields for filterable data report
+        function getMandatoryFilterableReportInformation(datasetCollectionItem) {
+            const url = new URL(datasetCollectionItem.uri);
+            return {
+                uri: url.pathname
+            };
+        }
+
+        if (fullDatasetCollectionData != null) {
+            switch (filterableDataTypeToUse) {
+                case filterableReportType.dataset:
+                case filterableReportType.datasetVersion:
+                    fullDatasetCollectionData.forEach((datasetCollectionItem) => {
+                        let singleReportItem = getMandatoryFilterableReportInformation(datasetCollectionItem);
+                        listOfReportData.push(singleReportItem)
+                    });
+                    break;
+            }
+        }
+        return listOfReportData;
+    }
+
+
+    let details;
 
     // get the event details
     $.ajax({
@@ -16,7 +49,6 @@ function viewReportDetails(collection, isPublished, $this) {
         type: "get",
         crossDomain: true,
         success: function (events) {
-
             // format eventDate to user readable date
             $(events).each(function (i) {
                 var formattedDate = events[i].eventDetails.date;
@@ -31,7 +63,6 @@ function viewReportDetails(collection, isPublished, $this) {
                     type: "GET",
                     crossDomain: true,
                     success: function (collection) {
-
                         var collection = collection[0];
 
                         var date = collection.publishEndDate;
@@ -42,7 +73,10 @@ function viewReportDetails(collection, isPublished, $this) {
                             return;
                         }
 
-                        var success = collection.publishResults[collection.publishResults.length - 1];
+                        const success = collection.publishResults[collection.publishResults.length - 1];
+                        const datasets = getFilterableReportData(filterableReportType.dataset, collection.datasets);
+                        const datasetVersions = getFilterableReportData(filterableReportType.datasetVersion, collection.datasetVersions);
+
                         var duration = (function () {
 
                             if (collection.publishStartDate && collection.publishEndDate) {
@@ -54,7 +88,6 @@ function viewReportDetails(collection, isPublished, $this) {
                             }
                             return end - start;
                         })();
-
 
                         if (collection.publishStartDate) {
                             var starting = StringUtils.formatIsoFullSec(collection.publishStartDate);
@@ -74,6 +107,8 @@ function viewReportDetails(collection, isPublished, $this) {
                             starting: starting,
                             duration: duration,
                             success: success,
+                            datasets: datasets,
+                            datasetVersions: datasetVersions,
                             events: events
                         };
 
@@ -91,8 +126,6 @@ function viewReportDetails(collection, isPublished, $this) {
                         handleApiError(response);
                     }
                 });
-
-
 
             } else {
 
@@ -123,8 +156,8 @@ function viewReportDetails(collection, isPublished, $this) {
             handleApiError(response);
         }
     });
-
 }
+
 
 function bindTableOrdering() {
     // Bind table ordering functionality to publish times
