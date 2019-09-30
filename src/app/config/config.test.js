@@ -1,21 +1,21 @@
-import { userLoggedIn, userLoggedOut } from './actions';
-import { initialState } from './initialState';
-import reducer from './reducer';
+import { userLoggedIn, userLoggedOut } from "./actions";
+import { initialState } from "./initialState";
+import reducer from "./reducer";
 
-jest.mock('../utilities/log', () => {
+jest.mock("../utilities/log", () => {
     return {
         add: function() {
             // do nothing
         },
         eventTypes: {}
-    }
-})
+    };
+});
 
-test('Reducer returns proper initial state', () => {
+test("Reducer returns proper initial state", () => {
     expect(reducer(undefined, {})).toEqual(initialState);
 });
 
-test('userLoggedIn action and USER_LOGGED_IN reducer return correct state', () => {
+test("userLoggedIn action and USER_LOGGED_IN reducer return correct state", () => {
     const action = userLoggedIn("foo@bar.com", "PUBLISHER", false);
     expect(reducer({}, action)).toEqual({
         user: {
@@ -27,7 +27,7 @@ test('userLoggedIn action and USER_LOGGED_IN reducer return correct state', () =
     });
 });
 
-test('userLoggedOut action and USER_LOGGED_OUT reducer return correct state', () => {
+test("userLoggedOut action and USER_LOGGED_OUT reducer return correct state", () => {
     const action = userLoggedOut();
     expect(reducer({}, action)).toEqual({
         user: {
