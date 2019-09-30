@@ -30,13 +30,16 @@ generate: ${GOPATH}/bin/go-bindata
 	{ echo "// +build debug"; cat assets/debug.go; } > assets/debug.go.new
 	mv assets/debug.go.new assets/debug.go
 
-test: test-go test-npm
+test: test-go test-npm test-pretty
 
 test-go:
 	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
 
 test-npm:
 	cd src; npm install && npm run test
+
+test-pretty:
+	cd src; npm run prettier-test
 
 node-modules:
 	cd src; npm install

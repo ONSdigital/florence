@@ -1631,6 +1631,8 @@ templates['reportPublishedDetails'] = template({"1":function(depth0,helpers,part
     + ((stack1 = helpers['if'].call(depth0,(depth0 != null ? depth0.events : depth0),{"name":"if","hash":{},"fn":this.program(9, data, 0),"inverse":this.program(14, data, 0),"data":data})) != null ? stack1 : "")
     + "                </div>\n            </div>\n            <div class=\"accordion js-accordion\">\n                <div class=\"accordion__title js-accordion__title\">\n                    <h3>Publishing times</h3>\n                </div>\n                <div class=\"accordion__content js-accordion__content disable-animation\">\n                    <table class=\"table table--section publish-times-table\">\n                        <thead>\n                        <tr>\n                            <th class=\"file-name\">Path</th>\n                            <th class=\"file-size\">Size (B)</th>\n                            <th class=\"file-duration\">Time (ms)</th>\n                        </tr>\n                        </thead>\n                        <tbody>\n"
     + ((stack1 = helpers.each.call(depth0,((stack1 = ((stack1 = (depth0 != null ? depth0.success : depth0)) != null ? stack1.transaction : stack1)) != null ? stack1.uriInfos : stack1),{"name":"each","hash":{},"fn":this.program(16, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasets : depth0),{"name":"each","hash":{},"fn":this.program(21, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
+    + ((stack1 = helpers.each.call(depth0,(depth0 != null ? depth0.datasetVersions : depth0),{"name":"each","hash":{},"fn":this.program(21, data, 0),"inverse":this.noop,"data":data})) != null ? stack1 : "")
     + "                        </tbody>\n                    </table>\n                </div>\n            </div>\n        </div>\n";
 },"9":function(depth0,helpers,partials,data) {
     var stack1;
@@ -1685,6 +1687,12 @@ templates['reportPublishedDetails'] = template({"1":function(depth0,helpers,part
     return "\n                            style=\"color: red;\" ";
 },"19":function(depth0,helpers,partials,data) {
     return "\n                            style=\"color: green;\" ";
+},"21":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "                            <tr>\n                                <td class=\"file-name\">"
+    + this.escapeExpression(((helper = (helper = helpers.uri || (depth0 != null ? depth0.uri : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"uri","hash":{},"data":data}) : helper)))
+    + "</td>\n                            </tr>\n";
 },"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
     var stack1, helper, alias1=helpers.helperMissing, alias2="function", alias3=this.escapeExpression;
 
