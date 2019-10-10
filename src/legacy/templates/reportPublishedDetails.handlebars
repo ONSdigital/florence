@@ -114,6 +114,16 @@
                                 <td class="file-duration">{{duration}}</td>
                             </tr>
                         {{/each}}
+                        {{#each datasets}}
+                            <tr>
+                                <td class="file-name">{{uri}}</td>
+                            </tr>
+                        {{/each}}
+                        {{#each datasetVersions}}
+                            <tr>
+                                <td class="file-name">{{uri}}</td>
+                            </tr>
+                        {{/each}}
                         </tbody>
                     </table>
                 </div>
