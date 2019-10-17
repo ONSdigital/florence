@@ -1,14 +1,14 @@
-import React from 'react';
-import { shallow } from 'enzyme';
-import { Link } from 'react-router';
-import { NavBar } from './NavBar';
+import React from "react";
+import { shallow } from "enzyme";
+import { Link } from "react-router";
+import { NavBar } from "./NavBar";
 
-jest.mock('../utilities/logging/log', () => {
+jest.mock("../utilities/logging/log", () => {
     return {
         event: function() {
             // do nothing
         }
-    }
+    };
 });
 
 jest.mock("../utilities/url", () => ({
@@ -30,7 +30,7 @@ const defaultProps = {
     rootPath: "/florence",
     location: {},
     dispatch: action => dispatchedActions.push(action)
-}
+};
 
 describe("Dataset import functionality", () => {
     it("displays the dataset upload tab when enabled in global config", () => {
@@ -41,9 +41,7 @@ describe("Dataset import functionality", () => {
                 enableDatasetImport: true
             }
         };
-        const component = shallow(
-            <NavBar {...props} />
-        );
+        const component = shallow(<NavBar {...props} />);
 
         expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
     });
@@ -56,9 +54,7 @@ describe("Dataset import functionality", () => {
                 enableDatasetImport: false
             }
         };
-        const component = shallow(
-            <NavBar {...props} />
-        );
+        const component = shallow(<NavBar {...props} />);
 
         expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
     });

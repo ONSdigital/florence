@@ -1,6 +1,6 @@
-import React from 'react';
-import Notifications from './Notifications';
-import { mount } from 'enzyme';
+import React from "react";
+import Notifications from "./Notifications";
+import { mount } from "enzyme";
 
 test("Editing a notifications prop updates the number of notifications displayed", () => {
     const notifications = [
@@ -15,22 +15,23 @@ test("Editing a notifications prop updates the number of notifications displayed
             id: "2"
         }
     ];
-    const component = mount(
-        <Notifications notifications={notifications} />  
-    );
-    expect(component.find('li').length).toBe(2);
+    const component = mount(<Notifications notifications={notifications} />);
+    expect(component.find("li").length).toBe(2);
     component.setProps({
-        notifications: [...notifications, {
-            type: "warning",
-            message: "Message 3",
-            id: "3"
-        }]
+        notifications: [
+            ...notifications,
+            {
+                type: "warning",
+                message: "Message 3",
+                id: "3"
+            }
+        ]
     });
-    expect(component.find('li').length).toBe(3);
+    expect(component.find("li").length).toBe(3);
     component.setProps({
         notifications: notifications.slice(0, 1)
     });
-    expect(component.find('li').length).toBe(1);
+    expect(component.find("li").length).toBe(1);
 });
 
 test("Button renders and onClick event calls back to caller", () => {
@@ -55,10 +56,8 @@ test("Button renders and onClick event calls back to caller", () => {
             id: "2"
         }
     ];
-    const component = mount(
-        <Notifications notifications={notifications} />  
-    );
+    const component = mount(<Notifications notifications={notifications} />);
     expect(hasClickedButton).toBe(false);
-    component.find('li button').simulate('click');
+    component.find("li button").simulate("click");
     expect(hasClickedButton).toBe(true);
 });

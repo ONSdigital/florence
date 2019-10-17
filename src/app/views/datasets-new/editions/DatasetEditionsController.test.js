@@ -1,25 +1,26 @@
-import React from 'react';
-import { DatasetEditionsController } from './DatasetEditionsController';
-import { shallow, mount } from 'enzyme';
-import datasets from '../../../utilities/api-clients/datasets';
+import React from "react";
+import { DatasetEditionsController } from "./DatasetEditionsController";
+import { shallow, mount } from "enzyme";
+import datasets from "../../../utilities/api-clients/datasets";
 
-console.error = () => { };
+console.error = () => {};
 
-jest.mock('../../../utilities/logging/log', () => {
+jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function () { },
-    }
+        event: function() {}
+    };
 });
 
-
-jest.mock('../../../utilities/notifications', () => {
+jest.mock("../../../utilities/notifications", () => {
     return {
-        add: jest.fn((notification) => { mockNotifications.push(notification) }),
-        remove: () => { }
-    }
+        add: jest.fn(notification => {
+            mockNotifications.push(notification);
+        }),
+        remove: () => {}
+    };
 });
 
-jest.mock('../../../utilities/api-clients/datasets', () => {
+jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         get: jest.fn(() => {
             return Promise.resolve(mockedDataset);
@@ -35,13 +36,13 @@ jest.mock('../../../utilities/api-clients/datasets', () => {
         }),
         getLatestVersionForEditions: jest.fn(() => {
             return Promise.resolve(mockedVersions);
-        }),
-    }
+        })
+    };
 });
 
 const mockedDataset = {
     id: "test-dataset-1",
-        current: {
+    current: {
         collection_id: "1234567890",
         id: "test-dataset-1",
         title: "Test Dataset 1"
@@ -58,10 +59,10 @@ const mockedEditions = {
                     latest_version: {
                         href: "test/3",
                         id: "3"
-                    },
+                    }
                 },
                 state: "published"
-            },
+            }
         },
         {
             id: "test-2",
@@ -71,34 +72,30 @@ const mockedEditions = {
                     latest_version: {
                         href: "test/3",
                         id: "12"
-                    },
+                    }
                 },
                 state: "published"
-            },
-        },
+            }
+        }
     ]
 };
 
-const mockedMappedEditions = [ 
-    { 
-        title: 'Test Dataset 1',
-        id: 'edition-1',
-        url: 'florence/collections/12345/datasets/6789/editions/edition-1',
-        details: [ 
-            'Edition: edition-1', 
-            'Release date: loading...' ],
-        latestVersion: '3' 
+const mockedMappedEditions = [
+    {
+        title: "Test Dataset 1",
+        id: "edition-1",
+        url: "florence/collections/12345/datasets/6789/editions/edition-1",
+        details: ["Edition: edition-1", "Release date: loading..."],
+        latestVersion: "3"
     },
-    { 
-        title: 'Test Dataset 1',
-        id: 'edition-2',
-        url: 'florence/collections/12345/datasets/6789/editions/edition-2',
-        details: [ 
-            'Edition: edition-2', 
-            'Release date: loading...' ],
-        latestVersion: '12' 
-    } 
-]
+    {
+        title: "Test Dataset 1",
+        id: "edition-2",
+        url: "florence/collections/12345/datasets/6789/editions/edition-2",
+        details: ["Edition: edition-2", "Release date: loading..."],
+        latestVersion: "12"
+    }
+];
 
 const mockedVersions = [
     {
@@ -117,9 +114,10 @@ const mockedVersions = [
         state: "published",
         version: 2
     }
-]
+];
 
-let dispatchedActions, mockNotifications = [];
+let dispatchedActions,
+    mockNotifications = [];
 
 const defaultProps = {
     dispatch: event => {
@@ -134,126 +132,107 @@ const defaultProps = {
     }
 };
 
-const component = shallow(
-    <DatasetEditionsController {...defaultProps} />
-);
+const component = shallow(<DatasetEditionsController {...defaultProps} />);
 
 beforeEach(() => {
-    mockNotifications = []
-})
+    mockNotifications = [];
+});
 
 describe("Calling getDataset", () => {
-    it("returns mapped dataset", async() => {
+    it("returns mapped dataset", async () => {
         const dataset = await component.instance().getDataset(mockedDataset.id);
-        expect(dataset).toMatchObject({title: mockedDataset.current.title});
-    })
+        expect(dataset).toMatchObject({ title: mockedDataset.current.title });
+    });
 
     it("updates isFetchingDataset state to show it's fetching data for all datasets", () => {
-        expect(component.state('isFetchingDataset')).toBe(false);
+        expect(component.state("isFetchingDataset")).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
         component.instance().getDataset(mockedDataset.id);
-        expect(component.state('isFetchingDataset')).toBe(true);
-    })
+        expect(component.state("isFetchingDataset")).toBe(true);
+    });
 
     it("updates isFetchingDatasets state to show it has fetched data for all datasets", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
         await component.instance().getDataset(mockedDataset.id);
-        expect(component.state('isFetchingDataset')).toBe(false);
+        expect(component.state("isFetchingDataset")).toBe(false);
     });
 
     it("updates isFetchingDatasets state correctly on failure to fetch data for all datasets", async () => {
-        datasets.get.mockImplementationOnce(() => (
-            Promise.reject({ status: 500 })
-        ));
+        datasets.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().getDataset(mockedDataset.id);
-        expect(component.state('isFetchingDataset')).toBe(false);
+        expect(component.state("isFetchingDataset")).toBe(false);
     });
 
     it("Errors cause notification", async () => {
-        datasets.get.mockImplementationOnce(() => (
-            Promise.reject({ status: 404 })
-        ));
+        datasets.get.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await component.instance().getDataset(mockedDataset.id);
         expect(mockNotifications.length).toBe(1);
     });
 });
 
 describe("Calling getEditions", () => {
-    it("returns mapped editions", async() => {
+    it("returns mapped editions", async () => {
         //gets dataset title and stores in state
-        component.setState({ dataset: { title: mockedDataset.current.title } })
+        component.setState({ dataset: { title: mockedDataset.current.title } });
         const editions = await component.instance().getEditions(mockedDataset.id);
-        expect(editions[0]).toMatchObject(
-            
-            {
-                title: mockedDataset.current.title,
-                id: mockedEditions.items[0].current.edition,
-                url: `${defaultProps.location.pathname}/editions/${mockedEditions.items[0].current.edition}`,
-                details: [ `Edition: ${mockedEditions.items[0].current.edition}`, `Release date: loading...`],
-                latestVersion: mockedEditions.items[0].current.links.latest_version.id
-            }
-        );
-    })
+        expect(editions[0]).toMatchObject({
+            title: mockedDataset.current.title,
+            id: mockedEditions.items[0].current.edition,
+            url: `${defaultProps.location.pathname}/editions/${mockedEditions.items[0].current.edition}`,
+            details: [`Edition: ${mockedEditions.items[0].current.edition}`, `Release date: loading...`],
+            latestVersion: mockedEditions.items[0].current.links.latest_version.id
+        });
+    });
 
     it("updates isFetchingEditions state to show it's fetching data for all editions", () => {
-        expect(component.state('isFetchingEditions')).toBe(false);
+        expect(component.state("isFetchingEditions")).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
         component.instance().getEditions();
-        expect(component.state('isFetchingEditions')).toBe(true);
-    })
+        expect(component.state("isFetchingEditions")).toBe(true);
+    });
 
     it("updates isFetchingEditions state to show it has fetched data for all editions", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
         await component.instance().getEditions();
-        expect(component.state('isFetchingEditions')).toBe(false);
+        expect(component.state("isFetchingEditions")).toBe(false);
     });
 
     it("updates isFetchingEditions state correctly on failure to fetch data for all editions", async () => {
-        datasets.getEditions.mockImplementationOnce(() => (
-            Promise.reject({ status: 500 })
-        ));
+        datasets.getEditions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().getEditions();
-        expect(component.state('isFetchingEditions')).toBe(false);
+        expect(component.state("isFetchingEditions")).toBe(false);
     });
 
     it("Errors cause notification", async () => {
-        datasets.getEditions.mockImplementationOnce(() => (
-            Promise.reject({ status: 404 })
-        ));
+        datasets.getEditions.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await component.instance().getEditions();
         expect(mockNotifications.length).toBe(1);
     });
 });
 
 describe("Mapping version release dates to editions method", () => {
-    it("returns mapped editions correctly", async() => {
-        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions)
-        expect (mappedEditions[0]).toMatchObject({
-            title: 'Test Dataset 1',
-            id: 'edition-1',
-            url: 'florence/collections/12345/datasets/6789/editions/edition-1',
-            details: [ 
-                'Edition: edition-1', 
-                'Release date: 07 September 2018' ],
-            latestVersion: '3'
+    it("returns mapped editions correctly", async () => {
+        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions);
+        expect(mappedEditions[0]).toMatchObject({
+            title: "Test Dataset 1",
+            id: "edition-1",
+            url: "florence/collections/12345/datasets/6789/editions/edition-1",
+            details: ["Edition: edition-1", "Release date: 07 September 2018"],
+            latestVersion: "3"
         });
     });
 
-    it("displays inline error if no versions returned", async() => {
-        datasets.getLatestVersionForEditions.mockImplementationOnce(() => (
-            Promise.reject({ status: 500 })
-        ));
-        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions)
+    it("displays inline error if no versions returned", async () => {
+        datasets.getLatestVersionForEditions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions);
         expect(mappedEditions[0]).toMatchObject({
-            title: 'Test Dataset 1',
-            id: 'edition-1',
-            url: 'florence/collections/12345/datasets/6789/editions/edition-1',
-            details: [   
-                'Edition: edition-1',
-                'Release date: error retreiving release date' ],
-            latestVersion: '3'
+            title: "Test Dataset 1",
+            id: "edition-1",
+            url: "florence/collections/12345/datasets/6789/editions/edition-1",
+            details: ["Edition: edition-1", "Release date: error retreiving release date"],
+            latestVersion: "3"
         });
     });
 });
@@ -261,21 +240,18 @@ describe("Mapping version release dates to editions method", () => {
 test("Mapping dataset to state", () => {
     const mappedDataset = component.instance().mapDatasetToState(mockedDataset);
     expect(mappedDataset).toMatchObject({ title: mockedDataset.current.title });
-})
+});
 
 test("Mapping edition to state", () => {
     const expectedMappedEdition = {
         title: "Dataset Title",
         id: mockedEditions.items[0].current.edition,
         url: defaultProps.location.pathname + "/editions/" + mockedEditions.items[0].current.edition,
-        details: [
-            "Edition: " + mockedEditions.items[0].current.edition,
-            "Release date: loading..."
-        ],
+        details: ["Edition: " + mockedEditions.items[0].current.edition, "Release date: loading..."],
         latestVersion: mockedEditions.items[0].current.links.latest_version.id
-    }
+    };
     // componenet gets dataset info and stores in state, so set it for this test
-    component.setState({ dataset: { title: "Dataset Title" } })
+    component.setState({ dataset: { title: "Dataset Title" } });
     const mappedEditions = component.instance().mapDatasetEditionsToView(mockedEditions.items);
     expect(mappedEditions[0]).toMatchObject(expectedMappedEdition);
 });
