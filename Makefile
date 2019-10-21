@@ -13,18 +13,22 @@ VAULT_POLICY:="$(shell vault policy write -address=$(VAULT_ADDR) read-psk policy
 TOKEN_INFO:="$(shell vault token create -address=$(VAULT_ADDR) -policy=read-psk -period=24h -display-name=florence)"
 APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
 
+.PHONY: build
 build: generate
 	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
 
+.PHONY: dev
 dev: node-modules generate
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
+.PHONY: debug
 debug: generate
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
-generate: ${GOPATH}/bin/go-bindata
+.PHONY: generate
+generate: node-modules ${GOPATH}/bin/go-bindata
 	# build the production version
 	cd assets; ${GOPATH}/bin/go-bindata -o prod.go -pkg assets ../dist/...
 	{ echo "// +build production"; cat assets/prod.go; } > assets/prod.go.new
@@ -34,25 +38,38 @@ generate: ${GOPATH}/bin/go-bindata
 	{ echo "// +build debug"; cat assets/debug.go; } > assets/debug.go.new
 	mv assets/debug.go.new assets/debug.go
 
-test: test-go test-npm test-pretty
+.PHONY: test
+test: test-npm test-pretty generate test-go 
 
+.PHONY: test-go
 test-go:
 	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
 
-test-npm:
-	cd src; npm install && npm run test
+.PHONY: test-npm
+test-npm: node-modules-react
+	cd src; npm run test
 
-test-pretty:
+.PHONY: test-pretty
+test-pretty: node-modules-react
 	cd src; npm run prettier-test
 
-node-modules:
+.PHONY: node-modules
+node-modules: node-modules-react node-modules-legacy
+
+.PHONY: node-modules-react
+node-modules-react:
 	cd src; npm install
+
+.PHONY: node-modules-legacy
+node-modules-legacy:
 	cd src/legacy; npm install
 
+.PHONY: watch-src
 watch-src:
 	make node-modules
 	cd src; npm run watch
 
+.PHONY: vault
 vault:
 	@echo "$(VAULT_POLICY)"
 	@echo "$(TOKEN_INFO)"
@@ -61,4 +78,6 @@ vault:
 ${GOPATH}/bin/go-bindata:
 	go get -u github.com/jteeuwen/go-bindata/go-bindata
 
-.PHONY: build debug test node-modules watch-src
+.PHONY: clean
+clean:
+	rm -rf build/ dist/ assets/debug.go assets/prod.go src/node_modules src/legacy/node_modules
