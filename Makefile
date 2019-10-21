@@ -16,6 +16,10 @@ APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
 build: generate
 	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
 
+dev: node-modules generate
+	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
+	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
+
 debug: generate
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
