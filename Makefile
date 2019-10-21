@@ -58,11 +58,11 @@ node-modules: node-modules-react node-modules-legacy
 
 .PHONY: node-modules-react
 node-modules-react:
-	cd src; npm install
+	cd src; npm install --unsafe-perm
 
 .PHONY: node-modules-legacy
 node-modules-legacy:
-	cd src/legacy; npm install
+	cd src/legacy; npm install --unsafe-perm
 
 .PHONY: watch-src
 watch-src:
