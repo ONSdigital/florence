@@ -51,6 +51,7 @@
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "test": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --no-cache",
     "test-watch": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
+    "preinstall": "mkdir ../dist && cp -R img/ ../dist/img/",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
