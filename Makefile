@@ -23,12 +23,15 @@ dev: node-modules generate
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 .PHONY: debug
-debug: generate
+debug: generate-go
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 .PHONY: generate
-generate: node-modules ${GOPATH}/bin/go-bindata
+generate: node-modules generate-go
+
+.PHONY: generate-go
+generate-go: ${GOPATH}/bin/go-bindata
 	# build the production version
 	cd assets; ${GOPATH}/bin/go-bindata -o prod.go -pkg assets ../dist/...
 	{ echo "// +build production"; cat assets/prod.go; } > assets/prod.go.new
@@ -36,7 +39,7 @@ generate: node-modules ${GOPATH}/bin/go-bindata
 	# build the debug version
 	cd assets; ${GOPATH}/bin/go-bindata -debug -o debug.go -pkg assets ../dist/...
 	{ echo "// +build debug"; cat assets/debug.go; } > assets/debug.go.new
-	mv assets/debug.go.new assets/debug.go
+	mv assets/debug.go.new assets/debug.go	
 
 .PHONY: test
 test: test-npm test-pretty generate test-go 
