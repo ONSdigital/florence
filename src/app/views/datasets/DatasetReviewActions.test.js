@@ -7,6 +7,7 @@ const defaultProps = {
     includeSaveLabels: false,
     reviewState: undefined,
     userEmail: "user-1@email.com",
+
     lastEditedBy: undefined,
     onSubmit: undefined,
     onApprove: undefined,
