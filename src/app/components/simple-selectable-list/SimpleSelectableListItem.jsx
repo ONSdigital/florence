@@ -7,7 +7,7 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
-    disabled: PropTypes.disabled
+    disabled: PropTypes.bool
 };
 
 export default class SimpleSelectableListItem extends Component {
