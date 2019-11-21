@@ -66,6 +66,7 @@ export class CreateDatasetController extends Component {
                 const datasets = responses[1];
                 const outputs = this.getAllOutputsFromRecipes(recipes);
                 const outputsWithoutExistingDataset = this.getOutputsWithoutExistingDataset(outputs, datasets);
+                console.log(this.mapOutputsToState(outputsWithoutExistingDataset));
                 this.setState({ recipes: this.mapOutputsToState(outputsWithoutExistingDataset) });
             })
             .catch(error => {});
@@ -101,7 +102,7 @@ export class CreateDatasetController extends Component {
             return outputs.map(output => {
                 return {
                     title: output.title,
-                    id: output.id,
+                    id: output.dataset_id,
                     url: this.props.location.pathname + "/" + output.id
                 };
             });
