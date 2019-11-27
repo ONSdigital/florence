@@ -27,7 +27,12 @@ class DatasetItem extends Component {
         return (
             <li className="simple-select-list__item" key={this.props.dataset.id}>
                 <h2>
-                    <a href="javascript:void(0)" onClick={this.props.onNewVersionClick} data-recipe-id={this.props.dataset.id}>
+                    <a
+                        href="javascript:void(0)"
+                        onClick={this.props.onNewVersionClick}
+                        data-recipe-id={this.props.dataset.id}
+                        disabled={this.props.isLoading}
+                    >
                         {this.props.dataset.alias}
                     </a>
                 </h2>
