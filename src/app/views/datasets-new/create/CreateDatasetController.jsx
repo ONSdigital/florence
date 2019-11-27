@@ -61,13 +61,14 @@ export class CreateDatasetController extends Component {
     };
 
     getAllUncreatedDatasetFromRecipeOutputs = () => {
+        this.setState({ isFetchingRecipesAndDatasets: true });
         Promise.all([this.getRecipes(), this.getDatasets()])
             .then(responses => {
                 const recipes = responses[0];
                 const datasets = responses[1];
                 const outputs = this.getAllOutputsFromRecipes(recipes);
                 const outputsWithoutExistingDataset = this.getOutputsWithoutExistingDataset(outputs, datasets);
-                this.setState({ recipes: this.mapOutputsToState(outputsWithoutExistingDataset) });
+                this.setState({ recipes: this.mapOutputsToState(outputsWithoutExistingDataset), isFetchingRecipesAndDatasets: false });
             })
             .catch(error => {
                 log.event("Error getting outputs with no created dataset", log.error(error));
@@ -78,6 +79,7 @@ export class CreateDatasetController extends Component {
                 };
                 notifications.add(notification);
                 console.error("Error getting outputs with no created dataset:\n", error);
+                this.setState({ isFetchingRecipesAndDatasets: true });
             });
     };
 
