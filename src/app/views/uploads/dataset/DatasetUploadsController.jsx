@@ -3,17 +3,14 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
-import { updateAllJobs, addNewJob, updateAllRecipes } from "../../../config/actions";
+import { addNewJob, updateAllRecipes } from "../../../config/actions";
 import recipes from "../../../utilities/api-clients/recipes";
 import datasetImport from "../../../utilities/api-clients/datasetImport";
 import notifications from "../../../utilities/notifications";
-import Definition from "../../../components/Definition";
 import log, { eventTypes } from "../../../utilities/log";
 
 import DatasetUploadRecipe from "./uploads-components/DatasetUploadRecipe";
-import DatasetUploadJobs from "./uploads-components/DatasetUploadJobs";
 import Input from "../../../components/Input";
-import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
