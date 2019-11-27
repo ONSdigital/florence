@@ -6,6 +6,7 @@ import datasets from "../../../utilities/api-clients/datasets";
 import recipes from "../../../utilities/api-clients/recipes";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
+import log from "../../../utilities/logging/log";
 
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 import Input from "../../../components/Input";
@@ -41,7 +42,7 @@ export class CreateDatasetController extends Component {
                     resolve(recipes);
                 })
                 .catch(error => {
-                    reject(error);
+                    reject({ message: "An error occured trying to retrieve all recipes", error: error });
                 });
         });
     };
@@ -54,7 +55,7 @@ export class CreateDatasetController extends Component {
                     resolve(datasets);
                 })
                 .catch(error => {
-                    reject(error);
+                    reject({ message: "An error occured trying to retrieve all datasets", error: error });
                 });
         });
     };
@@ -68,7 +69,16 @@ export class CreateDatasetController extends Component {
                 const outputsWithoutExistingDataset = this.getOutputsWithoutExistingDataset(outputs, datasets);
                 this.setState({ recipes: this.mapOutputsToState(outputsWithoutExistingDataset) });
             })
-            .catch(error => {});
+            .catch(error => {
+                log.event("Error getting outputs with no created dataset", log.error(error));
+                const notification = {
+                    type: "warning",
+                    message: "An error occurred when trying to get available datatsets. Try refreshing the page",
+                    isDismissable: true
+                };
+                notifications.add(notification);
+                console.error("Error getting outputs with no created dataset:\n", error);
+            });
     };
 
     // A recipe can output many datasets, so loop through
@@ -97,15 +107,13 @@ export class CreateDatasetController extends Component {
     };
 
     mapOutputsToState = outputs => {
-        try {
-            return outputs.map(output => {
-                return {
-                    title: output.title,
-                    id: output.dataset_id,
-                    url: this.props.location.pathname + "/" + output.id
-                };
-            });
-        } catch (error) {}
+        return outputs.map(output => {
+            return {
+                title: output.title,
+                id: output.dataset_id,
+                url: this.props.location.pathname + "/" + output.dataset_id
+            };
+        });
     };
 
     handleSearchInput = event => {
