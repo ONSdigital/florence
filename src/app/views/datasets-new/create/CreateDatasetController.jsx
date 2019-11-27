@@ -24,8 +24,8 @@ export class CreateDatasetController extends Component {
 
         this.state = {
             isFetchingRecipesAndDatasets: false,
-            filteredRecipes: [],
-            recipes: [],
+            filteredOutputs: [],
+            outputs: [],
             searchTerm: ""
         };
     }
@@ -68,7 +68,7 @@ export class CreateDatasetController extends Component {
                 const datasets = responses[1];
                 const outputs = this.getAllOutputsFromRecipes(recipes);
                 const outputsWithoutExistingDataset = this.getOutputsWithoutExistingDataset(outputs, datasets);
-                this.setState({ recipes: this.mapOutputsToState(outputsWithoutExistingDataset), isFetchingRecipesAndDatasets: false });
+                this.setState({ outputs: this.mapOutputsToState(outputsWithoutExistingDataset), isFetchingRecipesAndDatasets: false });
             })
             .catch(error => {
                 log.event("Error getting outputs with no created dataset", log.error(error));
@@ -83,8 +83,8 @@ export class CreateDatasetController extends Component {
             });
     };
 
-    // A recipe can output many datasets, so loop through
-    // and get all possible outputs that can be created
+    // A recipe can output many datasets, so loop through and get
+    // all possible outputs that can be created from a single recipe
     getAllOutputsFromRecipes = recipes => {
         const allOutputs = [];
         recipes.items.forEach(recipe => {
@@ -120,11 +120,11 @@ export class CreateDatasetController extends Component {
 
     handleSearchInput = event => {
         const searchTerm = event.target.value.toLowerCase();
-        const filteredRecipes = this.state.recipes.filter(recipe => {
+        const filteredOutputs = this.state.recipes.filter(recipe => {
             return recipe.title.toLowerCase().search(searchTerm) !== -1;
         });
         this.setState({
-            filteredRecipes,
+            filteredOutputs,
             searchTerm
         });
     };
@@ -147,7 +147,7 @@ export class CreateDatasetController extends Component {
                     <h1 className="margin-top--1 margin-bottom--1">Create new dataset</h1>
                     <Input id="search-datasets" placeholder="Search by name or ID" onChange={this.handleSearchInput} />
                     <SimpleSelectableList
-                        rows={this.state.filteredRecipes.length ? this.state.filteredRecipes : this.state.recipes}
+                        rows={this.state.filteredOutputs.length ? this.state.filteredOutputs : this.state.outputs}
                         showLoadingState={this.state.isFetchingRecipesAndDatasets}
                     />
                 </div>
