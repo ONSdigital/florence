@@ -197,6 +197,7 @@ export class CreateDatasetTaxonomyController extends Component {
                         >
                             Create dataset
                         </button>
+                        {this.state.isPosting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </div>
                 </div>
             </div>
