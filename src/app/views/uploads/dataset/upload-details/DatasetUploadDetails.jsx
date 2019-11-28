@@ -1,7 +1,7 @@
-import React, { Component } from "react";
-import { Link } from "react-router";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import React, {Component} from "react";
+import {Link} from "react-router";
+import {connect} from "react-redux";
+import {push} from "react-router-redux";
 import PropTypes from "prop-types";
 
 import Resumable from "resumeablejs";
@@ -46,7 +46,7 @@ class DatasetUploadController extends Component {
 
     componentWillMount() {
         if (!this.props.recipes || this.props.recipes.length === 0) {
-            this.setState({ isFetchingDataset: true });
+            this.setState({isFetchingDataset: true});
             const APIResponses = {};
             datasetImport
                 .get(this.props.params.jobID)
@@ -60,10 +60,10 @@ class DatasetUploadController extends Component {
                         recipe: APIResponses.recipe,
                         job: APIResponses.job
                     });
-                    this.setState({ activeDataset, isFetchingDataset: false });
+                    this.setState({activeDataset, isFetchingDataset: false});
                 })
                 .catch(error => {
-                    this.setState({ isFetchingDataset: false });
+                    this.setState({isFetchingDataset: false});
                     switch (error.status) {
                         case 404: {
                             const notification = {
@@ -122,7 +122,7 @@ class DatasetUploadController extends Component {
             const recipe = this.props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
             });
-            const activeDataset = this.mapAPIResponsesToState({ recipe, job });
+            const activeDataset = this.mapAPIResponsesToState({recipe, job});
 
             if (!activeDataset) {
                 const notification = {
@@ -135,7 +135,7 @@ class DatasetUploadController extends Component {
                 return;
             }
 
-            this.setState({ activeDataset });
+            this.setState({activeDataset});
         }
     }
 
@@ -161,7 +161,7 @@ class DatasetUploadController extends Component {
                 response.map(dimension => {
                     activeDataset.dimensions.push(dimension.name);
                 });
-                this.setState({ activeDataset });
+                this.setState({activeDataset});
             });
         }
         this.bindInputs();
@@ -195,7 +195,7 @@ class DatasetUploadController extends Component {
                     ...this.state.activeDataset,
                     files
                 };
-                this.setState({ activeDataset });
+                this.setState({activeDataset});
             });
             r.on("fileProgress", file => {
                 const progressPercentage = Math.round(Number(file.progress() * 100));
@@ -209,7 +209,7 @@ class DatasetUploadController extends Component {
                     ...this.state.activeDataset,
                     files
                 };
-                this.setState({ activeDataset });
+                this.setState({activeDataset});
             });
             r.on("fileError", file => {
                 const files = this.state.activeDataset.files.map(currentFile => {
@@ -224,7 +224,7 @@ class DatasetUploadController extends Component {
                 };
 
                 console.error("Error uploading file to server");
-                this.setState({ activeDataset });
+                this.setState({activeDataset});
             });
             r.on("fileSuccess", file => {
                 const aliasName = file.resumableObj.opts.query.aliasName;
@@ -242,7 +242,7 @@ class DatasetUploadController extends Component {
                             files
                         };
 
-                        this.setState({ activeDataset });
+                        this.setState({activeDataset});
 
                         this.addUploadedFileToJob(aliasName, response.url);
                     })
@@ -259,7 +259,7 @@ class DatasetUploadController extends Component {
                         };
 
                         console.error("Error fetching uploaded file's URL: ", error);
-                        this.setState({ activeDataset });
+                        this.setState({activeDataset});
                     });
             });
         });
@@ -387,11 +387,22 @@ class DatasetUploadController extends Component {
             });
     }
 
+    checkUploadsComplete() {
+        let filesWithoutURLS = [];
+        this.state.activeDataset.files.forEach((file) => {
+            if (file.url) {
+                filesWithoutURLS.push(file.alias_name)
+            }
+        });
+        const allUploadsComplete = (this.state.activeDataset.files.length > 0) && (filesWithoutURLS.length === 0);
+        return allUploadsComplete
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
 
-        for (var index = 0; index < this.state.activeDataset.files.length; index++) {
+        for (let index = 0; index < this.state.activeDataset.files.length; index++) {
             const file = this.state.activeDataset.files[index];
             if (!file.url) {
                 filesWithoutURLS.push(file.alias_name);
@@ -410,7 +421,7 @@ class DatasetUploadController extends Component {
                 files
             };
 
-            this.setState({ activeDataset });
+            this.setState({activeDataset});
             return;
         }
 
@@ -430,7 +441,7 @@ class DatasetUploadController extends Component {
             files
         };
 
-        this.setState({ activeDataset });
+        this.setState({activeDataset});
     }
 
     renderFileInputs() {
@@ -463,11 +474,13 @@ class DatasetUploadController extends Component {
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
+                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them
+                        know your files have been
                         submitted or if you have any questions.
                     </li>
                     <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is
+                        The publishing team can prepare the dataset landing page which includes the files and associated
+                        metadata when the upload is
                         complete.
                     </li>
                 </ul>
@@ -478,15 +491,18 @@ class DatasetUploadController extends Component {
     renderCompletedScreen() {
         return (
             <div>
-                <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
+                <p className="margin-bottom--2">Your files have been processed and are available to the publishing
+                    team.</p>
                 <h2 className="margin-bottom--1">What happens now?</h2>
                 <ul className="list margin-bottom--2">
                     <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
+                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them
+                        know your files have been
                         submitted or if you have any questions.
                     </li>
                     <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata.
+                        The publishing team can prepare the dataset landing page which includes the files and associated
+                        metadata.
                     </li>
                 </ul>
                 <h2 className="margin-bottom--1">
@@ -522,12 +538,21 @@ class DatasetUploadController extends Component {
                         <div className="margin-top--2">
                             &#9664; <Link to={url.resolve("../")}>Back</Link>
                         </div>
-                        <h1 className="margin-top--1">Upload new file(s)</h1>
-                        <form onSubmit={this.handleFormSubmit}>
+                        <div className="simple-select-list__item">
+                            <h1 className="margin-top--1 margin-bottom--1">Uploads</h1>
+                            <p className="font-size--18">
+                                <span className="font-weight--600">Dataset</span>:{" "}
+                                {this.state.activeDataset.alias ? this.state.activeDataset.alias : "loading..."}
+                            </p>
+                        </div>
+                        <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
+                            <h1 className="margin-top--0 margin-bottom--0">Create new instance</h1>
                             {this.renderFileInputs()}
-                            <button className="btn btn--positive" type="submit">
-                                Save and continue
-                            </button>
+                            {this.checkUploadsComplete() && (
+                                <button className="btn btn--positive" type="submit">
+                                    Save and continue
+                                </button>
+                            )}
                         </form>
                     </div>
                 );
@@ -561,9 +586,11 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
-                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
+                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting
+                            your dataset to publishing</p>
                         <p>
-                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
+                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing
+                            support</a> and inform them of this error
                         </p>
                     </div>
                 );
@@ -574,7 +601,7 @@ class DatasetUploadController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-9">
                     {this.state.activeDataset && this.renderDatasetState()}
                     {this.state.isFetchingDataset && (
                         <div className="grid--align-center grid--align-self-center">
