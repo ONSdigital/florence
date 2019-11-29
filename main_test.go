@@ -281,7 +281,7 @@ func TestMain(t *testing.T) {
 	})
 
 	Convey("Zebedee proxy director function sets 'X-Florence-Token' header when access_token cookie is available", t, func() {
-		cookie := http.Cookie{Name:"access_token", Value:"foo", Path:"/", Domain:"http://localhost", Expires:time.Now().AddDate(0, 0, 1), RawExpires:time.Now().AddDate(0, 0, 1).Format(time.UnixDate), MaxAge:0, Secure:false, HttpOnly:true, Raw: "access_token=foo", Unparsed:[]string{"access_token=foo"}}
+		cookie := http.Cookie{"access_token", "foo", "/", "http://localhost", time.Now().AddDate(0, 0, 1), time.Now().AddDate(0, 0, 1).Format(time.UnixDate), 0, false, true, http.SameSiteDefaultMode, "access_token=foo", []string{"access_token=foo"}}
 		request, err := http.NewRequest("GET", "", nil)
 		So(err, ShouldBeNil)
 		request.AddCookie(&cookie)
