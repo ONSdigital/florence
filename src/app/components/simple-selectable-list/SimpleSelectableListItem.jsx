@@ -20,10 +20,10 @@ export default class SimpleSelectableListItem extends Component {
         return (
             <li className="simple-select-list__item">
                 {this.props.disabled ? (
-                    <h2 className="simple-select-list__item--disabled">{this.props.title}</h2>
+                    <p className="simple-select-list__title simple-select-list__title--disabled">{this.props.title}</p>
                 ) : (
                     <Link to={this.props.url}>
-                        <h2>{this.props.title}</h2>
+                        <p className="simple-select-list__title">{this.props.title}</p>
                     </Link>
                 )}
                 {details.map((detail, i) => {
