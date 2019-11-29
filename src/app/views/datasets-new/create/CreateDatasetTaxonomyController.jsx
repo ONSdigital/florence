@@ -8,7 +8,7 @@ import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 
-import RadioGroup from "../../../components/radio-buttons/RadioGroup";
+import RadioList from "../../../components/radio-buttons/RadioList";
 import Input from "../../../components/Input";
 
 const propTypes = {
@@ -175,18 +175,16 @@ export class CreateDatasetTaxonomyController extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Select a taxonomy node</h1>
                     <Input id="search-datasets" placeholder="Search by name or ID" onChange={this.handleSearchInput} />
-                    {this.state.topics.length ? (
-                        <RadioGroup
-                            groupName="create-dataset-taxonomy"
-                            radioData={this.state.filteredTopics.length ? this.state.filteredTopics : this.state.topics}
-                            selectedValue={this.state.selectedTopicURL}
-                            onChange={this.handleSelectedTopicChange}
-                            legend={"Select a taxonomy node"}
-                            disabled={this.state.isPosting || this.state.isFetchingTopics}
-                        />
-                    ) : (
-                        <p className="margin-bottom--1">No taxonomy nodes found</p>
-                    )}
+
+                    <RadioList
+                        groupName="create-dataset-taxonomy"
+                        radioData={this.state.filteredTopics.length ? this.state.filteredTopics : this.state.topics}
+                        selectedValue={this.state.selectedTopicURL}
+                        onChange={this.handleSelectedTopicChange}
+                        legend={"Select a taxonomy node"}
+                        disabled={this.state.isPosting || this.state.isFetchingTopics}
+                        showLoadingState={this.state.isFetchingTopics}
+                    />
 
                     <div className="grid__col-2">
                         <button
