@@ -149,7 +149,10 @@ export class UsersController extends Component {
                     <div className="grid__col-4">
                         <h1>Select a user</h1>
                         <SelectableBox
-                            columns={[{ heading: "User", width: "6" }, { heading: "Email", width: "6" }]}
+                            columns={[
+                                { heading: "User", width: "6" },
+                                { heading: "Email", width: "6" }
+                            ]}
                             rows={this.props.users}
                             isUpdating={this.state.isFetchingUsers}
                             handleItemClick={this.handleUserSelection}
