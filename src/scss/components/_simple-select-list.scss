@@ -9,5 +9,18 @@
         &--disabled {
             color: $dusty-grey;
         }
+
+        // style form label elements (such as radio buttons) 
+        // used in simple selectable lists
+        label {
+            @extend h2;
+            line-height: 36px;
+        }
+
+        // remove margin from radio buttons
+        .radio {
+            margin-bottom: 0;
+        }
+
     }
 }
