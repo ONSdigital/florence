@@ -6,21 +6,32 @@
         border-bottom: $iron-dark solid 1px;
         padding: $lineheight 0;
 
-        &--disabled {
-            color: $dusty-grey;
-        }
-
-        // style form label elements (such as radio buttons) 
-        // used in simple selectable lists
-        label {
-            @extend h2;
-            line-height: 36px;
-        }
-
-        // remove margin from radio buttons
+        // This is a bit of a hack to show radio buttons
+        // as if they are simple-select-list items
         .radio {
             margin-bottom: 0;
         }
+        .radio__label {
+            @extend .simple-select-list__title;
+            padding: 0;
+        }
+        .sub-label {
+            font-size: 14px;
+            font-family: "Open Sans", sans-serif;
+            font-weight: 300;
+            line-height: $lineheight / 2;
+        }
+        // end of radio button hack
+    }
 
+    &__title {
+        font-size: 24.5px;
+        font-family: "Roboto Slab", serif;
+        font-weight: 400;
+        line-height: 36px;
+
+        &--disabled {
+            color: $dusty-grey;
+        }  
     }
 }
