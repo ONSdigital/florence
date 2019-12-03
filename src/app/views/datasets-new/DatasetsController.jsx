@@ -23,7 +23,13 @@ export class DatasetsController extends Component {
 
         this.state = {
             isFetchingDatasets: false,
-            datasets: [],
+            datasets: [
+                {
+                    title: "Create new dataset",
+                    id: "create-new-dataset",
+                    url: this.props.location.pathname + "/create"
+                }
+            ],
             filteredDatasets: [],
             searchTerm: ""
         };
@@ -115,7 +121,7 @@ export class DatasetsController extends Component {
 
     mapDatasetsToState = datasets => {
         try {
-            return datasets.map(dataset => {
+            const datasetsToMap = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
                 return {
                     title: dataset.title || dataset.id,
@@ -123,6 +129,7 @@ export class DatasetsController extends Component {
                     url: this.props.location.pathname + "/" + dataset.id
                 };
             });
+            return [...this.state.datasets, ...datasetsToMap];
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, {
                 message: `Error mapping datasets to to state. \n ${error}`
