@@ -74,7 +74,15 @@ const defaultProps = {
     }
 };
 
-const component = shallow(<DatasetsController {...defaultProps} />);
+const mountComponent = () => {
+    return shallow(<DatasetsController {...defaultProps} />);
+};
+
+let component;
+
+beforeEach(() => {
+    component = mountComponent();
+});
 
 describe("On mount of the datasets controller screen", () => {
     it("fetches datasets", () => {
@@ -85,9 +93,10 @@ describe("On mount of the datasets controller screen", () => {
 });
 
 describe("Calling getAllDatasets", () => {
-    it("adds all datasets to state", async () => {
+    it("adds all datasets to state", () => {
         component.instance().getAllDatasets();
-        expect(component.state().datasets.length).toBe(mockedAllDatasets.items.length);
+        // plus 1 to expected because we hard code a create link at index 0
+        expect(component.state().datasets.length).toBe(mockedAllDatasets.items.length + 1);
     });
 
     it("updates isFetchingDatasets state to show it's fetching data for all datasets", () => {
@@ -114,6 +123,11 @@ describe("Calling getAllDatasets", () => {
 describe("Mapping datasets to state", () => {
     it("maps correctly", () => {
         const expectedValue = [
+            {
+                title: "Create new dataset",
+                id: "create-new-dataset",
+                url: defaultProps.location.pathname + "/create"
+            },
             {
                 title: mockedAllDatasets.items[0].current.title,
                 id: mockedAllDatasets.items[0].current.id,
