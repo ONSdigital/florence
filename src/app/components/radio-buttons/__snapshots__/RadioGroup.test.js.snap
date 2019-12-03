@@ -29,7 +29,6 @@ exports[`Radio button matches stored snapshot 1`] = `
     >
       Test radio 1
        
-       
     </label>
   </div>
   <div
@@ -51,7 +50,6 @@ exports[`Radio button matches stored snapshot 1`] = `
       htmlFor="test-radio2"
     >
       Test radio 2
-       
        
     </label>
   </div>
