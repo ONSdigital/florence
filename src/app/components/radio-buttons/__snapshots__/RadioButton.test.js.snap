@@ -21,7 +21,6 @@ exports[`Radio button matches stored snapshot 1`] = `
   >
     Test radio
      
-     
   </label>
 </div>
 `;
