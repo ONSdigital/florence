@@ -7,7 +7,7 @@ import { addNewJob, updateAllRecipes } from "../../../config/actions";
 import recipes from "../../../utilities/api-clients/recipes";
 import datasetImport from "../../../utilities/api-clients/datasetImport";
 import notifications from "../../../utilities/notifications";
-import log, { eventTypes } from "../../../utilities/log";
+import log from "../../../utilities/logging/log";
 
 import DatasetUploadRecipe from "./uploads-components/DatasetUploadRecipe";
 import Input from "../../../components/Input";
@@ -42,12 +42,12 @@ export class DatasetUploadsController extends Component {
 
         const getRecipes = recipes.getAll();
 
-        Promise.all([getRecipes])
+        getRecipes
             .then(response => {
-                this.props.dispatch(updateAllRecipes(response[0].items));
+                this.props.dispatch(updateAllRecipes(response.items));
                 this.setState({
                     isFetchingData: false,
-                    datasets: this.mapDatasetsToState(response[0].items)
+                    datasets: this.mapDatasetsToState(response.items)
                 });
             })
             .catch(error => {
@@ -184,9 +184,7 @@ export class DatasetUploadsController extends Component {
                 };
             });
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Error mapping datasets to to state. \n ${error}`
-            });
+            log.event("Error mapping datasets to to state.", log.error(error));
             const notification = {
                 type: "warning",
                 message:
