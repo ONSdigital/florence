@@ -541,7 +541,7 @@ class DatasetUploadController extends Component {
                             </p>
                         </div>
                         <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
-                            <h1 className="margin-top--0 margin-bottom--0">Create new instance</h1>
+                            <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
                             {this.renderFileInputs()}
                             {this.checkUploadsComplete() && (
                                 <button className="btn btn--positive" type="submit">
