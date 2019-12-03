@@ -7,7 +7,7 @@ import notifications from "../../../utilities/notifications";
 import date from "../../../utilities/date";
 import url from "../../../utilities/url";
 
-import RadioGroup from "../../../components/radio-buttons/RadioGroup";
+import RadioList from "../../../components/radio-buttons/RadioList";
 
 const propTypes = {
     params: PropTypes.shape({
@@ -310,13 +310,14 @@ export class CreateVersionController extends Component {
                     </p>
 
                     {this.state.instances.length ? (
-                        <RadioGroup
+                        <RadioList
                             groupName="create-versions-instances"
                             radioData={this.state.instances}
                             selectedValue={this.state.selectedInstance}
                             onChange={this.handleSelectedInstanceChange}
-                            legend={"New data"}
+                            legend={"Select a version to create"}
                             disabled={this.state.isSaving || this.state.isFetchingInstances}
+                            showloadingState={this.state.isFetchingInstances}
                         />
                     ) : (
                         <p className="margin-bottom--1">No instances avialable for this edition</p>
