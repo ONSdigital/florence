@@ -145,7 +145,7 @@ export class CreateDatasetController extends Component {
                         </button>
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Create new dataset</h1>
-                    <Input id="search-datasets" placeholder="Search by name or ID" onChange={this.handleSearchInput} />
+                    <Input id="search-datasets" placeholder="Search by name" onChange={this.handleSearchInput} />
                     <SimpleSelectableList
                         rows={this.state.filteredOutputs.length ? this.state.filteredOutputs : this.state.outputs}
                         showLoadingState={this.state.isFetchingRecipesAndDatasets}
