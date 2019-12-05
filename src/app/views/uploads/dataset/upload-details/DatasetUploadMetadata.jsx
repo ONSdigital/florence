@@ -36,11 +36,9 @@ class DatasetUploadMetadata extends Component {
             isFetchingData: false,
             isSubmittingData: false,
             selectedEdition: null,
-            editionError: null
+            editionError: null,
+            recipeAlias: ""
         };
-
-        this.handleEditionChange = this.handleEditionChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     componentWillMount() {
@@ -67,6 +65,7 @@ class DatasetUploadMetadata extends Component {
                 if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.params.jobID) {
                     this.props.dispatch(updateActiveJob(responses[1]));
                 }
+                this.mapRecipeAliasToState();
                 this.setState({ isFetchingData: false });
             })
             .catch(error => {
@@ -123,6 +122,14 @@ class DatasetUploadMetadata extends Component {
             });
     }
 
+    mapRecipeAliasToState = () => {
+        const recipe = this.props.recipes.find(recipe => {
+            return recipe.id === this.props.job.recipe;
+        });
+        console.log(recipe);
+        this.setState({ recipeAlias: recipe.alias });
+    };
+
     mapEditionsToRadioList() {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.id === this.props.job.recipe;
@@ -135,15 +142,12 @@ class DatasetUploadMetadata extends Component {
         }));
     }
 
-    handleEditionChange(event) {
-        event.preventDefault();
-        this.setState({
-            selectedEdition: event.target.value,
-            editionError: null
-        });
-    }
+    handleSelectedEdiionChange = event => {
+        const selectedEdition = event.value;
+        this.setState({ selectedEdition: selectedEdition });
+    };
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
 
         if (!this.state.selectedEdition) {
@@ -241,7 +245,7 @@ class DatasetUploadMetadata extends Component {
                 this.setState({ isSubmittingData: false });
                 console.error("Error trying to submit edition to publishing team", error);
             });
-    }
+    };
 
     render() {
         console.log("LENGTH >>>", this.props.recipes.length);
@@ -284,18 +288,18 @@ class DatasetUploadMetadata extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Select an Edition</h1>
                     <p className="margin-bottom--1 font-size--18">
-                        {/* <span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."} */}
+                        <span className="font-weight--600">Dataset</span>: {this.state.recipeAlias ? this.state.recipeAlias : "loading..."}
                     </p>
                     <RadioList
                         groupName="upload-version-edition-select"
-                        radioData={!this.state.isFetchingData && this.mapEditionsToRadioList()}
-                        selectedValue={this.state.selectedTopicURL}
-                        onChange={this.handleEditionChange}
+                        radioData={!this.state.isFetchingData ? this.mapEditionsToRadioList() : []}
+                        selectedValue={this.state.selectedEdition}
+                        onChange={this.handleSelectedEdiionChange}
                         legend={"Select an edition"}
                         disabled={this.state.isSubmittingData || this.state.isFetchingData}
                         showLoadingState={this.state.isFetchingData}
                     />
-                    <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
+                    <button className="btn btn--positive margin-top--2" disabled={!this.state.selectedEdition || this.state.isSubmittingData}>
                         Submit to publishing
                     </button>
                     {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
