@@ -8,6 +8,7 @@ import dateFormat from "dateformat";
 
 import url from "../../../../utilities/url";
 import Select from "../../../../components/Select";
+import RadioList from "../../../../components/radio-buttons/RadioList";
 import recipes from "../../../../utilities/api-clients/recipes";
 import notifications from "../../../../utilities/notifications";
 import { updateActiveJob, updateAllRecipes } from "../../../../config/actions";
@@ -59,6 +60,7 @@ class DatasetUploadMetadata extends Component {
 
         Promise.all(promises)
             .then(responses => {
+                console.log(responses[0], responses[1]);
                 if (this.props.recipes.length === 0) {
                     this.props.dispatch(updateAllRecipes(responses[0].items));
                 }
@@ -121,14 +123,15 @@ class DatasetUploadMetadata extends Component {
             });
     }
 
-    mapEditionsToSelect() {
+    mapEditionsToRadioList() {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.id === this.props.job.recipe;
         });
         const editions = recipe.output_instances[0].editions;
         return editions.map(edition => ({
             id: edition,
-            name: edition
+            value: edition,
+            label: edition
         }));
     }
 
@@ -241,33 +244,61 @@ class DatasetUploadMetadata extends Component {
     }
 
     render() {
+        console.log("LENGTH >>>", this.props.recipes.length);
         return (
+            // <div className="grid grid--justify-center">
+            //     <div className="grid__col-6">
+            //         <div className="margin-top--2">
+            //             &#9664; <Link to={url.resolve("../")}>Return</Link>
+            //         </div>
+            //         <h1 className="margin-top--1">Dataset upload details</h1>
+            //         {this.state.isFetchingData ? (
+            //             <div className="loader loader--dark"></div>
+            //         ) : (
+            //             <form onSubmit={this.handleFormSubmit}>
+            //                 <p className="margin-bottom--1">Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}</p>
+            //                 <div className="grid__col-6">
+            //                     <RadioList
+            //                         groupName="upload-version-edition-select"
+            //                         radioData={this.mapEditionsToRadioList()}
+            //                         selectedValue={this.state.selectedTopicURL}
+            //                         onChange={this.handleEditionChange}
+            //                         legend={"Select an edition"}
+            //                         disabled={this.state.isSubmittingData || this.state.isFetchingData}
+            //                         showLoadingState={this.state.isFetchingData}
+            //                     />
+            //                 </div>
+            //                 <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
+            //                     Submit to publishing
+            //                 </button>
+            //                 {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
+            //             </form>
+            //         )}
+            //     </div>
+            // </div>
+
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-9">
                     <div className="margin-top--2">
-                        &#9664; <Link to={url.resolve("../")}>Return</Link>
+                        &#9664; <Link to={url.resolve("../")}>Back</Link>
                     </div>
-                    <h1 className="margin-top--1">Dataset upload details</h1>
-                    {this.state.isFetchingData ? (
-                        <div className="loader loader--dark"></div>
-                    ) : (
-                        <form onSubmit={this.handleFormSubmit}>
-                            <p className="margin-bottom--1">Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}</p>
-                            <div className="grid__col-6">
-                                <Select
-                                    id="editions"
-                                    label="Edition"
-                                    contents={this.mapEditionsToSelect()}
-                                    onChange={this.handleEditionChange}
-                                    error={this.state.editionError}
-                                />
-                            </div>
-                            <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
-                                Submit to publishing
-                            </button>
-                            {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
-                        </form>
-                    )}
+                    <h1 className="margin-top--1 margin-bottom--1">Select an Edition</h1>
+                    <p className="margin-bottom--1 font-size--18">
+                        {/* <span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."} */}
+                    </p>
+                    <RadioList
+                        groupName="upload-version-edition-select"
+                        radioData={!this.state.isFetchingData && this.mapEditionsToRadioList()}
+                        selectedValue={this.state.selectedTopicURL}
+                        onChange={this.handleEditionChange}
+                        legend={"Select an edition"}
+                        disabled={this.state.isSubmittingData || this.state.isFetchingData}
+                        showLoadingState={this.state.isFetchingData}
+                    />
+                    <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
+                        Submit to publishing
+                    </button>
+                    {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
                 </div>
             </div>
         );
