@@ -387,11 +387,22 @@ class DatasetUploadController extends Component {
             });
     }
 
+    checkUploadsComplete() {
+        let filesWithoutURLS = [];
+        this.state.activeDataset.files.forEach(file => {
+            if (file.url) {
+                filesWithoutURLS.push(file.alias_name);
+            }
+        });
+        const allUploadsComplete = this.state.activeDataset.files.length > 0 && filesWithoutURLS.length === 0;
+        return allUploadsComplete;
+    }
+
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
 
-        for (var index = 0; index < this.state.activeDataset.files.length; index++) {
+        for (let index = 0; index < this.state.activeDataset.files.length; index++) {
             const file = this.state.activeDataset.files[index];
             if (!file.url) {
                 filesWithoutURLS.push(file.alias_name);
@@ -522,12 +533,21 @@ class DatasetUploadController extends Component {
                         <div className="margin-top--2">
                             &#9664; <Link to={url.resolve("../")}>Back</Link>
                         </div>
-                        <h1 className="margin-top--1">Upload new file(s)</h1>
-                        <form onSubmit={this.handleFormSubmit}>
+                        <div className="simple-select-list__item">
+                            <h1 className="margin-top--1 margin-bottom--1">Uploads</h1>
+                            <p className="font-size--18">
+                                <span className="font-weight--600">Dataset</span>:{" "}
+                                {this.state.activeDataset.alias ? this.state.activeDataset.alias : "loading..."}
+                            </p>
+                        </div>
+                        <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
+                            <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
                             {this.renderFileInputs()}
-                            <button className="btn btn--positive" type="submit">
-                                Save and continue
-                            </button>
+                            {this.checkUploadsComplete() && (
+                                <button className="btn btn--positive" type="submit">
+                                    Save and continue
+                                </button>
+                            )}
                         </form>
                     </div>
                 );
@@ -574,7 +594,7 @@ class DatasetUploadController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-9">
                     {this.state.activeDataset && this.renderDatasetState()}
                     {this.state.isFetchingDataset && (
                         <div className="grid--align-center grid--align-self-center">

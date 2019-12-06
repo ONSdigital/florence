@@ -35,7 +35,10 @@ jest.mock("../../../utilities/websocket", () => {
 jest.mock("../../../utilities/api-clients/teams", () => {
     return {
         getAll: jest.fn(() => {
-            return Promise.resolve([{ id: 1, name: "Team 1" }, { id: 2, name: "Team 2" }]);
+            return Promise.resolve([
+                { id: 1, name: "Team 1" },
+                { id: 2, name: "Team 2" }
+            ]);
         })
     };
 });
@@ -75,7 +78,10 @@ const expectedPostBody = {
     type: "scheduled"
 };
 
-const mockedTeams = [{ id: "1", name: "Team 1" }, { id: "2", name: "Team 2" }];
+const mockedTeams = [
+    { id: "1", name: "Team 1" },
+    { id: "2", name: "Team 2" }
+];
 
 const defaultProps = {
     user: {

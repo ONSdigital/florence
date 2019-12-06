@@ -246,7 +246,10 @@ test("Latest changes are set in state correctly on mount", async () => {
 test("Available editions maps correctly to select element", async () => {
     const component = shallow(<VersionMetadata {...defaultProps} />);
 
-    const validSelectContents = [{ id: "time-series", name: "time-series" }, { id: "another-type", name: "another-type" }];
+    const validSelectContents = [
+        { id: "time-series", name: "time-series" },
+        { id: "another-type", name: "another-type" }
+    ];
     await component.instance().componentWillMount();
     await component.update();
     const createdSelectContents = component.instance().mapEditionsToSelectOptions();
