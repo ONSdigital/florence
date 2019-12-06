@@ -69,7 +69,10 @@ export default class EditMetadatItem extends Component {
                             id="type"
                             selectedOption={this.state.type}
                             label="Type"
-                            contents={[{ id: "alert", name: "Alert" }, { id: "correction", name: "Correction" }]}
+                            contents={[
+                                { id: "alert", name: "Alert" },
+                                { id: "correction", name: "Correction" }
+                            ]}
                             onChange={this.handleSelectChange}
                         />
                         <Input
