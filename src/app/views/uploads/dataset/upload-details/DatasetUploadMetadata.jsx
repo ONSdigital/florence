@@ -15,11 +15,7 @@ import datasets from "../../../../utilities/api-clients/datasets";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    recipes: PropTypes.arrayOf(
-        PropTypes.shape({
-            // editions: PropTypes.arrayOf(PropTypes.string).isRequired
-        })
-    ),
+    recipes: PropTypes.array,
     job: PropTypes.object,
     params: PropTypes.shape({
         jobID: PropTypes.string.isRequired
