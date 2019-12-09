@@ -57,7 +57,6 @@ class DatasetUploadMetadata extends Component {
 
         Promise.all(promises)
             .then(responses => {
-                console.log(responses[0], responses[1]);
                 if (this.props.recipes.length === 0) {
                     this.props.dispatch(updateAllRecipes(responses[0].items));
                 }
@@ -125,7 +124,6 @@ class DatasetUploadMetadata extends Component {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.id === this.props.job.recipe;
         });
-        console.log(recipe);
         this.setState({ recipeAlias: recipe.alias });
     };
 
@@ -148,7 +146,7 @@ class DatasetUploadMetadata extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
-        console.log("PRESSED");
+
         this.setState({ isSubmittingData: true });
 
         datasets
@@ -240,7 +238,6 @@ class DatasetUploadMetadata extends Component {
     };
 
     render() {
-        console.log("LENGTH >>>", this.props.recipes.length);
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
