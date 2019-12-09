@@ -4,10 +4,8 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import isEmptyObject from "is-empty-object";
-import dateFormat from "dateformat";
 
 import url from "../../../../utilities/url";
-import Select from "../../../../components/Select";
 import RadioList from "../../../../components/radio-buttons/RadioList";
 import recipes from "../../../../utilities/api-clients/recipes";
 import notifications from "../../../../utilities/notifications";
