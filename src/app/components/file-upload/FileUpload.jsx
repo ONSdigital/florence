@@ -31,10 +31,8 @@ class FileUpload extends Component {
             <div>
                 {/* Checking whether it is a number because 0 usually equals false
                     but we want it (and all other numbers) to resolve to true */}
-                <h2>{this.props.label}</h2>
                 {typeof this.props.progress === "number" ? (
                     <div className="margin-bottom--1">
-                        <p>{this.props.label}</p>
                         <p>Progress: {(this.props.progress > 0 ? this.props.progress : 1) + "%"}</p>
                         <div className="progress">
                             <div
@@ -63,7 +61,6 @@ class FileUpload extends Component {
     renderLink() {
         return (
             <div className="margin-bottom--2">
-                <h2 className="margin-bottom--1">{this.props.label}</h2>
                 <a href={this.props.url} target="_blank" rel="noopener noreferrer">
                     {this.props.url}
                 </a>
@@ -75,7 +72,7 @@ class FileUpload extends Component {
         return (
             <div className="grid">
                 {this.props.url && !this.props.error ? this.renderLink() : ""}
-                {!this.props.url && <div className="grid__col-6 margin-bottom--1">{this.renderInput()}</div>}
+                {!this.props.url && <div className="grid__col-9 margin-bottom--0">{this.renderInput()}</div>}
             </div>
         );
     }
