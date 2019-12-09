@@ -36,7 +36,6 @@ class DatasetUploadMetadata extends Component {
             isFetchingData: false,
             isSubmittingData: false,
             selectedEdition: null,
-            editionError: null,
             recipeAlias: ""
         };
     }
@@ -147,16 +146,9 @@ class DatasetUploadMetadata extends Component {
         this.setState({ selectedEdition: selectedEdition });
     };
 
-    handleFormSubmit = event => {
+    handleSubmit = event => {
         event.preventDefault();
-
-        if (!this.state.selectedEdition) {
-            this.setState({
-                editionError: "An edition must be selected"
-            });
-            return;
-        }
-
+        console.log("PRESSED");
         this.setState({ isSubmittingData: true });
 
         datasets
@@ -250,37 +242,6 @@ class DatasetUploadMetadata extends Component {
     render() {
         console.log("LENGTH >>>", this.props.recipes.length);
         return (
-            // <div className="grid grid--justify-center">
-            //     <div className="grid__col-6">
-            //         <div className="margin-top--2">
-            //             &#9664; <Link to={url.resolve("../")}>Return</Link>
-            //         </div>
-            //         <h1 className="margin-top--1">Dataset upload details</h1>
-            //         {this.state.isFetchingData ? (
-            //             <div className="loader loader--dark"></div>
-            //         ) : (
-            //             <form onSubmit={this.handleFormSubmit}>
-            //                 <p className="margin-bottom--1">Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}</p>
-            //                 <div className="grid__col-6">
-            //                     <RadioList
-            //                         groupName="upload-version-edition-select"
-            //                         radioData={this.mapEditionsToRadioList()}
-            //                         selectedValue={this.state.selectedTopicURL}
-            //                         onChange={this.handleEditionChange}
-            //                         legend={"Select an edition"}
-            //                         disabled={this.state.isSubmittingData || this.state.isFetchingData}
-            //                         showLoadingState={this.state.isFetchingData}
-            //                     />
-            //                 </div>
-            //                 <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
-            //                     Submit to publishing
-            //                 </button>
-            //                 {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
-            //             </form>
-            //         )}
-            //     </div>
-            // </div>
-
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
                     <div className="margin-top--2">
@@ -299,10 +260,16 @@ class DatasetUploadMetadata extends Component {
                         disabled={this.state.isSubmittingData || this.state.isFetchingData}
                         showLoadingState={this.state.isFetchingData}
                     />
-                    <button className="btn btn--positive margin-top--2" disabled={!this.state.selectedEdition || this.state.isSubmittingData}>
-                        Submit to publishing
-                    </button>
-                    {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
+                    <div>
+                        <button
+                            className="btn btn--positive margin-top--2"
+                            disabled={!this.state.selectedEdition || this.state.isSubmittingData}
+                            onClick={this.handleSubmit}
+                        >
+                            Submit to publishing
+                        </button>
+                        {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
+                    </div>
                 </div>
             </div>
         );
