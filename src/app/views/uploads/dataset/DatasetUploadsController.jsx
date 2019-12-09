@@ -211,7 +211,7 @@ export class DatasetUploadsController extends Component {
         const rows = this.state.filteredDatasets.length > 0 ? this.state.filteredDatasets : this.state.datasets;
         return (
             <div className="grid grid--justify-space-around">
-                <div className="grid__col-5">
+                <div className="grid__col-9">
                     <h1>Upload a dataset</h1>
                     <Input id="search-datasets" placeholder="Search by name" onChange={this.handleSearchInput} />
                     {this.state.isFetchingData && (
