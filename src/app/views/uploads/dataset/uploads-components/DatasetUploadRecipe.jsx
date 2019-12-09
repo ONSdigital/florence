@@ -25,19 +25,17 @@ class DatasetItem extends Component {
 
     render() {
         return (
-            <li className="list__item list__item--separated grid grid--justify-space-between" key={this.props.dataset.id}>
-                {this.props.dataset.alias}
-                <div>
-                    {this.props.isLoading && <span className="loader loader--dark"></span>}
-                    <button
-                        className="btn btn--primary"
-                        data-recipe-id={this.props.dataset.id}
+            <li className="simple-select-list__item" key={this.props.dataset.id}>
+                <h2>
+                    <a
+                        href="javascript:void(0)"
                         onClick={this.props.onNewVersionClick}
+                        data-recipe-id={this.props.dataset.id}
                         disabled={this.props.isLoading}
                     >
-                        Upload new version
-                    </button>
-                </div>
+                        {this.props.dataset.alias}
+                    </a>
+                </h2>
             </li>
         );
     }
