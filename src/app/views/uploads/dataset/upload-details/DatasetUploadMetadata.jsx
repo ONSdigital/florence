@@ -242,25 +242,23 @@ class DatasetUploadMetadata extends Component {
                     <p className="margin-bottom--1 font-size--18">
                         <span className="font-weight--600">Dataset</span>: {this.state.recipeAlias ? this.state.recipeAlias : "loading..."}
                     </p>
-                    <RadioList
-                        groupName="upload-version-edition-select"
-                        radioData={!this.state.isFetchingData ? this.mapEditionsToRadioList() : []}
-                        selectedValue={this.state.selectedEdition}
-                        onChange={this.handleSelectedEdiionChange}
-                        legend={"Select an edition"}
-                        disabled={this.state.isSubmittingData || this.state.isFetchingData}
-                        showLoadingState={this.state.isFetchingData}
-                    />
-                    <div>
-                        <button
-                            className="btn btn--positive margin-top--2"
-                            disabled={!this.state.selectedEdition || this.state.isSubmittingData}
-                            onClick={this.handleSubmit}
-                        >
-                            Submit to publishing
-                        </button>
-                        {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
-                    </div>
+                    <form onSubmit={this.handleSubmit}>
+                        <RadioList
+                            groupName="upload-version-edition-select"
+                            radioData={!this.state.isFetchingData ? this.mapEditionsToRadioList() : []}
+                            selectedValue={this.state.selectedEdition}
+                            onChange={this.handleSelectedEdiionChange}
+                            legend={"Select an edition"}
+                            disabled={this.state.isSubmittingData || this.state.isFetchingData}
+                            showLoadingState={this.state.isFetchingData}
+                        />
+                        <div>
+                            <button className="btn btn--positive margin-top--2" disabled={!this.state.selectedEdition || this.state.isSubmittingData}>
+                                Submit to publishing
+                            </button>
+                            {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
+                        </div>
+                    </form>
                 </div>
             </div>
         );
