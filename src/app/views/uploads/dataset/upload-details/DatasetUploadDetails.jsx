@@ -387,17 +387,6 @@ class DatasetUploadController extends Component {
             });
     }
 
-    checkUploadsComplete() {
-        let filesWithoutURLS = [];
-        this.state.activeDataset.files.forEach(file => {
-            if (file.url) {
-                filesWithoutURLS.push(file.alias_name);
-            }
-        });
-        const allUploadsComplete = this.state.activeDataset.files.length > 0 && filesWithoutURLS.length === 0;
-        return allUploadsComplete;
-    }
-
     handleFormSubmit(event) {
         event.preventDefault();
         let filesWithoutURLS = [];
@@ -543,11 +532,9 @@ class DatasetUploadController extends Component {
                         <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
                             <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
                             {this.renderFileInputs()}
-                            {this.checkUploadsComplete() && (
-                                <button className="btn btn--positive" type="submit">
-                                    Save and continue
-                                </button>
-                            )}
+                            <button className="btn btn--positive" type="submit">
+                                Save and continue
+                            </button>
                         </form>
                     </div>
                 );
