@@ -70,7 +70,13 @@ export default class RadioButton extends Component {
                     }
                     htmlFor={this.props.id}
                 >
-                    {this.props.label} {this.props.subLabel ? <br /> : null} {this.props.subLabel ? this.props.subLabel : null}
+                    {this.props.label}{" "}
+                    {this.props.subLabel ? (
+                        <span className="sub-label">
+                            <br />
+                            {this.props.subLabel}
+                        </span>
+                    ) : null}
                 </label>
             </div>
         );
