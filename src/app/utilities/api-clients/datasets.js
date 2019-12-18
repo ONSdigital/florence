@@ -2,6 +2,12 @@ import http from "../http";
 import url from "../url";
 
 export default class datasets {
+    static create = (datasetID, body) => {
+        return http.post(`/dataset/datasets/${datasetID}`, body).then(response => {
+            return response;
+        });
+    };
+
     static get = datasetID => {
         return http.get(`/dataset/datasets/${datasetID}`).then(response => {
             return response;

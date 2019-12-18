@@ -4,10 +4,9 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import isEmptyObject from "is-empty-object";
-import dateFormat from "dateformat";
 
 import url from "../../../../utilities/url";
-import Select from "../../../../components/Select";
+import RadioList from "../../../../components/radio-buttons/RadioList";
 import recipes from "../../../../utilities/api-clients/recipes";
 import notifications from "../../../../utilities/notifications";
 import { updateActiveJob, updateAllRecipes } from "../../../../config/actions";
@@ -16,11 +15,7 @@ import datasets from "../../../../utilities/api-clients/datasets";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    recipes: PropTypes.arrayOf(
-        PropTypes.shape({
-            // editions: PropTypes.arrayOf(PropTypes.string).isRequired
-        })
-    ),
+    recipes: PropTypes.array,
     job: PropTypes.object,
     params: PropTypes.shape({
         jobID: PropTypes.string.isRequired
@@ -35,11 +30,8 @@ class DatasetUploadMetadata extends Component {
             isFetchingData: false,
             isSubmittingData: false,
             selectedEdition: null,
-            editionError: null
+            recipeAlias: ""
         };
-
-        this.handleEditionChange = this.handleEditionChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     componentWillMount() {
@@ -65,6 +57,7 @@ class DatasetUploadMetadata extends Component {
                 if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.params.jobID) {
                     this.props.dispatch(updateActiveJob(responses[1]));
                 }
+                this.mapRecipeAliasToState();
                 this.setState({ isFetchingData: false });
             })
             .catch(error => {
@@ -121,34 +114,32 @@ class DatasetUploadMetadata extends Component {
             });
     }
 
-    mapEditionsToSelect() {
+    mapRecipeAliasToState = () => {
+        const recipe = this.props.recipes.find(recipe => {
+            return recipe.id === this.props.job.recipe;
+        });
+        this.setState({ recipeAlias: recipe.alias });
+    };
+
+    mapEditionsToRadioList() {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.id === this.props.job.recipe;
         });
         const editions = recipe.output_instances[0].editions;
         return editions.map(edition => ({
             id: edition,
-            name: edition
+            value: edition,
+            label: edition
         }));
     }
 
-    handleEditionChange(event) {
-        event.preventDefault();
-        this.setState({
-            selectedEdition: event.target.value,
-            editionError: null
-        });
-    }
+    handleSelectedEdiionChange = event => {
+        const selectedEdition = event.value;
+        this.setState({ selectedEdition: selectedEdition });
+    };
 
-    handleFormSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
-
-        if (!this.state.selectedEdition) {
-            this.setState({
-                editionError: "An edition must be selected"
-            });
-            return;
-        }
 
         this.setState({ isSubmittingData: true });
 
@@ -238,36 +229,36 @@ class DatasetUploadMetadata extends Component {
                 this.setState({ isSubmittingData: false });
                 console.error("Error trying to submit edition to publishing team", error);
             });
-    }
+    };
 
     render() {
         return (
             <div className="grid grid--justify-center">
-                <div className="grid__col-6">
+                <div className="grid__col-9">
                     <div className="margin-top--2">
-                        &#9664; <Link to={url.resolve("../")}>Return</Link>
+                        &#9664; <Link to={url.resolve("../")}>Back</Link>
                     </div>
-                    <h1 className="margin-top--1">Dataset upload details</h1>
-                    {this.state.isFetchingData ? (
-                        <div className="loader loader--dark"></div>
-                    ) : (
-                        <form onSubmit={this.handleFormSubmit}>
-                            <p className="margin-bottom--1">Last updated by ... on {dateFormat(this.props.job.last_updated, "HH:MM:ss dd/mm/yy")}</p>
-                            <div className="grid__col-6">
-                                <Select
-                                    id="editions"
-                                    label="Edition"
-                                    contents={this.mapEditionsToSelect()}
-                                    onChange={this.handleEditionChange}
-                                    error={this.state.editionError}
-                                />
-                            </div>
-                            <button className="btn btn--positive margin-top--2" disabled={this.state.isSubmittingData}>
+                    <h1 className="margin-top--1 margin-bottom--1">Select an Edition</h1>
+                    <p className="margin-bottom--1 font-size--18">
+                        <span className="font-weight--600">Dataset</span>: {this.state.recipeAlias ? this.state.recipeAlias : "loading..."}
+                    </p>
+                    <form onSubmit={this.handleSubmit}>
+                        <RadioList
+                            groupName="upload-version-edition-select"
+                            radioData={!this.state.isFetchingData ? this.mapEditionsToRadioList() : []}
+                            selectedValue={this.state.selectedEdition}
+                            onChange={this.handleSelectedEdiionChange}
+                            legend={"Select an edition"}
+                            disabled={this.state.isSubmittingData || this.state.isFetchingData}
+                            showLoadingState={this.state.isFetchingData}
+                        />
+                        <div>
+                            <button className="btn btn--positive margin-top--2" disabled={!this.state.selectedEdition || this.state.isSubmittingData}>
                                 Submit to publishing
                             </button>
                             {this.state.isSubmittingData && <div className="loader loader--centre loader--dark margin-left--1"></div>}
-                        </form>
-                    )}
+                        </div>
+                    </form>
                 </div>
             </div>
         );

@@ -15,6 +15,8 @@ import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
 import DatasetMetadataController from "./app/views/datasets-new/edit-metadata/DatasetMetadataController";
+import CreateDatasetController from "./app/views/datasets-new/create/CreateDatasetController";
+import CreateDatasetTaxonomyController from "./app/views/datasets-new/create/CreateDatasetTaxonomyController";
 import CreateVersionController from "./app/views/datasets-new/create/CreateVersionController";
 import CreateEditionController from "./app/views/datasets-new/create/CreateEditionController";
 import UsersController from "./app/views/users/UsersController";
@@ -96,6 +98,10 @@ class Index extends Component {
                                 <Route component={CollectionRoutesWrapper}>
                                     <Route path={`${rootPath}/collections/:collectionID/datasets`}>
                                         <IndexRoute component={userIsAuthenticated(SelectADataset)} />
+                                        <Route path="create">
+                                            <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
+                                            <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
+                                        </Route>
                                         <Route path=":datasetID">
                                             <IndexRoute component={userIsAuthenticated(DatasetEditionsController)} />
                                             <Route path={`editions`} component={userIsAuthenticated(CreateEditionController)} />
@@ -111,6 +117,7 @@ class Index extends Component {
                                                 <Route path="versions/:versionID/preview" component={userIsAuthenticated(DatasetPreviewController)} />
                                             </Route>
                                         </Route>
+                                        <Route path="datasets/create" component={userIsAuthenticated(CollectionsController)} />
                                     </Route>
                                 </Route>
                             )}

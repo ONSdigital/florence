@@ -72,7 +72,7 @@ export class UserDetailsController extends Component {
 
         this.setState({ isFetchingUser: false });
 
-        if (responses[0].error || responses[1].error || (!responses[0].response || !responses[1].response)) {
+        if (responses[0].error || responses[1].error || !responses[0].response || !responses[1].response) {
             this.setState({
                 errorFetchingUserDetails: responses[0].error || !responses[0].response ? true : false,
                 errorFetchingUserPermissions: responses[1].error || !responses[1].response ? true : false

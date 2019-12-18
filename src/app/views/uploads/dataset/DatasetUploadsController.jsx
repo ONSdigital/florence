@@ -3,14 +3,14 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
-import { updateAllJobs, addNewJob, updateAllRecipes } from "../../../config/actions";
+import { addNewJob, updateAllRecipes } from "../../../config/actions";
 import recipes from "../../../utilities/api-clients/recipes";
 import datasetImport from "../../../utilities/api-clients/datasetImport";
 import notifications from "../../../utilities/notifications";
-import Definition from "../../../components/Definition";
+import log from "../../../utilities/logging/log";
 
 import DatasetUploadRecipe from "./uploads-components/DatasetUploadRecipe";
-import DatasetUploadJobs from "./uploads-components/DatasetUploadJobs";
+import Input from "../../../components/Input";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -18,12 +18,6 @@ const propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             alias: PropTypes.string
-        })
-    ),
-    jobs: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            recipe: PropTypes.string.isRequired
         })
     )
 };
@@ -34,7 +28,10 @@ export class DatasetUploadsController extends Component {
 
         this.state = {
             isFetchingData: false,
-            disabledDataset: ""
+            disabledDataset: "",
+            datasets: [],
+            filteredDatasets: [],
+            searchTerm: ""
         };
 
         this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
@@ -44,13 +41,14 @@ export class DatasetUploadsController extends Component {
         this.setState({ isFetchingData: true });
 
         const getRecipes = recipes.getAll();
-        const getJobs = datasetImport.getAll();
 
-        Promise.all([getRecipes, getJobs])
+        getRecipes
             .then(response => {
-                this.props.dispatch(updateAllRecipes(response[0].items));
-                this.props.dispatch(updateAllJobs(response[1]));
-                this.setState({ isFetchingData: false });
+                this.props.dispatch(updateAllRecipes(response.items));
+                this.setState({
+                    isFetchingData: false,
+                    datasets: this.mapDatasetsToState(response.items)
+                });
             })
             .catch(error => {
                 switch (error.status) {
@@ -103,15 +101,6 @@ export class DatasetUploadsController extends Component {
                 }
                 this.setState({ isFetchingData: false });
             });
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        // Don't render all the jobs and datasets yet because the jobs haven't been added to the state yet
-        if (nextProps.recipes.length > 0 && !nextProps.jobs && !nextState.isFetchingData) {
-            return false;
-        }
-
-        return true;
     }
 
     handleNewVersionClick(event) {
@@ -186,19 +175,53 @@ export class DatasetUploadsController extends Component {
             });
     }
 
+    mapDatasetsToState = datasets => {
+        try {
+            return datasets.map(dataset => {
+                return {
+                    alias: dataset.alias || dataset.id,
+                    id: dataset.id
+                };
+            });
+        } catch (error) {
+            log.event("Error mapping datasets to to state.", log.error(error));
+            const notification = {
+                type: "warning",
+                message:
+                    "An unexpected error occurred when trying to get datasets, so some functionality in Florence may not work as expected. Try refreshing the page",
+                isDismissable: true
+            };
+            notifications.add(notification);
+            console.error("Error mapping datasets to state:\n", error);
+        }
+    };
+
+    handleSearchInput = event => {
+        const searchTerm = event.target.value.toLowerCase();
+        const filteredDatasets = this.state.datasets.filter(dataset => {
+            return dataset.alias.toLowerCase().search(searchTerm) !== -1;
+        });
+        this.setState({
+            filteredDatasets,
+            searchTerm
+        });
+    };
+
     render() {
+        const rows = this.state.filteredDatasets.length > 0 ? this.state.filteredDatasets : this.state.datasets;
         return (
             <div className="grid grid--justify-space-around">
-                <div className="grid__col-5">
+                <div className="grid__col-9">
                     <h1>Upload a dataset</h1>
+                    <Input id="search-datasets" placeholder="Search by name" onChange={this.handleSearchInput} />
                     {this.state.isFetchingData && (
                         <div className="grid--align-self-start">
                             <div className="loader loader--dark"></div>
                         </div>
                     )}
-                    {this.props.recipes.length > 0 && (
-                        <ul className="list list--neutral">
-                            {this.props.recipes.map(dataset => {
+                    {rows.length > 0 && (
+                        <ul className="list list--neutral simple-select-list">
+                            {rows.map(dataset => {
                                 return (
                                     <DatasetUploadRecipe
                                         key={dataset.id}
@@ -211,17 +234,6 @@ export class DatasetUploadsController extends Component {
                         </ul>
                     )}
                 </div>
-                <div className="grid__col-5 margin-top--5">
-                    <h2 className="margin-bottom--1">In progress</h2>
-                    <div className="margin-bottom--2">
-                        {this.state.isFetchingData && (
-                            <div className="grid--align-self-start">
-                                <div className="loader loader--dark"></div>
-                            </div>
-                        )}
-                        {!this.state.isFetchingData && <DatasetUploadJobs jobs={this.props.jobs} datasets={this.props.recipes} />}
-                    </div>
-                </div>
             </div>
         );
     }
@@ -231,8 +243,7 @@ DatasetUploadsController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        recipes: state.state.datasets.recipes,
-        jobs: state.state.datasets.jobs
+        recipes: state.state.datasets.recipes
     };
 }
 
