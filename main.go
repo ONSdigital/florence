@@ -93,7 +93,7 @@ func main() {
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
-	datasetControllerURL, err := url.Parse(cfg.DatasetAPIURL)
+	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
 	if err != nil {
 		log.Event(nil, "error parsing dataset controller URL", log.Error(err))
 		os.Exit(1)
