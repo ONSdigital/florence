@@ -93,6 +93,13 @@ func main() {
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
+	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
+	if err != nil {
+		log.Event(nil, "error parsing dataset controller URL", log.Error(err))
+		os.Exit(1)
+	}
+	datasetControllerProxy := reverseProxy.Create(datasetControllerURL, datasetControllerDirector)
+
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
 		vc, err = vault.CreateVaultClient(cfg.VaultToken, cfg.VaultAddr, 3)
@@ -120,6 +127,7 @@ func main() {
 		router.Handle("/import{uri:.*}", importAPIProxy)
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
+		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 	}
 
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
@@ -294,6 +302,11 @@ func tableDirector(req *http.Request) {
 func datasetAPIDirector(req *http.Request) {
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
+}
+
+func datasetControllerDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
 }
 
 func websocketHandler(w http.ResponseWriter, req *http.Request) {
