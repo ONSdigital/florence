@@ -42,11 +42,11 @@ export class DatasetsController extends Component {
     getAllDatasets() {
         this.setState({ isFetchingDatasets: true });
         return datasets
-            .getAll()
+            .getAllList()
             .then(datasets => {
                 this.setState({
                     isFetchingDatasets: false,
-                    datasets: this.mapDatasetsToState(datasets.items)
+                    datasets: this.mapDatasetsToState(datasets)
                 });
             })
             .catch(error => {
@@ -122,7 +122,6 @@ export class DatasetsController extends Component {
     mapDatasetsToState = datasets => {
         try {
             const datasetsToMap = datasets.map(dataset => {
-                dataset = dataset.current || dataset.next || dataset;
                 return {
                     title: dataset.title || dataset.id,
                     id: dataset.id,
