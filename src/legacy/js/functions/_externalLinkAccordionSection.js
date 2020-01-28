@@ -6,9 +6,21 @@
  * @param idField - HTML id for the template
  */
 
+function getExternalLinkAccordionSectionLabel(idField) {
+    switch(idField) {
+        case "filterable-dataset":
+            return "Try a new way to download data"
+        case "link":
+            return "You might also be interested in"
+        default:
+          return `Related ${idField}`
+      }
+}
+
 function renderExternalLinkAccordionSection(collectionId, data, field, idField) {
+    console.log(idField)
     var list = data[field];
-    var dataTemplate = {list: list, idField: idField};
+    var dataTemplate = {list: list, idField: idField, label: getExternalLinkAccordionSectionLabel(idField)};
     var html = templates.editorLinks(dataTemplate);
     $('#' + idField).replaceWith(html);
 
