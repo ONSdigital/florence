@@ -34,6 +34,8 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
         dataTemplate = {list: list, idField: idField, label: 'Related bulletins (DO NOT USE. TO BE DELETED)'};
     } else if (idField === 'dataset') {
         dataTemplate = {list: list, idField: idField, label: 'Related data'};
+    } else if (idField === 'data') {
+        dataTemplate = {list: list, idField: idField, label: 'Related data'};
     } else if (idField === 'document') {
         dataTemplate = {list: list, idField: idField, label: 'Publications that use this data'};
     } else if (idField === 'qmi' && isPublication) {
