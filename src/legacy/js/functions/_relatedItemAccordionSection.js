@@ -37,7 +37,7 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
     } else if (idField === 'data') {
         dataTemplate = {list: list, idField: idField, label: 'Related data'};
     } else if (idField === 'document') {
-        dataTemplate = {list: list, idField: idField, label: 'Publications that use this data'};
+        dataTemplate = {list: list, idField: idField, label: 'Related articles, bulletins and compendia'};
     } else if (idField === 'qmi' && isPublication) {
         // Tell users not to use related QMIs if editing a publication (input being phased out)
         dataTemplate = {list: list, idField: idField, label: 'Related QMIs (DO NOT USE. TO BE DELETED)'}
