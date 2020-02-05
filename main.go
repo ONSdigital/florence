@@ -14,15 +14,15 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ONSdigital/dp-api-clients-go/health"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
+	vault "github.com/ONSdigital/dp-vault"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
-	"github.com/ONSdigital/florence/healthcheck"
 	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/go-ns/common"
 	"github.com/ONSdigital/go-ns/handlers/reverseProxy"
-	hc "github.com/ONSdigital/go-ns/healthcheck"
 	"github.com/ONSdigital/go-ns/server"
-	"github.com/ONSdigital/go-ns/vault"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/pat"
 	"github.com/gorilla/websocket"
@@ -35,89 +35,106 @@ var upgrader = websocket.Upgrader{}
 // Version is set by the make target
 var Version string
 
+var (
+	// BuildTime represents the time in which the service was built
+	BuildTime string
+	// GitCommit represents the commit (SHA-1) hash of the service that is running
+	GitCommit string
+	// HcVersion represents the version of the service that is running
+	HcVersion string
+)
+
 func main() {
 	log.Namespace = "florence"
-	log.Event(nil, "florence version", log.Data{"version": Version})
+	ctx := context.Background()
+
+	log.Event(ctx, "florence version", log.Data{"version": Version})
 
 	cfg, err := config.Get()
 	if err != nil {
-		log.Event(nil, "error getting configuration", log.Error(err))
+		log.Event(ctx, "error getting configuration", log.Error(err))
 		os.Exit(1)
 	}
 
-	zc := healthcheck.New(cfg.ZebedeeURL, "zebedee")
-	rtrc := healthcheck.New(cfg.RouterURL, "router")
-	dc := healthcheck.New(cfg.DatasetAPIURL, "dataset-api")
-	rc := healthcheck.New(cfg.RecipeAPIURL, "recipe-api")
-	ic := healthcheck.New(cfg.ImportAPIURL, "import-api")
+	// Create healthcheck object with versionInfo
+	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
+	if err != nil {
+		log.Event(ctx, "failed to create service version information", log.Error(err))
+		os.Exit(1)
+	}
+	hc := healthcheck.New(versionInfo, cfg.HealthCheckCriticalTimeout, cfg.HealthCheckInterval)
 
 	routerURL, err := url.Parse(cfg.RouterURL)
 	if err != nil {
-		log.Event(nil, "error parsing router URL", log.Error(err))
+		log.Event(ctx, "error parsing router URL", log.Error(err))
 		os.Exit(1)
 	}
 	routerProxy := reverseProxy.Create(routerURL, director)
 
 	zebedeeURL, err := url.Parse(cfg.ZebedeeURL)
 	if err != nil {
-		log.Event(nil, "error parsing zebedee URL", log.Error(err))
+		log.Event(ctx, "error parsing zebedee URL", log.Error(err))
 		os.Exit(1)
 	}
 	zebedeeProxy := reverseProxy.Create(zebedeeURL, zebedeeDirector)
 
 	recipeAPIURL, err := url.Parse(cfg.RecipeAPIURL)
 	if err != nil {
-		log.Event(nil, "error parsing recipe API URL", log.Error(err))
+		log.Event(ctx, "error parsing recipe API URL", log.Error(err))
 		os.Exit(1)
 	}
 	recipeAPIProxy := reverseProxy.Create(recipeAPIURL, nil)
 
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
-		log.Event(nil, "error parsing table renderer URL", log.Error(err))
+		log.Event(ctx, "error parsing table renderer URL", log.Error(err))
 		os.Exit(1)
 	}
 	tableProxy := reverseProxy.Create(tableURL, tableDirector)
 
 	importAPIURL, err := url.Parse(cfg.ImportAPIURL)
 	if err != nil {
-		log.Event(nil, "error parsing import API URL", log.Error(err))
+		log.Event(ctx, "error parsing import API URL", log.Error(err))
 		os.Exit(1)
 	}
 	importAPIProxy := reverseProxy.Create(importAPIURL, importAPIDirector)
 
 	datasetAPIURL, err := url.Parse(cfg.DatasetAPIURL)
 	if err != nil {
-		log.Event(nil, "error parsing dataset API URL", log.Error(err))
+		log.Event(ctx, "error parsing dataset API URL", log.Error(err))
 		os.Exit(1)
 	}
 	datasetAPIProxy := reverseProxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
 	if err != nil {
-		log.Event(nil, "error parsing dataset controller URL", log.Error(err))
+		log.Event(ctx, "error parsing dataset controller URL", log.Error(err))
 		os.Exit(1)
 	}
 	datasetControllerProxy := reverseProxy.Create(datasetControllerURL, datasetControllerDirector)
 
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
-		vc, err = vault.CreateVaultClient(cfg.VaultToken, cfg.VaultAddr, 3)
+		vc, err = vault.CreateClient(cfg.VaultToken, cfg.VaultAddr, 3)
 		if err != nil {
-			log.Event(nil, "error creating vault client", log.Error(err))
+			log.Event(ctx, "error creating vault client", log.Error(err))
 			os.Exit(1)
 		}
 	}
 
+	if err = registerCheckers(ctx, &hc, cfg); err != nil {
+		os.Exit(1)
+	}
+
 	uploader, err := upload.New(cfg.UploadBucketName, cfg.VaultPath, vc)
 	if err != nil {
-		log.Event(nil, "error creating file uploader", log.Error(err))
+		log.Event(ctx, "error creating file uploader", log.Error(err))
 		os.Exit(1)
 	}
 
 	router := pat.New()
 
-	router.Path("/healthcheck").HandlerFunc(hc.Do)
+	router.HandleFunc("/health", hc.Handler)
 
 	if cfg.SharedConfig.EnableDatasetImport {
 		router.Path("/upload").Methods("GET").HandlerFunc(uploader.CheckUploaded)
@@ -142,7 +159,7 @@ func main() {
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 	router.Handle("/{uri:.*}", routerProxy)
 
-	log.Event(nil, "starting server", log.Data{"config": cfg})
+	log.Event(ctx, "starting server", log.Data{"config": cfg})
 
 	s := server.New(cfg.BindAddr, router)
 	// TODO need to reconsider default go-ns server timeouts
@@ -165,7 +182,7 @@ func main() {
 
 	go func() {
 		if err := s.ListenAndServe(); err != nil {
-			log.Event(nil, "error starting http server", log.Error(err))
+			log.Event(ctx, "error starting http server", log.Error(err))
 			os.Exit(2)
 		}
 	}()
@@ -174,7 +191,7 @@ func main() {
 	signal.Notify(stop, os.Interrupt, os.Kill)
 
 	for {
-		hc.MonitorExternal(rtrc, zc, ic, rc, dc)
+		hc.Start(ctx)
 
 		timer := time.NewTimer(time.Second * 60)
 
@@ -182,16 +199,49 @@ func main() {
 		case <-timer.C:
 			continue
 		case <-stop:
-			log.Event(nil, "shutting down gracefully")
+			log.Event(ctx, "shutting down gracefully")
 			timer.Stop()
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
+			hc.Stop()
 			if err := s.Server.Shutdown(ctx); err != nil {
-				log.Event(nil, "error shutting down gracefully", log.Error(err))
+				log.Event(ctx, "error shutting down gracefully", log.Error(err))
 			}
 			return
 		}
 	}
+}
+
+// registerCheckers creates health clients and registers the Checker functions to the provided HealthCheck
+func registerCheckers(ctx context.Context, hc *healthcheck.HealthCheck, cfg *config.Config) (err error) {
+
+	zebedeeCli := health.NewClient("Zebedee", cfg.ZebedeeURL)
+	recipeCli := health.NewClient("RecipeAPI", cfg.RecipeAPIURL)
+	importCli := health.NewClient("ImportAPI", cfg.ImportAPIURL)
+	datasetCli := health.NewClient("DatasetAPI", cfg.DatasetAPIURL)
+	routerCli := health.NewClient("FrontendRouter", cfg.RouterURL)
+
+	if err = hc.AddCheck("Zebedee", zebedeeCli.Checker); err != nil {
+		log.Event(ctx, "Failed to add Zebedee checker to healthcheck", log.Error(err))
+	}
+
+	if err = hc.AddCheck("RecipeAPI", recipeCli.Checker); err != nil {
+		log.Event(ctx, "Failed to add RecipeAPI checker to healthcheck", log.Error(err))
+	}
+
+	if err = hc.AddCheck("ImportAPI", importCli.Checker); err != nil {
+		log.Event(ctx, "Failed to add ImportAPI checker to healthcheck", log.Error(err))
+	}
+
+	if err = hc.AddCheck("DatasetAPI", datasetCli.Checker); err != nil {
+		log.Event(ctx, "Failed to add DatasetAPI checker to healthcheck", log.Error(err))
+	}
+
+	if err = hc.AddCheck("FrontendRouter", routerCli.Checker); err != nil {
+		log.Event(ctx, "Failed to add FrontendRouter checker to healthcheck", log.Error(err))
+	}
+
+	return
 }
 
 func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
