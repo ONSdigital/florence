@@ -9,7 +9,7 @@ image_resource:
 
 inputs:
   - name: florence
-    path: go/src/github.com/ONSdigital/florence
+    path: florence
 
 run:
-  path: go/src/github.com/ONSdigital/florence/ci/scripts/unit.sh
+  path: florence/ci/scripts/unit.sh

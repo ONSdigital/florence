@@ -14,35 +14,35 @@ TOKEN_INFO:="$(shell vault token create -address=$(VAULT_ADDR) -policy=read-psk 
 APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
 
 .PHONY: build
-build: generate
+build: node-modules generate-go-prod
 	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
 
 .PHONY: dev
-dev: node-modules generate
+dev: node-modules generate-go-debug
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 .PHONY: debug
-debug: generate-go
+debug: generate-go-debug
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	VAULT_TOKEN=$(APP_TOKEN) VAULT_ADDR=$(VAULT_ADDR) HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
-.PHONY: generate
-generate: node-modules generate-go
-
-.PHONY: generate-go
-generate-go: ${GOPATH}/bin/go-bindata
-	# build the production version
-	cd assets; ${GOPATH}/bin/go-bindata -o prod.go -pkg assets ../dist/...
+.PHONY: generate-go-prod
+generate-go-prod:
+	# Generate the production assets version
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o prod.go -pkg assets ../dist/...
 	{ echo "// +build production"; cat assets/prod.go; } > assets/prod.go.new
 	mv assets/prod.go.new assets/prod.go
-	# build the debug version
-	cd assets; ${GOPATH}/bin/go-bindata -debug -o debug.go -pkg assets ../dist/...
+
+.PHONY: generate-go-debug
+generate-go-debug:
+	# Gnerate the debug assets version
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o debug.go -pkg assets ../dist/...
 	{ echo "// +build debug"; cat assets/debug.go; } > assets/debug.go.new
 	mv assets/debug.go.new assets/debug.go	
 
 .PHONY: test
-test: test-npm test-pretty generate test-go 
+test: test-npm test-pretty mode-modules generate-go-production test-go 
 
 .PHONY: test-go
 test-go:
@@ -78,8 +78,6 @@ vault:
 	@echo "$(TOKEN_INFO)"
 	@echo "$(APP_TOKEN)"
 
-${GOPATH}/bin/go-bindata:
-	go get -u github.com/jteeuwen/go-bindata/go-bindata
 
 .PHONY: clean
 clean:
