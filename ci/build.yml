@@ -9,10 +9,10 @@ image_resource:
 
 inputs:
   - name: florence
-    path: go/src/github.com/ONSdigital/florence
+    path: florence
 
 outputs:
   - name: build
 
 run:
-  path: go/src/github.com/ONSdigital/florence/ci/scripts/build.sh
+  path: florence/ci/scripts/build.sh
