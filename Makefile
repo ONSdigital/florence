@@ -33,23 +33,19 @@ debug: generate-go-debug
 .PHONY: generate-go-prod
 generate-go-prod:
 	# Generate the production assets version
-	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o prod.go -pkg assets ../dist/...
-	{ echo "// +build production"; cat assets/prod.go; } > assets/prod.go.new
-	mv assets/prod.go.new assets/prod.go
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o data.go -pkg assets -ignore=\\.git ../dist/...
 
 .PHONY: generate-go-debug
 generate-go-debug:
-	# Gnerate the debug assets version
-	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o debug.go -pkg assets ../dist/...
-	{ echo "// +build debug"; cat assets/debug.go; } > assets/debug.go.new
-	mv assets/debug.go.new assets/debug.go	
+	# Generate the debug assets version
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets -ignore=\\.git ../dist/...
 
 .PHONY: test
-test: test-npm test-pretty mode-modules generate-go-production test-go 
+test: test-npm test-pretty mode-modules generate-go-prod test-go
 
 .PHONY: test-go
 test-go:
-	go test -cover $(shell go list ./... | grep -v /vendor/) -tags 'production'
+	go test -race -cover ./...
 
 .PHONY: test-npm
 test-npm: node-modules-react
