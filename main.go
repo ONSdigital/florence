@@ -14,7 +14,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	vault "github.com/ONSdigital/dp-vault"
 	"github.com/ONSdigital/florence/assets"
@@ -57,7 +56,7 @@ func main() {
 	}
 
 	// Create healthcheck object with versionInfo
-	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
+	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, HcVersion)
 	if err != nil {
 		log.Event(ctx, "failed to create service version information", log.Error(err))
 		os.Exit(1)
@@ -120,10 +119,10 @@ func main() {
 			log.Event(ctx, "error creating vault client", log.Error(err))
 			os.Exit(1)
 		}
-	}
-
-	if err = registerCheckers(ctx, &hc, cfg); err != nil {
-		os.Exit(1)
+		if err = hc.AddCheck(vault.ServiceName, vc.Checker); err != nil {
+			log.Event(ctx, "Failed to add Vault checker to healthcheck", log.Error(err))
+			os.Exit(1)
+		}
 	}
 
 	uploader, err := upload.New(cfg.UploadBucketName, cfg.VaultPath, vc)
@@ -210,38 +209,6 @@ func main() {
 			return
 		}
 	}
-}
-
-// registerCheckers creates health clients and registers the Checker functions to the provided HealthCheck
-func registerCheckers(ctx context.Context, hc *healthcheck.HealthCheck, cfg *config.Config) (err error) {
-
-	zebedeeCli := health.NewClient("Zebedee", cfg.ZebedeeURL)
-	recipeCli := health.NewClient("RecipeAPI", cfg.RecipeAPIURL)
-	importCli := health.NewClient("ImportAPI", cfg.ImportAPIURL)
-	datasetCli := health.NewClient("DatasetAPI", cfg.DatasetAPIURL)
-	routerCli := health.NewClient("FrontendRouter", cfg.RouterURL)
-
-	if err = hc.AddCheck("Zebedee", zebedeeCli.Checker); err != nil {
-		log.Event(ctx, "Failed to add Zebedee checker to healthcheck", log.Error(err))
-	}
-
-	if err = hc.AddCheck("RecipeAPI", recipeCli.Checker); err != nil {
-		log.Event(ctx, "Failed to add RecipeAPI checker to healthcheck", log.Error(err))
-	}
-
-	if err = hc.AddCheck("ImportAPI", importCli.Checker); err != nil {
-		log.Event(ctx, "Failed to add ImportAPI checker to healthcheck", log.Error(err))
-	}
-
-	if err = hc.AddCheck("DatasetAPI", datasetCli.Checker); err != nil {
-		log.Event(ctx, "Failed to add DatasetAPI checker to healthcheck", log.Error(err))
-	}
-
-	if err = hc.AddCheck("FrontendRouter", routerCli.Checker); err != nil {
-		log.Event(ctx, "Failed to add FrontendRouter checker to healthcheck", log.Error(err))
-	}
-
-	return
 }
 
 func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
