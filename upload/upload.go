@@ -2,6 +2,7 @@ package upload
 
 import (
 	"bytes"
+	"context"
 	"crypto/rand"
 	"encoding/hex"
 	"encoding/json"
@@ -9,6 +10,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/ONSdigital/s3crypto"
 	"github.com/aws/aws-sdk-go/aws"
@@ -61,6 +63,7 @@ type S3CryptoClient interface {
 type VaultClient interface {
 	ReadKey(path, key string) (string, error)
 	WriteKey(path, key, value string) error
+	Checker(ctx context.Context, state *healthcheck.CheckState) error
 }
 
 // New creates a new instance of Uploader using provided s3
