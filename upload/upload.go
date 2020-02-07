@@ -14,6 +14,9 @@ import (
 	"github.com/gorilla/schema"
 )
 
+//go:generate moq -out ./mock/mock_s3.go -pkg mock . S3Client
+//go:generate moq -out ./mock/mock_vault.go -pkg mock . VaultClient
+
 // AWSRegion is the Amazon Web Services Region that will be used.
 const AWSRegion = "eu-west-1"
 
@@ -74,13 +77,18 @@ func New(bucketName, vaultPath string, vc VaultClient) (*Uploader, error) {
 	usingVault := vc != nil
 
 	// Create S3 Client with region and bucket name.
-	s3Cli, err := s3client.New(AWSRegion, bucketName, usingVault)
+	s3, err := s3client.New(AWSRegion, bucketName, usingVault)
 	if err != nil {
 		return nil, err
 	}
 
 	// Create Uploader with newly created S3 client, and Vault client (if provided)
-	return &Uploader{s3Cli, vc, bucketName, vaultPath}, nil
+	return Instantiate(s3, vc, bucketName, vaultPath), nil
+}
+
+// Instantiate returns a new Uploader from the provided clients and vars
+func Instantiate(s3 S3Client, vc VaultClient, bucketName, vaultPath string) *Uploader {
+	return &Uploader{s3, vc, bucketName, vaultPath}
 }
 
 // CheckUploaded checks to see if a chunk has been uploaded
