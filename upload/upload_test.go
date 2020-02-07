@@ -1,17 +1,20 @@
-package upload
+package upload_test
 
 import (
 	"bytes"
+	"context"
+	"encoding/hex"
 	"errors"
+	"fmt"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/ONSdigital/florence/upload/mocks"
-	"github.com/aws/aws-sdk-go/service/s3"
+	s3client "github.com/ONSdigital/dp-s3"
+	"github.com/ONSdigital/florence/upload"
+	"github.com/ONSdigital/florence/upload/mock"
 
-	"github.com/golang/mock/gomock"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
@@ -19,267 +22,288 @@ var (
 	testBucketName = "test-bucket"
 	vaultRootPath  = "secret/path"
 	vaultKey       = "key"
+
+	expectedPayload = []byte(`some test file bytes to be uploaded`)
 )
 
-func TestUnitUpload(t *testing.T) {
-	mockCtrl := gomock.NewController(t)
-	defer mockCtrl.Finish()
+func TestGetUpload(t *testing.T) {
 
-	Convey("test CheckUpload", t, func() {
-		Convey("test CheckUploaded returns 404 if chunk has not yet been uploaded", func() {
-			w := httptest.NewRecorder()
-			req, err := http.NewRequest("GET", "/upload", nil)
-			So(err, ShouldBeNil)
+	Convey("given a GET /upload request", t, func() {
+
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("GET", "/upload", nil)
+		So(err, ShouldBeNil)
+
+		Convey("A 404 http status code is returned if chunk has not yet been uploaded", func() {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
+			// S3 client returns ErrNotUploaded if uploadID cannot be found
+			client := &mock.S3ClientMock{
+				CheckUploadedFunc: func(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
+					return false, &s3client.ErrNotUploaded{UploadKey: req.UploadKey}
+				},
+			}
 
-			up := Uploader{client: client, bucketName: testBucketName, vaultPath: vaultRootPath}
-
+			// Instantiate Upload with mock, and call Upload
+			up := upload.Instantiate(client, nil, testBucketName, "")
 			up.CheckUploaded(w, req)
 
+			// Validations
+			So(len(client.CheckUploadedCalls()), ShouldEqual, 1)
+			So(client.CheckUploadedCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
 			So(w.Code, ShouldEqual, 404)
 		})
 
-		Convey("test CheckUpload returns 200 if chunk has been uploaded", func() {
-			w := httptest.NewRecorder()
-			req, err := http.NewRequest("GET", "/upload", nil)
-			So(err, ShouldBeNil)
+		Convey("A 200 http status code is returned if chunk has been uploaded", func() {
 
 			addQueryParams(req, "1", "2")
 
-			key := "12345"
-			id := "test-id"
-
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{
-				Uploads: []*s3.MultipartUpload{
-					{
-						Key:      &key,
-						UploadId: &id,
-					},
+			// S3 client returns true if upload could be found and chunk was already uploaded
+			client := &mock.S3ClientMock{
+				CheckUploadedFunc: func(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
+					return true, nil
 				},
-			}, nil)
-			n := int64(1)
-			client.EXPECT().ListParts(&s3.ListPartsInput{Key: &key, Bucket: &testBucketName, UploadId: &id}).Return(&s3.ListPartsOutput{
-				Parts: []*s3.Part{
-					{
-						PartNumber: &n,
-					},
-				},
-			}, nil)
+			}
 
-			up := Uploader{client: client, bucketName: testBucketName}
-
+			// Instantiate Upload with mock, and call Upload
+			up := upload.Instantiate(client, nil, testBucketName, "")
 			up.CheckUploaded(w, req)
 
+			// Validations
+			So(len(client.CheckUploadedCalls()), ShouldEqual, 1)
+			So(client.CheckUploadedCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 2,
+				FileName:    "helloworld",
+			})
 			So(w.Code, ShouldEqual, 200)
 		})
 
-		Convey("test CheckUpload returns status 500 if multi part upload fails", func() {
-			w := httptest.NewRecorder()
-			req, err := http.NewRequest("GET", "/upload", nil)
-			So(err, ShouldBeNil)
+		Convey("A 500 http status code is returned if multi part upload fails", func() {
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(nil, errors.New("could not list uploads"))
+			// S3 client returns generic error if ListMultipartUploads fails
+			client := &mock.S3ClientMock{
+				CheckUploadedFunc: func(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
+					return false, errors.New("could not list uploads")
+				},
+			}
 
-			up := Uploader{client: client, bucketName: testBucketName}
-
+			// Instantiate Upload with mock, and call Upload
+			up := upload.Instantiate(client, nil, testBucketName, "")
 			up.CheckUploaded(w, req)
 
+			// Validations
+			So(len(client.CheckUploadedCalls()), ShouldEqual, 1)
+			So(client.CheckUploadedCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
 			So(w.Code, ShouldEqual, 500)
 		})
 	})
+}
 
-	Convey("test Upload", t, func() {
+func TestPostUpload(t *testing.T) {
+
+	Convey("given a POST /upload request", t, func() {
+
+		w := httptest.NewRecorder()
+		req, err := createTestFileUploadPart(expectedPayload)
+		So(err, ShouldBeNil)
+
 		Convey("test upload successfully uploads with only one chunk and no vault client", func() {
-			w := httptest.NewRecorder()
-
-			req, err := createTestFileUploadPart()
-			So(err, ShouldBeNil)
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
-
-			key := "12345"
-			id := "test-id"
-			contentType := "text/plain"
-
-			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
-				Bucket:      &testBucketName,
-				Key:         &key,
-				ContentType: &contentType,
-			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
-
-			n := int64(1)
-
-			client.EXPECT().UploadPart(&s3.UploadPartInput{
-				UploadId:   &id,
-				Bucket:     &testBucketName,
-				Key:        &key,
-				Body:       bytes.NewReader([]byte(`some test file bytes to be uploaded`)),
-				PartNumber: &n,
-			}).Return(nil, nil)
-
-			etag := "abcdefg"
-
-			client.EXPECT().ListParts(&s3.ListPartsInput{
-				Key:      &key,
-				Bucket:   &testBucketName,
-				UploadId: &id,
-			}).Return(&s3.ListPartsOutput{
-				Parts: []*s3.Part{
-					{
-						ETag:       &etag,
-						PartNumber: &n,
-					},
+			// S3 client returns generic error if ListMultipartUploads fails
+			client := &mock.S3ClientMock{
+				UploadFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error {
+					return nil
 				},
-			}, nil)
+			}
 
-			client.EXPECT().CompleteMultipartUpload(&s3.CompleteMultipartUploadInput{
-				Key:      &key,
-				UploadId: &id,
-				MultipartUpload: &s3.CompletedMultipartUpload{
-					Parts: []*s3.CompletedPart{
-						{
-							ETag:       &etag,
-							PartNumber: &n,
-						},
-					},
-				},
-				Bucket: &testBucketName,
-			}).Return(nil, nil)
-
-			up := Uploader{client: client, bucketName: testBucketName}
-
+			// Instantiate Upload with mock, and call Upload
+			up := upload.Instantiate(client, nil, testBucketName, "")
 			up.Upload(w, req)
 
+			// Validations
+			So(len(client.UploadCalls()), ShouldEqual, 1)
+			So(client.UploadCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
+			So(client.UploadCalls()[0].Payload, ShouldResemble, expectedPayload)
 			So(w.Code, ShouldEqual, 200)
 
 		})
 
-		Convey("test upload successfully uploads with only one chunk and a valid vault client", func() {
-			w := httptest.NewRecorder()
-
-			req, err := createTestFileUploadPart()
-			So(err, ShouldBeNil)
+		Convey("test upload successfully uploads with only one chunk and a valid vault client with no existing PSK", func() {
 
 			addQueryParams(req, "1", "1")
 
-			key := "12345"
-			id := "test-id"
-			contentType := "text/plain"
-			encodedPSK := "48656C6C6F20576F726C64"
-			psk := []byte("Hello World")
-
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(&s3.ListMultipartUploadsOutput{}, nil)
-
-			vault := mocks.NewMockVaultClient(mockCtrl)
-
-			vaultPath := vaultRootPath + "/" + key
-			vault.EXPECT().ReadKey(vaultPath, vaultKey).Return("", errors.New("no key created yet- better go create one"))
-			vault.EXPECT().WriteKey(vaultPath, vaultKey, gomock.Any()).Return(nil)
-			vault.EXPECT().ReadKey(vaultPath, vaultKey).Return(encodedPSK, nil)
-
-			client.EXPECT().CreateMultipartUpload(&s3.CreateMultipartUploadInput{
-				Bucket:      &testBucketName,
-				Key:         &key,
-				ContentType: &contentType,
-			}).Return(&s3.CreateMultipartUploadOutput{UploadId: &id}, nil)
-
-			n := int64(1)
-
-			client.EXPECT().UploadPartWithPSK(&s3.UploadPartInput{
-				UploadId:   &id,
-				Bucket:     &testBucketName,
-				Key:        &key,
-				Body:       bytes.NewReader([]byte(`some test file bytes to be uploaded`)),
-				PartNumber: &n,
-			}, psk).Return(nil, nil)
-
-			etag := "abcdefg"
-
-			client.EXPECT().ListParts(&s3.ListPartsInput{
-				Key:      &key,
-				Bucket:   &testBucketName,
-				UploadId: &id,
-			}).Return(&s3.ListPartsOutput{
-				Parts: []*s3.Part{
-					{
-						ETag:       &etag,
-						PartNumber: &n,
-					},
+			// S3 client returns generic error if ListMultipartUploads fails
+			client := &mock.S3ClientMock{
+				UploadWithPskFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error {
+					return nil
 				},
-			}, nil)
+			}
 
-			client.EXPECT().CompleteMultipartUpload(&s3.CompleteMultipartUploadInput{
-				Key:      &key,
-				UploadId: &id,
-				MultipartUpload: &s3.CompletedMultipartUpload{
-					Parts: []*s3.CompletedPart{
-						{
-							ETag:       &etag,
-							PartNumber: &n,
-						},
-					},
+			// Vault client mock
+			vault := &mock.VaultClientMock{
+				ReadKeyFunc: func(path string, key string) (string, error) {
+					return "", errors.New("no key created yet - better go create one")
 				},
-				Bucket: &testBucketName,
-			}).Return(nil, nil)
+				WriteKeyFunc: func(path string, key string, value string) error {
+					return nil
+				},
+			}
 
-			up := Uploader{client: client, vaultClient: vault, bucketName: testBucketName, vaultPath: vaultRootPath}
-
+			// Instantiate Upload with mocks, and call Upload
+			up := upload.Instantiate(client, vault, testBucketName, vaultRootPath)
 			up.Upload(w, req)
 
+			// Validations
+			So(len(client.UploadWithPskCalls()), ShouldEqual, 1)
+			So(client.UploadWithPskCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
+			So(client.UploadWithPskCalls()[0].Payload, ShouldResemble, expectedPayload)
+			So(len(client.UploadWithPskCalls()[0].Psk), ShouldEqual, 16)
+			So(len(vault.ReadKeyCalls()), ShouldEqual, 1)
+			So(len(vault.WriteKeyCalls()), ShouldEqual, 1)
 			So(w.Code, ShouldEqual, 200)
+		})
 
+		Convey("test upload successfully uploads with only one chunk and a valid vault client with existing PSK", func() {
+
+			addQueryParams(req, "1", "1")
+
+			// S3 client returns generic error if ListMultipartUploads fails
+			client := &mock.S3ClientMock{
+				UploadWithPskFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error {
+					return nil
+				},
+			}
+
+			// The expected vault path is the root path plus the S3 Key (i.e. path in bucket) of the upload request
+			vaultPath := vaultRootPath + "/12345"
+			encodedPSK := "48656C6C6F20576F726C64"
+			psk, err := hex.DecodeString(encodedPSK)
+
+			// Vault client mock
+			So(err, ShouldBeNil)
+			vault := &mock.VaultClientMock{
+				ReadKeyFunc: func(path string, key string) (string, error) {
+					return encodedPSK, nil
+				},
+			}
+
+			// Instantiate Upload with mocks, and call Upload
+			up := upload.Instantiate(client, vault, testBucketName, vaultRootPath)
+			up.Upload(w, req)
+
+			// Validations
+			So(len(client.UploadWithPskCalls()), ShouldEqual, 1)
+			So(client.UploadWithPskCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
+			So(client.UploadWithPskCalls()[0].Payload, ShouldResemble, expectedPayload)
+			So(client.UploadWithPskCalls()[0].Psk, ShouldResemble, psk)
+			So(len(vault.ReadKeyCalls()), ShouldEqual, 1)
+			So(vault.ReadKeyCalls()[0].Path, ShouldEqual, vaultPath)
+			So(w.Code, ShouldEqual, 200)
 		})
 
 		Convey("test 500 status returned if client throws an error", func() {
-			w := httptest.NewRecorder()
-
-			req, err := createTestFileUploadPart()
-			So(err, ShouldBeNil)
 
 			addQueryParams(req, "1", "1")
 
-			client := mocks.NewMockS3Client(mockCtrl)
-			client.EXPECT().ListMultipartUploads(&s3.ListMultipartUploadsInput{Bucket: &testBucketName}).Return(nil, errors.New("could not list uploads"))
+			// S3 client returns generic error if ListMultipartUploads fails
+			client := &mock.S3ClientMock{
+				UploadFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error {
+					return errors.New("could not list uploads")
+				},
+			}
 
-			up := Uploader{client: client, bucketName: testBucketName}
-
+			// Instantiate Upload with mock, and call Upload
+			up := upload.Instantiate(client, nil, testBucketName, "")
 			up.Upload(w, req)
 
+			// Validations
+			So(len(client.UploadCalls()), ShouldEqual, 1)
+			So(client.UploadCalls()[0].Req, ShouldResemble, &s3client.UploadRequest{
+				UploadKey:   "12345",
+				Type:        "text/plain",
+				ChunkNumber: 1,
+				TotalChunks: 1,
+				FileName:    "helloworld",
+			})
 			So(w.Code, ShouldEqual, 500)
 
 		})
-	})
 
-	Convey("test GetS3URL", t, func() {
-		Convey("test GetS3URL forms an s3 url and returns status 200", func() {
-			w := httptest.NewRecorder()
-			req, err := http.NewRequest("GET", "/upload?:id=173849-helloworldtxt", nil)
-			So(err, ShouldBeNil)
-
-			up := Uploader{bucketName: testBucketName}
-
-			up.GetS3URL(w, req)
-			So(w.Code, ShouldEqual, 200)
-			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/test-bucket/173849-helloworldtxt"}`)
-			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json")
-		})
 	})
 
 }
 
-func createTestFileUploadPart() (*http.Request, error) {
+func TestGetS3Url(t *testing.T) {
+
+	Convey("Given a GET /upload request with a path parameter", t, func() {
+
+		w := httptest.NewRecorder()
+		req, err := http.NewRequest("GET", "/upload?:id=173849-helloworldtxt", nil)
+		So(err, ShouldBeNil)
+
+		Convey("A 200 OK status is returned, with the fully qualified s3 url for the region, bucket and s3 key", func() {
+
+			// S3 client returns URL for test-bucket and eu-west-1 region
+			client := &mock.S3ClientMock{
+				GetURLFunc: func(path string) string {
+					return fmt.Sprintf("https://s3-eu-west-1.amazonaws.com/test-bucket/%s", path)
+				},
+			}
+
+			// Instantiate Upload with mock, and call GetS3URL
+			up := upload.Instantiate(client, nil, testBucketName, "173849-helloworldtxt")
+			up.GetS3URL(w, req)
+
+			// Validations
+			So(w.Code, ShouldEqual, 200)
+			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/test-bucket/173849-helloworldtxt"}`)
+			So(len(client.GetURLCalls()), ShouldEqual, 1)
+			So(client.GetURLCalls()[0].Path, ShouldEqual, "173849-helloworldtxt")
+			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json")
+		})
+	})
+}
+
+// createTestFileUploadPart creates an http Request with the expected body payload
+func createTestFileUploadPart(testPayload []byte) (*http.Request, error) {
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
 
@@ -288,7 +312,7 @@ func createTestFileUploadPart() (*http.Request, error) {
 		return nil, err
 	}
 
-	if _, err = part.Write([]byte(`some test file bytes to be uploaded`)); err != nil {
+	if _, err = part.Write(testPayload); err != nil {
 		return nil, err
 	}
 	err = writer.Close()
