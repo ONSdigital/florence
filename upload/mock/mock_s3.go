@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	lockS3ClientMockCheckUploaded sync.RWMutex
-	lockS3ClientMockGetURL        sync.RWMutex
-	lockS3ClientMockUpload        sync.RWMutex
-	lockS3ClientMockUploadWithPsk sync.RWMutex
+	lockS3ClientMockCheckUploaded   sync.RWMutex
+	lockS3ClientMockGetPathStyleURL sync.RWMutex
+	lockS3ClientMockUpload          sync.RWMutex
+	lockS3ClientMockUploadWithPsk   sync.RWMutex
 )
 
 // Ensure, that S3ClientMock does implement upload.S3Client.
@@ -30,8 +30,8 @@ var _ upload.S3Client = &S3ClientMock{}
 //             CheckUploadedFunc: func(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
 // 	               panic("mock out the CheckUploaded method")
 //             },
-//             GetURLFunc: func(path string) string {
-// 	               panic("mock out the GetURL method")
+//             GetPathStyleURLFunc: func(path string) string {
+// 	               panic("mock out the GetPathStyleURL method")
 //             },
 //             UploadFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error {
 // 	               panic("mock out the Upload method")
@@ -49,8 +49,8 @@ type S3ClientMock struct {
 	// CheckUploadedFunc mocks the CheckUploaded method.
 	CheckUploadedFunc func(ctx context.Context, req *s3client.UploadRequest) (bool, error)
 
-	// GetURLFunc mocks the GetURL method.
-	GetURLFunc func(path string) string
+	// GetPathStyleURLFunc mocks the GetPathStyleURL method.
+	GetPathStyleURLFunc func(path string) string
 
 	// UploadFunc mocks the Upload method.
 	UploadFunc func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error
@@ -67,8 +67,8 @@ type S3ClientMock struct {
 			// Req is the req argument value.
 			Req *s3client.UploadRequest
 		}
-		// GetURL holds details about calls to the GetURL method.
-		GetURL []struct {
+		// GetPathStyleURL holds details about calls to the GetPathStyleURL method.
+		GetPathStyleURL []struct {
 			// Path is the path argument value.
 			Path string
 		}
@@ -130,34 +130,34 @@ func (mock *S3ClientMock) CheckUploadedCalls() []struct {
 	return calls
 }
 
-// GetURL calls GetURLFunc.
-func (mock *S3ClientMock) GetURL(path string) string {
-	if mock.GetURLFunc == nil {
-		panic("S3ClientMock.GetURLFunc: method is nil but S3Client.GetURL was just called")
+// GetPathStyleURL calls GetPathStyleURLFunc.
+func (mock *S3ClientMock) GetPathStyleURL(path string) string {
+	if mock.GetPathStyleURLFunc == nil {
+		panic("S3ClientMock.GetPathStyleURLFunc: method is nil but S3Client.GetPathStyleURL was just called")
 	}
 	callInfo := struct {
 		Path string
 	}{
 		Path: path,
 	}
-	lockS3ClientMockGetURL.Lock()
-	mock.calls.GetURL = append(mock.calls.GetURL, callInfo)
-	lockS3ClientMockGetURL.Unlock()
-	return mock.GetURLFunc(path)
+	lockS3ClientMockGetPathStyleURL.Lock()
+	mock.calls.GetPathStyleURL = append(mock.calls.GetPathStyleURL, callInfo)
+	lockS3ClientMockGetPathStyleURL.Unlock()
+	return mock.GetPathStyleURLFunc(path)
 }
 
-// GetURLCalls gets all the calls that were made to GetURL.
+// GetPathStyleURLCalls gets all the calls that were made to GetPathStyleURL.
 // Check the length with:
-//     len(mockedS3Client.GetURLCalls())
-func (mock *S3ClientMock) GetURLCalls() []struct {
+//     len(mockedS3Client.GetPathStyleURLCalls())
+func (mock *S3ClientMock) GetPathStyleURLCalls() []struct {
 	Path string
 } {
 	var calls []struct {
 		Path string
 	}
-	lockS3ClientMockGetURL.RLock()
-	calls = mock.calls.GetURL
-	lockS3ClientMockGetURL.RUnlock()
+	lockS3ClientMockGetPathStyleURL.RLock()
+	calls = mock.calls.GetPathStyleURL
+	lockS3ClientMockGetPathStyleURL.RUnlock()
 	return calls
 }
 

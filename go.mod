@@ -6,7 +6,7 @@ require (
 	github.com/ONSdigital/dp-api-clients-go v1.2.0
 	github.com/ONSdigital/dp-download-service v0.0.0-20191028111458-0ea3742a14e6
 	github.com/ONSdigital/dp-healthcheck v0.0.0-20200131122546-9db6d3f0494e
-	github.com/ONSdigital/dp-s3 v1.0.1-0.20200207113615-e10a16fe9789
+	github.com/ONSdigital/dp-s3 v1.0.1-0.20200211112456-06720eb66c39
 	github.com/ONSdigital/dp-vault v1.0.0
 	github.com/ONSdigital/go-ns v0.0.0-20191104121206-f144c4ec2e58
 	github.com/ONSdigital/log.go v1.0.0

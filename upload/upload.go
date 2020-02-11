@@ -50,7 +50,7 @@ type S3Client interface {
 	Upload(ctx context.Context, req *s3client.UploadRequest, payload []byte) error
 	UploadWithPsk(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error
 	CheckUploaded(ctx context.Context, req *s3client.UploadRequest) (bool, error)
-	GetURL(path string) string
+	GetPathStyleURL(path string) string
 }
 
 // VaultClient is an interface to represent methods called to action upon vault (implemented by dp-vault)
@@ -211,13 +211,15 @@ func statusCodeFromError(err error) int {
 	default:
 		return http.StatusInternalServerError
 	}
+	// TODO I would suggest considering S3 client errors to be '502 BAD gateway'
 }
 
 // GetS3URL returns an S3 URL for a requested path, and the client's region and bucket name.
+// Path corresponds to the S3 object key
 func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":id")
 
-	url := u.client.GetURL(path)
+	url := u.client.GetPathStyleURL(path)
 
 	body := struct {
 		URL string `json:"url"`
