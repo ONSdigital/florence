@@ -7,8 +7,6 @@ github.com/ONSdigital/dp-healthcheck v0.0.0-20200131122546-9db6d3f0494e/go.mod h
 github.com/ONSdigital/dp-mocking v0.0.0-20190905163309-fee2702ad1b9/go.mod h1:BcIRgitUju//qgNePRBmNjATarTtynAgc0yV29VpLEk=
 github.com/ONSdigital/dp-rchttp v0.0.0-20190919143000-bb5699e6fd59/go.mod h1:KkW68U3FPuivW4ogi9L8CPKNj9ZxGko4qcUY7KoAAkQ=
 github.com/ONSdigital/dp-rchttp v0.0.0-20200114090501-463a529590e8/go.mod h1:821jZtK0oBsV8hjIkNr8vhAWuv0FxJBPJuAHa2B70Gk=
-github.com/ONSdigital/dp-s3 v1.0.1-0.20200211112456-06720eb66c39 h1:xPfgc1g+mT5usDX0KT15pbUfcWwbOrJIsaNKMBaQUvQ=
-github.com/ONSdigital/dp-s3 v1.0.1-0.20200211112456-06720eb66c39/go.mod h1:oJxCYvgDsXH2/J/8y2f9UOBCzOZ2EeO987gNpAXngxI=
 github.com/ONSdigital/dp-s3 v1.0.1-0.20200211151848-8c2d24a235e7 h1:fYSem/rCnMKNr69IIZ9i/S/mcndM1L9bNlJH1z3X0HY=
 github.com/ONSdigital/dp-s3 v1.0.1-0.20200211151848-8c2d24a235e7/go.mod h1:oJxCYvgDsXH2/J/8y2f9UOBCzOZ2EeO987gNpAXngxI=
 github.com/ONSdigital/dp-vault v1.0.0 h1:ksuzshSzJK1gBlDF+9CM3cAhhuzNflTTxEyIcxJni/s=
@@ -158,7 +156,6 @@ golang.org/x/sys v0.0.0-20190129075346-302c3dd5f1cc/go.mod h1:STP8DvDyc/dI5b8T5h
 golang.org/x/sys v0.0.0-20190215142949-d0b11bdaac8a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190222072716-a9d3bda3a223/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
 golang.org/x/sys v0.0.0-20190403152447-81d4e9dc473e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
-golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 h1:YyJpGZS1sBuBCzLAR1VEpK193GlqGZbnPFnPV/5Rsb4=
 golang.org/x/sys v0.0.0-20191026070338-33540a1f6037/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.1-0.20181227161524-e6919f6577db h1:6/JqlYfC1CCaLnGceQTI+sDGhC9UBSPAsBqI0Gun6kU=
