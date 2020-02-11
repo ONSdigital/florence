@@ -283,7 +283,7 @@ func TestGetS3Url(t *testing.T) {
 
 			// S3 client returns URL for test-bucket and eu-west-1 region
 			client := &mock.S3ClientMock{
-				GetURLFunc: func(path string) string {
+				GetPathStyleURLFunc: func(path string) string {
 					return fmt.Sprintf("https://s3-eu-west-1.amazonaws.com/test-bucket/%s", path)
 				},
 			}
@@ -295,8 +295,8 @@ func TestGetS3Url(t *testing.T) {
 			// Validations
 			So(w.Code, ShouldEqual, 200)
 			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/test-bucket/173849-helloworldtxt"}`)
-			So(len(client.GetURLCalls()), ShouldEqual, 1)
-			So(client.GetURLCalls()[0].Path, ShouldEqual, "173849-helloworldtxt")
+			So(len(client.GetPathStyleURLCalls()), ShouldEqual, 1)
+			So(client.GetPathStyleURLCalls()[0].Path, ShouldEqual, "173849-helloworldtxt")
 			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json")
 		})
 	})
