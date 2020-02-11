@@ -71,6 +71,7 @@ The following environment variables are available when running the Go server.
 | RECIPE_API_URL               | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
 | DATASET_API_URL              | http://localhost:22000            | URL that the [dataset API](https://github.com/ONSdigital/dp-dataset-api) can be accessed on                                              |
 | TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
+| AWS_REGION                   | eu-west-1                         | S3 region to use. This region has to match the region where the bucket was created.                                                      |
 | UPLOAD_BUCKET_NAME           | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                   |
 | DATASET_CONTROLLER_URL       | http://localhost:24000            | Dataset controller url                                                                                                                   |
 | ENCRYPTION_DISABLED          | false                             | Determines wether encryption is disabled or enabled                                                                                      |

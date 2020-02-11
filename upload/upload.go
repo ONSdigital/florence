@@ -17,9 +17,6 @@ import (
 //go:generate moq -out ./mock/mock_s3.go -pkg mock . S3Client
 //go:generate moq -out ./mock/mock_vault.go -pkg mock . VaultClient
 
-// AWSRegion is the Amazon Web Services Region that will be used.
-const AWSRegion = "eu-west-1"
-
 // Resumable represents resumable js upload query pararmeters
 type Resumable struct {
 	ChunkNumber      int    `schema:"resumableChunkNumber"`
@@ -39,7 +36,7 @@ func (resum *Resumable) s3Request() *s3client.UploadRequest {
 	return &s3client.UploadRequest{
 		UploadKey:   resum.Identifier,
 		Type:        resum.Type,
-		ChunkNumber: resum.ChunkNumber,
+		ChunkNumber: int64(resum.ChunkNumber),
 		TotalChunks: resum.TotalChunks,
 		FileName:    resum.FileName,
 	}
@@ -62,33 +59,14 @@ type VaultClient interface {
 
 // Uploader represents the necessary configuration for uploading a file
 type Uploader struct {
-	client      S3Client
+	s3Client    S3Client
 	vaultClient VaultClient
-
-	bucketName string
-	vaultPath  string
+	vaultPath   string
 }
 
-// New creates a new instance of Uploader using provided s3
-// environment authentication
-func New(bucketName, vaultPath string, vc VaultClient) (*Uploader, error) {
-
-	// Determine if we are using Vault or not
-	usingVault := vc != nil
-
-	// Create S3 Client with region and bucket name.
-	s3, err := s3client.New(AWSRegion, bucketName, usingVault)
-	if err != nil {
-		return nil, err
-	}
-
-	// Create Uploader with newly created S3 client, and Vault client (if provided)
-	return Instantiate(s3, vc, bucketName, vaultPath), nil
-}
-
-// Instantiate returns a new Uploader from the provided clients and vars
-func Instantiate(s3 S3Client, vc VaultClient, bucketName, vaultPath string) *Uploader {
-	return &Uploader{s3, vc, bucketName, vaultPath}
+// New returns a new Uploader from the provided clients and vault path
+func New(s3 S3Client, vc VaultClient, vaultPath string) *Uploader {
+	return &Uploader{s3, vc, vaultPath}
 }
 
 // CheckUploaded checks to see if a chunk has been uploaded
@@ -108,7 +86,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ok, err := u.client.CheckUploaded(req.Context(), resum.s3Request())
+	ok, err := u.s3Client.CheckUploaded(req.Context(), resum.s3Request())
 	if err != nil {
 		w.WriteHeader(statusCodeFromError(err))
 		return
@@ -158,7 +136,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	if u.vaultClient == nil {
 		// Perform upload without PSK
-		if err := u.client.Upload(req.Context(), resum.s3Request(), payload); err != nil {
+		if err := u.s3Client.Upload(req.Context(), resum.s3Request(), payload); err != nil {
 			w.WriteHeader(statusCodeFromError(err))
 			return
 		}
@@ -191,7 +169,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Perform upload using vault PSK
-	if err = u.client.UploadWithPsk(req.Context(), resum.s3Request(), payload, psk); err != nil {
+	if err = u.s3Client.UploadWithPsk(req.Context(), resum.s3Request(), payload, psk); err != nil {
 		w.WriteHeader(statusCodeFromError(err))
 		return
 	}
@@ -219,7 +197,7 @@ func statusCodeFromError(err error) int {
 func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":id")
 
-	url := u.client.GetPathStyleURL(path)
+	url := u.s3Client.GetPathStyleURL(path)
 
 	body := struct {
 		URL string `json:"url"`
