@@ -15,6 +15,7 @@ import (
 	"time"
 
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
+	s3client "github.com/ONSdigital/dp-s3"
 	vault "github.com/ONSdigital/dp-vault"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
@@ -112,6 +113,7 @@ func main() {
 	}
 	datasetControllerProxy := reverseProxy.Create(datasetControllerURL, datasetControllerDirector)
 
+	// Create Vault client (and add Check) if encryption is enabled
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
 		vc, err = vault.CreateClient(cfg.VaultToken, cfg.VaultAddr, 3)
@@ -125,11 +127,19 @@ func main() {
 		}
 	}
 
-	uploader, err := upload.New(cfg.UploadBucketName, cfg.VaultPath, vc)
+	// Create S3 Client with region and bucket name, and add Check
+	s3, err := s3client.New(cfg.AwsRegion, cfg.UploadBucketName, !cfg.EncryptionDisabled)
 	if err != nil {
-		log.Event(ctx, "error creating file uploader", log.Error(err))
+		log.Event(ctx, "error creating S3 client", log.Error(err))
 		os.Exit(1)
 	}
+	if err = hc.AddCheck(s3client.ServiceName, s3.Checker); err != nil {
+		log.Event(ctx, "Failed to add S3 checker to healthcheck", log.Error(err))
+		os.Exit(1)
+	}
+
+	// Create Uploader with S3 client and Vault
+	uploader := upload.New(s3, vc, cfg.VaultPath)
 
 	router := pat.New()
 
