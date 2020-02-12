@@ -33,15 +33,15 @@ debug: generate-go-debug
 .PHONY: generate-go-prod
 generate-go-prod:
 	# Generate the production assets version
-	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o data.go -pkg assets -ignore=\\.git ../dist/...
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o data.go -pkg assets ../dist/...
 
 .PHONY: generate-go-debug
 generate-go-debug:
 	# Generate the debug assets version
-	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets -ignore=\\.git ../dist/...
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -fs -o data.go -pkg assets ../dist/...
 
 .PHONY: test
-test: test-npm test-pretty mode-modules generate-go-prod test-go
+test: test-npm test-pretty node-modules generate-go-prod test-go
 
 .PHONY: test-go
 test-go:
@@ -80,4 +80,4 @@ vault:
 
 .PHONY: clean
 clean:
-	rm -rf build/ dist/ assets/debug.go assets/prod.go src/node_modules src/legacy/node_modules
+	rm -rf build/ dist/ assets/data.go src/node_modules src/legacy/node_modules
