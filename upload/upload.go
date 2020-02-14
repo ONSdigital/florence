@@ -32,8 +32,8 @@ type Resumable struct {
 }
 
 // s3Request creates a S3 UploadRequest struct from a Resumable struct
-func (resum *Resumable) s3Request() *s3client.UploadRequest {
-	return &s3client.UploadRequest{
+func (resum *Resumable) s3Request() *s3client.UploadPartRequest {
+	return &s3client.UploadPartRequest{
 		UploadKey:   resum.Identifier,
 		Type:        resum.Type,
 		ChunkNumber: int64(resum.ChunkNumber),
@@ -44,9 +44,9 @@ func (resum *Resumable) s3Request() *s3client.UploadRequest {
 
 // S3Client is an interface to represent methods called to action upon S3 (implemented by dp-s3)
 type S3Client interface {
-	Upload(ctx context.Context, req *s3client.UploadRequest, payload []byte) error
-	UploadWithPsk(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error
-	CheckUploaded(ctx context.Context, req *s3client.UploadRequest) (bool, error)
+	UploadPart(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
+	UploadPartWithPsk(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error
+	CheckPartUploaded(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
 	GetPathStyleURL(path string) string
 }
 
@@ -86,7 +86,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ok, err := u.s3Client.CheckUploaded(req.Context(), resum.s3Request())
+	ok, err := u.s3Client.CheckPartUploaded(req.Context(), resum.s3Request())
 	if err != nil {
 		w.WriteHeader(statusCodeFromError(err))
 		return
@@ -136,7 +136,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	if u.vaultClient == nil {
 		// Perform upload without PSK
-		if err := u.s3Client.Upload(req.Context(), resum.s3Request(), payload); err != nil {
+		if err := u.s3Client.UploadPart(req.Context(), resum.s3Request(), payload); err != nil {
 			w.WriteHeader(statusCodeFromError(err))
 			return
 		}
@@ -169,7 +169,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	}
 
 	// Perform upload using vault PSK
-	if err = u.s3Client.UploadWithPsk(req.Context(), resum.s3Request(), payload, psk); err != nil {
+	if err = u.s3Client.UploadPartWithPsk(req.Context(), resum.s3Request(), payload, psk); err != nil {
 		w.WriteHeader(statusCodeFromError(err))
 		return
 	}

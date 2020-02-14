@@ -11,10 +11,10 @@ import (
 )
 
 var (
-	lockS3ClientMockCheckUploaded   sync.RWMutex
-	lockS3ClientMockGetPathStyleURL sync.RWMutex
-	lockS3ClientMockUpload          sync.RWMutex
-	lockS3ClientMockUploadWithPsk   sync.RWMutex
+	lockS3ClientMockCheckPartUploaded sync.RWMutex
+	lockS3ClientMockGetPathStyleURL   sync.RWMutex
+	lockS3ClientMockUploadPart        sync.RWMutex
+	lockS3ClientMockUploadPartWithPsk sync.RWMutex
 )
 
 // Ensure, that S3ClientMock does implement upload.S3Client.
@@ -27,17 +27,17 @@ var _ upload.S3Client = &S3ClientMock{}
 //
 //         // make and configure a mocked upload.S3Client
 //         mockedS3Client := &S3ClientMock{
-//             CheckUploadedFunc: func(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
-// 	               panic("mock out the CheckUploaded method")
+//             CheckPartUploadedFunc: func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error) {
+// 	               panic("mock out the CheckPartUploaded method")
 //             },
 //             GetPathStyleURLFunc: func(path string) string {
 // 	               panic("mock out the GetPathStyleURL method")
 //             },
-//             UploadFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error {
-// 	               panic("mock out the Upload method")
+//             UploadPartFunc: func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error {
+// 	               panic("mock out the UploadPart method")
 //             },
-//             UploadWithPskFunc: func(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error {
-// 	               panic("mock out the UploadWithPsk method")
+//             UploadPartWithPskFunc: func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error {
+// 	               panic("mock out the UploadPartWithPsk method")
 //             },
 //         }
 //
@@ -46,47 +46,47 @@ var _ upload.S3Client = &S3ClientMock{}
 //
 //     }
 type S3ClientMock struct {
-	// CheckUploadedFunc mocks the CheckUploaded method.
-	CheckUploadedFunc func(ctx context.Context, req *s3client.UploadRequest) (bool, error)
+	// CheckPartUploadedFunc mocks the CheckPartUploaded method.
+	CheckPartUploadedFunc func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
 
 	// GetPathStyleURLFunc mocks the GetPathStyleURL method.
 	GetPathStyleURLFunc func(path string) string
 
-	// UploadFunc mocks the Upload method.
-	UploadFunc func(ctx context.Context, req *s3client.UploadRequest, payload []byte) error
+	// UploadPartFunc mocks the UploadPart method.
+	UploadPartFunc func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
 
-	// UploadWithPskFunc mocks the UploadWithPsk method.
-	UploadWithPskFunc func(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error
+	// UploadPartWithPskFunc mocks the UploadPartWithPsk method.
+	UploadPartWithPskFunc func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// CheckUploaded holds details about calls to the CheckUploaded method.
-		CheckUploaded []struct {
+		// CheckPartUploaded holds details about calls to the CheckPartUploaded method.
+		CheckPartUploaded []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Req is the req argument value.
-			Req *s3client.UploadRequest
+			Req *s3client.UploadPartRequest
 		}
 		// GetPathStyleURL holds details about calls to the GetPathStyleURL method.
 		GetPathStyleURL []struct {
 			// Path is the path argument value.
 			Path string
 		}
-		// Upload holds details about calls to the Upload method.
-		Upload []struct {
+		// UploadPart holds details about calls to the UploadPart method.
+		UploadPart []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Req is the req argument value.
-			Req *s3client.UploadRequest
+			Req *s3client.UploadPartRequest
 			// Payload is the payload argument value.
 			Payload []byte
 		}
-		// UploadWithPsk holds details about calls to the UploadWithPsk method.
-		UploadWithPsk []struct {
+		// UploadPartWithPsk holds details about calls to the UploadPartWithPsk method.
+		UploadPartWithPsk []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Req is the req argument value.
-			Req *s3client.UploadRequest
+			Req *s3client.UploadPartRequest
 			// Payload is the payload argument value.
 			Payload []byte
 			// Psk is the psk argument value.
@@ -95,38 +95,38 @@ type S3ClientMock struct {
 	}
 }
 
-// CheckUploaded calls CheckUploadedFunc.
-func (mock *S3ClientMock) CheckUploaded(ctx context.Context, req *s3client.UploadRequest) (bool, error) {
-	if mock.CheckUploadedFunc == nil {
-		panic("S3ClientMock.CheckUploadedFunc: method is nil but S3Client.CheckUploaded was just called")
+// CheckPartUploaded calls CheckPartUploadedFunc.
+func (mock *S3ClientMock) CheckPartUploaded(ctx context.Context, req *s3client.UploadPartRequest) (bool, error) {
+	if mock.CheckPartUploadedFunc == nil {
+		panic("S3ClientMock.CheckPartUploadedFunc: method is nil but S3Client.CheckPartUploaded was just called")
 	}
 	callInfo := struct {
 		Ctx context.Context
-		Req *s3client.UploadRequest
+		Req *s3client.UploadPartRequest
 	}{
 		Ctx: ctx,
 		Req: req,
 	}
-	lockS3ClientMockCheckUploaded.Lock()
-	mock.calls.CheckUploaded = append(mock.calls.CheckUploaded, callInfo)
-	lockS3ClientMockCheckUploaded.Unlock()
-	return mock.CheckUploadedFunc(ctx, req)
+	lockS3ClientMockCheckPartUploaded.Lock()
+	mock.calls.CheckPartUploaded = append(mock.calls.CheckPartUploaded, callInfo)
+	lockS3ClientMockCheckPartUploaded.Unlock()
+	return mock.CheckPartUploadedFunc(ctx, req)
 }
 
-// CheckUploadedCalls gets all the calls that were made to CheckUploaded.
+// CheckPartUploadedCalls gets all the calls that were made to CheckPartUploaded.
 // Check the length with:
-//     len(mockedS3Client.CheckUploadedCalls())
-func (mock *S3ClientMock) CheckUploadedCalls() []struct {
+//     len(mockedS3Client.CheckPartUploadedCalls())
+func (mock *S3ClientMock) CheckPartUploadedCalls() []struct {
 	Ctx context.Context
-	Req *s3client.UploadRequest
+	Req *s3client.UploadPartRequest
 } {
 	var calls []struct {
 		Ctx context.Context
-		Req *s3client.UploadRequest
+		Req *s3client.UploadPartRequest
 	}
-	lockS3ClientMockCheckUploaded.RLock()
-	calls = mock.calls.CheckUploaded
-	lockS3ClientMockCheckUploaded.RUnlock()
+	lockS3ClientMockCheckPartUploaded.RLock()
+	calls = mock.calls.CheckPartUploaded
+	lockS3ClientMockCheckPartUploaded.RUnlock()
 	return calls
 }
 
@@ -161,53 +161,53 @@ func (mock *S3ClientMock) GetPathStyleURLCalls() []struct {
 	return calls
 }
 
-// Upload calls UploadFunc.
-func (mock *S3ClientMock) Upload(ctx context.Context, req *s3client.UploadRequest, payload []byte) error {
-	if mock.UploadFunc == nil {
-		panic("S3ClientMock.UploadFunc: method is nil but S3Client.Upload was just called")
+// UploadPart calls UploadPartFunc.
+func (mock *S3ClientMock) UploadPart(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error {
+	if mock.UploadPartFunc == nil {
+		panic("S3ClientMock.UploadPartFunc: method is nil but S3Client.UploadPart was just called")
 	}
 	callInfo := struct {
 		Ctx     context.Context
-		Req     *s3client.UploadRequest
+		Req     *s3client.UploadPartRequest
 		Payload []byte
 	}{
 		Ctx:     ctx,
 		Req:     req,
 		Payload: payload,
 	}
-	lockS3ClientMockUpload.Lock()
-	mock.calls.Upload = append(mock.calls.Upload, callInfo)
-	lockS3ClientMockUpload.Unlock()
-	return mock.UploadFunc(ctx, req, payload)
+	lockS3ClientMockUploadPart.Lock()
+	mock.calls.UploadPart = append(mock.calls.UploadPart, callInfo)
+	lockS3ClientMockUploadPart.Unlock()
+	return mock.UploadPartFunc(ctx, req, payload)
 }
 
-// UploadCalls gets all the calls that were made to Upload.
+// UploadPartCalls gets all the calls that were made to UploadPart.
 // Check the length with:
-//     len(mockedS3Client.UploadCalls())
-func (mock *S3ClientMock) UploadCalls() []struct {
+//     len(mockedS3Client.UploadPartCalls())
+func (mock *S3ClientMock) UploadPartCalls() []struct {
 	Ctx     context.Context
-	Req     *s3client.UploadRequest
+	Req     *s3client.UploadPartRequest
 	Payload []byte
 } {
 	var calls []struct {
 		Ctx     context.Context
-		Req     *s3client.UploadRequest
+		Req     *s3client.UploadPartRequest
 		Payload []byte
 	}
-	lockS3ClientMockUpload.RLock()
-	calls = mock.calls.Upload
-	lockS3ClientMockUpload.RUnlock()
+	lockS3ClientMockUploadPart.RLock()
+	calls = mock.calls.UploadPart
+	lockS3ClientMockUploadPart.RUnlock()
 	return calls
 }
 
-// UploadWithPsk calls UploadWithPskFunc.
-func (mock *S3ClientMock) UploadWithPsk(ctx context.Context, req *s3client.UploadRequest, payload []byte, psk []byte) error {
-	if mock.UploadWithPskFunc == nil {
-		panic("S3ClientMock.UploadWithPskFunc: method is nil but S3Client.UploadWithPsk was just called")
+// UploadPartWithPsk calls UploadPartWithPskFunc.
+func (mock *S3ClientMock) UploadPartWithPsk(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error {
+	if mock.UploadPartWithPskFunc == nil {
+		panic("S3ClientMock.UploadPartWithPskFunc: method is nil but S3Client.UploadPartWithPsk was just called")
 	}
 	callInfo := struct {
 		Ctx     context.Context
-		Req     *s3client.UploadRequest
+		Req     *s3client.UploadPartRequest
 		Payload []byte
 		Psk     []byte
 	}{
@@ -216,29 +216,29 @@ func (mock *S3ClientMock) UploadWithPsk(ctx context.Context, req *s3client.Uploa
 		Payload: payload,
 		Psk:     psk,
 	}
-	lockS3ClientMockUploadWithPsk.Lock()
-	mock.calls.UploadWithPsk = append(mock.calls.UploadWithPsk, callInfo)
-	lockS3ClientMockUploadWithPsk.Unlock()
-	return mock.UploadWithPskFunc(ctx, req, payload, psk)
+	lockS3ClientMockUploadPartWithPsk.Lock()
+	mock.calls.UploadPartWithPsk = append(mock.calls.UploadPartWithPsk, callInfo)
+	lockS3ClientMockUploadPartWithPsk.Unlock()
+	return mock.UploadPartWithPskFunc(ctx, req, payload, psk)
 }
 
-// UploadWithPskCalls gets all the calls that were made to UploadWithPsk.
+// UploadPartWithPskCalls gets all the calls that were made to UploadPartWithPsk.
 // Check the length with:
-//     len(mockedS3Client.UploadWithPskCalls())
-func (mock *S3ClientMock) UploadWithPskCalls() []struct {
+//     len(mockedS3Client.UploadPartWithPskCalls())
+func (mock *S3ClientMock) UploadPartWithPskCalls() []struct {
 	Ctx     context.Context
-	Req     *s3client.UploadRequest
+	Req     *s3client.UploadPartRequest
 	Payload []byte
 	Psk     []byte
 } {
 	var calls []struct {
 		Ctx     context.Context
-		Req     *s3client.UploadRequest
+		Req     *s3client.UploadPartRequest
 		Payload []byte
 		Psk     []byte
 	}
-	lockS3ClientMockUploadWithPsk.RLock()
-	calls = mock.calls.UploadWithPsk
-	lockS3ClientMockUploadWithPsk.RUnlock()
+	lockS3ClientMockUploadPartWithPsk.RLock()
+	calls = mock.calls.UploadPartWithPsk
+	lockS3ClientMockUploadPartWithPsk.RUnlock()
 	return calls
 }

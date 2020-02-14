@@ -128,7 +128,7 @@ func main() {
 	}
 
 	// Create S3 Client with region and bucket name, and add Check
-	s3, err := s3client.New(cfg.AwsRegion, cfg.UploadBucketName, !cfg.EncryptionDisabled)
+	s3, err := s3client.NewClient(cfg.AwsRegion, cfg.UploadBucketName, !cfg.EncryptionDisabled)
 	if err != nil {
 		log.Event(ctx, "error creating S3 client", log.Error(err))
 		os.Exit(1)

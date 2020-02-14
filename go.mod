@@ -4,7 +4,7 @@ go 1.13
 
 require (
 	github.com/ONSdigital/dp-healthcheck v0.0.0-20200131122546-9db6d3f0494e
-	github.com/ONSdigital/dp-s3 v1.1.0
+	github.com/ONSdigital/dp-s3 v1.1.1-0.20200214160255-9879548e4716
 	github.com/ONSdigital/dp-vault v1.0.0
 	github.com/ONSdigital/go-ns v0.0.0-20200205115900-a11716f93bad
 	github.com/ONSdigital/log.go v1.0.0
