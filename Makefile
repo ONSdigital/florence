@@ -3,9 +3,8 @@ BINPATH ?= build
 
 BUILD_TIME=$(shell date +%s)
 GIT_COMMIT=$(shell git rev-parse HEAD)
-VERSION=`git describe --tags`
-HC_VERSION ?= $(shell git tag --points-at HEAD | grep ^v | head -n 1)
-LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.HcVersion=${HC_VERSION}' -X 'main.BuildTime=$(BUILD_TIME)' -X 'main.GitCommit=$(GIT_COMMIT)'"
+VERSION ?= $(shell git tag --points-at HEAD | grep ^v | head -n 1)
+LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_TIME)' -X 'main.GitCommit=$(GIT_COMMIT)'"
 
 VAULT_ADDR?='http://127.0.0.1:8200'
 

@@ -32,16 +32,13 @@ var getAsset = assets.Asset
 var getAssetETag = assets.GetAssetETag
 var upgrader = websocket.Upgrader{}
 
-// Version is set by the make target
-var Version string
-
 var (
 	// BuildTime represents the time in which the service was built
 	BuildTime string
 	// GitCommit represents the commit (SHA-1) hash of the service that is running
 	GitCommit string
-	// HcVersion represents the version of the service that is running
-	HcVersion string
+	// Version represents the version of the service that is running
+	Version string
 )
 
 func main() {
@@ -57,7 +54,7 @@ func main() {
 	}
 
 	// Create healthcheck object with versionInfo
-	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, HcVersion)
+	versionInfo, err := healthcheck.NewVersionInfo(BuildTime, GitCommit, Version)
 	if err != nil {
 		log.Event(ctx, "failed to create service version information", log.Error(err))
 		os.Exit(1)
