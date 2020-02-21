@@ -26,7 +26,7 @@ make debug
 
 Steps 2 & 3 can also be run with the following command:
 ```
-maked dev
+make dev
 ```
 This will build the node modules and then run the server
 
