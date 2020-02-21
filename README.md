@@ -15,10 +15,20 @@ Once you have installed those dependencies and cloned this repo you need to run 
 ```
 cd florence
 ```
-2. Run the server
+2. Build node modules (you won't need to do this everytime only when the assets need to be rebuilt)
+```
+make node-modules
+```
+3. Run the server
 ```
 make debug
 ```
+
+Steps 2 & 3 can also be run with the following command:
+```
+maked dev
+```
+This will build the node modules and then run the server
 
 Please note that encryption is enabled by default. To disable it set `ENCRYPTION_DISABLED=true`. If you wish to run with encryption
 enabled, you will need vault running locally:
