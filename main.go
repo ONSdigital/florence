@@ -14,6 +14,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ONSdigital/dp-api-clients-go/headers"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	s3client "github.com/ONSdigital/dp-s3"
 	vault "github.com/ONSdigital/dp-vault"
@@ -298,19 +299,17 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 }
 
 func zebedeeDirector(req *http.Request) {
-	if c, err := req.Cookie(`access_token`); err == nil && len(c.Value) > 0 {
-		req.Header.Set(`X-Florence-Token`, c.Value)
-	}
+	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
 func director(req *http.Request) {
 	if accessTokenCookie, err := req.Cookie(common.FlorenceCookieKey); err == nil && len(accessTokenCookie.Value) > 0 {
-		req.Header.Set(common.FlorenceHeaderKey, accessTokenCookie.Value)
+		headers.SetUserAuthToken(req, accessTokenCookie.Value)
 	}
 
 	if colletionCookie, err := req.Cookie(common.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
-		req.Header.Set(common.CollectionIDHeaderKey, colletionCookie.Value)
+		headers.SetCollectionID(req, colletionCookie.Value)
 	}
 }
 
