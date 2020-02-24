@@ -73,7 +73,7 @@ func New(s3 S3Client, vc VaultClient, vaultPath string) *Uploader {
 func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 
 	if err := req.ParseForm(); err != nil {
-		log.Event(req.Context(), "error parsing form", log.Error(err))
+		log.Event(req.Context(), "error parsing form", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -81,7 +81,7 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 	resum := new(Resumable)
 
 	if err := schema.NewDecoder().Decode(resum, req.Form); err != nil {
-		log.Event(req.Context(), "error decoding form", log.Error(err))
+		log.Event(req.Context(), "error decoding form", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -93,19 +93,19 @@ func (u *Uploader) CheckUploaded(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if ok {
-		log.Event(req.Context(), "uploaded file successfully", log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
+		log.Event(req.Context(), "uploaded file successfully", log.INFO, log.Data{"file-name": resum.FileName, "uid": resum.Identifier, "size": resum.TotalSize})
 		w.WriteHeader(http.StatusOK)
 		return
 	}
 
-	log.Event(req.Context(), "chunk number failed to upload", log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
+	log.Event(req.Context(), "chunk number failed to upload", log.WARN, log.Data{"chunk_number": resum.ChunkNumber, "file_name": resum.FileName})
 	w.WriteHeader(http.StatusNotFound)
 }
 
 // Upload handles the uploading of a file to AWS s3
 func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	if err := req.ParseForm(); err != nil {
-		log.Event(req.Context(), "error parsing form", log.Error(err))
+		log.Event(req.Context(), "error parsing form", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -113,14 +113,14 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 	resum := new(Resumable)
 
 	if err := schema.NewDecoder().Decode(resum, req.Form); err != nil {
-		log.Event(req.Context(), "error decoding form", log.Error(err))
+		log.Event(req.Context(), "error decoding form", log.WARN, log.Error(err))
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	content, _, err := req.FormFile("file")
 	if err != nil {
-		log.Event(req.Context(), "error getting file from form", log.Error(err))
+		log.Event(req.Context(), "error getting file from form", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -129,7 +129,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 
 	payload, err := ioutil.ReadAll(content)
 	if err != nil {
-		log.Event(req.Context(), "error reading file", log.Error(err))
+		log.Event(req.Context(), "error reading file", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -154,7 +154,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		// Create PSK and write it to Vault
 		psk = createPSK()
 		if err := u.vaultClient.WriteKey(vaultPath, vaultKey, hex.EncodeToString(psk)); err != nil {
-			log.Event(req.Context(), "error writing key to vault", log.Error(err))
+			log.Event(req.Context(), "error writing key to vault", log.ERROR, log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -162,7 +162,7 @@ func (u *Uploader) Upload(w http.ResponseWriter, req *http.Request) {
 		// Use existing PSK found in Vault
 		psk, err = hex.DecodeString(pskStr)
 		if err != nil {
-			log.Event(req.Context(), "error decoding key", log.Error(err))
+			log.Event(req.Context(), "error decoding key", log.ERROR, log.Error(err))
 			w.WriteHeader(http.StatusInternalServerError)
 			return
 		}
@@ -207,7 +207,7 @@ func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 
 	b, err := json.Marshal(body)
 	if err != nil {
-		log.Event(req.Context(), "error marshalling json", log.Error(err))
+		log.Event(req.Context(), "error marshalling json", log.ERROR, log.Error(err))
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}

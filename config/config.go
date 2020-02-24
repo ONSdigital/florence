@@ -22,6 +22,7 @@ type Config struct {
 	VaultToken                 string        `envconfig:"VAULT_TOKEN"                json:"-"`
 	VaultPath                  string        `envconfig:"VAULT_PATH"`
 	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
+	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	SharedConfig               SharedConfig
@@ -56,6 +57,7 @@ func Get() (*Config, error) {
 		VaultAddr:                  "http://localhost:8200",
 		VaultToken:                 "",
 		VaultPath:                  "secret/shared/psk",
+		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        10 * time.Second,
 		HealthCheckCriticalTimeout: 1 * time.Minute,
 	}
