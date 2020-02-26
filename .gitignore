@@ -14,10 +14,9 @@
 # Mac
 .DS_Store
 
-# Build
+# Build / generate
 dist
-assets/prod.go
-assets/debug.go
+assets/data.go
 build/florence
 
 # NPM

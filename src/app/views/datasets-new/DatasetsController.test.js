@@ -27,40 +27,26 @@ jest.mock("../../utilities/notifications", () => {
 
 jest.mock("../../utilities/api-clients/datasets", () => {
     return {
-        getAll: jest.fn(() => {
+        getAllList: jest.fn(() => {
             return Promise.resolve(mockedAllDatasets);
         })
     };
 });
 
-const mockedAllDatasets = {
-    items: [
-        {
-            id: "test-dataset-1",
-            current: {
-                collection_id: "1234567890",
-                id: "test-dataset-1",
-                title: "Test Dataset 1"
-            }
-        },
-        {
-            id: "test-dataset-2",
-            current: {
-                collection_id: "1234567890",
-                id: "test-dataset-2",
-                title: "Test Datatset 2"
-            }
-        },
-        {
-            id: "test-dataset-3",
-            current: {
-                collection_id: "1234567890",
-                id: "test-dataset-3",
-                title: ""
-            }
-        }
-    ]
-};
+const mockedAllDatasets = [
+    {
+        id: "test-dataset-1",
+        title: "Test Dataset 1"
+    },
+    {
+        id: "test-dataset-2",
+        title: "Test Datatset 2"
+    },
+    {
+        id: "test-dataset-3",
+        title: ""
+    }
+];
 
 let dispatchedActions = [];
 
@@ -86,9 +72,9 @@ beforeEach(() => {
 
 describe("On mount of the datasets controller screen", () => {
     it("fetches datasets", () => {
-        const getDatasetsCalls = datasets.getAll.mock.calls.length;
+        const getDatasetsCalls = datasets.getAllList.mock.calls.length;
         component.instance().componentWillMount();
-        expect(datasets.getAll.mock.calls.length).toBe(getDatasetsCalls + 1);
+        expect(datasets.getAllList.mock.calls.length).toBe(getDatasetsCalls + 1);
     });
 });
 
@@ -96,7 +82,7 @@ describe("Calling getAllDatasets", () => {
     it("adds all datasets to state", () => {
         component.instance().getAllDatasets();
         // plus 1 to expected because we hard code a create link at index 0
-        expect(component.state().datasets.length).toBe(mockedAllDatasets.items.length + 1);
+        expect(component.state().datasets.length).toBe(mockedAllDatasets.length + 1);
     });
 
     it("updates isFetchingDatasets state to show it's fetching data for all datasets", () => {
@@ -114,7 +100,7 @@ describe("Calling getAllDatasets", () => {
     });
 
     it("updates isFetchingDatasets state correctly on failure to fetch data for all datasets", async () => {
-        datasets.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        datasets.getAllList.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().getAllDatasets();
         expect(component.state("isFetchingDatasets")).toBe(false);
     });
@@ -129,22 +115,22 @@ describe("Mapping datasets to state", () => {
                 url: defaultProps.location.pathname + "/create"
             },
             {
-                title: mockedAllDatasets.items[0].current.title,
-                id: mockedAllDatasets.items[0].current.id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets.items[0].current.id
+                title: mockedAllDatasets[0].title,
+                id: mockedAllDatasets[0].id,
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[0].id
             },
             {
-                title: mockedAllDatasets.items[1].current.title,
-                id: mockedAllDatasets.items[1].current.id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets.items[1].current.id
+                title: mockedAllDatasets[1].title,
+                id: mockedAllDatasets[1].id,
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[1].id
             },
             {
-                title: mockedAllDatasets.items[2].current.id,
-                id: mockedAllDatasets.items[2].current.id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets.items[2].current.id
+                title: mockedAllDatasets[2].id,
+                id: mockedAllDatasets[2].id,
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[2].id
             }
         ];
-        const returnValue = component.instance().mapDatasetsToState(mockedAllDatasets.items);
+        const returnValue = component.instance().mapDatasetsToState(mockedAllDatasets);
         expect(returnValue[0]).toMatchObject(expectedValue[0]);
         expect(returnValue[1]).toMatchObject(expectedValue[1]);
         expect(returnValue[2]).toMatchObject(expectedValue[2]);

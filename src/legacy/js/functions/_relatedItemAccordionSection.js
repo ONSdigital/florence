@@ -29,29 +29,31 @@ function createRelatedItemAccordionSectionViewModel(idField, list, data) {
     var isPublication = (data.type === 'bulletin' || data.type === 'article' || data.type === 'compendium_chapter');
 
     if (idField === 'article') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'articles (DO NOT USE. TO BE DELETED)'};
+        dataTemplate = {list: list, idField: idField, label: 'Related articles (DO NOT USE. TO BE DELETED)'};
     } else if (idField === 'bulletin') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'bulletins (DO NOT USE. TO BE DELETED)'};
+        dataTemplate = {list: list, idField: idField, label: 'Related bulletins (DO NOT USE. TO BE DELETED)'};
     } else if (idField === 'dataset') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'datasets'};
+        dataTemplate = {list: list, idField: idField, label: 'Related data'};
+    } else if (idField === 'data') {
+        dataTemplate = {list: list, idField: idField, label: 'Related data'};
     } else if (idField === 'document') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'bulletins | articles | compendia'};
+        dataTemplate = {list: list, idField: idField, label: 'Related articles, bulletins and compendia'};
     } else if (idField === 'qmi' && isPublication) {
         // Tell users not to use related QMIs if editing a publication (input being phased out)
-        dataTemplate = {list: list, idField: idField, idPlural: 'QMIs (DO NOT USE. TO BE DELETED)'}
+        dataTemplate = {list: list, idField: idField, label: 'Related QMIs (DO NOT USE. TO BE DELETED)'}
     } else if (idField === 'qmi') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'QMIs'}
+        dataTemplate = {list: list, idField: idField, label: 'Related QMIs'}
     } else if (idField === 'methodology' && isPublication) {
         // Tell users not to use related methodology if editing a publication (input being phased out)
-        dataTemplate = {list: list, idField: idField, idPlural: 'methodology (DO NOT USE. TO BE DELETED)'};
+        dataTemplate = {list: list, idField: idField, label: 'Related methodology (DO NOT USE. TO BE DELETED)'};
     } else if (idField === 'methodology') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'methodology'};
+        dataTemplate = {list: list, idField: idField, label: 'Related methodology'};
     } else if (idField === 'link') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'links'};
+        dataTemplate = {list: list, idField: idField, label: 'Related links'};
     } else if (idField === 'filterable-dataset') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'filterable-datasets'};
+        dataTemplate = {list: list, idField: idField, label: 'Related filterable datasets'};
     } else if (idField === 'highlighted-content') {
-        dataTemplate = {list: list, idField: idField, idPlural: 'highlighted content'};
+        dataTemplate = {list: list, idField: idField, label: 'Related highlighted content'};
     }else {
         dataTemplate = {list: list, idField: idField};
     }
