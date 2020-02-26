@@ -1,6 +1,8 @@
 import http from "../http";
 import url from "../url";
 
+const datasetControllerURL = "/dataset-controller";
+
 export default class datasets {
     static create = (datasetID, body) => {
         return http.post(`/dataset/datasets/${datasetID}`, body).then(response => {
@@ -16,6 +18,12 @@ export default class datasets {
 
     static getAll() {
         return http.get(`/dataset/datasets`).then(response => {
+            return response;
+        });
+    }
+
+    static getAllList() {
+        return http.get(`${datasetControllerURL}/datasets`).then(response => {
             return response;
         });
     }

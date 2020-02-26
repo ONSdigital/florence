@@ -15,10 +15,20 @@ Once you have installed those dependencies and cloned this repo you need to run 
 ```
 cd florence
 ```
-2. Run the server
+2. Build node modules (you won't need to do this everytime only when the assets need to be rebuilt)
+```
+make node-modules
+```
+3. Run the server
 ```
 make debug
 ```
+
+Steps 2 & 3 can also be run with the following command:
+```
+make dev
+```
+This will build the node modules and then run the server
 
 Please note that encryption is enabled by default. To disable it set `ENCRYPTION_DISABLED=true`. If you wish to run with encryption
 enabled, you will need vault running locally:
@@ -62,16 +72,27 @@ make node-modules
 
 The following environment variables are available when running the Go server.
 
-| Environment variable  | Default                           | Description                                                                                                                              |
-|-----------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| BIND_ADDR             | :8080                             | Host and port to bind to. **Note**: running `make debug` will run Florence on `:8081`                                                    |
-| ROUTER_URL            | http://localhost:20000            | URL that the [frontend router](https://github.com/ONSdigital/dp-frontend-router) can be accessed on                                          |
-| ZEBEDEE_URL           | http://localhost:8081             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on                                                             |
-| IMPORT_API_URL        | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                        |
-| RECIPE_API_URL        | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
-| TABLE_RENDERER_URL    | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
-| UPLOAD_BUCKET_NAME    | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                   |
-| ENABLE_DATASET_IMPORT | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
+| Environment variable         | Default                           | Description                                                                                                                              |
+|------------------------------|-----------------------------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| BIND_ADDR                    | :8080                             | Host and port to bind to. **Note**: running `make debug` will run Florence on `:8081`                                                    |
+| ROUTER_URL                   | http://localhost:20000            | URL that the [frontend router](https://github.com/ONSdigital/dp-frontend-router) can be accessed on                                      |
+| ZEBEDEE_URL                  | http://localhost:8082             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on                                                             |
+| IMPORT_API_URL               | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                        |
+| RECIPE_API_URL               | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
+| DATASET_API_URL              | http://localhost:22000            | URL that the [dataset API](https://github.com/ONSdigital/dp-dataset-api) can be accessed on                                              |
+| TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
+| AWS_REGION                   | eu-west-1                         | S3 region to use. This region has to match the region where the bucket was created.                                                      |
+| UPLOAD_BUCKET_NAME           | dp-frontend-florence-file-uploads | Name of the S3 bucket that dataset uploads are sent to                                                                                   |
+| DATASET_CONTROLLER_URL       | http://localhost:24000            | Dataset controller url                                                                                                                   |
+| ENCRYPTION_DISABLED          | false                             | Determines wether encryption is disabled or enabled                                                                                      |
+| VAULT_ADDR                   | http://localhost:8200             | The URL that vault can be accessed on                                                                                                    |
+| VAULT_TOKEN                  | (secret) generated by Makefile    | Vault token                                                                                                                              |
+| VAULT_PATH                   | secret/shared/psk                 | Vault path                                                                                                                               |
+| ENABLE_DATASET_IMPORT        | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
+| GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds
+| HEALTHCHECK_INTERVAL         | 10s                               | The period of time between health checks                                                                                                 |
+| HEALTHCHECK_CRITICAL_TIMEOUT | 1m                                | The period of time after which failing checks will result in critical global check status                                                |
+
 
 For example:
 ```
