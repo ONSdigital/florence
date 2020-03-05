@@ -11,5 +11,9 @@ inputs:
   - name: florence
     path: florence
 
+caches:
+  - path: go/
+  - path: florence/node_modules
+
 run:
   path: florence/ci/scripts/unit.sh
