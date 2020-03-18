@@ -184,7 +184,7 @@ export class CreateVersionController extends Component {
                     id: instance.id,
                     value: instance.id,
                     label: `New data ${latest ? latest : ""}`,
-                    subLabel: `Upload dates: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`
+                    subLabel: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`
                 };
             });
             return instancesList.reverse();
