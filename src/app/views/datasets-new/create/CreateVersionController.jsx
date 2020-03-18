@@ -165,9 +165,10 @@ export class CreateVersionController extends Component {
         return datasets
             .getCompletedInstancesForDataset(datasetID)
             .then(instances => {
+                const sortedInstancesByLastUpdated = instances.items.sort(this.sortByLastUpdated);
                 this.setState({
                     isFetchingInstances: false,
-                    instances: this.mapInstancesToState(instances.items.reverse())
+                    instances: this.mapInstancesToState(sortedInstancesByLastUpdated)
                 });
             })
             .catch(error => {
@@ -179,7 +180,7 @@ export class CreateVersionController extends Component {
     mapInstancesToState = instances => {
         try {
             const instancesList = instances.map((instance, index) => {
-                const latest = index + 1 === instances.length ? "(latest)" : null;
+                const latest = index === 0 ? "(latest)" : null;
                 return {
                     id: instance.id,
                     value: instance.id,
@@ -187,7 +188,7 @@ export class CreateVersionController extends Component {
                     subLabel: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`
                 };
             });
-            return instancesList.reverse();
+            return instancesList;
         } catch (error) {
             const notification = {
                 type: "warning",
@@ -197,6 +198,10 @@ export class CreateVersionController extends Component {
             notifications.add(notification);
             console.error("Error getting mapping instances to state:\n", error);
         }
+    };
+
+    sortByLastUpdated = (a, b) => {
+        return a.last_updated - b.last_updated;
     };
 
     handleSelectedInstanceChange = event => {
