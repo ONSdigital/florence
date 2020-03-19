@@ -732,6 +732,9 @@ export class DatasetMetadataController extends Component {
             message: `${this.state.metadata.title} saved!`,
             isDismissable: true
         });
+        if (isMarkingAsReviewed || isSubmittingForReview) {
+            window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID;
+        }
     };
 
     handleSaveClick = () => {
