@@ -312,6 +312,7 @@ class DatasetMetadata extends Component {
                     <DatasetReviewActions
                         disabled={this.props.disableForm}
                         reviewState={this.props.collectionState}
+                        notInCollectionYet={!this.props.collectionState}
                         userEmail={this.props.userEmail}
                         lastEditedBy={this.props.lastEditedBy}
                         onSubmit={this.props.handleSubmitForReviewClick}
