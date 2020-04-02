@@ -110,9 +110,9 @@ export class DatasetsController extends Component {
 
     handleSearchInput = event => {
         const searchTerm = event.target.value.toLowerCase();
-        const filteredDatasets = this.state.datasets.filter(dataset => {
-            return dataset.title.toLowerCase().search(searchTerm) !== -1;
-        });
+        const filteredDatasets = this.state.datasets.filter(
+            dataset => dataset.title.toLowerCase().search(searchTerm) !== -1 || dataset.id.toLowerCase().search(searchTerm) !== -1
+        );
         this.setState({
             filteredDatasets,
             searchTerm

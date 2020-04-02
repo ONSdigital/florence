@@ -14,5 +14,9 @@ inputs:
 outputs:
   - name: build
 
+caches:
+  - path: go/
+  - path: florence/node_modules
+
 run:
   path: florence/ci/scripts/build.sh
