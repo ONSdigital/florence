@@ -194,10 +194,10 @@ export class DatasetEditionsController extends Component {
             return editions.map(editionItem => {
                 const edition = editionItem.current || editionItem.next || editionItem;
                 return {
-                    title: this.state.dataset.title,
+                    title: edition.edition,
                     id: edition.edition,
                     url: this.props.location.pathname + "/editions/" + edition.edition,
-                    details: ["Edition: " + edition.edition, "Release date: loading..."],
+                    details: ["Release date: loading..."],
                     latestVersion: edition.links.latest_version.id
                 };
             });
@@ -221,7 +221,7 @@ export class DatasetEditionsController extends Component {
         // if we fail to get latest versions display inline error
         if (!allVersions) {
             const mappedEditions = editions.map(edition => {
-                edition.details[1] = "Release date: error retreiving release date";
+                edition.details[0] = "Release date: error retreiving release date";
                 return edition;
             });
             return mappedEditions;
@@ -229,10 +229,10 @@ export class DatasetEditionsController extends Component {
 
         const mappedEditions = editions.map(edition => {
             allVersions.find(version => {
-                if (version.edition !== edition.id) {
+                if (version.edition !== edition.title) {
                     return;
                 }
-                edition.details[1] = `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`;
+                edition.details[0] = `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`;
             });
             return edition;
         });
