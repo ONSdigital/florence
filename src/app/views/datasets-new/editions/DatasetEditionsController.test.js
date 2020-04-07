@@ -82,17 +82,17 @@ const mockedEditions = {
 
 const mockedMappedEditions = [
     {
-        title: "Test Dataset 1",
+        title: "edition-1",
         id: "edition-1",
         url: "florence/collections/12345/datasets/6789/editions/edition-1",
-        details: ["Edition: edition-1", "Release date: loading..."],
+        details: ["Release date: loading..."],
         latestVersion: "3"
     },
     {
-        title: "Test Dataset 1",
+        title: "edition-2",
         id: "edition-2",
         url: "florence/collections/12345/datasets/6789/editions/edition-2",
-        details: ["Edition: edition-2", "Release date: loading..."],
+        details: ["Release date: loading..."],
         latestVersion: "12"
     }
 ];
@@ -177,10 +177,10 @@ describe("Calling getEditions", () => {
         component.setState({ dataset: { title: mockedDataset.current.title } });
         const editions = await component.instance().getEditions(mockedDataset.id);
         expect(editions[0]).toMatchObject({
-            title: mockedDataset.current.title,
+            title: mockedEditions.items[0].current.edition,
             id: mockedEditions.items[0].current.edition,
             url: `${defaultProps.location.pathname}/editions/${mockedEditions.items[0].current.edition}`,
-            details: [`Edition: ${mockedEditions.items[0].current.edition}`, `Release date: loading...`],
+            details: [`Release date: loading...`],
             latestVersion: mockedEditions.items[0].current.links.latest_version.id
         });
     });
@@ -216,10 +216,10 @@ describe("Mapping version release dates to editions method", () => {
     it("returns mapped editions correctly", async () => {
         const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions);
         expect(mappedEditions[0]).toMatchObject({
-            title: "Test Dataset 1",
+            title: "edition-1",
             id: "edition-1",
             url: "florence/collections/12345/datasets/6789/editions/edition-1",
-            details: ["Edition: edition-1", "Release date: 07 September 2018"],
+            details: ["Release date: 07 September 2018"],
             latestVersion: "3"
         });
     });
@@ -228,10 +228,10 @@ describe("Mapping version release dates to editions method", () => {
         datasets.getLatestVersionForEditions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         const mappedEditions = await component.instance().mapVersionReleaseDatesToEditions(mockedDataset.id, mockedMappedEditions);
         expect(mappedEditions[0]).toMatchObject({
-            title: "Test Dataset 1",
+            title: "edition-1",
             id: "edition-1",
             url: "florence/collections/12345/datasets/6789/editions/edition-1",
-            details: ["Edition: edition-1", "Release date: error retreiving release date"],
+            details: ["Release date: error retreiving release date"],
             latestVersion: "3"
         });
     });
@@ -244,10 +244,10 @@ test("Mapping dataset to state", () => {
 
 test("Mapping edition to state", () => {
     const expectedMappedEdition = {
-        title: "Dataset Title",
+        title: mockedEditions.items[0].current.edition,
         id: mockedEditions.items[0].current.edition,
         url: defaultProps.location.pathname + "/editions/" + mockedEditions.items[0].current.edition,
-        details: ["Edition: " + mockedEditions.items[0].current.edition, "Release date: loading..."],
+        details: ["Release date: loading..."],
         latestVersion: mockedEditions.items[0].current.links.latest_version.id
     };
     // componenet gets dataset info and stores in state, so set it for this test
