@@ -22,6 +22,13 @@
         "watch-misc-assets": "npm run build-misc-assets && ./node_modules/onchange/cli.js 'index.html' 'assets/version.json' -v -- npm run build-misc-assets",
         "watch": "npm run watch-js & npm run watch-templates & npm run watch-css & npm run watch-misc-assets",
         "build": "npm run build-js & npm run build-templates & npm run build-css & npm run build-misc-assets",
+        "preinstall": "npx npm-force-resolutions",
         "postinstall": "npm run build"
+    },
+    "devDependencies": {
+        "minimist": "^1.2.5"
+    },
+    "resolutions": {
+        "minimist": "^1.2.5"
     }
 }
