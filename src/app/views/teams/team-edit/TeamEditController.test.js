@@ -148,13 +148,13 @@ test("Lists of members and users are sorted into alphanumerical order", () => {
     });
 });
 
-test("List of 'All users' doesn't show users that are already a member of the team", async() => {
+test("List of 'All users' doesn't show users that are already a member of the team", async () => {
     const props = Object.assign({}, defaultProps, {
         members: ["user.3@test.com", "user.1@test.com", "user.2@test.com"]
     });
     const component = mount(<TeamEditController {...props} />);
 
-    await component.update()
+    await component.update();
     const editedUsersList = component.state("editedUsers");
     expect(editedUsersList.length).toBe(2);
 
