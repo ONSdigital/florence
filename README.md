@@ -90,8 +90,8 @@ The following environment variables are available when running the Go server.
 | VAULT_PATH                   | secret/shared/psk                 | Vault path                                                                                                                               |
 | ENABLE_DATASET_IMPORT        | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
 | GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds
-| HEALTHCHECK_INTERVAL         | 10s                               | The period of time between health checks                                                                                                 |
-| HEALTHCHECK_CRITICAL_TIMEOUT | 1m                                | The period of time after which failing checks will result in critical global check status                                                |
+| HEALTHCHECK_INTERVAL         | 30s                               | The period of time between health checks                                                                                                 |
+| HEALTHCHECK_CRITICAL_TIMEOUT | 90s                               | The period of time after which failing checks will result in critical global check status                                                |
 
 
 For example:
