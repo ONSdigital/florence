@@ -58,8 +58,8 @@ func Get() (*Config, error) {
 		VaultToken:                 "",
 		VaultPath:                  "secret/shared/psk",
 		GracefulShutdownTimeout:    10 * time.Second,
-		HealthCheckInterval:        10 * time.Second,
-		HealthCheckCriticalTimeout: 1 * time.Minute,
+		HealthCheckInterval:        30 * time.Second,
+		HealthCheckCriticalTimeout: 90 * time.Second,
 	}
 
 	return cfg, envconfig.Process("", cfg)
