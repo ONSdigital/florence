@@ -6,6 +6,7 @@ import datasets from "../../utilities/api-clients/datasets";
 import notifications from "../../utilities/notifications";
 import url from "../../utilities/url";
 import log, { eventTypes } from "../../utilities/log";
+import sort from "../../utilities/sort";
 
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import Input from "../../components/Input";
@@ -128,6 +129,7 @@ export class DatasetsController extends Component {
                     url: this.props.location.pathname + "/" + dataset.id
                 };
             });
+            datasetsToMap.sort((a, b) => sort.alphabetically(a.title, b.title));
             return [...this.state.datasets, ...datasetsToMap];
         } catch (error) {
             log.add(eventTypes.unexpectedRuntimeError, {
