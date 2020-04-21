@@ -177,6 +177,7 @@ export class DatasetUploadsController extends Component {
 
     mapDatasetsToState = datasets => {
         try {
+            datasets.sort((a, b) => a.alias.localeCompare(b.alias));
             return datasets.map(dataset => {
                 return {
                     alias: dataset.alias || dataset.id,
