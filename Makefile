@@ -18,7 +18,7 @@ APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
 .PHONY: audit
 audit:
 	nancy go.sum
-	npm audit --audit-level=high
+	cd src; npm audit --audit-level=high
 
 .PHONY: build
 build: node-modules generate-go-prod
