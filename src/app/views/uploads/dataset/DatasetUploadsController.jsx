@@ -177,6 +177,8 @@ export class DatasetUploadsController extends Component {
 
     mapDatasetsToState = datasets => {
         try {
+            const collator = new Intl.Collator("en", { numeric: true, sensitivity: "base" });
+            datasets.sort((a, b) => collator.compare(a.alias, b.alias));
             return datasets.map(dataset => {
                 return {
                     alias: dataset.alias || dataset.id,
