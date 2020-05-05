@@ -15,6 +15,11 @@ VAULT_POLICY:="$(shell vault policy write -address=$(VAULT_ADDR) read-psk policy
 TOKEN_INFO:="$(shell vault token create -address=$(VAULT_ADDR) -policy=read-psk -period=24h -display-name=florence)"
 APP_TOKEN:="$(shell echo $(TOKEN_INFO) | awk '{print $$6}')"
 
+.PHONY: audit
+audit:
+	nancy go.sum
+	cd src; npm audit --audit-level=high
+
 .PHONY: build
 build: node-modules generate-go-prod
 	go build $(LDFLAGS) -tags 'production' -o $(BINPATH)/florence
