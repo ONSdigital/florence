@@ -142,7 +142,8 @@ const defaultProps = {
     activeCollection: null,
     collectionsToDelete: {},
     routes: [{}],
-    enableDatasetImport: false
+    enableDatasetImport: false,
+    enableHomepagePublishing: false
 };
 
 const component = shallow(<CollectionsController {...defaultProps} />);
@@ -285,7 +286,8 @@ describe("mapStateToProps function", () => {
             },
             rootPath: "/florence",
             config: {
-                enableDatasetImport: false
+                enableDatasetImport: false,
+                enableHomepagePublishing: false
             }
         }
     };

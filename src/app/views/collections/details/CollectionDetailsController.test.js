@@ -56,6 +56,7 @@ const defaultProps = {
     },
     rootPath: "/florence",
     enableDatasetImport: false,
+    enableHomepagePublishing: false,
     routes: [{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -375,7 +376,8 @@ describe("Map state to props function", () => {
             },
             rootPath: "/florence",
             config: {
-                enableDatasetImport: false
+                enableDatasetImport: false,
+                enableHomepagePublishing: false
             }
         },
         routing: {
@@ -466,6 +468,33 @@ describe("Clicking 'edit' for a page", () => {
             .instance()
             .handleCollectionPageEditClick({ type: "article", uri: "/economy/grossdomesticproductgdp/articles/ansarticle" });
         expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+    });
+});
+
+describe("Edit Homepage functionality", () => {
+    it("is disabled in collection details when disabled in global config", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            activeCollection: {
+                id: "test-collection-12345"
+            },
+            enableHomepagePublishing: false
+        };
+        const component = shallow(<CollectionDetailsController {...props} />);
+        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(false);
+    });
+    it("is enabled in collection details when enabled in global config", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            activeCollection: {
+                id: "test-collection-12345"
+            },
+            enableHomepagePublishing: true
+        };
+        const component = shallow(<CollectionDetailsController {...props} />);
+        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(true);
     });
 });
 

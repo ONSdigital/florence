@@ -30,7 +30,8 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
-	EnableDatasetImport bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
+	EnableDatasetImport      bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
+	EnableHomepagePublishing bool `envconfig:"ENABLE_HOMEPAGE_PUBLISHING" json:"enableHomepagePublishing"`
 }
 
 var cfg *Config
@@ -51,7 +52,7 @@ func Get() (*Config, error) {
 		DatasetControllerURL:       "http://localhost:24000",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
-		SharedConfig:               SharedConfig{EnableDatasetImport: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
 		EncryptionDisabled:         false,
 		TableRendererURL:           "http://localhost:23300",
 		VaultAddr:                  "http://localhost:8200",

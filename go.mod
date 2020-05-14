@@ -10,6 +10,7 @@ require (
 	github.com/ONSdigital/go-ns v0.0.0-20200205115900-a11716f93bad
 	github.com/ONSdigital/log.go v1.0.0
 	github.com/aws/aws-sdk-go v1.29.9 // indirect
+	github.com/davecgh/go-spew v1.1.1
 	github.com/frankban/quicktest v1.9.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.7.4 // indirect
