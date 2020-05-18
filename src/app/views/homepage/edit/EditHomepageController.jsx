@@ -10,7 +10,9 @@ class EditHomepageController extends Component {
         super(props);
 
         this.state = {
-            highlightedContent: [],
+            data: {
+                highlightedContent: []
+            },
             isGettingHighlightedContent: false
         };
     }
@@ -29,7 +31,7 @@ class EditHomepageController extends Component {
             }
         ];
         this.setState({
-            highlightedContent,
+            data: { highlightedContent },
             isGettingHighlightedContent: false
         });
     }
@@ -42,11 +44,7 @@ class EditHomepageController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <EditHomepage
-                    highlightedContent={this.state.highlightedContent}
-                    handleBackButton={this.handleBackButton}
-                    disableForm={this.state.isGettingHighlightedContent}
-                />
+                <EditHomepage data={this.state.data} handleBackButton={this.handleBackButton} disableForm={this.state.isGettingHighlightedContent} />
             </div>
         );
     }

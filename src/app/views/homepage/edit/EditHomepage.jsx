@@ -16,8 +16,8 @@ class EditHomepage extends Component {
                 <h2 className="margin-top--1 margin-bottom--1">Headlines</h2>
                 <SimpleEditableList
                     addText={"Add headline"}
-                    fields={this.props.highlightedContent}
-                    editingStateFieldName="homepageHeadline"
+                    fields={this.props.data.highlightedContent}
+                    editingStateFieldName="highlightedContent"
                     handleAddClick={this.props.handleSimpleEditableListAdd}
                     handleEditClick={this.props.handleSimpleEditableListEdit}
                     handleDeleteClick={this.props.handleSimpleEditableListDelete}
@@ -29,7 +29,9 @@ class EditHomepage extends Component {
 }
 
 const propTypes = {
-    highlightedContent: PropTypes.array,
+    data: PropTypes.shape({
+        highlightedContent: PropTypes.array
+    }),
     handleBackButton: PropTypes.func.isRequired,
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
