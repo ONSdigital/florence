@@ -15,7 +15,7 @@ class EditHomepage extends Component {
                 <h1 className="margin-top--1 margin-bottom--1">Edit Homepage</h1>
                 <h2 className="margin-top--1 margin-bottom--1">Headlines</h2>
                 <SimpleEditableList
-                    addText={"Add a dataset"}
+                    addText={"Add headline"}
                     fields={this.props.highlightedContent}
                     editingStateFieldName="homepageHeadline"
                     handleAddClick={this.props.handleSimpleEditableListAdd}

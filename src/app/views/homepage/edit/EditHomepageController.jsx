@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import EditHomepage from "./EditHompage";
+import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
 
 import url from "../../../utilities/url";
@@ -10,8 +10,28 @@ class EditHomepageController extends Component {
         super(props);
 
         this.state = {
-            highlightedContent: []
+            highlightedContent: [],
+            isGettingHighlightedContent: false
         };
+    }
+
+    componentWillMount() {
+        this.getHighlightedContent();
+    }
+
+    getHighlightedContent() {
+        // hardcoded for testing purposes
+        this.setState({ isGettingHighlightedContent: true });
+        const highlightedContent = [
+            {
+                simpleListHeading: "Headline One",
+                simpleListDescription: "This is the description for headline one."
+            }
+        ];
+        this.setState({
+            highlightedContent,
+            isGettingHighlightedContent: false
+        });
     }
 
     handleBackButton = () => {
@@ -22,7 +42,11 @@ class EditHomepageController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <EditHomepage highlightedContent={this.state.highlightedContent} handleBackButton={this.handleBackButton} />
+                <EditHomepage
+                    highlightedContent={this.state.highlightedContent}
+                    handleBackButton={this.handleBackButton}
+                    disableForm={this.state.isGettingHighlightedContent}
+                />
             </div>
         );
     }
