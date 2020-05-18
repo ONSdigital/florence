@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
+import Input from "../../../components/Input";
 
 class EditHomepage extends Component {
     render() {
@@ -16,12 +17,21 @@ class EditHomepage extends Component {
                 <h2 className="margin-top--1 margin-bottom--1">Headlines</h2>
                 <SimpleEditableList
                     addText={"Add headline"}
-                    fields={this.props.data.highlightedContent}
+                    fields={this.props.homepageData.highlightedContent}
                     editingStateFieldName="highlightedContent"
                     handleAddClick={this.props.handleSimpleEditableListAdd}
                     handleEditClick={this.props.handleSimpleEditableListEdit}
                     handleDeleteClick={this.props.handleSimpleEditableListDelete}
                     disableActions={this.props.disableForm}
+                />
+                <h2 className="margin-top--1">Service Message</h2>
+                <Input
+                    id="service-message"
+                    label=""
+                    type="textarea"
+                    value={this.props.homepageData.serviceMessage}
+                    onChange={this.props.handleStringInputChange}
+                    disabled={this.props.disableForm}
                 />
             </div>
         );
@@ -29,8 +39,9 @@ class EditHomepage extends Component {
 }
 
 const propTypes = {
-    data: PropTypes.shape({
-        highlightedContent: PropTypes.array
+    homepageData: PropTypes.shape({
+        highlightedContent: PropTypes.array,
+        serviceMessage: PropTypes.string
     }),
     handleBackButton: PropTypes.func.isRequired,
     handleSimpleEditableListAdd: PropTypes.func.isRequired,

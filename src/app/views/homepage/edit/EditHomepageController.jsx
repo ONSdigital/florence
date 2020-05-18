@@ -10,18 +10,19 @@ class EditHomepageController extends Component {
         super(props);
 
         this.state = {
-            data: {
-                highlightedContent: []
+            homepageData: {
+                highlightedContent: [],
+                serviceMessage: ""
             },
             isGettingHighlightedContent: false
         };
     }
 
     componentWillMount() {
-        this.getHighlightedContent();
+        this.getHomepageData();
     }
 
-    getHighlightedContent() {
+    getHomepageData() {
         // hardcoded for testing purposes
         this.setState({ isGettingHighlightedContent: true });
         const highlightedContent = [
@@ -30,8 +31,9 @@ class EditHomepageController extends Component {
                 simpleListDescription: "This is the description for headline one."
             }
         ];
+        const serviceMessage = "This is a test service message.";
         this.setState({
-            data: { highlightedContent },
+            homepageData: { highlightedContent, serviceMessage },
             isGettingHighlightedContent: false
         });
     }
@@ -44,7 +46,11 @@ class EditHomepageController extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <EditHomepage data={this.state.data} handleBackButton={this.handleBackButton} disableForm={this.state.isGettingHighlightedContent} />
+                <EditHomepage
+                    homepageData={this.state.homepageData}
+                    handleBackButton={this.handleBackButton}
+                    disableForm={this.state.isGettingHighlightedContent}
+                />
             </div>
         );
     }
