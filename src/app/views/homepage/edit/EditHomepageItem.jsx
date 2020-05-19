@@ -33,6 +33,10 @@ export default class EditHomepageItem extends Component {
         };
     }
 
+    componentDidMount() {
+        console.log("DATA", this.props.data);
+    }
+
     handleSuccessClick = () => {
         this.props.handleSuccessClick(this.state, this.props.params.homepageDataField);
     };
@@ -41,19 +45,6 @@ export default class EditHomepageItem extends Component {
         const value = event.target.value;
         const fieldName = event.target.name;
         this.setState({ [fieldName]: value });
-    };
-
-    handleSelectChange = event => {
-        const value = event.target.value;
-        const fieldName = event.target.name;
-        this.setState({ [fieldName]: value });
-    };
-
-    handleDateInputChange = event => {
-        const fieldName = event.target.name;
-        const value = event.target.value;
-        const ISODate = new Date(value).toISOString();
-        this.setState({ [fieldName]: ISODate });
     };
 
     renderModalBody = () => {

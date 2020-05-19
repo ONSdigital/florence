@@ -106,11 +106,11 @@ class EditHomepageController extends Component {
         });
     };
 
-    homepageDataHasChanges = fieldName => {
-        if (fieldName === "releaseDate" || fieldName === "notices" || fieldName === "usageNotes" || fieldName === "latestChanges") {
+    checkForHomepageDataChnges = fieldName => {
+        if (fieldName === "highlightedContent") {
             return true;
         }
-        return this.state.versionMetadataHasChanges;
+        return this.state.hasChangesMade;
     };
 
     handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
@@ -121,7 +121,8 @@ class EditHomepageController extends Component {
             newHomepageDataState = this.updateHomepageDataField(newField, stateFieldName);
         }
         this.setState({
-            homepageData: newHomepageDataState
+            homepageData: newHomepageDataState,
+            hasChangesMade: this.homepageDataHasChanges(stateFieldName)
         });
         this.props.dispatch(push(url.resolve("../../../")));
     };
@@ -162,7 +163,9 @@ class EditHomepageController extends Component {
     };
 
     renderModal = () => {
+        console.log("called");
         const modal = React.Children.map(this.props.children, child => {
+            console.log(this.state.homepageData);
             return React.cloneElement(child, {
                 data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
@@ -173,6 +176,7 @@ class EditHomepageController extends Component {
     };
 
     render() {
+        console.log(this.props.params);
         return (
             <div className="grid grid--justify-center">
                 <EditHomepage
@@ -185,7 +189,7 @@ class EditHomepageController extends Component {
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                 />
 
-                {/* {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null} */}
+                {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
             </div>
         );
     }

@@ -97,8 +97,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route component={CollectionRoutesWrapper}>
-                                <Route path={`${rootPath}/collections/:collectionID/homepage`}>
-                                    <IndexRoute component={userIsAuthenticated(EditHomepageController)} />
+                                <Route path={`${rootPath}/collections/:collectionID/homepage`} component={userIsAuthenticated(EditHomepageController)}>
                                     <Route
                                         path={`edit/:homepageDataField/:homepageDataFieldID`}
                                         component={userIsAuthenticated(EditHomepageItem)}
