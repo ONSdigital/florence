@@ -24,16 +24,12 @@ class EditHomepageController extends Component {
 
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
-        // hardcoded for testing purposes
+        // API call to be set up at a later point
+        const highlightedContent = [];
+        const serviceMessage = "";
 
-        const highlightedContent = [
-            {
-                simpleListHeading: "Headline One",
-                simpleListDescription: "This is the description for headline one."
-            }
-        ];
         this.setState({
-            homepageData: { highlightedContent },
+            homepageData: { highlightedContent, serviceMessage },
             isGettingHomepageData: false
         });
     }
