@@ -1,11 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import date from "../../../utilities/date";
-
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
-import Select from "../../../components/Select";
 
 const propTypes = {
     params: PropTypes.shape({

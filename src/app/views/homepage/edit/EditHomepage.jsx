@@ -27,7 +27,7 @@ class EditHomepage extends Component {
                 />
                 <h2 className="margin-top--1">Service Message</h2>
                 <Input
-                    id="service-message"
+                    id="serviceMessage"
                     label=""
                     type="textarea"
                     value={this.props.homepageData.serviceMessage}
@@ -48,6 +48,7 @@ const propTypes = {
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
+    handleStringInputChange: PropTypes.func.isRequired,
     maximumNumberOfEntries: PropTypes.number,
     disableForm: PropTypes.bool.isRequired
 };

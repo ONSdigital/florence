@@ -106,7 +106,7 @@ class EditHomepageController extends Component {
     };
 
     checkForHomepageDataChanges = fieldName => {
-        if (fieldName === "highlightedContent") {
+        if (fieldName === "highlightedContent" || "serviceMessage") {
             return true;
         }
         return this.state.hasChangesMade;
@@ -175,6 +175,16 @@ class EditHomepageController extends Component {
         this.props.dispatch(push(url.resolve("../../../")));
     };
 
+    handleStringInputChange = event => {
+        const fieldName = event.target.name;
+        const value = event.target.value;
+        const newHomepageDataState = { ...this.state.homepageData, [fieldName]: value };
+        this.setState({
+            homepageData: newHomepageDataState,
+            hasChangesMade: this.checkForHomepageDataChanges(fieldName)
+        });
+    };
+
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
@@ -197,6 +207,7 @@ class EditHomepageController extends Component {
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
+                    handleStringInputChange={this.handleStringInputChange}
                 />
 
                 {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
