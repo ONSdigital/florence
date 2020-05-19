@@ -13,10 +13,8 @@ const propTypes = {
     }),
     data: PropTypes.shape({
         id: PropTypes.string,
-        type: PropTypes.string,
         description: PropTypes.string,
         href: PropTypes.string,
-        date: PropTypes.string,
         title: PropTypes.string
     }),
     handleSuccessClick: PropTypes.func.isRequired,
@@ -29,16 +27,10 @@ export default class EditHomepageItem extends Component {
 
         this.state = {
             id: this.props.data ? this.props.data.id : null,
-            type: this.props.data ? this.props.data.type : "",
             description: this.props.data ? this.props.data.description : "",
             href: this.props.data ? this.props.data.href : "",
-            date: this.props.data ? this.props.data.date : "",
             title: this.props.data ? this.props.data.title : ""
         };
-    }
-
-    componentDidMount() {
-        console.log(this.props);
     }
 
     handleSuccessClick = () => {

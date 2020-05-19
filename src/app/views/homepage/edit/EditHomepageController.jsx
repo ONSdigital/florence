@@ -44,25 +44,30 @@ class EditHomepageController extends Component {
         // API call to be set up at a later point
         const highlightedContent = [
             {
-                id: 0,
-                simpleListHeading: "Headline One",
-                simpleListDescription: "Description for Headline One"
+                title: "Headline One",
+                description: "Description for Headline One",
+                uri: "/",
+                image: null
             },
             {
-                id: 1,
-                simpleListHeading: "Headline Two",
-                simpleListDescription: "Description for Headline Two"
+                title: "Headline Two",
+                description: "Description for Headline Two",
+                uri: "/",
+                image: null
             },
             {
-                id: 2,
-                simpleListHeading: "Headline Three",
-                simpleListDescription: "Description for Headline Three"
+                title: "Headline Three",
+                description: "Description for Headline Three",
+                uri: "/",
+                image: null
             }
         ];
         const serviceMessage = "";
 
+        const mappedHighlightedContent = this.mapHighlightedContentToState(highlightedContent);
+
         this.setState({
-            homepageData: { highlightedContent, serviceMessage },
+            homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage },
             isGettingHomepageData: false
         });
     }
@@ -107,17 +112,37 @@ class EditHomepageController extends Component {
     mapHomepageDataFieldToState = (newState, stateFieldName) => {
         switch (stateFieldName) {
             case "homepageData": {
-                return this.mapNoticesToState(newState);
+                return this.mapHighlightedContentToState(newState);
             }
             default: {
                 log.event("Error mapping metadata field to state. Unknown field name.", log.data({ fieldName: stateFieldName }), log.error());
                 notifications.add({
                     type: "warning",
-                    message: `An when adding metadata item, changes or additions won't be save. Refresh the page and try again`,
+                    message: `An error occurred when adding a homepage item item, changes or additions won't be save. Refresh the page and try again`,
                     isDismissable: true
                 });
-                console.error(`Error mapping metadata field to state. Unknown field name '${stateFieldName}'`);
+                console.error(`Error mapping homepage data field to state. Unknown field name '${stateFieldName}'`);
             }
+        }
+    };
+
+    mapHighlightedContentToState = highlightedContent => {
+        try {
+            return highlightedContent.map((item, index) => {
+                return {
+                    id: index,
+                    description: item.description,
+                    href: item.uri,
+                    title: item.title,
+                    simpleListHeading: item.title,
+                    simpleListDescription: item.description
+                };
+            });
+        } catch (error) {
+            log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            // throw an error to let parent mapper catch and display notification
+            // this will prevent the page loading with half loaded/mapped data
+            throw new Error(`Error mapping highlighted content to state \n ${error}`);
         }
     };
 
@@ -126,9 +151,7 @@ class EditHomepageController extends Component {
     };
 
     renderModal = () => {
-        console.log("called");
         const modal = React.Children.map(this.props.children, child => {
-            console.log("called:", child);
             return React.cloneElement(child, {
                 data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
