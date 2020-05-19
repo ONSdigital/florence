@@ -31,6 +31,7 @@ class EditHomepageController extends Component {
                 serviceMessage: ""
             },
             isGettingHomepageData: false,
+            hasChangesMade: false,
             maximumNumberOfEntries: 4
         };
     }
@@ -45,20 +46,26 @@ class EditHomepageController extends Component {
         const mockAPIResponse = {
             highlightedContent: [
                 {
-                    title: "Headline One",
-                    description: "Description for Headline One",
+                    title: "Weekly deaths",
+                    description: "The most up-to-date provisional figures for deaths involving the coronavirus (COVID-19) in England and Wales.",
                     uri: "/",
                     image: null
                 },
                 {
-                    title: "Headline Two",
-                    description: "Description for Headline Two",
+                    title: "Coronavirus - faster indicators",
+                    description: "The latest data and experimental indicators on the UK economy and society.",
                     uri: "/",
                     image: null
                 },
                 {
-                    title: "Headline Three",
-                    description: "Description for Headline Three",
+                    title: "Coronavirus roundup",
+                    description: "Our summary of the latest data and analysis related to the coronavirus pandemic.",
+                    uri: "/",
+                    image: null
+                },
+                {
+                    title: "ONS blogs",
+                    description: "Find out more about the work ONS is doing to respond to the challenge of the pandemic.",
                     uri: "/",
                     image: null
                 }
@@ -87,6 +94,25 @@ class EditHomepageController extends Component {
         this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${editedField.id}`));
     };
 
+    handleSimpleEditableListDelete = (deletedField, stateFieldName) => {
+        const newFieldState = this.state.homepageData[stateFieldName].filter(item => item.id !== deletedField.id);
+        const newHomepageDataState = {
+            ...this.state.homepageData,
+            [stateFieldName]: newFieldState
+        };
+        this.setState({
+            homepageData: newHomepageDataState,
+            hasChangesMade: true
+        });
+    };
+
+    homepageDataHasChanges = fieldName => {
+        if (fieldName === "releaseDate" || fieldName === "notices" || fieldName === "usageNotes" || fieldName === "latestChanges") {
+            return true;
+        }
+        return this.state.versionMetadataHasChanges;
+    };
+
     handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
         let newHomepageDataState;
         if (newField.id === null) {
@@ -104,28 +130,11 @@ class EditHomepageController extends Component {
         const newFieldState = [...this.state.homepageData[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        const mappedNewFieldState = this.mapHomepageDataFieldToState(newFieldState, stateFieldName);
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
         };
-    };
-
-    mapHomepageDataFieldToState = (newState, stateFieldName) => {
-        switch (stateFieldName) {
-            case "homepageData": {
-                return this.mapHighlightedContentToState(newState);
-            }
-            default: {
-                log.event("Error mapping metadata field to state. Unknown field name.", log.data({ fieldName: stateFieldName }), log.error());
-                notifications.add({
-                    type: "warning",
-                    message: `An error occurred when adding a homepage item item, changes or additions won't be save. Refresh the page and try again`,
-                    isDismissable: true
-                });
-                console.error(`Error mapping homepage data field to state. Unknown field name '${stateFieldName}'`);
-            }
-        }
     };
 
     mapHighlightedContentToState = highlightedContent => {
@@ -173,9 +182,10 @@ class EditHomepageController extends Component {
                     maximumNumberOfEntries={this.state.maximumNumberOfEntries}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
+                    handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                 />
 
-                {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
+                {/* {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null} */}
             </div>
         );
     }
