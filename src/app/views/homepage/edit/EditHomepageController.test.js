@@ -38,6 +38,10 @@ const defaultProps = {
     dispatch: event => {
         dispatchedActions.push(event);
     },
+    params: {
+        homepageDataField: "",
+        homepageDataFieldID: ""
+    },
     rootPath: "/florence",
     location: {
         pathname: "florence/collections/12345/homepage"

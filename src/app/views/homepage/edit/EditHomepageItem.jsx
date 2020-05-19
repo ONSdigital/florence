@@ -12,7 +12,7 @@ const propTypes = {
         homepageDataField: PropTypes.string.isRequired
     }),
     data: PropTypes.shape({
-        id: PropTypes.string,
+        id: PropTypes.number,
         description: PropTypes.string,
         uri: PropTypes.string,
         title: PropTypes.string
@@ -74,10 +74,10 @@ export default class EditHomepageItem extends Component {
                 </div>
                 <div className="modal__body">{this.renderModalBody()}</div>
                 <div className="modal__footer">
-                    <button type="button" className="btn btn--primary btn--margin-right" onClick={this.handleSuccessClick}>
+                    <button id="continue" type="button" className="btn btn--primary btn--margin-right" onClick={this.handleSuccessClick}>
                         Continue
                     </button>
-                    <button type="button" className="btn" onClick={this.props.handleCancelClick}>
+                    <button id="cancel" type="button" className="btn" onClick={this.props.handleCancelClick}>
                         Cancel
                     </button>
                 </div>
