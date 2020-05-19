@@ -14,7 +14,7 @@ class EditHomepageController extends Component {
                 highlightedContent: [],
                 serviceMessage: ""
             },
-            isGettingHighlightedContent: false
+            isGettingHomepageData: false
         };
     }
 
@@ -23,18 +23,18 @@ class EditHomepageController extends Component {
     }
 
     getHomepageData() {
+        this.setState({ isGettingHomepageData: true });
         // hardcoded for testing purposes
-        this.setState({ isGettingHighlightedContent: true });
+
         const highlightedContent = [
             {
                 simpleListHeading: "Headline One",
                 simpleListDescription: "This is the description for headline one."
             }
         ];
-        const serviceMessage = "This is a test service message.";
         this.setState({
-            homepageData: { highlightedContent, serviceMessage },
-            isGettingHighlightedContent: false
+            homepageData: { highlightedContent },
+            isGettingHomepageData: false
         });
     }
 
@@ -49,7 +49,7 @@ class EditHomepageController extends Component {
                 <EditHomepage
                     homepageData={this.state.homepageData}
                     handleBackButton={this.handleBackButton}
-                    disableForm={this.state.isGettingHighlightedContent}
+                    disableForm={this.state.isGettingHomepageData}
                 />
             </div>
         );

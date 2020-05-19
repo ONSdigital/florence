@@ -14,7 +14,7 @@ class EditHomepage extends Component {
                     </button>
                 </div>
                 <h1 className="margin-top--1 margin-bottom--1">Edit Homepage</h1>
-                <h2 className="margin-top--1 margin-bottom--1">Headlines</h2>
+                <h2 className="margin-top--0">Headlines</h2>
                 <SimpleEditableList
                     addText={"Add headline"}
                     fields={this.props.homepageData.highlightedContent}
