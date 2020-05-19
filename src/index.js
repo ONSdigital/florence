@@ -28,6 +28,7 @@ import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/Da
 import DatasetMetadata from "./app/views/datasets/metadata/DatasetMetadata";
 import VersionMetadata from "./app/views/datasets/metadata/VersionMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController"
+import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem"
 
 import Logs from "./app/views/logs/Logs";
 
@@ -95,7 +96,15 @@ class Index extends Component {
                                     <Route path="restore-content" component={userIsAuthenticated(CollectionsController)} />
                                 </Route>
                             </Route>
-                            <Route path={`${rootPath}/collections/:collectionID/homepage`} component={userIsAuthenticated(EditHomepageController)} />
+                            <Route component={CollectionRoutesWrapper}>
+                                <Route path={`${rootPath}/collections/:collectionID/homepage`}>
+                                    <IndexRoute component={userIsAuthenticated(EditHomepageController)} />
+                                    <Route
+                                        path={`edit/:homepageDataField/:homepageDataFieldID`}
+                                        component={userIsAuthenticated(EditHomepageItem)}
+                                    />
+                                </Route>
+                            </Route>
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
 
                             {config.enableDatasetImport === true && (
