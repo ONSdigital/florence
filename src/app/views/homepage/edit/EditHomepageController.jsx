@@ -14,7 +14,8 @@ class EditHomepageController extends Component {
                 highlightedContent: [],
                 serviceMessage: ""
             },
-            isGettingHomepageData: false
+            isGettingHomepageData: false,
+            maximumNumberOfEntries: 4
         };
     }
 
@@ -25,7 +26,20 @@ class EditHomepageController extends Component {
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
         // API call to be set up at a later point
-        const highlightedContent = [];
+        const highlightedContent = [
+            {
+                simpleListHeading: "Headline One",
+                simpleListDescription: "Description for Headline One"
+            },
+            {
+                simpleListHeading: "Headline Two",
+                simpleListDescription: "Description for Headline Two"
+            },
+            {
+                simpleListHeading: "Headline Three",
+                simpleListDescription: "Description for Headline Three"
+            }
+        ];
         const serviceMessage = "";
 
         this.setState({
@@ -46,6 +60,7 @@ class EditHomepageController extends Component {
                     homepageData={this.state.homepageData}
                     handleBackButton={this.handleBackButton}
                     disableForm={this.state.isGettingHomepageData}
+                    maximumNumberOfEntries={this.state.maximumNumberOfEntries}
                 />
             </div>
         );

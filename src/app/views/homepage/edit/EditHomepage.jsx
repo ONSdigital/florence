@@ -22,6 +22,7 @@ class EditHomepage extends Component {
                     handleAddClick={this.props.handleSimpleEditableListAdd}
                     handleEditClick={this.props.handleSimpleEditableListEdit}
                     handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                    maximumNumberOfEntries={this.props.maximumNumberOfEntries}
                     disableActions={this.props.disableForm}
                 />
                 <h2 className="margin-top--1">Service Message</h2>
@@ -47,6 +48,7 @@ const propTypes = {
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
+    maximumNumberOfEntries: PropTypes.number,
     disableForm: PropTypes.bool.isRequired
 };
 
