@@ -2,6 +2,7 @@ import React from "react";
 import EditHomepageController from "./EditHomepageController";
 import { shallow } from "enzyme";
 
+// will need to be mocked and implemented properly when the API request code is implemented
 const mockAPIResponse = {
     highlightedContent: [
         {

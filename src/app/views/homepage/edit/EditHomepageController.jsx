@@ -3,7 +3,6 @@ import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
 
 import url from "../../../utilities/url";
-import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
 
 import { push } from "react-router-redux";
@@ -106,7 +105,7 @@ class EditHomepageController extends Component {
         });
     };
 
-    checkForHomepageDataChnges = fieldName => {
+    checkForHomepageDataChanges = fieldName => {
         if (fieldName === "highlightedContent") {
             return true;
         }
@@ -122,7 +121,7 @@ class EditHomepageController extends Component {
         }
         this.setState({
             homepageData: newHomepageDataState,
-            hasChangesMade: this.checkForHomepageDataChnges(stateFieldName)
+            hasChangesMade: this.checkForHomepageDataChanges(stateFieldName)
         });
         this.props.dispatch(push(url.resolve("../../../")));
     };
