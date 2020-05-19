@@ -122,7 +122,7 @@ class EditHomepageController extends Component {
         }
         this.setState({
             homepageData: newHomepageDataState,
-            hasChangesMade: this.homepageDataHasChanges(stateFieldName)
+            hasChangesMade: this.checkForHomepageDataChnges(stateFieldName)
         });
         this.props.dispatch(push(url.resolve("../../../")));
     };
@@ -144,7 +144,7 @@ class EditHomepageController extends Component {
                 return {
                     id: index,
                     description: item.description,
-                    href: item.uri,
+                    uri: item.uri,
                     title: item.title,
                     simpleListHeading: item.title,
                     simpleListDescription: item.description
@@ -158,14 +158,26 @@ class EditHomepageController extends Component {
         }
     };
 
+    updateHomepageDataField = (updatedField, stateFieldName) => {
+        const newFieldState = this.state.homepageData[stateFieldName].map(field => {
+            if (field.id === updatedField.id) {
+                return updatedField;
+            }
+            return field;
+        });
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState, stateFieldName);
+        return {
+            ...this.state.homepageData,
+            [stateFieldName]: mappedNewFieldState
+        };
+    };
+
     handleSimpleEditableListEditCancel = () => {
         this.props.dispatch(push(url.resolve("../../../")));
     };
 
     renderModal = () => {
-        console.log("called");
         const modal = React.Children.map(this.props.children, child => {
-            console.log(this.state.homepageData);
             return React.cloneElement(child, {
                 data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
@@ -176,7 +188,6 @@ class EditHomepageController extends Component {
     };
 
     render() {
-        console.log(this.props.params);
         return (
             <div className="grid grid--justify-center">
                 <EditHomepage

@@ -613,7 +613,6 @@ export class DatasetMetadataController extends Component {
                 value: "",
                 error: "You must set a release date"
             };
-            console.log(newReleaseDateState);
             const newMetadataState = {
                 ...this.state.metadata,
                 releaseDate: newReleaseDateState

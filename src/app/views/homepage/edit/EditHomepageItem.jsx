@@ -14,7 +14,7 @@ const propTypes = {
     data: PropTypes.shape({
         id: PropTypes.string,
         description: PropTypes.string,
-        href: PropTypes.string,
+        uri: PropTypes.string,
         title: PropTypes.string
     }),
     handleSuccessClick: PropTypes.func.isRequired,
@@ -28,13 +28,9 @@ export default class EditHomepageItem extends Component {
         this.state = {
             id: this.props.data ? this.props.data.id : null,
             description: this.props.data ? this.props.data.description : "",
-            href: this.props.data ? this.props.data.href : "",
+            uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : ""
         };
-    }
-
-    componentDidMount() {
-        console.log("DATA", this.props.data);
     }
 
     handleSuccessClick = () => {
@@ -53,7 +49,7 @@ export default class EditHomepageItem extends Component {
                 return (
                     <div>
                         <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
-                        <Input id="href" type="input" label="URL" value={this.state.href} onChange={this.handleInputChange} />
+                        <Input id="uri" type="input" label="URL" value={this.state.uri} onChange={this.handleInputChange} />
                         <Input
                             id="description"
                             type="textarea"
