@@ -42,32 +42,34 @@ class EditHomepageController extends Component {
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
         // API call to be set up at a later point
-        const highlightedContent = [
-            {
-                title: "Headline One",
-                description: "Description for Headline One",
-                uri: "/",
-                image: null
-            },
-            {
-                title: "Headline Two",
-                description: "Description for Headline Two",
-                uri: "/",
-                image: null
-            },
-            {
-                title: "Headline Three",
-                description: "Description for Headline Three",
-                uri: "/",
-                image: null
-            }
-        ];
-        const serviceMessage = "";
+        const mockAPIResponse = {
+            highlightedContent: [
+                {
+                    title: "Headline One",
+                    description: "Description for Headline One",
+                    uri: "/",
+                    image: null
+                },
+                {
+                    title: "Headline Two",
+                    description: "Description for Headline Two",
+                    uri: "/",
+                    image: null
+                },
+                {
+                    title: "Headline Three",
+                    description: "Description for Headline Three",
+                    uri: "/",
+                    image: null
+                }
+            ],
+            serviceMessage: "This is a default service message for mock testing"
+        };
 
-        const mappedHighlightedContent = this.mapHighlightedContentToState(highlightedContent);
+        const mappedHighlightedContent = this.mapHighlightedContentToState(mockAPIResponse.highlightedContent);
 
         this.setState({
-            homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage },
+            homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage: mockAPIResponse.serviceMessage },
             isGettingHomepageData: false
         });
     }
