@@ -11,7 +11,7 @@ const propTypes = {
     notInCollectionYet: PropTypes.bool
 };
 
-class CollectionPageReviewActions extends Component {
+class SaveAndReviewActions extends Component {
     constructor(props) {
         super(props);
     }
@@ -65,6 +65,6 @@ class CollectionPageReviewActions extends Component {
     }
 }
 
-CollectionPageReviewActions.propTypes = propTypes;
+SaveAndReviewActions.propTypes = propTypes;
 
-export default CollectionPageReviewActions;
+export default SaveAndReviewActions;
