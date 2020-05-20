@@ -51,7 +51,8 @@ class EditHomepageController extends Component {
             .then(homepageContent => {
                 const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
                 this.setState({
-                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage }
+                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
+                    isGettingHomepageData: false
                 });
             })
             .catch(error => {

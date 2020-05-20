@@ -25,7 +25,7 @@ const successRouteProps = {
         title: "Test title"
     },
     params: {
-        homepageDataField: "highlightedContent",
+        homepageDataField: "featuredContent",
         homepageDataFieldID: 0
     },
     handleSuccessClick: jest.fn(),
