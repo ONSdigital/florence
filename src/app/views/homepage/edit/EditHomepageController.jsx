@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
 
+import collections from "../../../utilities/api-clients/collections";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
@@ -74,6 +75,10 @@ class EditHomepageController extends Component {
             ],
             serviceMessage: "This is a default service message for mock testing"
         };
+
+        collections.get(this.props.params.collectionID).then(collection => {
+            console.log("Collection:", collection);
+        });
 
         const mappedHighlightedContent = this.mapHighlightedContentToState(mockAPIResponse.highlightedContent);
 
@@ -201,13 +206,31 @@ class EditHomepageController extends Component {
         window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
     };
 
-    handleSubmitForReview = () => {
-        this.handleSave(true, false);
+    handleSubmitForReview = async () => {
+        const submitHomepageForReviewError = await this.submitHomepageChangesForReview(this.props.params.collectionID, "/");
+        if (submitHomepageForReviewError) {
+            this.setState({ isSaving: false });
+            this.handleOnSaveError(`There was a problem saving your changes`);
+            return;
+        }
     };
 
-    handleMarkAsReviewed = () => {
-        this.handleSave(false, true);
+    submitHomepageChangesForReview = (collectionID, pageURI) => {
+        return collections.contentReview(collectionID, pageURI).catch(error => {
+            log.event(
+                "Error submitting homepage content for review",
+                log.data({
+                    collectionID: collectionID,
+                    pageURI: pageURI
+                }),
+                log.error(error)
+            );
+            console.error(`Error submitting homepage content for review. Collection ID: '${collectionID}' for review. Error:`, error);
+            return error;
+        });
     };
+
+    handleMarkAsReviewed = () => {};
 
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
