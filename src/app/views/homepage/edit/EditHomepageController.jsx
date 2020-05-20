@@ -3,6 +3,7 @@ import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
 
 import collections from "../../../utilities/api-clients/collections";
+import homepage from "../../../utilities/api-clients/homepage";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
@@ -45,46 +46,12 @@ class EditHomepageController extends Component {
 
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
-        // API call to be set up at a later point
-        const mockAPIResponse = {
-            highlightedContent: [
-                {
-                    title: "Weekly deaths",
-                    description: "The most up-to-date provisional figures for deaths involving the coronavirus (COVID-19) in England and Wales.",
-                    uri: "/",
-                    image: null
-                },
-                {
-                    title: "Coronavirus - faster indicators",
-                    description: "The latest data and experimental indicators on the UK economy and society.",
-                    uri: "/",
-                    image: null
-                },
-                {
-                    title: "Coronavirus roundup",
-                    description: "Our summary of the latest data and analysis related to the coronavirus pandemic.",
-                    uri: "/",
-                    image: null
-                },
-                {
-                    title: "ONS blogs",
-                    description: "Find out more about the work ONS is doing to respond to the challenge of the pandemic.",
-                    uri: "/",
-                    image: null
-                }
-            ],
-            serviceMessage: "This is a default service message for mock testing"
-        };
-
-        collections.get(this.props.params.collectionID).then(collection => {
-            console.log("Collection:", collection);
-        });
-
-        const mappedHighlightedContent = this.mapHighlightedContentToState(mockAPIResponse.highlightedContent);
-
-        this.setState({
-            homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage: mockAPIResponse.serviceMessage },
-            isGettingHomepageData: false
+        homepage.get(this.props.params.collectionID).then(homepageContent => {
+            const mappedHighlightedContent = this.mapHighlightedContentToState(homepageContent.featuredContent);
+            this.setState({
+                homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage: homepageContent.serviceMessage },
+                isGettingHomepageData: false
+            });
         });
     }
 
@@ -193,9 +160,21 @@ class EditHomepageController extends Component {
         });
     };
 
+    saveHomepageChanges = async () => {};
+
     handleSaveAndPreview = async () => {
         this.setState({ isSaving: true });
-        // Save implementation to come in a later story
+
+        let saveHomepageChangesError = false;
+        if (this.state.hasChangesMade) {
+            saveHomepageChangesError = this.saveHomepageChanges();
+        }
+
+        if (saveHomepageChangesError) {
+            this.setState({ isSaving: false });
+            this.handleOnSaveError(`There was a problem saving your homepage changes`);
+            return;
+        }
 
         this.setState({ isSaving: false });
         notifications.add({
@@ -207,21 +186,28 @@ class EditHomepageController extends Component {
     };
 
     handleSubmitForReview = async () => {
-        const submitHomepageForReviewError = await this.submitHomepageChangesForReview(this.props.params.collectionID, "/");
+        this.setState({ isSaving: true });
+        const submitHomepageForReviewError = await this.submitHomepageChangesForReview(this.props.params.collectionID);
         if (submitHomepageForReviewError) {
             this.setState({ isSaving: false });
             this.handleOnSaveError(`There was a problem saving your changes`);
             return;
         }
+        this.setState({ isSaving: false });
+        notifications.add({
+            type: "positive",
+            message: `Homepage content saved!`,
+            isDismissable: true
+        });
+        window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID;
     };
 
-    submitHomepageChangesForReview = (collectionID, pageURI) => {
-        return collections.contentReview(collectionID, pageURI).catch(error => {
+    submitHomepageChangesForReview = collectionID => {
+        return collections.contentReview(collectionID).catch(error => {
             log.event(
                 "Error submitting homepage content for review",
                 log.data({
-                    collectionID: collectionID,
-                    pageURI: pageURI
+                    collectionID: collectionID
                 }),
                 log.error(error)
             );
@@ -230,7 +216,19 @@ class EditHomepageController extends Component {
         });
     };
 
-    handleMarkAsReviewed = () => {};
+    handleMarkAsReviewed = collectionID => {
+        return collections.setDatasetVersionStatusToReviewed(collectionID).catch(error => {
+            log.event(
+                "Error marking version as reviewed",
+                log.data({
+                    collectionID: collectionID
+                }),
+                log.error(error)
+            );
+            console.error(`Error marking homepage changes as reviewed. Error:`, error);
+            return error;
+        });
+    };
 
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {

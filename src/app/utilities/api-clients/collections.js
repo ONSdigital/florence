@@ -30,8 +30,12 @@ export default class collections {
         return http.put(`/zebedee/collection/${collectionID}`, body);
     }
 
-    static contentReview(collectionID, pageURI) {
-        return http.post(`/zebedee/page/${collectionID}?uri=${pageURI}data.json`);
+    static getContent(collectionID) {
+        return http.get(`/zebedee/data/${collectionID}?uri=/`);
+    }
+
+    static contentReview(collectionID) {
+        return http.post(`/zebedee/page/${collectionID}?uri=/data.json`);
     }
 
     // In CMD we're using a new endpoint to delete pages (https://github.com/ONSdigital/zebedee/blob/cmd-develop/zebedee-cms/src/main/java/com/github/onsdigital/zebedee/api/Page.java)
