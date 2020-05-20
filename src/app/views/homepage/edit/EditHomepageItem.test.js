@@ -2,8 +2,6 @@ import React from "react";
 import EditHomepageItem from "./EditHomepageItem";
 import { shallow, mount } from "enzyme";
 
-let dispatchedActions = [];
-
 const nullParamProps = {
     data: {
         id: 0,

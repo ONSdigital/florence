@@ -1,6 +1,6 @@
-import React from "./react";
+import React from "react";
 import SaveAndReviewActions from "./SaveAndReviewActions";
-import { shallow } from "./enzyme";
+import { shallow } from "enzyme";
 
 const defaultProps = {
     disabled: false,

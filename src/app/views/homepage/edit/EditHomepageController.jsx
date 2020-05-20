@@ -30,6 +30,7 @@ class EditHomepageController extends Component {
                 highlightedContent: [],
                 serviceMessage: ""
             },
+            collectionState: "",
             isGettingHomepageData: false,
             hasChangesMade: false,
             maximumNumberOfEntries: 4,
@@ -200,11 +201,11 @@ class EditHomepageController extends Component {
         window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
     };
 
-    handleSubmitForReviewClick = () => {
+    handleSubmitForReview = () => {
         this.handleSave(true, false);
     };
 
-    handleMarkAsReviewedClick = () => {
+    handleMarkAsReviewed = () => {
         this.handleSave(false, true);
     };
 
@@ -233,6 +234,9 @@ class EditHomepageController extends Component {
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleStringInputChange={this.handleStringInputChange}
                     handleSaveAndPreview={this.handleSaveAndPreview}
+                    handleSubmitForReviewClick={this.handleSubmitForReview}
+                    handleMarkAsReviewedClick={this.handleMarkAsReviewed}
+                    collectionState={this.state.collectionState}
                 />
 
                 {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}

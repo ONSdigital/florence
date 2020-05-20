@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
+import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 import Input from "../../../components/Input";
+
+import { connect } from "react-redux";
 
 class EditHomepage extends Component {
     render() {
@@ -43,6 +46,15 @@ class EditHomepage extends Component {
                     >
                         Save and preview
                     </button>
+                    <SaveAndReviewActions
+                        disabled={this.props.disableForm}
+                        reviewState={this.props.collectionState}
+                        notInCollectionYet={!this.props.collectionState}
+                        userEmail={this.props.userEmail}
+                        lastEditedBy={this.props.lastEditedBy}
+                        onSubmit={this.props.handleSubmitForReviewClick}
+                        onApprove={this.props.handleMarkAsReviewedClick}
+                    />
                     {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                 </div>
             </div>
@@ -61,11 +73,22 @@ const propTypes = {
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleStringInputChange: PropTypes.func.isRequired,
     handleSaveAndPreview: PropTypes.func.isRequired,
+    handleSubmitForReviewClick: PropTypes.func.isRequired,
+    handleMarkAsReviewedClick: PropTypes.func.isRequired,
+    collectionState: PropTypes.string.isRequired,
+    userEmail: PropTypes.string.isRequired,
+    lastEditedBy: PropTypes.string,
     maximumNumberOfEntries: PropTypes.number,
     disableForm: PropTypes.bool.isRequired,
     isSaving: PropTypes.bool.isRequired
 };
 
+function mapStateToProps(state) {
+    return {
+        userEmail: state.state.user.email
+    };
+}
+
 EditHomepage.propTypes = propTypes;
 
-export default EditHomepage;
+export default connect(mapStateToProps)(EditHomepage);
