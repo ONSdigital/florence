@@ -180,7 +180,7 @@ class EditHomepageController extends Component {
             saveHomepageChangesError = this.saveHomepageChanges();
         }
 
-        if (saveHomepageChangesError) {
+        if (saveHomepageChangesError !== false) {
             this.setState({ isSaving: false });
             this.handleOnSaveError(`There was a problem saving your homepage changes`);
             return;
@@ -237,6 +237,14 @@ class EditHomepageController extends Component {
             );
             console.error(`Error marking homepage changes as reviewed. Error:`, error);
             return error;
+        });
+    };
+
+    handleOnSaveError = message => {
+        notifications.add({
+            type: "warning",
+            message: `${message}. You can try again by pressing save.`,
+            isDismissable: true
         });
     };
 
