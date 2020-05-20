@@ -1,5 +1,5 @@
 import React from "react";
-import DatasetReviewActions from "./DatasetReviewActions";
+import CollectionPageReviewActions from "./CollectionPageReviewActions";
 import { shallow } from "enzyme";
 
 const defaultProps = {
@@ -12,7 +12,7 @@ const defaultProps = {
     notInCollectionYet: false
 };
 
-const defaultComponent = shallow(<DatasetReviewActions {...defaultProps} />);
+const defaultComponent = shallow(<CollectionPageReviewActions {...defaultProps} />);
 
 const inProgressProps = {
     ...defaultProps,
@@ -20,7 +20,7 @@ const inProgressProps = {
     lastEditedBy: "user-1@email.com"
 };
 
-const inProgressComponent = shallow(<DatasetReviewActions {...inProgressProps} />);
+const inProgressComponent = shallow(<CollectionPageReviewActions {...inProgressProps} />);
 
 const completeProps = {
     ...defaultProps,
@@ -28,7 +28,7 @@ const completeProps = {
     lastEditedBy: "user-1@email.com"
 };
 
-const completeComponent = shallow(<DatasetReviewActions {...completeProps} />);
+const completeComponent = shallow(<CollectionPageReviewActions {...completeProps} />);
 
 const reviewedProps = {
     ...defaultProps,
@@ -36,7 +36,7 @@ const reviewedProps = {
     lastEditedBy: "user-2@email.com"
 };
 
-const reviewedComponent = shallow(<DatasetReviewActions {...reviewedProps} />);
+const reviewedComponent = shallow(<CollectionPageReviewActions {...reviewedProps} />);
 
 describe("Renders the correct buttons", () => {
     it("doesn't fail if most props are left undefined", () => {

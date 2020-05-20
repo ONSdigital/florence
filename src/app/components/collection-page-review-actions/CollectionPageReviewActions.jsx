@@ -11,7 +11,7 @@ const propTypes = {
     notInCollectionYet: PropTypes.bool
 };
 
-class DatasetReviewActions extends Component {
+class CollectionPageReviewActions extends Component {
     constructor(props) {
         super(props);
     }
@@ -65,6 +65,6 @@ class DatasetReviewActions extends Component {
     }
 }
 
-DatasetReviewActions.propTypes = propTypes;
+CollectionPageReviewActions.propTypes = propTypes;
 
-export default DatasetReviewActions;
+export default CollectionPageReviewActions;
