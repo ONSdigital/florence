@@ -1,6 +1,6 @@
-import React from "react";
-import CollectionPageReviewActions from "./CollectionPageReviewActions";
-import { shallow } from "enzyme";
+import React from "./react";
+import SaveAndReviewActions from "./SaveAndReviewActions";
+import { shallow } from "./enzyme";
 
 const defaultProps = {
     disabled: false,
@@ -12,7 +12,7 @@ const defaultProps = {
     notInCollectionYet: false
 };
 
-const defaultComponent = shallow(<CollectionPageReviewActions {...defaultProps} />);
+const defaultComponent = shallow(<SaveAndReviewActions {...defaultProps} />);
 
 const inProgressProps = {
     ...defaultProps,
@@ -20,7 +20,7 @@ const inProgressProps = {
     lastEditedBy: "user-1@email.com"
 };
 
-const inProgressComponent = shallow(<CollectionPageReviewActions {...inProgressProps} />);
+const inProgressComponent = shallow(<SaveAndReviewActions {...inProgressProps} />);
 
 const completeProps = {
     ...defaultProps,
@@ -28,7 +28,7 @@ const completeProps = {
     lastEditedBy: "user-1@email.com"
 };
 
-const completeComponent = shallow(<CollectionPageReviewActions {...completeProps} />);
+const completeComponent = shallow(<SaveAndReviewActions {...completeProps} />);
 
 const reviewedProps = {
     ...defaultProps,
@@ -36,7 +36,7 @@ const reviewedProps = {
     lastEditedBy: "user-2@email.com"
 };
 
-const reviewedComponent = shallow(<CollectionPageReviewActions {...reviewedProps} />);
+const reviewedComponent = shallow(<SaveAndReviewActions {...reviewedProps} />);
 
 describe("Renders the correct buttons", () => {
     it("doesn't fail if most props are left undefined", () => {

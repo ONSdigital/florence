@@ -8,7 +8,7 @@ import date from "../../../utilities/date";
 import Input from "../../../components/Input";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
-import CollectionPageReviewActions from "../../../components/collection-page-review-actions/CollectionPageReviewActions";
+import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -309,7 +309,7 @@ class DatasetMetadata extends Component {
                     >
                         Save
                     </button>
-                    <CollectionPageReviewActions
+                    <SaveAndReviewActions
                         disabled={this.props.disableForm}
                         reviewState={this.props.collectionState}
                         notInCollectionYet={!this.props.collectionState}
