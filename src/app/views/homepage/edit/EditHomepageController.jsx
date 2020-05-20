@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
+import notifications from "../../../utilities/notifications";
 
 import { push } from "react-router-redux";
 
@@ -31,7 +32,8 @@ class EditHomepageController extends Component {
             },
             isGettingHomepageData: false,
             hasChangesMade: false,
-            maximumNumberOfEntries: 4
+            maximumNumberOfEntries: 4,
+            isSaving: false
         };
     }
 
@@ -185,6 +187,27 @@ class EditHomepageController extends Component {
         });
     };
 
+    handleSaveAndPreview = async () => {
+        this.setState({ isSaving: true });
+        // Save implementation to come in a later story
+
+        this.setState({ isSaving: false });
+        notifications.add({
+            type: "positive",
+            message: `Homepage content saved!`,
+            isDismissable: true
+        });
+        window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
+    };
+
+    handleSubmitForReviewClick = () => {
+        this.handleSave(true, false);
+    };
+
+    handleMarkAsReviewedClick = () => {
+        this.handleSave(false, true);
+    };
+
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
@@ -203,11 +226,13 @@ class EditHomepageController extends Component {
                     homepageData={this.state.homepageData}
                     handleBackButton={this.handleBackButton}
                     disableForm={this.state.isGettingHomepageData}
+                    isSaving={this.state.isSaving}
                     maximumNumberOfEntries={this.state.maximumNumberOfEntries}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleStringInputChange={this.handleStringInputChange}
+                    handleSaveAndPreview={this.handleSaveAndPreview}
                 />
 
                 {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}

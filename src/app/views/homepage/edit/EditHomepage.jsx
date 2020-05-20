@@ -34,6 +34,17 @@ class EditHomepage extends Component {
                     onChange={this.props.handleStringInputChange}
                     disabled={this.props.disableForm}
                 />
+                <div className="margin-top--2">
+                    <button
+                        type="button"
+                        className="btn btn--primary margin-right--1"
+                        onClick={this.props.handleSaveAndPreview}
+                        disabled={this.props.disableForm}
+                    >
+                        Save and preview
+                    </button>
+                    {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
+                </div>
             </div>
         );
     }
@@ -49,8 +60,10 @@ const propTypes = {
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleStringInputChange: PropTypes.func.isRequired,
+    handleSaveAndPreview: PropTypes.func.isRequired,
     maximumNumberOfEntries: PropTypes.number,
-    disableForm: PropTypes.bool.isRequired
+    disableForm: PropTypes.bool.isRequired,
+    isSaving: PropTypes.bool.isRequired
 };
 
 EditHomepage.propTypes = propTypes;
