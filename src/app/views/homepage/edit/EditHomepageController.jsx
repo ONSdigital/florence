@@ -46,13 +46,24 @@ class EditHomepageController extends Component {
 
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
-        homepage.get(this.props.params.collectionID).then(homepageContent => {
-            const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
-            this.setState({
-                homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
-                isGettingHomepageData: false
+        return homepage
+            .get(this.props.params.collectionID)
+            .then(homepageContent => {
+                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
+                this.setState({
+                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage }
+                });
+            })
+            .catch(error => {
+                log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+                const notification = {
+                    type: "warning",
+                    message: "An error occurred whilst trying to get homepage data.",
+                    isDismissable: true
+                };
+                notifications.add(notification);
+                this.setState({ isGettingHomepageData: false });
             });
-        });
     }
 
     handleBackButton = () => {
@@ -126,8 +137,6 @@ class EditHomepageController extends Component {
             });
         } catch (error) {
             log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
-            // throw an error to let parent mapper catch and display notification
-            // this will prevent the page loading with half loaded/mapped data
             throw new Error(`Error mapping highlighted content to state \n ${error}`);
         }
     };
