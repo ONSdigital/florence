@@ -29,7 +29,7 @@ class EditHomepageController extends Component {
 
         this.state = {
             homepageData: {
-                highlightedContent: [],
+                featuredContent: [],
                 serviceMessage: ""
             },
             collectionState: "",
@@ -47,9 +47,9 @@ class EditHomepageController extends Component {
     getHomepageData() {
         this.setState({ isGettingHomepageData: true });
         homepage.get(this.props.params.collectionID).then(homepageContent => {
-            const mappedHighlightedContent = this.mapHighlightedContentToState(homepageContent.featuredContent);
+            const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
             this.setState({
-                homepageData: { highlightedContent: mappedHighlightedContent, serviceMessage: homepageContent.serviceMessage },
+                homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
                 isGettingHomepageData: false
             });
         });
@@ -81,7 +81,7 @@ class EditHomepageController extends Component {
     };
 
     checkForHomepageDataChanges = fieldName => {
-        if (fieldName === "highlightedContent" || "serviceMessage") {
+        if (fieldName === "featuredContent" || "serviceMessage") {
             return true;
         }
         return this.state.hasChangesMade;
@@ -105,16 +105,16 @@ class EditHomepageController extends Component {
         const newFieldState = [...this.state.homepageData[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState);
+        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
         };
     };
 
-    mapHighlightedContentToState = highlightedContent => {
+    mapfeaturedContentToState = featuredContent => {
         try {
-            return highlightedContent.map((item, index) => {
+            return featuredContent.map((item, index) => {
                 return {
                     id: index,
                     description: item.description,
@@ -139,7 +139,7 @@ class EditHomepageController extends Component {
             }
             return field;
         });
-        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState, stateFieldName);
+        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState, stateFieldName);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState

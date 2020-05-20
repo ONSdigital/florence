@@ -42,7 +42,7 @@ export default class EditHomepageItem extends Component {
 
     renderModalBody = () => {
         switch (this.props.params.homepageDataField) {
-            case "highlightedContent": {
+            case "featuredContent": {
                 return (
                     <div>
                         <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
