@@ -56,6 +56,7 @@ class EditHomepageController extends Component {
                     homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
                     isGettingHomepageData: false
                 });
+                this.setCollectionStateData();
             })
             .catch(error => {
                 log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
@@ -85,6 +86,18 @@ class EditHomepageController extends Component {
             log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
             throw new Error(`Error mapping highlighted content to state \n ${error}`);
         }
+    };
+
+    setCollectionStateData = () => {
+        collections.get(this.props.params.collectionID).then(collection => {
+            if (collection.complete.length > 0) {
+                this.setState({ collectionState: "complete" });
+            } else if (collection.reviewed.length > 0) {
+                this.setState({ collectionState: "reviewed" });
+            } else if (collection.inProgress.length > 0) {
+                this.setState({ collectionState: "inProgress" });
+            }
+        });
     };
 
     handleBackButton = () => {
@@ -255,7 +268,8 @@ class EditHomepageController extends Component {
 
     handleMarkAsReviewed = async () => {
         try {
-            return collections.setPageContentAsReviewed(this.props.params.collectionID, "/");
+            await collections.setPageContentAsReviewed(this.props.params.collectionID, "/");
+            this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
         } catch (error) {
             log.event(
                 "Error reviewing homepage content",
