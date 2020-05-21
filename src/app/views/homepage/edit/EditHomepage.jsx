@@ -52,8 +52,8 @@ class EditHomepage extends Component {
                         notInCollectionYet={!this.props.collectionState}
                         userEmail={this.props.userEmail}
                         lastEditedBy={this.props.lastEditedBy}
-                        onSubmit={this.props.handleSubmitForReviewClick}
                         onApprove={this.props.handleMarkAsReviewedClick}
+                        onSubmit={this.props.handleSubmitForReviewClick}
                     />
                     {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                 </div>

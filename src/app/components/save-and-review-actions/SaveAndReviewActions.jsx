@@ -39,7 +39,7 @@ class SaveAndReviewActions extends Component {
                 disabled={this.props.disabled}
                 className="btn btn--positive margin-right--1"
             >
-                Save and submit for approval
+                Submit for approval
             </button>
         );
     }

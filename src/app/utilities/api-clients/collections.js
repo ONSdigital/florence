@@ -34,18 +34,18 @@ export default class collections {
         return http.get(`/zebedee/data/${collectionID}?uri=/`);
     }
 
-    static saveContent(collectionID, content) {
-        if (typeof content !== "object") {
-            return Promise.reject({ status: 400 });
-        }
-
-        return http.post(`/zebedee/page/${collectionID}?uri=/data.json`, content, true).then(response => {
-            return response;
-        });
+    static setPageContentForReview(collectionID, contentURI) {
+        return http.post(`/zebedee/complete/${collectionID}?uri=${contentURI}data.json`);
     }
 
-    static contentReview(collectionID) {
-        return http.post(`/zebedee/page/${collectionID}?uri=/data.json`);
+    static setPageContentAsReviewed(collectionID, contentURI) {
+        return http.post(`/zebedee/review/${collectionID}?uri=${contentURI}data.json`);
+    }
+
+    static savePageContent(collectionID, contentURI, body) {
+        return http.post(`/zebedee/content/${collectionID}?uri=${contentURI}data.json`, body, true).then(response => {
+            return response;
+        });
     }
 
     // In CMD we're using a new endpoint to delete pages (https://github.com/ONSdigital/zebedee/blob/cmd-develop/zebedee-cms/src/main/java/com/github/onsdigital/zebedee/api/Page.java)

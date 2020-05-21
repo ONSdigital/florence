@@ -28,6 +28,7 @@ class EditHomepageController extends Component {
         super(props);
 
         this.state = {
+            initialHomepageContent: {},
             homepageData: {
                 featuredContent: [],
                 serviceMessage: ""
@@ -51,6 +52,7 @@ class EditHomepageController extends Component {
             .then(homepageContent => {
                 const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
                 this.setState({
+                    initialHomepageData: homepageContent,
                     homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
                     isGettingHomepageData: false
                 });
@@ -184,7 +186,7 @@ class EditHomepageController extends Component {
             isDismissable: true
         });
         this.setState({ isSaving: false });
-        window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
+        // window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
     };
 
     handleSave = async () => {
@@ -194,6 +196,7 @@ class EditHomepageController extends Component {
             const formattedHomepageData = this.formatHomepageDataForSaving();
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
+        console.log("handle here");
         return saveHomepageChangesError;
     };
 
@@ -205,7 +208,9 @@ class EditHomepageController extends Component {
                 uri: entry.uri
             }));
             const serviceMessage = this.state.homepageData.serviceMessage;
+            const initialHomepageData = this.state.initialHomepageData;
             return {
+                ...initialHomepageData,
                 featuredContent,
                 serviceMessage
             };
@@ -215,7 +220,7 @@ class EditHomepageController extends Component {
     };
 
     saveHomepageChanges = async (collectionID, homepageContent) => {
-        collections.saveContent(collectionID, homepageContent).catch(error => {
+        collections.savePageContent(collectionID, "/", homepageContent).catch(error => {
             log.event("Error saving homepage content", log.error(error));
             console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
             return error;
@@ -224,7 +229,11 @@ class EditHomepageController extends Component {
 
     handleSubmitForReview = async () => {
         try {
-            await this.handleSave();
+            const error = await this.handleSave();
+            if (error) {
+                this.handleOnSaveError(`There was a problem saving your changes`);
+            }
+            console.log("here");
             await this.submitHomepageChangesForReview(this.props.params.collectionID);
             this.setState({ isSaving: false });
             notifications.add({
@@ -239,8 +248,9 @@ class EditHomepageController extends Component {
     };
 
     submitHomepageChangesForReview = async collectionID => {
+        console.log(collectionID);
         try {
-            return collections.contentReview(collectionID);
+            return collections.setPageContentForReview(collectionID, "/");
         } catch (error) {
             log.event(
                 "Error submitting homepage content for review",
@@ -254,7 +264,22 @@ class EditHomepageController extends Component {
         }
     };
 
-    handleMarkAsReviewed = async collectionID => {};
+    handleMarkAsReviewed = async collectionID => {
+        console.log(collectionID);
+        try {
+            return collections.setPageContentAsReviewed(collectionID, "/");
+        } catch (error) {
+            log.event(
+                "Error marking homepage content as approved",
+                log.data({
+                    collectionID: collectionID
+                }),
+                log.error(error)
+            );
+            console.error(`Error submitting homepage content for review. Collection ID: '${collectionID}' for review. Error:`, error);
+            return error;
+        }
+    };
 
     handleOnSaveError = message => {
         notifications.add({
