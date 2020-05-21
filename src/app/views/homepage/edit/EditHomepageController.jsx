@@ -90,7 +90,7 @@ class EditHomepageController extends Component {
         this.props.dispatch(push(previousUrl));
     };
 
-    // Editable List handlers
+    // Editable List handlers - add, edit, delete, cancel, success implementations
     handleSimpleEditableListAdd = stateFieldName => {
         this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${this.state.homepageData[stateFieldName].length}`));
     };
@@ -191,7 +191,7 @@ class EditHomepageController extends Component {
         this.setState({ isSaving: true });
         let saveHomepageChangesError = false;
         if (this.state.hasChangesMade) {
-            const formattedHomepageData = await this.formatHomepageDataForSaving();
+            const formattedHomepageData = this.formatHomepageDataForSaving();
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
         return saveHomepageChangesError;
@@ -224,6 +224,7 @@ class EditHomepageController extends Component {
 
     handleSubmitForReview = async () => {
         try {
+            await this.handleSave();
             await this.submitHomepageChangesForReview(this.props.params.collectionID);
             this.setState({ isSaving: false });
             notifications.add({

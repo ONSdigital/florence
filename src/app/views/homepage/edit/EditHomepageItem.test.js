@@ -3,12 +3,6 @@ import EditHomepageItem from "./EditHomepageItem";
 import { shallow, mount } from "enzyme";
 
 const nullParamProps = {
-    data: {
-        id: 0,
-        description: "Test description",
-        uri: "/",
-        title: "Test title"
-    },
     params: {
         homepageDataField: null,
         homepageDataFieldID: null
@@ -44,10 +38,25 @@ describe("different item states", () => {
         const wrapper = shallow(<EditHomepageItem {...nullParamProps} />);
         const defaultMessage = wrapper.find("p");
         expect(defaultMessage.text()).toEqual("Something went wrong: unsupported field type");
+        expect(wrapper.state("id")).toBe(null);
+        expect(wrapper.state("description")).toBe("");
+        expect(wrapper.state("title")).toBe("");
+        expect(wrapper.state("uri")).toBe("");
     });
 });
 
 describe("event handlers", () => {
+    it("updates the input value when the input field is changed", () => {
+        const wrapper = shallow(<EditHomepageItem {...successRouteProps} />);
+        const mockEvent = {
+            target: {
+                value: "New value",
+                name: "title"
+            }
+        };
+        wrapper.instance().handleInputChange(mockEvent);
+        expect(wrapper.state("title")).toBe("New value");
+    });
     it("calls the cancel handler when clicked", () => {
         const wrapper = shallow(<EditHomepageItem {...successRouteProps} />);
         const cancelButton = wrapper.find("#cancel");

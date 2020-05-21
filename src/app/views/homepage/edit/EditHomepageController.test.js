@@ -68,8 +68,7 @@ describe("On mount of the edit homepage controller", () => {
 
 describe("mapping data fetched from API to component state", () => {
     it("maps the mock response to the state", () => {
-        const featuredContent = wrapper.state("homepageData").featuredContent;
-        expect(featuredContent.length).toBe(3);
+        expect(wrapper.state("homepageData").featuredContent.length).toBe(3);
     });
     it("maps the additional fields to the state", () => {
         const firstEntryOffeaturedContent = wrapper.state("homepageData").featuredContent[0];
@@ -99,6 +98,7 @@ describe("editable list handlers", () => {
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("florence/collections/12345/homepage/edit/featuredContent/3");
     });
+
     it("calls dispatch with the correct route when handleSimpleEditableListEdit is called", () => {
         const editedField = {
             id: 1,
@@ -111,6 +111,7 @@ describe("editable list handlers", () => {
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("florence/collections/12345/homepage/edit/featuredContent/1");
     });
+
     it("calls dispatch with the correct route when handleSimpleEditableListCancel is called", () => {
         wrapper.instance().handleSimpleEditableListEditCancel();
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
@@ -126,7 +127,7 @@ describe("editable list handlers", () => {
         expect(wrapper.state("homepageData").featuredContent.length).toBe(2);
     });
 
-    it("adds a new element into featuredContent when handleSimpleEditableListEditSuccess is called", async () => {
+    it("adds a new element into featuredContent when handleSimpleEditableListEditSuccess is called without an ID present", async () => {
         const newField = {
             title: "Title 2",
             description: "Description 5",
@@ -136,7 +137,7 @@ describe("editable list handlers", () => {
         expect(wrapper.state("homepageData").featuredContent.length).toBe(3);
     });
 
-    it("adds a new element into featuredContent when handleSimpleEditableListEditSuccess is called", async () => {
+    it("updates the element in featuredContent when handleSimpleEditableListEditSuccess is called with an ID present", async () => {
         const updatedfield = {
             id: 0,
             title: "New Title",
