@@ -35,7 +35,6 @@ export default class collections {
     }
 
     static saveContent(collectionID, content) {
-        console.log("CONTENT", content);
         if (typeof content !== "object") {
             return Promise.reject({ status: 400 });
         }

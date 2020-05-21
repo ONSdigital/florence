@@ -113,7 +113,6 @@ describe("editable list handlers", () => {
     });
     it("calls dispatch with the correct route when handleSimpleEditableListCancel is called", () => {
         wrapper.instance().handleSimpleEditableListEditCancel();
-        console.log(dispatchedActions[0].payload);
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("");
