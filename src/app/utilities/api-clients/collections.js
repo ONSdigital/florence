@@ -34,12 +34,6 @@ export default class collections {
         return http.get(`/zebedee/data/${collectionID}?uri=/`);
     }
 
-    static saveAndSubmitPageContentForReview(collectionID, contentURI, body) {
-        this.savePageContent(collectionID, contentURI, body).then(() => {
-            return http.post(`/zebedee/complete/${collectionID}?uri=${contentURI}data.json`);
-        });
-    }
-
     static submitPageContentForReview(collectionID, contentURI) {
         return http.post(`/zebedee/complete/${collectionID}?uri=${contentURI}data.json`);
     }
