@@ -72,6 +72,7 @@ class EditHomepageController extends Component {
         this.props.dispatch(push(previousUrl));
     };
 
+    // Editable List handlers
     handleSimpleEditableListAdd = stateFieldName => {
         this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${this.state.homepageData[stateFieldName].length}`));
     };
@@ -92,11 +93,8 @@ class EditHomepageController extends Component {
         });
     };
 
-    checkForHomepageDataChanges = fieldName => {
-        if (fieldName === "featuredContent" || "serviceMessage") {
-            return true;
-        }
-        return this.state.hasChangesMade;
+    handleSimpleEditableListEditCancel = () => {
+        this.props.dispatch(push(url.resolve("../../../")));
     };
 
     handleSimpleEditableListEditSuccess = (newField, stateFieldName) => {
@@ -124,6 +122,27 @@ class EditHomepageController extends Component {
         };
     };
 
+    updateHomepageDataField = (updatedField, stateFieldName) => {
+        const newFieldState = this.state.homepageData[stateFieldName].map(field => {
+            if (field.id === updatedField.id) {
+                return updatedField;
+            }
+            return field;
+        });
+        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState, stateFieldName);
+        return {
+            ...this.state.homepageData,
+            [stateFieldName]: mappedNewFieldState
+        };
+    };
+
+    checkForHomepageDataChanges = fieldName => {
+        if (fieldName === "featuredContent" || "serviceMessage") {
+            return true;
+        }
+        return this.state.hasChangesMade;
+    };
+
     mapfeaturedContentToState = featuredContent => {
         try {
             return featuredContent.map((item, index) => {
@@ -142,24 +161,6 @@ class EditHomepageController extends Component {
         }
     };
 
-    updateHomepageDataField = (updatedField, stateFieldName) => {
-        const newFieldState = this.state.homepageData[stateFieldName].map(field => {
-            if (field.id === updatedField.id) {
-                return updatedField;
-            }
-            return field;
-        });
-        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState, stateFieldName);
-        return {
-            ...this.state.homepageData,
-            [stateFieldName]: mappedNewFieldState
-        };
-    };
-
-    handleSimpleEditableListEditCancel = () => {
-        this.props.dispatch(push(url.resolve("../../../")));
-    };
-
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
@@ -170,29 +171,53 @@ class EditHomepageController extends Component {
         });
     };
 
-    saveHomepageChanges = async () => {};
+    saveHomepageChanges = async (collectionID, homepageContent) => {
+        collections.saveContent(collectionID, homepageContent).catch(error => {
+            log.event("Error saving homepage content", log.error(error));
+            console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
+            return error;
+        });
+    };
 
     handleSaveAndPreview = async () => {
-        this.setState({ isSaving: true });
-
-        let saveHomepageChangesError = false;
-        if (this.state.hasChangesMade) {
-            saveHomepageChangesError = this.saveHomepageChanges();
-        }
-
-        if (saveHomepageChangesError !== false) {
+        const error = await this.handleSave();
+        if (error) {
             this.setState({ isSaving: false });
             this.handleOnSaveError(`There was a problem saving your homepage changes`);
-            return;
         }
-
-        this.setState({ isSaving: false });
         notifications.add({
             type: "positive",
             message: `Homepage content saved!`,
             isDismissable: true
         });
-        window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
+        // window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
+    };
+
+    handleSave = async () => {
+        this.setState({ isSaving: true });
+
+        let saveHomepageChangesError = false;
+        if (this.state.hasChangesMade) {
+            const formattedHomepageData = await this.formatHomepageDataForSaving();
+            saveHomepageChangesError = this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
+            this.setState({ isSaving: false });
+            return;
+        }
+
+        return saveHomepageChangesError;
+    };
+
+    formatHomepageDataForSaving = async () => {
+        const featuredContent = this.state.homepageData.featuredContent.map(entry => ({
+            title: entry.title,
+            description: entry.description,
+            uri: entry.uri
+        }));
+        const serviceMessage = this.state.homepageData.serviceMessage;
+        return {
+            featuredContent,
+            serviceMessage
+        };
     };
 
     handleSubmitForReview = async () => {

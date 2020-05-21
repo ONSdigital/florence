@@ -34,6 +34,17 @@ export default class collections {
         return http.get(`/zebedee/data/${collectionID}?uri=/`);
     }
 
+    static saveContent(collectionID, content) {
+        console.log("CONTENT", content);
+        if (typeof content !== "object") {
+            return Promise.reject({ status: 400 });
+        }
+
+        return http.post(`/zebedee/page/${collectionID}?uri=/data.json`, content, true).then(response => {
+            return response;
+        });
+    }
+
     static contentReview(collectionID) {
         return http.post(`/zebedee/page/${collectionID}?uri=/data.json`);
     }
