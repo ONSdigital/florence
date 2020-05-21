@@ -248,7 +248,6 @@ class EditHomepageController extends Component {
     };
 
     submitHomepageChangesForReview = async collectionID => {
-        console.log(collectionID);
         try {
             return collections.setPageContentForReview(collectionID, "/");
         } catch (error) {
@@ -264,19 +263,21 @@ class EditHomepageController extends Component {
         }
     };
 
-    handleMarkAsReviewed = async collectionID => {
-        console.log(collectionID);
+    handleMarkAsReviewed = async () => {
         try {
-            return collections.setPageContentAsReviewed(collectionID, "/");
+            return collections.setPageContentAsReviewed(this.props.params.collectionID, "/");
         } catch (error) {
             log.event(
                 "Error marking homepage content as approved",
                 log.data({
-                    collectionID: collectionID
+                    collectionID: this.props.params.collectionID
                 }),
                 log.error(error)
             );
-            console.error(`Error submitting homepage content for review. Collection ID: '${collectionID}' for review. Error:`, error);
+            console.error(
+                `Error submitting homepage content for review. Collection ID: '${this.props.params.collectionID}' for review. Error:`,
+                error
+            );
             return error;
         }
     };
