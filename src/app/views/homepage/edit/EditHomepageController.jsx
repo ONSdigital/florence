@@ -175,92 +175,82 @@ class EditHomepageController extends Component {
 
     // Review actions handlers
     handleSaveAndPreview = async () => {
-        const error = await this.handleSave();
-        if (error) {
-            this.setState({ isSaving: false });
-            this.handleOnSaveError(`There was a problem saving your homepage changes`);
-        }
-        notifications.add({
-            type: "positive",
-            message: `Homepage content saved!`,
-            isDismissable: true
-        });
-        this.setState({ isSaving: false });
-        // window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID + "/homepage/preview";
+        const options = {
+            isPreviewing: true,
+            isSubmittingForReview: false
+        };
+        this.handleSave(options);
     };
 
-    handleSave = async () => {
+    handleSubmitForReview = async () => {
+        const options = {
+            isPreviewing: false,
+            isSubmittingForReview: true
+        };
+        this.handleSave(options);
+    };
+
+    handleSave = async options => {
+        let featuredContent = [];
+        let serviceMessage = "";
+        let initialHomepageData = this.state.initialHomepageData;
+        let formattedHomepageData = {};
+
         this.setState({ isSaving: true });
         let saveHomepageChangesError = false;
         if (this.state.hasChangesMade) {
-            const formattedHomepageData = this.formatHomepageDataForSaving();
-            saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
-        }
-        console.log("handle here");
-        return saveHomepageChangesError;
-    };
-
-    formatHomepageDataForSaving = () => {
-        try {
-            const featuredContent = this.state.homepageData.featuredContent.map(entry => ({
+            featuredContent = this.state.homepageData.featuredContent.map(entry => ({
                 title: entry.title,
                 description: entry.description,
                 uri: entry.uri
             }));
-            const serviceMessage = this.state.homepageData.serviceMessage;
-            const initialHomepageData = this.state.initialHomepageData;
-            return {
-                ...initialHomepageData,
-                featuredContent,
-                serviceMessage
-            };
-        } catch (error) {
-            this.handleOnSaveError("There was a problem saving your changes");
+            serviceMessage = this.state.homepageData.serviceMessage;
+            initialHomepageData = this.state.initialHomepageData;
+            formattedHomepageData = { ...initialHomepageData, featuredContent, serviceMessage };
+            saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
-    };
 
-    saveHomepageChanges = async (collectionID, homepageContent) => {
-        collections.savePageContent(collectionID, "/", homepageContent).catch(error => {
-            log.event("Error saving homepage content", log.error(error));
-            console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
-            return error;
-        });
-    };
+        if (saveHomepageChangesError) {
+            this.setState({ isSaving: false });
+            this.handleOnSaveError(`There was a problem saving your homepage changes`);
+        }
 
-    handleSubmitForReview = async () => {
-        try {
-            const error = await this.handleSave();
-            if (error) {
-                this.handleOnSaveError(`There was a problem saving your changes`);
-            }
-            console.log("here");
-            await this.submitHomepageChangesForReview(this.props.params.collectionID);
+        if (options.isPreviewing) {
+            this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage/preview`);
+        }
+
+        if (options.isSubmittingForReview) {
+            const sendToReviewError = await this.sendToReview(this.props.params.collectionID, "/", formattedHomepageData);
             this.setState({ isSaving: false });
             notifications.add({
                 type: "positive",
                 message: `Homepage content saved!`,
                 isDismissable: true
             });
-            window.location = window.location.origin + "/florence/collections/" + this.props.params.collectionID;
-        } catch (error) {
-            this.handleOnSaveError(`There was a problem saving your changes`);
+
+            if (sendToReviewError) {
+                this.setState({ isSaving: false });
+                this.handleOnSaveError(`There was a problem saving your homepage changes`);
+            } else {
+                this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
+            }
         }
     };
 
-    submitHomepageChangesForReview = async collectionID => {
-        try {
-            return collections.setPageContentForReview(collectionID, "/");
-        } catch (error) {
-            log.event(
-                "Error submitting homepage content for review",
-                log.data({
-                    collectionID: collectionID
-                }),
-                log.error(error)
-            );
-            console.error(`Error submitting homepage content for review. Collection ID: '${collectionID}' for review. Error:`, error);
+    saveHomepageChanges = async (collectionID, homepageContent) => {
+        await collections.savePageContent(collectionID, "/", homepageContent).catch(error => {
+            log.event("Error saving homepage content", log.error(error));
+            console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
             return error;
-        }
+        });
+    };
+
+    sendToReview = async (collectionID, homepageContent) => {
+        await collections.submitPageContentForReview(collectionID, "/", homepageContent).catch(error => {
+            log.event("Error submitting for review", log.error(error));
+            console.error(`Error submitting for review '${this.props.params.collectionID}'`, error);
+            return error;
+        });
     };
 
     handleMarkAsReviewed = async () => {
@@ -268,16 +258,13 @@ class EditHomepageController extends Component {
             return collections.setPageContentAsReviewed(this.props.params.collectionID, "/");
         } catch (error) {
             log.event(
-                "Error marking homepage content as approved",
+                "Error reviewing homepage content",
                 log.data({
                     collectionID: this.props.params.collectionID
                 }),
                 log.error(error)
             );
-            console.error(
-                `Error submitting homepage content for review. Collection ID: '${this.props.params.collectionID}' for review. Error:`,
-                error
-            );
+            console.error(`Error reviewing content. Collection ID: '${this.props.params.collectionID}' for review. Error:`, error);
             return error;
         }
     };
@@ -288,6 +275,10 @@ class EditHomepageController extends Component {
             message: `${message}. You can try again by pressing save.`,
             isDismissable: true
         });
+    };
+
+    redirectTo = route => {
+        window.location = window.location.origin + route;
     };
 
     renderModal = () => {
