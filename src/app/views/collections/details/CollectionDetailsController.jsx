@@ -356,6 +356,7 @@ export class CollectionDetailsController extends Component {
     }
 
     async handleCollectionPageEditClick(page, state) {
+        console.log(page);
         if (page.type === "dataset_details") {
             // This is a horrible hack to get the latest version url.
             // This could possibly be given to us from Zebedee.
@@ -395,6 +396,13 @@ export class CollectionDetailsController extends Component {
             const lastEditedBy = version.lastEditedBy;
             // const reviewState = version.state.charAt(0).toLowerCase() + version.state.slice(1); //lowercase it so it's consistent with the properties in our state (i.e. "InProgress" = "inProgress" )
             this.props.dispatch(updateActiveVersionReviewState(lastEditedBy, state));
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+
+        // Override the homepage url so that it no longer takes users to the workspace, but instead to the Edit Homepage form
+        if (page.type === "home_page") {
+            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/homepage`);
             this.props.dispatch(push(newURL));
             return newURL;
         }
