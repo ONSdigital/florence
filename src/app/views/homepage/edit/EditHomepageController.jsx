@@ -9,6 +9,7 @@ import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 
 const propTypes = {
     location: PropTypes.shape({
@@ -19,11 +20,12 @@ const propTypes = {
         homepageDataField: PropTypes.string,
         homepageDataFieldID: PropTypes.string
     }),
+    userEmail: PropTypes.string,
     children: PropTypes.element,
     dispatch: PropTypes.func.isRequired
 };
 
-class EditHomepageController extends Component {
+export class EditHomepageController extends Component {
     constructor(props) {
         super(props);
 
@@ -34,6 +36,7 @@ class EditHomepageController extends Component {
                 serviceMessage: ""
             },
             collectionState: "",
+            lastEditedBy: "",
             isGettingHomepageData: false,
             hasChangesMade: false,
             maximumNumberOfEntries: 4,
@@ -42,10 +45,11 @@ class EditHomepageController extends Component {
     }
 
     componentWillMount() {
+        this.setCollectionStateData();
         this.getHomepageData();
     }
 
-    getHomepageData() {
+    getHomepageData = async () => {
         this.setState({ isGettingHomepageData: true });
         return homepage
             .get(this.props.params.collectionID)
@@ -56,7 +60,6 @@ class EditHomepageController extends Component {
                     homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
                     isGettingHomepageData: false
                 });
-                this.setCollectionStateData();
             })
             .catch(error => {
                 log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
@@ -68,7 +71,7 @@ class EditHomepageController extends Component {
                 notifications.add(notification);
                 this.setState({ isGettingHomepageData: false });
             });
-    }
+    };
 
     mapfeaturedContentToState = featuredContent => {
         try {
@@ -88,15 +91,24 @@ class EditHomepageController extends Component {
         }
     };
 
-    setCollectionStateData = () => {
-        collections.get(this.props.params.collectionID).then(collection => {
-            if (collection.complete.length > 0) {
-                this.setState({ collectionState: "complete" });
-            } else if (collection.reviewed.length > 0) {
-                this.setState({ collectionState: "reviewed" });
-            } else if (collection.inProgress.length > 0) {
-                this.setState({ collectionState: "inProgress" });
+    setCollectionStateData = async () => {
+        return collections.getContentCollectionDetails(this.props.params.collectionID).then(collection => {
+            const lastEventIndex = collection.eventsByUri["/data.json"].length - 1;
+            const lastEvent = collection.eventsByUri["/data.json"][lastEventIndex];
+            let collectionState = "";
+
+            if (lastEvent.type === "COMPLETED") {
+                collectionState = "complete";
+            } else if (lastEvent.type === "EDITED") {
+                collectionState = "inProgress";
+            } else {
+                collectionState = "reviewed";
             }
+
+            this.setState({
+                lastEditedBy: lastEvent.email,
+                collectionState
+            });
         });
     };
 
@@ -323,6 +335,8 @@ class EditHomepageController extends Component {
                     handleSubmitForReviewClick={this.handleSubmitForReview}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewed}
                     collectionState={this.state.collectionState}
+                    userEmail={this.props.userEmail}
+                    lastEditedBy={this.state.lastEditedBy}
                 />
 
                 {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
@@ -331,6 +345,12 @@ class EditHomepageController extends Component {
     }
 }
 
+function mapStateToProps(state) {
+    return {
+        userEmail: state.state.user.email
+    };
+}
+
 EditHomepageController.propTypes = propTypes;
 
-export default EditHomepageController;
+export default connect(mapStateToProps)(EditHomepageController);

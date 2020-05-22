@@ -1,5 +1,5 @@
 import React from "react";
-import EditHomepageController from "./EditHomepageController";
+import { EditHomepageController } from "./EditHomepageController";
 import { shallow } from "enzyme";
 import homepage from "../../../utilities/api-clients/homepage";
 

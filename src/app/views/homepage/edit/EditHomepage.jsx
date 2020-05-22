@@ -83,12 +83,6 @@ const propTypes = {
     isSaving: PropTypes.bool.isRequired
 };
 
-function mapStateToProps(state) {
-    return {
-        userEmail: state.state.user.email
-    };
-}
-
 EditHomepage.propTypes = propTypes;
 
-export default connect(mapStateToProps)(EditHomepage);
+export default EditHomepage;
