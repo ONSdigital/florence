@@ -87,28 +87,37 @@ export class EditHomepageController extends Component {
         }
     };
 
-    setCollectionStateData = async () => {
-        return collections.getContentCollectionDetails(this.props.params.collectionID).then(collection => {
-            const lastEventIndex = collection.eventsByUri["/data.json"].length - 1;
-            const lastEvent = collection.eventsByUri["/data.json"][lastEventIndex];
-            let collectionState = "";
+    setCollectionStateData = () => {
+        collections
+            .getContentCollectionDetails(this.props.params.collectionID)
+            .then(collection => {
+                const lastEventIndex = collection.eventsByUri["/data.json"].length - 1;
+                const lastEvent = collection.eventsByUri["/data.json"][lastEventIndex];
+                let collectionState = "";
 
-            switch (lastEvent.type) {
-                case "COMPLETED":
-                    collectionState = "complete";
-                    break;
-                case "EDITED":
-                    collectionState = "inProgress";
-                    break;
-                default:
-                    collectionState = "reviewed";
-            }
+                switch (lastEvent.type) {
+                    case "COMPLETED":
+                        collectionState = "complete";
+                        break;
+                    case "EDITED":
+                        collectionState = "inProgress";
+                        break;
+                    default:
+                        collectionState = "reviewed";
+                }
 
-            this.setState({
-                lastEditedBy: lastEvent.email,
-                collectionState
+                this.setState({
+                    lastEditedBy: lastEvent.email,
+                    collectionState
+                });
+            })
+            .catch(() => {
+                notifications.add({
+                    type: "warning",
+                    message: `Error retrieving collection details`,
+                    isDismissable: true
+                });
             });
-        });
     };
 
     handleBackButton = () => {

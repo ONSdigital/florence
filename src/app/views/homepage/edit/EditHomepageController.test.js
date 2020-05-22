@@ -2,6 +2,7 @@ import React from "react";
 import { EditHomepageController } from "./EditHomepageController";
 import { shallow } from "enzyme";
 import homepage from "../../../utilities/api-clients/homepage";
+import collections from "../../../utilities/api-clients/collections";
 
 const mockAPIResponse = {
     featuredContent: [
@@ -27,10 +28,41 @@ const mockAPIResponse = {
     serviceMessage: "This is a default service message for mock testing"
 };
 
+const mockCollectionData = {
+    eventsByUri: {
+        "/data.json": [
+            {
+                type: "EDITED",
+                email: "test@email.com"
+            }
+        ]
+    }
+};
+
 jest.mock("../../../utilities/api-clients/homepage", () => {
     return {
         get: jest.fn(() => {
             return Promise.resolve(mockAPIResponse);
+        })
+    };
+});
+
+jest.mock("../../../utilities/api-clients/collections", () => {
+    return {
+        get: jest.fn(() => {
+            return Promise.resolve(mockAPIResponse);
+        }),
+        savePageContent: jest.fn(() => {
+            return Promise.resolve(true);
+        }),
+        submitPageContentForReview: jest.fn(() => {
+            return Promise.resolve(true);
+        }),
+        setPageContentAsReviewed: jest.fn(() => {
+            return Promise.resolve(true);
+        }),
+        getContentCollectionDetails: jest.fn(() => {
+            return Promise.resolve(mockCollectionData);
         })
     };
 });
@@ -148,5 +180,33 @@ describe("editable list handlers", () => {
         expect(wrapper.state("homepageData").featuredContent[0].title).toBe("New Title");
         expect(wrapper.state("homepageData").featuredContent[0].description).toBe("New Description");
         expect(wrapper.state("homepageData").featuredContent[0].uri).toBe("/new-uri");
+    });
+});
+
+describe("submit handlers", () => {
+    it("calls the savePageContent method when changes have been made", async () => {
+        const updatedfield = {
+            id: 0,
+            title: "New Title",
+            description: "New Description",
+            uri: "/new-uri"
+        };
+        await wrapper.instance().handleSimpleEditableListEditSuccess(updatedfield, "featuredContent");
+        await wrapper.instance().handleSaveAndPreview();
+        expect(wrapper.state("isSaving")).toBe(true);
+        expect(wrapper.state("hasChangesMade")).toBe(true);
+        expect(collections.savePageContent.mock.calls.length).toBe(1);
+    });
+    it("calls the submitPageContentForReview method", async () => {
+        await wrapper.instance().handleSubmitForReview();
+        expect(wrapper.state("isSaving")).toBe(true);
+        expect(wrapper.state("hasChangesMade")).toBe(false);
+        expect(collections.submitPageContentForReview.mock.calls.length).toBe(1);
+    });
+    it("calls the setPageContentAsReviewed method", async () => {
+        await wrapper.instance().handleMarkAsReviewed();
+        expect(wrapper.state("isSaving")).toBe(false);
+        expect(wrapper.state("hasChangesMade")).toBe(false);
+        expect(collections.setPageContentAsReviewed.mock.calls.length).toBe(1);
     });
 });
