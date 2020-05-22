@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
-
 import collections from "../../../utilities/api-clients/collections";
 import homepage from "../../../utilities/api-clients/homepage";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
-
 import { push } from "react-router-redux";
 import { connect } from "react-redux";
 
@@ -28,9 +26,8 @@ const propTypes = {
 export class EditHomepageController extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
-            initialHomepageContent: {},
+            initialHomepageData: {},
             homepageData: {
                 featuredContent: [],
                 serviceMessage: ""
@@ -53,22 +50,21 @@ export class EditHomepageController extends Component {
         this.setState({ isGettingHomepageData: true });
         return homepage
             .get(this.props.params.collectionID)
-            .then(homepageContent => {
-                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageContent.featuredContent);
+            .then(homepageData => {
+                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
                 this.setState({
-                    initialHomepageData: homepageContent,
-                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageContent.serviceMessage },
+                    initialHomepageData: homepageData,
+                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage },
                     isGettingHomepageData: false
                 });
             })
             .catch(error => {
                 log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
-                const notification = {
+                notifications.add({
                     type: "warning",
                     message: "An error occurred whilst trying to get homepage data.",
                     isDismissable: true
-                };
-                notifications.add(notification);
+                });
                 this.setState({ isGettingHomepageData: false });
             });
     };
@@ -97,12 +93,15 @@ export class EditHomepageController extends Component {
             const lastEvent = collection.eventsByUri["/data.json"][lastEventIndex];
             let collectionState = "";
 
-            if (lastEvent.type === "COMPLETED") {
-                collectionState = "complete";
-            } else if (lastEvent.type === "EDITED") {
-                collectionState = "inProgress";
-            } else {
-                collectionState = "reviewed";
+            switch (lastEvent.type) {
+                case "COMPLETED":
+                    collectionState = "complete";
+                    break;
+                case "EDITED":
+                    collectionState = "inProgress";
+                    break;
+                default:
+                    collectionState = "reviewed";
             }
 
             this.setState({
@@ -215,7 +214,7 @@ export class EditHomepageController extends Component {
         this.handleSave(options);
     };
 
-    handleSave = async options => {
+    handleSave = async actions => {
         let featuredContent = [];
         let serviceMessage = "";
         let initialHomepageData = this.state.initialHomepageData;
@@ -240,11 +239,11 @@ export class EditHomepageController extends Component {
             this.handleOnSaveError(`There was a problem saving your homepage changes`);
         }
 
-        if (options.isPreviewing) {
+        if (actions.isPreviewing) {
             this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage/preview`);
         }
 
-        if (options.isSubmittingForReview) {
+        if (actions.isSubmittingForReview) {
             const sendToReviewError = await this.sendToReview(this.props.params.collectionID, "/", formattedHomepageData);
             this.setState({ isSaving: false });
             notifications.add({
@@ -262,16 +261,16 @@ export class EditHomepageController extends Component {
         }
     };
 
-    saveHomepageChanges = async (collectionID, homepageContent) => {
-        await collections.savePageContent(collectionID, "/", homepageContent).catch(error => {
+    saveHomepageChanges = async (collectionID, homepageData) => {
+        await collections.savePageContent(collectionID, "/", homepageData).catch(error => {
             log.event("Error saving homepage content", log.error(error));
             console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
             return error;
         });
     };
 
-    sendToReview = async (collectionID, homepageContent) => {
-        await collections.submitPageContentForReview(collectionID, "/", homepageContent).catch(error => {
+    sendToReview = async (collectionID, homepageData) => {
+        await collections.submitPageContentForReview(collectionID, "/", homepageData).catch(error => {
             log.event("Error submitting for review", log.error(error));
             console.error(`Error submitting for review '${this.props.params.collectionID}'`, error);
             return error;
@@ -338,7 +337,6 @@ export class EditHomepageController extends Component {
                     userEmail={this.props.userEmail}
                     lastEditedBy={this.state.lastEditedBy}
                 />
-
                 {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
             </div>
         );
@@ -352,5 +350,4 @@ function mapStateToProps(state) {
 }
 
 EditHomepageController.propTypes = propTypes;
-
 export default connect(mapStateToProps)(EditHomepageController);
