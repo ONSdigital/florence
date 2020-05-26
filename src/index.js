@@ -45,6 +45,7 @@ import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadat
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
+import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 
 
 const config = window.getEnv();
@@ -96,6 +97,8 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/collections/:collectionID/homepage`} component={userIsAuthenticated(EditHomepageController)} />
+                            <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
+                                
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
 
                             {config.enableDatasetImport === true && (
