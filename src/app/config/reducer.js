@@ -44,7 +44,8 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 config: {
-                    enableDatasetImport: action.config.enableDatasetImport
+                    enableDatasetImport: action.config.enableDatasetImport,
+                    enableHomepagePublishing: action.config.enableHomepagePublishing
                 }
             };
         }

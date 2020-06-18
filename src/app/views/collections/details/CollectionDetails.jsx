@@ -39,6 +39,7 @@ const propTypes = {
     activePageURI: PropTypes.string,
     name: PropTypes.string,
     enableDatasetImport: PropTypes.bool,
+    enableHomepagePublishing: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,
@@ -377,6 +378,15 @@ export class CollectionDetails extends Component {
                             {this.props.enableDatasetImport && (
                                 <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">
                                     Create/edit CMD dataset page
+                                </Link>
+                            )}
+                            {this.props.enableHomepagePublishing && (
+                                <Link
+                                    id="edit-homepage"
+                                    to={`/florence/collections/${this.props.id}/homepage`}
+                                    className="btn btn--primary btn--margin-left"
+                                >
+                                    Edit Homepage
                                 </Link>
                             )}
                             <button
