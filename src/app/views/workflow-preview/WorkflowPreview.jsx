@@ -33,6 +33,8 @@ export class WorkflowPreview extends Component {
     // returns '/' incase the url is '/homepage' or errors
     getPreviewIframeURL = path => {
         try {
+            // regex will capture the value between /florence/collections/collection-id and /preview
+            // e.g. /florence/collections/collection-id/capture/group/preview => /capture/group
             const regex = /(?:\/[^/]+){3}(?<contentURL>.+)\/preview/;
             const regexResult = regex.exec(path);
             const contentURL = regexResult.groups.contentURL;
