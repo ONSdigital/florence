@@ -30,15 +30,11 @@ export default class collections {
         return http.put(`/zebedee/collection/${collectionID}`, body);
     }
 
-    static getContent(collectionID) {
-        return http.get(`/zebedee/data/${collectionID}?uri=/`);
-    }
-
     static getContentCollectionDetails(collectionID) {
         return http.get(`/zebedee/collection/${collectionID}`);
     }
 
-    static submitPageContentForReview(collectionID, contentURI) {
+    static setContentStatusToComplete(collectionID, contentURI) {
         return http.post(`/zebedee/complete/${collectionID}?uri=${contentURI}data.json`);
     }
 

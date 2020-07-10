@@ -55,7 +55,7 @@ jest.mock("../../../utilities/api-clients/collections", () => {
         savePageContent: jest.fn(() => {
             return Promise.resolve(true);
         }),
-        submitPageContentForReview: jest.fn(() => {
+        setContentStatusToComplete: jest.fn(() => {
             return Promise.resolve(true);
         }),
         setPageContentAsReviewed: jest.fn(() => {
@@ -197,11 +197,11 @@ describe("submit handlers", () => {
         expect(wrapper.state("hasChangesMade")).toBe(true);
         expect(collections.savePageContent.mock.calls.length).toBe(1);
     });
-    it("calls the submitPageContentForReview method", async () => {
+    it("calls the setContentStatusToComplete method", async () => {
         await wrapper.instance().handleSubmitForReview();
         expect(wrapper.state("isSaving")).toBe(true);
         expect(wrapper.state("hasChangesMade")).toBe(false);
-        expect(collections.submitPageContentForReview.mock.calls.length).toBe(1);
+        expect(collections.setContentStatusToComplete.mock.calls.length).toBe(1);
     });
     it("calls the setPageContentAsReviewed method", async () => {
         await wrapper.instance().handleMarkAsReviewed();

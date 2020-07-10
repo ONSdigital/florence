@@ -279,7 +279,7 @@ export class EditHomepageController extends Component {
     };
 
     sendToReview = async (collectionID, homepageData) => {
-        await collections.submitPageContentForReview(collectionID, "/", homepageData).catch(error => {
+        await collections.setContentStatusToComplete(collectionID, "/", homepageData).catch(error => {
             log.event("Error submitting for review", log.error(error));
             console.error(`Error submitting for review '${this.props.params.collectionID}'`, error);
             return error;
