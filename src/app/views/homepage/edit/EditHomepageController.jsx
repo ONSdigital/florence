@@ -312,7 +312,7 @@ export class EditHomepageController extends Component {
     };
 
     redirectTo = route => {
-        window.location = window.location.origin + route;
+        this.props.dispatch(push(route));
     };
 
     renderModal = () => {
