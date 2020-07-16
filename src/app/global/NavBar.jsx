@@ -41,8 +41,8 @@ export class NavBar extends Component {
             return;
         }
 
-        const route = this.props.location.pathname;
-        if (route.indexOf(`/datasets`) >= 0 || route.indexOf(`/preview`) >= 0) {
+        const path = this.props.location.pathname;
+        if (this.routeIsACollectionPage(path)) {
             return (
                 // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
                 <li className="global-nav__item global-nav__item--working-on">
@@ -57,6 +57,10 @@ export class NavBar extends Component {
                 </li>
             );
         }
+    }
+
+    routeIsACollectionPage(path) {
+        return path.indexOf(`/datasets`) >= 0 || path.indexOf(`/preview`) >= 0 || path.indexOf(`/homepage`);
     }
 
     renderNavItems() {
