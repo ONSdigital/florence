@@ -91,25 +91,30 @@ export class EditHomepageController extends Component {
         collections
             .getContentCollectionDetails(this.props.params.collectionID)
             .then(collection => {
-                const lastEventIndex = collection.eventsByUri["/data.json"].length - 1;
-                const lastEvent = collection.eventsByUri["/data.json"][lastEventIndex];
-                let collectionState = "";
+                const pageHasEvent = collection.hasOwnProperty("eventsByUri") && collection.eventsByUri.hasOwnProperty("/data.json");
+                if (pageHasEvent) {
+                    const homepageCollectionEventHistory = collection.eventsByUri["/data.json"];
+                    const lastEventIndex = homepageCollectionEventHistory.length - 1;
+                    const lastEvent = homepageCollectionEventHistory[lastEventIndex];
+                    let collectionState = "";
 
-                switch (lastEvent.type) {
-                    case "COMPLETED":
-                        collectionState = "complete";
-                        break;
-                    case "EDITED":
-                        collectionState = "inProgress";
-                        break;
-                    default:
-                        collectionState = "reviewed";
+                    switch (lastEvent.type) {
+                        case "COMPLETED":
+                            collectionState = "complete";
+                            break;
+                        case "EDITED":
+                            collectionState = "inProgress";
+                            break;
+                        default:
+                            collectionState = "reviewed";
+                    }
+
+                    this.setState({
+                        lastEditedBy: lastEvent.email,
+                        collectionState
+                    });
                 }
-
-                this.setState({
-                    lastEditedBy: lastEvent.email,
-                    collectionState
-                });
+                return;
             })
             .catch(() => {
                 notifications.add({

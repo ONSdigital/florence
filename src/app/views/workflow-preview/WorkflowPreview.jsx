@@ -46,7 +46,7 @@ export class WorkflowPreview extends Component {
             notifications.add({
                 type: "warning",
                 message:
-                    "There was an error previewing this content so you've bene directed to the homepage. You can navigate to the content or refresh Florence.",
+                    "There was an error previewing this content so you've been directed to the homepage. You can navigate to the content or refresh Florence.",
                 isDismissable: true
             });
             return "/";
