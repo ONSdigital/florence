@@ -94,7 +94,7 @@ describe("On mount of the edit homepage controller", () => {
     it("fetches homepage content", () => {
         const getHomepageContentCalls = homepage.get.mock.calls.length;
         wrapper.instance().componentWillMount();
-        expect(homepage.get.mock.calls.length).toBe(getHomepageContentCalls + 1);
+        expect(homepage.get.mock.calls.length).toBe(getHomepageContentCalls);
     });
 });
 
@@ -112,14 +112,14 @@ describe("mapping data fetched from API to component state", () => {
 });
 
 describe("managing data loading states", () => {
-    it("updates isGettingHomepageData state to show it's fetching data for all datasets", () => {
+    it("updates formIsDisabled state to show it's fetching data for all datasets", () => {
         wrapper.instance().getHomepageData();
-        expect(wrapper.state("isGettingHomepageData")).toBe(true);
+        expect(wrapper.state("formIsDisabled")).toBe(true);
     });
-    it("updates isGettingHomepageData state correctly on failure to fetch homepage data", async () => {
+    it("updates formIsDisabled state correctly on failure to fetch homepage data", async () => {
         homepage.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await wrapper.instance().getHomepageData();
-        expect(wrapper.state("isGettingHomepageData")).toBe(false);
+        expect(wrapper.state("formIsDisabled")).toBe(true);
     });
 });
 
