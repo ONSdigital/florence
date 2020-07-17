@@ -34,7 +34,7 @@ export class EditHomepageController extends Component {
             },
             collectionState: "",
             lastEditedBy: "",
-            isGettingHomepageData: false,
+            formIsDisabled: true,
             hasChangesMade: false,
             maximumNumberOfEntries: 4,
             isSaving: false
@@ -43,11 +43,10 @@ export class EditHomepageController extends Component {
 
     componentWillMount() {
         this.setCollectionStateData();
-        this.getHomepageData();
     }
 
     getHomepageData = async () => {
-        this.setState({ isGettingHomepageData: true });
+        this.setState({ formIsDisabled: true });
         return homepage
             .get(this.props.params.collectionID)
             .then(homepageData => {
@@ -55,7 +54,7 @@ export class EditHomepageController extends Component {
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage },
-                    isGettingHomepageData: false
+                    formIsDisabled: false
                 });
             })
             .catch(error => {
@@ -65,7 +64,7 @@ export class EditHomepageController extends Component {
                     message: "An error occurred whilst trying to get homepage data.",
                     isDismissable: true
                 });
-                this.setState({ isGettingHomepageData: false });
+                this.setState({ formIsDisabled: true });
             });
     };
 
@@ -111,15 +110,24 @@ export class EditHomepageController extends Component {
 
                     this.setState({
                         lastEditedBy: lastEvent.email,
-                        collectionState
+                        collectionState,
+                        formIsDisabled: false
                     });
                 }
-                return;
+                this.getHomepageData();
             })
-            .catch(() => {
+            .catch(error => {
+                this.setState({
+                    formIsDisabled: true
+                });
+                log.event(
+                    "error retrieving the homepage's collection state",
+                    log.data({ collectionID: this.props.params.collectionID }),
+                    log.error(error)
+                );
                 notifications.add({
                     type: "warning",
-                    message: `Error retrieving collection details`,
+                    message: `Error retrieving the homepage's collection state. Please try refreshing the page.`,
                     isDismissable: true
                 });
             });
@@ -337,7 +345,7 @@ export class EditHomepageController extends Component {
                 <EditHomepage
                     homepageData={this.state.homepageData}
                     handleBackButton={this.handleBackButton}
-                    disableForm={this.state.isGettingHomepageData}
+                    disableForm={this.state.formIsDisabled}
                     isSaving={this.state.isSaving}
                     maximumNumberOfEntries={this.state.maximumNumberOfEntries}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
