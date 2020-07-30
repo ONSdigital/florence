@@ -63,6 +63,9 @@ jest.mock("../../../utilities/api-clients/collections", () => {
         }),
         getContentCollectionDetails: jest.fn(() => {
             return Promise.resolve(mockCollectionData);
+        }),
+        checkContentIsInCollection: jest.fn(() => {
+            return Promise.resolve("");
         })
     };
 });
@@ -92,9 +95,8 @@ beforeEach(() => {
 
 describe("On mount of the edit homepage controller", () => {
     it("fetches homepage content", () => {
-        const getHomepageContentCalls = homepage.get.mock.calls.length;
         wrapper.instance().componentWillMount();
-        expect(homepage.get.mock.calls.length).toBe(getHomepageContentCalls);
+        expect(homepage.get.mock.calls.length).toBe(2);
     });
 });
 

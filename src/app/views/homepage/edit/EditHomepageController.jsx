@@ -19,6 +19,7 @@ const propTypes = {
         homepageDataFieldID: PropTypes.string
     }),
     userEmail: PropTypes.string,
+    currentCollection: PropTypes.object,
     children: PropTypes.element,
     dispatch: PropTypes.func.isRequired
 };
@@ -43,6 +44,32 @@ export class EditHomepageController extends Component {
 
     componentWillMount() {
         this.setCollectionStateData();
+        this.getHomepageData();
+    }
+
+    checkIfHomepageIsInAnotherCollection() {
+        collections
+            .checkContentIsInCollection("/")
+            .then(response => {
+                if (response !== this.props.currentCollection.name) {
+                    log.event(
+                        "the homepage is already being edited in another collection.",
+                        log.data({ collectionHomepageIsIn: response }),
+                        log.error(response)
+                    );
+                    notifications.add({
+                        type: "neutral",
+                        message: `The homepage is already being edited in another collection: ${response}`,
+                        isDismissable: true
+                    });
+                    this.setState({ formIsDisabled: true });
+                    return;
+                }
+                this.setState({ formIsDisabled: false });
+            })
+            .catch(error => {
+                log.event("error occurred when trying to check if homepage is being edited in another collection", log.error(error));
+            });
     }
 
     getHomepageData = async () => {
@@ -53,9 +80,10 @@ export class EditHomepageController extends Component {
                 const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
                 this.setState({
                     initialHomepageData: homepageData,
-                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage },
-                    formIsDisabled: false
+                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage }
                 });
+                this.checkIfHomepageIsInAnotherCollection();
+                return;
             })
             .catch(error => {
                 log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
@@ -86,8 +114,8 @@ export class EditHomepageController extends Component {
         }
     };
 
-    setCollectionStateData = () => {
-        collections
+    setCollectionStateData = async () => {
+        await collections
             .getContentCollectionDetails(this.props.params.collectionID)
             .then(collection => {
                 const pageHasEvent = collection.hasOwnProperty("eventsByUri") && collection.eventsByUri.hasOwnProperty("/data.json");
@@ -110,11 +138,10 @@ export class EditHomepageController extends Component {
 
                     this.setState({
                         lastEditedBy: lastEvent.email,
-                        collectionState,
-                        formIsDisabled: false
+                        collectionState
                     });
                 }
-                this.getHomepageData();
+                return;
             })
             .catch(error => {
                 this.setState({
@@ -367,7 +394,8 @@ export class EditHomepageController extends Component {
 
 function mapStateToProps(state) {
     return {
-        userEmail: state.state.user.email
+        userEmail: state.state.user.email,
+        currentCollection: state.state.global.workingOn
     };
 }
 
