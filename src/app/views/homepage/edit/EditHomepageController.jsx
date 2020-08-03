@@ -42,79 +42,13 @@ export class EditHomepageController extends Component {
         };
     }
 
-    componentWillMount() {
-        this.setCollectionStateData();
-        this.getHomepageData();
+    async componentDidMount() {
+        await this.setCollectionState();
+        await this.getHomepageData();
+        this.checkIfHomepageIsInAnotherCollection();
     }
 
-    checkIfHomepageIsInAnotherCollection() {
-        collections
-            .checkContentIsInCollection("/")
-            .then(response => {
-                if (response !== this.props.currentCollection.name) {
-                    log.event(
-                        "the homepage is already being edited in another collection.",
-                        log.data({ collectionHomepageIsIn: response }),
-                        log.error(response)
-                    );
-                    notifications.add({
-                        type: "neutral",
-                        message: `The homepage is already being edited in another collection: ${response}`,
-                        isDismissable: true
-                    });
-                    this.setState({ formIsDisabled: true });
-                    return;
-                }
-                this.setState({ formIsDisabled: false });
-            })
-            .catch(error => {
-                log.event("error occurred when trying to check if homepage is being edited in another collection", log.error(error));
-            });
-    }
-
-    getHomepageData = async () => {
-        this.setState({ formIsDisabled: true });
-        return homepage
-            .get(this.props.params.collectionID)
-            .then(homepageData => {
-                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
-                this.setState({
-                    initialHomepageData: homepageData,
-                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage }
-                });
-                this.checkIfHomepageIsInAnotherCollection();
-                return;
-            })
-            .catch(error => {
-                log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
-                notifications.add({
-                    type: "warning",
-                    message: "An error occurred whilst trying to get homepage data.",
-                    isDismissable: true
-                });
-                this.setState({ formIsDisabled: true });
-            });
-    };
-
-    mapfeaturedContentToState = featuredContent => {
-        try {
-            return featuredContent.map((item, index) => {
-                return {
-                    id: index,
-                    description: item.description,
-                    uri: item.uri,
-                    title: item.title,
-                    simpleListHeading: item.title,
-                    simpleListDescription: item.description
-                };
-            });
-        } catch (error) {
-            log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
-            throw new Error(`Error mapping highlighted content to state \n ${error}`);
-        }
-    };
-
-    setCollectionStateData = async () => {
+    setCollectionState = async () => {
         await collections
             .getContentCollectionDetails(this.props.params.collectionID)
             .then(collection => {
@@ -159,6 +93,72 @@ export class EditHomepageController extends Component {
                 });
             });
     };
+
+    getHomepageData = async () => {
+        this.setState({ formIsDisabled: true });
+        return homepage
+            .get(this.props.params.collectionID)
+            .then(homepageData => {
+                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
+                this.setState({
+                    initialHomepageData: homepageData,
+                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage }
+                });
+                return;
+            })
+            .catch(error => {
+                log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+                notifications.add({
+                    type: "warning",
+                    message: "An error occurred whilst trying to get homepage data.",
+                    isDismissable: true
+                });
+                this.setState({ formIsDisabled: true });
+            });
+    };
+
+    mapfeaturedContentToState = featuredContent => {
+        try {
+            return featuredContent.map((item, index) => {
+                return {
+                    id: index,
+                    description: item.description,
+                    uri: item.uri,
+                    title: item.title,
+                    simpleListHeading: item.title,
+                    simpleListDescription: item.description
+                };
+            });
+        } catch (error) {
+            log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            throw new Error(`Error mapping highlighted content to state \n ${error}`);
+        }
+    };
+
+    checkIfHomepageIsInAnotherCollection() {
+        collections
+            .checkContentIsInCollection("/")
+            .then(response => {
+                if (response !== this.props.currentCollection.name) {
+                    log.event(
+                        "the homepage is already being edited in another collection.",
+                        log.data({ collectionHomepageIsIn: response }),
+                        log.error(response)
+                    );
+                    notifications.add({
+                        type: "neutral",
+                        message: `The homepage is already being edited in another collection: ${response}`,
+                        isDismissable: true
+                    });
+                    this.setState({ formIsDisabled: true });
+                    return;
+                }
+                this.setState({ formIsDisabled: false });
+            })
+            .catch(error => {
+                log.event("error occurred when trying to check if homepage is being edited in another collection", log.error(error));
+            });
+    }
 
     handleBackButton = () => {
         const previousUrl = url.resolve("../../");

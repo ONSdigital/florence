@@ -1,6 +1,6 @@
 import React from "react";
 import { EditHomepageController } from "./EditHomepageController";
-import { shallow } from "enzyme";
+import { mount } from "enzyme";
 import homepage from "../../../utilities/api-clients/homepage";
 import collections from "../../../utilities/api-clients/collections";
 
@@ -81,6 +81,7 @@ const defaultProps = {
         homepageDataField: "",
         homepageDataFieldID: ""
     },
+    userEmail: "florence@test.com",
     rootPath: "/florence",
     location: {
         pathname: "florence/collections/12345/homepage"
@@ -88,15 +89,15 @@ const defaultProps = {
 };
 
 let wrapper;
-beforeEach(() => {
+beforeEach(async () => {
     dispatchedActions = [];
-    wrapper = shallow(<EditHomepageController {...defaultProps} />);
+    wrapper = mount(<EditHomepageController {...defaultProps} />);
 });
 
 describe("On mount of the edit homepage controller", () => {
     it("fetches homepage content", () => {
-        wrapper.instance().componentWillMount();
-        expect(homepage.get.mock.calls.length).toBe(2);
+        wrapper.instance().componentDidMount();
+        expect(homepage.get.mock.calls.length).toBe(1);
     });
 });
 
