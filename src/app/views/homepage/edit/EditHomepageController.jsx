@@ -29,6 +29,9 @@ export class EditHomepageController extends Component {
         super(props);
         this.state = {
             initialHomepageData: {},
+            homepageFetched: false,
+            collectionDetailsFetched: false,
+            isInAnotherCollection: true,
             homepageData: {
                 featuredContent: [],
                 serviceMessage: ""
@@ -42,11 +45,23 @@ export class EditHomepageController extends Component {
         };
     }
 
-    async componentDidMount() {
-        await this.setCollectionState();
-        await this.getHomepageData();
-        this.checkIfHomepageIsInAnotherCollection();
+    componentDidMount() {
+        this.setCollectionState();
+        this.getHomepageData();
     }
+
+    componentDidUpdate(prevProps, prevState) {
+        if (this.flagsAreSetToDisplayForm(prevState)) {
+            this.setState({ formIsDisabled: false });
+            return;
+        }
+    }
+
+    flagsAreSetToDisplayForm = prevState => {
+        // We check against previous state so as not to create an infinite loop in the componentDidUpdate method
+        const formIsCurrentlyDisabled = prevState.formIsDisabled;
+        return formIsCurrentlyDisabled && !this.state.isInAnotherCollection && this.state.collectionDetailsFetched && this.state.homepageFetched;
+    };
 
     setCollectionState = async () => {
         await collections
@@ -75,11 +90,14 @@ export class EditHomepageController extends Component {
                         collectionState
                     });
                 }
-                return;
+                this.setState({
+                    collectionDetailsFetched: true
+                });
+                return this.checkIfHomepageIsInAnotherCollection();
             })
             .catch(error => {
                 this.setState({
-                    formIsDisabled: true
+                    collectionDetailsFetched: false
                 });
                 log.event(
                     "error retrieving the homepage's collection state",
@@ -95,13 +113,13 @@ export class EditHomepageController extends Component {
     };
 
     getHomepageData = async () => {
-        this.setState({ formIsDisabled: true });
         return homepage
             .get(this.props.params.collectionID)
             .then(homepageData => {
                 const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
                 this.setState({
                     initialHomepageData: homepageData,
+                    homepageFetched: true,
                     homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage }
                 });
                 return;
@@ -113,7 +131,6 @@ export class EditHomepageController extends Component {
                     message: "An error occurred whilst trying to get homepage data.",
                     isDismissable: true
                 });
-                this.setState({ formIsDisabled: true });
             });
     };
 
@@ -135,7 +152,7 @@ export class EditHomepageController extends Component {
         }
     };
 
-    checkIfHomepageIsInAnotherCollection() {
+    checkIfHomepageIsInAnotherCollection = () => {
         collections
             .checkContentIsInCollection("/")
             .then(response => {
@@ -150,15 +167,20 @@ export class EditHomepageController extends Component {
                         message: `The homepage is already being edited in another collection: ${response}`,
                         isDismissable: true
                     });
-                    this.setState({ formIsDisabled: true });
+                    this.setState({ isInAnotherCollection: true });
                     return;
                 }
-                this.setState({ formIsDisabled: false });
+                this.setState({ isInAnotherCollection: false });
             })
             .catch(error => {
+                notifications.add({
+                    type: "warning",
+                    message: `An error occurred when trying to check if the homepage is in another collection: ${error}`,
+                    isDismissable: true
+                });
                 log.event("error occurred when trying to check if homepage is being edited in another collection", log.error(error));
             });
-    }
+    };
 
     handleBackButton = () => {
         const previousUrl = url.resolve("../../");

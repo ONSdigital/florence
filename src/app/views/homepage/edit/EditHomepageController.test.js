@@ -97,7 +97,7 @@ beforeEach(async () => {
 describe("On mount of the edit homepage controller", () => {
     it("fetches homepage content", () => {
         wrapper.instance().componentDidMount();
-        expect(homepage.get.mock.calls.length).toBe(1);
+        expect(homepage.get.mock.calls.length).toBe(2);
     });
 });
 
