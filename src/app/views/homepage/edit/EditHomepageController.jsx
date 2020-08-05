@@ -154,23 +154,24 @@ export class EditHomepageController extends Component {
 
     checkIfHomepageIsInAnotherCollection = () => {
         collections
-            .checkContentIsInCollection("/")
+            .checkContentIsInCollection("/data.json")
             .then(response => {
-                if (response !== this.props.currentCollection.name) {
-                    log.event(
-                        "the homepage is already being edited in another collection.",
-                        log.data({ collectionHomepageIsIn: response }),
-                        log.error(response)
-                    );
-                    notifications.add({
-                        type: "neutral",
-                        message: `The homepage is already being edited in another collection: ${response}`,
-                        isDismissable: true
-                    });
-                    this.setState({ isInAnotherCollection: true });
+                if (response.status === 204 || response === this.props.currentCollection.name) {
+                    this.setState({ isInAnotherCollection: false });
                     return;
                 }
-                this.setState({ isInAnotherCollection: false });
+                log.event(
+                    "the homepage is already being edited in another collection.",
+                    log.data({ collectionHomepageIsIn: response }),
+                    log.error(response)
+                );
+                notifications.add({
+                    type: "neutral",
+                    message: `The homepage is already being edited in another collection: ${response}`,
+                    isDismissable: true
+                });
+                this.setState({ isInAnotherCollection: true });
+                return;
             })
             .catch(error => {
                 notifications.add({
