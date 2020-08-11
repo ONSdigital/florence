@@ -400,6 +400,13 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
 
+        // Override the homepage url so that it no longer takes users to the workspace, but instead to the Edit Homepage form
+        if (page.type === "home_page") {
+            const newURL = url.resolve(`/collections/${this.props.activeCollection.id}/homepage`);
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+
         const newURL = `${this.props.rootPath}/workspace?collection=${this.props.collectionID}&uri=${page.uri}`;
         window.location = newURL;
 

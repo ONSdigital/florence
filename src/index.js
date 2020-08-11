@@ -27,6 +27,9 @@ import DatasetUploadDetails from "./app/views/uploads/dataset/upload-details/Dat
 import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/DatasetUploadMetadata";
 import DatasetMetadata from "./app/views/datasets/metadata/DatasetMetadata";
 import VersionMetadata from "./app/views/datasets/metadata/VersionMetadata";
+import EditHomepageController from "./app/views/homepage/edit/EditHomepageController"
+import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem"
+
 import Logs from "./app/views/logs/Logs";
 
 import auth from "./app/utilities/auth";
@@ -43,6 +46,8 @@ import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadat
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
+import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
+
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -92,6 +97,16 @@ class Index extends Component {
                                     <Route path="restore-content" component={userIsAuthenticated(CollectionsController)} />
                                 </Route>
                             </Route>
+                            <Route component={CollectionRoutesWrapper}>
+                                <Route path={`${rootPath}/collections/:collectionID/homepage`} component={userIsAuthenticated(EditHomepageController)}>
+                                    <Route
+                                        path={`edit/:homepageDataField/:homepageDataFieldID`}
+                                        component={userIsAuthenticated(EditHomepageItem)}
+                                    />
+                                </Route>
+                            </Route>
+                            <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
+                                
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
 
                             {config.enableDatasetImport === true && (

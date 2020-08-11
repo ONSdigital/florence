@@ -30,6 +30,23 @@ export default class collections {
         return http.put(`/zebedee/collection/${collectionID}`, body);
     }
 
+    static getContentCollectionDetails(collectionID) {
+        return http.get(`/zebedee/collection/${collectionID}`);
+    }
+
+    static setContentStatusToComplete(collectionID, contentURI) {
+        return http.post(`/zebedee/complete/${collectionID}?uri=${contentURI}data.json`);
+    }
+
+    static async setPageContentAsReviewed(collectionID, contentURI) {
+        return http.post(`/zebedee/review/${collectionID}?uri=${contentURI}data.json`);
+    }
+
+    static async savePageContent(collectionID, contentURI, body) {
+        const response = await http.post(`/zebedee/content/${collectionID}?uri=${contentURI}data.json`, body, true);
+        return response;
+    }
+
     // In CMD we're using a new endpoint to delete pages (https://github.com/ONSdigital/zebedee/blob/cmd-develop/zebedee-cms/src/main/java/com/github/onsdigital/zebedee/api/Page.java)
     // which means that this method only works once Zebedee has been updated to CMD. For now, we need to be able to continue using the old
     // `deletePage` method so that we can still delete content before CMD is merged into prod Zebedee. This is why I've created this very

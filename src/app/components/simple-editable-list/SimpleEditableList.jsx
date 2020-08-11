@@ -16,7 +16,8 @@ const propTypes = {
     handleAddClick: PropTypes.func.isRequired,
     handleEditClick: PropTypes.func.isRequired,
     handleDeleteClick: PropTypes.func.isRequired,
-    disableActions: PropTypes.bool
+    disableActions: PropTypes.bool,
+    maximumNumberOfEntries: PropTypes.number
 };
 
 export default class SimpleEditableList extends Component {
@@ -34,6 +35,16 @@ export default class SimpleEditableList extends Component {
 
     handleDeleteClick = deletedField => {
         this.props.handleDeleteClick(deletedField, this.props.editingStateFieldName);
+    };
+
+    hasReachedMaximumNumberOfEntries = () => {
+        if (this.props.maximumNumberOfEntries == null || this.props.fields == null) {
+            return false;
+        }
+
+        if (this.props.fields.length >= this.props.maximumNumberOfEntries) {
+            return true;
+        }
     };
 
     render() {
@@ -58,7 +69,7 @@ export default class SimpleEditableList extends Component {
                     type="button"
                     className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")}
                     onClick={this.handleAddClick}
-                    disabled={this.props.disableActions}
+                    disabled={this.props.disableActions || this.hasReachedMaximumNumberOfEntries()}
                 >
                     {this.props.addText ? this.props.addText : "Add a new item"}
                 </button>

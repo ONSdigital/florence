@@ -11,7 +11,7 @@ const propTypes = {
     notInCollectionYet: PropTypes.bool
 };
 
-class DatasetReviewActions extends Component {
+class SaveAndReviewActions extends Component {
     constructor(props) {
         super(props);
     }
@@ -39,7 +39,7 @@ class DatasetReviewActions extends Component {
                 disabled={this.props.disabled}
                 className="btn btn--positive margin-right--1"
             >
-                Save and submit for approval
+                Submit for approval
             </button>
         );
     }
@@ -65,6 +65,6 @@ class DatasetReviewActions extends Component {
     }
 }
 
-DatasetReviewActions.propTypes = propTypes;
+SaveAndReviewActions.propTypes = propTypes;
 
-export default DatasetReviewActions;
+export default SaveAndReviewActions;
