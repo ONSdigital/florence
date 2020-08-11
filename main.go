@@ -142,7 +142,7 @@ func main() {
 	}
 
 	// Create Uploader with S3 client and Vault
-	uploader := upload.New(s3, vc, cfg.VaultPath)
+	uploader := upload.New(s3, vc, cfg.VaultPath, cfg.AwsRegion, cfg.UploadBucketName)
 
 	router := pat.New()
 
