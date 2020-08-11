@@ -9,6 +9,7 @@ import (
 // Config represents the configuration required for florence
 type Config struct {
 	BindAddr                   string        `envconfig:"BIND_ADDR"`
+	APIRouterURL               string        `envconfig:"API_ROUTER_URL"`
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
 	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
 	RecipeAPIURL               string        `envconfig:"RECIPE_API_URL"`
@@ -44,6 +45,7 @@ func Get() (*Config, error) {
 
 	cfg = &Config{
 		BindAddr:                   ":8080",
+		APIRouterURL:               "http://localhost:23200",
 		RouterURL:                  "http://localhost:20000",
 		ZebedeeURL:                 "http://localhost:8082",
 		RecipeAPIURL:               "http://localhost:22300",

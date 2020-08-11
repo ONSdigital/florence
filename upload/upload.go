@@ -47,6 +47,7 @@ type S3Client interface {
 	UploadPart(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
 	UploadPartWithPsk(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error
 	CheckPartUploaded(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
+	Checker(ctx context.Context, state *healthcheck.CheckState) error
 }
 
 // VaultClient is an interface to represent methods called to action upon vault (implemented by dp-vault)

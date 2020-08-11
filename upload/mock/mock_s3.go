@@ -5,6 +5,7 @@ package mock
 
 import (
 	"context"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/dp-s3"
 	"github.com/ONSdigital/florence/upload"
 	"sync"
@@ -12,6 +13,7 @@ import (
 
 var (
 	lockS3ClientMockCheckPartUploaded sync.RWMutex
+	lockS3ClientMockChecker           sync.RWMutex
 	lockS3ClientMockUploadPart        sync.RWMutex
 	lockS3ClientMockUploadPartWithPsk sync.RWMutex
 )
@@ -29,6 +31,9 @@ var _ upload.S3Client = &S3ClientMock{}
 //             CheckPartUploadedFunc: func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error) {
 // 	               panic("mock out the CheckPartUploaded method")
 //             },
+//             CheckerFunc: func(ctx context.Context, state *healthcheck.CheckState) error {
+// 	               panic("mock out the Checker method")
+//             },
 //             UploadPartFunc: func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error {
 // 	               panic("mock out the UploadPart method")
 //             },
@@ -45,6 +50,9 @@ type S3ClientMock struct {
 	// CheckPartUploadedFunc mocks the CheckPartUploaded method.
 	CheckPartUploadedFunc func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
 
+	// CheckerFunc mocks the Checker method.
+	CheckerFunc func(ctx context.Context, state *healthcheck.CheckState) error
+
 	// UploadPartFunc mocks the UploadPart method.
 	UploadPartFunc func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
 
@@ -59,6 +67,13 @@ type S3ClientMock struct {
 			Ctx context.Context
 			// Req is the req argument value.
 			Req *s3client.UploadPartRequest
+		}
+		// Checker holds details about calls to the Checker method.
+		Checker []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// State is the state argument value.
+			State *healthcheck.CheckState
 		}
 		// UploadPart holds details about calls to the UploadPart method.
 		UploadPart []struct {
@@ -115,6 +130,41 @@ func (mock *S3ClientMock) CheckPartUploadedCalls() []struct {
 	lockS3ClientMockCheckPartUploaded.RLock()
 	calls = mock.calls.CheckPartUploaded
 	lockS3ClientMockCheckPartUploaded.RUnlock()
+	return calls
+}
+
+// Checker calls CheckerFunc.
+func (mock *S3ClientMock) Checker(ctx context.Context, state *healthcheck.CheckState) error {
+	if mock.CheckerFunc == nil {
+		panic("S3ClientMock.CheckerFunc: method is nil but S3Client.Checker was just called")
+	}
+	callInfo := struct {
+		Ctx   context.Context
+		State *healthcheck.CheckState
+	}{
+		Ctx:   ctx,
+		State: state,
+	}
+	lockS3ClientMockChecker.Lock()
+	mock.calls.Checker = append(mock.calls.Checker, callInfo)
+	lockS3ClientMockChecker.Unlock()
+	return mock.CheckerFunc(ctx, state)
+}
+
+// CheckerCalls gets all the calls that were made to Checker.
+// Check the length with:
+//     len(mockedS3Client.CheckerCalls())
+func (mock *S3ClientMock) CheckerCalls() []struct {
+	Ctx   context.Context
+	State *healthcheck.CheckState
+} {
+	var calls []struct {
+		Ctx   context.Context
+		State *healthcheck.CheckState
+	}
+	lockS3ClientMockChecker.RLock()
+	calls = mock.calls.Checker
+	lockS3ClientMockChecker.RUnlock()
 	return calls
 }
 
