@@ -8,40 +8,40 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestMain(t *testing.T) {
-	mockHTMLFile := `
-	<!DOCTYPE html>
-	<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Florence</title>
-	
-		<link rel="stylesheet" href="/florence/dist/css/app.css">
-	</head>
-	<body>
-	<noscript><h1>Enable Javascript to use Florence</h1></noscript>
-	<script>
-		function getEnv() {
-		  return /* environment variables placeholder */
-		}
-	</script>
-	<div id="app"></div>
-	
-	<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
-		because the NPM module appears to be out-of-date and breaks our code. -->
-	<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
-	
-	<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
-	</body>
-	</html>
-	`
+var mockHTMLFile = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Florence</title>
+
+	<link rel="stylesheet" href="/florence/dist/css/app.css">
+</head>
+<body>
+<noscript><h1>Enable Javascript to use Florence</h1></noscript>
+<script>
+	function getEnv() {
+	  return /* environment variables placeholder */
+	}
+</script>
+<div id="app"></div>
+
+<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
+	because the NPM module appears to be out-of-date and breaks our code. -->
+<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
+
+<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
+</body>
+</html>
+`
+
+func TestStaticFiles(t *testing.T) {
 
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
@@ -63,6 +63,9 @@ func TestMain(t *testing.T) {
 		staticFiles(recorder, request)
 		So(recorder.Code, ShouldEqual, 404)
 	})
+}
+
+func TestIndexFile(t *testing.T) {
 
 	Convey("Request for legacy HTML file returns a 200 response", t, func() {
 		cfg := &config.Config{}
@@ -266,35 +269,5 @@ func TestMain(t *testing.T) {
 			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
 		})
 
-	})
-
-	Convey("Table renderer proxy director function trims '/table' from the request URL", t, func() {
-		request, err := http.NewRequest("GET", "/table/parse", nil)
-		So(err, ShouldBeNil)
-		tableDirector(request)
-		So(request.URL.String(), ShouldEqual, "/parse")
-	})
-
-	Convey("Zebedee proxy director function trims '/zebedee' from the request URL", t, func() {
-		request, err := http.NewRequest("GET", "/zebedee/test", nil)
-		So(err, ShouldBeNil)
-		zebedeeDirector(request)
-		So(request.URL.String(), ShouldEqual, "/test")
-	})
-
-	Convey("Zebedee proxy director function sets 'X-Florence-Token' header when access_token cookie is available", t, func() {
-		cookie := http.Cookie{"access_token", "foo", "/", "http://localhost", time.Now().AddDate(0, 0, 1), time.Now().AddDate(0, 0, 1).Format(time.UnixDate), 0, false, true, http.SameSiteDefaultMode, "access_token=foo", []string{"access_token=foo"}}
-		request, err := http.NewRequest("GET", "", nil)
-		So(err, ShouldBeNil)
-		request.AddCookie(&cookie)
-		zebedeeDirector(request)
-		So(request.Header.Get("X-Florence-Token"), ShouldEqual, "foo")
-	})
-
-	Convey("Zebedee proxy director function doesn't set 'X-Florence-Token' header when no access_token cookie is available", t, func() {
-		request, err := http.NewRequest("GET", "", nil)
-		So(err, ShouldBeNil)
-		zebedeeDirector(request)
-		So(request.Header.Get("X-Florence-Token"), ShouldBeBlank)
 	})
 }

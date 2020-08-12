@@ -1,22 +1,11 @@
 package service
 
 import (
-	"bufio"
-	"bytes"
 	"context"
-	"encoding/json"
-	"fmt"
-	"mime"
-	"net/http"
 	"net/url"
-	"path/filepath"
-	"strings"
-	"time"
 
-	"github.com/ONSdigital/dp-api-clients-go/headers"
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
-	dprequest "github.com/ONSdigital/dp-net/request"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/upload"
@@ -26,16 +15,11 @@ import (
 	"github.com/pkg/errors"
 )
 
-// generated files constants
-const (
-	assetStaticRoot  = "../dist/"
-	assetLegacyIndex = "../dist/legacy-assets/index.html"
-	assetRefactored  = "../dist/refactored.html"
+var (
+	getAsset     = assets.Asset
+	getAssetETag = assets.GetAssetETag
+	upgrader     = websocket.Upgrader{}
 )
-
-var getAsset = assets.Asset
-var getAssetETag = assets.GetAssetETag
-var upgrader = websocket.Upgrader{}
 
 // Service contains all the configs, server and clients to run the Image API
 type Service struct {
@@ -55,6 +39,8 @@ type Service struct {
 func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceList, buildTime, gitCommit, version string, svcErrors chan error) (svc *Service, err error) {
 
 	log.Event(ctx, "running service", log.INFO)
+
+	// Initialise Service struct
 	svc = &Service{
 		version:     version,
 		config:      cfg,
@@ -83,7 +69,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// Get health client for api router
 	svc.healthClient = serviceList.GetHealthClient("api-router", cfg.APIRouterURL)
 
-	// Get healthcheck
+	// Get healthcheck with checkers
 	svc.healthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
 		log.Event(ctx, "failed to create health check", log.FATAL, log.Error(err))
@@ -93,6 +79,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 		return nil, errors.Wrap(err, "unable to register checkers")
 	}
 
+	// Create Router and HTTP Server
 	svc.router, err = svc.createRouter(ctx, cfg)
 	if err != nil {
 		return nil, err
@@ -109,8 +96,8 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// }
 	// s.MiddlewareOrder = newMo
 
+	// Start Healthcheck and HTTP Server
 	svc.healthCheck.Start(ctx)
-
 	go func() {
 		if err := svc.server.ListenAndServe(); err != nil {
 			svcErrors <- errors.Wrap(err, "failure in http listen and serve")
@@ -186,7 +173,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
 	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
 	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
-	router.HandleFunc("/florence/websocket", svc.websocketHandler)
+	router.HandleFunc("/florence/websocket", websocketHandler(svc.version))
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 	router.Handle("/{uri:.*}", routerProxy)
 
@@ -211,7 +198,7 @@ func (svc *Service) Close(ctx context.Context) error {
 			svc.healthCheck.Stop()
 		}
 
-		// stop any incoming requests before closing any outbound connections
+		// stop any incoming requests
 		if err := svc.server.Shutdown(ctx); err != nil {
 			log.Event(ctx, "failed to shutdown http server", log.Error(err), log.ERROR)
 			hasShutdownError = true
@@ -260,201 +247,4 @@ func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (e
 		return errors.New("Error(s) registering checkers for healthcheck")
 	}
 	return nil
-}
-
-func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
-	http.Redirect(w, req, "/florence", 301)
-}
-
-func staticFiles(w http.ResponseWriter, req *http.Request) {
-	path := req.URL.Query().Get(":uri")
-	assetPath := assetStaticRoot + path
-
-	etag, err := getAssetETag(assetPath)
-
-	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
-		w.WriteHeader(http.StatusNotModified)
-		return
-	}
-
-	b, err := getAsset(assetPath)
-	if err != nil {
-		log.Event(req.Context(), "error getting asset", log.ERROR, log.Error(err))
-		w.WriteHeader(404)
-		return
-	}
-
-	w.Header().Set(`ETag`, etag)
-	w.Header().Set(`Cache-Control`, "no-cache")
-	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
-	w.WriteHeader(200)
-	w.Write(b)
-}
-
-func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		log.Event(req.Context(), "getting legacy html file", log.INFO)
-
-		b, err := getAsset(assetLegacyIndex)
-		if err != nil {
-			log.Event(req.Context(), "error getting legacy html file", log.ERROR, log.Error(err))
-			w.WriteHeader(404)
-			return
-		}
-
-		cfgJSON, err := json.Marshal(cfg.SharedConfig)
-		if err != nil {
-			log.Event(req.Context(), "error marshalling shared configuration", log.ERROR, log.Error(err))
-			w.WriteHeader(500)
-			return
-		}
-		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
-
-		w.Header().Set(`Content-Type`, "text/html")
-		w.WriteHeader(200)
-		w.Write(b)
-	}
-}
-
-func director(req *http.Request) {
-	if accessTokenCookie, err := req.Cookie(dprequest.FlorenceCookieKey); err == nil && len(accessTokenCookie.Value) > 0 {
-		headers.SetUserAuthToken(req, accessTokenCookie.Value)
-	}
-
-	if colletionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
-		headers.SetCollectionID(req, colletionCookie.Value)
-	}
-}
-
-func zebedeeDirector(req *http.Request) {
-	director(req)
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
-}
-
-func recipeAPIDirector(apiRouterVersion string) func(req *http.Request) {
-	return func(req *http.Request) {
-		director(req)
-		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
-	}
-}
-
-func importAPIDirector(apiRouterVersion string) func(req *http.Request) {
-	return func(req *http.Request) {
-		director(req)
-		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, strings.TrimPrefix(req.URL.Path, "/import"))
-	}
-}
-
-func datasetAPIDirector(apiRouterVersion string) func(req *http.Request) {
-	return func(req *http.Request) {
-		director(req)
-		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, strings.TrimPrefix(req.URL.Path, "/dataset"))
-	}
-}
-
-func datasetControllerDirector(req *http.Request) {
-	director(req)
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
-}
-
-func tableDirector(req *http.Request) {
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
-}
-
-func (svc *Service) websocketHandler(w http.ResponseWriter, req *http.Request) {
-	c, err := upgrader.Upgrade(w, req, nil)
-	if err != nil {
-		log.Event(req.Context(), "error upgrading connection to websocket", log.ERROR, log.Error(err))
-		return
-	}
-
-	defer c.Close()
-
-	err = c.WriteJSON(florenceServerEvent{"version", florenceVersionPayload{Version: svc.version}})
-	if err != nil {
-		log.Event(req.Context(), "error writing version message", log.ERROR, log.Error(err))
-		return
-	}
-
-	for {
-		_, message, err := c.ReadMessage()
-		if err != nil {
-			log.Event(req.Context(), "error reading websocket message", log.ERROR, log.Error(err))
-			break
-		}
-
-		rdr := bufio.NewReader(bytes.NewReader(message))
-		b, err := rdr.ReadBytes('{')
-		if err != nil {
-			log.Event(req.Context(), "error reading websocket bytes", log.WARN, log.Error(err), log.Data{"bytes": string(b)})
-			continue
-		}
-
-		tags := strings.Split(string(b), ":")
-		eventID := tags[0]
-		eventType := tags[1]
-		eventData := message[len(eventID)+len(eventType)+2:]
-
-		switch eventType {
-		case "log":
-			var e florenceLogEvent
-			e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
-			err = json.Unmarshal(eventData, &e)
-			if err != nil {
-				log.Event(req.Context(), "error unmarshalling websocket message", log.WARN, log.Error(err), log.Data{"data": string(eventData)})
-				continue
-			}
-			log.Event(req.Context(), "client log", log.INFO, log.Data{"data": e})
-
-			err = c.WriteJSON(florenceServerEvent{"ack", eventID})
-			if err != nil {
-				log.Event(req.Context(), "error writing websocket ack", log.WARN, log.Error(err))
-			}
-		default:
-			log.Event(req.Context(), "unknown websocket event type", log.WARN, log.Data{"type": eventType, "data": string(eventData)})
-		}
-	}
-}
-
-func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
-	return func(w http.ResponseWriter, req *http.Request) {
-		log.Event(req.Context(), "getting refactored html file", log.INFO)
-
-		b, err := getAsset(assetRefactored)
-		if err != nil {
-			log.Event(req.Context(), "error getting refactored html file", log.ERROR, log.Error(err))
-			w.WriteHeader(404)
-			return
-		}
-
-		cfgJSON, err := json.Marshal(cfg.SharedConfig)
-		if err != nil {
-			log.Event(req.Context(), "error marshalling shared configuration", log.ERROR, log.Error(err))
-			w.WriteHeader(500)
-			return
-		}
-		b = []byte(strings.Replace(string(b), "/* environment variables placeholder */", "/* server generated shared config */ "+string(cfgJSON), 1))
-
-		w.Header().Set(`Content-Type`, "text/html")
-		w.WriteHeader(200)
-		w.Write(b)
-	}
-}
-
-type florenceLogEvent struct {
-	ServerTimestamp string      `json:"-"`
-	ClientTimestamp time.Time   `json:"clientTimestamp"`
-	Type            string      `json:"type"`
-	Location        string      `json:"location"`
-	InstanceID      string      `json:"instanceID"`
-	Payload         interface{} `json:"payload"`
-}
-
-type florenceServerEvent struct {
-	Type    string      `json:"type"`
-	Payload interface{} `json:"payload"`
-}
-
-type florenceVersionPayload struct {
-	Version string `json:"version"`
 }
