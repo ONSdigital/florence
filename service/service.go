@@ -8,7 +8,6 @@ import (
 	"mime"
 	"net/http"
 	"net/url"
-	"os"
 	"path/filepath"
 	"strings"
 	"time"
@@ -93,7 +92,10 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 		return nil, errors.Wrap(err, "unable to register checkers")
 	}
 
-	svc.router = svc.createRouter(ctx, cfg)
+	svc.router, err = svc.createRouter(ctx, cfg)
+	if err != nil {
+		return nil, err
+	}
 	svc.server = serviceList.GetHTTPServer(cfg.BindAddr, svc.router)
 
 	// // FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
@@ -117,58 +119,47 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	return svc, nil
 }
 
-func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) *pat.Router {
+func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *pat.Router, err error) {
+
+	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
+	if err != nil {
+		log.Event(ctx, "error parsing API router URL", log.FATAL, log.Error(err))
+		return nil, err
+	}
 
 	routerURL, err := url.Parse(cfg.RouterURL)
 	if err != nil {
-		log.Event(ctx, "error parsing router URL", log.FATAL, log.Error(err))
-		os.Exit(1)
+		log.Event(ctx, "error parsing frontend router URL", log.FATAL, log.Error(err))
+		return nil, err
 	}
-	routerProxy := reverseproxy.Create(routerURL, director)
 
 	zebedeeURL, err := url.Parse(cfg.ZebedeeURL)
 	if err != nil {
 		log.Event(ctx, "error parsing zebedee URL", log.FATAL, log.Error(err))
-		os.Exit(1)
+		return nil, err
 	}
-	zebedeeProxy := reverseproxy.Create(zebedeeURL, zebedeeDirector)
-
-	recipeAPIURL, err := url.Parse(cfg.RecipeAPIURL)
-	if err != nil {
-		log.Event(ctx, "error parsing recipe API URL", log.FATAL, log.Error(err))
-		os.Exit(1)
-	}
-	recipeAPIProxy := reverseproxy.Create(recipeAPIURL, nil)
 
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
 		log.Event(ctx, "error parsing table renderer URL", log.FATAL, log.Error(err))
-		os.Exit(1)
+		return nil, err
 	}
-	tableProxy := reverseproxy.Create(tableURL, tableDirector)
-
-	importAPIURL, err := url.Parse(cfg.ImportAPIURL)
-	if err != nil {
-		log.Event(ctx, "error parsing import API URL", log.FATAL, log.Error(err))
-		os.Exit(1)
-	}
-	importAPIProxy := reverseproxy.Create(importAPIURL, importAPIDirector)
-
-	datasetAPIURL, err := url.Parse(cfg.DatasetAPIURL)
-	if err != nil {
-		log.Event(ctx, "error parsing dataset API URL", log.FATAL, log.Error(err))
-		os.Exit(1)
-	}
-	datasetAPIProxy := reverseproxy.Create(datasetAPIURL, datasetAPIDirector)
 
 	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
 	if err != nil {
 		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
-		os.Exit(1)
+		return nil, err
 	}
+
+	routerProxy := reverseproxy.Create(routerURL, director)
+	zebedeeProxy := reverseproxy.Create(zebedeeURL, zebedeeDirector)
+	recipeAPIProxy := reverseproxy.Create(apiRouterURL, nil)
+	tableProxy := reverseproxy.Create(tableURL, tableDirector)
+	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector)
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
 
-	router := pat.New()
+	router = pat.New()
 
 	router.HandleFunc("/health", svc.healthCheck.Handler)
 
@@ -195,7 +186,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) *pat.R
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 	router.Handle("/{uri:.*}", routerProxy)
 
-	return router
+	return router, nil
 }
 
 // Close gracefully shuts the service down in the required order, with timeout
