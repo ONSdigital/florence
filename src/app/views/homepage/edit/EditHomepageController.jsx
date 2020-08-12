@@ -135,7 +135,6 @@ export class EditHomepageController extends Component {
     };
 
     mapfeaturedContentToState = featuredContent => {
-        console.log("FEATURED CONTENT:", featuredContent);
         try {
             return featuredContent.map((item, index) => {
                 return {
