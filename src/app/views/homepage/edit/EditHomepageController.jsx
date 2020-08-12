@@ -135,12 +135,14 @@ export class EditHomepageController extends Component {
     };
 
     mapfeaturedContentToState = featuredContent => {
+        console.log("FEATURED CONTENT:", featuredContent);
         try {
             return featuredContent.map((item, index) => {
                 return {
                     id: index,
                     description: item.description,
                     uri: item.uri,
+                    image: item.image,
                     title: item.title,
                     simpleListHeading: item.title,
                     simpleListDescription: item.description
@@ -298,7 +300,8 @@ export class EditHomepageController extends Component {
             featuredContent = this.state.homepageData.featuredContent.map(entry => ({
                 title: entry.title,
                 description: entry.description,
-                uri: entry.uri
+                uri: entry.uri,
+                image: entry.image
             }));
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
