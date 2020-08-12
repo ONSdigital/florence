@@ -15,6 +15,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 		So(configuration, ShouldResemble, &Config{
 			BindAddr:                   ":8080",
 			APIRouterURL:               "http://localhost:23200",
+			APIRouterVersion:           "v1",
 			RouterURL:                  "http://localhost:20000",
 			ZebedeeURL:                 "http://localhost:8082",
 			DatasetControllerURL:       "http://localhost:24000",

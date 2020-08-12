@@ -10,6 +10,7 @@ import (
 type Config struct {
 	BindAddr                   string        `envconfig:"BIND_ADDR"`
 	APIRouterURL               string        `envconfig:"API_ROUTER_URL"`
+	APIRouterVersion           string        `envconfig:"API_ROUTER_VERSION"`
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
 	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
@@ -43,6 +44,7 @@ func Get() (*Config, error) {
 	cfg = &Config{
 		BindAddr:                   ":8080",
 		APIRouterURL:               "http://localhost:23200", // API router
+		APIRouterVersion:           "v1",
 		RouterURL:                  "http://localhost:20000", // Frontend router
 		ZebedeeURL:                 "http://localhost:8082",
 		DatasetControllerURL:       "http://localhost:24000",

@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"mime"
 	"net/http"
 	"net/url"
@@ -119,6 +120,9 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	return svc, nil
 }
 
+// createRouter creates a Router with the necessary reverse proxies for services that florence needs to call,
+// and handlers for the S3 Uploader and legacy index files.
+// CMD API calls (recipe, import and dataset APIs) are proxied through the API router.
 func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *pat.Router, err error) {
 
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
@@ -153,10 +157,10 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	routerProxy := reverseproxy.Create(routerURL, director)
 	zebedeeProxy := reverseproxy.Create(zebedeeURL, zebedeeDirector)
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, nil)
+	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, tableDirector)
-	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector)
-	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector)
+	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion))
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion))
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
 
 	router = pat.New()
@@ -327,23 +331,34 @@ func zebedeeDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/zebedee")
 }
 
-func importAPIDirector(req *http.Request) {
-	director(req)
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/import")
+func recipeAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
+	}
 }
 
-func tableDirector(req *http.Request) {
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
+func importAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, strings.TrimPrefix(req.URL.Path, "/import"))
+	}
 }
 
-func datasetAPIDirector(req *http.Request) {
-	director(req)
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset")
+func datasetAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, strings.TrimPrefix(req.URL.Path, "/dataset"))
+	}
 }
 
 func datasetControllerDirector(req *http.Request) {
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
+}
+
+func tableDirector(req *http.Request) {
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }
 
 func (svc *Service) websocketHandler(w http.ResponseWriter, req *http.Request) {
