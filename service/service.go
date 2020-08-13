@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"net/url"
+	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
@@ -21,7 +22,7 @@ var (
 	upgrader     = websocket.Upgrader{}
 )
 
-// Service contains all the configs, server and clients to run the Image API
+// Service contains all the configs, server and clients to run Florence
 type Service struct {
 	version      string
 	config       *config.Config
@@ -85,16 +86,6 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 		return nil, err
 	}
 	svc.server = serviceList.GetHTTPServer(cfg.BindAddr, svc.router)
-
-	// // FIXME temporary hack to remove timeout middleware (doesn't support hijacker interface)
-	// mo := s.MiddlewareOrder
-	// var newMo []string
-	// for _, mw := range mo {
-	// 	if mw != "Timeout" {
-	// 		newMo = append(newMo, mw)
-	// 	}
-	// }
-	// s.MiddlewareOrder = newMo
 
 	// Start Healthcheck and HTTP Server
 	svc.healthCheck.Start(ctx)
@@ -185,34 +176,36 @@ func (svc *Service) Close(ctx context.Context) error {
 	timeout := svc.config.GracefulShutdownTimeout
 	log.Event(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout}, log.INFO)
 	ctx, cancel := context.WithTimeout(ctx, timeout)
-
-	// track shutown gracefully closes up
-	var gracefulShutdown bool
+	hasShutdownError := false
 
 	go func() {
 		defer cancel()
-		var hasShutdownError bool
 
 		// stop healthcheck, as it depends on everything else
 		if svc.serviceList.HealthCheck {
 			svc.healthCheck.Stop()
 		}
 
+		time.Sleep(11 * time.Second)
+
 		// stop any incoming requests
 		if err := svc.server.Shutdown(ctx); err != nil {
 			log.Event(ctx, "failed to shutdown http server", log.Error(err), log.ERROR)
 			hasShutdownError = true
-		}
-
-		if !hasShutdownError {
-			gracefulShutdown = true
 		}
 	}()
 
 	// wait for shutdown success (via cancel) or failure (timeout)
 	<-ctx.Done()
 
-	if !gracefulShutdown {
+	// timeout expired
+	if ctx.Err() == context.DeadlineExceeded {
+		log.Event(ctx, "shutdown timed out", log.ERROR, log.Error(ctx.Err()))
+		return ctx.Err()
+	}
+
+	// other error
+	if hasShutdownError {
 		err := errors.New("failed to shutdown gracefully")
 		log.Event(ctx, "failed to shutdown gracefully ", log.ERROR, log.Error(err))
 		return err
