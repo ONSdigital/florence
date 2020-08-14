@@ -116,6 +116,13 @@ func main() {
 	}
 	datasetControllerProxy := reverseProxy.Create(datasetControllerURL, datasetControllerDirector)
 
+	imageAPIURL, err := url.Parse(cfg.ImageAPIURL)
+	if err != nil {
+		log.Event(ctx, "error parsing image API URL", log.FATAL, log.Error(err))
+		os.Exit(1)
+	}
+	imageAPIProxy := reverseProxy.Create(imageAPIURL, imageAPIDirector)
+
 	// Create Vault client (and add Check) if encryption is enabled
 	var vc upload.VaultClient
 	if !cfg.EncryptionDisabled {
@@ -158,7 +165,7 @@ func main() {
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 	}
-
+	router.Handle("/image{uri:*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
@@ -326,6 +333,11 @@ func director(req *http.Request) {
 	if colletionCookie, err := req.Cookie(common.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
 		headers.SetCollectionID(req, colletionCookie.Value)
 	}
+}
+
+func imageAPIDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/image")
 }
 
 func importAPIDirector(req *http.Request) {
