@@ -30,7 +30,8 @@ export default class EditHomepageItem extends Component {
             imageID: "",
             imageURL: "",
             imageTitle: "",
-            ImageAltText: ""
+            ImageAltText: "",
+            isUploadingImage: false
         };
     }
 
@@ -49,21 +50,51 @@ export default class EditHomepageItem extends Component {
             case "featuredContent": {
                 return (
                     <div>
-                        <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
-                        <Input id="uri" type="input" label="URL" value={this.state.uri} onChange={this.handleInputChange} />
+                        <Input
+                            id="title"
+                            type="input"
+                            label="Title"
+                            disabled={this.state.isUploadingImage}
+                            value={this.state.title}
+                            onChange={this.handleInputChange}
+                        />
+                        <Input
+                            id="uri"
+                            type="input"
+                            label="URL"
+                            disabled={this.state.isUploadingImage}
+                            value={this.state.uri}
+                            onChange={this.handleInputChange}
+                        />
                         <Input
                             id="description"
                             type="textarea"
                             label="Description"
+                            disabled={this.state.isUploadingImage}
                             value={this.state.description}
                             onChange={this.handleInputChange}
                         />
-                        <Input id="image-file" type="file" label="Image upload" value={this.state.imageID} onChange={this.handleInputChange} />
-                        <Input id="image-title" type="input" label="Image title" value={this.state.imageTitle} onChange={this.handleInputChange} />
+                        <Input
+                            id="image-file"
+                            type="file"
+                            label="Image upload"
+                            disabled={this.state.isUploadingImage}
+                            value={this.state.imageID}
+                            onChange={this.handleInputChange}
+                        />
+                        <Input
+                            id="image-title"
+                            type="input"
+                            label="Image title"
+                            disabled={this.state.isUploadingImage}
+                            value={this.state.imageTitle}
+                            onChange={this.handleInputChange}
+                        />
                         <Input
                             id="image-alt-text"
                             type="input"
                             label="Alt text (leave blank if decorative)"
+                            disabled={this.state.isUploadingImage}
                             value={this.state.image}
                             onChange={this.handleInputChange}
                         />
