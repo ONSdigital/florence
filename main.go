@@ -165,7 +165,7 @@ func main() {
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 	}
-	router.Handle("/image{uri:*}", imageAPIProxy)
+	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)

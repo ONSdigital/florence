@@ -50,7 +50,7 @@ func Get() (*Config, error) {
 		RecipeAPIURL:               "http://localhost:22300",
 		ImportAPIURL:               "http://localhost:21800",
 		DatasetAPIURL:              "http://localhost:22000",
-		ImageAPIURL:                "localhost:24700",
+		ImageAPIURL:                "http://localhost:24700",
 		DatasetControllerURL:       "http://localhost:24000",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
