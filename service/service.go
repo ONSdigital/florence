@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"net/url"
-	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
@@ -25,15 +24,15 @@ var (
 // Service contains all the configs, server and clients to run Florence
 type Service struct {
 	version      string
-	config       *config.Config
+	Config       *config.Config
 	vaultClient  upload.VaultClient
 	s3Client     upload.S3Client
 	uploader     *upload.Uploader
 	healthClient *health.Client
-	healthCheck  HealthChecker
-	router       *pat.Router
-	server       HTTPServer
-	serviceList  *ExternalServiceList
+	HealthCheck  HealthChecker
+	Router       *pat.Router
+	Server       HTTPServer
+	ServiceList  *ExternalServiceList
 }
 
 // Run the service
@@ -44,8 +43,8 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// Initialise Service struct
 	svc = &Service{
 		version:     version,
-		config:      cfg,
-		serviceList: serviceList,
+		Config:      cfg,
+		ServiceList: serviceList,
 	}
 
 	// Create Vault client (and add Check) if encryption is enabled
@@ -71,7 +70,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	svc.healthClient = serviceList.GetHealthClient("api-router", cfg.APIRouterURL)
 
 	// Get healthcheck with checkers
-	svc.healthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
+	svc.HealthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
 		log.Event(ctx, "failed to create health check", log.FATAL, log.Error(err))
 		return nil, err
@@ -81,16 +80,16 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	}
 
 	// Create Router and HTTP Server
-	svc.router, err = svc.createRouter(ctx, cfg)
+	svc.Router, err = svc.createRouter(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}
-	svc.server = serviceList.GetHTTPServer(cfg.BindAddr, svc.router)
+	svc.Server = serviceList.GetHTTPServer(cfg.BindAddr, svc.Router)
 
 	// Start Healthcheck and HTTP Server
-	svc.healthCheck.Start(ctx)
+	svc.HealthCheck.Start(ctx)
 	go func() {
-		if err := svc.server.ListenAndServe(); err != nil {
+		if err := svc.Server.ListenAndServe(); err != nil {
 			svcErrors <- errors.Wrap(err, "failure in http listen and serve")
 		}
 	}()
@@ -143,7 +142,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	router = pat.New()
 
-	router.HandleFunc("/health", svc.healthCheck.Handler)
+	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
 	if cfg.SharedConfig.EnableDatasetImport {
 		router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
@@ -173,7 +172,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 // Close gracefully shuts the service down in the required order, with timeout
 func (svc *Service) Close(ctx context.Context) error {
-	timeout := svc.config.GracefulShutdownTimeout
+	timeout := svc.Config.GracefulShutdownTimeout
 	log.Event(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout}, log.INFO)
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	hasShutdownError := false
@@ -182,14 +181,12 @@ func (svc *Service) Close(ctx context.Context) error {
 		defer cancel()
 
 		// stop healthcheck, as it depends on everything else
-		if svc.serviceList.HealthCheck {
-			svc.healthCheck.Stop()
+		if svc.ServiceList.HealthCheck {
+			svc.HealthCheck.Stop()
 		}
 
-		time.Sleep(11 * time.Second)
-
 		// stop any incoming requests
-		if err := svc.server.Shutdown(ctx); err != nil {
+		if err := svc.Server.Shutdown(ctx); err != nil {
 			log.Event(ctx, "failed to shutdown http server", log.Error(err), log.ERROR)
 			hasShutdownError = true
 		}
@@ -219,18 +216,18 @@ func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (e
 
 	hasErrors := false
 
-	if err = svc.healthCheck.AddCheck("S3", svc.s3Client.Checker); err != nil {
+	if err = svc.HealthCheck.AddCheck("S3", svc.s3Client.Checker); err != nil {
 		hasErrors = true
 		log.Event(ctx, "error adding check for s3 client", log.ERROR, log.Error(err))
 	}
 
-	if err = svc.healthCheck.AddCheck("API Router", svc.healthClient.Checker); err != nil {
+	if err = svc.HealthCheck.AddCheck("API Router", svc.healthClient.Checker); err != nil {
 		hasErrors = true
 		log.Event(ctx, "error adding check for api router health client", log.ERROR, log.Error(err))
 	}
 
 	if !cfg.EncryptionDisabled {
-		if err = svc.healthCheck.AddCheck("Vault", svc.vaultClient.Checker); err != nil {
+		if err = svc.HealthCheck.AddCheck("Vault", svc.vaultClient.Checker); err != nil {
 			hasErrors = true
 			log.Event(ctx, "error adding check for vault", log.ERROR, log.Error(err))
 		}
