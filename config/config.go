@@ -14,6 +14,7 @@ type Config struct {
 	RecipeAPIURL               string        `envconfig:"RECIPE_API_URL"`
 	ImportAPIURL               string        `envconfig:"IMPORT_API_URL"`
 	DatasetAPIURL              string        `envconfig:"DATASET_API_URL"`
+	ImageAPIURL                string        `envconfig:"IMAGE_API_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
 	AwsRegion                  string        `envconfig:"AWS_REGION"`
 	UploadBucketName           string        `envconfig:"UPLOAD_BUCKET_NAME"`
@@ -49,6 +50,7 @@ func Get() (*Config, error) {
 		RecipeAPIURL:               "http://localhost:22300",
 		ImportAPIURL:               "http://localhost:21800",
 		DatasetAPIURL:              "http://localhost:22000",
+		ImageAPIURL:                "localhost:24700",
 		DatasetControllerURL:       "http://localhost:24000",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
