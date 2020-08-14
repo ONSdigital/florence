@@ -26,7 +26,11 @@ export default class EditHomepageItem extends Component {
             id: this.props.data ? this.props.data.id : null,
             description: this.props.data ? this.props.data.description : "",
             uri: this.props.data ? this.props.data.uri : "",
-            title: this.props.data ? this.props.data.title : ""
+            title: this.props.data ? this.props.data.title : "",
+            imageID: "",
+            imageURL: "",
+            imageTitle: "",
+            ImageAltText: ""
         };
     }
 
@@ -52,6 +56,15 @@ export default class EditHomepageItem extends Component {
                             type="textarea"
                             label="Description"
                             value={this.state.description}
+                            onChange={this.handleInputChange}
+                        />
+                        <Input id="image-file" type="file" label="Image upload" value={this.state.imageID} onChange={this.handleInputChange} />
+                        <Input id="image-title" type="input" label="Image title" value={this.state.imageTitle} onChange={this.handleInputChange} />
+                        <Input
+                            id="image-alt-text"
+                            type="input"
+                            label="Alt text (leave blank if decorative)"
+                            value={this.state.image}
                             onChange={this.handleInputChange}
                         />
                     </div>
