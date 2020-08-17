@@ -1,12 +1,19 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
+import image from "../../../utilities/api-clients/image";
+import http from "../../../utilities/http";
+
+import Resumable from "resumeablejs";
+
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
+import FileUpload from "../../../components/file-upload/FileUpload";
 
 const propTypes = {
     params: PropTypes.shape({
-        homepageDataField: PropTypes.string.isRequired
+        homepageDataField: PropTypes.string.isRequired,
+        collectionID: PropTypes.string.isRequired
     }),
     data: PropTypes.shape({
         id: PropTypes.number,
@@ -31,11 +38,20 @@ export default class EditHomepageItem extends Component {
             imageURL: "",
             imageTitle: "",
             ImageAltText: "",
+            upload: {},
             isUploadingImage: false
         };
     }
 
-    handleSuccessClick = () => {
+    componentDidMount = () => {
+        this.bindInputs();
+    };
+
+    handleSuccessClick = async () => {
+        const imageUploaded = this.handleImageUpload();
+        if (!imageUploaded) {
+            return;
+        }
         this.props.handleSuccessClick(this.state, this.props.params.homepageDataField);
     };
 
@@ -45,7 +61,120 @@ export default class EditHomepageItem extends Component {
         this.setState({ [fieldName]: value });
     };
 
+    handleImageUpload = async () => {
+        this.setState({ isUploadingImage: true });
+        const imageRecord = await this.createImageRecord();
+        if (!imageRecord.id) {
+            return false;
+        }
+        return true;
+    };
+
+    createImageRecord = () => {
+        const imageProps = {
+            collection_id: this.props.params.collectionID,
+            type: "eye-candy"
+        };
+        image
+            .create(imageProps)
+            .then(image => image)
+            .catch(error => {
+                // TODO: Handle error properly
+                console.log(error);
+            });
+    };
+
+    bindInputs() {
+        const input = document.getElementById("image-file-upload");
+        const r = new Resumable({
+            target: "/upload",
+            chunkSize: 5 * 1024 * 1024,
+            query: {
+                aliasName: ""
+            },
+            forceChunkSize: true,
+            simultaneousUploads: 1
+        });
+        r.assignBrowse(input);
+        r.assignDrop(input);
+        r.on("fileAdded", file => {
+            const aliasName = file.container.name;
+            r.opts.query.aliasName = aliasName;
+            r.upload();
+            const fileUpload = {
+                aliasName: aliasName,
+                progress: 0,
+                error: null
+            };
+            const upload = {
+                ...this.state.upload,
+                ...fileUpload
+            };
+            this.setState({ upload });
+        });
+        r.on("fileProgress", file => {
+            const progressPercentage = Math.round(Number(file.progress() * 100));
+            const fileUpload = {
+                progress: progressPercentage
+            };
+            const upload = {
+                ...this.state.upload,
+                ...fileUpload
+            };
+            this.setState({ upload });
+        });
+        r.on("fileError", file => {
+            const fileUpload = {
+                error: "An error occurred whilst uploading this file."
+            };
+            const upload = {
+                ...this.state.upload,
+                ...fileUpload
+            };
+
+            console.error("Error uploading file to server");
+            this.setState({ upload });
+        });
+        r.on("fileSuccess", file => {
+            const aliasName = file.resumableObj.opts.query.aliasName;
+            http.get(`/upload/${file.uniqueIdentifier}`)
+                .then(response => {
+                    const fileUpload = {
+                        aliasName: aliasName,
+                        progress: 0,
+                        url: response.url
+                    };
+                    const upload = {
+                        ...this.state.upload,
+                        ...fileUpload
+                    };
+
+                    this.setState({ upload });
+
+                    //this.addUploadedFileToJob(aliasName, response.url);
+                })
+                .catch(error => {
+                    const fileUpload = {
+                        error: "An error occurred whilst uploading this file"
+                    };
+
+                    const upload = {
+                        ...this.state.upload,
+                        ...fileUpload
+                    };
+
+                    console.error("Error fetching uploaded file's URL: ", error);
+                    this.setState({ upload });
+                });
+        });
+    }
+
+    handleRetryClick = () => {
+        console.log("You retried");
+    };
+
     renderModalBody = () => {
+        const upload = this.state.upload;
         switch (this.props.params.homepageDataField) {
             case "featuredContent": {
                 return (
@@ -74,13 +203,16 @@ export default class EditHomepageItem extends Component {
                             value={this.state.description}
                             onChange={this.handleInputChange}
                         />
-                        <Input
-                            id="image-file"
+                        <FileUpload
+                            label="File upload"
                             type="file"
-                            label="Image upload"
-                            disabled={this.state.isUploadingImage}
-                            value={this.state.imageID}
-                            onChange={this.handleInputChange}
+                            id="image-file-upload"
+                            accept=".png, .jpeg, .svg"
+                            url={upload.url || null}
+                            extension={upload.extension || null}
+                            error={upload.error || null}
+                            progress={upload.progress >= 0 ? upload.progress : null}
+                            onRetry={this.handleRetryClick}
                         />
                         <Input
                             id="image-title"
