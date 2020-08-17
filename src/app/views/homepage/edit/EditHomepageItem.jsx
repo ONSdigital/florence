@@ -84,6 +84,16 @@ export default class EditHomepageItem extends Component {
             });
     };
 
+    addUploadToImageRecord = imageS3URL => {
+        const imageProps = {
+            url: imageS3URL,
+            status: "uploaded"
+        };
+        image.update().then(response => {
+            console.log(response);
+        });
+    };
+
     bindInputs() {
         const input = document.getElementById("image-file-upload");
         const r = new Resumable({
