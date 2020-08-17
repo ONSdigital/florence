@@ -19,6 +19,7 @@ const propTypes = {
         id: PropTypes.number,
         description: PropTypes.string,
         uri: PropTypes.string,
+        image: PropTypes.string,
         title: PropTypes.string
     }),
     handleSuccessClick: PropTypes.func.isRequired,
@@ -28,10 +29,10 @@ const propTypes = {
 export default class EditHomepageItem extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             id: this.props.data ? this.props.data.id : null,
             description: this.props.data ? this.props.data.description : "",
+            image: this.props.data ? this.props.data.image : "",
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
             imageID: "",
