@@ -6,8 +6,13 @@ const propTypes = {
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
+    externalLink: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
     disabled: PropTypes.bool
+};
+
+const defaultProps = {
+    externalLink: false
 };
 
 export default class SimpleSelectableListItem extends Component {
@@ -21,6 +26,10 @@ export default class SimpleSelectableListItem extends Component {
             <li className="simple-select-list__item">
                 {this.props.disabled ? (
                     <p className="simple-select-list__title simple-select-list__title--disabled">{this.props.title}</p>
+                ) : this.props.externalLink ? (
+                    <a href={this.props.url}>
+                        <p className="simple-select-list__title">{this.props.title}</p>
+                    </a>
                 ) : (
                     <Link to={this.props.url}>
                         <p className="simple-select-list__title">{this.props.title}</p>
@@ -35,3 +44,4 @@ export default class SimpleSelectableListItem extends Component {
 }
 
 SimpleSelectableListItem.propTypes = propTypes;
+SimpleSelectableListItem.defaultProps = defaultProps;
