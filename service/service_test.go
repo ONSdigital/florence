@@ -6,11 +6,13 @@ import (
 	"net/http"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
+	"github.com/ONSdigital/florence/service/mock"
 	serviceMock "github.com/ONSdigital/florence/service/mock"
 	"github.com/ONSdigital/florence/upload"
 	uploadMock "github.com/ONSdigital/florence/upload/mock"
@@ -313,7 +315,6 @@ func TestClose(t *testing.T) {
 		})
 
 		Convey("If services fail to stop, the Close operation tries to close all dependencies and returns an error", func() {
-
 			failingserverMock := &serviceMock.HTTPServerMock{
 				ListenAndServeFunc: func() error { return nil },
 				ShutdownFunc: func(ctx context.Context) error {
@@ -331,8 +332,34 @@ func TestClose(t *testing.T) {
 			}
 			err = svc.Close(context.Background())
 			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldResemble, "failed to shutdown gracefully")
 			So(len(hcMock.StopCalls()), ShouldEqual, 1)
 			So(len(failingserverMock.ShutdownCalls()), ShouldEqual, 1)
+		})
+
+		Convey("If service times out while shutting down, the Close operation fails with the expected error", func() {
+			cfg.GracefulShutdownTimeout = 1 * time.Millisecond
+			timeoutServerMock := &mock.HTTPServerMock{
+				ListenAndServeFunc: func() error { return nil },
+				ShutdownFunc: func(ctx context.Context) error {
+					time.Sleep(2 * time.Millisecond)
+					return nil
+				},
+			}
+
+			svcList := service.NewServiceList(nil)
+			svcList.HealthCheck = true
+			svc := service.Service{
+				Config:      cfg,
+				ServiceList: svcList,
+				Server:      timeoutServerMock,
+				HealthCheck: hcMock,
+			}
+			err = svc.Close(context.Background())
+			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldResemble, "context deadline exceeded")
+			So(len(hcMock.StopCalls()), ShouldEqual, 1)
+			So(len(timeoutServerMock.ShutdownCalls()), ShouldEqual, 1)
 		})
 	})
 }
