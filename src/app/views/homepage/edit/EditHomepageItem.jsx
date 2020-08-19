@@ -45,14 +45,15 @@ export default class EditHomepageItem extends Component {
     }
 
     componentDidMount = () => {
+        if (this.props.image) {
+            // load image
+            return;
+        }
+        this.createImageRecord();
         this.bindInputs();
     };
 
     handleSuccessClick = async () => {
-        const imageUploaded = this.handleImageUpload();
-        if (!imageUploaded) {
-            return;
-        }
         this.props.handleSuccessClick(this.state, this.props.params.homepageDataField);
     };
 
@@ -62,15 +63,6 @@ export default class EditHomepageItem extends Component {
         this.setState({ [fieldName]: value });
     };
 
-    handleImageUpload = async () => {
-        this.setState({ isUploadingImage: true });
-        const imageRecord = await this.createImageRecord();
-        if (!imageRecord.id) {
-            return false;
-        }
-        return true;
-    };
-
     createImageRecord = () => {
         const imageProps = {
             collection_id: this.props.params.collectionID,
@@ -78,21 +70,32 @@ export default class EditHomepageItem extends Component {
         };
         image
             .create(imageProps)
-            .then(image => image)
+            .then(image => {
+                this.setState({ imageID: image.id });
+            })
             .catch(error => {
                 // TODO: Handle error properly
-                console.log(error);
+                console.error(error);
             });
     };
 
     addUploadToImageRecord = imageS3URL => {
         const imageProps = {
             url: imageS3URL,
-            status: "uploaded"
+            state: "uploaded",
+            upload: {
+                src: imageS3URL
+            }
         };
-        image.update().then(response => {
-            console.log(response);
-        });
+        image
+            .update(this.state.imageID, imageProps)
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                // TODO: Handle error properly
+                console.log(error);
+            });
     };
 
     bindInputs() {
@@ -162,7 +165,7 @@ export default class EditHomepageItem extends Component {
 
                     this.setState({ upload });
 
-                    //this.addUploadedFileToJob(aliasName, response.url);
+                    this.addUploadToImageRecord(response.url);
                 })
                 .catch(error => {
                     const fileUpload = {
