@@ -40,6 +40,7 @@ export default class EditHomepageItem extends Component {
             imageTitle: "",
             ImageAltText: "",
             upload: {},
+            isCreatingImageRecord: false,
             isUploadingImage: false
         };
     }
@@ -64,6 +65,7 @@ export default class EditHomepageItem extends Component {
     };
 
     createImageRecord = () => {
+        this.setState({ isCreatingImageRecord });
         const imageProps = {
             collection_id: this.props.params.collectionID,
             type: "eye-candy"
@@ -221,7 +223,7 @@ export default class EditHomepageItem extends Component {
                             label="File upload"
                             type="file"
                             id="image-file-upload"
-                            accept=".png, .jpeg, .svg"
+                            accept=".png"
                             url={upload.url || null}
                             extension={upload.extension || null}
                             error={upload.error || null}
