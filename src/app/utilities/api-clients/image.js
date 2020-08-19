@@ -7,7 +7,7 @@ export default class image {
         return http.post(`${imageAPIURL}/images`, body);
     };
 
-    static update = body => {
-        return http.put(`${imageAPIURL}/images`, body);
+    static update = (imageID, body) => {
+        return http.put(`${imageAPIURL}/images/${imageID}`, body);
     };
 }
