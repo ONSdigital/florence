@@ -37,7 +37,6 @@ export default class EditHomepageItem extends Component {
             image: this.props.data ? this.props.data.image : "",
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
-            imageID: "",
             imageData: {
                 imageURL: "",
                 imageTitle: "",
@@ -60,7 +59,10 @@ export default class EditHomepageItem extends Component {
     };
 
     handleSuccessClick = async () => {
-        this.props.handleSuccessClick(this.state, this.props.params.homepageDataField);
+        this.props.handleSuccessClick(
+            { id: this.state.id, description: this.state.description, uri: this.state.uri, title: this.state.title, image: this.state.image },
+            this.props.params.homepageDataField
+        );
     };
 
     handleInputChange = event => {
@@ -78,7 +80,7 @@ export default class EditHomepageItem extends Component {
         image
             .create(imageProps)
             .then(image => {
-                this.setState({ imageID: image.id, isCreatingImageRecord: false });
+                this.setState({ image: image.id, isCreatingImageRecord: false });
             })
             .catch(error => {
                 this.setState({ isCreatingImageRecord: false });
@@ -104,7 +106,7 @@ export default class EditHomepageItem extends Component {
             }
         };
         image
-            .update(this.state.imageID, imageProps)
+            .update(this.state.image, imageProps)
             .then(response => {
                 console.log(response);
             })
@@ -112,7 +114,7 @@ export default class EditHomepageItem extends Component {
                 this.setState({ isCreatingImageRecord: false });
                 log.event(
                     "error adding upload to image record",
-                    log.data({ collection_id: this.params.collectionID, image_id: this.state.imageID, image_upload_path: imageS3URL }),
+                    log.data({ collection_id: this.params.collectionID, image_id: this.state.image, image_upload_path: imageS3URL }),
                     log.error(error)
                 );
                 console.error("error adding upload to image record:", error);
