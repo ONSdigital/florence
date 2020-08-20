@@ -3,6 +3,8 @@ import PropTypes from "prop-types";
 
 import image from "../../../utilities/api-clients/image";
 import http from "../../../utilities/http";
+import log from "../../../utilities/logging/log";
+import notifications from "../../../utilities/notifications";
 
 import Resumable from "resumeablejs";
 
@@ -65,7 +67,7 @@ export default class EditHomepageItem extends Component {
     };
 
     createImageRecord = () => {
-        this.setState({ isCreatingImageRecord });
+        this.setState({ isCreatingImageRecord: true });
         const imageProps = {
             collection_id: this.props.params.collectionID,
             type: "eye-candy"
@@ -73,11 +75,20 @@ export default class EditHomepageItem extends Component {
         image
             .create(imageProps)
             .then(image => {
-                this.setState({ imageID: image.id });
+                this.setState({ imageID: image.id, isCreatingImageRecord: false });
             })
             .catch(error => {
-                // TODO: Handle error properly
-                console.error(error);
+                this.setState({ isCreatingImageRecord: true });
+                log.event("error creating image record", log.error(error));
+                console.error("error creating image record:", error);
+                if (error.status == 401) {
+                    return;
+                }
+                notifications.add({
+                    type: "warning",
+                    message: "There was an error creating the image record. Please refresh the page",
+                    isDismissable: true
+                });
             });
     };
 
@@ -95,8 +106,21 @@ export default class EditHomepageItem extends Component {
                 console.log(response);
             })
             .catch(error => {
-                // TODO: Handle error properly
-                console.log(error);
+                this.setState({ isCreatingImageRecord: true });
+                log.event(
+                    "error adding upload to image record",
+                    log.data({ collection_id: this.params.collectionID, image_id: this.state.imageID, image_upload_path: imageS3URL }),
+                    log.error(error)
+                );
+                console.error("error adding upload to image record:", error);
+                if (error.status == 401) {
+                    return;
+                }
+                notifications.add({
+                    type: "warning",
+                    message: "There was an error creating the image record. Please close the model and try again",
+                    isDismissable: true
+                });
             });
     };
 
