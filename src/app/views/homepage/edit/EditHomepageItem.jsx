@@ -50,8 +50,9 @@ export default class EditHomepageItem extends Component {
     }
 
     componentDidMount = () => {
-        if (this.props.image) {
-            // load image
+        const image = this.props.data.image;
+        if (image) {
+            this.getImage(image);
             return;
         }
         this.createImageRecord();
@@ -99,7 +100,6 @@ export default class EditHomepageItem extends Component {
 
     addUploadToImageRecord = imageS3URL => {
         const imageProps = {
-            url: imageS3URL,
             state: "uploaded",
             upload: {
                 path: imageS3URL
