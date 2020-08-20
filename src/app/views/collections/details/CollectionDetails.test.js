@@ -386,25 +386,3 @@ describe("Delete collection button", () => {
         expect(component.find("#delete-collection").exists()).toEqual(false);
     });
 });
-
-describe("Dataset import functionality", () => {
-    it("doesn't display when it is disabled in props", () => {
-        const props = {
-            ...defaultProps,
-            enableDatasetImport: false
-        };
-        const component = shallow(<CollectionDetails {...props} />);
-
-        expect(component.find("#import-dataset-link").exists()).toBe(false);
-    });
-
-    it("displays when it is enabled in props", () => {
-        const props = {
-            ...defaultProps,
-            enableDatasetImport: true
-        };
-        const component = shallow(<CollectionDetails {...props} />);
-
-        expect(component.find("#import-dataset-link").exists()).toBe(true);
-    });
-});
