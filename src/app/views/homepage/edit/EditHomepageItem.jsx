@@ -38,12 +38,15 @@ export default class EditHomepageItem extends Component {
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
             imageID: "",
-            imageURL: "",
-            imageTitle: "",
-            ImageAltText: "",
+            imageData: {
+                imageURL: "",
+                imageTitle: "",
+                ImageAltText: ""
+            },
             upload: {},
             isCreatingImageRecord: false,
-            isUploadingImage: false
+            isUploadingImage: false,
+            isGettingImage: false
         };
     }
 
@@ -78,7 +81,7 @@ export default class EditHomepageItem extends Component {
                 this.setState({ imageID: image.id, isCreatingImageRecord: false });
             })
             .catch(error => {
-                this.setState({ isCreatingImageRecord: true });
+                this.setState({ isCreatingImageRecord: false });
                 log.event("error creating image record", log.error(error));
                 console.error("error creating image record:", error);
                 if (error.status == 401) {
@@ -97,7 +100,7 @@ export default class EditHomepageItem extends Component {
             url: imageS3URL,
             state: "uploaded",
             upload: {
-                src: imageS3URL
+                path: imageS3URL
             }
         };
         image
@@ -106,7 +109,7 @@ export default class EditHomepageItem extends Component {
                 console.log(response);
             })
             .catch(error => {
-                this.setState({ isCreatingImageRecord: true });
+                this.setState({ isCreatingImageRecord: false });
                 log.event(
                     "error adding upload to image record",
                     log.data({ collection_id: this.params.collectionID, image_id: this.state.imageID, image_upload_path: imageS3URL }),
@@ -122,6 +125,41 @@ export default class EditHomepageItem extends Component {
                     isDismissable: true
                 });
             });
+    };
+
+    getImage = imageID => {
+        this.setState({ isGettingImage: true });
+        image
+            .get(imageID)
+            .then(response => {
+                const imageData = this.mapImageToState(response);
+                this.setState({ isGettingImage: false, imageData: imageData });
+            })
+            .catch(error => {
+                this.setState({ isCreatingImageRecord: false });
+                log.event("error getting image details from image-api", log.data({ image_id: imageID }), log.error(error));
+                console.error("error getting image details from image-api", error);
+                if (error.status == 401) {
+                    return;
+                }
+                notifications.add({
+                    type: "warning",
+                    message: "There was an error getting the image. You can still edit this item.",
+                    isDismissable: true
+                });
+            });
+    };
+
+    mapImageToState = image => {
+        try {
+            return {
+                imageURL: image.upload.path
+            };
+        } catch (error) {
+            log.event("error mapping image data to state", log.error(error));
+            // throw an error to let parent mapper catch and display notification
+            throw new Error(`Error mapping image data to state: \n ${error}`);
+        }
     };
 
     bindInputs() {
