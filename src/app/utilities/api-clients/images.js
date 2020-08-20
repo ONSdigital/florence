@@ -7,6 +7,10 @@ export default class image {
         return http.post(`${imageAPIURL}/images`, body);
     };
 
+    static get = imageID => {
+        return http.get(`${imageAPIURL}/images/${imageID}`);
+    };
+
     static update = (imageID, body) => {
         return http.put(`${imageAPIURL}/images/${imageID}`, body);
     };
