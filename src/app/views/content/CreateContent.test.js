@@ -58,5 +58,4 @@ it("handle search returns correct results", () => {
     expect(component.state().filteredContentTypes[0]).toBe(contentTypes[0]);
     component.instance().handleSearchInput({ target: { value: "cmd" } });
     expect(component.state().filteredContentTypes[0]).toBe(contentTypes[1]);
-    //expect(component.state().datasets.length).toBe(mockedAllDatasets.length + 1);
 });
