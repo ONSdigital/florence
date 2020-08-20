@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
-import image from "../../../utilities/api-clients/image";
+import image from "../../../utilities/api-clients/images";
 import http from "../../../utilities/http";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
