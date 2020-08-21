@@ -215,7 +215,7 @@ func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (e
 		log.Event(ctx, "error adding check for s3 client", log.ERROR, log.Error(err))
 	}
 
-	if err = svc.HealthCheck.AddCheck("API Router", svc.healthClient.Checker); err != nil {
+	if err = svc.HealthCheck.AddCheck("API router", svc.healthClient.Checker); err != nil {
 		hasErrors = true
 		log.Event(ctx, "error adding check for api router health client", log.ERROR, log.Error(err))
 	}

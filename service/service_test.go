@@ -182,7 +182,7 @@ func TestRun(t *testing.T) {
 				So(svcList.HealthCheck, ShouldBeTrue)
 				So(len(hcMockAddFail.AddCheckCalls()), ShouldEqual, 3)
 				So(hcMockAddFail.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMockAddFail.AddCheckCalls()[1].Name, ShouldResemble, "API Router")
+				So(hcMockAddFail.AddCheckCalls()[1].Name, ShouldResemble, "API router")
 				So(hcMockAddFail.AddCheckCalls()[2].Name, ShouldResemble, "Vault")
 			})
 		})
@@ -208,7 +208,7 @@ func TestRun(t *testing.T) {
 			Convey("The checkers are registered and the healthcheck and http server started", func() {
 				So(len(hcMock.AddCheckCalls()), ShouldEqual, 3)
 				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API Router")
+				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API router")
 				So(hcMock.AddCheckCalls()[2].Name, ShouldResemble, "Vault")
 				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
 				So(initMock.DoGetHTTPServerCalls()[0].BindAddr, ShouldEqual, ":8080")
@@ -239,7 +239,7 @@ func TestRun(t *testing.T) {
 			Convey("The checkers, except Vault, are registered and the healthcheck and http server started", func() {
 				So(len(hcMock.AddCheckCalls()), ShouldEqual, 2)
 				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API Router")
+				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API router")
 				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
 				So(initMock.DoGetHTTPServerCalls()[0].BindAddr, ShouldEqual, ":8080")
 				So(len(hcMock.StartCalls()), ShouldEqual, 1)
