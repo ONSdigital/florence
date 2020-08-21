@@ -17,7 +17,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			APIRouterURL:               "http://localhost:23200",
 			APIRouterVersion:           "v1",
 			RouterURL:                  "http://localhost:20000",
-			ZebedeeURL:                 "http://localhost:8082",
 			DatasetControllerURL:       "http://localhost:24000",
 			TableRendererURL:           "http://localhost:23300",
 			AwsRegion:                  "eu-west-1",

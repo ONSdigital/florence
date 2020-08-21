@@ -114,12 +114,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	zebedeeURL, err := url.Parse(cfg.ZebedeeURL)
-	if err != nil {
-		log.Event(ctx, "error parsing zebedee URL", log.FATAL, log.Error(err))
-		return nil, err
-	}
-
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
 		log.Event(ctx, "error parsing table renderer URL", log.FATAL, log.Error(err))
@@ -133,7 +127,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	}
 
 	routerProxy := reverseproxy.Create(routerURL, director)
-	zebedeeProxy := reverseproxy.Create(zebedeeURL, zebedeeDirector)
+	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, tableDirector)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion))

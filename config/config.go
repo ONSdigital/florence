@@ -12,7 +12,6 @@ type Config struct {
 	APIRouterURL               string        `envconfig:"API_ROUTER_URL"`
 	APIRouterVersion           string        `envconfig:"API_ROUTER_VERSION"`
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
-	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
 	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
 	AwsRegion                  string        `envconfig:"AWS_REGION"`
@@ -46,7 +45,6 @@ func Get() (*Config, error) {
 		APIRouterURL:               "http://localhost:23200", // API router
 		APIRouterVersion:           "v1",
 		RouterURL:                  "http://localhost:20000", // Frontend router
-		ZebedeeURL:                 "http://localhost:8082",
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
 		AwsRegion:                  "eu-west-1",
