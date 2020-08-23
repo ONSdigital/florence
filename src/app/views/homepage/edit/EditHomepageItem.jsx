@@ -289,7 +289,7 @@ export default class EditHomepageItem extends Component {
         );
     };
 
-    renderModalBody = () => {
+    renderModalBody = isDisabled => {
         switch (this.props.params.homepageDataField) {
             case "featuredContent": {
                 return (
@@ -298,23 +298,16 @@ export default class EditHomepageItem extends Component {
                             id="title"
                             type="input"
                             label="Title"
-                            disabled={this.state.isUploadingImage}
+                            disabled={isDisabled}
                             value={this.state.title}
                             onChange={this.handleInputChange}
                         />
-                        <Input
-                            id="uri"
-                            type="input"
-                            label="URL"
-                            disabled={this.state.isUploadingImage}
-                            value={this.state.uri}
-                            onChange={this.handleInputChange}
-                        />
+                        <Input id="uri" type="input" label="URL" disabled={isDisabled} value={this.state.uri} onChange={this.handleInputChange} />
                         <Input
                             id="description"
                             type="textarea"
                             label="Description"
-                            disabled={this.state.isUploadingImage}
+                            disabled={isDisabled}
                             value={this.state.description}
                             onChange={this.handleInputChange}
                         />
@@ -323,7 +316,7 @@ export default class EditHomepageItem extends Component {
                             id="image-title"
                             type="input"
                             label="Image title"
-                            disabled={this.state.isUploadingImage}
+                            disabled={isDisabled}
                             value={this.state.imageTitle}
                             onChange={this.handleInputChange}
                         />
@@ -331,7 +324,7 @@ export default class EditHomepageItem extends Component {
                             id="image-alt-text"
                             type="input"
                             label="Alt text (leave blank if decorative)"
-                            disabled={this.state.isUploadingImage}
+                            disabled={isDisabled}
                             value={this.state.image}
                             onChange={this.handleInputChange}
                         />
@@ -345,6 +338,7 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
+        const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>
                 <div className="modal__header">
@@ -352,10 +346,16 @@ export default class EditHomepageItem extends Component {
                 </div>
                 <div className="modal__body">{this.renderModalBody()}</div>
                 <div className="modal__footer">
-                    <button id="continue" type="button" className="btn btn--primary btn--margin-right" onClick={this.handleSuccessClick}>
+                    <button
+                        id="continue"
+                        type="button"
+                        className="btn btn--primary btn--margin-right"
+                        disabled={isDisabled}
+                        onClick={this.handleSuccessClick}
+                    >
                         Continue
                     </button>
-                    <button id="cancel" type="button" className="btn" onClick={this.props.handleCancelClick}>
+                    <button id="cancel" type="button" className="btn" disabled={isDisabled} onClick={this.props.handleCancelClick}>
                         Cancel
                     </button>
                 </div>
