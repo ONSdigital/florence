@@ -6,8 +6,13 @@ const propTypes = {
     title: PropTypes.string.isRequired,
     id: PropTypes.string.isRequired,
     url: PropTypes.string.isRequired,
+    externalLink: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
     disabled: PropTypes.bool
+};
+
+const defaultProps = {
+    externalLink: false
 };
 
 export default class SimpleSelectableListItem extends Component {
@@ -15,17 +20,31 @@ export default class SimpleSelectableListItem extends Component {
         super(props);
     }
 
+    renderTitle = () => {
+        if (this.props.disabled) {
+            return <p className="simple-select-list__title simple-select-list__title--disabled">{this.props.title}</p>;
+        }
+
+        if (this.props.externalLink) {
+            return (
+                <a href={this.props.url}>
+                    <p className="simple-select-list__title">{this.props.title}</p>
+                </a>
+            );
+        }
+
+        return (
+            <Link to={this.props.url}>
+                <p className="simple-select-list__title">{this.props.title}</p>
+            </Link>
+        );
+    };
+
     render() {
         const details = this.props.details || [];
         return (
             <li className="simple-select-list__item">
-                {this.props.disabled ? (
-                    <p className="simple-select-list__title simple-select-list__title--disabled">{this.props.title}</p>
-                ) : (
-                    <Link to={this.props.url}>
-                        <p className="simple-select-list__title">{this.props.title}</p>
-                    </Link>
-                )}
+                {this.renderTitle()}
                 {details.map((detail, i) => {
                     return <p key={`detail-${i}`}>{detail}</p>;
                 })}
@@ -35,3 +54,4 @@ export default class SimpleSelectableListItem extends Component {
 }
 
 SimpleSelectableListItem.propTypes = propTypes;
+SimpleSelectableListItem.defaultProps = defaultProps;
