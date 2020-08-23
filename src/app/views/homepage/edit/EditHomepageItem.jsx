@@ -38,9 +38,9 @@ export default class EditHomepageItem extends Component {
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
             imageData: {
-                imageURL: "",
-                imageTitle: "",
-                ImageAltText: ""
+                url: "",
+                title: "",
+                altText: ""
             },
             upload: {},
             isCreatingImageRecord: false,
@@ -50,9 +50,9 @@ export default class EditHomepageItem extends Component {
     }
 
     componentDidMount = () => {
-        const image = this.props.data.image;
-        if (image) {
-            this.getImage(image);
+        const hasImage = this.props.data && this.props.data.image;
+        if (hasImage) {
+            this.getImage(this.props.data.image);
             return;
         }
         this.createImageRecord();
@@ -155,7 +155,7 @@ export default class EditHomepageItem extends Component {
     mapImageToState = image => {
         try {
             return {
-                imageURL: image.upload.path
+                url: image.upload.path
             };
         } catch (error) {
             log.event("error mapping image data to state", log.error(error));
@@ -253,8 +253,43 @@ export default class EditHomepageItem extends Component {
         console.log("You retried");
     };
 
-    renderModalBody = () => {
+    handleRemoveImageClick = () => {};
+
+    renderImagePreview = () => {
+        return (
+            <div>
+                <div>{this.state.imageData.url ? <img src={this.state.imageData.url} /> : null}</div>
+                <button type="button" className="btn btn--link" onClick={this.props.handleRemoveImageClick}>
+                    Remove image
+                </button>
+            </div>
+        );
+    };
+
+    renderImageUpload = () => {
         const upload = this.state.upload;
+        return (
+            <div>
+                {this.props.data && this.props.data.image ? (
+                    this.renderImagePreview()
+                ) : (
+                    <FileUpload
+                        label="File upload"
+                        type="file"
+                        id="image-file-upload"
+                        accept=".png"
+                        url={upload.url || null}
+                        extension={upload.extension || null}
+                        error={upload.error || null}
+                        progress={upload.progress >= 0 ? upload.progress : null}
+                        onRetry={this.handleRetryClick}
+                    />
+                )}
+            </div>
+        );
+    };
+
+    renderModalBody = () => {
         switch (this.props.params.homepageDataField) {
             case "featuredContent": {
                 return (
@@ -283,17 +318,7 @@ export default class EditHomepageItem extends Component {
                             value={this.state.description}
                             onChange={this.handleInputChange}
                         />
-                        <FileUpload
-                            label="File upload"
-                            type="file"
-                            id="image-file-upload"
-                            accept=".png"
-                            url={upload.url || null}
-                            extension={upload.extension || null}
-                            error={upload.error || null}
-                            progress={upload.progress >= 0 ? upload.progress : null}
-                            onRetry={this.handleRetryClick}
-                        />
+                        {this.renderImageUpload()}
                         <Input
                             id="image-title"
                             type="input"
