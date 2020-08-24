@@ -9,6 +9,7 @@ const propTypes = {
             title: PropTypes.string.isRequired,
             id: PropTypes.string.isRequired,
             url: PropTypes.string.isRequired,
+            externalLink: PropTypes.bool,
             details: PropTypes.arrayOf(PropTypes.string)
         })
     ).isRequired,

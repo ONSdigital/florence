@@ -369,26 +369,9 @@ export class CollectionDetails extends Component {
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
                         <div>
-                            <a
-                                href={url.resolve("/workspace") + "?collection=" + this.props.id}
-                                className={"btn btn--primary" + (this.props.isLoadingNameAndDate ? " btn--disabled" : "")}
-                            >
-                                Create/edit page
-                            </a>
-                            {this.props.enableDatasetImport && (
-                                <Link id="import-dataset-link" to={`${location.pathname}/datasets`} className="btn btn--primary btn--margin-left">
-                                    Create/edit CMD dataset page
-                                </Link>
-                            )}
-                            {this.props.enableHomepagePublishing && (
-                                <Link
-                                    id="edit-homepage"
-                                    to={`/florence/collections/${this.props.id}/homepage`}
-                                    className="btn btn--primary btn--margin-left"
-                                >
-                                    Edit Homepage
-                                </Link>
-                            )}
+                            <Link id="create-edit-content" to={`${location.pathname}/create`} className="btn btn--primary">
+                                Create/edit content
+                            </Link>
                             <button
                                 disabled={this.props.isLoadingNameAndDate}
                                 className="btn btn--margin-left"
