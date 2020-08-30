@@ -14,4 +14,8 @@ export default class image {
     static update = (imageID, body) => {
         return http.put(`${imageAPIURL}/images/${imageID}`, body);
     };
+
+    static getImageDownload = (imageID, type) => {
+        return http.get(`${imageAPIURL}/images/${imageID}/downloads/${type}`);
+    };
 }
