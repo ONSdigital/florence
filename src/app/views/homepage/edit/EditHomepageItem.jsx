@@ -6,7 +6,7 @@ import http from "../../../utilities/http";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
-import Resumable from "resumeablejs";
+import Resumable from "../../../resumable";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
@@ -75,6 +75,7 @@ export default class EditHomepageItem extends Component {
     createImageRecord = () => {
         this.setState({ isCreatingImageRecord: true });
         const imageProps = {
+            state: "created",
             collection_id: this.props.params.collectionID,
             type: "eye-candy"
         };
@@ -134,13 +135,44 @@ export default class EditHomepageItem extends Component {
         image
             .get(imageID)
             .then(response => {
-                const imageData = this.mapImageToState(response);
-                this.setState({ isGettingImage: false, imageData: imageData });
+                if (response.state == "completed" || response.state == "published") {
+                    this.getImageDownload(imageID);
+                }
+                if (response.state == "importing") {
+                    // start polling
+                }
             })
             .catch(error => {
-                this.setState({ isCreatingImageRecord: false });
+                this.setState({ isGettingImage: false });
                 log.event("error getting image details from image-api", log.data({ image_id: imageID }), log.error(error));
                 console.error("error getting image details from image-api", error);
+                if (error.status == 401) {
+                    return;
+                }
+                notifications.add({
+                    type: "warning",
+                    message: "There was an error getting the image. You can still edit this item.",
+                    isDismissable: true
+                });
+            });
+    };
+
+    getImageDownload = imageID => {
+        const downloadType = "original";
+        image
+            .getImageDownload(imageID, downloadType)
+            .then(response => {
+                const imageState = this.mapImageToState(response);
+                this.setState({ isGettingImage: false, imageData: imageState });
+            })
+            .catch(error => {
+                this.setState({ isGettingImage: false });
+                log.event(
+                    "error getting image downloads from image-api",
+                    log.data({ image_id: imageID, download_type: downloadType }),
+                    log.error(error)
+                );
+                console.error("error getting image downloads from image-api", error);
                 if (error.status == 401) {
                     return;
                 }
@@ -155,7 +187,7 @@ export default class EditHomepageItem extends Component {
     mapImageToState = image => {
         try {
             return {
-                url: image.upload.path
+                url: image.href
             };
         } catch (error) {
             log.event("error mapping image data to state", log.error(error));
@@ -256,14 +288,20 @@ export default class EditHomepageItem extends Component {
     handleRemoveImageClick = () => {};
 
     renderImagePreview = () => {
-        return (
-            <div>
-                <div>{this.state.imageData.url ? <img src={this.state.imageData.url} /> : null}</div>
-                <button type="button" className="btn btn--link" onClick={this.props.handleRemoveImageClick}>
-                    Remove image
-                </button>
-            </div>
-        );
+        if (this.state.isGettingImage) {
+            return <div>Image is loading</div>;
+        }
+        if (this.state.imageData && this.state.imageData.url) {
+            return (
+                <div>
+                    <img src={this.state.imageData.url} />
+                    <button type="button" className="btn btn--link" onClick={this.props.handleRemoveImageClick}>
+                        Remove image
+                    </button>
+                </div>
+            );
+        }
+        return;
     };
 
     renderImageUpload = () => {
