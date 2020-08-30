@@ -10,7 +10,7 @@ import Resumable from "../../../resumable";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
-import FileUpload from "../../../components/file-upload/FileUpload";
+import FileUpload, { bindFileUploadInput } from "../../../components/file-upload/FileUpload";
 
 const propTypes = {
     params: PropTypes.shape({
@@ -27,6 +27,8 @@ const propTypes = {
     handleSuccessClick: PropTypes.func.isRequired,
     handleCancelClick: PropTypes.func.isRequired
 };
+
+const fileUploadID = "image-file-upload";
 
 export default class EditHomepageItem extends Component {
     constructor(props) {
@@ -56,7 +58,19 @@ export default class EditHomepageItem extends Component {
             return;
         }
         this.createImageRecord();
-        this.bindInputs();
+        this.bindInput();
+    };
+
+    bindInput = () => {
+        bindFileUploadInput(fileUploadID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess);
+    };
+
+    updateUploadState = upload => {
+        this.setState({ upload });
+    };
+
+    onFileUploadSuccess = url => {
+        this.addUploadToImageRecord(url);
     };
 
     handleSuccessClick = async () => {
@@ -109,6 +123,7 @@ export default class EditHomepageItem extends Component {
         image
             .update(this.state.image, imageProps)
             .then(response => {
+                // TODO: poll for image
                 console.log(response);
             })
             .catch(error => {
@@ -196,91 +211,6 @@ export default class EditHomepageItem extends Component {
         }
     };
 
-    bindInputs() {
-        const input = document.getElementById("image-file-upload");
-        const r = new Resumable({
-            target: "/upload",
-            chunkSize: 5 * 1024 * 1024,
-            query: {
-                aliasName: ""
-            },
-            forceChunkSize: true,
-            simultaneousUploads: 1
-        });
-        r.assignBrowse(input);
-        r.assignDrop(input);
-        r.on("fileAdded", file => {
-            const aliasName = file.container.name;
-            r.opts.query.aliasName = aliasName;
-            r.upload();
-            const fileUpload = {
-                aliasName: aliasName,
-                progress: 0,
-                error: null
-            };
-            const upload = {
-                ...this.state.upload,
-                ...fileUpload
-            };
-            this.setState({ upload });
-        });
-        r.on("fileProgress", file => {
-            const progressPercentage = Math.round(Number(file.progress() * 100));
-            const fileUpload = {
-                progress: progressPercentage
-            };
-            const upload = {
-                ...this.state.upload,
-                ...fileUpload
-            };
-            this.setState({ upload });
-        });
-        r.on("fileError", file => {
-            const fileUpload = {
-                error: "An error occurred whilst uploading this file."
-            };
-            const upload = {
-                ...this.state.upload,
-                ...fileUpload
-            };
-
-            console.error("Error uploading file to server");
-            this.setState({ upload });
-        });
-        r.on("fileSuccess", file => {
-            const aliasName = file.resumableObj.opts.query.aliasName;
-            http.get(`/upload/${file.uniqueIdentifier}`)
-                .then(response => {
-                    const fileUpload = {
-                        aliasName: aliasName,
-                        progress: 0,
-                        url: response.url
-                    };
-                    const upload = {
-                        ...this.state.upload,
-                        ...fileUpload
-                    };
-
-                    this.setState({ upload });
-
-                    this.addUploadToImageRecord(response.url);
-                })
-                .catch(error => {
-                    const fileUpload = {
-                        error: "An error occurred whilst uploading this file"
-                    };
-
-                    const upload = {
-                        ...this.state.upload,
-                        ...fileUpload
-                    };
-
-                    console.error("Error fetching uploaded file's URL: ", error);
-                    this.setState({ upload });
-                });
-        });
-    }
-
     handleRetryClick = () => {
         console.log("You retried");
     };
@@ -314,7 +244,7 @@ export default class EditHomepageItem extends Component {
                     <FileUpload
                         label="File upload"
                         type="file"
-                        id="image-file-upload"
+                        id={fileUploadID}
                         accept=".png"
                         url={upload.url || null}
                         extension={upload.extension || null}
