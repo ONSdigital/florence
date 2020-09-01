@@ -6,7 +6,7 @@ import http from "../../../utilities/http";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
-import Resumable from "../../../resumable";
+//import Resumable from "../../../resumable";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
@@ -47,7 +47,9 @@ export default class EditHomepageItem extends Component {
             upload: {},
             isCreatingImageRecord: false,
             isUploadingImage: false,
-            isGettingImage: false
+            isGettingImage: false,
+            isImportingImage: false,
+            importHasErrored: false
         };
     }
 
@@ -151,10 +153,15 @@ export default class EditHomepageItem extends Component {
             .get(imageID)
             .then(response => {
                 if (response.state == "completed" || response.state == "published") {
+                    this.setState({ isImportingImage: false, importHasErrored: false });
                     this.getImageDownload(imageID);
                 }
                 if (response.state == "importing") {
-                    // start polling
+                    this.setState({ isImportingImage: true, importHasErrored: false });
+                    this.getImage(imageID);
+                }
+                if (response.state == "error") {
+                    this.setState({ isImportingImage: false, importHasErrored: true });
                 }
             })
             .catch(error => {
@@ -218,8 +225,14 @@ export default class EditHomepageItem extends Component {
     handleRemoveImageClick = () => {};
 
     renderImagePreview = () => {
+        if (this.state.isImportingImage) {
+            return <p>Image being imported</p>;
+        }
+        if (this.state.importHasErrored) {
+            return <p>Image import errored</p>;
+        }
         if (this.state.isGettingImage) {
-            return <div>Image is loading</div>;
+            return <p>Image is loading</p>;
         }
         if (this.state.imageData && this.state.imageData.url) {
             return (
