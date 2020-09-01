@@ -225,7 +225,6 @@ export default class EditHomepageItem extends Component {
     };
 
     handleRemoveImageClick = async () => {
-        console.log("You clicked remove");
         this.setState({
             image: "",
             imageData: {
