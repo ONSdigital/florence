@@ -69,7 +69,7 @@ export default class EditHomepageItem extends Component {
     };
 
     updateUploadState = upload => {
-        this.setState({ upload });
+        this.setState({ ...upload });
     };
 
     onFileUploadSuccess = url => {
@@ -333,7 +333,6 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
-        console.log(this.state);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>
