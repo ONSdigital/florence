@@ -6,8 +6,6 @@ import http from "../../../utilities/http";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
-//import Resumable from "../../../resumable";
-
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import FileUpload, { bindFileUploadInput } from "../../../components/file-upload/FileUpload";
@@ -57,7 +55,7 @@ export default class EditHomepageItem extends Component {
     componentDidMount = () => {
         const hasImage = this.props.data && this.props.data.image;
         if (hasImage) {
-            this.getImage(this.props.data.image);
+            this.getImage(this.props.data.image, true);
             return;
         }
         this.createImageRecord();
@@ -148,22 +146,29 @@ export default class EditHomepageItem extends Component {
             });
     };
 
-    getImage = imageID => {
+    getImage = (imageID, shouldPoll) => {
         this.setState({ isGettingImage: true });
         image
             .get(imageID)
             .then(response => {
                 if (response.state == "completed" || response.state == "published") {
                     this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
+                    this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
+                    return;
                 }
                 if (response.state == "importing") {
                     this.setState({ isImportingImage: true, importHasErrored: false, imageState: response.state });
-                    this.getImage(imageID);
+                    if (shouldPoll) {
+                        this.pollForUpdates(imageID);
+                    }
+                    return;
                 }
                 if (response.state == "error") {
                     this.setState({ isImportingImage: false, importHasErrored: true, imageState: response.state });
+                    this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
+                    return;
                 }
             })
             .catch(error => {
@@ -179,6 +184,16 @@ export default class EditHomepageItem extends Component {
                     isDismissable: true
                 });
             });
+    };
+
+    pollForUpdates = imageID => {
+        window.pollForUpdates = setInterval(() => {
+            this.getImage(imageID, false);
+        }, 1000);
+    };
+
+    stopPollingForUpdates = () => {
+        clearInterval(window.pollForUpdates);
     };
 
     getImageDownload = imageID => {
@@ -218,6 +233,11 @@ export default class EditHomepageItem extends Component {
             // throw an error to let parent mapper catch and display notification
             throw new Error(`Error mapping image data to state: \n ${error}`);
         }
+    };
+
+    handleCancelClick = () => {
+        this.stopPollingForUpdates();
+        this.props.handleCancelClick();
     };
 
     handleRetryClick = () => {
@@ -349,7 +369,7 @@ export default class EditHomepageItem extends Component {
                     >
                         Continue
                     </button>
-                    <button id="cancel" type="button" className="btn" disabled={isDisabled} onClick={this.props.handleCancelClick}>
+                    <button id="cancel" type="button" className="btn" onClick={this.handleCancelClick}>
                         Cancel
                     </button>
                 </div>
