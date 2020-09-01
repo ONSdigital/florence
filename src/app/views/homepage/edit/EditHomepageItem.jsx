@@ -241,7 +241,11 @@ export default class EditHomepageItem extends Component {
     };
 
     handleRetryClick = () => {
-        console.log("You retried");
+        this.setState({
+            imageState: "created",
+            upload: {}
+        });
+        this.bindInput();
     };
 
     handleRemoveImageClick = async () => {
