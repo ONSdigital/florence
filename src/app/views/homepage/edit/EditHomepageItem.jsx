@@ -44,6 +44,7 @@ export default class EditHomepageItem extends Component {
                 title: "",
                 altText: ""
             },
+            imageState: "",
             upload: {},
             isCreatingImageRecord: false,
             isUploadingImage: false,
@@ -98,7 +99,7 @@ export default class EditHomepageItem extends Component {
         image
             .create(imageProps)
             .then(image => {
-                this.setState({ image: image.id, isCreatingImageRecord: false });
+                this.setState({ image: image.id, isCreatingImageRecord: false, imageState: "created" });
             })
             .catch(error => {
                 this.setState({ isCreatingImageRecord: false });
@@ -153,15 +154,16 @@ export default class EditHomepageItem extends Component {
             .get(imageID)
             .then(response => {
                 if (response.state == "completed" || response.state == "published") {
-                    this.setState({ isImportingImage: false, importHasErrored: false });
+                    this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
                     this.getImageDownload(imageID);
                 }
                 if (response.state == "importing") {
-                    this.setState({ isImportingImage: true, importHasErrored: false });
+                    this.setState({ isImportingImage: true, importHasErrored: false, imageState: response.state });
                     this.getImage(imageID);
                 }
                 if (response.state == "error") {
-                    this.setState({ isImportingImage: false, importHasErrored: true });
+                    this.setState({ isImportingImage: false, importHasErrored: true, imageState: response.state });
+                    console.error("Image import failed, image ID:", imageID);
                 }
             })
             .catch(error => {
@@ -184,8 +186,8 @@ export default class EditHomepageItem extends Component {
         image
             .getImageDownload(imageID, downloadType)
             .then(response => {
-                const imageState = this.mapImageToState(response);
-                this.setState({ isGettingImage: false, imageData: imageState });
+                const imageData = this.mapImageToState(response);
+                this.setState({ isGettingImage: false, imageData: imageData });
             })
             .catch(error => {
                 this.setState({ isGettingImage: false });
@@ -222,7 +224,19 @@ export default class EditHomepageItem extends Component {
         console.log("You retried");
     };
 
-    handleRemoveImageClick = () => {};
+    handleRemoveImageClick = async () => {
+        console.log("You clicked remove");
+        this.setState({
+            image: "",
+            imageData: {
+                url: "",
+                title: "",
+                altText: ""
+            }
+        });
+        await this.createImageRecord();
+        this.bindInput();
+    };
 
     renderImagePreview = () => {
         if (this.state.isImportingImage) {
@@ -238,7 +252,7 @@ export default class EditHomepageItem extends Component {
             return (
                 <div>
                     <img src={this.state.imageData.url} />
-                    <button type="button" className="btn btn--link" onClick={this.props.handleRemoveImageClick}>
+                    <button type="button" className="btn btn--link" onClick={this.handleRemoveImageClick}>
                         Remove image
                     </button>
                 </div>
@@ -251,7 +265,7 @@ export default class EditHomepageItem extends Component {
         const upload = this.state.upload;
         return (
             <div>
-                {this.props.data && this.props.data.image ? (
+                {this.props.data && this.state.image && this.state.imageState != "created" ? (
                     this.renderImagePreview()
                 ) : (
                     <FileUpload
@@ -319,6 +333,7 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
+        console.log(this.state);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>
