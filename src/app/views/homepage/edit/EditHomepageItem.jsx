@@ -344,7 +344,7 @@ export default class EditHomepageItem extends Component {
                             type="input"
                             label="Image title"
                             disabled={isDisabled}
-                            value={this.state.imageTitle}
+                            value={this.state.imageData.title}
                             onChange={this.handleInputChange}
                         />
                         <Input
@@ -352,7 +352,7 @@ export default class EditHomepageItem extends Component {
                             type="input"
                             label="Alt text (leave blank if decorative)"
                             disabled={isDisabled}
-                            value={this.state.image}
+                            value={this.state.imageData.altText}
                             onChange={this.handleInputChange}
                         />
                     </div>
