@@ -279,8 +279,8 @@ export default class EditHomepageItem extends Component {
         }
         if (this.state.imageData && this.state.imageData.url) {
             return (
-                <div>
-                    <img src={this.state.imageData.url} />
+                <div className="grid">
+                    <img className="grid__col-12" src={this.state.imageData.url} />
                     <button type="button" className="btn btn--link" onClick={this.handleRemoveImageClick}>
                         Remove image
                     </button>
