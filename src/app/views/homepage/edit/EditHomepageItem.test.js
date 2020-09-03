@@ -2,6 +2,45 @@ import React from "react";
 import EditHomepageItem from "./EditHomepageItem";
 import { shallow, mount } from "enzyme";
 
+import image from "../../../utilities/api-clients/images";
+
+import { bindFileUploadInput } from "../../../components/file-upload/bind";
+
+jest.mock("../../../utilities/api-clients/images", () => {
+    return {
+        create: jest.fn(() => {
+            return Promise.resolve({ id: "test-image-id" });
+        }),
+        get: jest.fn(() => {
+            return Promise.resolve();
+        })
+    };
+});
+
+jest.mock("../../../components/file-upload/bind", () => {
+    return {
+        bindFileUploadInput: jest.fn(() => {})
+    };
+});
+
+jest.mock("../../../utilities/log", () => {
+    return {
+        add: function() {},
+        eventTypes: {}
+    };
+});
+
+jest.mock("../../../utilities/notifications", () => {
+    return {
+        add: jest.fn(notification => {
+            mockNotifications.push(notification);
+        }),
+        remove: () => {}
+    };
+});
+
+console.error = () => {};
+
 const nullParamProps = {
     params: {
         homepageDataField: null,
@@ -16,22 +55,38 @@ const successRouteProps = {
         id: 0,
         description: "Test description",
         uri: "/",
-        title: "Test title"
+        title: "Test title",
+        image: ""
     },
     params: {
         homepageDataField: "featuredContent",
-        homepageDataFieldID: 0
+        homepageDataFieldID: 0,
+        collectionID: "test-collection"
     },
     handleSuccessClick: jest.fn(),
     handleCancelClick: jest.fn()
 };
+
+const propsWithImage = {
+    ...successRouteProps,
+    data: {
+        ...successRouteProps.data,
+        image: "test-id"
+    }
+};
+
+let mockNotifications = [];
+
+beforeEach(() => {
+    mockNotifications = [];
+});
 
 describe("different item states", () => {
     it("maps the propagated data to the fields", () => {
         const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
         const inputs = wrapper.find("input");
         const textarea = wrapper.find("textarea");
-        expect(inputs.length).toBe(2);
+        expect(inputs.length).toBe(5);
         expect(textarea.length).toBe(1);
     });
     it("renders something went wrong message when unsupported field type is passed ", () => {
@@ -68,5 +123,35 @@ describe("event handlers", () => {
         const cancelButton = wrapper.find("#continue");
         cancelButton.simulate("click");
         expect(successRouteProps.handleSuccessClick).toBeCalled();
+    });
+});
+
+describe("create image record", () => {
+    const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
+    it("updates isCreatingImageRecord state to show it's creating image record", () => {
+        expect(wrapper.state("isCreatingImageRecord")).toBe(false);
+
+        // Tests that state is set correctly before asynchronous requests have finished
+        wrapper.instance().createImageRecord();
+        expect(wrapper.state("isCreatingImageRecord")).toBe(true);
+    });
+
+    it("updates isCreatingImageRecord state to show it has created image record", async () => {
+        // Tests that state is set correctly after asynchronous requests were successful
+        await wrapper.instance().createImageRecord();
+        console.log(wrapper.state());
+        expect(wrapper.state("isCreatingImageRecord")).toBe(false);
+    });
+
+    it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
+        image.create.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await wrapper.instance().createImageRecord();
+        expect(wrapper.state("isCreatingImageRecord")).toBe(false);
+    });
+
+    it("errors cause notification", async () => {
+        image.create.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        await wrapper.instance().createImageRecord();
+        expect(mockNotifications.length).toBe(1);
     });
 });

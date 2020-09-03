@@ -100,7 +100,7 @@ export default class EditHomepageItem extends Component {
             collection_id: this.props.params.collectionID,
             type: "eye-candy"
         };
-        image
+        return image
             .create(imageProps)
             .then(image => {
                 this.setState({ image: image.id, isCreatingImageRecord: false, imageState: "created" });
@@ -127,7 +127,7 @@ export default class EditHomepageItem extends Component {
                 path: imageS3URL
             }
         };
-        image
+        return image
             .update(imageID, imageProps)
             .then(() => {
                 this.pollForUpdates(imageID);
@@ -153,7 +153,7 @@ export default class EditHomepageItem extends Component {
 
     getImage = (imageID, shouldPoll) => {
         this.setState({ isGettingImage: true });
-        image
+        return image
             .get(imageID)
             .then(response => {
                 if (response.state == "completed" || response.state == "published") {
