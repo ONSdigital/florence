@@ -46,6 +46,7 @@ export default class EditHomepageItem extends Component {
             imageState: "",
             upload: {},
             isCreatingImageRecord: false,
+            isUpdatingImageRecord: false,
             isUploadingImage: false,
             isGettingImage: false,
             isImportingImage: false,
@@ -127,16 +128,18 @@ export default class EditHomepageItem extends Component {
                 path: imageS3URL
             }
         };
+        this.setState({ isUpdatingImageRecord: true });
         return image
             .update(imageID, imageProps)
             .then(() => {
+                this.setState({ isUpdatingImageRecord: false });
                 this.pollForUpdates(imageID);
             })
             .catch(error => {
-                this.setState({ isCreatingImageRecord: false });
+                this.setState({ isUpdatingImageRecord: false });
                 log.event(
                     "error adding upload to image record",
-                    log.data({ collection_id: this.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
+                    log.data({ collection_id: this.props.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
                     log.error(error)
                 );
                 console.error("error adding upload to image record:", error);
