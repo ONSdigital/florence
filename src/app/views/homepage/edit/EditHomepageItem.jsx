@@ -77,7 +77,7 @@ export default class EditHomepageItem extends Component {
 
     onFileUploadSuccess = url => {
         this.setState({ isImportingImage: true });
-        this.addUploadToImageRecord(url);
+        this.addUploadToImageRecord(this.state.image, url);
     };
 
     handleSuccessClick = async () => {
@@ -120,7 +120,7 @@ export default class EditHomepageItem extends Component {
             });
     };
 
-    addUploadToImageRecord = imageS3URL => {
+    addUploadToImageRecord = (imageID, imageS3URL) => {
         const imageProps = {
             state: "uploaded",
             upload: {
@@ -128,16 +128,16 @@ export default class EditHomepageItem extends Component {
             }
         };
         image
-            .update(this.state.image, imageProps)
+            .update(imageID, imageProps)
             .then(response => {
-                // TODO: poll for image
                 console.log(response);
+                this.pollForUpdates(imageID);
             })
             .catch(error => {
                 this.setState({ isCreatingImageRecord: false });
                 log.event(
                     "error adding upload to image record",
-                    log.data({ collection_id: this.params.collectionID, image_id: this.state.image, image_upload_path: imageS3URL }),
+                    log.data({ collection_id: this.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
                     log.error(error)
                 );
                 console.error("error adding upload to image record:", error);
