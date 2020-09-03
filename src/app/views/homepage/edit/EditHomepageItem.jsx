@@ -8,7 +8,8 @@ import notifications from "../../../utilities/notifications";
 
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
-import FileUpload, { bindFileUploadInput } from "../../../components/file-upload/FileUpload";
+import FileUpload from "../../../components/file-upload/FileUpload";
+import { bindFileUploadInput } from "../../../components/file-upload/bind";
 
 const propTypes = {
     params: PropTypes.shape({
@@ -63,14 +64,19 @@ export default class EditHomepageItem extends Component {
     };
 
     bindInput = () => {
-        bindFileUploadInput(fileUploadID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess);
+        bindFileUploadInput(fileUploadID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
     };
 
     updateUploadState = upload => {
         this.setState({ ...upload });
     };
 
+    onFileUploadError = () => {
+        this.bindInput();
+    };
+
     onFileUploadSuccess = url => {
+        this.setState({ isImportingImage: true });
         this.addUploadToImageRecord(url);
     };
 
