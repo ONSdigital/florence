@@ -76,7 +76,7 @@ export default class EditHomepageItem extends Component {
     };
 
     onFileUploadSuccess = url => {
-        this.setState({ isImportingImage: true });
+        this.setState({ isImportingImage: true, imageState: "uploaded" });
         this.addUploadToImageRecord(this.state.image, url);
     };
 
@@ -294,7 +294,7 @@ export default class EditHomepageItem extends Component {
         const upload = this.state.upload;
         return (
             <div>
-                {this.props.data && this.state.image && this.state.imageState != "created" ? (
+                {this.props.data || (this.state.image && this.state.imageState != "created") ? (
                     this.renderImagePreview()
                 ) : (
                     <FileUpload
