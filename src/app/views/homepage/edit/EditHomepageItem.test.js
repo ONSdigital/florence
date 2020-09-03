@@ -13,6 +13,9 @@ jest.mock("../../../utilities/api-clients/images", () => {
         }),
         get: jest.fn(() => {
             return Promise.resolve();
+        }),
+        update: jest.fn(() => {
+            return Promise.resolve();
         })
     };
 });
@@ -73,6 +76,11 @@ const propsWithImage = {
         ...successRouteProps.data,
         image: "test-id"
     }
+};
+
+const mockImage = {
+    id: "test-image-001",
+    upload: { path: "fake/upload/path" }
 };
 
 let mockNotifications = [];
@@ -136,11 +144,12 @@ describe("create image record", () => {
         expect(wrapper.state("isCreatingImageRecord")).toBe(true);
     });
 
-    it("updates isCreatingImageRecord state to show it has created image record", async () => {
+    it("updates state to show it has created image record", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
         await wrapper.instance().createImageRecord();
-        console.log(wrapper.state());
         expect(wrapper.state("isCreatingImageRecord")).toBe(false);
+        expect(wrapper.state("image")).toBe("test-image-id");
+        expect(wrapper.state("imageState")).toBe("created");
     });
 
     it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
@@ -152,6 +161,35 @@ describe("create image record", () => {
     it("errors cause notification", async () => {
         image.create.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await wrapper.instance().createImageRecord();
+        expect(mockNotifications.length).toBe(1);
+    });
+});
+
+describe("add upload to image record", () => {
+    const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
+    it("updates isUpdatingImageRecord state to show it's creating image record", () => {
+        expect(wrapper.state("isUpdatingImageRecord")).toBe(false);
+
+        // Tests that state is set correctly before asynchronous requests have finished
+        wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
+        expect(wrapper.state("isUpdatingImageRecord")).toBe(true);
+    });
+
+    it("updates isUpdatingImageRecord state to show it has created image record", async () => {
+        // Tests that state is set correctly after asynchronous requests were successful
+        await wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
+        expect(wrapper.state("isUpdatingImageRecord")).toBe(false);
+    });
+
+    it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
+        image.update.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
+        expect(wrapper.state("isUpdatingImageRecord")).toBe(false);
+    });
+
+    it("errors cause notification", async () => {
+        image.update.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        await wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
         expect(mockNotifications.length).toBe(1);
     });
 });
