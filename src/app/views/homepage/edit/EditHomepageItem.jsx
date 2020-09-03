@@ -129,8 +129,7 @@ export default class EditHomepageItem extends Component {
         };
         image
             .update(imageID, imageProps)
-            .then(response => {
-                console.log(response);
+            .then(() => {
                 this.pollForUpdates(imageID);
             })
             .catch(error => {
