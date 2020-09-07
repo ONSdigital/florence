@@ -154,7 +154,7 @@ export default class EditHomepageItem extends Component {
             });
     };
 
-    getImage = (imageID, shouldPoll) => {
+    getImage = (imageID, shouldPoll = false) => {
         this.setState({ isGettingImage: true });
         return image
             .get(imageID)
@@ -163,6 +163,7 @@ export default class EditHomepageItem extends Component {
                     this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
+                    console.log("HELLO");
                     return;
                 }
                 if (response.state == "importing") {
@@ -173,7 +174,7 @@ export default class EditHomepageItem extends Component {
                     return;
                 }
                 if (response.state == "error") {
-                    this.setState({ isImportingImage: false, importHasErrored: true, imageState: response.state });
+                    this.setState({ isGettingImage: false, isImportingImage: false, importHasErrored: true, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
                     log.event("image import failed", log.data({ image_id: imageID }), log.error(error));
@@ -207,7 +208,8 @@ export default class EditHomepageItem extends Component {
 
     getImageDownload = imageID => {
         const downloadType = "original";
-        image
+        this.setState({ isGettingImage: true });
+        return image
             .getImageDownload(imageID, downloadType)
             .then(response => {
                 const imageData = this.mapImageToState(response);

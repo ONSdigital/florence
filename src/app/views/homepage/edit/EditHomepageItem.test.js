@@ -3,6 +3,7 @@ import EditHomepageItem from "./EditHomepageItem";
 import { shallow, mount } from "enzyme";
 
 import image from "../../../utilities/api-clients/images";
+import log from "../../../utilities/logging/log";
 
 import { bindFileUploadInput } from "../../../components/file-upload/bind";
 
@@ -16,6 +17,9 @@ jest.mock("../../../utilities/api-clients/images", () => {
         }),
         update: jest.fn(() => {
             return Promise.resolve();
+        }),
+        getImageDownload: jest.fn(() => {
+            return Promise.resolve();
         })
     };
 });
@@ -25,11 +29,11 @@ jest.mock("../../../components/file-upload/bind", () => {
         bindFileUploadInput: jest.fn(() => {})
     };
 });
-
-jest.mock("../../../utilities/log", () => {
+jest.mock("../../../utilities/logging/log", () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        event: jest.fn(() => {}),
+        data: jest.fn(() => {}),
+        error: jest.fn(() => {})
     };
 });
 
@@ -87,7 +91,10 @@ let mockNotifications = [];
 
 beforeEach(() => {
     mockNotifications = [];
+    image.getImageDownload.mockClear();
 });
+
+jest.useFakeTimers();
 
 describe("different item states", () => {
     it("maps the propagated data to the fields", () => {
@@ -190,6 +197,78 @@ describe("add upload to image record", () => {
     it("errors cause notification", async () => {
         image.update.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
+        expect(mockNotifications.length).toBe(1);
+    });
+});
+
+describe("get image upload ", () => {
+    const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
+    it("updates isGettingImage state to show it's getting image", () => {
+        expect(wrapper.state("isGettingImage")).toBe(false);
+
+        // Tests that state is set correctly before asynchronous requests have finished
+        wrapper.instance().getImageDownload(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(true);
+    });
+
+    it("updates isUpdatingImageRecord state to show it has created image record", async () => {
+        // Tests that state is set correctly after asynchronous requests were successful
+        await wrapper.instance().getImageDownload(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
+        image.getImageDownload.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await wrapper.instance().getImageDownload(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("errors cause notification", async () => {
+        image.getImageDownload.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        await wrapper.instance().getImageDownload(mockImage.id);
+        expect(mockNotifications.length).toBe(1);
+    });
+});
+
+describe("get image", () => {
+    const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
+    it("updates isGettingImage state to show it's getting image", () => {
+        expect(wrapper.state("isGettingImage")).toBe(false);
+
+        // Tests that state is set correctly before asynchronous requests have finished
+        wrapper.instance().getImage(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(true);
+    });
+
+    it("updates isUpdatingImageRecord state to show it has created image record", async () => {
+        // Tests that state is set correctly after asynchronous requests were successful
+        await wrapper.instance().getImage(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("when response.status is 'completed' or 'publishing' calls to get image download", async () => {
+        image.get.mockImplementationOnce(() => Promise.resolve({ state: "completed" }));
+        await wrapper.instance().getImage(mockImage.id);
+        expect(image.getImageDownload.mock.calls[0][0].length).toBeGreaterThan(0);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("when response.status is 'error' we log the error", async () => {
+        image.get.mockImplementationOnce(() => Promise.resolve({ state: "error" }));
+        await wrapper.instance().getImage(mockImage.id);
+        expect(log.event.mock.calls[0][0].length).toBeGreaterThan(0);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
+        image.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await wrapper.instance().getImage(mockImage.id);
+        expect(wrapper.state("isGettingImage")).toBe(false);
+    });
+
+    it("errors cause notification", async () => {
+        image.get.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        await wrapper.instance().getImage(mockImage.id);
         expect(mockNotifications.length).toBe(1);
     });
 });
