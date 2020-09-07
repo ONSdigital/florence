@@ -163,7 +163,6 @@ export default class EditHomepageItem extends Component {
                     this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
-                    console.log("HELLO");
                     return;
                 }
                 if (response.state == "importing") {
