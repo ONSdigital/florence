@@ -218,13 +218,13 @@ describe("get image upload ", () => {
     });
 
     it("updates isCreatingImageRecords state correctly on failure to fetch data for all datasets", async () => {
-        image.getImageDownload.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        image.getDownloads.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await wrapper.instance().getImageDownload(mockImage.id);
         expect(wrapper.state("isGettingImage")).toBe(false);
     });
 
     it("errors cause notification", async () => {
-        image.getImageDownload.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        image.getDownloads.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await wrapper.instance().getImageDownload(mockImage.id);
         expect(mockNotifications.length).toBe(1);
     });
