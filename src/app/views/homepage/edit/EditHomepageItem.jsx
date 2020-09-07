@@ -176,7 +176,7 @@ export default class EditHomepageItem extends Component {
                     this.setState({ isGettingImage: false, isImportingImage: false, importHasErrored: true, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
-                    log.event("image import failed", log.data({ image_id: imageID }), log.error(error));
+                    log.event("image import failed", log.data({ image_id: imageID }));
                     return;
                 }
             })
