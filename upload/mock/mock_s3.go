@@ -5,6 +5,7 @@ package mock
 
 import (
 	"context"
+	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/dp-s3"
 	"github.com/ONSdigital/florence/upload"
 	"sync"
@@ -12,7 +13,7 @@ import (
 
 var (
 	lockS3ClientMockCheckPartUploaded sync.RWMutex
-	lockS3ClientMockGetPathStyleURL   sync.RWMutex
+	lockS3ClientMockChecker           sync.RWMutex
 	lockS3ClientMockUploadPart        sync.RWMutex
 	lockS3ClientMockUploadPartWithPsk sync.RWMutex
 )
@@ -30,8 +31,8 @@ var _ upload.S3Client = &S3ClientMock{}
 //             CheckPartUploadedFunc: func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error) {
 // 	               panic("mock out the CheckPartUploaded method")
 //             },
-//             GetPathStyleURLFunc: func(path string) string {
-// 	               panic("mock out the GetPathStyleURL method")
+//             CheckerFunc: func(ctx context.Context, state *healthcheck.CheckState) error {
+// 	               panic("mock out the Checker method")
 //             },
 //             UploadPartFunc: func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error {
 // 	               panic("mock out the UploadPart method")
@@ -49,8 +50,8 @@ type S3ClientMock struct {
 	// CheckPartUploadedFunc mocks the CheckPartUploaded method.
 	CheckPartUploadedFunc func(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
 
-	// GetPathStyleURLFunc mocks the GetPathStyleURL method.
-	GetPathStyleURLFunc func(path string) string
+	// CheckerFunc mocks the Checker method.
+	CheckerFunc func(ctx context.Context, state *healthcheck.CheckState) error
 
 	// UploadPartFunc mocks the UploadPart method.
 	UploadPartFunc func(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
@@ -67,10 +68,12 @@ type S3ClientMock struct {
 			// Req is the req argument value.
 			Req *s3client.UploadPartRequest
 		}
-		// GetPathStyleURL holds details about calls to the GetPathStyleURL method.
-		GetPathStyleURL []struct {
-			// Path is the path argument value.
-			Path string
+		// Checker holds details about calls to the Checker method.
+		Checker []struct {
+			// Ctx is the ctx argument value.
+			Ctx context.Context
+			// State is the state argument value.
+			State *healthcheck.CheckState
 		}
 		// UploadPart holds details about calls to the UploadPart method.
 		UploadPart []struct {
@@ -130,34 +133,38 @@ func (mock *S3ClientMock) CheckPartUploadedCalls() []struct {
 	return calls
 }
 
-// GetPathStyleURL calls GetPathStyleURLFunc.
-func (mock *S3ClientMock) GetPathStyleURL(path string) string {
-	if mock.GetPathStyleURLFunc == nil {
-		panic("S3ClientMock.GetPathStyleURLFunc: method is nil but S3Client.GetPathStyleURL was just called")
+// Checker calls CheckerFunc.
+func (mock *S3ClientMock) Checker(ctx context.Context, state *healthcheck.CheckState) error {
+	if mock.CheckerFunc == nil {
+		panic("S3ClientMock.CheckerFunc: method is nil but S3Client.Checker was just called")
 	}
 	callInfo := struct {
-		Path string
+		Ctx   context.Context
+		State *healthcheck.CheckState
 	}{
-		Path: path,
+		Ctx:   ctx,
+		State: state,
 	}
-	lockS3ClientMockGetPathStyleURL.Lock()
-	mock.calls.GetPathStyleURL = append(mock.calls.GetPathStyleURL, callInfo)
-	lockS3ClientMockGetPathStyleURL.Unlock()
-	return mock.GetPathStyleURLFunc(path)
+	lockS3ClientMockChecker.Lock()
+	mock.calls.Checker = append(mock.calls.Checker, callInfo)
+	lockS3ClientMockChecker.Unlock()
+	return mock.CheckerFunc(ctx, state)
 }
 
-// GetPathStyleURLCalls gets all the calls that were made to GetPathStyleURL.
+// CheckerCalls gets all the calls that were made to Checker.
 // Check the length with:
-//     len(mockedS3Client.GetPathStyleURLCalls())
-func (mock *S3ClientMock) GetPathStyleURLCalls() []struct {
-	Path string
+//     len(mockedS3Client.CheckerCalls())
+func (mock *S3ClientMock) CheckerCalls() []struct {
+	Ctx   context.Context
+	State *healthcheck.CheckState
 } {
 	var calls []struct {
-		Path string
+		Ctx   context.Context
+		State *healthcheck.CheckState
 	}
-	lockS3ClientMockGetPathStyleURL.RLock()
-	calls = mock.calls.GetPathStyleURL
-	lockS3ClientMockGetPathStyleURL.RUnlock()
+	lockS3ClientMockChecker.RLock()
+	calls = mock.calls.Checker
+	lockS3ClientMockChecker.RUnlock()
 	return calls
 }
 

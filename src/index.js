@@ -47,6 +47,7 @@ import ChangeUserPasswordController from "./app/views/users/change-password/Chan
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
+import CreateContent from "./app/views/content/CreateContent";
 
 
 const config = window.getEnv();
@@ -108,6 +109,8 @@ class Index extends Component {
                             <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
                                 
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
+
+                            <Route path={`${rootPath}/collections/:collectionID/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateContent))} />
 
                             {config.enableDatasetImport === true && (
                                 <Route component={CollectionRoutesWrapper}>
