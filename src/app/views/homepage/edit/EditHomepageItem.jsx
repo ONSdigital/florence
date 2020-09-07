@@ -210,7 +210,7 @@ export default class EditHomepageItem extends Component {
         const downloadType = "original";
         this.setState({ isGettingImage: true });
         return image
-            .getImageDownload(imageID, downloadType)
+            .getDownloads(imageID, downloadType)
             .then(response => {
                 const imageData = this.mapImageToState(response);
                 this.setState({ isGettingImage: false, imageData: imageData });

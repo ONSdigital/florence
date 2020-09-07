@@ -18,7 +18,7 @@ jest.mock("../../../utilities/api-clients/images", () => {
         update: jest.fn(() => {
             return Promise.resolve();
         }),
-        getImageDownload: jest.fn(() => {
+        getDownloads: jest.fn(() => {
             return Promise.resolve();
         })
     };
@@ -91,7 +91,7 @@ let mockNotifications = [];
 
 beforeEach(() => {
     mockNotifications = [];
-    image.getImageDownload.mockClear();
+    image.getDownloads.mockClear();
 });
 
 jest.useFakeTimers();
@@ -249,7 +249,7 @@ describe("get image", () => {
     it("when response.status is 'completed' or 'publishing' calls to get image download", async () => {
         image.get.mockImplementationOnce(() => Promise.resolve({ state: "completed" }));
         await wrapper.instance().getImage(mockImage.id);
-        expect(image.getImageDownload.mock.calls[0][0].length).toBeGreaterThan(0);
+        expect(image.getDownloads.mock.calls[0][0].length).toBeGreaterThan(0);
         expect(wrapper.state("isGettingImage")).toBe(false);
     });
 
