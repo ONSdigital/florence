@@ -5,7 +5,6 @@ import (
 	"context"
 	"encoding/hex"
 	"errors"
-	"fmt"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -21,6 +20,9 @@ import (
 var (
 	vaultRootPath = "secret/path"
 	vaultKey      = "key"
+
+	s3Region = "eu-west-1"
+	s3Bucket = "test-bucket"
 
 	expectedPayload = []byte(`some test file bytes to be uploaded`)
 )
@@ -45,7 +47,7 @@ func TestGetUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mock, and call Upload
-			up := upload.New(s3, nil, "")
+			up := upload.New(s3, nil, "", "", "")
 			up.CheckUploaded(w, req)
 
 			// Validations
@@ -72,7 +74,7 @@ func TestGetUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mock, and call Upload
-			up := upload.New(s3, nil, "")
+			up := upload.New(s3, nil, "", "", "")
 			up.CheckUploaded(w, req)
 
 			// Validations
@@ -99,7 +101,7 @@ func TestGetUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mock, and call Upload
-			up := upload.New(s3, nil, "")
+			up := upload.New(s3, nil, "", "", "")
 			up.CheckUploaded(w, req)
 
 			// Validations
@@ -136,7 +138,7 @@ func TestPostUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mock, and call Upload
-			up := upload.New(s3, nil, "")
+			up := upload.New(s3, nil, "", "", "")
 			up.Upload(w, req)
 
 			// Validations
@@ -175,7 +177,7 @@ func TestPostUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mocks, and call Upload
-			up := upload.New(s3, vc, vaultRootPath)
+			up := upload.New(s3, vc, vaultRootPath, "", "")
 			up.Upload(w, req)
 
 			// Validations
@@ -219,7 +221,7 @@ func TestPostUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mocks, and call Upload
-			up := upload.New(s3, vc, vaultRootPath)
+			up := upload.New(s3, vc, vaultRootPath, "", "")
 			up.Upload(w, req)
 
 			// Validations
@@ -250,7 +252,7 @@ func TestPostUpload(t *testing.T) {
 			}
 
 			// Instantiate Upload with mock, and call Upload
-			up := upload.New(s3, nil, "")
+			up := upload.New(s3, nil, "", "", "")
 			up.Upload(w, req)
 
 			// Validations
@@ -280,22 +282,13 @@ func TestGetS3Url(t *testing.T) {
 
 		Convey("A 200 OK status is returned, with the fully qualified s3 url for the region, bucket and s3 key", func() {
 
-			// S3 client returns URL for test-bucket and eu-west-1 region
-			s3 := &mock.S3ClientMock{
-				GetPathStyleURLFunc: func(path string) string {
-					return fmt.Sprintf("https://s3-eu-west-1.amazonaws.com/test-bucket/%s", path)
-				},
-			}
-
 			// Instantiate Upload with mock, and call GetS3URL
-			up := upload.New(s3, nil, "173849-helloworldtxt")
+			up := upload.New(&mock.S3ClientMock{}, nil, "173849-helloworldtxt", s3Region, s3Bucket)
 			up.GetS3URL(w, req)
 
 			// Validations
 			So(w.Code, ShouldEqual, 200)
 			So(w.Body.String(), ShouldEqual, `{"url":"https://s3-eu-west-1.amazonaws.com/test-bucket/173849-helloworldtxt"}`)
-			So(len(s3.GetPathStyleURLCalls()), ShouldEqual, 1)
-			So(s3.GetPathStyleURLCalls()[0].Path, ShouldEqual, "173849-helloworldtxt")
 			So(w.Header().Get("Content-Type"), ShouldEqual, "application/json")
 		})
 	})
