@@ -7,8 +7,10 @@ import http from "../../utilities/http";
 import notifications from "../../utilities/notifications";
 import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage, updateWorkingOn, emptyWorkingOn } from "../../config/actions";
 import cookies from "../../utilities/cookies";
+import log from "../../utilities/logging/log";
 
 import Iframe from "../../components/iframe/Iframe";
+import content from "../../utilities/api-clients/content";
 
 const propTypes = {
     selectedPageUri: PropTypes.string,
@@ -53,8 +55,8 @@ export class PreviewController extends Component {
 
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID)
-            .then(collection => {
-                const nonDatasetPages = [...collection.inProgress, ...collection.complete, ...collection.reviewed];
+            .then(async collection => {
+                const nonDatasetPages = await this.mapPages([...collection.inProgress, ...collection.complete, ...collection.reviewed]);
                 if (this.props.enableDatasetImport) {
                     const datasetPages = [...collection.datasetVersions, ...collection.datasets];
                     const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
@@ -107,6 +109,39 @@ export class PreviewController extends Component {
                 console.error(`Error fetching ${collectionID}:\n`, error);
             });
     }
+
+    mapPages = async pages => {
+        const mappedPages = [];
+
+        for (let i = 0; i < pages.length; i++) {
+            if (pages[i].type === "visualisation") {
+                const visPage = await this.getVisualisationFiles(pages[i]);
+                mappedPages.push(visPage);
+            } else {
+                mappedPages.push(pages[i]);
+            }
+        }
+        return mappedPages;
+    };
+
+    getVisualisationFiles = visualisation => {
+        return content
+            .get(visualisation.uri, this.props.routeParams.collectionID)
+            .then(response => {
+                visualisation.files = response.filenames;
+                return visualisation;
+            })
+            .catch(error => {
+                log.event("preview: error getting visualisation files", log.error(error));
+                notifications.add({
+                    type: "warning",
+                    message:
+                        "There was a problem getting visualisations in this collection so they will not appear in the list. Refresh the page to try again.",
+                    isDismissable: true
+                });
+                return {};
+            });
+    };
 
     mapDatasetPages(datasetPages) {
         try {
