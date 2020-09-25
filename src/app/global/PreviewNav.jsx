@@ -25,6 +25,16 @@ export class PreviewNav extends Component {
         if (pages) {
             try {
                 return pages.map(page => {
+                    if (page.type === "visualisation" && page.files) {
+                        return {
+                            id: page.uri,
+                            name: this.createPageTitle(page),
+                            isGroup: true,
+                            groupOptions: page.files.map(file => {
+                                return { id: `/visualisations/dvc221/${file}`, name: file };
+                            })
+                        };
+                    }
                     return {
                         id: page.uri,
                         name: this.createPageTitle(page)
