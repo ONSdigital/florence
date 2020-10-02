@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"net/http"
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
@@ -19,6 +20,7 @@ var (
 	getAsset     = assets.Asset
 	getAssetETag = assets.GetAssetETag
 	upgrader     = websocket.Upgrader{}
+	routerProxy  http.Handler
 )
 
 // Service contains all the configs, server and clients to run Florence
@@ -125,23 +127,29 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
 		return nil, err
 	}
-
-	routerProxy := reverseproxy.Create(routerURL, director)
+	if routerProxy == nil {
+		routerProxy = reverseproxy.Create(routerURL, director)
+	}
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, tableDirector)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion))
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion))
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
+	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion))
 
 	router = pat.New()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
 	if cfg.SharedConfig.EnableDatasetImport {
-		router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
-		router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
-		router.Path("/upload/{id}").Methods("GET").HandlerFunc(svc.uploader.GetS3URL)
+		if cfg.SharedConfig.EnableUploadService {
+			router.Handle("/upload{uri:.*}", uploadServiceAPIProxy)
+		} else {
+			router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
+			router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
+			router.Path("/upload/{id}").Methods("GET").HandlerFunc(svc.uploader.GetS3URL)
+		}
 		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 		router.Handle("/import{uri:.*}", importAPIProxy)
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)

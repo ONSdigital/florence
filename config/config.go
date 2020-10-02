@@ -14,6 +14,7 @@ type Config struct {
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
 	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
+	UploadServiceURL           string        `envconfig:"UPLOAD_SERVICE_URL"`
 	AwsRegion                  string        `envconfig:"AWS_REGION"`
 	UploadBucketName           string        `envconfig:"UPLOAD_BUCKET_NAME"`
 	EncryptionDisabled         bool          `envconfig:"ENCRYPTION_DISABLED"`
@@ -28,6 +29,7 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
+	EnableUploadService      bool `envconfig:"ENABLE_UPLOAD_SERVICE" json:"enableUploadService"`
 	EnableDatasetImport      bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 	EnableHomepagePublishing bool `envconfig:"ENABLE_HOMEPAGE_PUBLISHING" json:"enableHomepagePublishing"`
 }
@@ -47,9 +49,10 @@ func Get() (*Config, error) {
 		RouterURL:                  "http://localhost:20000", // Frontend router
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
+		UploadServiceURL:           "http://localhost:25100",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
-		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
+		SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},
 		EncryptionDisabled:         false,
 		VaultAddr:                  "http://localhost:8200",
 		VaultToken:                 "",
