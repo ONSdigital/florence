@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"net/http"
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
@@ -20,7 +19,6 @@ var (
 	getAsset     = assets.Asset
 	getAssetETag = assets.GetAssetETag
 	upgrader     = websocket.Upgrader{}
-	routerProxy  http.Handler
 )
 
 // Service contains all the configs, server and clients to run Florence
@@ -127,9 +125,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
 		return nil, err
 	}
-	if routerProxy == nil {
-		routerProxy = reverseproxy.Create(routerURL, director)
-	}
+
+	routerProxy := reverseproxy.Create(routerURL, director)
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, tableDirector)
