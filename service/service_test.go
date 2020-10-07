@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"net/http/httptest"
 	"sync"
 	"testing"
 
@@ -14,6 +15,8 @@ import (
 	serviceMock "github.com/ONSdigital/florence/service/mock"
 	"github.com/ONSdigital/florence/upload"
 	uploadMock "github.com/ONSdigital/florence/upload/mock"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/pat"
 	"github.com/pkg/errors"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -108,6 +111,11 @@ func TestRun(t *testing.T) {
 			return vaultMock, nil
 		}
 
+		funcHasRoute := func(r *pat.Router, method, path string, match *mux.RouteMatch) bool {
+			req := httptest.NewRequest(method, path, nil)
+			return r.Match(req, match)
+		}
+
 		Convey("Given that initialising Vault returns an error", func() {
 			initMock := &serviceMock.InitialiserMock{
 				DoGetVaultFunc: funcDoGetVaultErr,
@@ -196,11 +204,17 @@ func TestRun(t *testing.T) {
 			svcErrors := make(chan error, 1)
 			svcList := service.NewServiceList(initMock)
 			serverWg.Add(1)
-			_, err := service.Run(ctx, cfg, svcList, testBuildTime, testGitCommit, testVersion, svcErrors)
+			match := &mux.RouteMatch{}
+			s, err := service.Run(ctx, cfg, svcList, testBuildTime, testGitCommit, testVersion, svcErrors)
 
 			Convey("Then service Run succeeds and all the flags are set", func() {
 				So(err, ShouldBeNil)
 				So(svcList.HealthCheck, ShouldBeTrue)
+			})
+
+			Convey("And the following route should have been added", func() {
+				So(funcHasRoute(s.Router, "GET", "/health", match), ShouldBeTrue)
+				So(match.Handler, ShouldEqual, s.HealthCheck.Handler)
 			})
 
 			Convey("The checkers are registered and the healthcheck and http server started", func() {

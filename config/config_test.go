@@ -21,7 +21,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			TableRendererURL:           "http://localhost:23300",
 			AwsRegion:                  "eu-west-1",
 			UploadBucketName:           "dp-frontend-florence-file-uploads",
-			SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
+			SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},
 			EncryptionDisabled:         false,
 			VaultAddr:                  "http://localhost:8200",
 			VaultToken:                 "",

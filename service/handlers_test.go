@@ -205,6 +205,7 @@ func TestIndexFile(t *testing.T) {
 	Convey("Environment variables are set", t, func() {
 		cfg := &config.Config{
 			SharedConfig: config.SharedConfig{
+				EnableUploadService:      true,
 				EnableDatasetImport:      true,
 				EnableHomepagePublishing: true,
 			},
@@ -225,7 +226,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableUploadService":true,"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -235,7 +236,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableUploadService":true,"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
 		})
 
 	})
@@ -255,7 +256,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableUploadService":false,"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
 
 		})
 
@@ -266,7 +267,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableUploadService":false,"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
 		})
 
 	})

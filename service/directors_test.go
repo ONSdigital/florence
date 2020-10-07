@@ -67,4 +67,11 @@ func TestDirectors(t *testing.T) {
 		datasetAPIDirector("v123")(request)
 		So(request.URL.String(), ShouldEqual, "/v123/foo")
 	})
+
+	Convey("UploadService API proxy director function appends the provided router api version to the provided path' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/foo", nil)
+		So(err, ShouldBeNil)
+		uploadServiceAPIDirector("v123")(request)
+		So(request.URL.String(), ShouldEqual, "/v123/foo")
+	})
 }
