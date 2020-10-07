@@ -14,7 +14,6 @@ type Config struct {
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
 	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
-	UploadServiceURL           string        `envconfig:"UPLOAD_SERVICE_URL"`
 	AwsRegion                  string        `envconfig:"AWS_REGION"`
 	UploadBucketName           string        `envconfig:"UPLOAD_BUCKET_NAME"`
 	EncryptionDisabled         bool          `envconfig:"ENCRYPTION_DISABLED"`
@@ -49,7 +48,6 @@ func Get() (*Config, error) {
 		RouterURL:                  "http://localhost:20000", // Frontend router
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
-		UploadServiceURL:           "http://localhost:25100",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
 		SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},

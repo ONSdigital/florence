@@ -19,7 +19,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			RouterURL:                  "http://localhost:20000",
 			DatasetControllerURL:       "http://localhost:24000",
 			TableRendererURL:           "http://localhost:23300",
-			UploadServiceURL:           "http://localhost:25100",
 			AwsRegion:                  "eu-west-1",
 			UploadBucketName:           "dp-frontend-florence-file-uploads",
 			SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},
