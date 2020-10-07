@@ -24,6 +24,7 @@ export class PreviewNav extends Component {
     mapPagesToSelect(pages) {
         if (pages) {
             try {
+                console.log(pages);
                 return pages.map(page => {
                     if (page.type === "visualisation" && page.files) {
                         return {
@@ -31,7 +32,7 @@ export class PreviewNav extends Component {
                             name: this.createPageTitle(page),
                             isGroup: true,
                             groupOptions: page.files.map(file => {
-                                return { id: `/visualisations/dvc221/${file}`, name: file };
+                                return { id: `${page.contentPath}/${file}`, name: file };
                             })
                         };
                     }
