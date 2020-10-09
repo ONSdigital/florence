@@ -40,7 +40,7 @@ export class EditHomepageController extends Component {
             lastEditedBy: "",
             formIsDisabled: true,
             hasChangesMade: false,
-            maximumNumberOfEntries: 4,
+            maximumNumberOfEntries: 8,
             isSaving: false
         };
     }
