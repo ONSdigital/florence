@@ -12,6 +12,7 @@ require (
 	github.com/aws/aws-sdk-go v1.29.9 // indirect
 	github.com/frankban/quicktest v1.9.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
+	github.com/gorilla/mux v1.7.4
 	github.com/gorilla/pat v1.0.1
 	github.com/gorilla/schema v1.1.0
 	github.com/gorilla/websocket v1.4.1
