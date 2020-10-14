@@ -141,7 +141,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	if cfg.SharedConfig.EnableDatasetImport {
 		if cfg.SharedConfig.EnableUploadService {
-			router.Handle("/upload{uri:.*}", uploadServiceAPIProxy)
+			router.Handle("/upload", uploadServiceAPIProxy)
+			router.Handle("/upload/{id}", uploadServiceAPIProxy)
 		} else {
 			router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
 			router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
