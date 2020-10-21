@@ -18,6 +18,7 @@ import {
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
     updateWorkingOn,
+    emptyWorkingOn,
     updateActiveDatasetReviewState,
     updateActiveVersionReviewState
 } from "../../../config/actions";
@@ -102,6 +103,10 @@ export class CollectionDetailsController extends Component {
             this.fetchActiveCollection(this.props.collectionID);
             this.setState({ drawerIsVisible: true });
         }
+
+        if (!this.props.collectionID) {
+            this.removeActiveCollectionGlobally();
+        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -159,6 +164,10 @@ export class CollectionDetailsController extends Component {
         return true;
     }
 
+    componentWillUnmount = () => {
+        this.props.dispatch(emptyActiveCollection());
+    };
+
     fetchActiveCollection(collectionID) {
         this.setState({ isFetchingCollectionDetails: true });
         collections
@@ -203,6 +212,11 @@ export class CollectionDetailsController extends Component {
         this.props.dispatch(updateActiveCollection(collection));
         this.props.dispatch(updateWorkingOn(collection.id, collection.name));
         cookies.add("collection", collection.id, null);
+    }
+
+    removeActiveCollectionGlobally() {
+        this.props.dispatch(emptyActiveCollection());
+        this.props.dispatch(emptyWorkingOn());
     }
 
     handleCollectionDeleteClick(collectionID) {
@@ -575,6 +589,7 @@ export class CollectionDetailsController extends Component {
             drawerIsAnimatable: true,
             drawerIsVisible: false
         });
+        this.removeActiveCollectionGlobally();
     }
 
     handleRestoreDeletedContentClose() {
