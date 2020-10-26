@@ -31,7 +31,6 @@ function visualisationEditor(collectionId, data) {
     $selectWrapper.find('select').empty().append(selectOptions.join(''));
     $selectWrapper.show();
     $('#browser-location').hide();
-    // $('.browser.disabled').removeClass('disabled');
 
     // Bind to select's change and toggle preview to selected HTML file
     $('#select-vis-preview').change(function() {
@@ -42,7 +41,6 @@ function visualisationEditor(collectionId, data) {
     $('#browse').one('click', function() {
         $selectWrapper.hide();
         $('#browser-location').show();
-        $('.browser').addClass('disabled');
         var browseURL = data.uri;
         $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
         updateBrowserURL(browseURL);
