@@ -24,7 +24,18 @@ export class PreviewNav extends Component {
     mapPagesToSelect(pages) {
         if (pages) {
             try {
+                console.log(pages);
                 return pages.map(page => {
+                    if (page.type === "visualisation" && page.files) {
+                        return {
+                            id: page.uri,
+                            name: this.createPageTitle(page),
+                            isGroup: true,
+                            groupOptions: page.files.map(file => {
+                                return { id: `${page.contentPath}/${file}`, name: file };
+                            })
+                        };
+                    }
                     return {
                         id: page.uri,
                         name: this.createPageTitle(page)
