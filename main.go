@@ -50,6 +50,8 @@ func run(ctx context.Context) error {
 		os.Exit(1)
 	}
 
+	log.Event(ctx, "got service configuration", log.INFO, log.Data{"config": cfg})
+
 	// Start service
 	svc, err := service.Run(ctx, cfg, svcList, BuildTime, GitCommit, Version, svcErrors)
 	if err != nil {
