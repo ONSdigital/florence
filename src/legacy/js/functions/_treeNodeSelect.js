@@ -5,6 +5,8 @@ function treeNodeSelect(url) {
     $('.js-browse__item.selected').removeClass('selected');
     $selectedListItem.addClass('selected');
 
+    // Check to see if the user has selected a visualisation. If so, start the process of fetching visualisation data 
+    // and rendering the select element so users can preview the visualisation without having to go to the Edit screen
     var selectWrapper = $('#select-vis-wrapper');
     if (isVisualisation($selectedListItem)) {
         loadVisualisationPreviewer($selectedListItem.attr('data-url'), Florence.collection.id)

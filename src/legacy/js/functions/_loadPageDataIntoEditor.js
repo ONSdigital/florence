@@ -52,7 +52,6 @@ function loadVisualisationPreviewer(path, collectionId, click) {
 
     var { pageUrlData, toApproveUrlData } = buildUrls(path)
     
-
     var pageData, isPageComplete;
     var ajaxRequests = [];
     ajaxRequests.push(
