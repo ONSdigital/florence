@@ -34,7 +34,7 @@ function loadEmbedIframe(onSave) {
             embedUrl = parsedEmbedUrl.pathname;
         }
 
-        onSave('<ons-interactive url="' + embedUrl + '" title="'+ embedTitle +'" full-width="' + fullWidth + '"/>');
+        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '" title="' + embedTitle + '"/>');
         modal.remove();
 
     }
