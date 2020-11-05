@@ -9,7 +9,7 @@
         "cat": "latest",
         "onchange": "latest",
         "handlebars": "4.7.3",
-        "node-sass": "latest"
+        "node-sass": "^4.13.1"
     },
     "scripts": {
         "watch-js": "npm run build-js && ./node_modules/onchange/cli.js 'js/classes/*.js' 'js/functions/*.js' 'js/components/*.js' 'js/zebedee-api/*.js' -v -- npm run build-js",
