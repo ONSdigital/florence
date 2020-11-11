@@ -11,17 +11,10 @@
 
 function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
-    if (content.title == undefined) {
-        var html = templates.markdownEditorNoTitle(content);
-        $('body').append(html);
-        $('.markdown-editor').stop().fadeIn(200);
-        $('#wmd-input').focus();
-    } else {
-        var html = templates.markdownEditor(content);
-        $('body').append(html);
-        $('.markdown-editor').stop().fadeIn(200);
-        $('#wmd-input').focus();
-    }
+    var html = templates.markdownEditor(content);
+    $('body').append(html);
+    $('.markdown-editor').stop().fadeIn(200);
+    $('#wmd-input').focus();
 
     markdownEditor();
 
