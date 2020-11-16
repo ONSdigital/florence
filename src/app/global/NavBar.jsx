@@ -60,7 +60,7 @@ export class NavBar extends Component {
     }
 
     routeIsACollectionPage(path) {
-        return path.indexOf(`/datasets`) >= 0 || path.indexOf(`/preview`) >= 0 || path.indexOf(`/homepage`);
+        return path.indexOf(`/collections`) >= 0;
     }
 
     renderNavItems() {

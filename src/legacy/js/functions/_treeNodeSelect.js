@@ -5,6 +5,16 @@ function treeNodeSelect(url) {
     $('.js-browse__item.selected').removeClass('selected');
     $selectedListItem.addClass('selected');
 
+    // Check to see if the user has selected a visualisation. If so, start the process of fetching visualisation data 
+    // and rendering the select element so users can preview the visualisation without having to go to the Edit screen
+    var selectWrapper = $('#select-vis-wrapper');
+    if (isVisualisation($selectedListItem)) {
+        loadVisualisationPreviewer($selectedListItem.attr('data-url'), Florence.collection.id)
+    } else if (selectWrapper) {
+        selectWrapper.hide();
+        $('#browser-location').show();
+    }
+
     // Hide container for item and buttons for previous and show selected one
     $('.page__container.selected').removeClass('selected');
     $selectedListItem.find('.page__container:first').addClass('selected');
@@ -25,4 +35,8 @@ function treeNodeSelect(url) {
 
     // Open active directories
     selectParentDirectories($selectedListItem);
+}
+
+function isVisualisation(node) {
+    return node.attr("data-url").split("/").includes("visualisations")
 }
