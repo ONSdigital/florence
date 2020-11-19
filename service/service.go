@@ -134,15 +134,21 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion))
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion))
+	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion))
 
 	router = pat.New()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
 	if cfg.SharedConfig.EnableDatasetImport {
-		router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
-		router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
-		router.Path("/upload/{id}").Methods("GET").HandlerFunc(svc.uploader.GetS3URL)
+		if cfg.SharedConfig.EnableUploadService {
+			router.Handle("/upload", uploadServiceAPIProxy)
+			router.Handle("/upload/{id}", uploadServiceAPIProxy)
+		} else {
+			router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
+			router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
+			router.Path("/upload/{id}").Methods("GET").HandlerFunc(svc.uploader.GetS3URL)
+		}
 		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 		router.Handle("/import{uri:.*}", importAPIProxy)
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)

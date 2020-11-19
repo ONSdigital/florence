@@ -8,7 +8,15 @@ const propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
-            disabled: PropTypes.bool
+            disabled: PropTypes.bool,
+            isGroup: PropTypes.bool,
+            groupOptions: PropTypes.arrayOf(
+                PropTypes.shape({
+                    id: PropTypes.string.isRequired,
+                    name: PropTypes.string.isRequired,
+                    disabled: PropTypes.bool
+                })
+            )
         })
     ).isRequired,
     name: PropTypes.string,
@@ -38,6 +46,29 @@ class Select extends Component {
         this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
     }
 
+    renderOptions = options => {
+        return options.map((option, index) => {
+            if (option.isGroup) {
+                return (
+                    <optgroup label={option.name} key={index}>
+                        {option.groupOptions.map((groupOption, index) => {
+                            return (
+                                <option disabled={groupOption.disabled} key={`${option.name}-${index}`} value={groupOption.id}>
+                                    {groupOption.name}
+                                </option>
+                            );
+                        })}
+                    </optgroup>
+                );
+            }
+            return (
+                <option disabled={option.disabled} key={index} value={option.id}>
+                    {option.name}
+                </option>
+            );
+        });
+    };
+
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
@@ -64,13 +95,7 @@ class Select extends Component {
                         value={this.props.selectedOption}
                     >
                         <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
-                        {this.props.contents.map((item, index) => {
-                            return (
-                                <option disabled={item.disabled} key={index} value={item.id}>
-                                    {item.name}
-                                </option>
-                            );
-                        })}
+                        {this.renderOptions(this.props.contents)}
                     </select>
                 </div>
             </div>
