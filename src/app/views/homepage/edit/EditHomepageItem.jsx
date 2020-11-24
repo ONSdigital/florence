@@ -173,7 +173,7 @@ export default class EditHomepageItem extends Component {
             .get(imageID)
             .then(response => {
                 if (response.state == "imported" || response.state == "completed" || response.state == "published") {
-                    this.setState({ imageImportStatus: STATUS_GETTING_IMAGE, imageState: response.state });
+                    this.setState({ imageImportStatus: STATUS_GETTING_IMAGE, isGettingImage: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
                     return;
@@ -186,7 +186,7 @@ export default class EditHomepageItem extends Component {
                     return;
                 }
                 if (response.state == "error") {
-                    this.setState({ imageImportStatus: STATUS_IMPORTING_ERROR, imageState: response.state });
+                    this.setState({ imageImportStatus: STATUS_IMPORTING_ERROR, isGettingImage: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
                     log.event("image import failed", log.data({ image_id: imageID }));
