@@ -121,11 +121,18 @@ export default class EditHomepageItem extends Component {
             });
     };
 
+    // getImageKeyFromURL extracts the last part of the upload URL (aka the 'key' in AWS speak)
+    // it is usually some like {id}-{filename}{filetype}
+    getImageKeyFromURL = url => {
+        return url.substring(url.lastIndexOf("/") + 1);
+    };
+
     addUploadToImageRecord = (imageID, imageS3URL) => {
+        const imageKey = this.getImageKeyFromURL(imageS3URL);
         const imageProps = {
             state: "uploaded",
             upload: {
-                path: imageS3URL
+                path: imageKey
             }
         };
         this.setState({ isUpdatingImageRecord: true });
@@ -159,7 +166,7 @@ export default class EditHomepageItem extends Component {
         return image
             .get(imageID)
             .then(response => {
-                if (response.state == "completed" || response.state == "published") {
+                if (response.state == "imported" || response.state == "completed" || response.state == "published") {
                     this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
