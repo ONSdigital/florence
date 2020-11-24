@@ -131,6 +131,7 @@ export default class EditHomepageItem extends Component {
         const imageKey = this.getImageKeyFromURL(imageS3URL);
         const imageProps = {
             state: "uploaded",
+            filename: this.state.upload ? this.state.upload.filename : imageKey,
             upload: {
                 path: imageKey
             }
