@@ -27,7 +27,13 @@ const propTypes = {
     handleCancelClick: PropTypes.func.isRequired
 };
 
-const fileUploadID = "image-file-upload";
+const FILE_UPLOAD_ID = "image-file-upload";
+
+const STATUS_IMAGE_RECORD_CREATED = "Image record created";
+const STATUS_IMPORTING_IMAGE = "Image being imported";
+const STATUS_IMPORTING_ERROR = "Image import errored";
+const STATUS_GETTING_IMAGE = "Image is loading";
+const STATUS_IMAGE_LOADED = "Image loaded";
 
 export default class EditHomepageItem extends Component {
     constructor(props) {
@@ -49,8 +55,7 @@ export default class EditHomepageItem extends Component {
             isUpdatingImageRecord: false,
             isUploadingImage: false,
             isGettingImage: false,
-            isImportingImage: false,
-            importHasErrored: false
+            imageImportStatus: STATUS_IMAGE_RECORD_CREATED
         };
     }
 
@@ -65,7 +70,7 @@ export default class EditHomepageItem extends Component {
     };
 
     bindInput = () => {
-        bindFileUploadInput(fileUploadID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
+        bindFileUploadInput(FILE_UPLOAD_ID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
     };
 
     updateUploadState = upload => {
@@ -136,7 +141,7 @@ export default class EditHomepageItem extends Component {
                 path: imageKey
             }
         };
-        this.setState({ isUpdatingImageRecord: true });
+        this.setState({ imageImportStatus: STATUS_IMPORTING_IMAGE, isUpdatingImageRecord: true });
         return image
             .update(imageID, imageProps)
             .then(() => {
@@ -168,20 +173,20 @@ export default class EditHomepageItem extends Component {
             .get(imageID)
             .then(response => {
                 if (response.state == "imported" || response.state == "completed" || response.state == "published") {
-                    this.setState({ isImportingImage: false, importHasErrored: false, imageState: response.state });
+                    this.setState({ imageImportStatus: STATUS_GETTING_IMAGE, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
                     return;
                 }
                 if (response.state == "importing") {
-                    this.setState({ isImportingImage: true, importHasErrored: false, imageState: response.state });
+                    this.setState({ imageImportStatus: STATUS_IMPORTING_IMAGE, imageState: response.state });
                     if (shouldPoll) {
                         this.pollForUpdates(imageID);
                     }
                     return;
                 }
                 if (response.state == "error") {
-                    this.setState({ isGettingImage: false, isImportingImage: false, importHasErrored: true, imageState: response.state });
+                    this.setState({ imageImportStatus: STATUS_IMPORTING_ERROR, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
                     log.event("image import failed", log.data({ image_id: imageID }));
@@ -220,7 +225,7 @@ export default class EditHomepageItem extends Component {
             .getDownloads(imageID, downloadType)
             .then(response => {
                 const imageData = this.mapImageToState(response);
-                this.setState({ isGettingImage: false, imageData: imageData });
+                this.setState({ isGettingImage: false, imageImportStatus: STATUS_IMAGE_LOADED, imageData: imageData });
             })
             .catch(error => {
                 this.setState({ isGettingImage: false });
@@ -280,14 +285,8 @@ export default class EditHomepageItem extends Component {
     };
 
     renderImagePreview = () => {
-        if (this.state.isImportingImage) {
-            return <p>Image being imported</p>;
-        }
-        if (this.state.importHasErrored) {
-            return <p>Image import errored</p>;
-        }
-        if (this.state.isGettingImage) {
-            return <p>Image is loading</p>;
+        if (this.state.imageImportStatus !== STATUS_IMAGE_RECORD_CREATED && this.state.imageImportStatus !== STATUS_IMAGE_LOADED) {
+            return <p>{this.state.imageImportStatus}</p>;
         }
         if (this.state.imageData && this.state.imageData.url) {
             return (
@@ -312,7 +311,7 @@ export default class EditHomepageItem extends Component {
                     <FileUpload
                         label="File upload"
                         type="file"
-                        id={fileUploadID}
+                        id={FILE_UPLOAD_ID}
                         accept=".png"
                         url={upload.url || null}
                         extension={upload.extension || null}
