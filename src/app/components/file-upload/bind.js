@@ -22,7 +22,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
         const fileUpload = {
             aliasName: aliasName,
             progress: 0,
-            error: null
+            error: null,
+            filename: file.fileName
         };
         const upload = {
             ...uploadState,
@@ -33,7 +34,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
     r.on("fileProgress", file => {
         const progressPercentage = Math.round(Number(file.progress() * 100));
         const fileUpload = {
-            progress: progressPercentage
+            progress: progressPercentage,
+            filename: file.fileName
         };
         const upload = {
             ...uploadState,
@@ -43,7 +45,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
     });
     r.on("fileError", file => {
         const fileUpload = {
-            error: "An error occurred whilst uploading this file."
+            error: "An error occurred whilst uploading this file.",
+            filename: file.fileName
         };
         const upload = {
             ...uploadState,
@@ -61,7 +64,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
                 const fileUpload = {
                     aliasName: aliasName,
                     progress: 0,
-                    url: response.url
+                    url: response.url,
+                    filename: file.fileName
                 };
                 const upload = {
                     ...uploadState,
@@ -74,7 +78,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
             })
             .catch(error => {
                 const fileUpload = {
-                    error: "An error occurred whilst uploading this file"
+                    error: "An error occurred whilst uploading this file",
+                    filename: file.fileName
                 };
 
                 const upload = {
