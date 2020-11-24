@@ -287,7 +287,6 @@ export default class EditHomepageItem extends Component {
     };
 
     renderImagePreview = () => {
-        console.log("in here");
         if (this.state.imageImportStatus !== STATUS_IMAGE_RECORD_CREATED && this.state.imageImportStatus !== STATUS_IMAGE_LOADED) {
             return <p>{this.state.imageImportStatus}</p>;
         }
@@ -305,7 +304,6 @@ export default class EditHomepageItem extends Component {
     };
 
     renderImageUpload = () => {
-        console.log(this.props.data, "\n", this.state.image, "\n", this.state.imageState, "\n", this.state.imageImportStatus);
         const upload = this.state.upload;
         return (
             <div>
