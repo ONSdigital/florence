@@ -146,13 +146,11 @@ describe("create image record", () => {
     it("updates isCreatingImageRecord state to show it's creating image record", () => {
         expect(wrapper.state("isCreatingImageRecord")).toBe(false);
 
-        // Tests that state is set correctly before asynchronous requests have finished
         wrapper.instance().createImageRecord();
         expect(wrapper.state("isCreatingImageRecord")).toBe(true);
     });
 
     it("updates state to show it has created image record", async () => {
-        // Tests that state is set correctly after asynchronous requests were successful
         await wrapper.instance().createImageRecord();
         expect(wrapper.state("isCreatingImageRecord")).toBe(false);
         expect(wrapper.state("image")).toBe("test-image-id");
@@ -177,13 +175,11 @@ describe("add upload to image record", () => {
     it("updates isUpdatingImageRecord state to show it's creating image record", () => {
         expect(wrapper.state("isUpdatingImageRecord")).toBe(false);
 
-        // Tests that state is set correctly before asynchronous requests have finished
         wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
         expect(wrapper.state("isUpdatingImageRecord")).toBe(true);
     });
 
     it("updates isUpdatingImageRecord state to show it has created image record", async () => {
-        // Tests that state is set correctly after asynchronous requests were successful
         await wrapper.instance().addUploadToImageRecord(mockImage.id, mockImage.upload.path);
         expect(wrapper.state("isUpdatingImageRecord")).toBe(false);
     });
@@ -206,13 +202,11 @@ describe("get image upload ", () => {
     it("updates isGettingImage state to show it's getting image", () => {
         expect(wrapper.state("isGettingImage")).toBe(false);
 
-        // Tests that state is set correctly before asynchronous requests have finished
         wrapper.instance().getImageDownload(mockImage.id);
         expect(wrapper.state("isGettingImage")).toBe(true);
     });
 
     it("updates isUpdatingImageRecord state to show it has created image record", async () => {
-        // Tests that state is set correctly after asynchronous requests were successful
         await wrapper.instance().getImageDownload(mockImage.id);
         expect(wrapper.state("isGettingImage")).toBe(false);
     });
@@ -235,13 +229,11 @@ describe("get image", () => {
     it("updates isGettingImage state to show it's getting image", () => {
         expect(wrapper.state("isGettingImage")).toBe(false);
 
-        // Tests that state is set correctly before asynchronous requests have finished
         wrapper.instance().getImage(mockImage.id);
         expect(wrapper.state("isGettingImage")).toBe(true);
     });
 
     it("updates isUpdatingImageRecord state to show it has created image record", async () => {
-        // Tests that state is set correctly after asynchronous requests were successful
         await wrapper.instance().getImage(mockImage.id);
         expect(wrapper.state("isGettingImage")).toBe(false);
     });
