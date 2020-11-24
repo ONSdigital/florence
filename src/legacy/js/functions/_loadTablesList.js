@@ -35,11 +35,9 @@ function initialiseTablesList(collectionId, data) {
                         refreshPreview();
                         refreshTablesList(collectionId, data);
                     };
-                    if (table.version == "2") {
-                        loadTableBuilderV2(data, onSave, tableData);
-                    } else {
-                        loadTableBuilder(data, onSave, tableData);
-                    }
+
+                    loadTableBuilderV2(data, onSave, tableData);
+
                 })
         });
 
