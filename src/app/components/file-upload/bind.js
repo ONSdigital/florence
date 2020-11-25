@@ -16,59 +16,75 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     r.assignBrowse(input);
     r.assignDrop(input);
     r.on("fileAdded", file => {
-        const aliasName = file.container.name;
-        r.opts.query.aliasName = aliasName;
-        r.upload();
-        const fileUpload = {
-            aliasName: aliasName,
-            progress: 0,
-            error: null,
-            filename: file.fileName
-        };
-
-        updateState(fileUpload);
+        beginUploadAndUpdateComponentState(r, file, updateState);
     });
     r.on("fileProgress", file => {
-        const progressPercentage = Math.round(Number(file.progress() * 100));
-        const fileUpload = {
-            progress: progressPercentage,
-            filename: file.fileName
-        };
-        updateState(fileUpload);
+        updateComponentState(file, updateState);
     });
     r.on("fileError", file => {
-        const fileUpload = {
-            error: "An error occurred whilst uploading this file.",
-            filename: file.fileName
-        };
-
-        console.error("Error uploading file to server");
-        updateState(fileUpload);
-        onError();
+        handleErrorAndUpdateComponentState(file, updateState, onError);
     });
     r.on("fileSuccess", file => {
-        const aliasName = file.resumableObj.opts.query.aliasName;
-        http.get(`/upload/${file.uniqueIdentifier}`)
-            .then(response => {
-                const fileUpload = {
-                    aliasName: aliasName,
-                    progress: 0,
-                    url: response.url,
-                    filename: file.fileName
-                };
-
-                updateState(fileUpload);
-
-                onSuccess(response.url);
-            })
-            .catch(error => {
-                const fileUpload = {
-                    error: "An error occurred whilst uploading this file",
-                    filename: file.fileName
-                };
-
-                console.error("Error fetching uploaded file's URL: ", error);
-                updateState(fileUpload);
-            });
+        handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updateState, onSuccess);
     });
+}
+
+function beginUploadAndUpdateComponentState(resumable, file, updateState) {
+    const aliasName = file.container.name;
+    resumable.opts.query.aliasName = aliasName;
+    resumable.upload();
+    const fileUpload = {
+        aliasName: aliasName,
+        progress: 0,
+        error: null,
+        filename: file.fileName
+    };
+
+    updateState(fileUpload);
+}
+
+function updateComponentState(file, updateState) {
+    const progressPercentage = Math.round(Number(file.progress() * 100));
+    const fileUpload = {
+        progress: progressPercentage,
+        filename: file.fileName
+    };
+    updateState(fileUpload);
+}
+
+function handleErrorAndUpdateComponentState(file, updateState, onError) {
+    const fileUpload = {
+        error: "An error occurred whilst uploading this file.",
+        filename: file.fileName
+    };
+
+    console.error("Error uploading file to server");
+    updateState(fileUpload);
+    onError();
+}
+
+function handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updateState, onSuccess) {
+    const aliasName = file.resumableObj.opts.query.aliasName;
+    http.get(`/upload/${file.uniqueIdentifier}`)
+        .then(response => {
+            const fileUpload = {
+                aliasName: aliasName,
+                progress: 0,
+                url: response.url,
+                filename: file.fileName
+            };
+
+            updateState(fileUpload);
+
+            onSuccess(response.url);
+        })
+        .catch(error => {
+            const fileUpload = {
+                error: "An error occurred whilst uploading this file",
+                filename: file.fileName
+            };
+
+            console.error("Error fetching uploaded file's URL: ", error);
+            updateState(fileUpload);
+        });
 }
