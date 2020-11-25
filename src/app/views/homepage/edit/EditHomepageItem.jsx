@@ -29,6 +29,7 @@ const propTypes = {
 
 const FILE_UPLOAD_ID = "image-file-upload";
 
+// Values correspond to server side status of image import
 const STATUS_IMAGE_RECORD_CREATED = "Image record created";
 const STATUS_IMPORTING_IMAGE = "Image being imported";
 const STATUS_IMPORTING_ERROR = "Image import errored";
