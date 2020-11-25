@@ -10,6 +10,7 @@ import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import FileUpload from "../../../components/file-upload/FileUpload";
 import { bindFileUploadInput } from "../../../components/file-upload/bind";
+import { is } from "../../../../../../../Library/Caches/typescript/4.0/node_modules/@babel/types/lib/index";
 
 const propTypes = {
     params: PropTypes.shape({
@@ -71,11 +72,17 @@ export default class EditHomepageItem extends Component {
     };
 
     bindInput = () => {
-        bindFileUploadInput(FILE_UPLOAD_ID, this.state.upload, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
+        bindFileUploadInput(FILE_UPLOAD_ID, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
     };
 
     updateUploadState = upload => {
-        this.setState({ ...upload });
+        console.log("called, upload obj is:", upload);
+        const newUploadState = {
+            ...this.state.upload,
+            ...upload
+        };
+        console.log("newUploadState is", newUploadState);
+        this.setState({ upload: newUploadState });
     };
 
     onFileUploadError = () => {

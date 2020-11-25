@@ -2,7 +2,7 @@ import http from "../../utilities/http";
 
 import Resumable from "resumeablejs";
 
-export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess, onError) {
+export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
         target: "/upload",
@@ -25,11 +25,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
             error: null,
             filename: file.fileName
         };
-        const upload = {
-            ...uploadState,
-            ...fileUpload
-        };
-        updateState({ upload });
+
+        updateState(fileUpload);
     });
     r.on("fileProgress", file => {
         const progressPercentage = Math.round(Number(file.progress() * 100));
@@ -37,24 +34,16 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
             progress: progressPercentage,
             filename: file.fileName
         };
-        const upload = {
-            ...uploadState,
-            ...fileUpload
-        };
-        updateState({ upload });
+        updateState(fileUpload);
     });
     r.on("fileError", file => {
         const fileUpload = {
             error: "An error occurred whilst uploading this file.",
             filename: file.fileName
         };
-        const upload = {
-            ...uploadState,
-            ...fileUpload
-        };
 
         console.error("Error uploading file to server");
-        updateState({ upload });
+        updateState(fileUpload);
         onError();
     });
     r.on("fileSuccess", file => {
@@ -67,12 +56,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
                     url: response.url,
                     filename: file.fileName
                 };
-                const upload = {
-                    ...uploadState,
-                    ...fileUpload
-                };
 
-                updateState({ upload });
+                updateState(fileUpload);
 
                 onSuccess(response.url);
             })
@@ -82,13 +67,8 @@ export function bindFileUploadInput(inputID, uploadState, updateState, onSuccess
                     filename: file.fileName
                 };
 
-                const upload = {
-                    ...uploadState,
-                    ...fileUpload
-                };
-
                 console.error("Error fetching uploaded file's URL: ", error);
-                updateState({ upload });
+                updateState(fileUpload);
             });
     });
 }
