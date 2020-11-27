@@ -10,7 +10,6 @@ import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import FileUpload from "../../../components/file-upload/FileUpload";
 import { bindFileUploadInput } from "../../../components/file-upload/bind";
-import { is } from "../../../../../../../Library/Caches/typescript/4.0/node_modules/@babel/types/lib/index";
 
 const propTypes = {
     params: PropTypes.shape({
