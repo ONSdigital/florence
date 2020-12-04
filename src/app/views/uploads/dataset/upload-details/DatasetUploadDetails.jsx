@@ -34,8 +34,10 @@ const propTypes = {
 class DatasetUploadController extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             isFetchingDataset: false,
+            loadingPageForFirstTime: false,
             activeDataset: null
         };
 
@@ -102,20 +104,22 @@ class DatasetUploadController extends Component {
     }
 
     repeatUploadStatusCheck() {
-        try {
-            this.setState({ isFetchingDataset: true }, () => {
+        this.setState(
+            {
+                isFetchingDataset: true,
+                loadingPageForFirstTime: true
+            },
+            () => {
                 this.getUploadStatus();
-            });
-            this.intervalID = setInterval(async () => {
-                if (!this.state.isFetchingDataset) {
-                    this.setState({ isFetchingDataset: true }, () => {
-                        this.getUploadStatus();
-                    });
-                }
-            }, 5000);
-        } catch (e) {
-            console.log(e);
-        }
+            }
+        );
+        this.intervalID = setInterval(async () => {
+            if (!this.state.isFetchingDataset) {
+                this.setState({ isFetchingDataset: true }, () => {
+                    this.getUploadStatus();
+                });
+            }
+        }, 5000);
     }
 
     getUploadStatus() {
@@ -132,10 +136,10 @@ class DatasetUploadController extends Component {
                     recipe: APIResponses.recipe,
                     job: APIResponses.job
                 });
-                this.setState({ activeDataset, isFetchingDataset: false });
+                this.setState({ activeDataset, isFetchingDataset: false, loadingPageForFirstTime: false });
             })
             .catch(error => {
-                this.setState({ isFetchingDataset: false });
+                this.setState({ isFetchingDataset: false, loadingPageForFirstTime: false });
                 clearInterval(this.intervalID);
                 switch (error.status) {
                     case 404: {
@@ -610,7 +614,7 @@ class DatasetUploadController extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
                     {this.state.activeDataset && this.renderDatasetState()}
-                    {this.state.isFetchingDataset && (
+                    {this.state.loadingPageForFirstTime && (
                         <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
