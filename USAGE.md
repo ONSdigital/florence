@@ -51,7 +51,13 @@ The quickest file to test with is CPIH. These instructions specifically referenc
 - Sign in to Florence
 - Choose the `Datasets` tab
 - Select the relevant dataset
-- Upload and import the file
+- Upload the CSV file
+- Select the edition of the dataset you are uploaded. Typically, there is only one value available: `time-series`
+- Click the `Submit to publishing` button to start the import process.
+- Once you reach the `Your dataset has been submitted` page, there are a few ways you can track the import process:
+ - To determine if the entire import is complete, you can refresh the page. Once the import is complete the page will display: `Your dataset upload is complete`
+ - If you need more detail, you can use the instance's endpoint: http://localhost:8081/dataset/instances. See the `import_tasks` value for the status of each task within the import. The most recent instance is the first one in the array. Each task will start with a state of `created`, and once complete it will show the state `completed`
+For more details on the CMD import process, refer to the [CMD dataset import sequence diagram](https://github.com/ONSdigital/dp-import/blob/develop/docs/import-sequence/CMDDatasetImport.png)
 
 #### Create an account
 
