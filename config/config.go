@@ -9,19 +9,17 @@ import (
 // Config represents the configuration required for florence
 type Config struct {
 	BindAddr                   string        `envconfig:"BIND_ADDR"`
+	APIRouterURL               string        `envconfig:"API_ROUTER_URL"`
+	APIRouterVersion           string        `envconfig:"API_ROUTER_VERSION"`
 	RouterURL                  string        `envconfig:"ROUTER_URL"`
-	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
-	RecipeAPIURL               string        `envconfig:"RECIPE_API_URL"`
-	ImportAPIURL               string        `envconfig:"IMPORT_API_URL"`
-	DatasetAPIURL              string        `envconfig:"DATASET_API_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
+	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
 	AwsRegion                  string        `envconfig:"AWS_REGION"`
 	UploadBucketName           string        `envconfig:"UPLOAD_BUCKET_NAME"`
 	EncryptionDisabled         bool          `envconfig:"ENCRYPTION_DISABLED"`
 	VaultAddr                  string        `envconfig:"VAULT_ADDR"`
 	VaultToken                 string        `envconfig:"VAULT_TOKEN"                json:"-"`
 	VaultPath                  string        `envconfig:"VAULT_PATH"`
-	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
 	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
@@ -30,6 +28,7 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
+	EnableUploadService      bool `envconfig:"ENABLE_UPLOAD_SERVICE" json:"enableUploadService"`
 	EnableDatasetImport      bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 	EnableHomepagePublishing bool `envconfig:"ENABLE_HOMEPAGE_PUBLISHING" json:"enableHomepagePublishing"`
 }
@@ -44,17 +43,15 @@ func Get() (*Config, error) {
 
 	cfg = &Config{
 		BindAddr:                   ":8080",
-		RouterURL:                  "http://localhost:20000",
-		ZebedeeURL:                 "http://localhost:8082",
-		RecipeAPIURL:               "http://localhost:22300",
-		ImportAPIURL:               "http://localhost:21800",
-		DatasetAPIURL:              "http://localhost:22000",
+		APIRouterURL:               "http://localhost:23200", // API router
+		APIRouterVersion:           "v1",
+		RouterURL:                  "http://localhost:20000", // Frontend router
 		DatasetControllerURL:       "http://localhost:24000",
+		TableRendererURL:           "http://localhost:23300",
 		AwsRegion:                  "eu-west-1",
 		UploadBucketName:           "dp-frontend-florence-file-uploads",
-		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
+		SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},
 		EncryptionDisabled:         false,
-		TableRendererURL:           "http://localhost:23300",
 		VaultAddr:                  "http://localhost:8200",
 		VaultToken:                 "",
 		VaultPath:                  "secret/shared/psk",

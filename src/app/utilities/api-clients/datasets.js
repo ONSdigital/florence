@@ -96,8 +96,10 @@ export default class datasets {
                 return;
             }
 
-            const latestVersionURL = url.resolve(dataset.current.links.latest_version.href);
-            const latestVersion = await http.get(`/dataset${latestVersionURL}`).catch(error => reject(error));
+            const latestVersionPath = dataset.current.links.latest_version.href.replace(dataset.current.links.self.href, "");
+            const latestVersionURL = datasetURL + latestVersionPath;
+
+            const latestVersion = await http.get(latestVersionURL).catch(error => reject(error));
             resolve(latestVersion);
         });
     }

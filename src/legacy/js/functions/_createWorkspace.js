@@ -104,6 +104,10 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
+                var isHomepagePath = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url') === "/";                
+                if (isHomepagePath) {
+                    window.location.href = `/florence/collections/${collectionId}/homepage`
+                }
                 if(datasetID){
                   var url = $('#browser-location').val();
                   url = url.replace(/^.*\/\/[^\/]+/, '')
@@ -191,6 +195,11 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         $('.workspace-menu').on('click', '.btn-browse-edit', function () {
             var dest = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url');
+
+            if (dest === "/") {
+                window.location.href = `/florence/collections/${collectionId}/homepage`
+            }
+
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
@@ -333,18 +342,6 @@ function updateBrowserURL(url) {
         url = Florence.globalVars.pagePath;
     }
     $('.browser-location').val(Florence.babbageBaseUrl + url);
-
-    // Disable preview for visualisations
-    var isVisualisation = url.split('/')[1] === "visualisations";
-    if (isVisualisation && $('#browse.selected').length > 0) {
-        $('.browser').addClass('disabled');
-        return;
-    }
-
-    // Enable the preview if we're viewing a normal page and the preview is currently disabled
-    if ($('.browser.disabled').length > 0) {
-        $('.browser.disabled').removeClass('disabled');
-    }
 }
 
 // toggle delete button from 'delete' to 'revert' for content marked as to be deleted and remove/show other buttons in item

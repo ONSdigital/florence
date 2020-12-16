@@ -47,7 +47,7 @@ type S3Client interface {
 	UploadPart(ctx context.Context, req *s3client.UploadPartRequest, payload []byte) error
 	UploadPartWithPsk(ctx context.Context, req *s3client.UploadPartRequest, payload []byte, psk []byte) error
 	CheckPartUploaded(ctx context.Context, req *s3client.UploadPartRequest) (bool, error)
-	GetPathStyleURL(path string) string
+	Checker(ctx context.Context, state *healthcheck.CheckState) error
 }
 
 // VaultClient is an interface to represent methods called to action upon vault (implemented by dp-vault)
@@ -62,11 +62,13 @@ type Uploader struct {
 	s3Client    S3Client
 	vaultClient VaultClient
 	vaultPath   string
+	s3Region    string
+	s3Bucket    string
 }
 
 // New returns a new Uploader from the provided clients and vault path
-func New(s3 S3Client, vc VaultClient, vaultPath string) *Uploader {
-	return &Uploader{s3, vc, vaultPath}
+func New(s3 S3Client, vc VaultClient, vaultPath, s3Region, s3Bucket string) *Uploader {
+	return &Uploader{s3, vc, vaultPath, s3Region, s3Bucket}
 }
 
 // CheckUploaded checks to see if a chunk has been uploaded
@@ -197,7 +199,20 @@ func statusCodeFromError(err error) int {
 func (u *Uploader) GetS3URL(w http.ResponseWriter, req *http.Request) {
 	path := req.URL.Query().Get(":id")
 
-	url := u.s3Client.GetPathStyleURL(path)
+	// Generate URL from region, bucket and S3 key defined by query
+	s3Url, err := s3client.NewURL(u.s3Region, u.s3Bucket, path)
+	if err != nil {
+		log.Event(req.Context(), "error generating S3 URL from bucket and path", log.ERROR, log.Error(err),
+			log.Data{"bucket": u.s3Bucket, "region": u.s3Region, "path": path})
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	url, err := s3Url.String(s3client.PathStyle)
+	if err != nil {
+		log.Event(req.Context(), "error getting path-style S3 URL", log.ERROR, log.Error(err))
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 
 	body := struct {
 		URL string `json:"url"`

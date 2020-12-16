@@ -14,11 +14,17 @@ function loadEmbedIframe(onSave) {
     }
     function saveUrl() {
         var embedUrl = $('input#embed-url').val();
+        var embedTitle = $('input#embed-title').val();
         var fullWidth = $('input#full-width-checkbox').is(':checked');
 
         if (!embedUrl) {
             console.log("No url added");
             sweetAlert('URL field is empty', 'Please add a url and save again');
+            return;
+        }
+
+        if (!embedTitle) {
+            sweetAlert('Title field is empty', 'Please add a title and save again');
             return;
         }
 
@@ -28,7 +34,7 @@ function loadEmbedIframe(onSave) {
             embedUrl = parsedEmbedUrl.pathname;
         }
 
-        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '"/>');
+        onSave('<ons-interactive url="' + embedUrl + '" full-width="' + fullWidth + '" title="' + embedTitle + '"/>');
         modal.remove();
 
     }

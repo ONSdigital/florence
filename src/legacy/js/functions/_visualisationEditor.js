@@ -25,24 +25,30 @@ function visualisationEditor(collectionId, data) {
     var selectOptions = ["<option value=''>-- Select an HTML file to preview --</option>"],
         $selectWrapper = $('#select-vis-wrapper');
 
-    for (i = 0; i < data.filenames.length; i++) {
-        selectOptions.push("<option value='" + data.filenames[i] + "'>" + data.filenames[i] + "</option>")
+    if (data.filenames.length > 0) {
+        for (i = 0; i < data.filenames.length; i++) {
+            if (i === 0) {
+                selectOptions.push("<option value='" + data.filenames[i] + "' selected>" + data.filenames[i] + "</option>")
+            } else {
+                selectOptions.push("<option value='" + data.filenames[i] + "'>" + data.filenames[i] + "</option>")
+            }
+        }
+        refreshVisPreview("/" + data.filenames[0])
     }
+
     $selectWrapper.find('select').empty().append(selectOptions.join(''));
     $selectWrapper.show();
     $('#browser-location').hide();
-    // $('.browser.disabled').removeClass('disabled');
 
     // Bind to select's change and toggle preview to selected HTML file
     $('#select-vis-preview').change(function() {
         refreshVisPreview("/" + $(this).val());
     });
 
-    // Disable preview when navigating back to browse tab
+    // Hide preview select element and re-display the browser URL when navigating away from the visualisation
     $('#browse').one('click', function() {
         $selectWrapper.hide();
         $('#browser-location').show();
-        $('.browser').addClass('disabled');
         var browseURL = data.uri;
         $('#iframe').attr('src', Florence.babbageBaseUrl + browseURL);
         updateBrowserURL(browseURL);

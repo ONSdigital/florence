@@ -40,7 +40,7 @@ export class EditHomepageController extends Component {
             lastEditedBy: "",
             formIsDisabled: true,
             hasChangesMade: false,
-            maximumNumberOfEntries: 4,
+            maximumNumberOfEntries: 8,
             isSaving: false
         };
     }
@@ -141,6 +141,7 @@ export class EditHomepageController extends Component {
                     id: index,
                     description: item.description,
                     uri: item.uri,
+                    image: item.image,
                     title: item.title,
                     simpleListHeading: item.title,
                     simpleListDescription: item.description
@@ -298,7 +299,8 @@ export class EditHomepageController extends Component {
             featuredContent = this.state.homepageData.featuredContent.map(entry => ({
                 title: entry.title,
                 description: entry.description,
-                uri: entry.uri
+                uri: entry.uri,
+                image: entry.image
             }));
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
