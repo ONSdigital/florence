@@ -8,67 +8,72 @@
         {{#each collectionDetails}}
             <div class="accordion js-accordion">
                 <div class="accordion__title js-accordion__title">
-                    <h3 class="collection-name" data-id="{{id}}">{{name}}</h3>
+                    <h3 class="collection-name" data-id="{{id}}">{{#if name}}{{name}}{{else}}{{id}}{{/if}}</h3>
                 </div>
                 <div class="accordion__content accordion__content--padded disable-animation js-accordion__content">
                     {{#if pageType}}
-                        <button class="btn btn--positive margin-top--1 margin-bottom--0 btn-collection-publish">Publish collection</button>
+                            <button class="btn btn--positive margin-top--1 margin-bottom--0 btn-collection-publish">Publish collection</button>
                     {{/if}}
                     <button class="btn btn--primary margin-top--1 margin-bottom--0 btn-collection-unlock">Unlock collection</button>
-                    {{#if_any pageDetails datasets datasetVersions}}
-                        <h4>Approved pages in this collection</h4>
-                        <ul class="page-list">
-                            {{#if pageDetails}}
-                                {{#each pageDetails}}
-                                    <li class="page-list__item"><span class="page__item page__item--{{type}}"
-                                              data-path="{{uri}}">{{description.title}}{{#if description.edition}}
-                                        : {{description.edition}}{{/if}}</span>
-                                        <div class="page__buttons page__buttons--list">
-                                            <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
-                                        </div>
+                    {{#if error}} 
+                        <p>This collection details has failed to load.</p>
+                    {{else}}
+                        
+                        {{#if_any pageDetails datasets datasetVersions}}
+                            <h4>Approved pages in this collection</h4>
+                            <ul class="page-list">
+                                {{#if pageDetails}}
+                                    {{#each pageDetails}}
+                                        <li class="page-list__item"><span class="page__item page__item--{{type}}"
+                                                data-path="{{uri}}">{{description.title}}{{#if description.edition}}
+                                            : {{description.edition}}{{/if}}</span>
+                                            <div class="page__buttons page__buttons--list">
+                                                <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
+                                            </div>
+                                        </li>
+                                    {{/each}}
+                                {{/if}}
+                                {{#if datasets}}
+                                    {{#each datasets}}
+                                        <li class="page-list__item"><span class="page__item page__item--dataset"
+                                                                        data-path="{{uri}}">{{title}}</span>
+                                            <div class="page__buttons page__buttons--list">
+                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
+                                            </div>
+                                        </li>
+                                    {{/each}}
+                                {{/if}}
+                                {{#if datasetVersions}}
+                                    {{#each datasetVersions}}
+                                        <li class="page-list__item"><span class="page__item page__item--dataset_version"
+                                                                        data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
+                                            <div class="page__buttons page__buttons--list">
+                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
+                                            </div>
+                                        </li>
+                                    {{/each}}
+                                {{/if}}
+                            </ul>
+                        {{/if_any}}
+                        {{#if pendingDeletes}}
+                            <h4>Deleted pages in this collection</h4>
+                            <ul class="page-list">
+                                {{#each pendingDeletes}}
+                                    <li class="page-list__item">
+                                        <span class="page__item page__item--{{root.type}}">
+                                            {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}<br/>
+                                            {{root.uri}}
+                                        </span>
+                                        {{#if root.children}} {{!-- Within the context of the current item --}}
+                                            <div class="page__children">
+                                                <h4>This delete contains</h4>
+                                                {{> childDeletes}} {{!-- Recursively render the partial --}}
+                                            </div>
+                                        {{/if}}
                                     </li>
                                 {{/each}}
-                            {{/if}}
-                            {{#if datasets}}
-                                {{#each datasets}}
-                                    <li class="page-list__item"><span class="page__item page__item--dataset"
-                                                                      data-path="{{uri}}">{{title}}</span>
-                                        <div class="page__buttons page__buttons--list">
-                                            <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                        </div>
-                                    </li>
-                                {{/each}}
-                            {{/if}}
-                            {{#if datasetVersions}}
-                                {{#each datasetVersions}}
-                                    <li class="page-list__item"><span class="page__item page__item--dataset_version"
-                                                                      data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
-                                        <div class="page__buttons page__buttons--list">
-                                            <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                        </div>
-                                    </li>
-                                {{/each}}
-                            {{/if}}
-                        </ul>
-                    {{/if_any}}
-                    {{#if pendingDeletes}}
-                        <h4>Deleted pages in this collection</h4>
-                        <ul class="page-list">
-                            {{#each pendingDeletes}}
-                                <li class="page-list__item">
-                                    <span class="page__item page__item--{{root.type}}">
-                                        {{root.description.title}}{{#if root.description.edition}}: {{root.description.edition}}{{/if}}<br/>
-                                        {{root.uri}}
-                                    </span>
-                                    {{#if root.children}} {{!-- Within the context of the current item --}}
-                                        <div class="page__children">
-                                            <h4>This delete contains</h4>
-                                            {{> childDeletes}} {{!-- Recursively render the partial --}}
-                                        </div>
-                                    {{/if}}
-                                </li>
-                            {{/each}}
-                        </ul>
+                            </ul>
+                        {{/if}}
                     {{/if}}
                 </div>
             </div>
