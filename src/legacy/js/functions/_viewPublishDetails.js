@@ -13,7 +13,7 @@ function viewPublishDetails(collections) {
     $.each(collections, function (i, collectionId) {
         onlyOne += 1;
         pageDataRequests.push(
-            getCollectionDetails(collectionId,
+            getPublishingQueueCollectionDetails(collectionId,
                 success = function (response) {
                     if (result.date === manual) {
                         result.collectionDetails.push({
