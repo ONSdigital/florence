@@ -65,13 +65,11 @@ function viewPublishDetails(collections) {
 
         $('.btn-collection-publish').click(function () {
             var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
-            console.log(collection);
             publish(collection);
         });
 
         $('.btn-collection-unlock').click(function () {
             var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
-            console.log(collection);
 
             if (result.date !== manual) {
                 swal({
