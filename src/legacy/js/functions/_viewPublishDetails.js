@@ -92,6 +92,11 @@ function viewPublishDetails(collections) {
             }
         });
 
+        $('.btn-collection-preview').click(function () {
+            var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
+            window.location = `/florence/collections/${collection}/preview`
+        });
+
         //page-list
         $('.page__item:not(.delete-child)').click(function () {
             $('.page-list li').removeClass('selected');
