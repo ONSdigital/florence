@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 import image from "../../../utilities/api-clients/images";
-import http from "../../../utilities/http";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
@@ -56,6 +55,7 @@ export default class EditHomepageItem extends Component {
             isUpdatingImageRecord: false,
             isUploadingImage: false,
             isGettingImage: false,
+            isImportingImage: false,
             imageImportStatus: STATUS_IMAGE_RECORD_CREATED
         };
     }
@@ -122,7 +122,7 @@ export default class EditHomepageItem extends Component {
                 this.setState({ isCreatingImageRecord: false });
                 log.event("error creating image record", log.error(error));
                 console.error("error creating image record:", error);
-                if (error.status == 401) {
+                if (error.status === 401) {
                     return;
                 }
                 notifications.add({
@@ -155,20 +155,36 @@ export default class EditHomepageItem extends Component {
                 this.setState({ isUpdatingImageRecord: false });
                 this.pollForUpdates(imageID);
             })
-            .catch(error => {
-                this.setState({ isUpdatingImageRecord: false });
+            .catch(async error => {
+                this.stopPollingForUpdates(imageID);
+                this.setState({
+                    imageData: {
+                        url: "",
+                        title: "",
+                        altText: ""
+                    },
+                    imageState: "created",
+                    upload: {},
+                    isUpdatingImageRecord: false,
+                    isUploadingImage: false,
+                    isGettingImage: false,
+                    isImportingImage: false,
+                    imageImportStatus: STATUS_IMAGE_RECORD_CREATED
+                });
+                await this.createImageRecord();
+                this.bindInput();
                 log.event(
                     "error adding upload to image record",
                     log.data({ collection_id: this.props.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
                     log.error(error)
                 );
                 console.error("error adding upload to image record:", error);
-                if (error.status == 401) {
+                if (error.status === 401) {
                     return;
                 }
                 notifications.add({
                     type: "warning",
-                    message: "There was an error creating the image record. Please close the model and try again",
+                    message: "There was an error creating the image record. Please try again",
                     isDismissable: true
                 });
             });
@@ -179,32 +195,31 @@ export default class EditHomepageItem extends Component {
         return image
             .get(imageID)
             .then(response => {
-                if (response.state == "imported" || response.state == "completed" || response.state == "published") {
+                if (response.state === "imported" || response.state === "completed" || response.state === "published") {
                     this.setState({ imageImportStatus: STATUS_GETTING_IMAGE, isGettingImage: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     this.getImageDownload(imageID);
                     return;
                 }
-                if (response.state == "importing") {
+                if (response.state === "importing") {
                     this.setState({ imageImportStatus: STATUS_IMPORTING_IMAGE, imageState: response.state });
                     if (shouldPoll) {
                         this.pollForUpdates(imageID);
                     }
                     return;
                 }
-                if (response.state == "error") {
+                if (response.state === "error") {
                     this.setState({ imageImportStatus: STATUS_IMPORTING_ERROR, isGettingImage: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
                     log.event("image import failed", log.data({ image_id: imageID }));
-                    return;
                 }
             })
             .catch(error => {
                 this.setState({ isGettingImage: false });
                 log.event("error getting image details from image-api", log.data({ image_id: imageID }), log.error(error));
                 console.error("error getting image details from image-api", error);
-                if (error.status == 401) {
+                if (error.status === 401) {
                     return;
                 }
                 notifications.add({
@@ -242,7 +257,7 @@ export default class EditHomepageItem extends Component {
                     log.error(error)
                 );
                 console.error("error getting image downloads from image-api", error);
-                if (error.status == 401) {
+                if (error.status === 401) {
                     return;
                 }
                 notifications.add({
@@ -307,14 +322,13 @@ export default class EditHomepageItem extends Component {
                 </div>
             );
         }
-        return;
     };
 
     renderImageUpload = () => {
         const upload = this.state.upload;
         return (
             <div>
-                {this.state.image && this.state.imageState != "created" ? (
+                {this.state.image && this.state.imageState !== "created" ? (
                     this.renderImagePreview()
                 ) : (
                     <FileUpload
