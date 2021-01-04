@@ -37,84 +37,20 @@ class DatasetUploadController extends Component {
 
         this.state = {
             isFetchingDataset: false,
+            loadingPageForFirstTime: false,
             activeDataset: null
         };
 
+        let intervalID = 0;
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
         this.handleRetryClick = this.handleRetryClick.bind(this);
+        this.getUploadStatus = this.getUploadStatus.bind(this);
+        this.repeatUploadStatusCheck = this.repeatUploadStatusCheck.bind(this);
     }
 
     componentWillMount() {
         if (!this.props.recipes || this.props.recipes.length === 0) {
-            this.setState({ isFetchingDataset: true });
-            const APIResponses = {};
-            datasetImport
-                .get(this.props.params.jobID)
-                .then(job => {
-                    APIResponses.job = job;
-                    return recipes.get(job.recipe);
-                })
-                .then(recipe => {
-                    APIResponses.recipe = recipe;
-                    const activeDataset = this.mapAPIResponsesToState({
-                        recipe: APIResponses.recipe,
-                        job: APIResponses.job
-                    });
-                    this.setState({ activeDataset, isFetchingDataset: false });
-                })
-                .catch(error => {
-                    this.setState({ isFetchingDataset: false });
-                    switch (error.status) {
-                        case 404: {
-                            const notification = {
-                                type: "neutral",
-                                message: `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
-                                isDismissable: true
-                            };
-                            notifications.add(notification);
-                            this.props.dispatch(push(url.resolve("../")));
-                            break;
-                        }
-                        case "RESPONSE_ERR": {
-                            const notification = {
-                                type: "warning",
-                                message: "An error's occurred whilst trying to get this job.",
-                                isDismissable: true
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "FETCH_ERR": {
-                            const notification = {
-                                type: "warning",
-                                message:
-                                    "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
-                                isDismissable: true
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "UNEXPECTED_ERR": {
-                            const notification = {
-                                type: "warning",
-                                message: "An unexpected error has occurred whilst trying to get this job.",
-                                isDismissable: true
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        default: {
-                            const notification = {
-                                type: "warning",
-                                message: "An unexpected error's occurred whilst trying to get this job.",
-                                isDismissable: true
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                    }
-                    console.error("Error getting job and recipe data: ", error);
-                });
+            this.repeatUploadStatusCheck();
         } else {
             const job = this.props.jobs.find(job => {
                 return job.id === this.props.params.jobID;
@@ -165,6 +101,98 @@ class DatasetUploadController extends Component {
             });
         }
         this.bindInputs();
+    }
+
+    repeatUploadStatusCheck() {
+        this.setState(
+            {
+                isFetchingDataset: true,
+                loadingPageForFirstTime: true
+            },
+            () => {
+                this.getUploadStatus();
+            }
+        );
+        this.intervalID = setInterval(async () => {
+            if (!this.state.isFetchingDataset) {
+                this.setState({ isFetchingDataset: true }, () => {
+                    this.getUploadStatus();
+                });
+            }
+        }, 5000);
+    }
+
+    getUploadStatus() {
+        const APIResponses = {};
+        datasetImport
+            .get(this.props.params.jobID)
+            .then(job => {
+                APIResponses.job = job;
+                return recipes.get(job.recipe);
+            })
+            .then(recipe => {
+                APIResponses.recipe = recipe;
+                const activeDataset = this.mapAPIResponsesToState({
+                    recipe: APIResponses.recipe,
+                    job: APIResponses.job
+                });
+                this.setState({ activeDataset, isFetchingDataset: false, loadingPageForFirstTime: false });
+            })
+            .catch(error => {
+                this.setState({ isFetchingDataset: false, loadingPageForFirstTime: false });
+                clearInterval(this.intervalID);
+                switch (error.status) {
+                    case 404: {
+                        const notification = {
+                            type: "neutral",
+                            message: `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        this.props.dispatch(push(url.resolve("../")));
+                        break;
+                    }
+                    case "RESPONSE_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "An error's occurred whilst trying to get this job.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error has occurred whilst trying to get this job.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    default: {
+                        const notification = {
+                            type: "warning",
+                            message: "An unexpected error's occurred whilst trying to get this job.",
+                            isDismissable: true
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                }
+                console.error("Error getting job and recipe data: ", error);
+            });
+        return APIResponses;
     }
 
     bindInputs() {
@@ -289,6 +317,9 @@ class DatasetUploadController extends Component {
 
         const editionOverride = recipeAPIResponse.output_instances.editions_override;
 
+        if (jobAPIResponse.state === "completed" || jobAPIResponse.state === "error") {
+            clearInterval(this.intervalID);
+        }
         return {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.id,
@@ -583,7 +614,7 @@ class DatasetUploadController extends Component {
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
                     {this.state.activeDataset && this.renderDatasetState()}
-                    {this.state.isFetchingDataset && (
+                    {this.state.loadingPageForFirstTime && (
                         <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
