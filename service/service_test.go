@@ -13,8 +13,6 @@ import (
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
 	serviceMock "github.com/ONSdigital/florence/service/mock"
-	"github.com/ONSdigital/florence/upload"
-	uploadMock "github.com/ONSdigital/florence/upload/mock"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/pat"
 	"github.com/pkg/errors"
@@ -31,17 +29,7 @@ var (
 
 var (
 	errHealthcheck = errors.New("healthCheck error")
-	errVault       = errors.New("vault error")
-	errS3          = errors.New("s3 error")
 )
-
-var funcDoGetVaultErr = func(vaultToken string, vaultAddress string, retries int) (upload.VaultClient, error) {
-	return nil, errVault
-}
-
-var funcDoGetS3ClientErr = func(awsRegion string, bucketName string, encryptionEnabled bool) (upload.S3Client, error) {
-	return nil, errS3
-}
 
 var funcDoGetHealthcheckErr = func(cfg *config.Config, buildTime string, gitCommit string, version string) (service.HealthChecker, error) {
 	return nil, errHealthcheck
@@ -56,17 +44,12 @@ func TestRun(t *testing.T) {
 	Convey("Having a set of mocked dependencies", t, func() {
 
 		cfg, err := config.Get()
-		cfg.EncryptionDisabled = false
 		So(err, ShouldBeNil)
 
 		hcMock := &serviceMock.HealthCheckerMock{
 			AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 			StartFunc:    func(ctx context.Context) {},
 		}
-
-		s3ClientMock := &uploadMock.S3ClientMock{}
-
-		vaultMock := &uploadMock.VaultClientMock{}
 
 		serverWg := &sync.WaitGroup{}
 		serverMock := &serviceMock.HTTPServerMock{
@@ -102,53 +85,15 @@ func TestRun(t *testing.T) {
 			}
 		}
 
-		funcDoGetS3ClientOk := func(awsRegion string, bucketName string, encryptionEnabled bool) (upload.S3Client, error) {
-			return s3ClientMock, nil
-
-		}
-
-		funcDoGetVaultOk := func(vaultToken string, vaultAddress string, retries int) (upload.VaultClient, error) {
-			return vaultMock, nil
-		}
-
 		funcHasRoute := func(r *pat.Router, method, path string, match *mux.RouteMatch) bool {
 			req := httptest.NewRequest(method, path, nil)
 			return r.Match(req, match)
 		}
 
-		Convey("Given that initialising Vault returns an error", func() {
+
+
+		Convey("Given that initialising Healthcheck returns an error", func() {
 			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc: funcDoGetVaultErr,
-			}
-			svcErrors := make(chan error, 1)
-			svcList := service.NewServiceList(initMock)
-			_, err := service.Run(ctx, cfg, svcList, testBuildTime, testGitCommit, testVersion, svcErrors)
-
-			Convey("Then service Run fails with the same error and the flag is not set. No further initialisations are attempted", func() {
-				So(err, ShouldResemble, errVault)
-				So(svcList.HealthCheck, ShouldBeFalse)
-			})
-		})
-
-		Convey("Given that initialising the S3 client returns an error", func() {
-			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc:    funcDoGetVaultOk,
-				DoGetS3ClientFunc: funcDoGetS3ClientErr,
-			}
-			svcErrors := make(chan error, 1)
-			svcList := service.NewServiceList(initMock)
-			_, err := service.Run(ctx, cfg, svcList, testBuildTime, testGitCommit, testVersion, svcErrors)
-
-			Convey("Then service Run fails with the same error and the flag is not set. No further initialisations are attempted", func() {
-				So(err, ShouldResemble, errS3)
-				So(svcList.HealthCheck, ShouldBeFalse)
-			})
-		})
-
-		Convey("Given that initialising Helthcheck returns an error", func() {
-			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc:        funcDoGetVaultOk,
-				DoGetS3ClientFunc:     funcDoGetS3ClientOk,
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc:  funcDoGetHealthcheckErr,
 			}
@@ -171,8 +116,6 @@ func TestRun(t *testing.T) {
 			}
 
 			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc:        funcDoGetVaultOk,
-				DoGetS3ClientFunc:     funcDoGetS3ClientOk,
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc: func(cfg *config.Config, buildTime string, gitCommit string, version string) (service.HealthChecker, error) {
 					return hcMockAddFail, nil
@@ -186,17 +129,14 @@ func TestRun(t *testing.T) {
 				So(err, ShouldNotBeNil)
 				So(err.Error(), ShouldResemble, fmt.Sprintf("unable to register checkers: %s", errAddheckFail.Error()))
 				So(svcList.HealthCheck, ShouldBeTrue)
-				So(len(hcMockAddFail.AddCheckCalls()), ShouldEqual, 3)
-				So(hcMockAddFail.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMockAddFail.AddCheckCalls()[1].Name, ShouldResemble, "API router")
-				So(hcMockAddFail.AddCheckCalls()[2].Name, ShouldResemble, "Vault")
+				So(len(hcMockAddFail.AddCheckCalls()), ShouldEqual, 1)
+				So(hcMockAddFail.AddCheckCalls()[0].Name, ShouldResemble, "API router")
+
 			})
 		})
 
 		Convey("Given that all dependencies are successfully initialised", func() {
 			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc:        funcDoGetVaultOk,
-				DoGetS3ClientFunc:     funcDoGetS3ClientOk,
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc:  funcDoGetHealthcheckOk,
 				DoGetHTTPServerFunc:   funcDoGetHTTPServer,
@@ -218,10 +158,8 @@ func TestRun(t *testing.T) {
 			})
 
 			Convey("The checkers are registered and the healthcheck and http server started", func() {
-				So(len(hcMock.AddCheckCalls()), ShouldEqual, 3)
-				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API router")
-				So(hcMock.AddCheckCalls()[2].Name, ShouldResemble, "Vault")
+				So(len(hcMock.AddCheckCalls()), ShouldEqual, 1)
+				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "API router")
 				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
 				So(initMock.DoGetHTTPServerCalls()[0].BindAddr, ShouldEqual, ":8080")
 				So(len(hcMock.StartCalls()), ShouldEqual, 1)
@@ -231,9 +169,7 @@ func TestRun(t *testing.T) {
 		})
 
 		Convey("Given that all dependencies are successfully initialised and encryption is disabled", func() {
-			cfg.EncryptionDisabled = true
 			initMock := &serviceMock.InitialiserMock{
-				DoGetS3ClientFunc:     funcDoGetS3ClientOk,
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc:  funcDoGetHealthcheckOk,
 				DoGetHTTPServerFunc:   funcDoGetHTTPServer,
@@ -249,9 +185,8 @@ func TestRun(t *testing.T) {
 			})
 
 			Convey("The checkers, except Vault, are registered and the healthcheck and http server started", func() {
-				So(len(hcMock.AddCheckCalls()), ShouldEqual, 2)
-				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "S3")
-				So(hcMock.AddCheckCalls()[1].Name, ShouldResemble, "API router")
+				So(len(hcMock.AddCheckCalls()), ShouldEqual, 1)
+				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "API router")
 				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
 				So(initMock.DoGetHTTPServerCalls()[0].BindAddr, ShouldEqual, ":8080")
 				So(len(hcMock.StartCalls()), ShouldEqual, 1)
@@ -263,8 +198,6 @@ func TestRun(t *testing.T) {
 		Convey("Given that all dependencies are successfully initialised but the http server fails", func() {
 
 			initMock := &serviceMock.InitialiserMock{
-				DoGetVaultFunc:        funcDoGetVaultOk,
-				DoGetS3ClientFunc:     funcDoGetS3ClientOk,
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc:  funcDoGetHealthcheckOk,
 				DoGetHTTPServerFunc:   funcDoGetFailingHTTPSerer,
