@@ -8,7 +8,6 @@ import (
 	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
-	"github.com/ONSdigital/florence/upload"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/pat"
 	"github.com/gorilla/websocket"
@@ -25,9 +24,6 @@ var (
 type Service struct {
 	version      string
 	Config       *config.Config
-	vaultClient  upload.VaultClient
-	s3Client     upload.S3Client
-	uploader     *upload.Uploader
 	healthClient *health.Client
 	HealthCheck  HealthChecker
 	Router       *pat.Router
@@ -46,25 +42,6 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 		Config:      cfg,
 		ServiceList: serviceList,
 	}
-
-	// Create Vault client (and add Check) if encryption is enabled
-	if !cfg.EncryptionDisabled {
-		svc.vaultClient, err = serviceList.GetVault(cfg)
-		if err != nil {
-			log.Event(ctx, "error creating vault client", log.FATAL, log.Error(err))
-			return nil, err
-		}
-	}
-
-	// Create S3 Client with region and bucket name
-	svc.s3Client, err = serviceList.GetS3Client(cfg)
-	if err != nil {
-		log.Event(ctx, "error creating S3 client", log.FATAL, log.Error(err))
-		return nil, err
-	}
-
-	// Create Uploader with S3 client and Vault
-	svc.uploader = upload.New(svc.s3Client, svc.vaultClient, cfg.VaultPath, cfg.AwsRegion, cfg.UploadBucketName)
 
 	// Get health client for api router
 	svc.healthClient = serviceList.GetHealthClient("api-router", cfg.APIRouterURL)
@@ -98,7 +75,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 }
 
 // createRouter creates a Router with the necessary reverse proxies for services that florence needs to call,
-// and handlers for the S3 Uploader and legacy index files.
+// and handlers legacy index files.
 // CMD API calls (recipe, import and dataset APIs) are proxied through the API router.
 func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *pat.Router, err error) {
 
@@ -140,14 +117,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
 	if cfg.SharedConfig.EnableDatasetImport {
-		if cfg.SharedConfig.EnableUploadService {
-			router.Handle("/upload", uploadServiceAPIProxy)
-			router.Handle("/upload/{id}", uploadServiceAPIProxy)
-		} else {
-			router.Path("/upload").Methods("GET").HandlerFunc(svc.uploader.CheckUploaded)
-			router.Path("/upload").Methods("POST").HandlerFunc(svc.uploader.Upload)
-			router.Path("/upload/{id}").Methods("GET").HandlerFunc(svc.uploader.GetS3URL)
-		}
+		router.Handle("/upload", uploadServiceAPIProxy)
+		router.Handle("/upload/{id}", uploadServiceAPIProxy)
 		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 		router.Handle("/import{uri:.*}", importAPIProxy)
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
@@ -216,21 +187,9 @@ func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (e
 
 	hasErrors := false
 
-	if err = svc.HealthCheck.AddCheck("S3", svc.s3Client.Checker); err != nil {
-		hasErrors = true
-		log.Event(ctx, "error adding check for s3 client", log.ERROR, log.Error(err))
-	}
-
 	if err = svc.HealthCheck.AddCheck("API router", svc.healthClient.Checker); err != nil {
 		hasErrors = true
 		log.Event(ctx, "error adding check for api router health client", log.ERROR, log.Error(err))
-	}
-
-	if !cfg.EncryptionDisabled {
-		if err = svc.HealthCheck.AddCheck("Vault", svc.vaultClient.Checker); err != nil {
-			hasErrors = true
-			log.Event(ctx, "error adding check for vault", log.ERROR, log.Error(err))
-		}
 	}
 
 	if hasErrors {
