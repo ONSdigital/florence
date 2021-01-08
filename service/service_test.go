@@ -7,11 +7,13 @@ import (
 	"net/http/httptest"
 	"sync"
 	"testing"
+	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
+	"github.com/ONSdigital/florence/service/mock"
 	serviceMock "github.com/ONSdigital/florence/service/mock"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/pat"
@@ -90,8 +92,6 @@ func TestRun(t *testing.T) {
 			return r.Match(req, match)
 		}
 
-
-
 		Convey("Given that initialising Healthcheck returns an error", func() {
 			initMock := &serviceMock.InitialiserMock{
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
@@ -158,33 +158,6 @@ func TestRun(t *testing.T) {
 			})
 
 			Convey("The checkers are registered and the healthcheck and http server started", func() {
-				So(len(hcMock.AddCheckCalls()), ShouldEqual, 1)
-				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "API router")
-				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
-				So(initMock.DoGetHTTPServerCalls()[0].BindAddr, ShouldEqual, ":8080")
-				So(len(hcMock.StartCalls()), ShouldEqual, 1)
-				serverWg.Wait() // Wait for HTTP server go-routine to finish
-				So(len(serverMock.ListenAndServeCalls()), ShouldEqual, 1)
-			})
-		})
-
-		Convey("Given that all dependencies are successfully initialised and encryption is disabled", func() {
-			initMock := &serviceMock.InitialiserMock{
-				DoGetHealthClientFunc: funcDoGetHealthClientOk,
-				DoGetHealthCheckFunc:  funcDoGetHealthcheckOk,
-				DoGetHTTPServerFunc:   funcDoGetHTTPServer,
-			}
-			svcErrors := make(chan error, 1)
-			svcList := service.NewServiceList(initMock)
-			serverWg.Add(1)
-			_, err := service.Run(ctx, cfg, svcList, testBuildTime, testGitCommit, testVersion, svcErrors)
-
-			Convey("Then service Run successfully initialises all dependencies except Vault, and all the flags are set", func() {
-				So(err, ShouldBeNil)
-				So(svcList.HealthCheck, ShouldBeTrue)
-			})
-
-			Convey("The checkers, except Vault, are registered and the healthcheck and http server started", func() {
 				So(len(hcMock.AddCheckCalls()), ShouldEqual, 1)
 				So(hcMock.AddCheckCalls()[0].Name, ShouldResemble, "API router")
 				So(len(initMock.DoGetHTTPServerCalls()), ShouldEqual, 1)
@@ -282,29 +255,29 @@ func TestClose(t *testing.T) {
 			So(len(failingserverMock.ShutdownCalls()), ShouldEqual, 1)
 		})
 
-		// Convey("If service times out while shutting down, the Close operation fails with the expected error", func() {
-		// 	cfg.GracefulShutdownTimeout = 1 * time.Millisecond
-		// 	timeoutServerMock := &mock.HTTPServerMock{
-		// 		ListenAndServeFunc: func() error { return nil },
-		// 		ShutdownFunc: func(ctx context.Context) error {
-		// 			time.Sleep(2 * time.Millisecond)
-		// 			return nil
-		// 		},
-		// 	}
+		Convey("If service times out while shutting down, the Close operation fails with the expected error", func() {
+			cfg.GracefulShutdownTimeout = 100 * time.Millisecond
+			timeoutServerMock := &mock.HTTPServerMock{
+				ListenAndServeFunc: func() error { return nil },
+				ShutdownFunc: func(ctx context.Context) error {
+					time.Sleep(200 * time.Millisecond)
+					return nil
+				},
+			}
 
-		// 	svcList := service.NewServiceList(nil)
-		// 	svcList.HealthCheck = true
-		// 	svc := service.Service{
-		// 		Config:      cfg,
-		// 		ServiceList: svcList,
-		// 		Server:      timeoutServerMock,
-		// 		HealthCheck: hcMock,
-		// 	}
-		// 	err = svc.Close(context.Background())
-		// 	So(err, ShouldNotBeNil)
-		// 	So(err.Error(), ShouldResemble, "context deadline exceeded")
-		// 	So(len(hcMock.StopCalls()), ShouldEqual, 1)
-		// 	So(len(timeoutServerMock.ShutdownCalls()), ShouldEqual, 1)
-		// })
+			svcList := service.NewServiceList(nil)
+			svcList.HealthCheck = true
+			svc := service.Service{
+				Config:      cfg,
+				ServiceList: svcList,
+				Server:      timeoutServerMock,
+				HealthCheck: hcMock,
+			}
+			err = svc.Close(context.Background())
+			So(err, ShouldNotBeNil)
+			So(err.Error(), ShouldResemble, "context deadline exceeded")
+			So(len(hcMock.StopCalls()), ShouldEqual, 1)
+			So(len(timeoutServerMock.ShutdownCalls()), ShouldEqual, 1)
+		})
 	})
 }
