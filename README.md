@@ -30,12 +30,6 @@ make dev
 ```
 This will build the node modules and then run the server
 
-Please note that encryption is enabled by default. To disable it set `ENCRYPTION_DISABLED=true`. If you wish to run with encryption
-enabled, you will need vault running locally:
-
-- Run `brew install vault`
-- Run `vault server -dev`
-
 3. Browse to the Florence homepage http://localhost:8081/florence
 
 4. If you are running Florence for the first time you will need to login with the setup credentials. You will be asked to change this password.
@@ -82,7 +76,6 @@ The following environment variables are available when running the Go server.
 | DATASET_API_URL              | http://localhost:22000            | URL that the [dataset API](https://github.com/ONSdigital/dp-dataset-api) can be accessed on                                              |
 | TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        | |
 | DATASET_CONTROLLER_URL       | http://localhost:24000            | Dataset controller url                                                                                                                   |
-| ENCRYPTION_DISABLED          | false                             | Determines wether encryption is disabled or enabled                                                                                      |
 | ENABLE_DATASET_IMPORT        | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
 | GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds
 | HEALTHCHECK_INTERVAL         | 30s                               | The period of time between health checks                                                                                                 |
@@ -93,13 +86,6 @@ For example:
 ```
 make debug BIND_ADDR=:20000
 ```
-
-AWS configurations are needed for the dataset file upload process, so make sure the credentials are configured correctly for your environment.
-```
-export AWS_ACCESS_KEY_ID=<ACCESS_KEY>
-export AWS_SECRET_ACCESS_KEY=<SECRET_KEY>`
-```
-
 ### Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
