@@ -137,6 +137,11 @@ function loadImageBuilder(pageData, onSave, image) {
       return;
     }
 
+    if (!previewImage.altText) {
+      sweetAlert("Please enter alt text for the image.");
+      return;
+    }
+
     var imageFileName = getExistingFileName(previewImage, imageFileKey);
     if (!imageFileName && image)
       imageFileName = getExistingFileName(image, imageFileKey);
