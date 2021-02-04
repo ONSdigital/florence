@@ -198,4 +198,16 @@ export default class datasets {
             return response;
         });
     }
+
+    static getEditMetadata(datasetID, editionID, versionID) {
+        return http.get(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`).then(response => {
+            return response;
+        });
+    }
+
+    static putEditMetadata(datasetID, editionID, versionID, body) {
+        return http.put(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
+            return response;
+        });
+    }
 }
