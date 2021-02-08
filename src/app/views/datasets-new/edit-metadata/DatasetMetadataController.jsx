@@ -801,7 +801,6 @@ export class DatasetMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-        console.log(body);
 
         this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
     };
