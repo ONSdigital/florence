@@ -38,7 +38,6 @@ export class DatasetMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
-            datasetState: "",
             datasetCollectionState: "",
             versionCollectionState: "",
             lastEditedBy: "",
@@ -140,9 +139,10 @@ export class DatasetMetadataController extends Component {
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
                 collection: metadata.dataset.collection_id || false,
-                datasetCollectionState: metadata.collection_state || null,
-                versionCollectionState: metadata.collection_state || null,
-                lastEditedBy: metadata.collection_last_edited_by || null
+                datasetCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || null,
+                versionCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || null,
+                lastEditedBy: metadata.collection_last_edited_by || null,
+                versionIsPublished: version.state === "published"
             };
         } catch (error) {
             log.event("error mapping metadata to to state", log.data({ datasetID: dataset.id, versionID: version.id }), log.error(error));
@@ -156,8 +156,8 @@ export class DatasetMetadataController extends Component {
     };
 
     handleGETSuccess = response => {
-        const mappedMetadata = this.mapMetadataToState(response);
-        if (mappedMetadata.state === "associated" && mappedMetadata.collection !== this.props.params.collectionID) {
+        const mapped = this.mapMetadataToState(response);
+        if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
             this.setState({ disableScreen: true });
             notifications.add({
                 type: "neutral",
@@ -166,9 +166,13 @@ export class DatasetMetadataController extends Component {
             });
         }
         this.setState({
-            metadata: mappedMetadata.metadata,
-            datasetIsInCollection: mappedMetadata.collection,
-            datasetState: mappedMetadata.state
+            metadata: mapped.metadata,
+            datasetIsInCollection: mapped.collection,
+            datasetCollectionState: mapped.datasetCollectionState,
+            versionCollectionState: mapped.versionCollectionState,
+            datasetState: mapped.state,
+            lastEditedBy: mapped.lastEditedBy,
+            versionIsPublished: mapped.versionIsPublished
         });
     };
 
@@ -779,7 +783,6 @@ export class DatasetMetadataController extends Component {
     };
 
     handleSave = (isSubmittingForReview, isMarkingAsReviewed) => {
-        console.log("handle save called");
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
@@ -798,7 +801,7 @@ export class DatasetMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-        console.log("BODY >>>", body);
+        console.log(body);
 
         this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
     };
@@ -953,173 +956,174 @@ export class DatasetMetadataController extends Component {
         });
     };
 
-    mapDatasetToPutBody = () => {
-        return {
-            id: this.props.params.datasetID,
-            title: this.state.metadata.title,
-            description: this.state.metadata.summary,
-            keywords: this.state.metadata.keywords ? this.state.metadata.keywords.split(", ") : [],
-            national_statistic: this.state.metadata.nationalStatistic,
-            license: this.state.metadata.licence,
-            related_datasets: this.state.metadata.relatedDatasets,
-            publications: this.state.metadata.relatedPublications,
-            methodologies: this.state.metadata.relatedMethodologies,
-            qmi: {
-                href: this.state.metadata.qmi
-            },
-            release_frequency: this.state.metadata.releaseFrequency,
-            contacts: [
-                {
-                    name: this.state.metadata.contactName,
-                    email: this.state.metadata.contactEmail,
-                    telephone: this.state.metadata.contactTelephone
-                }
-            ],
-            next_release: this.state.metadata.nextReleaseDate,
-            unit_of_measure: this.state.metadata.unitOfMeasure
-        };
-    };
+    // mapDatasetToPutBody = () => {
+    //     return {
+    //         id: this.props.params.datasetID,
+    //         title: this.state.metadata.title,
+    //         description: this.state.metadata.summary,
+    //         keywords: this.state.metadata.keywords ? this.state.metadata.keywords.split(", ") : [],
+    //         national_statistic: this.state.metadata.nationalStatistic,
+    //         license: this.state.metadata.licence,
+    //         related_datasets: this.state.metadata.relatedDatasets,
+    //         publications: this.state.metadata.relatedPublications,
+    //         methodologies: this.state.metadata.relatedMethodologies,
+    //         qmi: {
+    //             href: this.state.metadata.qmi
+    //         },
+    //         release_frequency: this.state.metadata.releaseFrequency,
+    //         contacts: [
+    //             {
+    //                 name: this.state.metadata.contactName,
+    //                 email: this.state.metadata.contactEmail,
+    //                 telephone: this.state.metadata.contactTelephone
+    //             }
+    //         ],
+    //         next_release: this.state.metadata.nextReleaseDate,
+    //         unit_of_measure: this.state.metadata.unitOfMeasure
+    //     };
+    // };
 
-    mapVersionToPutBody = () => {
-        return {
-            release_date: this.state.metadata.releaseDate.value,
-            alerts: this.state.metadata.notices,
-            usage_notes: this.state.metadata.usageNotes,
-            lastest_changes: this.state.metadata.latestChanges
-        };
-    };
+    // mapVersionToPutBody = () => {
+    //     return {
+    //         release_date: this.state.metadata.releaseDate.value,
+    //         alerts: this.state.metadata.notices,
+    //         usage_notes: this.state.metadata.usageNotes,
+    //         lastest_changes: this.state.metadata.latestChanges
+    //     };
+    // };
 
-    addDatasetToCollection = (collectionID, datasetID) => {
-        return collections.addDataset(collectionID, datasetID).catch(error => {
-            log.event("Error adding dataset to collection", log.data({ collectionID: collectionID, datasetID: datasetID }, log.error(error)));
-            console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
-            return error;
-        });
-    };
+    // addDatasetToCollection = (collectionID, datasetID) => {
+    //     return collections.addDataset(collectionID, datasetID).catch(error => {
+    //         log.event("Error adding dataset to collection", log.data({ collectionID: collectionID, datasetID: datasetID }, log.error(error)));
+    //         console.error(`Error adding dataset '${datasetID}' to collection '${this.props.params.collectionID}'`, error);
+    //         return error;
+    //     });
+    // };
 
-    addVersionToCollection = (collectionID, datasetID, editionID, versionID) => {
-        return collections.addDatasetVersion(collectionID, datasetID, editionID, versionID).catch(error => {
-            log.event(
-                "Error adding version to collection",
-                log.data({
-                    collectionID: collectionID,
-                    version: `${datasetID}/editions/${editionID}/versions/${versionID}`
-                }),
-                log.error(error)
-            );
-            console.error(
-                `Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`,
-                error
-            );
-            return error;
-        });
-    };
+    // addVersionToCollection = (collectionID, datasetID, editionID, versionID) => {
+    //     return collections.addDatasetVersion(collectionID, datasetID, editionID, versionID).catch(error => {
+    //         log.event(
+    //             "Error adding version to collection",
+    //             log.data({
+    //                 collectionID: collectionID,
+    //                 version: `${datasetID}/editions/${editionID}/versions/${versionID}`
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(
+    //             `Error adding version '${datasetID}/editions/${editionID}/versions/${versionID}' to collection '${this.props.params.collectionID}'`,
+    //             error
+    //         );
+    //         return error;
+    //     });
+    // };
 
-    saveDatasetChanges = (datasetID, metadata) => {
-        return datasets.updateDatasetMetadata(datasetID, metadata).catch(error => {
-            log.event("Error saving dataset changes to dataset API", log.data({ datasetID: datasetID }), log.error(error));
-            console.error(`Error saving dataset '${datasetID}' changes to dataset API '${this.props.params.collectionID}'`, error);
-            return error;
-        });
-    };
+    // saveDatasetChanges = (datasetID, metadata) => {
+    //     return datasets.updateDatasetMetadata(datasetID, metadata).catch(error => {
+    //         log.event("Error saving dataset changes to dataset API", log.data({ datasetID: datasetID }), log.error(error));
+    //         console.error(`Error saving dataset '${datasetID}' changes to dataset API '${this.props.params.collectionID}'`, error);
+    //         return error;
+    //     });
+    // };
 
-    saveVersionChanges = (datasetID, editionID, versionID, metadata) => {
-        return datasets.updateVersionMetadata(datasetID, editionID, versionID, metadata).catch(error => {
-            log.event(
-                "Error saving version changes to dataset API",
-                log.data({
-                    version: `${datasetID}/editions/${editionID}/versions/${versionID}`
-                }),
-                log.error(error)
-            );
-            console.error(
-                `Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`,
-                error
-            );
-            return error;
-        });
-    };
+    // saveVersionChanges = (datasetID, editionID, versionID, metadata) => {
+    //     return datasets.updateVersionMetadata(datasetID, editionID, versionID, metadata).catch(error => {
+    //         log.event(
+    //             "Error saving version changes to dataset API",
+    //             log.data({
+    //                 version: `${datasetID}/editions/${editionID}/versions/${versionID}`
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(
+    //             `Error saving version '${datasetID}/editions/${editionID}/versions/${versionID}' changes to dataset API '${this.props.params.collectionID}'`,
+    //             error
+    //         );
+    //         return error;
+    //     });
+    // };
 
-    saveDimensionChanges = (instanceID, dimensions) => {
-        return datasets.updateInstanceDimensions(instanceID, dimensions).catch(error => {
-            log.event("Error saving dimensions on instance to dataset API", log.data({ instanceID: instanceID }), log.error(error));
-            console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
-            return error;
-        });
-    };
+    // saveDimensionChanges = (instanceID, dimensions) => {
+    //     return datasets.updateInstanceDimensions(instanceID, dimensions).catch(error => {
+    //         log.event("Error saving dimensions on instance to dataset API", log.data({ instanceID: instanceID }), log.error(error));
+    //         console.error(`Error saving dimensions on instance '${instanceID}' to dataset API '${this.props.params.collectionID}'`, error);
+    //         return error;
+    //     });
+    // };
 
-    submitDatasetForReview = (collectionID, datasetID) => {
-        return collections.setDatasetStatusToComplete(collectionID, datasetID).catch(error => {
-            log.event(
-                "Error submitting dataset for review",
-                log.data({
-                    collectionID: collectionID,
-                    datasetID: datasetID
-                }),
-                log.error(error)
-            );
-            console.error(`Error submitting dataset '${datasetID}' for review. Error:`, error);
-            return error;
-        });
-    };
+    // submitDatasetForReview = (collectionID, datasetID) => {
+    //     return collections.setDatasetStatusToComplete(collectionID, datasetID).catch(error => {
+    //         log.event(
+    //             "Error submitting dataset for review",
+    //             log.data({
+    //                 collectionID: collectionID,
+    //                 datasetID: datasetID
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(`Error submitting dataset '${datasetID}' for review. Error:`, error);
+    //         return error;
+    //     });
+    // };
 
-    markDatasetAsReviewed = (collectionID, datasetID) => {
-        return collections.setDatasetStatusToReviewed(collectionID, datasetID).catch(error => {
-            log.event(
-                "Error marking dataset as reviewed",
-                log.data({
-                    collectionID: collectionID,
-                    datasetID: datasetID
-                }),
-                log.error(error)
-            );
-            console.error(`Error marking dataset '${datasetID}' as reviewed. Error:`, error);
-            return error;
-        });
-    };
+    // markDatasetAsReviewed = (collectionID, datasetID) => {
+    //     return collections.setDatasetStatusToReviewed(collectionID, datasetID).catch(error => {
+    //         log.event(
+    //             "Error marking dataset as reviewed",
+    //             log.data({
+    //                 collectionID: collectionID,
+    //                 datasetID: datasetID
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(`Error marking dataset '${datasetID}' as reviewed. Error:`, error);
+    //         return error;
+    //     });
+    // };
 
-    submitVersionForReview = (collectionID, datasetID, editionID, versionID) => {
-        return collections.setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID).catch(error => {
-            log.event(
-                "Error submitting version for review",
-                log.data({
-                    collectionID: collectionID,
-                    version: `${datasetID}/editions/${editionID}/versions/${versionID}`
-                }),
-                log.error(error)
-            );
-            console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
-            return error;
-        });
-    };
+    // submitVersionForReview = (collectionID, datasetID, editionID, versionID) => {
+    //     return collections.setDatasetVersionStatusToComplete(collectionID, datasetID, editionID, versionID).catch(error => {
+    //         log.event(
+    //             "Error submitting version for review",
+    //             log.data({
+    //                 collectionID: collectionID,
+    //                 version: `${datasetID}/editions/${editionID}/versions/${versionID}`
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
+    //         return error;
+    //     });
+    // };
 
-    markVersionAsReviewed = (collectionID, datasetID, editionID, versionID) => {
-        return collections.setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID).catch(error => {
-            log.event(
-                "Error marking version as reviewed",
-                log.data({
-                    collectionID: collectionID,
-                    version: `${datasetID}/editions/${editionID}/versions/${versionID}`
-                }),
-                log.error(error)
-            );
-            console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
-            return error;
-        });
-    };
+    // markVersionAsReviewed = (collectionID, datasetID, editionID, versionID) => {
+    //     return collections.setDatasetVersionStatusToReviewed(collectionID, datasetID, editionID, versionID).catch(error => {
+    //         log.event(
+    //             "Error marking version as reviewed",
+    //             log.data({
+    //                 collectionID: collectionID,
+    //                 version: `${datasetID}/editions/${editionID}/versions/${versionID}`
+    //             }),
+    //             log.error(error)
+    //         );
+    //         console.error(`Error marking dataset '${datasetID}/editions/${editionID}/versions/${versionID}' as reviewed. Error:`, error);
+    //         return error;
+    //     });
+    // };
 
-    renderModal = () => {
-        const modal = React.Children.map(this.props.children, child => {
-            return React.cloneElement(child, {
-                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
-                handleSuccessClick: this.handleSimpleEditableListEditSuccess,
-                handleCancelClick: this.handleSimpleEditableListEditCancel
-            });
-        });
-        return modal;
-    };
+    // renderModal = () => {
+    //     const modal = React.Children.map(this.props.children, child => {
+    //         return React.cloneElement(child, {
+    //             data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+    //             handleSuccessClick: this.handleSimpleEditableListEditSuccess,
+    //             handleCancelClick: this.handleSimpleEditableListEditCancel
+    //         });
+    //     });
+    //     return modal;
+    // };
 
     render() {
+        console.log("DatasetMetadataController.jsx", this.state);
         return (
             <div className="grid grid--justify-center">
                 <DatasetMetadata
