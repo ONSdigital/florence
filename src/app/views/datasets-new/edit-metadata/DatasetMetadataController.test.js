@@ -81,7 +81,7 @@ const mockedMetadata = {
         }
     ],
     collection_id: "123",
-    collection_state: "InProgress",
+    collection_state: "inProgress",
     collection_last_edited_by: "test@user.com"
 };
 const mockedState = {
