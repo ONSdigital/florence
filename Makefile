@@ -8,7 +8,7 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 
 
 .PHONY: audit
-audit:
+audit: node-modules
 	go list -m all | nancy sleuth
 	# cd src; npx auditjs ossi --whitelist /Users/jon/dev/florence/src/audit-whitelist.json --quiet
 	cd src; npm run audit
