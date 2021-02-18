@@ -10,7 +10,8 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 .PHONY: audit
 audit:
 	go list -m all | nancy sleuth
-	cd src; npm audit --audit-level=high
+	# cd src; npx auditjs ossi --whitelist /Users/jon/dev/florence/src/audit-whitelist.json --quiet
+	cd src; npm run audit
 
 .PHONY: build
 build: node-modules generate-go-prod

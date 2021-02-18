@@ -19,8 +19,11 @@
     "testURL": "http://localhost"
   },
   "devDependencies": {
+    "auditjs": "^4.0.24",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.9.0",
+    "better-npm-audit": "^1.5.0",
+    "copy-webpack-plugin": "^5.1.1",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
     "eslint": "^4.19.1",
@@ -43,10 +46,14 @@
     "react-test-renderer": "^15.5.4",
     "regenerator-runtime": "^0.10.5",
     "replace-in-file": "^3.4.4",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.11.2"
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
+    "audit": "auditjs ossi --whitelist ./audit-whitelist.json --quiet",
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
     "watch-refactored": "node ./node_modules/webpack/bin/webpack.js -d --watch & npm run prettier-watch",
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
@@ -72,7 +79,6 @@
     "babel-loader": "^8.1.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-regenerator-runtime": "^6.5.0",
-    "copy-webpack-plugin": "^5.1.1",
     "css-loader": "^3.5.1",
     "dateformat": "^2.0.0",
     "dp-table-builder-ui": "^1.1.0",
@@ -98,10 +104,7 @@
     "sass-loader": "^7.3.1",
     "style-loader": "^0.13.2",
     "url-loader": "^1.1.2",
-    "uuid": "^3.4.0",
-    "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.2"
+    "uuid": "^3.4.0"
   },
   "resolutions": {
     "lodash": "^4.17.15",
