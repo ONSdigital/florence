@@ -8,9 +8,9 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 
 
 .PHONY: audit
-audit:
-	nancy go.sum
-	cd src; npm audit --audit-level=high
+audit: node-modules
+	go list -m all | nancy sleuth
+	cd src; npm run audit
 
 .PHONY: build
 build: node-modules generate-go-prod
