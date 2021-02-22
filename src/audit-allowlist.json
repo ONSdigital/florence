@@ -6,6 +6,7 @@
         { "id": "58fdd459-8d4a-4bf6-b106-ef7cff98268c", "package": "moment" },
         { "id": "d939d5e9-46d5-4682-a6c7-756e5fea2b2b", "package": "moment" },
         { "id": "b7740d41-fc85-4d22-8af5-5a3159e114ea", "package": "yargs-parser" },
-        { "id": "7ccaaed0-205b-4382-a963-8a30a0b151b1", "package": "yargs-parser" }
+        { "id": "7ccaaed0-205b-4382-a963-8a30a0b151b1", "package": "yargs-parser" },
+        { "id": "bcd8143c-e087-4471-b5ee-7537c8936296", "package": "node-fetch"}
     ]
 }
