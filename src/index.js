@@ -132,7 +132,7 @@ class Index extends Component {
                                                         component={userIsAuthenticated(EditMetadataItem)}
                                                     />
                                                 </Route>
-                                                <Route path="versions/:versionID/preview" component={userIsAuthenticated(DatasetPreviewController)} />
+                                                <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
                                             </Route>
                                         </Route>
                                         <Route path="datasets/create" component={userIsAuthenticated(CollectionsController)} />
