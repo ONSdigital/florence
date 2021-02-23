@@ -90,7 +90,7 @@ export class DatasetMetadataController extends Component {
                 this.handleGETSuccess(metadata);
             })
             .catch(error => {
-                this.setState({ isGettingMetadata: false });
+                this.setState({ isGettingMetadata: false, disableScreen: true });
                 log.event("get metadata: error GETting metadata from controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
