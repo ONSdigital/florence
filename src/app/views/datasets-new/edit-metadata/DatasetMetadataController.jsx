@@ -136,10 +136,11 @@ export class DatasetMetadataController extends Component {
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
                 collection: metadata.dataset.collection_id || false,
-                datasetCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || null,
-                versionCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || null,
+                datasetCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || "",
+                versionCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || "",
                 lastEditedBy: metadata.collection_last_edited_by || null,
-                versionIsPublished: version.state === "published"
+                versionIsPublished: version.state === "published",
+                state: dataset.state
             };
         } catch (error) {
             log.event("error mapping metadata to to state", log.data({ datasetID: dataset.id, versionID: version.id }), log.error(error));
