@@ -568,7 +568,6 @@ export class DatasetMetadataController extends Component {
     };
 
     render() {
-        console.log("DatasetMetadataController.jsx", this.state);
         return (
             <div className="grid grid--justify-center">
                 <DatasetMetadata
