@@ -41,7 +41,6 @@ import { store, history } from "./app/config/store";
 import SelectableTest from "./SelectableTest";
 import VersionPreviewController from "./app/views/datasets/preview/VersionPreviewController";
 import PreviewController from "./app/views/preview/PreviewController";
-import DatasetPreviewController from "./app/views/datasets-new/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
@@ -132,7 +131,7 @@ class Index extends Component {
                                                         component={userIsAuthenticated(EditMetadataItem)}
                                                     />
                                                 </Route>
-                                                <Route path="versions/:versionID/preview" component={userIsAuthenticated(DatasetPreviewController)} />
+                                                <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
                                             </Route>
                                         </Route>
                                         <Route path="datasets/create" component={userIsAuthenticated(CollectionsController)} />
@@ -171,7 +170,7 @@ class Index extends Component {
                                         <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetsController))} />
                                         <Route path=":datasetID">
                                             <IndexRedirect to={`${rootPath}/datasets`} />
-                                            <Route path="preview" component={userIsAuthenticated(userIsAdminOrEditor(DatasetPreviewController))} />
+                                            <Route path="preview" component={userIsAuthenticated(userIsAdminOrEditor(WorkflowPreview))} />
                                             <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetMetadata))} />
                                             <Route path="editions/:edition/versions/:version">
                                                 <IndexRedirect to="metadata" />
