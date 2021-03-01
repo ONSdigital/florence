@@ -50,7 +50,7 @@ export class CreateDatasetController extends Component {
     getDatasets = () => {
         return new Promise((resolve, reject) => {
             return datasets
-                .getAll()
+                .getAllList()
                 .then(datasets => {
                     resolve(datasets);
                 })
@@ -101,7 +101,7 @@ export class CreateDatasetController extends Component {
 
     getOutputsWithoutExistingDataset = (outputs, datasets) => {
         return outputs.filter(output => {
-            const doesMatchRecipe = datasets.items.some(datasetItem => {
+            const doesMatchRecipe = datasets.some(datasetItem => {
                 return output.dataset_id === datasetItem.id;
             });
             return !doesMatchRecipe;

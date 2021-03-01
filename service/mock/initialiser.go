@@ -7,17 +7,8 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/health"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
-	"github.com/ONSdigital/florence/upload"
 	"net/http"
 	"sync"
-)
-
-var (
-	lockInitialiserMockDoGetHTTPServer   sync.RWMutex
-	lockInitialiserMockDoGetHealthCheck  sync.RWMutex
-	lockInitialiserMockDoGetHealthClient sync.RWMutex
-	lockInitialiserMockDoGetS3Client     sync.RWMutex
-	lockInitialiserMockDoGetVault        sync.RWMutex
 )
 
 // Ensure, that InitialiserMock does implement service.Initialiser.
@@ -39,12 +30,6 @@ var _ service.Initialiser = &InitialiserMock{}
 //             DoGetHealthClientFunc: func(name string, url string) *health.Client {
 // 	               panic("mock out the DoGetHealthClient method")
 //             },
-//             DoGetS3ClientFunc: func(awsRegion string, bucketName string, encryptionEnabled bool) (upload.S3Client, error) {
-// 	               panic("mock out the DoGetS3Client method")
-//             },
-//             DoGetVaultFunc: func(vaultToken string, vaultAddress string, retries int) (upload.VaultClient, error) {
-// 	               panic("mock out the DoGetVault method")
-//             },
 //         }
 //
 //         // use mockedInitialiser in code that requires service.Initialiser
@@ -60,12 +45,6 @@ type InitialiserMock struct {
 
 	// DoGetHealthClientFunc mocks the DoGetHealthClient method.
 	DoGetHealthClientFunc func(name string, url string) *health.Client
-
-	// DoGetS3ClientFunc mocks the DoGetS3Client method.
-	DoGetS3ClientFunc func(awsRegion string, bucketName string, encryptionEnabled bool) (upload.S3Client, error)
-
-	// DoGetVaultFunc mocks the DoGetVault method.
-	DoGetVaultFunc func(vaultToken string, vaultAddress string, retries int) (upload.VaultClient, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -94,25 +73,10 @@ type InitialiserMock struct {
 			// URL is the url argument value.
 			URL string
 		}
-		// DoGetS3Client holds details about calls to the DoGetS3Client method.
-		DoGetS3Client []struct {
-			// AwsRegion is the awsRegion argument value.
-			AwsRegion string
-			// BucketName is the bucketName argument value.
-			BucketName string
-			// EncryptionEnabled is the encryptionEnabled argument value.
-			EncryptionEnabled bool
-		}
-		// DoGetVault holds details about calls to the DoGetVault method.
-		DoGetVault []struct {
-			// VaultToken is the vaultToken argument value.
-			VaultToken string
-			// VaultAddress is the vaultAddress argument value.
-			VaultAddress string
-			// Retries is the retries argument value.
-			Retries int
-		}
 	}
+	lockDoGetHTTPServer   sync.RWMutex
+	lockDoGetHealthCheck  sync.RWMutex
+	lockDoGetHealthClient sync.RWMutex
 }
 
 // DoGetHTTPServer calls DoGetHTTPServerFunc.
@@ -127,9 +91,9 @@ func (mock *InitialiserMock) DoGetHTTPServer(bindAddr string, router http.Handle
 		BindAddr: bindAddr,
 		Router:   router,
 	}
-	lockInitialiserMockDoGetHTTPServer.Lock()
+	mock.lockDoGetHTTPServer.Lock()
 	mock.calls.DoGetHTTPServer = append(mock.calls.DoGetHTTPServer, callInfo)
-	lockInitialiserMockDoGetHTTPServer.Unlock()
+	mock.lockDoGetHTTPServer.Unlock()
 	return mock.DoGetHTTPServerFunc(bindAddr, router)
 }
 
@@ -144,9 +108,9 @@ func (mock *InitialiserMock) DoGetHTTPServerCalls() []struct {
 		BindAddr string
 		Router   http.Handler
 	}
-	lockInitialiserMockDoGetHTTPServer.RLock()
+	mock.lockDoGetHTTPServer.RLock()
 	calls = mock.calls.DoGetHTTPServer
-	lockInitialiserMockDoGetHTTPServer.RUnlock()
+	mock.lockDoGetHTTPServer.RUnlock()
 	return calls
 }
 
@@ -166,9 +130,9 @@ func (mock *InitialiserMock) DoGetHealthCheck(cfg *config.Config, buildTime stri
 		GitCommit: gitCommit,
 		Version:   version,
 	}
-	lockInitialiserMockDoGetHealthCheck.Lock()
+	mock.lockDoGetHealthCheck.Lock()
 	mock.calls.DoGetHealthCheck = append(mock.calls.DoGetHealthCheck, callInfo)
-	lockInitialiserMockDoGetHealthCheck.Unlock()
+	mock.lockDoGetHealthCheck.Unlock()
 	return mock.DoGetHealthCheckFunc(cfg, buildTime, gitCommit, version)
 }
 
@@ -187,9 +151,9 @@ func (mock *InitialiserMock) DoGetHealthCheckCalls() []struct {
 		GitCommit string
 		Version   string
 	}
-	lockInitialiserMockDoGetHealthCheck.RLock()
+	mock.lockDoGetHealthCheck.RLock()
 	calls = mock.calls.DoGetHealthCheck
-	lockInitialiserMockDoGetHealthCheck.RUnlock()
+	mock.lockDoGetHealthCheck.RUnlock()
 	return calls
 }
 
@@ -205,9 +169,9 @@ func (mock *InitialiserMock) DoGetHealthClient(name string, url string) *health.
 		Name: name,
 		URL:  url,
 	}
-	lockInitialiserMockDoGetHealthClient.Lock()
+	mock.lockDoGetHealthClient.Lock()
 	mock.calls.DoGetHealthClient = append(mock.calls.DoGetHealthClient, callInfo)
-	lockInitialiserMockDoGetHealthClient.Unlock()
+	mock.lockDoGetHealthClient.Unlock()
 	return mock.DoGetHealthClientFunc(name, url)
 }
 
@@ -222,86 +186,8 @@ func (mock *InitialiserMock) DoGetHealthClientCalls() []struct {
 		Name string
 		URL  string
 	}
-	lockInitialiserMockDoGetHealthClient.RLock()
+	mock.lockDoGetHealthClient.RLock()
 	calls = mock.calls.DoGetHealthClient
-	lockInitialiserMockDoGetHealthClient.RUnlock()
-	return calls
-}
-
-// DoGetS3Client calls DoGetS3ClientFunc.
-func (mock *InitialiserMock) DoGetS3Client(awsRegion string, bucketName string, encryptionEnabled bool) (upload.S3Client, error) {
-	if mock.DoGetS3ClientFunc == nil {
-		panic("InitialiserMock.DoGetS3ClientFunc: method is nil but Initialiser.DoGetS3Client was just called")
-	}
-	callInfo := struct {
-		AwsRegion         string
-		BucketName        string
-		EncryptionEnabled bool
-	}{
-		AwsRegion:         awsRegion,
-		BucketName:        bucketName,
-		EncryptionEnabled: encryptionEnabled,
-	}
-	lockInitialiserMockDoGetS3Client.Lock()
-	mock.calls.DoGetS3Client = append(mock.calls.DoGetS3Client, callInfo)
-	lockInitialiserMockDoGetS3Client.Unlock()
-	return mock.DoGetS3ClientFunc(awsRegion, bucketName, encryptionEnabled)
-}
-
-// DoGetS3ClientCalls gets all the calls that were made to DoGetS3Client.
-// Check the length with:
-//     len(mockedInitialiser.DoGetS3ClientCalls())
-func (mock *InitialiserMock) DoGetS3ClientCalls() []struct {
-	AwsRegion         string
-	BucketName        string
-	EncryptionEnabled bool
-} {
-	var calls []struct {
-		AwsRegion         string
-		BucketName        string
-		EncryptionEnabled bool
-	}
-	lockInitialiserMockDoGetS3Client.RLock()
-	calls = mock.calls.DoGetS3Client
-	lockInitialiserMockDoGetS3Client.RUnlock()
-	return calls
-}
-
-// DoGetVault calls DoGetVaultFunc.
-func (mock *InitialiserMock) DoGetVault(vaultToken string, vaultAddress string, retries int) (upload.VaultClient, error) {
-	if mock.DoGetVaultFunc == nil {
-		panic("InitialiserMock.DoGetVaultFunc: method is nil but Initialiser.DoGetVault was just called")
-	}
-	callInfo := struct {
-		VaultToken   string
-		VaultAddress string
-		Retries      int
-	}{
-		VaultToken:   vaultToken,
-		VaultAddress: vaultAddress,
-		Retries:      retries,
-	}
-	lockInitialiserMockDoGetVault.Lock()
-	mock.calls.DoGetVault = append(mock.calls.DoGetVault, callInfo)
-	lockInitialiserMockDoGetVault.Unlock()
-	return mock.DoGetVaultFunc(vaultToken, vaultAddress, retries)
-}
-
-// DoGetVaultCalls gets all the calls that were made to DoGetVault.
-// Check the length with:
-//     len(mockedInitialiser.DoGetVaultCalls())
-func (mock *InitialiserMock) DoGetVaultCalls() []struct {
-	VaultToken   string
-	VaultAddress string
-	Retries      int
-} {
-	var calls []struct {
-		VaultToken   string
-		VaultAddress string
-		Retries      int
-	}
-	lockInitialiserMockDoGetVault.RLock()
-	calls = mock.calls.DoGetVault
-	lockInitialiserMockDoGetVault.RUnlock()
+	mock.lockDoGetHealthClient.RUnlock()
 	return calls
 }

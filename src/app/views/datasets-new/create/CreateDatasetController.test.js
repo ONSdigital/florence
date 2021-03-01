@@ -1,6 +1,6 @@
 import React from "react";
 import { CreateDatasetController } from "./CreateDatasetController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
 import recipes from "../../../utilities/api-clients/recipes";
 
@@ -24,7 +24,7 @@ jest.mock("../../../utilities/notifications", () => {
 
 jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
-        getAll: jest.fn(() => {
+        getAllList: jest.fn(() => {
             return Promise.resolve(mockedAllDatasetsCall);
         })
     };
@@ -40,26 +40,14 @@ jest.mock("../../../utilities/api-clients/recipes", () => {
 
 let mockNotifications = [];
 
-const mockedAllDatasetsCall = {
-    items: [
-        {
-            id: "test-dataset-1",
-            current: {
-                collection_id: "1234567890",
-                id: "test-dataset-1",
-                title: "Test Dataset 1"
-            }
-        },
-        {
-            id: "test-dataset-2",
-            current: {
-                collection_id: "1234567890",
-                id: "test-dataset-2",
-                title: "Test Datatset 2"
-            }
-        }
-    ]
-};
+const mockedAllDatasetsCall = [
+    {
+        id: "test-dataset-1"
+    },
+    {
+        id: "test-dataset-2"
+    }
+];
 
 const mockedAllRecipesCall = {
     items: [
@@ -225,24 +213,30 @@ describe("calling getRecipes", () => {
             .getRecipes()
             .catch(error => {
                 console.log(error);
-                expect(error).toMatchObject({ error: { status: 500 }, message: "An error occured trying to retrieve all recipes" });
+                expect(error).toMatchObject({
+                    error: { status: 500 },
+                    message: "An error occured trying to retrieve all recipes"
+                });
             });
     });
 });
 
 describe("calling getDatasets", () => {
-    it("returns recipes on success", async () => {
+    it("returns datasets on success", async () => {
         const response = await component.instance().getDatasets();
         expect(response).toMatchObject(mockedAllDatasetsCall);
     });
 
     it("returns error on fail", async () => {
-        datasets.getAll.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        datasets.getAllList.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         await component
             .instance()
             .getDatasets()
             .catch(error => {
-                expect(error).toMatchObject({ error: { status: 404 }, message: "An error occured trying to retrieve all datasets" });
+                expect(error).toMatchObject({
+                    error: { status: 404 },
+                    message: "An error occured trying to retrieve all datasets"
+                });
             });
     });
 });

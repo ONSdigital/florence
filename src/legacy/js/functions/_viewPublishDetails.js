@@ -35,8 +35,12 @@ function viewPublishDetails(collections) {
                         });
                     }
                 },
-                error = function (response) {
-                    handleApiError(response);
+                error = function () {
+                    result.collectionDetails.push({
+                        id: getCollectionIDWithoutUUID(collectionId),
+                        error: true,
+                        pageType: result.date === manual ? "manual" : ""
+                    })
                 }
             )
         );
@@ -48,20 +52,24 @@ function viewPublishDetails(collections) {
         result.subtitle = 'The following collections have been approved';
     }
 
-    $.when.apply($, pageDataRequests).then(function () {
+    Promise.allSettled(pageDataRequests).then(() => {
+        displayPublishDetailsPanel()
+    }).catch(err => {
+        handleApiError(err);
+    })
+
+    function displayPublishDetailsPanel() {
         var publishDetails = templates.publishDetails(result);
         $('.panel--off-canvas').html(publishDetails);
         bindAccordions();
 
         $('.btn-collection-publish').click(function () {
             var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
-            console.log(collection);
             publish(collection);
         });
 
         $('.btn-collection-unlock').click(function () {
             var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
-            console.log(collection);
 
             if (result.date !== manual) {
                 swal({
@@ -80,6 +88,11 @@ function viewPublishDetails(collections) {
             } else {
                 unlock(collection);
             }
+        });
+
+        $('.btn-collection-preview').click(function () {
+            var collection = $(this).closest('.js-accordion').find('.collection-name').attr('data-id');
+            window.location = `/florence/collections/${collection}/preview`
         });
 
         //page-list
@@ -108,5 +121,10 @@ function viewPublishDetails(collections) {
 
             hidePanel(hidePanelOptions);
         });
-    });
+    }
+
+    // return collection id without unique identifier on the end
+    function getCollectionIDWithoutUUID(collectionID) {
+        return collectionID.split("-")[0]
+    }
 }

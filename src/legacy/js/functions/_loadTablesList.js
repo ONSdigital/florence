@@ -14,14 +14,6 @@ function refreshTablesList(collectionId, data) {
 
 function initialiseTablesList(collectionId, data) {
 
-    $('#add-table').click(function () {
-        loadTableBuilder(data, function () {
-            Florence.Editor.isDirty = false;
-            refreshPreview();
-            refreshTablesList(collectionId, data);
-        });
-    });
-
     $('#add-table-v2').click(function () {
         loadTableBuilderV2(data, function () {
             Florence.Editor.isDirty = false;
@@ -43,11 +35,9 @@ function initialiseTablesList(collectionId, data) {
                         refreshPreview();
                         refreshTablesList(collectionId, data);
                     };
-                    if (table.version == "2") {
-                        loadTableBuilderV2(data, onSave, tableData);
-                    } else {
-                        loadTableBuilder(data, onSave, tableData);
-                    }
+
+                    loadTableBuilderV2(data, onSave, tableData);
+
                 })
         });
 

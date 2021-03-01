@@ -1,6 +1,7 @@
 package config
 
 import (
+	"os"
 	"testing"
 	"time"
 
@@ -10,6 +11,7 @@ import (
 func TestGetRetrunsDefaultValues(t *testing.T) {
 	t.Parallel()
 	Convey("When a loading a configuration, default values are return", t, func() {
+		os.Clearenv()
 		configuration, err := Get()
 		So(err, ShouldBeNil)
 		So(configuration, ShouldResemble, &Config{
@@ -19,13 +21,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			RouterURL:                  "http://localhost:20000",
 			DatasetControllerURL:       "http://localhost:24000",
 			TableRendererURL:           "http://localhost:23300",
-			AwsRegion:                  "eu-west-1",
-			UploadBucketName:           "dp-frontend-florence-file-uploads",
-			SharedConfig:               SharedConfig{EnableUploadService: false, EnableDatasetImport: false, EnableHomepagePublishing: false},
-			EncryptionDisabled:         false,
-			VaultAddr:                  "http://localhost:8200",
-			VaultToken:                 "",
-			VaultPath:                  "secret/shared/psk",
+			SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
 			HealthCheckCriticalTimeout: 90 * time.Second,

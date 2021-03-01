@@ -67,10 +67,6 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
         loadChartBuilder(pageData, onInsertSave);
     });
 
-    $("#js-editor--table").click(function () {
-        loadTableBuilder(pageData, onInsertSave);
-    });
-
     $("#js-editor--table-v2").click(function () {
         loadTableBuilderV2(pageData, onInsertSave);
     });
