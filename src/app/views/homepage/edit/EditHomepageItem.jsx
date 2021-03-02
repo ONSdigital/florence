@@ -75,12 +75,10 @@ export default class EditHomepageItem extends Component {
     };
 
     updateUploadState = upload => {
-        console.log("called, upload obj is:", upload);
         const newUploadState = {
             ...this.state.upload,
             ...upload
         };
-        console.log("newUploadState is", newUploadState);
         this.setState({ upload: newUploadState });
     };
 
