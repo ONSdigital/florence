@@ -246,7 +246,7 @@ describe("get image", () => {
     });
 
     it("when response.status is 'error' we log the error", async () => {
-        image.get.mockImplementationOnce(() => Promise.resolve({ state: "error" }));
+        image.get.mockImplementationOnce(() => Promise.resolve({ state: "failed_import" }));
         await wrapper.instance().getImage(mockImage.id);
         expect(log.event.mock.calls[0][0].length).toBeGreaterThan(0);
         expect(wrapper.state("isGettingImage")).toBe(false);
