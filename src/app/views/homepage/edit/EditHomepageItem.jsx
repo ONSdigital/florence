@@ -206,7 +206,7 @@ export default class EditHomepageItem extends Component {
                     }
                     return;
                 }
-                if (response.state === "error") {
+                if (response.state === "failed_import") {
                     this.setState({ imageImportStatus: STATUS_IMPORTING_ERROR, isGettingImage: false, imageState: response.state });
                     this.stopPollingForUpdates();
                     console.error("Image import failed, image ID:", imageID);
