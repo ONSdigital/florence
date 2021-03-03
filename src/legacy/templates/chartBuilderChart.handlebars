@@ -52,3 +52,32 @@
                         </label>
                     {{/if_eq}}
                 </span>
+
+
+                  <span class="refresh-chart">
+                    <legend>Colours</legend>
+            {{#if_eq palette 'extended'}}
+                    <input type="radio" name="palette" id="primary" value="primary" />
+                    <label for="primary">Primary</label>
+                    <input type="radio" name="palette" id="extended" value="extended" checked="checked"/>
+                    <label for="extended">Extended</label>
+                    <input type="radio" name="palette" id="alternate" value="alternate"/>
+                    <label for="alternate">Alternate</label>
+            {{else}}
+                {{#if_eq palette 'alternate'}}
+                    <input type="radio" name="palette" id="primary" value="primary" />
+                    <label for="primary">Primary</label>
+                    <input type="radio" name="palette" id="extended" value="extended" />
+                    <label for="extended">Extended</label>
+                    <input type="radio" name="palette" id="alternate" value="alternate" checked="checked"/>
+                    <label for="alternate">Alternate</label>
+                {{else}}
+                    <input type="radio" name="palette" id="primary" value="primary" checked="checked"/>
+                    <label for="primary">Primary</label>
+                    <input type="radio" name="palette" id="extended" value="extended"/>
+                    <label for="extended">Extended</label>
+                    <input type="radio" name="palette" id="alternate" value="alternate"/>
+                    <label for="alternate">Alternate</label>
+                {{/if_eq}}
+            {{/if_eq}}
+                  </span>
