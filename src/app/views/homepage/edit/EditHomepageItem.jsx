@@ -268,13 +268,8 @@ export default class EditHomepageItem extends Component {
 
     mapImageToState = image => {
         try {
-            // set image url hostname to current host name for cases when the
-            // image-api returns something different to host Florence is
-            // running on e.g. 127.0.0.1 vs localhost
-            const url = new URL(image.href);
-            url.hostname = window.location.hostname;
             return {
-                url: url
+                url: image.href
             };
         } catch (error) {
             log.event("error mapping image data to state", log.error(error));
@@ -399,6 +394,7 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
+        console.log(this.state.imageData.url);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>
