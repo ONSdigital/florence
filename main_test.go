@@ -16,11 +16,12 @@ var componentFlag = flag.Bool("component", false, "perform component tests")
 
 type ComponentTest struct {
 	MongoFeature *componenttest.MongoFeature
+	t *testing.T
 }
 
 func (f *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 	authorizationFeature := componenttest.NewAuthorizationFeature()
-	datasetFeature, err := steps.NewFlorenceFeature()
+	datasetFeature, err := steps.NewFlorenceFeature(f.t)
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +61,9 @@ func TestComponent(t *testing.T) {
 			Paths:  flag.Args(),
 		}
 
-		f := &ComponentTest{}
+		f := &ComponentTest{
+			t: t,
+		}
 
 		status = godog.TestSuite{
 			Name:                 "feature_tests",
