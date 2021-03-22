@@ -2,7 +2,6 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"os"
 	"testing"
 
@@ -16,35 +15,35 @@ var componentFlag = flag.Bool("component", false, "perform component tests")
 
 type ComponentTest struct {
 	MongoFeature *componenttest.MongoFeature
-	t *testing.T
+	testingT *testing.T
 }
 
-func (f *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
+func (c *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 	authorizationFeature := componenttest.NewAuthorizationFeature()
-	datasetFeature, err := steps.NewFlorenceFeature(f.t)
+	florenceFeature, err := steps.NewFlorenceFeature(c.testingT)
 	if err != nil {
 		panic(err)
 	}
 
-	apiFeature := componenttest.NewAPIFeature(datasetFeature.InitialiseService)
+	apiFeature := componenttest.NewAPIFeature(florenceFeature.InitialiseService)
 
 	ctx.BeforeScenario(func(*godog.Scenario) {
 		apiFeature.Reset()
-		datasetFeature.Reset()
+		florenceFeature.Reset()
 		authorizationFeature.Reset()
 	})
 
 	ctx.AfterScenario(func(*godog.Scenario, error) {
-		datasetFeature.Close()
+		florenceFeature.Close()
 		authorizationFeature.Close()
 	})
 
-	datasetFeature.RegisterSteps(ctx)
+	florenceFeature.RegisterSteps(ctx)
 	apiFeature.RegisterSteps(ctx)
 	authorizationFeature.RegisterSteps(ctx)
 }
 
-func (f *ComponentTest) InitializeTestSuite(ctx *godog.TestSuiteContext) {
+func (c *ComponentTest) InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
 	})
 	ctx.AfterSuite(func() {
@@ -53,8 +52,6 @@ func (f *ComponentTest) InitializeTestSuite(ctx *godog.TestSuiteContext) {
 
 func TestComponent(t *testing.T) {
 	if *componentFlag {
-		status := 0
-
 		var opts = godog.Options{
 			Output: colors.Colored(os.Stdout),
 			Format: "pretty",
@@ -62,21 +59,19 @@ func TestComponent(t *testing.T) {
 		}
 
 		f := &ComponentTest{
-			t: t,
+			testingT: t,
 		}
 
-		status = godog.TestSuite{
+		status := godog.TestSuite{
 			Name:                 "feature_tests",
 			ScenarioInitializer:  f.InitializeScenario,
 			TestSuiteInitializer: f.InitializeTestSuite,
 			Options:              &opts,
 		}.Run()
 
-		fmt.Println("=================================")
-		fmt.Printf("Component test coverage: %.2f%%\n", testing.Coverage()*100)
-		fmt.Println("=================================")
-
-		os.Exit(status)
+		if status > 0 {
+			t.Fail()
+		}
 	} else {
 		t.Skip("component flag required to run component tests")
 	}
