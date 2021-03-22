@@ -7,7 +7,3 @@ Feature: Uploading a dataset.
 
   Scenario: Something about uploading a dataset?
     When I create a new collection called "Census 2021"
-
-
-
-
