@@ -73,7 +73,12 @@ func NewFlorenceFeature(t *testing.T) (*FlorenceFeature, error) {
 
 func (f *FlorenceFeature) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I am logged in as "([^"]*)"$`, f.iAmLoggedInAs)
-	ctx.Step(`^I create a new collection called "([^"]*)"$`, f.iCreateANewCollectionCalled)
+
+	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, f.iCreateANewCollectionCalledForManualPublishing)
+	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, f.iShouldBePresentedWithAEditableCollectionTitled)
+	ctx.Step(`^I should be told the systems is "([^"]*)"$`, f.iShouldBeToldTheSystemsIs)
+	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, f.theCollectionShouldBe)
+
 }
 
 func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
@@ -87,16 +92,29 @@ func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
 	return nil
 }
 
-func (f *FlorenceFeature) iCreateANewCollectionCalled(collectionName string) error {
+func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
 	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
 	if err := collectionAction.create(collectionName); err != nil {
 		return err
 	}
 
-	time.Sleep(20 * time.Second)
+	time.Sleep(10 * time.Second)
 
 	return f.ErrorFeature.StepError()
 }
+
+func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
+	return godog.ErrPending
+}
+
+func (f *FlorenceFeature) iShouldBeToldTheSystemsIs(message string) error {
+	return godog.ErrPending
+}
+
+func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishType string) error {
+	return godog.ErrPending
+}
+
 
 func (f *FlorenceFeature) Reset() *FlorenceFeature {
 	f.FakeApi.fakeHttp.Reset()
