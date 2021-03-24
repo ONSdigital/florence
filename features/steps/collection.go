@@ -2,6 +2,7 @@ package steps
 
 import (
 	"context"
+	"fmt"
 	"github.com/chromedp/chromedp"
 )
 
@@ -19,31 +20,10 @@ func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 }
 
 func (c *Collection) create(collectionName string) error {
-	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"Census jjj"}`)).Reply(200).Body([]byte(`
-{
-    "approvalStatus": "IN_PROGRESS",
-    "publishComplete": false,
-    "isEncrypted": false,
-    "timeseriesImportFiles": [],
-    "id": "abc123",
-    "name": "jons collection",
-    "type": "manual",
-    "teams": []
-}
+	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"Census 2021","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
+		buildCollectionDetailsResponse(collectionName))).SetHeader("Content-Type", "application/json")
 
-`)).SetHeader("Content-Type", "application/json")
-
-	c.api.setJsonResponseForGet("/collectionDetails/abc123", `
-{
-    "approvalStatus": "IN_PROGRESS",
-    "publishComplete": false,
-    "isEncrypted": false,
-    "timeseriesImportFiles": [],
-    "id": "abc123",
-    "name": "my collection",
-    "type": "manual",
-    "teams": []
-}`)
+	c.api.setJsonResponseForGet("/collectionDetails/abc123", buildCollectionDetailsResponse(collectionName))
 
 	err := chromedp.Run(c.chromeCtx,
 		chromedp.SendKeys("#collection-name", collectionName),
@@ -52,4 +32,18 @@ func (c *Collection) create(collectionName string) error {
 	)
 
 	return err
+}
+
+func buildCollectionDetailsResponse(collectionName string) string {
+	return fmt.Sprintf(`
+	{
+		"approvalStatus": "IN_PROGRESS",
+		"publishComplete": false,
+		"isEncrypted": false,
+		"timeseriesImportFiles": [],
+		"id": "abc123",
+		"name": "%s",
+		"type": "manual",
+		"teams": []
+	}`, collectionName)
 }
