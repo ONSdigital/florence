@@ -93,7 +93,7 @@ func (f *FlorenceFeature) iCreateANewCollectionCalled(collectionName string) err
 		return err
 	}
 
-	//time.Sleep(1 * time.Second)
+	time.Sleep(20 * time.Second)
 
 	return f.ErrorFeature.StepError()
 }
