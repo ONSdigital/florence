@@ -18,7 +18,6 @@ import (
 	"os/signal"
 	"syscall"
 	"testing"
-	"time"
 )
 
 type Chrome struct {
@@ -96,7 +95,7 @@ func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collect
 		return err
 	}
 
-	time.Sleep(30 * time.Second)
+	//time.Sleep(30 * time.Second)
 
 	return f.ErrorFeature.StepError()
 }
