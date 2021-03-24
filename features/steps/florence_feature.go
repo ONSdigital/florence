@@ -76,9 +76,7 @@ func (f *FlorenceFeature) RegisterSteps(ctx *godog.ScenarioContext) {
 
 	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, f.iCreateANewCollectionCalledForManualPublishing)
 	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, f.iShouldBePresentedWithAEditableCollectionTitled)
-	ctx.Step(`^I should be told the systems is "([^"]*)"$`, f.iShouldBeToldTheSystemsIs)
 	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, f.theCollectionShouldBe)
-
 }
 
 func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
@@ -98,21 +96,21 @@ func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collect
 		return err
 	}
 
-	time.Sleep(10 * time.Second)
+	time.Sleep(30 * time.Second)
 
 	return f.ErrorFeature.StepError()
 }
 
 func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
-	return godog.ErrPending
+	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
+
+	return collectionAction.hasTitle(collectionTitle)
 }
 
-func (f *FlorenceFeature) iShouldBeToldTheSystemsIs(message string) error {
-	return godog.ErrPending
-}
+func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishSchedule string) error {
+	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
 
-func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishType string) error {
-	return godog.ErrPending
+	return collectionAction.hasPublishSchedule(collectionPublishSchedule)
 }
 
 
@@ -135,7 +133,6 @@ func (f *FlorenceFeature) Reset() *FlorenceFeature {
 	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
 	f.chrome.ctxCanceller = cancel
 
-	time.Sleep(1 * time.Second)
 	log.Print("re-starting chrome ...")
 
 	f.chrome.ctx = ctx

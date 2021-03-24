@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/chromedp/chromedp"
+	"github.com/hashicorp/go-uuid"
+	"github.com/pkg/errors"
 )
 
 type Collection struct {
@@ -20,10 +22,11 @@ func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 }
 
 func (c *Collection) create(collectionName string) error {
+	var collectionId, _ = uuid.GenerateUUID()
 	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"Census 2021","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
-		buildCollectionDetailsResponse(collectionName))).SetHeader("Content-Type", "application/json")
+		buildCollectionDetailsResponseForId(collectionName, collectionId))).SetHeader("Content-Type", "application/json")
 
-	c.api.setJsonResponseForGet("/collectionDetails/abc123", buildCollectionDetailsResponse(collectionName))
+	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, buildCollectionDetailsResponseForId(collectionName, collectionId))
 
 	err := chromedp.Run(c.chromeCtx,
 		chromedp.SendKeys("#collection-name", collectionName),
@@ -34,16 +37,45 @@ func (c *Collection) create(collectionName string) error {
 	return err
 }
 
-func buildCollectionDetailsResponse(collectionName string) string {
+func (c *Collection) hasTitle(expectedTitle string) error {
+	return  c.hasTextInSelector(expectedTitle, ".drawer h2")
+}
+
+func (c *Collection) hasPublishSchedule(expectedPublishSchedule string) error {
+	return  c.hasTextInSelector(expectedPublishSchedule, ".drawer h2 + p")
+}
+
+func (c *Collection) hasTextInSelector(expectedText string, selector string) error {
+
+	var actualText string
+	if err := chromedp.Run(
+		c.chromeCtx,
+		chromedp.Text(selector, &actualText, chromedp.NodeVisible, chromedp.ByQuery),
+	); err != nil {
+		return err
+	}
+
+	if actualText != expectedText {
+		return errors.New(fmt.Sprintf("Expected text in %s to be: %s but it was: %s ", selector, expectedText, actualText))
+	}
+
+	return nil
+}
+
+func buildCollectionDetailsResponseForId(collectionName string, id string) string {
 	return fmt.Sprintf(`
 	{
-		"approvalStatus": "IN_PROGRESS",
-		"publishComplete": false,
-		"isEncrypted": false,
-		"timeseriesImportFiles": [],
-		"id": "abc123",
-		"name": "%s",
-		"type": "manual",
-		"teams": []
-	}`, collectionName)
+		"inProgress":[],
+		"complete":[],
+		"reviewed":[],"timeseriesImportFiles":[],
+		"approvalStatus":"NOT_STARTED",
+		"pendingDeletes":[],
+		"datasets":[],
+		"datasetVersions":[],
+		"teamsDetails":[],
+		"id":"%s",
+		"name":"%s",
+		"type":"manual",
+		"teams":[]
+	}`,id, collectionName)
 }
