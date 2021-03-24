@@ -1,4 +1,4 @@
-Feature: Uploading a dataset.
+Feature: Creating a new Collection
 
   As a Publisher etc.
 
@@ -9,5 +9,4 @@ Feature: Uploading a dataset.
     When I create a new collection called "Census 2021" for manual publishing
     Then I should be presented with a editable collection titled "Census 2021"
     And the collection publishing schedule should be "Manual publish"
-    And I should be told the systems is "Preparing collection for the publishing queue"
 
