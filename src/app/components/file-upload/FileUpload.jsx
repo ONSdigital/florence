@@ -72,7 +72,7 @@ class FileUpload extends Component {
         return (
             <div className="grid">
                 {this.props.url && !this.props.error ? this.renderLink() : ""}
-                {!this.props.url && <div className="grid__col-9 margin-bottom--0">{this.renderInput()}</div>}
+                {!this.props.url && <div className="grid__col-12 margin-bottom--0">{this.renderInput()}</div>}
             </div>
         );
     }
