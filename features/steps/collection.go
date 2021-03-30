@@ -3,7 +3,6 @@ package steps
 import (
 	"context"
 	"fmt"
-	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/chromedp/chromedp"
 	"github.com/hashicorp/go-uuid"
 	"github.com/stretchr/testify/assert"
@@ -12,10 +11,10 @@ import (
 type Collection struct {
 	api *FakeApi
 	chromeCtx context.Context
-	errorFeature *componenttest.ErrorFeature
+	errorFeature *mockTester
 }
 
-func NewCollectionAction(ef *componenttest.ErrorFeature, f *FakeApi, c context.Context) *Collection {
+func NewCollectionAction(ef *mockTester, f *FakeApi, c context.Context) *Collection {
 	return &Collection{
 		errorFeature: ef,
 		api: f,
@@ -36,11 +35,15 @@ func (c *Collection) create(collectionName string) error {
 		chromedp.Click("button"),
 	)
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	return c.errorFeature.StepError()
 }
 
 func (c *Collection) assertHasTitle(expectedTitle string) error {
-	return  c.assertHasTextInSelector(expectedTitle, ".drawer h2")
+	return c.assertHasTextInSelector(expectedTitle, ".drawer h2")
 }
 
 func (c *Collection) assertHasPublishSchedule(expectedPublishSchedule string) error {
@@ -57,7 +60,7 @@ func (c *Collection) assertHasTextInSelector(expectedText string, selector strin
 		return err
 	}
 
-	assert.Equal(c.errorFeature, expectedText, actualText)
+	assert.Equal(c.errorFeature, expectedText, actualText, fmt.Sprintf("expected to see text: '%s' in selector: %s", expectedText, selector))
 
 	return c.errorFeature.StepError()
 }
@@ -67,7 +70,8 @@ func buildCollectionDetailsResponseForId(collectionName string, id string) strin
 	{
 		"inProgress":[],
 		"complete":[],
-		"reviewed":[],"timeseriesImportFiles":[],
+		"reviewed":[],
+		"timeseriesImportFiles":[],
 		"approvalStatus":"NOT_STARTED",
 		"pendingDeletes":[],
 		"datasets":[],

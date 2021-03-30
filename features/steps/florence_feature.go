@@ -3,7 +3,6 @@ package steps
 import (
 	"context"
 	"github.com/ONSdigital/dp-api-clients-go/health"
-	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
@@ -12,13 +11,11 @@ import (
 	dplog "github.com/ONSdigital/log.go/log"
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
-	"testing"
 )
 
 type Chrome struct {
@@ -28,7 +25,7 @@ type Chrome struct {
 }
 
 type FlorenceFeature struct {
-	ErrorFeature componenttest.ErrorFeature
+	errorFeature *mockTester
 	svc          *service.Service
 	errorChan    chan error
 	HTTPServer   *http.Server
@@ -39,13 +36,15 @@ type FlorenceFeature struct {
 	publisher    Publisher
 }
 
-func NewFlorenceFeature(t *testing.T) (*FlorenceFeature, error) {
+func NewFlorenceFeature() (*FlorenceFeature, error) {
+	mt := &mockTester{}
 
 	f := &FlorenceFeature{
-		HTTPServer: &http.Server{},
-		errorChan:  make(chan error),
-		FakeApi:    NewFakeApi(testing.TB(t)),
-		ctx:        context.Background(),
+		HTTPServer:   &http.Server{},
+		errorChan:    make(chan error),
+		FakeApi:      NewFakeApi(mt),
+		ctx:          context.Background(),
+		errorFeature: mt,
 	}
 
 	signals := make(chan os.Signal, 1)
@@ -91,42 +90,42 @@ func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
 }
 
 func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
-	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 	if err := collectionAction.create(collectionName); err != nil {
 		return err
 	}
 
-	//time.Sleep(30 * time.Second)
+	//time.Sleep(120 * time.Second)
 
-	return nil
+	return f.errorFeature.StepError()
 }
 
 func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
-	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 
 	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
 		return err
 	}
 
-	return f.ErrorFeature.StepError()
+	return f.errorFeature.StepError()
 
 }
 
 func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishSchedule string) error {
-	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 
 	if err := collectionAction.assertHasPublishSchedule(collectionPublishSchedule); err != nil {
 		return err
 	}
 
-	return f.ErrorFeature.StepError()
+	return f.errorFeature.StepError()
 }
 
 
 func (f *FlorenceFeature) Reset() *FlorenceFeature {
 	f.FakeApi.fakeHttp.Reset()
 
-	f.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
+	//f.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
 
 	f.FakeApi.setJsonResponseForGet("/collections", `[]`)
 	f.FakeApi.setJsonResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
@@ -200,10 +199,6 @@ func DoGetHealthcheckOk(cfg *config.Config, buildTime, gitCommit, version string
 // GetHealthClient returns a healthclient for the provided URL
 func DoGetHealthClient(name, url string) *health.Client {
 	return &health.Client{}
-}
-
-func  (f *FlorenceFeature) assert(assertThat func(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool , expected, actual interface{}, msg...interface{}) {
-	assertThat(&f.ErrorFeature, expected, actual, msg)
 }
 
 //colleciton details
