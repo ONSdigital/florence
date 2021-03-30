@@ -8,7 +8,7 @@ type FakeApi struct {
 	fakeHttp *httpfake.HTTPFake
 }
 
-func NewFakeApi(mt *mockTester) *FakeApi {
+func NewFakeApi(mt *ErrorFeature) *FakeApi {
 	return &FakeApi{
 		fakeHttp: httpfake.New(httpfake.WithTesting(mt)),
 	}
@@ -24,4 +24,7 @@ func (f *FakeApi) setJsonResponseForPost(url string, responseBody string) {
 
 func (f *FakeApi) Close() {
 	f.fakeHttp.Close()
+}
+func (f *FakeApi) Reset() {
+	f.fakeHttp.Reset()
 }

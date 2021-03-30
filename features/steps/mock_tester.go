@@ -5,23 +5,23 @@ import (
 	"testing"
 )
 
-type mockTester struct {
+type ErrorFeature struct {
 	testing.TB
 	err error
 }
 
-func (t *mockTester) Log(args ...interface{}) {
+func (t *ErrorFeature) Log(args ...interface{}) {
 }
 
-func (t *mockTester) Logf(format string, args ...interface{}) {
+func (t *ErrorFeature) Logf(format string, args ...interface{}) {
 	t.err = fmt.Errorf(format, args...)
 }
 
-func (t *mockTester) Errorf(format string, args ...interface{}) {
+func (t *ErrorFeature) Errorf(format string, args ...interface{}) {
 	t.err = fmt.Errorf(format, args...)
 }
 
-func (t *mockTester) StepError() error {
+func (t *ErrorFeature) StepError() error {
 	return t.err
 }
 

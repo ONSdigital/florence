@@ -11,10 +11,10 @@ import (
 type Collection struct {
 	api *FakeApi
 	chromeCtx context.Context
-	errorFeature *mockTester
+	errorFeature *ErrorFeature
 }
 
-func NewCollectionAction(ef *mockTester, f *FakeApi, c context.Context) *Collection {
+func NewCollectionAction(ef *ErrorFeature, f *FakeApi, c context.Context) *Collection {
 	return &Collection{
 		errorFeature: ef,
 		api: f,
@@ -24,7 +24,7 @@ func NewCollectionAction(ef *mockTester, f *FakeApi, c context.Context) *Collect
 
 func (c *Collection) create(collectionName string) error {
 	var collectionId, _ = uuid.GenerateUUID()
-	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"`+collectionName+`","type":"manual","publishDate":0,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
+	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"`+collectionName+`","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
 		buildCollectionDetailsResponseForId(collectionName, collectionId))).SetHeader("Content-Type", "application/json")
 
 	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, buildCollectionDetailsResponseForId(collectionName, collectionId))
