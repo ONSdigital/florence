@@ -20,7 +20,7 @@ type ComponentTest struct {
 
 func (c *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 	authorizationFeature := componenttest.NewAuthorizationFeature()
-	florenceFeature, err := steps.NewFlorenceFeature()
+	florenceFeature, err := steps.NewFlorenceFeature(c.testingT)
 	if err != nil {
 		panic(err)
 	}
@@ -58,20 +58,15 @@ func TestComponent(t *testing.T) {
 			Paths:  flag.Args(),
 		}
 
-		f := &ComponentTest{
-			testingT: t,
-		}
+		f := &ComponentTest{testingT: t}
 
-		status := godog.TestSuite{
+		godog.TestSuite{
 			Name:                 "feature_tests",
 			ScenarioInitializer:  f.InitializeScenario,
 			TestSuiteInitializer: f.InitializeTestSuite,
 			Options:              &opts,
 		}.Run()
 
-		if status > 0 {
-			//t.Fail()
-		}
 	} else {
 		t.Skip("component flag required to run component tests")
 	}
