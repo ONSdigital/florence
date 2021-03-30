@@ -12,6 +12,7 @@ import (
 	dplog "github.com/ONSdigital/log.go/log"
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
+	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
 	"os"
@@ -43,7 +44,7 @@ func NewFlorenceFeature(t *testing.T) (*FlorenceFeature, error) {
 	f := &FlorenceFeature{
 		HTTPServer: &http.Server{},
 		errorChan:  make(chan error),
-		FakeApi:    NewFakeApi(t),
+		FakeApi:    NewFakeApi(testing.TB(t)),
 		ctx:        context.Background(),
 	}
 
@@ -90,26 +91,35 @@ func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
 }
 
 func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
-	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
 	if err := collectionAction.create(collectionName); err != nil {
 		return err
 	}
 
 	//time.Sleep(30 * time.Second)
 
-	return f.ErrorFeature.StepError()
+	return nil
 }
 
 func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
-	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
 
-	return collectionAction.hasTitle(collectionTitle)
+	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
+		return err
+	}
+
+	return f.ErrorFeature.StepError()
+
 }
 
 func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishSchedule string) error {
-	collectionAction := NewCollectionAction(f.FakeApi, f.chrome.ctx)
+	collectionAction := NewCollectionAction(&f.ErrorFeature, f.FakeApi, f.chrome.ctx)
 
-	return collectionAction.hasPublishSchedule(collectionPublishSchedule)
+	if err := collectionAction.assertHasPublishSchedule(collectionPublishSchedule); err != nil {
+		return err
+	}
+
+	return f.ErrorFeature.StepError()
 }
 
 
@@ -123,7 +133,7 @@ func (f *FlorenceFeature) Reset() *FlorenceFeature {
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.DisableGPU,
-		chromedp.Flag("headless", false),
+		chromedp.Flag("headless", true),
 	)
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
@@ -190,6 +200,10 @@ func DoGetHealthcheckOk(cfg *config.Config, buildTime, gitCommit, version string
 // GetHealthClient returns a healthclient for the provided URL
 func DoGetHealthClient(name, url string) *health.Client {
 	return &health.Client{}
+}
+
+func  (f *FlorenceFeature) assert(assertThat func(t assert.TestingT, expected, actual interface{}, msgAndArgs ...interface{}) bool , expected, actual interface{}, msg...interface{}) {
+	assertThat(&f.ErrorFeature, expected, actual, msg)
 }
 
 //colleciton details

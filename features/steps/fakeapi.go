@@ -7,11 +7,13 @@ import (
 
 type FakeApi struct {
 	fakeHttp *httpfake.HTTPFake
+	TestingTB testing.TB
 }
 
-func NewFakeApi(t* testing.T) *FakeApi {
+func NewFakeApi(t testing.TB) *FakeApi {
 	return &FakeApi{
 		fakeHttp: httpfake.New(httpfake.WithTesting(t)),
+		TestingTB: t,
 	}
 }
 

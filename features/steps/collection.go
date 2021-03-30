@@ -3,19 +3,21 @@ package steps
 import (
 	"context"
 	"fmt"
+	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/chromedp/chromedp"
 	"github.com/hashicorp/go-uuid"
-	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 type Collection struct {
 	api *FakeApi
 	chromeCtx context.Context
-	//create func (ctx context.Context, actions ...chromedp.Action) error
+	errorFeature *componenttest.ErrorFeature
 }
 
-func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
+func NewCollectionAction(ef *componenttest.ErrorFeature, f *FakeApi, c context.Context) *Collection {
 	return &Collection{
+		errorFeature: ef,
 		api: f,
 		chromeCtx: c,
 	}
@@ -23,7 +25,7 @@ func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 
 func (c *Collection) create(collectionName string) error {
 	var collectionId, _ = uuid.GenerateUUID()
-	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"Census 2021","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
+	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"`+collectionName+`","type":"manual","publishDate":0,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
 		buildCollectionDetailsResponseForId(collectionName, collectionId))).SetHeader("Content-Type", "application/json")
 
 	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, buildCollectionDetailsResponseForId(collectionName, collectionId))
@@ -37,15 +39,15 @@ func (c *Collection) create(collectionName string) error {
 	return err
 }
 
-func (c *Collection) hasTitle(expectedTitle string) error {
-	return  c.hasTextInSelector(expectedTitle, ".drawer h2")
+func (c *Collection) assertHasTitle(expectedTitle string) error {
+	return  c.assertHasTextInSelector(expectedTitle, ".drawer h2")
 }
 
-func (c *Collection) hasPublishSchedule(expectedPublishSchedule string) error {
-	return  c.hasTextInSelector(expectedPublishSchedule, ".drawer h2 + p")
+func (c *Collection) assertHasPublishSchedule(expectedPublishSchedule string) error {
+	return  c.assertHasTextInSelector(expectedPublishSchedule, ".drawer h2 + p")
 }
 
-func (c *Collection) hasTextInSelector(expectedText string, selector string) error {
+func (c *Collection) assertHasTextInSelector(expectedText string, selector string) error {
 
 	var actualText string
 	if err := chromedp.Run(
@@ -55,11 +57,9 @@ func (c *Collection) hasTextInSelector(expectedText string, selector string) err
 		return err
 	}
 
-	if actualText != expectedText {
-		return errors.New(fmt.Sprintf("Expected text in %s to be: %s but it was: %s ", selector, expectedText, actualText))
-	}
+	assert.Equal(c.errorFeature, expectedText, actualText)
 
-	return nil
+	return c.errorFeature.StepError()
 }
 
 func buildCollectionDetailsResponseForId(collectionName string, id string) string {
