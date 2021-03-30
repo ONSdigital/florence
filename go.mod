@@ -20,9 +20,10 @@ require (
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519 // indirect
 	github.com/jteeuwen/go-bindata v3.0.8-0.20180305030458-6025e8de665b+incompatible // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
-	github.com/maxcnunes/httpfake v1.2.2
+	github.com/maxcnunes/httpfake v1.2.3
 	github.com/pkg/errors v0.9.1
 	github.com/smartystreets/goconvey v1.6.4
+	github.com/stretchr/testify v1.6.1
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
 	golang.org/x/sys v0.0.0-20210315160823-c6e025ad8005 // indirect
 )
