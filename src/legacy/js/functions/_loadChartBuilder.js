@@ -557,6 +557,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         chart.yAxisPos = $('#position-y-axis').val();
         chart.highlight = $('#chart-highlight option:selected').text();
 
+        chart.palette = $('input[name=palette]:checked').val();
         chart.showTooltip = $('#show-tooltip').prop('checked');
         chart.showMarker = $('#show-marker').prop('checked');
         chart.hasConnectNull = $('#connect-null').prop('checked');
