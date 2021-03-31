@@ -3,13 +3,14 @@ package steps
 import (
 	"context"
 	"fmt"
+	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/chromedp/chromedp"
 	"github.com/hashicorp/go-uuid"
 	"github.com/stretchr/testify/assert"
 )
 
 type Collection struct {
-	ErrorFeature
+	componenttest.ErrorFeature
 	api *FakeApi
 	chromeCtx context.Context
 }
