@@ -6,6 +6,10 @@ github.com/ONSdigital/dp-api-clients-go v1.33.5 h1:OorHPAkcf0L1TT4e9Gn68Q2ouuqkN
 github.com/ONSdigital/dp-api-clients-go v1.33.5/go.mod h1:0pUK3MN1v7DTjq0JSAD+DqbsZ8AVTodrXSXgJecg9Pw=
 github.com/ONSdigital/dp-component-test v0.2.0 h1:lg1oc9k/xS7QgYhYi5cKBKmgqqDkHBae9xi05RzzaZQ=
 github.com/ONSdigital/dp-component-test v0.2.0/go.mod h1:Y2TANFmqH9mk8ZERD22jWncSJyTxU0WmfnMp9EWPJb4=
+github.com/ONSdigital/dp-component-test v0.2.1 h1:uM1z85Wg8YhclLLBrYvPXwsIRnc6M52iNYhtahFbjtc=
+github.com/ONSdigital/dp-component-test v0.2.1/go.mod h1:nfMbRE8h4pWF+vriwVIj1K9xiwtKxbAT+29LiQWjlZQ=
+github.com/ONSdigital/dp-component-test v0.3.0 h1:ru/X6yM2dt1k98xeDMXqsiOdZeeyO7Ceon0bid3ODvc=
+github.com/ONSdigital/dp-component-test v0.3.0/go.mod h1:nfMbRE8h4pWF+vriwVIj1K9xiwtKxbAT+29LiQWjlZQ=
 github.com/ONSdigital/dp-healthcheck v1.0.5 h1:DXnohGIqXaLLeYGdaGOhgkZjAbWMNoLAjQ3EgZeMT3M=
 github.com/ONSdigital/dp-healthcheck v1.0.5/go.mod h1:2wbVAUHMl9+4tWhUlxYUuA1dnf2+NrwzC+So5f5BMLk=
 github.com/ONSdigital/dp-mocking v0.0.0-20190905163309-fee2702ad1b9/go.mod h1:BcIRgitUju//qgNePRBmNjATarTtynAgc0yV29VpLEk=
@@ -277,6 +281,8 @@ gopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127/go.mod h1:Co6ibVJAznAaIkqp8
 gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/errgo.v2 v2.1.0/go.mod h1:hNsd1EY+bozCKY1Ytp96fpM3vjJbqLJn88ws8XvfDNI=
+gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22 h1:VpOs+IwYnYBaFnrNAeB8UUWtL3vEUnzSCL1nVjPhqrw=
+gopkg.in/mgo.v2 v2.0.0-20190816093944-a6b53ec6cb22/go.mod h1:yeKp02qBN3iKW1OzL3MGk2IdtZzaj7SFntXj72NppTA=
 gopkg.in/yaml.v2 v2.2.2/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v2 v2.2.8/go.mod h1:hI93XBmqTisBFMUTm0b8Fm+jr3Dg1NNxqwp+5A1VGuI=
 gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c h1:dUUwHk2QECo/6vqA44rthZ8ie2QXMNeKRTHCNY2nXvo=

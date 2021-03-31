@@ -3,6 +3,7 @@ package steps
 import (
 	"context"
 	"github.com/ONSdigital/dp-api-clients-go/health"
+	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
@@ -25,7 +26,7 @@ type Chrome struct {
 }
 
 type Component struct {
-	ErrorFeature
+	componenttest.ErrorFeature
 	svc          *service.Service
 	errorChan    chan error
 	HTTPServer   *http.Server
