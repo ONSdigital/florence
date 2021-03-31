@@ -25,7 +25,7 @@ type Chrome struct {
 	ctx                    context.Context
 }
 
-type FlorenceFeature struct {
+type Component struct {
 	errorFeature *ErrorFeature
 	svc          *service.Service
 	errorChan    chan error
@@ -37,12 +37,12 @@ type FlorenceFeature struct {
 	publisher    Publisher
 }
 
-func NewFlorenceFeature(t* testing.T) (*FlorenceFeature, error) {
+func NewFlorenceComponent(t* testing.T) (*Component, error) {
 	mt := &ErrorFeature{
 		TB: t,
 	}
 
-	f := &FlorenceFeature{
+	f := &Component{
 		HTTPServer:   &http.Server{},
 		errorChan:    make(chan error),
 		FakeApi:      NewFakeApi(mt),
@@ -73,7 +73,7 @@ func NewFlorenceFeature(t* testing.T) (*FlorenceFeature, error) {
 	return f, nil
 }
 
-func (f *FlorenceFeature) RegisterSteps(ctx *godog.ScenarioContext) {
+func (f *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I am logged in as "([^"]*)"$`, f.iAmLoggedInAs)
 
 	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, f.iCreateANewCollectionCalledForManualPublishing)
@@ -81,7 +81,7 @@ func (f *FlorenceFeature) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, f.theCollectionShouldBe)
 }
 
-func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
+func (f *Component) iAmLoggedInAs(username string) error {
 
 	err := f.publisher.logIn(username)
 	if err != nil {
@@ -92,18 +92,18 @@ func (f *FlorenceFeature) iAmLoggedInAs(username string) error {
 	return nil
 }
 
-func (f *FlorenceFeature) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
+func (f *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
 	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 	if err := collectionAction.create(collectionName); err != nil {
 		return err
 	}
 
-	//time.Sleep(120 * time.Second)
+	//time.Sleep(2 * time.Second)
 
 	return f.errorFeature.StepError()
 }
 
-func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
+func (f *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
 	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 
 	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
@@ -114,7 +114,7 @@ func (f *FlorenceFeature) iShouldBePresentedWithAEditableCollectionTitled(collec
 
 }
 
-func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishSchedule string) error {
+func (f *Component) theCollectionShouldBe(collectionPublishSchedule string) error {
 	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
 
 	if err := collectionAction.assertHasPublishSchedule(collectionPublishSchedule); err != nil {
@@ -125,7 +125,7 @@ func (f *FlorenceFeature) theCollectionShouldBe(collectionPublishSchedule string
 }
 
 
-func (f *FlorenceFeature) Reset() *FlorenceFeature {
+func (f *Component) Reset() *Component {
 	f.FakeApi.Reset()
 
 	f.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
@@ -152,30 +152,30 @@ func (f *FlorenceFeature) Reset() *FlorenceFeature {
 	return f
 }
 
-func (f *FlorenceFeature) Close() error {
+func (f *Component) Close() error {
 	dplog.Event(f.ctx, "Shutting down app from test ...")
 	if f.svc != nil {
 		_ = f.svc.Close(f.ctx)
 	}
 
-	defer f.FakeApi.Close()
+	f.FakeApi.Close()
 	f.chrome.ctxCanceller()
 	f.chrome.execAllocatorCanceller()
 
 	return nil
 }
 
-func (f *FlorenceFeature) InitialiseService() (http.Handler, error) {
+func (f *Component) InitialiseService() (http.Handler, error) {
 	return f.HTTPServer.Handler, nil
 }
 
-func (f *FlorenceFeature) DoGetHTTPServer(bindAddr string, router http.Handler) service.HTTPServer {
+func (f *Component) DoGetHTTPServer(bindAddr string, router http.Handler) service.HTTPServer {
 	f.HTTPServer.Addr = bindAddr
 	f.HTTPServer.Handler = router
 	return f.HTTPServer
 }
 
-func (f *FlorenceFeature) runApplication(cfg *config.Config, serviceList *service.ExternalServiceList, signals chan os.Signal) {
+func (f *Component) runApplication(cfg *config.Config, serviceList *service.ExternalServiceList, signals chan os.Signal) {
 	go func() {
 		f.svc, _ = service.Run(f.ctx, cfg, serviceList, "1", "", "", f.errorChan)
 
