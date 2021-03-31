@@ -16,7 +16,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"testing"
 )
 
 type Chrome struct {
@@ -26,7 +25,7 @@ type Chrome struct {
 }
 
 type Component struct {
-	errorFeature *ErrorFeature
+	ErrorFeature
 	svc          *service.Service
 	errorChan    chan error
 	HTTPServer   *http.Server
@@ -37,18 +36,14 @@ type Component struct {
 	publisher    Publisher
 }
 
-func NewFlorenceComponent(t* testing.T) (*Component, error) {
-	mt := &ErrorFeature{
-		TB: t,
-	}
-
-	f := &Component{
+func NewFlorenceComponent() (*Component, error) {
+	c := &Component{
 		HTTPServer:   &http.Server{},
 		errorChan:    make(chan error),
-		FakeApi:      NewFakeApi(mt),
 		ctx:          context.Background(),
-		errorFeature: mt,
 	}
+
+	c.FakeApi = NewFakeApi(c)
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
@@ -58,79 +53,79 @@ func NewFlorenceComponent(t* testing.T) (*Component, error) {
 		return nil, err
 	}
 
-	cfg.APIRouterURL = f.FakeApi.fakeHttp.ResolveURL("")
+	cfg.APIRouterURL = c.FakeApi.fakeHttp.ResolveURL("")
 
 	initFunctions := &initialiser.InitialiserMock{
-		DoGetHTTPServerFunc:   f.DoGetHTTPServer,
+		DoGetHTTPServerFunc:   c.DoGetHTTPServer,
 		DoGetHealthCheckFunc:  DoGetHealthcheckOk,
 		DoGetHealthClientFunc: DoGetHealthClient,
 	}
 
 	serviceList := service.NewServiceList(initFunctions)
 
-	f.runApplication(cfg, serviceList, signals)
+	c.runApplication(cfg, serviceList, signals)
 
-	return f, nil
+	return c, nil
 }
 
-func (f *Component) RegisterSteps(ctx *godog.ScenarioContext) {
-	ctx.Step(`^I am logged in as "([^"]*)"$`, f.iAmLoggedInAs)
+func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
+	ctx.Step(`^I am logged in as "([^"]*)"$`, c.iAmLoggedInAs)
 
-	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, f.iCreateANewCollectionCalledForManualPublishing)
-	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, f.iShouldBePresentedWithAEditableCollectionTitled)
-	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, f.theCollectionShouldBe)
+	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
+	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
+	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
 }
 
-func (f *Component) iAmLoggedInAs(username string) error {
+func (c *Component) iAmLoggedInAs(username string) error {
 
-	err := f.publisher.logIn(username)
+	err := c.publisher.logIn(username)
 	if err != nil {
 		return err
 	}
 
-	f.LoggedInUser = username
+	c.LoggedInUser = username
 	return nil
 }
 
-func (f *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
-	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
+func (c *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
+	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 	if err := collectionAction.create(collectionName); err != nil {
 		return err
 	}
 
 	//time.Sleep(2 * time.Second)
 
-	return f.errorFeature.StepError()
+	return c.StepError()
 }
 
-func (f *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
-	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
+func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
+	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 
 	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
 		return err
 	}
 
-	return f.errorFeature.StepError()
+	return c.StepError()
 
 }
 
-func (f *Component) theCollectionShouldBe(collectionPublishSchedule string) error {
-	collectionAction := NewCollectionAction(f.errorFeature, f.FakeApi, f.chrome.ctx)
+func (c *Component) theCollectionShouldBe(collectionPublishSchedule string) error {
+	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 
 	if err := collectionAction.assertHasPublishSchedule(collectionPublishSchedule); err != nil {
 		return err
 	}
 
-	return f.errorFeature.StepError()
+	return c.StepError()
 }
 
 
-func (f *Component) Reset() *Component {
-	f.FakeApi.Reset()
+func (c *Component) Reset() *Component {
+	c.FakeApi.Reset()
 
-	f.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
-	f.FakeApi.setJsonResponseForGet("/collections", `[]`)
-	f.FakeApi.setJsonResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
+	c.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
+	c.FakeApi.setJsonResponseForGet("/collections", `[]`)
+	c.FakeApi.setJsonResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.DisableGPU,
@@ -138,53 +133,53 @@ func (f *Component) Reset() *Component {
 	)
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-	f.chrome.execAllocatorCanceller = cancel
+	c.chrome.execAllocatorCanceller = cancel
 
 	ctx, cancel := chromedp.NewContext(allocCtx, chromedp.WithLogf(log.Printf))
-	f.chrome.ctxCanceller = cancel
+	c.chrome.ctxCanceller = cancel
 
 	log.Print("re-starting chrome ...")
 
-	f.chrome.ctx = ctx
+	c.chrome.ctx = ctx
 
-	f.publisher.chromeCtx = ctx
-	f.publisher.fakeApi = f.FakeApi
-	return f
+	c.publisher.chromeCtx = ctx
+	c.publisher.fakeApi = c.FakeApi
+	return c
 }
 
-func (f *Component) Close() error {
-	dplog.Event(f.ctx, "Shutting down app from test ...")
-	if f.svc != nil {
-		_ = f.svc.Close(f.ctx)
+func (c *Component) Close() error {
+	dplog.Event(c.ctx, "Shutting down app from test ...")
+	if c.svc != nil {
+		_ = c.svc.Close(c.ctx)
 	}
 
-	f.FakeApi.Close()
-	f.chrome.ctxCanceller()
-	f.chrome.execAllocatorCanceller()
+	c.FakeApi.Close()
+	c.chrome.ctxCanceller()
+	c.chrome.execAllocatorCanceller()
 
 	return nil
 }
 
-func (f *Component) InitialiseService() (http.Handler, error) {
-	return f.HTTPServer.Handler, nil
+func (c *Component) InitialiseService() (http.Handler, error) {
+	return c.HTTPServer.Handler, nil
 }
 
-func (f *Component) DoGetHTTPServer(bindAddr string, router http.Handler) service.HTTPServer {
-	f.HTTPServer.Addr = bindAddr
-	f.HTTPServer.Handler = router
-	return f.HTTPServer
+func (c *Component) DoGetHTTPServer(bindAddr string, router http.Handler) service.HTTPServer {
+	c.HTTPServer.Addr = bindAddr
+	c.HTTPServer.Handler = router
+	return c.HTTPServer
 }
 
-func (f *Component) runApplication(cfg *config.Config, serviceList *service.ExternalServiceList, signals chan os.Signal) {
+func (c *Component) runApplication(cfg *config.Config, serviceList *service.ExternalServiceList, signals chan os.Signal) {
 	go func() {
-		f.svc, _ = service.Run(f.ctx, cfg, serviceList, "1", "", "", f.errorChan)
+		c.svc, _ = service.Run(c.ctx, cfg, serviceList, "1", "", "", c.errorChan)
 
 		// blocks until an os interrupt or a fatal error occurs
 		select {
-		case err := <-f.errorChan:
-			dplog.Event(f.ctx, "service error received", dplog.ERROR, dplog.Error(err))
+		case err := <-c.errorChan:
+			dplog.Event(c.ctx, "service error received", dplog.ERROR, dplog.Error(err))
 		case sig := <-signals:
-			dplog.Event(f.ctx, "os signal received", dplog.Data{"signal": sig}, dplog.INFO)
+			dplog.Event(c.ctx, "os signal received", dplog.Data{"signal": sig}, dplog.INFO)
 		}
 	}()
 }

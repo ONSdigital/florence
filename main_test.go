@@ -20,7 +20,7 @@ type ComponentTest struct {
 
 func (c *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 	authorizationFeature := componenttest.NewAuthorizationFeature()
-	florenceFeature, err := steps.NewFlorenceComponent(c.testingT)
+	florenceFeature, err := steps.NewFlorenceComponent()
 	if err != nil {
 		panic(err)
 	}
