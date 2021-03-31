@@ -2,15 +2,16 @@ package steps
 
 import (
 	"github.com/maxcnunes/httpfake"
+	"testing"
 )
 
 type FakeApi struct {
 	fakeHttp *httpfake.HTTPFake
 }
 
-func NewFakeApi(mt *ErrorFeature) *FakeApi {
+func NewFakeApi(t testing.TB) *FakeApi {
 	return &FakeApi{
-		fakeHttp: httpfake.New(httpfake.WithTesting(mt)),
+		fakeHttp: httpfake.New(httpfake.WithTesting(t)),
 	}
 }
 

@@ -9,14 +9,13 @@ import (
 )
 
 type Collection struct {
+	ErrorFeature
 	api *FakeApi
 	chromeCtx context.Context
-	errorFeature *ErrorFeature
 }
 
-func NewCollectionAction(ef *ErrorFeature, f *FakeApi, c context.Context) *Collection {
+func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 	return &Collection{
-		errorFeature: ef,
 		api: f,
 		chromeCtx: c,
 	}
@@ -39,7 +38,7 @@ func (c *Collection) create(collectionName string) error {
 		return err
 	}
 
-	return c.errorFeature.StepError()
+	return c.StepError()
 }
 
 func (c *Collection) assertHasTitle(expectedTitle string) error {
@@ -60,9 +59,9 @@ func (c *Collection) assertHasTextInSelector(expectedText string, selector strin
 		return err
 	}
 
-	assert.Equal(c.errorFeature, expectedText, actualText, fmt.Sprintf("expected to see text: '%s' in selector: %s", expectedText, selector))
+	assert.Equal(c, expectedText, actualText, fmt.Sprintf("expected to see text: '%s' in selector: %s", expectedText, selector))
 
-	return c.errorFeature.StepError()
+	return c.StepError()
 }
 
 func buildCollectionDetailsResponseForId(collectionName string, id string) string {
