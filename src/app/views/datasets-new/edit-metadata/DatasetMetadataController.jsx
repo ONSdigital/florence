@@ -220,9 +220,9 @@ export class DatasetMetadataController extends Component {
                 return {
                     id: index,
                     title: note.title,
-                    note: note.note,
+                    note: note.description,
                     simpleListHeading: note.title,
-                    simpleListDescription: note.note
+                    simpleListDescription: note.description
                 };
             });
         } catch (error) {
@@ -566,6 +566,17 @@ export class DatasetMetadataController extends Component {
 
     handleMarkAsReviewedClick = () => {
         this.handleSave(false, true);
+    };
+
+    renderModal = () => {
+        const modal = React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+                handleSuccessClick: this.handleSimpleEditableListEditSuccess,
+                handleCancelClick: this.handleSimpleEditableListEditCancel
+            });
+        });
+        return modal;
     };
 
     render() {
