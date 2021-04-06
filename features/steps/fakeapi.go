@@ -1,26 +1,47 @@
 package steps
 
 import (
+	"fmt"
 	"github.com/maxcnunes/httpfake"
+	"io/ioutil"
+	"net/http"
 	"testing"
 )
 
 type FakeApi struct {
-	fakeHttp *httpfake.HTTPFake
+	fakeHttp                     *httpfake.HTTPFake
+	outboundRequests             []string
+	collectOutboundRequestBodies httpfake.CustomAssertor
 }
 
 func NewFakeApi(t testing.TB) *FakeApi {
-	return &FakeApi{
+	fa := &FakeApi{
 		fakeHttp: httpfake.New(httpfake.WithTesting(t)),
 	}
+
+	fa.collectOutboundRequestBodies = func(r *http.Request) error {
+		// inspect request
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			return fmt.Errorf("error reading the outbound request body: %s", err.Error())
+		}
+		fa.outboundRequests = append(fa.outboundRequests, string(body))
+		return nil
+	}
+
+	return fa
 }
 
 func (f *FakeApi) setJsonResponseForGet(url string, responseBody string) {
-	f.fakeHttp.NewHandler().Get(url).Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+	f.fakeHttp.NewHandler().Get(url).AssertHeaders("Content-Type").Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
 }
 
-func (f *FakeApi) setJsonResponseForPost(url string, responseBody string) {
-	f.fakeHttp.NewHandler().Post(url).Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+func (f *FakeApi) setJsonResponseForPost(url string, responseBody string) (*httpfake.Request) {
+	request := f.fakeHttp.NewHandler().Post(url).AssertHeaders("Content-Type")
+
+	request.Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+
+	return request
 }
 
 func (f *FakeApi) Close() {

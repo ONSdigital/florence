@@ -23,11 +23,13 @@ func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 }
 
 func (c *Collection) create(collectionName string) error {
-	var collectionId, _ = uuid.GenerateUUID()
-	c.api.fakeHttp.NewHandler().Post("/collection").AssertBody([]byte(`{"name":"`+collectionName+`","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}`)).Reply(200).Body([]byte(
-		buildCollectionDetailsResponseForId(collectionName, collectionId))).SetHeader("Content-Type", "application/json")
 
-	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, buildCollectionDetailsResponseForId(collectionName, collectionId))
+	var collectionId, _ = uuid.GenerateUUID()
+
+	collectionDetailsResponse := buildCollectionDetailsResponseForId(collectionName, collectionId);
+
+	c.api.setJsonResponseForPost("/collection", collectionDetailsResponse).AssertCustom(c.api.collectOutboundRequestBodies)
+	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, collectionDetailsResponse)
 
 	err := chromedp.Run(c.chromeCtx,
 		chromedp.SendKeys("#collection-name", collectionName),
@@ -39,7 +41,7 @@ func (c *Collection) create(collectionName string) error {
 		return err
 	}
 
-	return c.StepError()
+	return nil
 }
 
 func (c *Collection) assertHasTitle(expectedTitle string) error {
@@ -83,3 +85,5 @@ func buildCollectionDetailsResponseForId(collectionName string, id string) strin
 		"teams":[]
 	}`,id, collectionName)
 }
+
+
