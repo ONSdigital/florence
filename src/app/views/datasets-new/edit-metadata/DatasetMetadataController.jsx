@@ -220,9 +220,9 @@ export class DatasetMetadataController extends Component {
                 return {
                     id: index,
                     title: note.title,
-                    note: note.description,
+                    note: note.note,
                     simpleListHeading: note.title,
-                    simpleListDescription: note.description
+                    simpleListDescription: note.note
                 };
             });
         } catch (error) {

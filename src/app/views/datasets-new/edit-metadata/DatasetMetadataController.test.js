@@ -1,8 +1,7 @@
 import React from "react";
 import { DatasetMetadataController } from "./DatasetMetadataController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
-import { async } from "regenerator-runtime";
 
 console.error = () => {};
 
@@ -62,7 +61,17 @@ const mockedMetadata = {
         id: "ed0e8b92-7152-4b43-a2cf-999dc65c1af2",
         release_date: "2020-12-03T00:00:00.000Z",
         state: "edition-confirmed",
-        version: 2
+        version: 2,
+        usage_notes: [
+            {
+                note: "usage note 1",
+                title: "usage note title 1"
+            },
+            {
+                note: "usage note 2",
+                title: "usage note title 2"
+            }
+        ]
     },
     dimensions: [
         {
@@ -106,7 +115,22 @@ const mockedState = {
         releaseDate: { value: mockedMetadata.version.release_date, error: "" },
         notices: [],
         dimensions: mockedMetadata.dimensions,
-        usageNotes: [],
+        usageNotes: [
+            {
+                id: 0,
+                note: "usage note 1",
+                simpleListDescription: "usage note 1",
+                simpleListHeading: "usage note title 1",
+                title: "usage note title 1"
+            },
+            {
+                id: 1,
+                note: "usage note 2",
+                simpleListDescription: "usage note 2",
+                simpleListHeading: "usage note title 2",
+                title: "usage note title 2"
+            }
+        ],
         latestChanges: []
     },
     datasetCollectionState: mockedMetadata.collection_state,
