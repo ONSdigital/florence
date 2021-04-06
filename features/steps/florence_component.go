@@ -12,6 +12,8 @@ import (
 	dplog "github.com/ONSdigital/log.go/log"
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
+	"github.com/maxcnunes/httpfake"
+	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
 	"os"
@@ -35,6 +37,7 @@ type Component struct {
 	chrome       Chrome
 	LoggedInUser string
 	publisher    Publisher
+	fakeRequest *httpfake.Request
 }
 
 func NewFlorenceComponent() (*Component, error) {
@@ -75,6 +78,8 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
 	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
 	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
+	ctx.Step(`^these collection creation details should have been sent:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
+
 }
 
 func (c *Component) iAmLoggedInAs(username string) error {
@@ -90,16 +95,26 @@ func (c *Component) iAmLoggedInAs(username string) error {
 
 func (c *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
 	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
-	if err := collectionAction.create(collectionName); err != nil {
+
+	err := collectionAction.create(collectionName)
+	if err != nil {
 		return err
 	}
 
 	//time.Sleep(2 * time.Second)
+	return c.StepError()
+}
+
+func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionDetails *godog.DocString) error {
+	for _, outboundRequestBody := range c.FakeApi.outboundRequests {
+		assert.JSONEq(c, collectionDetails.Content, outboundRequestBody)
+	}
 
 	return c.StepError()
 }
 
 func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
+
 	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 
 	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
@@ -107,7 +122,6 @@ func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTi
 	}
 
 	return c.StepError()
-
 }
 
 func (c *Component) theCollectionShouldBe(collectionPublishSchedule string) error {

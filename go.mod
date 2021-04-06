@@ -11,6 +11,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20210313213058-f5c5a7a06834 // indirect
 	github.com/chromedp/chromedp v0.6.8
 	github.com/cucumber/godog v0.10.0
+	github.com/cucumber/messages-go/v10 v10.0.3
 	github.com/fatih/color v1.10.0 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
 	github.com/gorilla/mux v1.8.0
