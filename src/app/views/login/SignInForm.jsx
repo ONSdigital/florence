@@ -42,7 +42,7 @@ export default class LoginForm extends Component {
                             Log in
                         </button>
 
-                        {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
+                        {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"/> : ""}
                     </form>
                 </div>
             </div>

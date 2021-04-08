@@ -9,7 +9,7 @@ import { setConfig } from "./app/config/actions";
 import App from "./app/App";
 import Layout from "./app/global/Layout";
 import LoginController from "./app/views/login/LoginController";
-import LoginController2 from "./app/views/login/LoginController2";
+import LoginController2 from "./app/views/login/SignInController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";

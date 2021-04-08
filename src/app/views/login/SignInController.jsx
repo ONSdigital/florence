@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
-import LoginForm from "./LoginForm2";
+import LoginForm from "./SignInForm";
 import Modal from "../../components/Modal";
 import ChangePasswordController from "../../components/change-password/ChangePasswordController";
 import notifications from "../../utilities/notifications";
