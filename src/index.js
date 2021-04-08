@@ -9,7 +9,7 @@ import { setConfig } from "./app/config/actions";
 import App from "./app/App";
 import Layout from "./app/global/Layout";
 import LoginController from "./app/views/login/LoginController";
-import LoginController2 from "./app/views/login/SignInController";
+import SignInController from "./app/views/login/SignInController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
@@ -194,8 +194,7 @@ class Index extends Component {
                             )}
                             <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                             <Route path={`${rootPath}/logs`} component={Logs} />
-                            <Route path={`${rootPath}/login`} component={config.enableNewSignIn ? LoginController2 : LoginController} />
-                            <Route path={`${rootPath}/login`} component={LoginController2} />
+                            <Route path={`${rootPath}/login`} component={config.enableNewSignIn ? SignInController : LoginController} />
                             <Route path="*" component={UnknownRoute} />
                         </Route>
                     </Route>
