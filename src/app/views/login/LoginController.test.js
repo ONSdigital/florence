@@ -44,7 +44,7 @@ test("Check redirect doesn't work if not authenticated", () => {
         isAuthenticated: false
     };
     const component = mount(<LoginController {...props} />);
-    expect(component.find("h1").text()).toBe("Login");
+    expect(component.find("h1").text()).toBe("Log in to your Florence account");
 });
 
 test("Does password change form appear on state change", () => {
