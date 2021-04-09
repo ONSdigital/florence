@@ -17,7 +17,10 @@ const propTypes = {
     min: PropTypes.string,
     max: PropTypes.string,
     allowAutoComplete: PropTypes.bool,
-    placeholder: PropTypes.string
+    placeholder: PropTypes.string,
+    displayShowHide: PropTypes.bool,
+    disableToggleShowPassword: PropTypes.bool,
+    reverseLabelOrder: PropTypes.bool
 };
 
 const defaultProps = {
@@ -29,10 +32,9 @@ const defaultProps = {
 export default class Input extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             type: this.props.type,
-            displayShowHide: this.props.type === "password"
+            displayShowHide: !this.props.disableToggleShowPassword && this.props.type === "password"
         };
 
         this.showHide = this.showHide.bind(this);
@@ -54,26 +56,33 @@ export default class Input extends Component {
         event.target.value = val;
     }
 
-    render() {
-        return (
-            <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
-                {!this.props.inline && (
-                    <label className="form__label" htmlFor={this.props.id}>
-                        {this.props.label}
-                    </label>
-                )}
-                {this.props.error ? (
-                    <div id={`input-error-${this.props.id}`} className="error-msg">
-                        {this.props.error}
-                    </div>
-                ) : (
-                    ""
-                )}
-                {this.props.type !== "textarea" ? (
+    renderInput() {
+        switch (this.props.type) {
+            case "textarea":
+                return (
+                    <textarea
+                        id={this.props.id}
+                        className="input input__textarea"
+                        name={this.props.name || this.props.id}
+                        disabled={this.props.disabled}
+                        onChange={this.props.onChange}
+                        onBlur={this.props.onBlur}
+                        autoFocus={this.props.isFocused}
+                        placeholder={this.props.inline ? this.props.label : ""}
+                        value={this.props.value}
+                    />
+                );
+            default:
+                return (
                     <input
                         id={this.props.id}
-                        type={this.state.type}
-                        className={"input" + (this.state.displayShowHide ? " input--show-hide" : "")}
+                        /* If using old 'Show' within input then use 'state' as it is managed within the input component
+                         * otherwise use the prop which is managed by the parent */
+                        type={this.props.displayShowHide ? this.state.type : this.props.type}
+                        className={
+                            "input" +
+                            ((this.state.displayShowHide ? " input--show-hide" : "") + (this.props.type === "checkbox" ? " input__checkbox" : ""))
+                        }
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
@@ -90,19 +99,30 @@ export default class Input extends Component {
                         // https://www.chromium.org/developers/design-documents/form-styles-that-chromium-understands
                         autoComplete={!this.props.allowAutoComplete && "new-password"}
                     />
+                );
+        }
+    }
+
+    renderLabel() {
+        return (
+            <label className={"form__label" + (this.props.type === "checkbox" ? " form__checkbox__label" : "")} htmlFor={this.props.id}>
+                {this.props.label}
+            </label>
+        );
+    }
+
+    render() {
+        return (
+            <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
+                {!this.props.inline && !this.props.reverseLabelOrder && this.renderLabel()}
+                {this.props.error ? (
+                    <div id={`input-error-${this.props.id}`} className="error-msg">
+                        {this.props.error}
+                    </div>
                 ) : (
-                    <textarea
-                        id={this.props.id}
-                        className="input input__textarea"
-                        name={this.props.name || this.props.id}
-                        disabled={this.props.disabled}
-                        onChange={this.props.onChange}
-                        onBlur={this.props.onBlur}
-                        autoFocus={this.props.isFocused}
-                        placeholder={this.props.inline ? this.props.label : ""}
-                        value={this.props.value}
-                    ></textarea>
+                    ""
                 )}
+                {this.renderInput()}
                 {this.state.displayShowHide ? (
                     <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">
                         {this.state.type === "text" ? "Hide" : "Show"}
@@ -110,6 +130,7 @@ export default class Input extends Component {
                 ) : (
                     ""
                 )}
+                {this.props.inline && this.props.reverseLabelOrder && this.renderLabel()}
             </div>
         );
     }

@@ -1,284 +1,297 @@
 .input {
-    box-sizing: border-box;
-    border: 3px solid $scarpa-flow;
-    border-radius: 4px;
-    display: inline-block;
-    width: 100%;
+  box-sizing: border-box;
+  border: 3px solid $scarpa-flow;
+  border-radius: 4px;
+  display: inline-block;
+  width: 100%;
+  height: $lineheight * 2;
+  padding: ($lineheight / 2) ($gutter / 2);
+  background-color: $white;
+
+  &:focus {
+    border: 3px solid $focus;
+  }
+
+  &:disabled {
+    border-color: $nappa;
+    color: $nappa;
+    background-color: $quill-grey;
+    position: relative;
+
+    &:-webkit-autofill {
+      -webkit-text-fill-color: $nappa;
+    }
+
+  }
+
+  &--show-hide {
+    padding-right: $gutter * 3;
+  }
+
+  &__textarea {
+    height: auto;
+    min-height: ($lineheight * 5);
+  }
+
+  &__checkbox {
+    width: $lineheight * 2;
     height: $lineheight * 2;
-    padding: ($lineheight / 2) ($gutter / 2);
-    background-color: $white;
-
-    &:focus {
-        border: 3px solid $focus;
-    }
-
-    &:disabled {
-        border-color: $nappa;
-        color: $nappa;
-        background-color: $quill-grey;
-        position: relative;
-
-        &:-webkit-autofill {
-            -webkit-text-fill-color: $nappa;
-        }
-
-    }
-
-    &--show-hide {
-        padding-right: $gutter * 3;
-    }
-
-    &__textarea {
-        height: auto;
-        min-height: ($lineheight * 5);
-    }
+    background: $white;
+    border: 3px solid $scarpa-flow;
+    box-sizing: border-box;
+    border-radius: 3px;
+    vertical-align: middle;
+    display: inline-block;
+  }
 
 }
 
 .select {
-    border: none; //reset default styling
-    border-radius: 0;
-    width: 100%;
-    min-width: 100%;
-    padding: 7px ($gutter * 2.5) 7px ($gutter / 2);
-    background-color: transparent;
+  border: none; //reset default styling
+  border-radius: 0;
+  width: 100%;
+  min-width: 100%;
+  padding: 7px ($gutter * 2.5) 7px ($gutter / 2);
+  background-color: transparent;
+  position: relative;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &-wrap {
     position: relative;
-    cursor: pointer;
+    height: $lineheight * 2;
+    display: inline-block;
+    width: 100%;
+    border: 3px solid $scarpa-flow;
+    border-radius: 4px;
+    background-color: $white;
+    margin: 0;
 
-    &:disabled {
-        cursor: default;
+    &:before {
+      content: '';
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+      width: 42px;
+      height: 40px;
+      position: absolute;
+      top: -3px;
+      right: -3px;
+      background: $scarpa-flow url(../../dist/img/sprite.svg) no-repeat 6px -690px;
+      background-size: 30px auto;
     }
 
-    &-wrap {
-        position: relative;
-        height: $lineheight * 2;
-        display: inline-block;
-        width: 100%;
-        border: 3px solid $scarpa-flow;
-        border-radius: 4px;
-        background-color: $white;
-        margin: 0;
+    &--disabled {
+      border-color: $nappa;
+      background-color: $quill-grey;
 
-        &:before {
-            content: '';
-            border-top-right-radius: 4px;
-            border-bottom-right-radius: 4px;
-            width: 42px;
-            height: 40px;
-            position: absolute;
-            top: -3px;
-            right: -3px;
-            background: $scarpa-flow url(../../dist/img/sprite.svg) no-repeat 6px -690px;
-            background-size: 30px auto;
-        }
-
-        &--disabled {
-            border-color: $nappa;
-            background-color: $quill-grey;
-
-            &:before {
-                background-color: $nappa;
-            }
-        }
-
-        &--focus {
-            border-radius: 4px;
-            border-top: 3px solid $focus;
-            border-bottom: 3px solid $focus;
-            border-left: 3px solid $focus;
-            border-right: 3px solid $scarpa-flow;
-
-            &:before {
-                border-left: 3px solid $focus;
-                border-top: 1px solid $scarpa-flow;
-                border-bottom: 1px solid $scarpa-flow;
-                top: -3px;
-                right: -3px;
-                height: 42px;
-                box-sizing: border-box;
-            }
-        }
-
-        &--error {
-            border-radius: 4px;
-            border-top: 3px solid $night-shadz;
-            border-bottom: 3px solid $night-shadz;
-            border-left: 3px solid $night-shadz;
-            border-right: 3px solid $scarpa-flow;
-
-            &:before {
-                border-left: 3px solid $night-shadz;
-                border-top: 1px solid $scarpa-flow;
-                border-bottom: 1px solid $scarpa-flow;
-                top: -3px;
-                right: -3px;
-                height: 42px;
-            }
-        }
-
+      &:before {
+        background-color: $nappa;
+      }
     }
 
-    &-details {
-        border-left: 3px solid $scarpa-flow;
-        padding: ($lineheight / 2) $gutter;
-        margin-bottom: $lineheight;
+    &--focus {
+      border-radius: 4px;
+      border-top: 3px solid $focus;
+      border-bottom: 3px solid $focus;
+      border-left: 3px solid $focus;
+      border-right: 3px solid $scarpa-flow;
 
-        &__label {
-            font-weight: 600;
-        }
-
+      &:before {
+        border-left: 3px solid $focus;
+        border-top: 1px solid $scarpa-flow;
+        border-bottom: 1px solid $scarpa-flow;
+        top: -3px;
+        right: -3px;
+        height: 42px;
+        box-sizing: border-box;
+      }
     }
+
+    &--error {
+      border-radius: 4px;
+      border-top: 3px solid $night-shadz;
+      border-bottom: 3px solid $night-shadz;
+      border-left: 3px solid $night-shadz;
+      border-right: 3px solid $scarpa-flow;
+
+      &:before {
+        border-left: 3px solid $night-shadz;
+        border-top: 1px solid $scarpa-flow;
+        border-bottom: 1px solid $scarpa-flow;
+        top: -3px;
+        right: -3px;
+        height: 42px;
+      }
+    }
+
+  }
+
+  &-details {
+    border-left: 3px solid $scarpa-flow;
+    padding: ($lineheight / 2) $gutter;
+    margin-bottom: $lineheight;
+
+    &__label {
+      font-weight: 600;
+    }
+
+  }
 }
 
 .radio {
+  display: block;
+  float: none;
+  clear: left;
+  position: relative;
+
+  padding: 0 0 0 38px;
+  margin-bottom: $lineheight / 2;
+
+  &--inline {
+    display: inline-block;
+  }
+
+  &__input {
+    position: absolute;
+    cursor: pointer;
+    left: 0;
+    top: 0;
+    width: 38px;
+    height: 38px;
+    z-index: 0;
+    opacity: 0;
+  }
+
+  &__label {
+    cursor: pointer;
+    padding: 8px $lineheight 9px 6px;
     display: block;
+
+    &:before {
+      content: "";
+      border: 3px solid $scarpa-flow;
+      background: white;
+      width: 28px;
+      height: 28px;
+      position: absolute;
+      top: 4px;
+      left: 0;
+      border-radius: 50%;
+    }
+
+    &:after {
+      content: "";
+      border: 8px solid $astral;
+      width: 0;
+      height: 0;
+      position: absolute;
+      top: 10px;
+      left: 6px;
+      border-radius: 50%;
+      opacity: 0;
+    }
+
+    &--selected {
+      &:after {
+        opacity: 1;
+      }
+    }
+
+    &--focused {
+      &:before {
+        box-shadow: 0 0 0 4px $focus;
+      }
+    }
+
+    &--disabled {
+      &:before {
+        border-color: $nappa;
+      }
+
+      &:after {
+        border-color: $quill-grey;
+      }
+    }
+  }
+}
+
+.checkbox {
+  position: relative;
+
+  &__input {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &:disabled + label:before {
+      border-color: $nappa;
+      background-color: $quill-grey;
+    }
+
+    &:focus {
+      outline: 3px solid $focus;
+    }
+
+    &:checked + label:after {
+      opacity: 1;
+    }
+
+    + label {
+      &:before {
+        content: "";
+        border: 3px solid $scarpa-flow;
+        background: white;
+        width: 28px;
+        height: 28px;
+        position: absolute;
+        top: 0;
+        left: 0;
+      }
+
+      &:after {
+        content: "";
+        border: solid;
+        border-width: 0 0 3px 3px;
+        border-color: $scarpa-flow;
+        background: transparent;
+        width: 15px;
+        height: 8px;
+        position: absolute;
+        top: 8px;
+        left: 7px;
+        -moz-transform: rotate(-45deg); // Firefox 15 compatibility
+        -o-transform: rotate(-45deg); // Opera 12.0 compatibility
+        -webkit-transform: rotate(-45deg); // Safari 8 compatibility
+        -ms-transform: rotate(-45deg); // IE9 compatibility
+        transform: rotate(-45deg);
+        opacity: 0;
+      }
+
+      :focus:after {
+        opacity: 1;
+      }
+
+    }
+  }
+
+  &__label {
+    display: inline-block;
     float: none;
     clear: left;
     position: relative;
-
-    padding: 0 0 0 38px;
-    margin-bottom: $lineheight / 2;
-
-    &--inline {
-        display: inline-block;
-    }
-
-    &__input {
-        position: absolute;
-        cursor: pointer;
-        left: 0;
-        top: 0;
-        width: 38px;
-        height: 38px;
-        z-index: 0;
-        opacity: 0;
-    }
-
-    &__label {
-        cursor: pointer;
-        padding: 8px $lineheight 9px 6px;
-        display: block;
-
-        &:before {
-            content: "";
-            border: 3px solid $scarpa-flow;
-            background: white;
-            width: 28px;
-            height: 28px;
-            position: absolute;
-            top: 4px;
-            left: 0;
-            border-radius: 50%;
-        }
-
-        &:after {
-            content: "";
-            border: 8px solid $astral;
-            width: 0;
-            height: 0;
-            position: absolute;
-            top: 10px;
-            left: 6px;
-            border-radius: 50%;
-            opacity: 0;
-        }
-
-        &--selected {
-            &:after {
-                opacity: 1;
-            }
-        }
-
-        &--focused {
-            &:before {
-                box-shadow: 0 0 0 4px $focus;
-            }
-        }
-
-        &--disabled {
-            &:before {
-                border-color: $nappa;
-            }
-            &:after {
-                border-color: $quill-grey;
-            }
-        }
-    }
-}
-.checkbox {
-    position: relative;
-
-    &__input {
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 28px;
-        height: 28px;
-        margin: 0;
-
-        &:disabled {
-            cursor: default;
-        }
-
-        &:disabled + label:before {
-            border-color: $nappa;
-            background-color: $quill-grey;
-        }
-
-        &:focus {
-            outline: 3px solid $focus;
-        }
-
-        &:checked + label:after {
-            opacity: 1;
-        }
-
-        + label {
-            &:before {
-                content: "";
-                border: 3px solid $scarpa-flow;
-                background: white;
-                width: 28px;
-                height: 28px;
-                position: absolute;
-                top: 0;
-                left: 0;
-            }
-
-            &:after {
-                content: "";
-                border: solid;
-                border-width: 0 0 3px 3px;
-                border-color: $scarpa-flow;
-                background: transparent;
-                width: 15px;
-                height: 8px;
-                position: absolute;
-                top: 8px;
-                left: 7px;
-                -moz-transform: rotate(-45deg); // Firefox 15 compatibility
-                -o-transform: rotate(-45deg); // Opera 12.0 compatibility
-                -webkit-transform: rotate(-45deg); // Safari 8 compatibility
-                -ms-transform: rotate(-45deg); // IE9 compatibility
-                transform: rotate(-45deg);
-                opacity: 0;
-            }
-
-            :focus:after {
-                opacity: 1;
-            }
-
-        }
-    }
-
-    &__label {
-        display: inline-block;
-        float: none;
-        clear: left;
-        position: relative;
-        padding: (4px 8px 9px 35px);
-        margin-bottom: 8px;
-        cursor: pointer; // Encourage clicking on block labels
-    }
+    padding: (4px 8px 9px 35px);
+    margin-bottom: 8px;
+    cursor: pointer; // Encourage clicking on block labels
+  }
 
 }

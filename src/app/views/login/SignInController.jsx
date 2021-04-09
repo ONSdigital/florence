@@ -19,7 +19,8 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object
+    location: PropTypes.object,
+    enableNewSignIn: PropTypes.bool
 };
 
 export class LoginController extends Component {
@@ -33,7 +34,8 @@ export class LoginController extends Component {
             },
             password: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
+                type: "password"
             },
             requestPasswordChange: false,
             isSubmitting: false
@@ -149,6 +151,7 @@ export class LoginController extends Component {
     handleInputChange(event) {
         const id = event.target.id;
         const value = event.target.value;
+        const checked = event.target.checked;
 
         switch (id) {
             case "email": {
@@ -161,12 +164,22 @@ export class LoginController extends Component {
                 break;
             }
             case "password": {
-                this.setState({
+                this.setState(prevState => ({
                     password: {
+                        ...prevState.password,
                         value: value,
                         errorMsg: ""
                     }
-                });
+                }));
+                break;
+            }
+            case "toggle-password": {
+                this.setState(prevState => ({
+                    password: {
+                        ...prevState.password,
+                        type: checked ? "text" : "password"
+                    }
+                }));
                 break;
             }
         }
@@ -202,9 +215,18 @@ export class LoginController extends Component {
                 {
                     id: "password",
                     label: "Password",
-                    type: "password",
+                    type: this.state.password.type,
+                    disableToggleShowPassword: this.props.enableNewSignIn,
                     onChange: this.handleInputChange,
                     error: this.state.password.errorMsg
+                },
+                {
+                    id: "toggle-password",
+                    label: "Show password",
+                    type: "checkbox",
+                    reverseLabelOrder: true,
+                    inline: true,
+                    onChange: this.handleInputChange
                 }
             ],
             onSubmit: this.handleSubmit,
@@ -213,7 +235,7 @@ export class LoginController extends Component {
 
         return (
             <div>
-                <LoginForm formData={formData} />
+                <LoginForm formData={formData} enableNewSignIn={this.props.enableNewSignIn} />
 
                 {this.state.requestPasswordChange ? (
                     <Modal sizeClass={"grid__col-3"}>
@@ -237,7 +259,8 @@ LoginController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
+        enableNewSignIn: state.state.config.enableNewSignIn
     };
 }
 

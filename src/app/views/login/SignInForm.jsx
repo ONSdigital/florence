@@ -15,7 +15,8 @@ const propTypes = {
             })
         ),
         onSubmit: PropTypes.func,
-        isSubmitting: PropTypes.bool
+        isSubmitting: PropTypes.bool,
+        enableNewSignIn: PropTypes.bool
     })
 };
 
@@ -37,6 +38,10 @@ export default class LoginForm extends Component {
                         {inputs.map((input, index) => {
                             return <Input key={index} {...input} disabled={isSubmitting} allowAutoComplete={true} />;
                         })}
+                        {/*<input type="checkbox" name="toggle-password" id="toggle-password" value="false" className={"checkbox"} />*/}
+                        {/*<label htmlFor="toggle-password" className={"checkbox__label"}>*/}
+                        {/*    Show password*/}
+                        {/*</label>*/}
 
                         <button type="submit" className="btn btn--primary margin-top--1" disabled={isSubmitting}>
                             Log in
