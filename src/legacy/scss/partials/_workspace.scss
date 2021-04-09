@@ -729,6 +729,16 @@
     &__label {
         font-size: 16px;
     }
+
+    &__textarea {
+        width: 100%;
+        border: 3px solid $scarpa-flow;
+        background-color: $white;
+        word-wrap: normal;
+        resize: vertical;
+        padding: 7px 20px;
+        margin: 21px 0;
+    }
 }
 
 .child-page {

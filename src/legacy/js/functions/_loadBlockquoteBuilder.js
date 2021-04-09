@@ -10,7 +10,7 @@ function loadBlockquoteBuilder(onSave) {
         modal.remove();
     }
     function saveBlockquote() {
-        var quoteContent = $('input#blockquote-quote').val();
+        var quoteContent = $('textarea#blockquote-quote').val();
         var quoteAttribution = $('input#blockquote-attribution').val();
 
         if (!quoteContent) {
