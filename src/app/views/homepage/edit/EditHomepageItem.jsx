@@ -44,11 +44,9 @@ export default class EditHomepageItem extends Component {
             image: this.props.data ? this.props.data.image : "",
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
-            imageData: {
-                url: "",
-                title: "",
-                altText: ""
-            },
+            imageUrl: "",
+            imageTitle: "",
+            imageAltText: "",
             imageState: "",
             upload: {},
             isCreatingImageRecord: false,
@@ -100,7 +98,9 @@ export default class EditHomepageItem extends Component {
 
     handleInputChange = event => {
         const value = event.target.value;
+        console.log(value);
         const fieldName = event.target.name;
+        console.log(fieldName);
         this.setState({ [fieldName]: value });
     };
 
@@ -156,11 +156,9 @@ export default class EditHomepageItem extends Component {
             .catch(async error => {
                 this.stopPollingForUpdates(imageID);
                 this.setState({
-                    imageData: {
-                        url: "",
-                        title: "",
-                        altText: ""
-                    },
+                    imageUrl: "",
+                    imageTitle: "",
+                    imageAltText: "",
                     imageState: "created",
                     upload: {},
                     isUpdatingImageRecord: false,
@@ -294,11 +292,9 @@ export default class EditHomepageItem extends Component {
     handleRemoveImageClick = async () => {
         this.setState({
             image: "",
-            imageData: {
-                url: "",
-                title: "",
-                altText: ""
-            },
+            imageUrl: "",
+            imageTitle: "",
+            imageAltText: "",
             upload: {},
             imageImportStatus: STATUS_IMAGE_RECORD_CREATED
         });
@@ -310,10 +306,10 @@ export default class EditHomepageItem extends Component {
         if (this.state.imageImportStatus !== STATUS_IMAGE_RECORD_CREATED && this.state.imageImportStatus !== STATUS_IMAGE_LOADED) {
             return <p>{this.state.imageImportStatus}</p>;
         }
-        if (this.state.imageData && this.state.imageData.url) {
+        if (this.state.imageUrl) {
             return (
                 <div className="grid">
-                    <img className="grid__col-12" src={this.state.imageData.url} />
+                    <img className="grid__col-12" src={this.state.imageUrl} />
                     <button type="button" className="btn btn--link" onClick={this.handleRemoveImageClick}>
                         Remove image
                     </button>
@@ -373,7 +369,7 @@ export default class EditHomepageItem extends Component {
                             type="input"
                             label="Image title"
                             disabled={isDisabled}
-                            value={this.state.imageData.title}
+                            value={this.state.imageTitle}
                             onChange={this.handleInputChange}
                         />
                         <Input
@@ -381,7 +377,7 @@ export default class EditHomepageItem extends Component {
                             type="input"
                             label="Alt text (leave blank if decorative)"
                             disabled={isDisabled}
-                            value={this.state.imageData.altText}
+                            value={this.state.imageAltText}
                             onChange={this.handleInputChange}
                         />
                     </div>
@@ -394,7 +390,7 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
-        console.log(this.state.imageData.url);
+        console.log(this.state.imageUrl);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>
