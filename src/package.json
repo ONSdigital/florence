@@ -19,7 +19,7 @@
     "testURL": "http://localhost"
   },
   "devDependencies": {
-    "auditjs": "^4.0.24",
+    "auditjs": "^4.0.25",
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^24.9.0",
     "better-npm-audit": "^1.5.0",
