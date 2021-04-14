@@ -17,7 +17,10 @@
                     <button class="btn btn--primary margin-top--1 margin-bottom--0 margin-right--0 btn-collection-unlock">Unlock</button>
                     <button class="btn btn--primary margin-top--1 margin-bottom--0 btn-collection-preview">Preview</button>
                     {{#if error}} 
-                        <p>This collection's details have failed to load.</p>
+                        <p>
+                        This collection is in the queue, but there are too many files to load in this list.
+                        There's no need to raise a support ticket, the collection is now ready for publish.
+                        </p>
                     {{else}}
                         
                         {{#if_any pageDetails datasets datasetVersions}}
