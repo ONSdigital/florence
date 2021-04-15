@@ -19,7 +19,6 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
-	"time"
 )
 
 type Chrome struct {
@@ -156,7 +155,7 @@ func (c *Component) Reset() *Component {
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.DisableGPU,
 		// set this to false to be able to watch the browser in action
-		chromedp.Flag("headless", false),
+		chromedp.Flag("headless", true),
 	)
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
