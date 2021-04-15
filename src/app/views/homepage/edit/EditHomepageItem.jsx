@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import image from "../../../utilities/api-clients/images";
 import log from "../../../utilities/logging/log";
@@ -98,10 +99,13 @@ export default class EditHomepageItem extends Component {
 
     handleInputChange = event => {
         const value = event.target.value;
-        console.log(value);
-        const fieldName = event.target.name;
-        console.log(fieldName);
-        this.setState({ [fieldName]: value });
+        let fieldName = event.target.name;
+        if (fieldName.includes("-")) {
+            fieldName = _.camelCase(fieldName);
+            this.setState({ [fieldName]: value });
+        } else {
+            this.setState({ [fieldName]: value });
+        }
     };
 
     createImageRecord = () => {
