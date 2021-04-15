@@ -11,13 +11,13 @@ import (
 
 type Collection struct {
 	componenttest.ErrorFeature
-	api *FakeApi
+	api       *FakeApi
 	chromeCtx context.Context
 }
 
 func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
 	return &Collection{
-		api: f,
+		api:       f,
 		chromeCtx: c,
 	}
 }
@@ -28,10 +28,10 @@ func (c *Collection) create(collectionName string) error {
 
 	// Here we set up the fake responses that would be returned from the collection-creating API
 	// including the fake collection details that will appear in the browser UI as a result
-	collectionDetailsResponse := buildCollectionDetailsResponseForId(collectionName, collectionId);
+	collectionDetailsResponse := buildCollectionDetailsResponseForId(collectionName, collectionId)
 
 	c.api.setJsonResponseForPost("/collection", collectionDetailsResponse).AssertCustom(c.api.collectOutboundRequestBodies)
-	c.api.setJsonResponseForGet("/collectionDetails/" + collectionId, collectionDetailsResponse)
+	c.api.setJsonResponseForGet("/collectionDetails/"+collectionId, collectionDetailsResponse)
 
 	// Enter the name of the collection and press the button to send the form
 	err := chromedp.Run(c.chromeCtx,
@@ -52,7 +52,7 @@ func (c *Collection) assertHasTitle(expectedTitle string) error {
 }
 
 func (c *Collection) assertHasPublishSchedule(expectedPublishSchedule string) error {
-	return  c.assertHasTextInSelector(expectedPublishSchedule, ".drawer h2 + p")
+	return c.assertHasTextInSelector(expectedPublishSchedule, ".drawer h2 + p")
 }
 
 func (c *Collection) assertHasTextInSelector(expectedText string, selector string) error {
@@ -86,7 +86,5 @@ func buildCollectionDetailsResponseForId(collectionName string, id string) strin
 		"name":"%s",
 		"type":"manual",
 		"teams":[]
-	}`,id, collectionName)
+	}`, id, collectionName)
 }
-
-

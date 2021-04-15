@@ -37,14 +37,14 @@ type Component struct {
 	chrome       Chrome
 	LoggedInUser string
 	publisher    Publisher
-	fakeRequest *httpfake.Request
+	fakeRequest  *httpfake.Request
 }
 
 func NewFlorenceComponent() (*Component, error) {
 	c := &Component{
-		HTTPServer:   &http.Server{},
-		errorChan:    make(chan error),
-		ctx:          context.Background(),
+		HTTPServer: &http.Server{},
+		errorChan:  make(chan error),
+		ctx:        context.Background(),
 	}
 
 	c.FakeApi = NewFakeApi(c)
@@ -143,7 +143,6 @@ func (c *Component) theCollectionShouldBe(collectionPublishSchedule string) erro
 
 	return c.StepError()
 }
-
 
 func (c *Component) Reset() *Component {
 	c.FakeApi.Reset()

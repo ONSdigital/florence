@@ -36,7 +36,7 @@ func (f *FakeApi) setJsonResponseForGet(url string, responseBody string) {
 	f.fakeHttp.NewHandler().Get(url).AssertHeaders("Content-Type").Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
 }
 
-func (f *FakeApi) setJsonResponseForPost(url string, responseBody string) (*httpfake.Request) {
+func (f *FakeApi) setJsonResponseForPost(url string, responseBody string) *httpfake.Request {
 	request := f.fakeHttp.NewHandler().Post(url).AssertHeaders("Content-Type")
 
 	request.Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))

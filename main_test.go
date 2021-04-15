@@ -15,7 +15,7 @@ var componentFlag = flag.Bool("component", false, "perform component tests")
 
 type ComponentTest struct {
 	MongoFeature *componenttest.MongoFeature
-	testingT *testing.T
+	testingT     *testing.T
 }
 
 func (c *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {

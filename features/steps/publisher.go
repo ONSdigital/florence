@@ -7,15 +7,15 @@ import (
 )
 
 type Publisher struct {
-	fakeApi *FakeApi
+	fakeApi   *FakeApi
 	chromeCtx context.Context
 }
 
-func NewPublisher(api* FakeApi, ctx context.Context) *Publisher {
+func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 	return &Publisher{fakeApi: api, chromeCtx: ctx}
 }
 
-func (p* Publisher) logIn(username string) error {
+func (p *Publisher) logIn(username string) error {
 
 	// Here we are setting the fake data that would be returned from the identity-api
 	// with the permissions requires to create a new collection
