@@ -3,5 +3,7 @@
 cwd=$(pwd)
 
 pushd $cwd/florence
-    echo "component test placeholder"
+    apt-get update
+    apt-get install chromium-browser
+    make component-test
 popd
