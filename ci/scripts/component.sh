@@ -3,7 +3,7 @@
 cwd=$(pwd)
 
 pushd $cwd/florence
-    apt-get update
-    apt-get install chromium-browser
-    make component-test
+    apt-get -y update
+    apt-get -y install google-chrome-stable
+    make test-component
 popd
