@@ -11,6 +11,7 @@ require (
 	github.com/chromedp/cdproto v0.0.0-20210313213058-f5c5a7a06834 // indirect
 	github.com/chromedp/chromedp v0.6.8
 	github.com/cucumber/godog v0.10.0
+	github.com/cucumber/messages-go/v10 v10.0.3
 	github.com/fatih/color v1.10.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/gorilla/context v1.1.1 // indirect
@@ -19,6 +20,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-uuid v1.0.0
 	github.com/hokaccha/go-prettyjson v0.0.0-20210113012101-fb4e108d2519 // indirect
+	github.com/jteeuwen/go-bindata v3.0.8-0.20180305030458-6025e8de665b+incompatible // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/maxcnunes/httpfake v1.2.3
 	github.com/pkg/errors v0.9.1
