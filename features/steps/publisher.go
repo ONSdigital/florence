@@ -17,6 +17,8 @@ func NewPublisher(api* FakeApi, ctx context.Context) *Publisher {
 
 func (p* Publisher) logIn(username string) error {
 
+	// Here we are setting the fake data that would be returned from the identity-api
+	// with the permissions requires to create a new collection
 	p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(200).Body([]byte(`faketoken`))
 	p.fakeApi.setJsonResponseForGet("/permission", fmt.Sprintf(`{"email":"%s","admin":true,"editor":true}`, username))
 

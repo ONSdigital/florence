@@ -19,6 +19,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 type Chrome struct {
@@ -82,6 +83,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 
 }
 
+// This steps actually logs in to Florence by entering a dummy username and password
 func (c *Component) iAmLoggedInAs(username string) error {
 
 	err := c.publisher.logIn(username)
@@ -93,6 +95,10 @@ func (c *Component) iAmLoggedInAs(username string) error {
 	return nil
 }
 
+// This step actives the browser UI, entering a collection name
+// and presses the "Create Collection" button
+// consequently, the form data is sent to Florence back and and outwards to the
+// collection creating API
 func (c *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
 	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 
@@ -101,10 +107,11 @@ func (c *Component) iCreateANewCollectionCalledForManualPublishing(collectionNam
 		return err
 	}
 
-	//time.Sleep(2 * time.Second)
 	return c.StepError()
 }
 
+// This step asserts that the instructions for creating the collection
+// have been sent correctly from Florence backend to the API that creates the collection
 func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionDetails *godog.DocString) error {
 	for _, outboundRequestBody := range c.FakeApi.outboundRequests {
 		assert.JSONEq(c, collectionDetails.Content, outboundRequestBody)
@@ -113,6 +120,8 @@ func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionD
 	return c.StepError()
 }
 
+// This step checks that the browser UI shows the correct new
+// title of the collection
 func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
 
 	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
@@ -124,6 +133,8 @@ func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTi
 	return c.StepError()
 }
 
+// This step checks that the browser UI shows the type
+// of collection schedule created (e.g. "Manual")
 func (c *Component) theCollectionShouldBe(collectionPublishSchedule string) error {
 	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
 
@@ -144,7 +155,8 @@ func (c *Component) Reset() *Component {
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.DisableGPU,
-		chromedp.Flag("headless", true),
+		// set this to false to be able to watch the browser in action
+		chromedp.Flag("headless", false),
 	)
 
 	allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
