@@ -7,7 +7,7 @@ Feature: Creating a new Collection
 
   Scenario: Creating a new collection for manual publishing
     When I create a new collection called "Census 2021" for manual publishing
-    Then these collection creation details should have been sent:
+    Then a collection with these details should be created:
     """
     {"name":"Census 2021","type":"manual","publishDate":null,"teams":[],"collectionOwner":"ADMIN","releaseUri":null}
     """
