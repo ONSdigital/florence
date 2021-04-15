@@ -3,10 +3,8 @@
 cwd=$(pwd)
 
 pushd $cwd/florence
-    apt-get -y update
-    apt-get -y install software-properties-common
-    add-apt-repository ppa:canonical-chromium-builds/stage
-    apt-get -y update
-    apt-get -y install chromium-browser
+    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dpkg -i google-chrome-stable_current_amd64.deb
+    apt -f install
     make test-component
 popd
