@@ -11,6 +11,7 @@ pushd $cwd/florence
     wget https://dl.google.com/linux/linux_signing_key.pub
     apt-key add linux_signing_key.pub
     apt -y update
+    apt -u install apt-utils
     apt -y install google-chrome-stable
     make test-component
 popd
