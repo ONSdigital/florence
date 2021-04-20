@@ -70,3 +70,8 @@ watch-src:
 .PHONY: clean
 clean:
 	rm -rf build/ dist/ assets/data.go src/node_modules src/legacy/node_modules
+
+
+.PHONY: test-component
+test-component:
+	go test -cover -coverpkg=github.com/ONSdigital/florence/... -component

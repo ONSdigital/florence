@@ -15,6 +15,7 @@ const propTypes = {
         id: PropTypes.string,
         type: PropTypes.string,
         description: PropTypes.string,
+        note: PropTypes.string,
         href: PropTypes.string,
         date: PropTypes.string,
         title: PropTypes.string
@@ -31,6 +32,7 @@ export default class EditMetadatItem extends Component {
             id: this.props.data ? this.props.data.id : null,
             type: this.props.data ? this.props.data.type : "",
             description: this.props.data ? this.props.data.description : "",
+            note: this.props.data ? this.props.data.note : "",
             href: this.props.data ? this.props.data.href : "",
             date: this.props.data ? this.props.data.date : "",
             title: this.props.data ? this.props.data.title : ""
@@ -110,6 +112,12 @@ export default class EditMetadatItem extends Component {
                 );
             }
             case "usageNotes":
+                return (
+                    <div>
+                        <Input id="title" type="input" label="Title" value={this.state.title} onChange={this.handleInputChange} />
+                        <Input id="note" type="textarea" label="Note" value={this.state.note} onChange={this.handleInputChange} />
+                    </div>
+                );
             case "latestChanges": {
                 return (
                     <div>
