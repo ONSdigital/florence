@@ -31,7 +31,7 @@ export default class LoginForm extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-3">
-                    <h1 className="line-height--46">Log in to your Florence account</h1>
+                    <h1>Log in to your Florence account</h1>
 
                     <form className="form" onSubmit={this.props.formData.onSubmit}>
                         {inputs.map((input, index) => {
