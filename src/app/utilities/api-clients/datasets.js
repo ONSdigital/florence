@@ -210,4 +210,10 @@ export default class datasets {
             return response;
         });
     }
+
+    static getVersionsList(datasetID, editionID) {
+        return http.get(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions`).then(response => {
+            return response;
+        });
+    }
 }
