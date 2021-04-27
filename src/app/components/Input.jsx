@@ -81,7 +81,7 @@ export default class Input extends Component {
                         type={this.props.displayShowHide ? this.state.type : this.props.type}
                         className={
                             "input" +
-                            ((this.state.displayShowHide ? " input--show-hide" : "") + (this.props.type === "checkbox" ? " input__checkbox" : ""))
+                            ((this.state.displayShowHide ? " input--show-hide" : "") + (this.props.type === "checkbox" ? " checkbox__input" : ""))
                         }
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
@@ -105,7 +105,7 @@ export default class Input extends Component {
 
     renderLabel() {
         return (
-            <label className={"form__label" + (this.props.type === "checkbox" ? " form__checkbox__label" : "")} htmlFor={this.props.id}>
+            <label className={"form__label" + (this.props.type === "checkbox" ? " checkbox__label" : "")} htmlFor={this.props.id}>
                 {this.props.label}
             </label>
         );
