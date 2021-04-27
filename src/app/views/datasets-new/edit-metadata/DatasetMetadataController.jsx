@@ -568,6 +568,17 @@ export class DatasetMetadataController extends Component {
         this.handleSave(false, true);
     };
 
+    renderModal = () => {
+        const modal = React.Children.map(this.props.children, child => {
+            return React.cloneElement(child, {
+                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+                handleSuccessClick: this.handleSimpleEditableListEditSuccess,
+                handleCancelClick: this.handleSimpleEditableListEditCancel
+            });
+        });
+        return modal;
+    };
+
     render() {
         return (
             <div className="grid grid--justify-center">

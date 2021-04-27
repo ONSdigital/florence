@@ -94,6 +94,12 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
 
     $("#js-editor--warning-box").click(function () {
         loadPulloutWarningBox();
+    });    
+    
+    $("#js-editor--blockquote").click(function () {
+        loadBlockquoteBuilder(function(markdown) {
+            onInsertSave('', markdown)
+        });
     });
 
     $("#wmd-input").on('click', function () {
@@ -219,6 +225,17 @@ function markdownEditor() {
         });
         return newText;
     });
+
+    // output blockquote tag as text instead of the actual tag.
+    converter.hooks.chain("preBlockGamut", function (text) {
+        var onsQuoteTag = text.replace(/(<ons-quote\scontent=\"(.*?)\"\s?(attr=\"(.*?)\")?\s*\/>)/ig, function (match) {
+            var content = $(match).attr('content');
+            var attr = $(match).attr('attr');
+            return attr ? '[blockquote content="' + content + '" attr="' + attr + '"]' :
+             '[blockquote content="' + content + '"]';
+        });
+        return onsQuoteTag;
+    })
 
     converter.hooks.chain("plainLinkText", function (link) {
         console.log("link done, innit");
