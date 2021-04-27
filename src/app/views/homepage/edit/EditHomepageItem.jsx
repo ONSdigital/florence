@@ -21,7 +21,10 @@ const propTypes = {
         description: PropTypes.string,
         uri: PropTypes.string,
         image: PropTypes.string,
-        title: PropTypes.string
+        title: PropTypes.string,
+        imageUrl: PropTypes.string,
+        imageTitle: PropTypes.string,
+        imageAltText: PropTypes.string
     }),
     handleSuccessClick: PropTypes.func.isRequired,
     handleCancelClick: PropTypes.func.isRequired
@@ -45,9 +48,9 @@ export default class EditHomepageItem extends Component {
             image: this.props.data ? this.props.data.image : "",
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
-            imageUrl: "",
-            imageTitle: "",
-            imageAltText: "",
+            imageUrl: this.props.data ? this.props.data.imageUrl : "",
+            imageTitle: this.props.data ? this.props.data.imageTitle : "",
+            imageAltText: this.props.data ? this.props.data.imageAltText : "",
             imageState: "",
             upload: {},
             isCreatingImageRecord: false,
@@ -91,8 +94,18 @@ export default class EditHomepageItem extends Component {
     };
 
     handleSuccessClick = async () => {
+        console.log(this.state.imageAltText);
         this.props.handleSuccessClick(
-            { id: this.state.id, description: this.state.description, uri: this.state.uri, title: this.state.title, image: this.state.image },
+            {
+                id: this.state.id,
+                description: this.state.description,
+                uri: this.state.uri,
+                title: this.state.title,
+                image: this.state.image,
+                imageUrl: this.state.imageUrl,
+                imageTitle: this.state.imageTitle,
+                imageAltText: this.state.imageAltText
+            },
             this.props.params.homepageDataField
         );
     };
@@ -160,9 +173,6 @@ export default class EditHomepageItem extends Component {
             .catch(async error => {
                 this.stopPollingForUpdates(imageID);
                 this.setState({
-                    imageUrl: "",
-                    imageTitle: "",
-                    imageAltText: "",
                     imageState: "created",
                     upload: {},
                     isUpdatingImageRecord: false,
@@ -394,7 +404,6 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
-        console.log(this.state.imageUrl);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>

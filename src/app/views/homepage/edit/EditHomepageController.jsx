@@ -32,6 +32,7 @@ export class EditHomepageController extends Component {
             homepageFetched: false,
             collectionDetailsFetched: false,
             isInAnotherCollection: true,
+
             homepageData: {
                 featuredContent: [],
                 serviceMessage: ""
@@ -143,6 +144,9 @@ export class EditHomepageController extends Component {
                     uri: item.uri,
                     image: item.image,
                     title: item.title,
+                    imageUrl: item.imageUrl,
+                    imageTitle: item.imageTitle,
+                    imageAltText: item.imageAltText,
                     simpleListHeading: item.title,
                     simpleListDescription: item.description
                 };
@@ -291,6 +295,7 @@ export class EditHomepageController extends Component {
         let featuredContent = [];
         let serviceMessage = "";
         let initialHomepageData = this.state.initialHomepageData;
+        console.log(JSON.stringify(initialHomepageData));
         let formattedHomepageData = {};
 
         this.setState({ isSaving: true });
@@ -300,11 +305,15 @@ export class EditHomepageController extends Component {
                 title: entry.title,
                 description: entry.description,
                 uri: entry.uri,
-                image: entry.image
+                image: entry.image,
+                imageUrl: entry.imageUrl,
+                imageTitle: entry.imageTitle,
+                imageAltText: entry.imageAltText
             }));
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
             formattedHomepageData = { ...initialHomepageData, featuredContent, serviceMessage };
+            console.log(JSON.stringify(formattedHomepageData));
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
 
