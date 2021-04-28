@@ -109,12 +109,6 @@ export class LoginController extends Component {
                             });
                             break;
                         }
-                        case "UNEXPECTED_ERR": {
-                            console.error(errCodes.UNEXPECTED_ERR);
-                            notification.message = errCodes.UNEXPECTED_ERR;
-                            notifications.add(notification);
-                            break;
-                        }
                         case "RESPONSE_ERR": {
                             console.error(errCodes.RESPONSE_ERR);
                             notification.message = errCodes.RESPONSE_ERR;
@@ -126,6 +120,17 @@ export class LoginController extends Component {
                             notification.message = errCodes.FETCH_ERR;
                             notifications.add(notification);
                             break;
+                        }
+                        case "UNEXPECTED_ERR": {
+                            console.error(errCodes.UNEXPECTED_ERR);
+                            notification.message = errCodes.UNEXPECTED_ERR;
+                            notifications.add(notification);
+                            break;
+                        }
+                        default: {
+                            console.error(errCodes.UNEXPECTED_ERR);
+                            notification.message = errCodes.UNEXPECTED_ERR;
+                            notifications.add(notification);
                         }
                     }
                 }
@@ -169,6 +174,16 @@ export class LoginController extends Component {
                 });
                 break;
             }
+            default: {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000
+                };
+                console.error(errCodes.UNEXPECTED_ERR);
+                notification.message = errCodes.UNEXPECTED_ERR;
+                notifications.add(notification);
+            }
         }
     }
 
@@ -190,30 +205,26 @@ export class LoginController extends Component {
     }
 
     render() {
-        const formData = {
-            inputs: [
-                {
-                    id: "email",
-                    label: "Email",
-                    type: "email",
-                    onChange: this.handleInputChange,
-                    error: this.state.email.errorMsg
-                },
-                {
-                    id: "password",
-                    label: "Password",
-                    type: "password",
-                    onChange: this.handleInputChange,
-                    error: this.state.password.errorMsg
-                }
-            ],
-            onSubmit: this.handleSubmit,
-            isSubmitting: this.state.isSubmitting
-        };
+        const inputs = [
+            {
+                id: "email",
+                label: "Email",
+                type: "email",
+                onChange: this.handleInputChange,
+                error: this.state.email.errorMsg
+            },
+            {
+                id: "password",
+                label: "Password",
+                type: "password",
+                onChange: this.handleInputChange,
+                error: this.state.password.errorMsg
+            }
+        ];
 
         return (
             <div>
-                <LoginForm formData={formData} />
+                <LoginForm inputs={inputs} isSubmitting={this.state.isSubmitting} onSubmit={this.handleSubmit} />
 
                 {this.state.requestPasswordChange ? (
                     <Modal sizeClass={"grid__col-3"}>
