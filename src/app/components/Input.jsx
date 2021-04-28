@@ -39,6 +39,7 @@ export default class Input extends Component {
 
         this.showHide = this.showHide.bind(this);
         this.moveCaretToEnd = this.moveCaretToEnd.bind(this);
+        this.getFormClasses = this.getFormClasses.bind(this);
     }
 
     showHide(e) {
@@ -112,8 +113,9 @@ export default class Input extends Component {
     }
 
     render() {
+        const formClasses = this.getFormClasses();
         return (
-            <div className={"form__input" + (this.props.error ? " form__input--error" : "") + (this.props.inline ? " form__input--flush" : "")}>
+            <div className={formClasses}>
                 {!this.props.inline && !this.props.reverseLabelOrder && this.renderLabel()}
                 {this.props.error ? (
                     <div id={`input-error-${this.props.id}`} className="error-msg">
@@ -133,6 +135,20 @@ export default class Input extends Component {
                 {this.props.inline && this.props.reverseLabelOrder && this.renderLabel()}
             </div>
         );
+    }
+
+    getFormClasses() {
+        let formClasses = "form__input";
+        if (this.props.error) {
+            formClasses += " form__input--error";
+        }
+        if (this.props.inline) {
+            formClasses += " form__input--flush";
+        }
+        if (this.props.type === "checkbox") {
+            formClasses += " checkbox";
+        }
+        return formClasses;
     }
 }
 

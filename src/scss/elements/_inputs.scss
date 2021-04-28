@@ -239,7 +239,7 @@
     }
 
     &:focus {
-      outline: 3px solid $focus;
+      box-shadow: 0 0 0 $focus;
     }
 
     &:checked + label:after {
@@ -250,6 +250,7 @@
       &:before {
         content: "";
         border: 3px solid $scarpa-flow;
+        border-radius: 3px;
         background: white;
         width: 28px;
         height: 28px;
