@@ -139,20 +139,35 @@ export class EditHomepageController extends Component {
 
     mapfeaturedContentToState = featuredContent => {
         try {
-            return featuredContent.map((item, index) => {
+            featuredContent = this.state.homepageData.featuredContent;
+            return featuredContent.map((item) => {
                 return {
-                    id: index,
+                    title: item.title,
                     description: item.description,
                     uri: item.uri,
                     image: item.image,
-                    title: item.title,
                     imageUrl: item.imageUrl,
                     imageTitle: item.imageTitle,
                     imageAltText: item.imageAltText,
                     simpleListHeading: item.title,
                     simpleListDescription: item.description
-                };
+                }
             });
+
+            // return featuredContent.map((item, index) => {
+            //     return {
+            //         id: index,
+            //         description: item.description,
+            //         uri: item.uri,
+            //         image: item.image,
+            //         title: item.title,
+            //         imageUrl: item.imageUrl,
+            //         imageTitle: item.imageTitle,
+            //         imageAltText: item.imageAltText,
+            //         simpleListHeading: item.title,
+            //         simpleListDescription: item.description
+            //     };
+            // });
         } catch (error) {
             log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
             throw new Error(`Error mapping highlighted content to state \n ${error}`);
@@ -296,7 +311,7 @@ export class EditHomepageController extends Component {
     handleSave = async actions => {
         let featuredContent = [];
         let serviceMessage = "";
-        let initialHomepageData = this.state.homepageData;
+        let initialHomepageData = this.state.homepageData.featuredContent;
         console.log("initialHomepageData: " + JSON.stringify(initialHomepageData));
         let formattedHomepageData = {};
 
@@ -313,8 +328,8 @@ export class EditHomepageController extends Component {
                 imageAltText: entry.imageAltText
             }));
             serviceMessage = this.state.homepageData.serviceMessage;
-            initialHomepageData = this.state.homepageData;
-            formattedHomepageData = { ...initialHomepageData, featuredContent, serviceMessage };
+            initialHomepageData = this.state.homepageData.featuredContent;
+            formattedHomepageData = { featuredContent, serviceMessage };
             console.log("formattedData " + JSON.stringify(formattedHomepageData));
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
