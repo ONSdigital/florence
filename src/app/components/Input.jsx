@@ -34,7 +34,7 @@ export default class Input extends Component {
         super(props);
         this.state = {
             type: this.props.type,
-            displayShowHide: !this.props.disableToggleShowPassword && this.props.type === "password"
+            displayShowHide: !this.props.disableShowPasswordText && this.props.type === "password"
         };
 
         this.showHide = this.showHide.bind(this);
