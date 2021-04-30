@@ -43,7 +43,6 @@ export class DatasetVersionsController extends Component {
         return datasets
             .getVersionsList(datasetID, editions)
             .then(response => {
-                console.log(response);
                 const versionsList = this.buildVersionsList(response.versions);
                 this.setState({
                     isFetchingData: false,
