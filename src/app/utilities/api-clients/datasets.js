@@ -1,7 +1,7 @@
 import http from "../http";
 import url from "../url";
 
-const datasetControllerURL = "/dataset-controller";
+const publishingDatasetControllerURL = "/dataset-controller";
 
 export default class datasets {
     static create = (datasetID, body) => {
@@ -23,7 +23,7 @@ export default class datasets {
     }
 
     static getAllList() {
-        return http.get(`${datasetControllerURL}/datasets`).then(response => {
+        return http.get(`${publishingDatasetControllerURL}/datasets`).then(response => {
             return response;
         });
     }
@@ -200,19 +200,19 @@ export default class datasets {
     }
 
     static getEditMetadata(datasetID, editionID, versionID) {
-        return http.get(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`).then(response => {
+        return http.get(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`).then(response => {
             return response;
         });
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {
-        return http.put(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
+        return http.put(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
             return response;
         });
     }
 
     static getVersionsList(datasetID, editionID) {
-        return http.get(`${datasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions`).then(response => {
+        return http.get(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions`).then(response => {
             return response;
         });
     }
