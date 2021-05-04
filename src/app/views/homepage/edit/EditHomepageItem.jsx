@@ -133,10 +133,7 @@ export default class EditHomepageItem extends Component {
                 this.setState({
                     image: image.id,
                     isCreatingImageRecord: false,
-                    imageState: "created",
-                    imageUrl: this.state.imageUrl,
-                    imageAltText: this.state.imageAltText,
-                    imageTitle: this.state.imageTitle
+                    imageState: "created"
                 });
             })
             .catch(error => {
@@ -182,6 +179,9 @@ export default class EditHomepageItem extends Component {
                     imageState: "created",
                     upload: {},
                     isUpdatingImageRecord: false,
+                    imageUrl: this.state.imageUrl,
+                    imageAltText: this.state.imageAltText,
+                    imageTitle: this.state.imageTitle,
                     isUploadingImage: false,
                     isGettingImage: false,
                     isImportingImage: false,
