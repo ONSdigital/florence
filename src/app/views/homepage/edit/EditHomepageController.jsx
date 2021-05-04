@@ -295,7 +295,6 @@ export class EditHomepageController extends Component {
         let featuredContent = [];
         let serviceMessage = "";
         let initialHomepageData = this.state.initialHomepageData;
-        console.log(JSON.stringify(initialHomepageData));
         let formattedHomepageData = {};
 
         this.setState({ isSaving: true });
@@ -313,7 +312,6 @@ export class EditHomepageController extends Component {
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
             formattedHomepageData = { ...initialHomepageData, featuredContent, serviceMessage };
-            console.log(JSON.stringify(formattedHomepageData));
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
 

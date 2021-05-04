@@ -94,7 +94,6 @@ export default class EditHomepageItem extends Component {
     };
 
     handleSuccessClick = async () => {
-        console.log(this.state.imageAltText);
         this.props.handleSuccessClick(
             {
                 id: this.state.id,
@@ -126,7 +125,9 @@ export default class EditHomepageItem extends Component {
         const imageProps = {
             state: "created",
             collection_id: this.props.params.collectionID,
-            type: "eye-candy"
+            type: "eye-candy",
+            alt_text: this.state.imageAltText,
+            image_title: this.state.imageTitle
         };
         return image
             .create(imageProps)
@@ -257,7 +258,13 @@ export default class EditHomepageItem extends Component {
             .getDownloads(imageID, downloadType)
             .then(response => {
                 const imageData = this.mapImageToState(response);
-                this.setState({ isGettingImage: false, imageImportStatus: STATUS_IMAGE_LOADED, imageData: imageData });
+                this.setState({
+                    isGettingImage: false,
+                    imageImportStatus: STATUS_IMAGE_LOADED,
+                    imageUrl: imageData.imageUrl,
+                    imageTitle: imageData.imageTitle,
+                    imageAltText: imageData.imageAltText
+                });
             })
             .catch(error => {
                 this.setState({ isGettingImage: false });
