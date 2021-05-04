@@ -18,7 +18,6 @@ const propTypes = {
     max: PropTypes.string,
     allowAutoComplete: PropTypes.bool,
     placeholder: PropTypes.string,
-    displayShowHide: PropTypes.bool,
     disableToggleShowPassword: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool
 };
@@ -32,14 +31,14 @@ const defaultProps = {
 export default class Input extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             type: this.props.type,
-            displayShowHide: !this.props.disableShowPasswordText && this.props.type === "password"
+            displayShowHide: (!this.props.disableShowPasswordText && this.props.type) === "password"
         };
 
         this.showHide = this.showHide.bind(this);
         this.moveCaretToEnd = this.moveCaretToEnd.bind(this);
-        this.getFormClasses = this.getFormClasses.bind(this);
     }
 
     showHide(e) {
@@ -55,6 +54,31 @@ export default class Input extends Component {
         const val = event.target.value;
         event.target.value = "";
         event.target.value = val;
+    }
+
+    getFormClasses() {
+        let formClasses = "form__input";
+        if (this.props.error) {
+            formClasses += " form__input--error";
+        }
+        if (this.props.inline) {
+            formClasses += " form__input--flush";
+        }
+        if (this.props.type === "checkbox") {
+            formClasses += " checkbox";
+        }
+        return formClasses;
+    }
+
+    getInputClasses() {
+        let inputClasses = "input";
+        if (this.state.displayShowHide) {
+            inputClasses += " input--show-hide";
+        }
+        if (this.props.type === "checkbox") {
+            inputClasses += " checkbox__input";
+        }
+        return inputClasses;
     }
 
     renderInput() {
@@ -80,10 +104,7 @@ export default class Input extends Component {
                         /* If using old 'Show' within input then use 'state' as it is managed within the input component
                          * otherwise use the prop which is managed by the parent */
                         type={this.state.displayShowHide ? this.state.type : this.props.type}
-                        className={
-                            "input" +
-                            ((this.state.displayShowHide ? " input--show-hide" : "") + (this.props.type === "checkbox" ? " checkbox__input" : ""))
-                        }
+                        className={this.getInputClasses()}
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
@@ -135,20 +156,6 @@ export default class Input extends Component {
                 {this.props.inline && this.props.reverseLabelOrder && this.renderLabel()}
             </div>
         );
-    }
-
-    getFormClasses() {
-        let formClasses = "form__input";
-        if (this.props.error) {
-            formClasses += " form__input--error";
-        }
-        if (this.props.inline) {
-            formClasses += " form__input--flush";
-        }
-        if (this.props.type === "checkbox") {
-            formClasses += " checkbox";
-        }
-        return formClasses;
     }
 }
 

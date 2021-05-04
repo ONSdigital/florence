@@ -6,16 +6,6 @@
         font-weight: 600;
     }
 
-    &__checkbox {
-        &__label{
-            line-height: $lineheight * 2;
-            font-weight: normal;
-            margin: 0 14px;
-            vertical-align: middle;
-            display: inline-block;
-        }
-    }
-
     &__input {
         margin-bottom: $lineheight;
 
