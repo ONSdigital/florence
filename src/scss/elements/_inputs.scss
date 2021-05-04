@@ -33,17 +33,6 @@
         min-height: ($lineheight * 5);
     }
 
-    &__checkbox {
-        width: $lineheight * 2;
-        height: $lineheight * 2;
-        background: $white;
-        border: 3px solid $scarpa-flow;
-        box-sizing: border-box;
-        border-radius: 3px;
-        vertical-align: middle;
-        display: inline-block;
-    }
-
 }
 
 .select {
