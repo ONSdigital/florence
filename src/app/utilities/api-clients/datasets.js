@@ -206,13 +206,21 @@ export default class datasets {
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {
-        return http.put(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true).then(response => {
-            return response;
-        });
+        return http
+            .put(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true)
+            .then(response => {
+                return response;
+            });
     }
 
     static getVersionsList(datasetID, editionID) {
         return http.get(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions`).then(response => {
+            return response;
+        });
+    }
+
+    static getEditionsList(datasetID) {
+        return http.get(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions`).then(response => {
             return response;
         });
     }
