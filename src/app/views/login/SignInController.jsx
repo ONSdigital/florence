@@ -182,7 +182,7 @@ export class LoginController extends Component {
                 this.setState(prevState => ({
                     password: {
                         ...prevState.password,
-                        type: checked ? "text" : "password"
+                        type: checked && this.props.enableNewSignIn ? "text" : "password"
                     }
                 }));
                 break;
