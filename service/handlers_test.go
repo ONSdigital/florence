@@ -225,7 +225,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true,"enableNewSignIn":false}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -235,7 +235,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableHomepagePublishing":true,"enableNewSignIn":false}`), ShouldBeTrue)
 		})
 
 	})
@@ -255,7 +255,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false,"enableNewSignIn":false}`), ShouldBeTrue)
 
 		})
 
@@ -266,7 +266,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableHomepagePublishing":false,"enableNewSignIn":false}`), ShouldBeTrue)
 		})
 
 	})

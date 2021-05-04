@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginController } from "./LoginController";
+import { LoginController } from "./SignInController";
 import renderer from "react-test-renderer";
 import { mount, shallow } from "enzyme";
 

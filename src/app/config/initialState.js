@@ -1,7 +1,8 @@
 export const initialState = {
     config: {
         enableDatasetImport: false,
-        enableHomepagePublishing: false
+        enableHomepagePublishing: false,
+        enableNewSignIn: false
     },
     user: {
         isAuthenticated: false,

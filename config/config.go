@@ -24,6 +24,7 @@ type Config struct {
 type SharedConfig struct {
 	EnableDatasetImport      bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 	EnableHomepagePublishing bool `envconfig:"ENABLE_HOMEPAGE_PUBLISHING" json:"enableHomepagePublishing"`
+	EnableNewSignIn          bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
 }
 
 var cfg *Config
@@ -41,7 +42,7 @@ func Get() (*Config, error) {
 		RouterURL:                  "http://localhost:20000", // Frontend router
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
-		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false, EnableNewSignIn: false},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
