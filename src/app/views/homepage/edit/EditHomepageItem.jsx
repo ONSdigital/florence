@@ -125,14 +125,19 @@ export default class EditHomepageItem extends Component {
         const imageProps = {
             state: "created",
             collection_id: this.props.params.collectionID,
-            type: "eye-candy",
-            alt_text: this.state.imageAltText,
-            image_title: this.state.imageTitle
+            type: "eye-candy"
         };
         return image
             .create(imageProps)
             .then(image => {
-                this.setState({ image: image.id, isCreatingImageRecord: false, imageState: "created" });
+                this.setState({
+                    image: image.id,
+                    isCreatingImageRecord: false,
+                    imageState: "created",
+                    imageUrl: this.state.imageUrl,
+                    imageAltText: this.state.imageAltText,
+                    imageTitle: this.state.imageTitle
+                });
             })
             .catch(error => {
                 this.setState({ isCreatingImageRecord: false });

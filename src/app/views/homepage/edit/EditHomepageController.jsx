@@ -32,7 +32,6 @@ export class EditHomepageController extends Component {
             homepageFetched: false,
             collectionDetailsFetched: false,
             isInAnotherCollection: true,
-
             homepageData: {
                 featuredContent: [],
                 serviceMessage: ""
