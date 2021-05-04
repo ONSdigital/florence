@@ -79,7 +79,7 @@ export default class Input extends Component {
                         id={this.props.id}
                         /* If using old 'Show' within input then use 'state' as it is managed within the input component
                          * otherwise use the prop which is managed by the parent */
-                        type={this.props.displayShowHide ? this.state.type : this.props.type}
+                        type={this.state.displayShowHide ? this.state.type : this.props.type}
                         className={
                             "input" +
                             ((this.state.displayShowHide ? " input--show-hide" : "") + (this.props.type === "checkbox" ? " checkbox__input" : ""))
