@@ -31,7 +31,7 @@ export default class LoginForm extends Component {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-3">
-                    <h1>Log in to your Florence account</h1>
+                    <h1>Sign in to your Florence account</h1>
 
                     <form className="form" onSubmit={this.props.formData.onSubmit}>
                         {inputs.map((input, index) => {
@@ -39,7 +39,7 @@ export default class LoginForm extends Component {
                         })}
 
                         <button type="submit" className="btn btn--primary margin-top--1" disabled={isSubmitting}>
-                            Log in
+                            Sign in
                         </button>
 
                         {isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}

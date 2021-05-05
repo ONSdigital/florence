@@ -121,7 +121,7 @@ export class NavBar extends Component {
                 )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={this.handleLogoutClick} className="global-nav__link">
-                        Logout
+                        Sign out
                     </Link>
                 </li>
             </span>
