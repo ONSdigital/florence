@@ -7,11 +7,12 @@
     },
     "dependencies": {
         "cat": "latest",
-        "onchange": "latest",
-        "handlebars": "4.7.3",
-        "node-sass": "^4.13.1"
+        "handlebars": "^4.7.7",
+        "node-sass": "^4.14.1",
+        "onchange": "latest"
     },
     "scripts": {
+        "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet",
         "watch-js": "npm run build-js && ./node_modules/onchange/cli.js 'js/classes/*.js' 'js/functions/*.js' 'js/components/*.js' 'js/zebedee-api/*.js' -v -- npm run build-js",
         "build-js": "mkdir -p ../../dist/legacy-assets/js && cat js/classes/*.js js/zebedee-api/*.js js/functions/*.js js/components/*.js > ../../dist/legacy-assets/js/main.js",
         "watch-templates": "npm run build-templates && ./node_modules/onchange/cli.js 'templates/*.handlebars' -v -- npm run build-templates",
@@ -26,6 +27,7 @@
         "postinstall": "npm run build"
     },
     "devDependencies": {
+        "auditjs": "^4.0.25",
         "minimist": "^1.2.5"
     },
     "resolutions": {
