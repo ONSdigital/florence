@@ -59,7 +59,7 @@ export class DatasetEditionsController extends Component {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: "No API route available for a list of versions. You should still be able to use this page, or you can refresh.",
+                            message: "No API route available for a list of editions. Try refresh the page.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -68,7 +68,7 @@ export class DatasetEditionsController extends Component {
                     case "RESPONSE_ERR": {
                         const notification = {
                             type: "warning",
-                            message: "An error's occurred whilst trying to get a list of versions.",
+                            message: "An error's occurred whilst trying to get a list of editions.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -78,7 +78,7 @@ export class DatasetEditionsController extends Component {
                         const notification = {
                             type: "warning",
                             message:
-                                "There's been a network error whilst trying to get the versions. Please check you internet connection and try again in a few moments.",
+                                "There's been a network error whilst trying to get the editions. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -87,7 +87,7 @@ export class DatasetEditionsController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get a list of versions.",
+                            message: "An unexpected error's occurred whilst trying to get a list of editions.",
                             isDismissable: true
                         };
                         notifications.add(notification);
