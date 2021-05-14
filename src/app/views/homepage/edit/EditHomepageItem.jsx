@@ -155,7 +155,7 @@ export default class EditHomepageItem extends Component {
                 this.stopPollingForUpdates(imageID);
                 this.setState({
                     imageData: {
-                        url: "",
+                        url: ""
                     },
                     imageState: "created",
                     upload: {},
