@@ -45,7 +45,7 @@ function handleLoginApiError(response) {
         sweetAlert("Please enter a valid username and password");
         logout();
     } else if (response.status === 403 || response.status === 401) {
-        sweetAlert('Incorrect login details', 'These login credentials were not recognised. Please try again.', 'error');
+        sweetAlert('Incorrect sign in details', 'These sign in credentials were not recognised. Please try again.', 'error');
         logout();
     } else {
         var message = 'An error has occurred, please contact an administrator.';

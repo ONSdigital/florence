@@ -68,12 +68,12 @@ export class LoginController extends Component {
                         this.setState({ isSubmitting: false });
                         notifications.add({
                             type: "warning",
-                            message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
+                            message: "Unable to sign in due to an error getting your account's permissions. Please refresh and try again.",
                             autoDismiss: 8000,
                             isDismissable: true
                         });
-                        log.event("Error getting a user's permissions on login", log.error(error));
-                        console.error("Error getting a user's permissions on login", error);
+                        log.event("Error getting a user's permissions on sign in", log.error(error));
+                        console.error("Error getting a user's permissions on sign in", error);
                     });
             })
             .catch(error => {

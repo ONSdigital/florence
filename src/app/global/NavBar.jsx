@@ -68,7 +68,7 @@ export class NavBar extends Component {
             return (
                 <li className="global-nav__item">
                     <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
-                        Login
+                        Sign in
                     </Link>
                 </li>
             );
