@@ -101,7 +101,7 @@ describe("different item states", () => {
         const wrapper = mount(<EditHomepageItem {...successRouteProps} />);
         const inputs = wrapper.find("input");
         const textarea = wrapper.find("textarea");
-        expect(inputs.length).toBe(5);
+        expect(inputs.length).toBe(3);
         expect(textarea.length).toBe(1);
     });
     it("renders something went wrong message when unsupported field type is passed ", () => {

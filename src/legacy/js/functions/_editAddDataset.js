@@ -122,7 +122,7 @@ function addDataset(collectionId, data, field, idField) {
                 }
 
                 if (pageTitle.length < 4 || pageTitle.toLowerCase() === 'data') {
-                    sweetAlert("This is not a valid file title");
+                    sweetAlert("Invalid title, ensure that the 'period' is at least four characters and isn't 'data'");
                     return;
                 }
 
