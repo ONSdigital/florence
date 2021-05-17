@@ -1,103 +1,103 @@
 .margin {
 
-    @for $i from 0 through 5 {
-        $vertical-spacing: $lineheight * $i;
-        $horizontal-spacing: $gutter * $i;
+  @for $i from 0 through 5 {
+    $vertical-spacing: $lineheight * $i;
+    $horizontal-spacing: $gutter * $i;
 
-        &--#{$i} {
-            margin: $vertical-spacing $horizontal-spacing;
-        }
-
-        &-top--#{$i} {
-            margin-top: $vertical-spacing;
-        }
-
-        &-right--#{$i} {
-            margin-right: $horizontal-spacing;
-        }
-
-        &-bottom--#{$i} {
-            margin-bottom: $vertical-spacing;
-        }
-
-        &-left--#{$i} {
-            margin-left: $horizontal-spacing;
-        }
-
+    &--#{$i} {
+      margin: $vertical-spacing $horizontal-spacing;
     }
+
+    &-top--#{$i} {
+      margin-top: $vertical-spacing;
+    }
+
+    &-right--#{$i} {
+      margin-right: $horizontal-spacing;
+    }
+
+    &-bottom--#{$i} {
+      margin-bottom: $vertical-spacing;
+    }
+
+    &-left--#{$i} {
+      margin-left: $horizontal-spacing;
+    }
+
+  }
 
 }
 
 .padding {
 
-    @for $i from 0 through 5 {
-        $vertical-spacing: $lineheight * $i;
-        $horizontal-spacing: $gutter * $i;
+  @for $i from 0 through 5 {
+    $vertical-spacing: $lineheight * $i;
+    $horizontal-spacing: $gutter * $i;
 
-        &--#{$i} {
-            padding: $vertical-spacing $horizontal-spacing;
-        }
-
-        &-top--#{$i} {
-            padding-top: $vertical-spacing;
-        }
-
-        &-right--#{$i} {
-            padding-right: $horizontal-spacing;
-        }
-
-        &-bottom--#{$i} {
-            padding-bottom: $vertical-spacing;
-        }
-
-        &-left--#{$i} {
-            padding-left: $horizontal-spacing;
-        }
-
+    &--#{$i} {
+      padding: $vertical-spacing $horizontal-spacing;
     }
-    
-    @for $i from 1 through 5 {
-        $margin: $gutter * $i;
 
-        &-right--#{$i} {
-            margin-right: $margin;
-        }
-        
-        &-left--#{$i} {
-            margin-left: $margin;
-        }
+    &-top--#{$i} {
+      padding-top: $vertical-spacing;
     }
+
+    &-right--#{$i} {
+      padding-right: $horizontal-spacing;
+    }
+
+    &-bottom--#{$i} {
+      padding-bottom: $vertical-spacing;
+    }
+
+    &-left--#{$i} {
+      padding-left: $horizontal-spacing;
+    }
+
+  }
+
+  @for $i from 1 through 5 {
+    $margin: $gutter * $i;
+
+    &-right--#{$i} {
+      margin-right: $margin;
+    }
+
+    &-left--#{$i} {
+      margin-left: $margin;
+    }
+  }
 
 }
 
 .colour {
 
-    @each $colour-name, $colour-value in $colours {
+  @each $colour-name, $colour-value in $colours {
 
-        &--#{$colour-name},
-        &--#{$colour-name}:visited {
-            color: $colour-value;
-        }    
+    &--#{$colour-name},
+    &--#{$colour-name}:visited {
+      color: $colour-value;
     }
+  }
 
 }
 
 .font-size {
-    &--16 {
-        font-size: 16px;
-    }
+  &--16 {
+    font-size: 16px;
+  }
 
-    &--18 {
-        font-size: 18px;
-    }
+  &--18 {
+    font-size: 18px;
+  }
 }
 
 .inline {
-    display: inline;
+  display: inline;
 
-    &-block {
-        display: inline-block;
-    }
+  &-block {
+    display: inline-block;
+  }
 }
 
 .block {
@@ -105,21 +105,23 @@
 }
 
 .text-center {
-    text-align: center;
+  text-align: center;
 }
 
 .text-right {
-    text-align: right;
+  text-align: right;
 }
 
 .font-weight {
-    &--300 {
-        font-weight: 300;
-    }
-    &--400 {
-        font-weight: 400;
-    }
-    &--600 {
-        font-weight: 600;
-    }
+  &--300 {
+    font-weight: 300;
+  }
+
+  &--400 {
+    font-weight: 400;
+  }
+
+  &--600 {
+    font-weight: 600;
+  }
 }

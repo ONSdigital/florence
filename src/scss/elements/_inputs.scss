@@ -9,7 +9,7 @@
     background-color: $white;
 
     &:focus {
-        border: 3px solid $focus;
+        box-shadow: 0 0 0 3px $focus;
     }
 
     &:disabled {
@@ -123,11 +123,10 @@
         padding: ($lineheight / 2) $gutter;
         margin-bottom: $lineheight;
 
-        &__label {
-            font-weight: 600;
-        }
-
+    &__label {
+        font-weight: 600;
     }
+  }
 }
 
 .radio {
@@ -199,12 +198,14 @@
             &:before {
                 border-color: $nappa;
             }
+
             &:after {
                 border-color: $quill-grey;
             }
         }
     }
 }
+
 .checkbox {
     position: relative;
 
@@ -225,10 +226,6 @@
             background-color: $quill-grey;
         }
 
-        &:focus {
-            outline: 3px solid $focus;
-        }
-
         &:checked + label:after {
             opacity: 1;
         }
@@ -237,6 +234,7 @@
             &:before {
                 content: "";
                 border: 3px solid $scarpa-flow;
+                border-radius: 3px;
                 background: white;
                 width: 28px;
                 height: 28px;

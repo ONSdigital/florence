@@ -137,7 +137,7 @@ function setupFlorence() {
     Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
-    Florence.globalVars.config = config || { enableDatasetImport: false, enableHomepagePublishing: false };
+    Florence.globalVars.config = config || { enableDatasetImport: false, enableHomepagePublishing: false, enableNewSignIn: false };
  
     // load main florence template
     var florence = templates.florence;

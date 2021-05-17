@@ -11,6 +11,7 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 audit: node-modules
 	go list -m all | nancy sleuth
 	cd src; npm run audit
+	cd src/legacy; npm run audit
 
 .PHONY: build
 build: node-modules generate-go-prod
