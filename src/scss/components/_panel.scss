@@ -1,0 +1,37 @@
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 14px 14px 14px 20px;
+  width: 100%;
+  height: auto;
+  background: #F8F8F8;
+  box-shadow: inset 4px 0 0 rgba(0, 0, 0, 0.25);
+  font-style: normal;
+  font-weight: normal;
+  font-size: 14px;
+  line-height: 19px;
+  color: $black;
+  margin: 19px 0;
+
+  &:focus{
+    box-shadow: none;
+    outline: 4px solid $color-focus !important;
+    outline-offset: 0;
+  }
+
+  &--error {
+    color: $night-shadz;
+    box-shadow: inset 4px 0 0 $night-shadz;
+    background: #FBF7F7;
+  }
+
+  &__heading {
+    font-weight: bold;
+    margin: 0px 0px;
+  }
+
+  &__description {
+    margin: 0px 0px;
+  }
+}
