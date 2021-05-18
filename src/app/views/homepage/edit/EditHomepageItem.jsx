@@ -45,9 +45,7 @@ export default class EditHomepageItem extends Component {
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
             imageData: {
-                url: "",
-                title: "",
-                altText: ""
+                url: ""
             },
             imageState: "",
             upload: {},
@@ -157,9 +155,7 @@ export default class EditHomepageItem extends Component {
                 this.stopPollingForUpdates(imageID);
                 this.setState({
                     imageData: {
-                        url: "",
-                        title: "",
-                        altText: ""
+                        url: ""
                     },
                     imageState: "created",
                     upload: {},
@@ -295,9 +291,7 @@ export default class EditHomepageItem extends Component {
         this.setState({
             image: "",
             imageData: {
-                url: "",
-                title: "",
-                altText: ""
+                url: ""
             },
             upload: {},
             imageImportStatus: STATUS_IMAGE_RECORD_CREATED
@@ -368,22 +362,6 @@ export default class EditHomepageItem extends Component {
                             onChange={this.handleInputChange}
                         />
                         {this.renderImageUpload()}
-                        <Input
-                            id="image-title"
-                            type="input"
-                            label="Image title"
-                            disabled={isDisabled}
-                            value={this.state.imageData.title}
-                            onChange={this.handleInputChange}
-                        />
-                        <Input
-                            id="image-alt-text"
-                            type="input"
-                            label="Alt text (leave blank if decorative)"
-                            disabled={isDisabled}
-                            value={this.state.imageData.altText}
-                            onChange={this.handleInputChange}
-                        />
                     </div>
                 );
             }

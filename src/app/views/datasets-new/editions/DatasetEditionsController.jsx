@@ -25,122 +25,41 @@ export class DatasetEditionsController extends Component {
         super(props);
 
         this.state = {
-            isFetchingDataset: false,
-            dataset: {},
-            isFetchingEditions: false,
+            isFetchingData: false,
+            datasetTitle: "",
             editions: [
                 {
                     title: "Create new edition",
                     id: "create-new-edition",
                     url: this.props.location.pathname + "/editions"
                 }
-            ],
-            isFetchingEditionsAndVersions: false
+            ]
         };
     }
 
-    async componentWillMount() {
-        this.setState({ isFetchingEditionsAndVersions: true });
+    componentWillMount = () => {
         const datasetID = this.props.params.datasetID;
-        const dataset = await this.getDataset(datasetID);
-        this.setState({ dataset: this.mapDatasetToState(dataset) });
-        this.createListOfEditions(datasetID);
-    }
-
-    createListOfEditions = async datasetID => {
-        const editions = (await this.getEditions(datasetID)) || [];
-        const editionsWithReleaseDates = await this.mapVersionReleaseDatesToEditions(datasetID, editions);
-        this.setState({
-            editions: [...this.state.editions, ...editionsWithReleaseDates],
-            isFetchingEditionsAndVersions: false
-        });
+        this.getAllEditions(datasetID);
     };
 
-    getDataset = datasetID => {
-        this.setState({ isFetchingDataset: true });
+    getAllEditions = datasetID => {
+        this.setState({ isFetchingData: true });
         return datasets
-            .get(datasetID)
-            .then(dataset => {
-                this.setState({ isFetchingDataset: false });
-                return this.mapDatasetToState(dataset);
+            .getEditionsList(datasetID)
+            .then(response => {
+                const editionsList = this.buildEditionsList(response.editions);
+                this.setState({
+                    isFetchingData: false,
+                    editions: editionsList,
+                    datasetTitle: response.dataset_name
+                });
             })
             .catch(error => {
                 switch (error.status) {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    case "RESPONSE_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message: "An error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    case "FETCH_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message:
-                                "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    default: {
-                        const notification = {
-                            type: "warning",
-                            message: "An unexpected error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                }
-                console.error(`Error getting dataset (${datasetID}):\n`, error);
-                this.setState({ isFetchingDataset: false });
-            });
-    };
-
-    mapDatasetToState = datasetResponse => {
-        try {
-            const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
-            return {
-                title: dataset.title
-            };
-        } catch (error) {
-            const notification = {
-                type: "warning",
-                message:
-                    "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
-            };
-            notifications.add(notification);
-            console.error("Error getting dataset details to state:\n", error);
-        }
-    };
-
-    getEditions = datasetID => {
-        this.setState({ isFetchingEditions: true });
-        return datasets
-            .getEditions(datasetID)
-            .then(editions => {
-                this.setState({ isFetchingEditions: false });
-                return this.mapDatasetEditionsToView(editions.items);
-            })
-            .catch(error => {
-                switch (error.status) {
-                    case 404: {
-                        const notification = {
-                            type: "warning",
-                            message: "No API route available for a list of editions.",
+                            message: "No API route available for a list of editions. Try refresh the page.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -159,16 +78,7 @@ export class DatasetEditionsController extends Component {
                         const notification = {
                             type: "warning",
                             message:
-                                "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    case "UNEXPECTED_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message: "An unexpected error has occurred whilst trying to get a list of editions.",
+                                "There's been a network error whilst trying to get the editions. Please check you internet connection and try again in a few moments.",
                             isDismissable: true
                         };
                         notifications.add(notification);
@@ -184,70 +94,42 @@ export class DatasetEditionsController extends Component {
                         break;
                     }
                 }
-                console.error(`Error getting dataset (${datasetID}):\n`, error);
-                this.setState({ isFetchingEditions: false });
+                console.error(`Error getting editions list for ${datasetID}:\n`, error);
+                this.setState({ isFetchingData: false });
             });
     };
 
-    mapDatasetEditionsToView = editions => {
+    mapEditionsToState = editions => {
         try {
-            return editions.map(editionItem => {
-                const edition = editionItem.current || editionItem.next || editionItem;
+            const editionsList = editions.map(edition => {
                 return {
-                    title: edition.edition,
-                    id: edition.edition,
-                    url: this.props.location.pathname + "/editions/" + edition.edition,
-                    details: ["Release date: loading..."],
-                    latestVersion: edition.links.latest_version.id
+                    id: edition.id,
+                    title: edition.title,
+                    url: this.props.location.pathname + "/editions/" + edition.id,
+                    details: [`Release date: ${edition.release_date || "Not yet set"}`]
                 };
             });
+            return editionsList;
         } catch (error) {
             const notification = {
                 type: "warning",
                 message:
-                    "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
+                    "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
                 isDismissable: true
             };
             notifications.add(notification);
-            console.error("Error getting mapping editions to state:\n", error);
+            console.error("Error getting mapping versions to state:\n", error);
         }
     };
 
-    mapVersionReleaseDatesToEditions = async (datasetID, editions) => {
-        const allVersions = await this.getLatestVersionForAllEditions(datasetID, editions).then(versions => {
-            return versions;
+    buildEditionsList = editions => {
+        const editionsList = this.mapEditionsToState(editions);
+        editionsList.unshift({
+            title: "Create new edition",
+            id: "create-new-edition",
+            url: this.props.location.pathname + "/editions"
         });
-
-        // if we fail to get latest versions display inline error
-        if (!allVersions) {
-            const mappedEditions = editions.map(edition => {
-                edition.details[0] = "Release date: error retreiving release date";
-                return edition;
-            });
-            return mappedEditions;
-        }
-
-        const mappedEditions = editions.map(edition => {
-            allVersions.find(version => {
-                if (version.edition !== edition.title) {
-                    return;
-                }
-                edition.details[0] = `Release date: ${date.format(version.release_date, "dd mmmm yyyy")}`;
-            });
-            return edition;
-        });
-        return mappedEditions;
-    };
-
-    getLatestVersionForAllEditions = (datasetID, editions) => {
-        return datasets
-            .getLatestVersionForEditions(datasetID, editions)
-            .then(versions => {
-                return versions;
-            })
-            .catch(error => {
-                console.error("Error getting latest versions", error);
-            });
+        return editionsList;
     };
 
     handleBackButton = () => {
@@ -267,7 +149,7 @@ export class DatasetEditionsController extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Select an Edition</h1>
                     <p className="margin-bottom--1 font-size--18">
-                        <span className="font-weight--600">Dataset</span>: {this.state.dataset.title ? this.state.dataset.title : "loading..."}
+                        <span className="font-weight--600">Dataset</span>: {this.state.datasetTitle ? this.state.datasetTitle : "loading..."}
                     </p>
                     <SimpleSelectableList rows={this.state.editions} showLoadingState={this.state.isFetchingEditionsAndVersions} />
                 </div>
