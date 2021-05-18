@@ -69,7 +69,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     // here (ie at the lowest level possible)
                     const notification = {
                         type: "neutral",
-                        message: "Your session has expired so you've been redirected to the login screen",
+                        message: "Your session has expired so you've been redirected to the sign in screen",
                         isDismissable: true,
                         autoDismiss: 20000
                     };

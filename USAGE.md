@@ -65,7 +65,7 @@ For more details on the CMD import process, refer to the [CMD dataset import seq
 - Provide an email address and password for the new account
 - Select the account type - in order to review and approve content, the user must be of type `administrator` or `publisher`
 - `Create user`
-- Sign out and sign back in - you will be asked to update the password on first log in
+- Sign out and sign back in - you will be asked to update the password on first sign in
 
 #### Publish a collection
 
