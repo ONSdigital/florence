@@ -68,7 +68,7 @@ export class NavBar extends Component {
             return (
                 <li className="global-nav__item">
                     <Link to={`${this.props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
-                        Login
+                        Sign in
                     </Link>
                 </li>
             );
@@ -121,7 +121,7 @@ export class NavBar extends Component {
                 )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={this.handleLogoutClick} className="global-nav__link">
-                        Logout
+                        Sign out
                     </Link>
                 </li>
             </span>
