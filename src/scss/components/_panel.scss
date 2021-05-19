@@ -85,7 +85,7 @@
     color: $night-shadz;
   }
 
-  &--warn {
+  &--warning {
     border: 0 !important;
     margin-bottom: 1rem;
     padding: 0;
@@ -128,7 +128,7 @@
       padding: 0;
     }
 
-    &.panel--warn {
+    &.panel--warning {
       padding: 0;
     }
   }
@@ -137,7 +137,7 @@
     padding: 2rem;
   }
 
-  &--warn &,
+  &--warning &,
   &--announcement & {
     &__body {
       font-weight: 600;
@@ -196,7 +196,7 @@
   }
 
   &--success,
-  &--warn,
+  &--warning,
   &--announcement {
     .panel__icon {
       position: absolute;
@@ -206,7 +206,7 @@
 
 @include panel-type(error, $night-shadz, transparentize($ruby-red, .95));
 @include panel-type(success, $leaf-green, transparentize($leaf-green, .95));
-@include panel-type(info, transparentize($black, .75), transparentize($black, .95));
-@include panel-type(warn, $white, $white);
+@include panel-type(information, transparentize($black, .75), transparentize($black, .95));
+@include panel-type(warning, $white, $white);
 @include panel-type(announcement, $black, $black);
 
