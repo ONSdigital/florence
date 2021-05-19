@@ -1,7 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-// Types: warning, error, announcement, information, success, bare
 const propTypes = {
     type: PropTypes.string.isRequired,
     body: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
@@ -38,7 +37,8 @@ const Panel = props => {
         </svg>
     );
     const arrowSVG = (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" focusable="false"
+             aria-hidden="true">
             <path
                 d="M4.2,12c0-0.6,0.4-1,1-1h11.2l-4.9-4.9c-0.4-0.4-0.4-1,0-1.4c0.4-0.4,1-0.4,1.4,0l6.6,6.6c0.4,0.4,0.4,1,0,1.4l-6.6,6.6c-0.4,0.4-1,0.4-1.4,0c-0.4-0.4-0.4-1,0-1.4l4.9-4.9H5.2C4.7,13,4.2,12.6,4.2,12z"
                 fill="currentColor"
@@ -95,10 +95,6 @@ const Panel = props => {
         );
     }
 
-    //______________________________________________________________________
-    //{props.heading && props.bannerHeading && headingSection}
-    //                     {props.input && inputSection}
-    //______________________________________________________________________
     return (
         <div className={props.type}>
             <div className={props.type === "announcement" ? "padding-right--1 padding-left--1" : ""}>
