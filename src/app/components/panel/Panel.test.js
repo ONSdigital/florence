@@ -74,6 +74,7 @@ test("error panel with a regular heading and an input field", () => {
             pattern: "[0-9]",
             id: "number",
             type: "text",
+            required: false,
             label: "Number of employees paid monthly",
             inputMode: "numeric"
         }
