@@ -127,7 +127,7 @@ export default class Input extends Component {
 
     renderLabel() {
         return (
-            <label className={"form__label" + (this.props.type === "checkbox" ? " checkbox__label" : "")} htmlFor={this.props.id}>
+            <label className={"form__label" + (this.props.type === "checkbox" ? " checkbox__label font-weight--300" : "")} htmlFor={this.props.id}>
                 {this.props.label}
             </label>
         );
