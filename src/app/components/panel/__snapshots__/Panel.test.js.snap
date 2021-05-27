@@ -1,0 +1,278 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`announcement panel with custom html in body and an icon and no heading 1`] = `
+<div
+  className="announcement"
+>
+  <div
+    className="padding-right--1 padding-left--1"
+  >
+    <div
+      className="panel panel--announcement panel--no-title"
+    >
+      <span
+        aria-hidden="true"
+        className="panel__icon"
+      >
+        <svg
+          aria-hidden="true"
+          focusable="false"
+          height="24px"
+          viewBox="0 0 24 24"
+          width="24px"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M4.2,12c0-0.6,0.4-1,1-1h11.2l-4.9-4.9c-0.4-0.4-0.4-1,0-1.4c0.4-0.4,1-0.4,1.4,0l6.6,6.6c0.4,0.4,0.4,1,0,1.4l-6.6,6.6c-0.4,0.4-1,0.4-1.4,0c-0.4-0.4-0.4-1,0-1.4l4.9-4.9H5.2C4.7,13,4.2,12.6,4.2,12z"
+            fill="currentColor"
+          />
+        </svg>
+      </span>
+      <span
+        className="visually-hidden"
+      >
+        announcement
+      </span>
+      <div
+        className="panel__body"
+      >
+        <p>
+          "Coronavirus lockdown: stay at home Coronavirus (COVID-19) remains a serious threat across the country. 
+          <a
+            href="#0"
+          >
+            Find out more
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`error panel with a heading and a bullet point list  1`] = `
+<div
+  className="error"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--error"
+    >
+      <div
+        className="panel__header"
+      >
+        <h2
+          className="panel__title"
+          data-qa="header"
+          id="error-summary-title"
+        >
+          There are 2 problems: 
+        </h2>
+      </div>
+      <span
+        className="visually-hidden"
+      >
+        error
+      </span>
+      <div
+        className="panel__body"
+      >
+        <ol
+          className="list"
+        >
+          <li
+            className="list__item "
+          >
+            <a
+              className="list__link js-inpagelink"
+              href="#container-test-number"
+            >
+              Enter a number
+            </a>
+          </li>
+          <li
+            className="list__item "
+          >
+            <a
+              className="list__link js-inpagelink"
+              href="#container-test-percent"
+            >
+              Enter a number less than or equal to 100
+            </a>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`error panel with a regular heading and an input field 1`] = `
+<div
+  className="error"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--error panel--no-title"
+    >
+      <span
+        className="visually-hidden"
+      >
+        error
+      </span>
+      <div
+        className="field"
+      >
+        <label
+          className="label  "
+          htmlFor="number"
+        >
+          Number of employees paid monthly
+        </label>
+        <input
+          className="input input--text input-type__input  input--props.type"
+          id="number"
+          inputMode="numeric"
+          pattern="[0-9]"
+          required={false}
+          type="text"
+        />
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`error type panel with a regular heading and body 1`] = `
+<div
+  className="error"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--error panel--no-title"
+    >
+      <span
+        className="visually-hidden"
+      >
+        error
+      </span>
+      <div
+        className="panel__body"
+      >
+        <p
+          className="panel__error"
+        >
+          <strong
+            className="font-weight--600"
+          >
+            Fix the following: 
+          </strong>
+        </p>
+        Email address or password are incorrect
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`information panel with no heading and raw string for body 1`] = `
+<div
+  className="information"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--information panel--no-title"
+    >
+      <span
+        className="visually-hidden"
+      >
+        information
+      </span>
+      <div
+        className="panel__body"
+      >
+        In principle but likewise practice this is a relatively simple but important message. The fact of the matter is that you had absolutely no idea and therefore did not know whether or not it was vital for you to spend the time to read this message until you actually started to consume the words which this message contains. Now that you have started to read it this message can help you realise that the nature of this message is to inform you that you have indeed actually now read this message.
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`success panel with a tick icon and a raw text body 1`] = `
+<div
+  className="success"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--success panel--no-title"
+    >
+      <span
+        className="panel__icon"
+      >
+        <svg
+          className="svg-icon"
+          focusable="false"
+          viewBox="0 0 13 10"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M14.35,3.9l-.71-.71a.5.5,0,0,0-.71,0h0L5.79,10.34,3.07,7.61a.51.51,0,0,0-.71,0l-.71.71a.51.51,0,0,0,0,.71l3.78,3.78a.5.5,0,0,0,.71,0h0L14.35,4.6A.5.5,0,0,0,14.35,3.9Z"
+            transform="translate(-1.51 -3.04)"
+          />
+        </svg>
+      </span>
+      <span
+        className="visually-hidden"
+      >
+        success
+      </span>
+      <div
+        className="panel__body"
+      >
+        Information has been successfully submitted
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`warning panel with an exclamation icon and raw string body 1`] = `
+<div
+  className="warning"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--warning panel--no-title"
+    >
+      <span
+        aria-hidden="true"
+        className="panel__icon"
+      >
+        !
+      </span>
+      <span
+        className="visually-hidden"
+      >
+        warning
+      </span>
+      <div
+        className="panel__body"
+      >
+        All the information about this person will be deleted
+      </div>
+    </div>
+  </div>
+</div>
+`;

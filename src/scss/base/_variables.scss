@@ -45,6 +45,51 @@ $silver-sand: #BBBDC0;
 $focus: #ffbf47;
 $primary-link: #3B7A9E;
 
+// ONS approved colour pallet
+$spring-green: #A8BD3A;
+$aqua-teal: #00A3A6;
+$sky-blue: #27A0CC;
+$ocean-blue: #206095;
+$night-blue: #003C57;
+
+// Mono
+$grey1: #414042;
+$grey2: #707071;
+$grey3: #BCBCBD;
+$grey4: #E2E2E3;
+$grey5: #F5F5F6;
+
+// Supporting Palette
+$ruby-red: #D0021B;
+$jaffa-orange: #FE781F;
+$sun-yellow: #FBC900;
+$neon-yellow: #F0F762;
+$leaf-green: #0F8243;
+
+// Census
+$indigo-blue: #3C388E;
+$plum-purple: #902082;
+$flamingo-pink: #DF0667;
+
+// --- Tints ---
+// Allowed tint percentages
+$tints: (70, 40, 10);
+// colours to be used (currently all listed in colour palettes except greys)
+$tintable-colors: (
+        $spring-green,
+        $aqua-teal,
+        $sky-blue,
+        $ocean-blue,
+        $night-blue,
+        $indigo-blue,
+        $plum-purple,
+        $flamingo-pink,
+        $ruby-red,
+        $jaffa-orange,
+        $sun-yellow,
+        $neon-yellow,
+        $leaf-green);
+
 $colours: (
     black: $black,
     white: $white,
