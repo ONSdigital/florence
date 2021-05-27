@@ -76,7 +76,7 @@ export default class Input extends Component {
             inputClasses += " input--show-hide";
         }
         if (this.props.type === "checkbox") {
-            inputClasses += " checkbox__input";
+            inputClasses += " checkbox__input visually-hidden";
         }
         return inputClasses;
     }
