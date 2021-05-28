@@ -28,6 +28,7 @@ export class LoginController extends Component {
         super(props);
 
         this.state = {
+            validationErrors: {},
             email: {
                 value: "",
                 errorMsg: ""
@@ -57,86 +58,121 @@ export class LoginController extends Component {
         return http.post("/zebedee/login", body, true, true);
     }
 
-    handleLogin(credentials) {
+    requestLogin(credentials) {
         this.postLoginCredentials(credentials)
             .then(accessToken => {
-                cookies.add("access_token", accessToken);
-                user.getPermissions(this.state.email.value)
-                    .then(userType => {
-                        user.setUserState(userType);
-                        redirectToMainScreen(this.props.location.query.redirect);
-                    })
-                    .catch(error => {
-                        this.setState({ isSubmitting: false });
-                        notifications.add({
-                            type: "warning",
-                            message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
-                            autoDismiss: 8000,
-                            isDismissable: true
-                        });
-                        log.event("Error getting a user's permissions on login", log.error(error));
-                        console.error("Error getting a user's permissions on login", error);
-                    });
+                this.handleLogin(accessToken);
             })
             .catch(error => {
+                let stateToSet = {};
                 if (error) {
-                    const notification = {
-                        type: "warning",
-                        isDismissable: true,
-                        autoDismiss: 15000
-                    };
-
-                    switch (error.status) {
-                        case 404: {
-                            const email = Object.assign({}, this.state.email, {
-                                errorMsg: "Email address not recognised"
-                            });
-                            this.setState({
-                                email: email,
-                                isSubmitting: false
-                            });
-                            break;
-                        }
-                        case 401: {
-                            const password = Object.assign({}, this.state.email, { errorMsg: "Incorrect password" });
-                            this.setState({
-                                password: password,
-                                isSubmitting: false
-                            });
-                            break;
-                        }
-                        case 417: {
-                            this.setState({
-                                requestPasswordChange: true
-                            });
-                            break;
-                        }
-                        case "RESPONSE_ERR": {
-                            console.error(errCodes.RESPONSE_ERR);
-                            notification.message = errCodes.RESPONSE_ERR;
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "FETCH_ERR": {
-                            console.error(errCodes.FETCH_ERR);
-                            notification.message = errCodes.FETCH_ERR;
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "UNEXPECTED_ERR": {
-                            console.error(errCodes.UNEXPECTED_ERR);
-                            notification.message = errCodes.UNEXPECTED_ERR;
-                            notifications.add(notification);
-                            break;
-                        }
-                        default: {
-                            console.error(errCodes.UNEXPECTED_ERR);
-                            notification.message = errCodes.UNEXPECTED_ERR;
-                            notifications.add(notification);
-                        }
-                    }
+                    stateToSet = this.handleLoginError(error, stateToSet);
                 }
+
+                this.setState({
+                    ...stateToSet,
+                    isSubmitting: false
+                });
+            });
+    }
+
+    handleLoginError(error, stateToSet) {
+        const notification = {
+            type: "warning",
+            isDismissable: true,
+            autoDismiss: 15000
+        };
+
+        if (error.status != null) {
+            if (error.status >= 400 && error.status < 500) {
+                let errorContents = { errorsForBody: [], emailMessage: "", passwordMessage: "" };
+                let validationErrors = {
+                    heading: "Fix the following: "
+                };
+
+                if (error.errors != null) {
+                    error.errors.forEach(anError => {
+                        errorContents = this.showValidationError(anError, errorContents, notification);
+                    });
+                } else {
+                    this.notifyUnexpectedError(notification);
+                }
+
+                validationErrors.body = errorContents.errorsForBody;
+                stateToSet = {
+                    ...this.state,
+                    validationErrors
+                };
+                stateToSet.email.errorMsg = errorContents.emailMessage;
+                stateToSet.password.errorMsg = errorContents.passwordMessage;
+            } else {
+                this.notifyUnexpectedError(notification);
+            }
+        } else {
+            this.notifyUnexpectedError(notification);
+        }
+
+        return stateToSet;
+    }
+
+    showValidationError(anError, errorContents, notification) {
+        switch (anError.code) {
+            case "InvalidEmail":
+                errorContents.errorsForBody.push(
+                    <p>
+                        <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                            Enter a valid email address
+                        </a>
+                    </p>
+                );
+                errorContents.emailMessage = "Enter a valid email address";
+                break;
+            case "InvalidPassword":
+                errorContents.errorsForBody.push(
+                    <p>
+                        <a href="javascript:document.getElementById('password').focus()" className={"colour--night-shadz"}>
+                            Enter a password
+                        </a>
+                    </p>
+                );
+                errorContents.passwordMessage = "Enter a password";
+                break;
+            case "NotAuthorised":
+                errorContents.errorsForBody.push(<p>Email address or password are incorrect</p>);
+                break;
+            case "TooManyFailedAttempts":
+                errorContents.errorsForBody.push(<p>You've tried to sign in to your account too many times. Please try again later.</p>);
+                break;
+            default:
+                // Code undefined or different to expected range of errors
+                this.notifyUnexpectedError(notification);
+        }
+        return errorContents;
+    }
+
+    notifyUnexpectedError(notification) {
+        console.error(errCodes.LOGIN_UNEXPECTED_ERR);
+        notification.message = errCodes.LOGIN_UNEXPECTED_ERR;
+        notifications.add(notification);
+    }
+
+    handleLogin(accessToken) {
+        cookies.add("access_token", accessToken);
+        user.getPermissions(this.state.email.value)
+            .then(userType => {
+                user.setUserState(userType);
+                redirectToMainScreen(this.props.location.query.redirect);
+            })
+            .catch(error => {
                 this.setState({ isSubmitting: false });
+                notifications.add({
+                    type: "warning",
+                    message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
+                    autoDismiss: 8000,
+                    isDismissable: true
+                });
+                log.event("Error getting a user's permissions on login", log.error(error));
+                console.error("Error getting a user's permissions on login", error);
             });
     }
 
@@ -150,7 +186,7 @@ export class LoginController extends Component {
 
         this.setState({ isSubmitting: true });
 
-        this.handleLogin(credentials);
+        this.requestLogin(credentials);
     }
 
     handleInputChange(event) {
@@ -206,7 +242,7 @@ export class LoginController extends Component {
             password: newPassword
         };
 
-        this.handleLogin(credentials);
+        this.requestLogin(credentials);
     }
 
     handlePasswordChangeCancel(event) {
@@ -246,7 +282,12 @@ export class LoginController extends Component {
 
         return (
             <div>
-                <LoginForm inputs={inputs} isSubmitting={this.state.isSubmitting} onSubmit={this.handleSubmit} />
+                <LoginForm
+                    inputs={inputs}
+                    isSubmitting={this.state.isSubmitting}
+                    onSubmit={this.handleSubmit}
+                    validationErrors={this.state.validationErrors}
+                />
 
                 {this.state.requestPasswordChange ? (
                     <Modal sizeClass={"grid__col-3"}>

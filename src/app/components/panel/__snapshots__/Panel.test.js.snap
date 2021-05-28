@@ -138,7 +138,6 @@ exports[`error panel with a regular heading and an input field 1`] = `
           id="number"
           inputMode="numeric"
           pattern="[0-9]"
-          required={false}
           type="text"
         />
       </div>
