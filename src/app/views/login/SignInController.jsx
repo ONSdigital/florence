@@ -90,8 +90,8 @@ export class LoginController extends Component {
                     heading: "Fix the following: "
                 };
 
-                if (error.errors != null) {
-                    error.errors.forEach(anError => {
+                if (error.body != null && error.body.errors != null) {
+                    error.body.errors.forEach(anError => {
                         errorContents = this.showValidationError(anError, errorContents, notification);
                     });
                 } else {
