@@ -105,6 +105,11 @@ export class LoginController extends Component {
                 };
                 stateToSet.email.errorMsg = errorContents.emailMessage;
                 stateToSet.password.errorMsg = errorContents.passwordMessage;
+                // Temporary code until login work is connected to dp-identity-api
+                if (error.status === 417) {
+                    stateToSet.requestPasswordChange = true;
+                }
+                // End of temporary code
             } else {
                 this.notifyUnexpectedError(notification);
             }
