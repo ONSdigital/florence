@@ -1,0 +1,212 @@
+@mixin panel-type($name, $color, $color-bg) {
+  .panel {
+    &--#{$name} {
+      background: $color-bg;
+      border-color: $color;
+    }
+
+    &--#{$name} & {
+      &__header {
+        background: $color;
+      }
+    }
+  }
+}
+
+.announcement {
+  background-color: $black;
+}
+
+.panel {
+  border-radius: 0;
+  position: relative;
+  // Removes inherited bottom margin to make whitespace inside panel equal
+  > *:last-child {
+    margin-bottom: 0;
+  }
+
+  .field {
+    margin-bottom: 0;
+  }
+
+  &:focus {
+    box-shadow: none;
+    outline: 4px solid $focus !important;
+    outline-offset: 0;
+  }
+
+  .svg-icon {
+    height: 1rem;
+    vertical-align: middle;
+    width: 1rem;
+  }
+
+  &__header {
+    border-radius: 0;
+    color: $white;
+    margin: 0;
+    padding: 0.75rem 1rem;
+  }
+
+  &__title {
+    margin: 0;
+  }
+
+  &__body {
+    padding: 1rem;
+    // Removes inherited bottom margin to make whitespace inside panel equal
+    > *:last-child,
+    strong > *:last-child {
+      margin-bottom: 0;
+    }
+
+    &.svg-icon-margin--xxl {
+      padding-left: 3.3rem !important;
+    }
+
+    &.svg-icon-margin--xl {
+      padding-left: 2.8rem !important;
+    }
+
+    &.svg-icon-margin--l {
+      padding-left: 2.5rem !important;
+    }
+
+    &.svg-icon-margin--m {
+      padding-left: 2.2rem !important;
+    }
+
+    &.svg-icon-margin--s {
+      padding-left: 1.4rem !important;
+    }
+  }
+
+  &__error {
+    color: $night-shadz;
+  }
+
+  &--warning {
+    border: 0 !important;
+    margin-bottom: 1rem;
+    padding: 0;
+
+    &--footer {
+      background-color: $grey4 !important;
+      margin-bottom: 0;
+      padding: 1rem 0 !important;
+    }
+  }
+
+  &--announcement {
+    border: 0 !important;
+    color: $white;
+    margin-bottom: 0;
+    padding: 1rem 0 !important;
+
+    & a {
+      color: inherit;
+      text-decoration: underline solid $white 1px;
+    }
+
+    & a:hover {
+      text-decoration-thickness: 2px;
+    }
+  }
+
+  &--announcement {
+    & a:focus {
+      box-shadow: 0 -2px #fd0, 0 4px $focus !important; // Override focus style because the black border is not visible on a black background
+    }
+  }
+
+  &--no-title {
+    border-left: 4px solid transparent;
+    padding: 1rem;
+
+    .panel__body {
+      background: none;
+      padding: 0;
+    }
+
+    &.panel--warning {
+      padding: 0;
+    }
+  }
+
+  &--spacious {
+    padding: 2rem;
+  }
+
+  &--warning &,
+  &--announcement & {
+    &__body {
+      font-weight: 600;
+      min-height: 2rem; // Height of icon
+      padding: 0.222rem 0 0.222rem 2.8rem; // Alignment tweak
+    }
+
+    &__icon {
+      background: $black;
+      border-radius: 50%;
+      color: $white;
+      font-size: 1.5rem;
+      font-weight: 900;
+      line-height: 2rem;
+      min-height: 2rem;
+      min-width: 2rem;
+      text-align: center;
+    }
+  }
+
+  &--announcement & {
+    &__body div > *:last-child {
+      margin-bottom: 0;
+    }
+
+    &__icon {
+      display: flex;
+
+      svg {
+        margin: auto;
+      }
+    }
+  }
+
+  &--announcement & {
+    &__icon {
+      background-color: $white;
+      color: $black;
+    }
+  }
+
+  &--success & {
+    &__icon {
+      fill: $leaf-green;
+      left: 0;
+      padding-left: 1rem;
+
+      .svg-icon {
+        margin-top: -15% !important;
+      }
+    }
+
+    &__body {
+      padding-left: 1.8rem;
+    }
+  }
+
+  &--success,
+  &--warning,
+  &--announcement {
+    .panel__icon {
+      position: absolute;
+    }
+  }
+}
+
+@include panel-type(error, $night-shadz, transparentize($ruby-red, .95));
+@include panel-type(success, $leaf-green, transparentize($leaf-green, .95));
+@include panel-type(information, transparentize($black, .75), transparentize($black, .95));
+@include panel-type(warning, $white, $white);
+@include panel-type(announcement, $black, $black);
+
