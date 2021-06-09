@@ -16,17 +16,17 @@ import notifications from "../notifications";
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401) {
+export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401, headers) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
     let retryCount = 0;
 
     return new Promise(function(resolve, reject) {
-        tryFetch(resolve, reject, URI, willRetry, body);
+        tryFetch(resolve, reject, URI, willRetry, body, headers);
     });
 
-    function tryFetch(resolve, reject, URI, willRetry, body) {
+    function tryFetch(resolve, reject, URI, willRetry, body, headers) {
         const UID = uuid();
         const URL = window.location.origin + URI;
 
@@ -34,6 +34,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             method,
             credentials: "include",
             headers: {
+                ...headers,
                 "Content-Type": "application/json",
                 "Request-ID": UID,
                 "internal-token": "FD0108EA-825D-411C-9B1D-41EF7727F465"
@@ -195,7 +196,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     // retry post
                     if (retryCount < maxRetries) {
                         setTimeout(function() {
-                            tryFetch(resolve, reject, URI, willRetry, body);
+                            tryFetch(resolve, reject, URI, willRetry, body, headers);
                         }, interval);
                         retryCount++;
                         interval = interval * 2;

@@ -74,4 +74,11 @@ func TestDirectors(t *testing.T) {
 		uploadServiceAPIDirector("v123")(request)
 		So(request.URL.String(), ShouldEqual, "/v123/foo")
 	})
+
+	Convey("Identity API proxy director function appends the provided router api version to the provided path' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/foo", nil)
+		So(err, ShouldBeNil)
+		identityAPIDirector("v123")(request)
+		So(request.URL.String(), ShouldEqual, "/v123/foo")
+	})
 }
