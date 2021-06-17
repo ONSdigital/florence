@@ -37,6 +37,10 @@ generate-go-debug:
 	# Generate the debug assets version
 	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets ../dist/...
 
+.PHONY: lint
+lint:
+	exit
+
 .PHONY: test
 test: test-npm test-pretty node-modules generate-go-prod test-go
 
