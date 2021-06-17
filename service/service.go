@@ -112,6 +112,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion))
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion))
+	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion))
 
 	router = pat.New()
 
@@ -128,6 +129,10 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
+		if cfg.SharedConfig.EnableNewSignIn {
+			router.Handle("/tokens/{uri:.*}", identityAPIProxy)
+			router.Handle("/users/{uri:.*}", identityAPIProxy)
+		}
 	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)

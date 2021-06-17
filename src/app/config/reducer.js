@@ -37,6 +37,7 @@ export default function reducer(state = initialState, action) {
         case RESET: {
             return {
                 ...initialState,
+                notifications: state.notifications,
                 config: state.config
             };
         }
