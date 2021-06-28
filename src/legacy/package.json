@@ -8,8 +8,8 @@
     "dependencies": {
         "cat": "latest",
         "handlebars": "^4.7.7",
-        "node-sass": "^4.14.1",
-        "onchange": "latest"
+        "onchange": "latest",
+        "sass": "^1.34.1"
     },
     "scripts": {
         "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet",
@@ -18,7 +18,7 @@
         "watch-templates": "npm run build-templates && ./node_modules/onchange/cli.js 'templates/*.handlebars' -v -- npm run build-templates",
         "build-templates": "mkdir -p ../../dist/legacy-assets/js && node ./node_modules/handlebars/bin/handlebars templates/*.handlebars --output ../../dist/legacy-assets/js/templates.js",
         "watch-css": "npm run build-css && ./node_modules/onchange/cli.js 'scss/*.scss' 'scss/*/*.scss' -v -- npm run build-css",
-        "build-css": "mkdir -p ../../dist/legacy-assets/css && node ./node_modules/node-sass/bin/node-sass --output-style expanded --source-map-embed true scss/main.scss ../../dist/legacy-assets/css/main.min.css",
+        "build-css": "mkdir -p ../../dist/legacy-assets/css &&  node ./node_modules/sass/sass   scss/main.scss ../../dist/legacy-assets/css/main.min.css --embed-source-map",
         "build-misc-assets": "mkdir -p ../../dist/legacy-assets && cp index.html assets/version.json ../../dist/legacy-assets",
         "watch-misc-assets": "npm run build-misc-assets && ./node_modules/onchange/cli.js 'index.html' 'assets/version.json' -v -- npm run build-misc-assets",
         "watch": "npm run watch-js & npm run watch-templates & npm run watch-css & npm run watch-misc-assets",
