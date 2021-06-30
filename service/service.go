@@ -130,6 +130,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 		if cfg.SharedConfig.EnableNewSignIn {
+			router.Handle("/tokens", identityAPIProxy)
 			router.Handle("/tokens/{uri:.*}", identityAPIProxy)
 			router.Handle("/users/{uri:.*}", identityAPIProxy)
 		}

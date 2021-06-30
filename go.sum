@@ -14,6 +14,8 @@ github.com/ONSdigital/dp-net v1.0.7/go.mod h1:1QFzx32FwPKD2lgZI6MtcsUXritsBdJihl
 github.com/ONSdigital/dp-net v1.0.10/go.mod h1:2lvIKOlD4T3BjWQwjHhBUO2UNWDk82u/+mHRn0R3C9A=
 github.com/ONSdigital/dp-net v1.0.11 h1:BJi+e21NuwEaqANDhEzWeaQgPuoSWkQS49mJALgZJKs=
 github.com/ONSdigital/dp-net v1.0.11/go.mod h1:2lvIKOlD4T3BjWQwjHhBUO2UNWDk82u/+mHRn0R3C9A=
+github.com/ONSdigital/dp-net v1.0.12 h1:Vd06ia1FXKR9uyhzWykQ52b1LTp4N0VOLnrF7KOeP78=
+github.com/ONSdigital/dp-net v1.0.12/go.mod h1:2lvIKOlD4T3BjWQwjHhBUO2UNWDk82u/+mHRn0R3C9A=
 github.com/ONSdigital/go-ns v0.0.0-20191104121206-f144c4ec2e58 h1:XHnzoC7TxueLAfkBpblPiwaIxjngGv1VNVZhvE4jY6w=
 github.com/ONSdigital/go-ns v0.0.0-20191104121206-f144c4ec2e58/go.mod h1:iWos35il+NjbvDEqwtB736pyHru0MPFE/LqcwkV1wDc=
 github.com/ONSdigital/log.go v1.0.0/go.mod h1:UnGu9Q14gNC+kz0DOkdnLYGoqugCvnokHBRBxFRpVoQ=
@@ -21,6 +23,7 @@ github.com/ONSdigital/log.go v1.0.1-0.20200805084515-ee61165ea36a/go.mod h1:dDnQ
 github.com/ONSdigital/log.go v1.0.1-0.20200805145532-1f25087a0744/go.mod h1:y4E9MYC+cV9VfjRD0UBGj8PA7H3wABqQi87/ejrDhYc=
 github.com/ONSdigital/log.go v1.0.1 h1:SZ5wRZAwlt2jQUZ9AUzBB/PL+iG15KapfQpJUdA18/4=
 github.com/ONSdigital/log.go v1.0.1/go.mod h1:dIwSXuvFB5EsZG5x44JhsXZKMd80zlb0DZxmiAtpL4M=
+github.com/ONSdigital/log.go/v2 v2.0.0/go.mod h1:PR7vXrv9dZKUc7SI/0toxBbStk84snmybBnWpe+xY2o=
 github.com/acobaugh/osrelease v0.0.0-20181218015638-a93a0a55a249 h1:fMi9ZZ/it4orHj3xWrM6cLkVFcCbkXQALFUiNtHtCPs=
 github.com/acobaugh/osrelease v0.0.0-20181218015638-a93a0a55a249/go.mod h1:iU1PxQMQwoHZZWmMKrMkrNlY+3+p9vxIjpZOVyxWa0g=
 github.com/aslakhellesoy/gox v1.0.100/go.mod h1:AJl542QsKKG96COVsv0N74HHzVQgDIQPceVUh1aeU2M=
@@ -265,6 +268,8 @@ golang.org/x/sys v0.0.0-20210305215415-5cdee2b1b5a0 h1:MOJR6AyRlIYMexU2acorBot1a
 golang.org/x/sys v0.0.0-20210305215415-5cdee2b1b5a0/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/sys v0.0.0-20210315160823-c6e025ad8005 h1:pDMpM2zh2MT0kHy037cKlSby2nEhD50SYqwQk76Nm40=
 golang.org/x/sys v0.0.0-20210315160823-c6e025ad8005/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
+golang.org/x/sys v0.0.0-20210414055047-fe65e336abe0 h1:g9s1Ppvvun/fI+BptTMj909BBIcGrzQ32k9FNlcevOE=
+golang.org/x/sys v0.0.0-20210414055047-fe65e336abe0/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1/go.mod h1:bj7SfCRtBDWHUb9snDiAeCFNEtKQo2Wmx5Cou7ajbmo=
 golang.org/x/text v0.3.0/go.mod h1:NqM8EUOU14njkJ3fqMW+pc6Ldnwhi/IjpwHt7yyuwOQ=
 golang.org/x/text v0.3.3 h1:cokOdA+Jmi5PJGXLlLllQSgYigAEfHXJAERHVMaCc2k=

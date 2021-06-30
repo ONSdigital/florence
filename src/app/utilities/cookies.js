@@ -10,7 +10,7 @@ export default class cookies {
         return cookiesObject;
     }
 
-    static add(name, value, path, domain) {
+    static add(name, value, path, domain, sameSite, secure) {
         if (!name || typeof name !== "string") {
             console.error(`cookie.add() requires a cookie name (type=string) as an argument`);
             return false;
@@ -25,8 +25,14 @@ export default class cookies {
         if (!domain) {
             domain = location.hostname;
         }
-
-        document.cookie = `${name}=${value};path=${path};domain=${domain}`;
+        let cookie = `${name}=${value};path=${path};domain=${domain}`;
+        if (sameSite != null) {
+            cookie += `; SameSite=${sameSite}`;
+        }
+        if (secure) {
+            cookie += `; Secure`;
+        }
+        document.cookie = cookie;
     }
 
     static get(name) {

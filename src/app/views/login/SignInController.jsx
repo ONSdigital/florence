@@ -55,13 +55,17 @@ export class LoginController extends Component {
     }
 
     postLoginCredentials(body) {
-        return http.post("/zebedee/login", body, true, true);
+        return http.post("/tokens", body, true, true, true);
     }
 
     requestLogin(credentials) {
         this.postLoginCredentials(credentials)
-            .then(accessToken => {
-                this.handleLogin(accessToken);
+            .then(response => {
+                // NOTE: ACCESS TOKEN and REFRESH TOKEN will be moved out of here shortly
+                const accessToken = response.headers.get("Authorization");
+                const refreshToken = response.headers.get("Refresh");
+                const userToken = response.headers.get("Id");
+                this.handleLogin(accessToken, userToken, refreshToken);
             })
             .catch(error => {
                 let stateToSet = {};
@@ -161,8 +165,10 @@ export class LoginController extends Component {
         notifications.add(notification);
     }
 
-    handleLogin(accessToken) {
-        cookies.add("access_token", accessToken);
+    handleLogin(accessToken, userToken, refreshToken) {
+        cookies.add("access_token", accessToken, "/", null, "strict", true);
+        cookies.add("user_token", userToken, "/", null, "strict", true);
+        cookies.add("refresh_token", userToken, "/tokens/self", null, "strict", true);
         user.getPermissions(this.state.email.value)
             .then(userType => {
                 user.setUserState(userType);

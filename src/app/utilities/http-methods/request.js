@@ -12,21 +12,22 @@ import notifications from "../notifications";
  * @param {object} body - JSON of the request body (if it's an applicable HTTP method)
  * @param {function} onRetry - Runs whenever the request is going to be retried. Added for use in unit tests, so that we can run our mocked timeOuts (or else the async test breaks)
  * @param {boolean} callerHandles401 - Flag to decide whether caller or global handler is to handle 401 responses
+ * @param {boolean} returnResponseHeaders - Flag to decide whether to return headers along with usual response
  *
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401, headers) {
+export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401, returnResponseHeaders) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
     let retryCount = 0;
 
     return new Promise(function(resolve, reject) {
-        tryFetch(resolve, reject, URI, willRetry, body, headers);
+        tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
     });
 
-    function tryFetch(resolve, reject, URI, willRetry, body, headers) {
+    function tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders) {
         const UID = uuid();
         const URL = window.location.origin + URI;
 
@@ -34,7 +35,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             method,
             credentials: "include",
             headers: {
-                ...headers,
                 "Content-Type": "application/json",
                 "Request-ID": UID,
                 "internal-token": "FD0108EA-825D-411C-9B1D-41EF7727F465"
@@ -144,7 +144,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     (async () => {
                         try {
                             const text = await response.text();
-                            resolve(text);
+                            returnResponseHeaders ? resolve({ body: text, headers: response.headers }) : resolve(text);
                         } catch (error) {
                             console.error("Error trying to parse request body as text: ", error);
                             log.event("Error trying to parse request body as text", log.error(error));
@@ -168,7 +168,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 (async () => {
                     try {
                         const json = await response.json();
-                        resolve(json);
+                        returnResponseHeaders ? resolve({ body: json, headers: response.headers }) : resolve(json);
                     } catch (error) {
                         // We're not necessarily relying on a response with these methods
                         // so we should still resolve the promise, just with no response body
@@ -196,7 +196,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     // retry post
                     if (retryCount < maxRetries) {
                         setTimeout(function() {
-                            tryFetch(resolve, reject, URI, willRetry, body, headers);
+                            tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
                         }, interval);
                         retryCount++;
                         interval = interval * 2;
