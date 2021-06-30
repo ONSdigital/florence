@@ -168,7 +168,7 @@ export class LoginController extends Component {
     handleLogin(accessToken, userToken, refreshToken) {
         cookies.add("access_token", accessToken, "/", null, "strict", true);
         cookies.add("user_token", userToken, "/", null, "strict", true);
-        cookies.add("refresh_token", userToken, "/tokens/self", null, "strict", true);
+        cookies.add("refresh_token", refreshToken, "/tokens/self", null, "strict", true);
         user.getPermissions(this.state.email.value)
             .then(userType => {
                 user.setUserState(userType);
