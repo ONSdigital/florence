@@ -10,7 +10,36 @@ export default class cookies {
         return cookiesObject;
     }
 
-    static add(name, value, path, domain, sameSite, secure) {
+    /**
+     * Adds a cookie on the client's machine
+     *
+     * @param name - mandatory field for the name of the cookie to set
+     * @param value - mandatory field for the value the should hold
+     * @param cookieAttributes - all non-mandatory fields such as path, domain, SameSite, Secure etc
+     * @returns {boolean} if error occurs will return false
+     */
+    static add(name, value, cookieAttributes) {
+        cookieAttributes = cookieAttributes || {};
+        if (!this.checkHasAllMandatoryAddFields(name, value)) {
+            return false
+        }
+        if (!cookieAttributes.path) {
+            cookieAttributes.path = `/`;
+        }
+        if (!cookieAttributes.domain) {
+            cookieAttributes.domain = location.hostname;
+        }
+        let cookie = `${name}=${value};path=${cookieAttributes.path};domain=${cookieAttributes.domain}`;
+        if (cookieAttributes.sameSite != null) {
+            cookie += `; SameSite=${cookieAttributes.sameSite}`;
+        }
+        if (cookieAttributes.secure) {
+            cookie += `; Secure`;
+        }
+        document.cookie = cookie;
+    }
+
+    static checkHasAllMandatoryAddFields(name, value) {
         if (!name || typeof name !== "string") {
             console.error(`cookie.add() requires a cookie name (type=string) as an argument`);
             return false;
@@ -19,20 +48,7 @@ export default class cookies {
             console.error(`cookie.add() requires a cookie value as an argument`);
             return false;
         }
-        if (!path) {
-            path = `/`;
-        }
-        if (!domain) {
-            domain = location.hostname;
-        }
-        let cookie = `${name}=${value};path=${path};domain=${domain}`;
-        if (sameSite != null) {
-            cookie += `; SameSite=${sameSite}`;
-        }
-        if (secure) {
-            cookie += `; Secure`;
-        }
-        document.cookie = cookie;
+        return true
     }
 
     static get(name) {
