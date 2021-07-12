@@ -2,16 +2,20 @@ package service
 
 import (
 	"fmt"
+	"github.com/ONSdigital/log.go/log"
 	"net/http"
 	"strings"
 
-	"github.com/ONSdigital/dp-api-clients-go/headers"
+	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	dprequest "github.com/ONSdigital/dp-net/request"
 )
 
 func director(req *http.Request) {
 	if accessTokenCookie, err := req.Cookie(dprequest.FlorenceCookieKey); err == nil && len(accessTokenCookie.Value) > 0 {
-		headers.SetUserAuthToken(req, accessTokenCookie.Value)
+		err := headers.SetAuthToken(req, accessTokenCookie.Value)
+		if err != nil {
+			log.Event(req.Context(), "unable to set auth token header", log.Error(err), log.ERROR)
+		}
 	}
 
 	if colletionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
