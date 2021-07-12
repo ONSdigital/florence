@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/ONSdigital/dp-api-clients-go/health"
+	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"

@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/ONSdigital/dp-api-clients-go/health"
+	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
@@ -130,6 +130,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 		if cfg.SharedConfig.EnableNewSignIn {
+			router.Handle("/tokens", identityAPIProxy)
 			router.Handle("/tokens/{uri:.*}", identityAPIProxy)
 			router.Handle("/users/{uri:.*}", identityAPIProxy)
 		}
