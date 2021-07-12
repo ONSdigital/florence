@@ -53,7 +53,6 @@ func identityResponseModifier(r *http.Response) error {
 			}
 			refreshTokenCookie := cookieRefresh.String()
 			r.Header.Add("Set-Cookie", refreshTokenCookie)
-
 		}
 	}
 	return nil

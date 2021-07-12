@@ -19,17 +19,17 @@ require (
 	github.com/gorilla/pat v1.0.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-uuid v1.0.0
+	github.com/jteeuwen/go-bindata v3.0.8-0.20180305030458-6025e8de665b+incompatible // indirect
 	github.com/kelseyhightower/envconfig v1.4.0
 	github.com/maxcnunes/httpfake v1.2.3
 	github.com/pkg/errors v0.9.1
 	github.com/smartystreets/assertions v1.2.0 // indirect
 	github.com/smartystreets/goconvey v1.6.4
 	github.com/stretchr/testify v1.6.1
+	go.mongodb.org/mongo-driver v1.4.6 // indirect
 	golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b // indirect
 )
 
-replace github.com/ONSdigital/dp-api-clients-go/v2 => /Users/danielwalford/dev/GoMod/dp-api-clients-go/v2
+replace github.com/ONSdigital/dp-api-clients-go/v2 => /Users/danielwalford/dev/GoMod/dp-api-clients-go
 
 replace github.com/ONSdigital/dp-net => /Users/danielwalford/dev/GoMod/dp-net
-
-replace github.com/ONSdigital/dp-cookies => /Users/danielwalford/dev/GoMod/dp-cookies/

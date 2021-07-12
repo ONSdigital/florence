@@ -11,7 +11,6 @@ import notifications from "../../utilities/notifications";
 import http from "../../utilities/http";
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
-import cookies from "../../utilities/cookies";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
 
@@ -60,12 +59,8 @@ export class LoginController extends Component {
 
     requestLogin(credentials) {
         this.postLoginCredentials(credentials)
-            .then(response => {
-                // NOTE: ACCESS TOKEN and REFRESH TOKEN will be moved out of here shortly
-                const accessToken = response.headers.get("Authorization");
-                const refreshToken = response.headers.get("Refresh");
-                const userToken = response.headers.get("Id");
-                this.handleLogin(accessToken, userToken, refreshToken);
+            .then(() => {
+                this.handleLogin();
             })
             .catch(error => {
                 let stateToSet = {};
@@ -165,10 +160,7 @@ export class LoginController extends Component {
         notifications.add(notification);
     }
 
-    handleLogin(accessToken, userToken, refreshToken) {
-        // cookies.add("access_token", accessToken, "/", null, "strict", true);
-        // cookies.add("id_token", userToken, "/", null, "strict", true);
-        // cookies.add("refresh_token", refreshToken, "/tokens/self", null, "strict", true);
+    handleLogin() {
         user.getPermissions(this.state.email.value)
             .then(userType => {
                 user.setUserState(userType);
