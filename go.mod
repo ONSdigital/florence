@@ -3,7 +3,8 @@ module github.com/ONSdigital/florence
 go 1.16
 
 require (
-	github.com/ONSdigital/dp-api-clients-go v1.34.3
+	github.com/ONSdigital/dp-api-clients-go v1.34.3 // indirect
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.0.1-beta
 	github.com/ONSdigital/dp-component-test v0.3.0
 	github.com/ONSdigital/dp-healthcheck v1.0.5
 	github.com/ONSdigital/dp-net v1.0.12
@@ -29,5 +30,3 @@ require (
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
 )
-
-replace github.com/ONSdigital/dp-api-clients-go => /Users/danielwalford/go/src/github.com/ONSdigital/dp-api-clients-go
