@@ -78,7 +78,7 @@ class UnknownRoute extends Component {
     render() {
         return (
             <div className="grid grid--justify-center">
-                <h1>Sorry, this page couldnt be found</h1>
+                <h1>Sorry, this page couldn't be found</h1>
             </div>
         );
     }
