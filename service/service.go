@@ -5,7 +5,7 @@ import (
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
-	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
+	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/log.go/log"

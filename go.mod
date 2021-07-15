@@ -4,10 +4,10 @@ go 1.16
 
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.41.1 // indirect
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.0.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.0.1-beta
 	github.com/ONSdigital/dp-component-test v0.3.0
 	github.com/ONSdigital/dp-healthcheck v1.0.5
-	github.com/ONSdigital/dp-net v1.0.12
+	github.com/ONSdigital/dp-net/v2 v2.0.0-beta
 	github.com/ONSdigital/log.go v1.0.1
 	github.com/chromedp/cdproto v0.0.0-20210313213058-f5c5a7a06834 // indirect
 	github.com/chromedp/chromedp v0.6.8
@@ -29,7 +29,3 @@ require (
 	go.mongodb.org/mongo-driver v1.4.6 // indirect
 	golang.org/x/crypto v0.0.0-20210314154223-e6e6c4f2bb5b // indirect
 )
-
-replace github.com/ONSdigital/dp-api-clients-go/v2 => /Users/danielwalford/dev/GoMod/dp-api-clients-go
-
-replace github.com/ONSdigital/dp-net => /Users/danielwalford/dev/GoMod/dp-net
