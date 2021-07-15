@@ -65,7 +65,8 @@ node-modules-react:
 
 .PHONY: node-modules-legacy
 node-modules-legacy:
-	cd src/legacy; npm install --unsafe-perm
+	cd src/legacy; npm install --unsafe-perm ; sleep 2
+    # NB. Sleeping for two seconds as a workaround to allow time for main.min.css to finish writing
 
 .PHONY: watch-src
 watch-src:
