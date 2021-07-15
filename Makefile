@@ -80,3 +80,9 @@ clean:
 .PHONY: test-component
 test-component:
 	go test -cover -coverpkg=github.com/ONSdigital/florence/... -component
+
+
+# Sleeping for a bit if necessary as a workaround to allow time for main.min.css to finish writing
+.PHONY: wait-for-css
+wait-for-css:
+	for i in {1..10}; do [[ -f dist/legacy-assets/css/main.min.css ]] && break; echo "Waiting for main.min.css $$i/10"; sleep $$i; done
