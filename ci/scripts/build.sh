@@ -3,5 +3,5 @@
 cwd=$(pwd)
 
 pushd $cwd/florence
-  make node-modules build && cp Dockerfile.concourse build/florence $cwd/build
+  make build && cp Dockerfile.concourse build/florence $cwd/build
 popd
