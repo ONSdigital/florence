@@ -70,13 +70,12 @@ export class ForgottenPasswordController extends Component {
         if (error.status != null) {
             if (error.status >= 400 && error.status < 500) {
                 let errorContents = { errorsForBody: [], emailMessage: "" };
-                let validationErrors = {
-                    heading: "Fix the following: "
-                };
+                let validationErrors = {};
 
                 if (error.body != null && error.body.errors != null) {
                     error.body.errors.forEach(anError => {
                         errorContents = this.showValidationError(anError, errorContents);
+                        validationErrors.heading = "Fix the following: ";
                     });
                 } else {
                     this.notifyUnexpectedError();
@@ -99,13 +98,10 @@ export class ForgottenPasswordController extends Component {
     }
 
     postResetPassword(body) {
-        console.log("body is: ");
-        console.log(body);
         return http.post("/password-reset", body, true, true);
     }
 
     requestEmailChange(email) {
-        console.log("email in requestEmailChange is: " + email);
         const body = { email: email };
         this.postResetPassword(body)
             .then(response => {
@@ -135,10 +131,7 @@ export class ForgottenPasswordController extends Component {
 
     handleSubmit(event) {
         event.preventDefault();
-        console.log("event is: ");
-        console.log(event);
         const email = this.state.email.value;
-        console.log("email on handleSubmit is: " + email);
 
         this.setState(
             {
@@ -152,15 +145,14 @@ export class ForgottenPasswordController extends Component {
     }
 
     render() {
+        // Type text as we don't want the browser validation as it is not the most accessible
         const emailInput = {
             id: "email",
             label: "Email",
-            type: "email",
+            type: "text",
             onChange: this.handleInputChange,
             error: this.state.email.errorMsg
         };
-        console.log("emailInput in controller 2: ");
-        console.log(emailInput);
         const screenToShow = this.state.hasSubmitted ? (
             <ForgottenPasswordEmailSent />
         ) : (
@@ -168,11 +160,6 @@ export class ForgottenPasswordController extends Component {
             // <ForgottenPasswordRequest validationErrors={this.state.validationErrors} />
         );
         return <div>{screenToShow}</div>;
-        // return (
-        //     <div>
-        //         <ForgottenPasswordRequest emailInput={emailInput} />
-        //     </div>
-        // );
     }
 }
 
