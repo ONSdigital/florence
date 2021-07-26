@@ -27,15 +27,24 @@ debug: generate-go-debug
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
+.PHONY: ensure-main-min-css
+ensure-main-min-css:
+    # Sleeping for a bit if necessary as a workaround to allow time for main.min.css to finish writing
+	bash -c 'for i in {1..10} ; do if [ -e dist/legacy-assets/css/main.min.css ] ; then break ; fi ; echo "Waiting for main.min.css" ; sleep 2 ; done'
+
 .PHONY: generate-go-prod
-generate-go-prod:
+generate-go-prod: ensure-main-min-css
 	# Generate the production assets version
-	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -o data.go -pkg assets ../dist/...
+	cd assets; find ../dist/ -type f ; go run github.com/jteeuwen/go-bindata/go-bindata -o data.go -pkg assets ../dist/...
 
 .PHONY: generate-go-debug
 generate-go-debug:
 	# Generate the debug assets version
 	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets ../dist/...
+
+.PHONY: lint
+lint:
+	exit
 
 .PHONY: test
 test: test-npm test-pretty node-modules generate-go-prod test-go
