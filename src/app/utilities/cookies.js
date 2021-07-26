@@ -21,7 +21,7 @@ export default class cookies {
     static add(name, value, cookieAttributes) {
         cookieAttributes = cookieAttributes || {};
         if (!this.checkHasAllMandatoryAddFields(name, value)) {
-            return false
+            return false;
         }
         if (!cookieAttributes.path) {
             cookieAttributes.path = `/`;
@@ -48,7 +48,7 @@ export default class cookies {
             console.error(`cookie.add() requires a cookie value as an argument`);
             return false;
         }
-        return true
+        return true;
     }
 
     static get(name) {

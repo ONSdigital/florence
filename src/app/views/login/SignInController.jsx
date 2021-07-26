@@ -1,6 +1,6 @@
-import React, {Component} from "react";
-import {connect} from "react-redux";
-import {push} from "react-router-redux";
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
 import LoginForm from "./SignInForm";
@@ -9,7 +9,7 @@ import ChangePasswordController from "../../components/change-password/ChangePas
 import notifications from "../../utilities/notifications";
 
 import http from "../../utilities/http";
-import {errCodes} from "../../utilities/errorCodes";
+import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
@@ -89,7 +89,7 @@ export class LoginController extends Component {
 
         if (error.status != null) {
             if (error.status >= 400 && error.status < 500) {
-                let errorContents = {errorsForBody: [], emailMessage: "", passwordMessage: ""};
+                let errorContents = { errorsForBody: [], emailMessage: "", passwordMessage: "" };
                 let validationErrors = {
                     heading: "Fix the following: "
                 };
@@ -139,8 +139,7 @@ export class LoginController extends Component {
             case "InvalidPassword":
                 errorContents.errorsForBody.push(
                     <p>
-                        <a href="javascript:document.getElementById('password').focus()"
-                           className={"colour--night-shadz"}>
+                        <a href="javascript:document.getElementById('password').focus()" className={"colour--night-shadz"}>
                             Enter a password
                         </a>
                     </p>
@@ -151,8 +150,7 @@ export class LoginController extends Component {
                 errorContents.errorsForBody.push(<p>Email address or password are incorrect</p>);
                 break;
             case "TooManyFailedAttempts":
-                errorContents.errorsForBody.push(<p>You've tried to sign in to your account too many times. Please try
-                    again later.</p>);
+                errorContents.errorsForBody.push(<p>You've tried to sign in to your account too many times. Please try again later.</p>);
                 break;
             default:
                 // Code undefined or different to expected range of errors
@@ -168,8 +166,8 @@ export class LoginController extends Component {
     }
 
     handleLogin(accessToken, userToken, refreshToken) {
-        const authCookieAttributes = {path: "/", domain: null, sameSite: "strict", secure: true}
-        const refreshCookieAttributes = {path: "/", domain: null, sameSite: "strict", secure: true}
+        const authCookieAttributes = { path: "/", domain: null, sameSite: "strict", secure: true };
+        const refreshCookieAttributes = { path: "/", domain: null, sameSite: "strict", secure: true };
         cookies.add("access_token", accessToken, authCookieAttributes);
         cookies.add("user_token", userToken, authCookieAttributes);
         cookies.add("refresh_token", refreshToken, refreshCookieAttributes);
@@ -179,7 +177,7 @@ export class LoginController extends Component {
                 redirectToMainScreen(this.props.location.query.redirect);
             })
             .catch(error => {
-                this.setState({isSubmitting: false});
+                this.setState({ isSubmitting: false });
                 notifications.add({
                     type: "warning",
                     message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
@@ -199,7 +197,7 @@ export class LoginController extends Component {
             password: this.state.password.value
         };
 
-        this.setState({isSubmitting: true});
+        this.setState({ isSubmitting: true });
 
         this.requestLogin(credentials);
     }
