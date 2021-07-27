@@ -36,6 +36,9 @@ const LoginForm = props => {
                     {props.inputs.map((input, index) => {
                         return <Input key={index} {...input} disabled={props.isSubmitting} allowAutoComplete={true} />;
                     })}
+                    <div>
+                        <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
+                    </div>
                     <button type="submit" className="btn btn--primary margin-top--1" disabled={props.isSubmitting}>
                         Sign in
                     </button>

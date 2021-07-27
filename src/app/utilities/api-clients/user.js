@@ -34,8 +34,8 @@ export default class user {
         return http.get(`/zebedee/permission?email=${email}`, true, true);
     }
 
-    static expireSession(headers) {
-        return http.delete("/tokens/self", true, true, headers);
+    static expireSession() {
+        return http.delete("/tokens/self", true, true);
     }
 
     static getOldUserType(user) {
@@ -94,10 +94,7 @@ export default class user {
 
         const config = window.getEnv();
         if (config.enableNewSignIn) {
-            const headers = {
-                Authorization: cookies.get("access_token")
-            };
-            user.expireSession(headers)
+            user.expireSession()
                 .then(response => {
                     clearCookies();
                 })
