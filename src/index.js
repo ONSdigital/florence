@@ -10,6 +10,7 @@ import App from "./app/App";
 import Layout from "./app/global/Layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignInController";
+import ForgottenPasswordController from "./app/views/forgotten-password/forgottenPasswordController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
@@ -107,7 +108,7 @@ class Index extends Component {
                                 </Route>
                             </Route>
                             <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
-                                
+
                             <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
 
                             <Route path={`${rootPath}/collections/:collectionID/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateContent))} />
@@ -195,6 +196,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                             <Route path={`${rootPath}/logs`} component={Logs} />
                             <Route path={`${rootPath}/login`} component={config.enableNewSignIn ? SignInController : LoginController} />
+                            <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                             <Route path="*" component={UnknownRoute} />
                         </Route>
                     </Route>
