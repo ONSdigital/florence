@@ -9,7 +9,7 @@ import (
 func identityResponseModifier(r *http.Response) error {
 	// maxAgeBrowserSession is length of time to expire cookie on browser close
 	maxAgeBrowserSession := 0
-	if r.StatusCode >= 200 && r.StatusCode < 300 {
+	if r.StatusCode >= http.StatusOK && r.StatusCode < http.StatusMultipleChoices {
 		if r.Header.Get("Authorization") != "" {
 			cookieUser := &http.Cookie{
 				Name:     "user_token",
