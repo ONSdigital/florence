@@ -31,6 +31,7 @@ import DatasetMetadata from "./app/views/datasets/metadata/DatasetMetadata";
 import VersionMetadata from "./app/views/datasets/metadata/VersionMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController"
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem"
+import ChangeFirstPasswordController from "./app/views/change-password/changePasswordController"
 
 import Logs from "./app/views/logs/Logs";
 
@@ -197,6 +198,7 @@ class Index extends Component {
                             <Route path={`${rootPath}/logs`} component={Logs} />
                             <Route path={`${rootPath}/login`} component={config.enableNewSignIn ? SignInController : LoginController} />
                             <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
+                            <Route path={`${rootPath}/change-password`} component={config.enableNewSignIn ? ChangeFirstPasswordController : null} />
                             <Route path="*" component={UnknownRoute} />
                         </Route>
                     </Route>
