@@ -59,9 +59,12 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                 if (response.status === 401) {
                     if (callerHandles401) {
-                        reject({
-                            status: response.status,
-                            message: response.statusText
+                        response.text().then(body => {
+                            reject({
+                                status: response.status,
+                                message: response.statusText,
+                                body: parseBodyAsJson(body)
+                            });
                         });
                         return;
                     }
