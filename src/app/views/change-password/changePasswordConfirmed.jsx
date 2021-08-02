@@ -1,12 +1,10 @@
 import React from "react";
-import PropTypes from "prop-types";
 import Panel from "../../components/panel/Panel";
 
 const ChangePasswordConfirmed = props => {
     const changePasswordPanelBody = (
         <p>
-            If you have technical problems with your account, please email
-            <a href="mailto:publishing@ons.gov.uk"> publishing@ons.gov.uk</a>
+            If you have technical problems with your account, please email&nbsp;<a href="mailto:publishing@ons.gov.uk">publishing@ons.gov.uk</a>
         </p>
     );
 
