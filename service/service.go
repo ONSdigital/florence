@@ -5,7 +5,7 @@ import (
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
-	"github.com/ONSdigital/dp-net/handlers/reverseproxy"
+	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/log.go/log"
@@ -103,16 +103,16 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	routerProxy := reverseproxy.Create(routerURL, director)
-	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector)
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion))
-	tableProxy := reverseproxy.Create(tableURL, tableDirector)
-	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion))
-	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion))
-	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector)
-	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion))
-	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion))
-	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion))
+	routerProxy := reverseproxy.Create(routerURL, director, nil)
+	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
+	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
+	tableProxy := reverseproxy.Create(tableURL, tableDirector, nil)
+	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion), nil)
+	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
+	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
+	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
+	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), identityResponseModifier)
 
 	router = pat.New()
 
