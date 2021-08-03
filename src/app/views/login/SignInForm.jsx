@@ -3,6 +3,7 @@ import React from "react";
 import Input from "../../components/Input";
 import Panel from "../../components/panel/Panel";
 import PropTypes from "prop-types";
+import ValidateNewPassword from "../../components/validate-new-password/ValidateNewPassword";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
@@ -26,6 +27,7 @@ const LoginForm = props => {
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
+                <ValidateNewPassword />
                 <h1>Sign in to your Florence account</h1>
                 {props.validationErrors.body && (
                     <div className={"margin-bottom--1"}>
