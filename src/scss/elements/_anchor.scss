@@ -1,0 +1,20 @@
+.anchor-btn{
+  &:visited {
+    color: white;
+  }
+  
+  background-color: $astral;
+  color: white;
+  display: inline-block;
+  border-radius: 4px;
+  padding: 15px 25px;
+  font-size: 14px;
+  text-decoration: none;
+  max-width: 215px;
+  min-width: 100px;
+
+  &:hover,
+  &:focus {
+    background-color: $ocean-blue;
+  }
+}
