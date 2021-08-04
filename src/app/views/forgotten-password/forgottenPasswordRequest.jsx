@@ -9,6 +9,7 @@ const propTypes = {
         body: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     }),
     onSubmit: PropTypes.func,
+    waitingResponse: PropTypes.bool,
     emailInput: PropTypes.shape({
         id: PropTypes.string,
         label: PropTypes.string,
@@ -21,7 +22,7 @@ const propTypes = {
 const ForgottenPasswordRequest = props => {
     return (
         <div className="grid grid--justify-center">
-            <div className="grid__col-3">
+            <div className="grid__col-4">
                 <h1>Forgotten password</h1>
                 <p className={"font-size--18 margin-bottom--2"}>We'll email you a link to reset your password.</p>
                 {props.validationErrors.body && (
@@ -34,6 +35,7 @@ const ForgottenPasswordRequest = props => {
                     <button type="submit" className="btn btn--primary margin-top--1">
                         Send the link
                     </button>
+                    {props.waitingResponse ? <div className="form__loader loader loader--dark margin-left--1" /> : ""}
                 </form>
             </div>
         </div>
