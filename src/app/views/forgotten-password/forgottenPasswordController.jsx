@@ -30,7 +30,7 @@ export class ForgottenPasswordController extends Component {
         // Switch so that it is easily expandable if we introduce new error types
         switch (anError.code) {
             case "JSONMarshalError":
-            case "InvalidEmail":
+            case "InvalidEmail": {
                 errorContents.errorsForBody.push(
                     <p>
                         <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
@@ -40,7 +40,8 @@ export class ForgottenPasswordController extends Component {
                 );
                 errorContents.emailMessage = "Enter a valid email address";
                 break;
-            case "LimitExceeded":
+            }
+            case "LimitExceeded": {
                 let notification = {
                     type: "warning",
                     isDismissable: true,
@@ -50,8 +51,10 @@ export class ForgottenPasswordController extends Component {
                 console.error(errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT);
                 notifications.add(notification);
                 break;
-            default:
+            }
+            default: {
                 this.notifyUnexpectedError();
+            }
         }
         return errorContents;
     }
