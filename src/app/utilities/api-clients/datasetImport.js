@@ -20,13 +20,20 @@ export default class datasetImport {
         });
     }
 
-    static updateStatus(jobID, status) {
+    static updateStatus(jobID, status, links = null) {
         if (!jobID) {
             console.warn("No job ID given to update status for. Request cancelled");
             return Promise.reject();
         }
+        const body = {
+            state: status
+        };
 
-        return http.put(`/import/jobs/${jobID}`, { state: status }, true).then(response => {
+        if (links) {
+            body.links = links;
+        }
+
+        return http.put(`/import/jobs/${jobID}`, body, true).then(response => {
             return response;
         });
     }
