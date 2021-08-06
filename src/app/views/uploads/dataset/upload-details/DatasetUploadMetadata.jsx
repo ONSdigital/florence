@@ -30,7 +30,8 @@ class DatasetUploadMetadata extends Component {
             isFetchingData: false,
             isSubmittingData: false,
             selectedEdition: null,
-            recipeAlias: ""
+            recipeAlias: "",
+            isCantabular: false
         };
     }
 
@@ -57,7 +58,7 @@ class DatasetUploadMetadata extends Component {
                 if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.params.jobID) {
                     this.props.dispatch(updateActiveJob(responses[1]));
                 }
-                this.mapRecipeAliasToState();
+                this.mapRecipeDetailsToState();
                 this.setState({ isFetchingData: false });
             })
             .catch(error => {
@@ -114,11 +115,16 @@ class DatasetUploadMetadata extends Component {
             });
     }
 
-    mapRecipeAliasToState = () => {
+    mapRecipeDetailsToState = () => {
         const recipe = this.props.recipes.find(recipe => {
             return recipe.id === this.props.job.recipe;
         });
-        this.setState({ recipeAlias: recipe.alias });
+        let isRecipeCantabular = false;
+        if (recipe.format === "cantabular_table" || recipe.format === "cantabular_blob") {
+            isRecipeCantabular = true;
+        }
+
+        this.setState({ recipeAlias: recipe.alias, isCantabular: isRecipeCantabular });
     };
 
     mapEditionsToRadioList() {
@@ -146,13 +152,15 @@ class DatasetUploadMetadata extends Component {
         datasets
             .updateInstanceEdition(this.props.job.links.instances[0].id, this.state.selectedEdition)
             .then(() => {
-                return datasetImport.updateStatus(this.props.params.jobID, "submitted").then(() => {
-                    const activeDataset = {
-                        ...this.state.activeDataset,
-                        status: "submitted"
-                    };
-                    this.setState({ activeDataset });
-                });
+                return datasetImport
+                    .updateStatus(this.props.params.jobID, "submitted", this.state.isCantabular ? this.props.job.links : null)
+                    .then(() => {
+                        const activeDataset = {
+                            ...this.state.activeDataset,
+                            status: "submitted"
+                        };
+                        this.setState({ activeDataset });
+                    });
             })
             .then(() => {
                 this.setState({ isSubmittingData: false });
