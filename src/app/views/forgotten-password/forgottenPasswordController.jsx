@@ -42,7 +42,7 @@ export class ForgottenPasswordController extends Component {
                 break;
             }
             case "LimitExceeded": {
-                let notification = {
+                const notification = {
                     type: "warning",
                     isDismissable: true,
                     autoDismiss: 15000,
@@ -60,7 +60,7 @@ export class ForgottenPasswordController extends Component {
     }
 
     notifyUnexpectedError() {
-        let notification = {
+        const notification = {
             type: "warning",
             isDismissable: true,
             autoDismiss: 15000,
