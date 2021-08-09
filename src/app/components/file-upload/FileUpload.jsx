@@ -15,16 +15,10 @@ const propTypes = {
 };
 
 class FileUpload extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleOnRetry = this.handleOnRetry.bind(this);
-    }
-
-    handleOnRetry(event) {
+    handleOnRetry = event => {
         event.preventDefault();
         this.props.onRetry(this.props.label);
-    }
+    };
 
     renderInput() {
         return (

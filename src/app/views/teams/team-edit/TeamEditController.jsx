@@ -30,10 +30,6 @@ export class TeamEditController extends Component {
             disabledUsers: [],
             searchTerm: ""
         };
-
-        this.handleUsersSearch = this.handleUsersSearch.bind(this);
-        this.handleMembersChange = this.handleMembersChange.bind(this);
-        this.handleDone = this.handleDone.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -59,7 +55,7 @@ export class TeamEditController extends Component {
         }
     }
 
-    handleUsersSearch(event) {
+    handleUsersSearch = event => {
         const searchTerm = event.target.value.toLowerCase();
         const filteredUsers = this.props.users.filter(user => {
             const isTeamMember = this.props.members.some(member => {
@@ -71,7 +67,7 @@ export class TeamEditController extends Component {
             editedUsers: filteredUsers,
             searchTerm
         });
-    }
+    };
 
     sortUsers(users) {
         return users.sort((userA, userB) => {
@@ -89,7 +85,7 @@ export class TeamEditController extends Component {
         });
     }
 
-    handleMembersChange(userAttributes) {
+    handleMembersChange = userAttributes => {
         log.event(
             "Updateing user in team",
             log.data({
@@ -306,11 +302,11 @@ export class TeamEditController extends Component {
                 break;
             }
         }
-    }
+    };
 
-    handleDone() {
+    handleDone = () => {
         this.props.dispatch(push(this.state.parentPath));
-    }
+    };
 
     render() {
         return (

@@ -39,14 +39,6 @@ export class TeamsController extends Component {
             isEditingTeam: false,
             isDeletingTeam: false
         };
-
-        this.handleTeamClick = this.handleTeamClick.bind(this);
-        this.handleMembersEditClick = this.handleMembersEditClick.bind(this);
-        this.handleDrawerTransitionEnd = this.handleDrawerTransitionEnd.bind(this);
-        this.handleDrawerCancelClick = this.handleDrawerCancelClick.bind(this);
-        this.handleTeamDeleteClick = this.handleTeamDeleteClick.bind(this);
-        this.handleTeamDeleteSuccess = this.handleTeamDeleteSuccess.bind(this);
-        this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -121,28 +113,28 @@ export class TeamsController extends Component {
         this.props.dispatch(emptyActiveTeam());
     }
 
-    handleDrawerTransitionEnd() {
+    handleDrawerTransitionEnd = () => {
         this.setState({ drawerIsAnimatable: false });
 
         if (this.state.clearActiveTeam) {
             this.setState({ clearActiveTeam: false });
             this.props.dispatch(emptyActiveTeam());
         }
-    }
+    };
 
-    handleMembersEditClick() {
+    handleMembersEditClick = () => {
         this.props.dispatch(push(`${location.pathname}/edit`));
-    }
+    };
 
-    handleDrawerCancelClick() {
+    handleDrawerCancelClick = () => {
         this.props.dispatch(push(url.resolve("../")));
-    }
+    };
 
-    handleTeamDeleteClick() {
+    handleTeamDeleteClick = () => {
         this.props.dispatch(push(`${location.pathname}/delete`));
-    }
+    };
 
-    handleTeamDeleteSuccess() {
+    handleTeamDeleteSuccess = () => {
         this.props.dispatch(push(url.resolve("../../")));
         const notification = {
             type: "positive",
@@ -152,11 +144,11 @@ export class TeamsController extends Component {
         };
         notifications.add(notification);
         this.fetchTeams();
-    }
+    };
 
-    handleTeamCreateSuccess() {
+    handleTeamCreateSuccess = () => {
         this.fetchTeams();
-    }
+    };
 
     fetchTeams() {
         this.setState({ isUpdatingAllTeams: true });
@@ -326,14 +318,14 @@ export class TeamsController extends Component {
             });
     }
 
-    handleTeamClick(clickedTeam) {
+    handleTeamClick = clickedTeam => {
         // Make no change if clicked team is already the selected team
         if (clickedTeam.isSelected) {
             return;
         }
         const path = url.sanitise(clickedTeam.name + "_" + clickedTeam.id);
         this.props.dispatch(push(`${this.props.rootPath}/teams/${path}`));
-    }
+    };
 
     renderDrawer() {
         return (

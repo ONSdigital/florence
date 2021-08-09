@@ -126,21 +126,6 @@ export class DatasetMetadata extends Component {
             license: "",
             nextRelease: ""
         };
-
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleToggleChange = this.handleToggleChange.bind(this);
-        this.handleBackButton = this.handleBackButton.bind(this);
-        this.handleModalSubmit = this.handleModalSubmit.bind(this);
-        this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
-        this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
-        this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
-        this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
-        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
-        this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
-        this.editRelatedLink = this.editRelatedLink.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -471,29 +456,29 @@ export class DatasetMetadata extends Component {
         });
     }
 
-    handleSelectChange(event) {
+    handleSelectChange = event => {
         this.setState({
             error: "",
             releaseFrequency: event.target.value,
             hasChanges: true
         });
-    }
+    };
 
-    handleModalSubmit(event) {
+    handleModalSubmit = event => {
         event.preventDefault();
         this.setState({ showModal: false });
         const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
         this.props.dispatch(push(URL));
-    }
+    };
 
-    handleToggleChange(isChecked) {
+    handleToggleChange = isChecked => {
         this.setState({
             isNationalStat: isChecked,
             hasChanges: true
         });
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -522,9 +507,9 @@ export class DatasetMetadata extends Component {
                 [name]: value
             });
         }
-    }
+    };
 
-    handleBackButton() {
+    handleBackButton = () => {
         if (!this.state.isReadOnly && this.state.hasChanges) {
             this.setState({ showModal: true });
             return;
@@ -532,9 +517,9 @@ export class DatasetMetadata extends Component {
 
         const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
         this.props.dispatch(push(URL));
-    }
+    };
 
-    handleRelatedContentCancel() {
+    handleRelatedContentCancel = () => {
         this.setState({
             showModal: false,
             modalType: "",
@@ -543,16 +528,16 @@ export class DatasetMetadata extends Component {
             descInput: "",
             titleInput: ""
         });
-    }
+    };
 
-    handleAddRelatedClick(type) {
+    handleAddRelatedClick = type => {
         this.setState({
             showModal: true,
             modalType: type
         });
-    }
+    };
 
-    handleEditRelatedClick(type, key) {
+    handleEditRelatedClick = (type, key) => {
         let relatedItem;
 
         if (type === "bulletin") {
@@ -580,9 +565,9 @@ export class DatasetMetadata extends Component {
             titleInput: relatedItem.title || "",
             descInput: relatedItem.description || ""
         });
-    }
+    };
 
-    handleDeleteRelatedClick(type, key) {
+    handleDeleteRelatedClick = (type, key) => {
         function remove(items, key) {
             return items.filter(item => {
                 return item.key !== key;
@@ -612,9 +597,9 @@ export class DatasetMetadata extends Component {
 
         console.warn("Attempt to remove a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
-    }
+    };
 
-    editRelatedLink(type, key) {
+    editRelatedLink = (type, key) => {
         const edit = items => {
             return items.map(item => {
                 if (item.key !== key) {
@@ -649,7 +634,7 @@ export class DatasetMetadata extends Component {
 
         console.warn("Attempt to edit a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
-    }
+    };
 
     mapTypeContentsToCard(items) {
         return items.map(item => {
@@ -715,7 +700,7 @@ export class DatasetMetadata extends Component {
         });
     }
 
-    handleRelatedContentSubmit(event) {
+    handleRelatedContentSubmit = event => {
         event.preventDefault();
 
         if (this.state.titleInput == "" || this.state.urlInput == "") {
@@ -775,9 +760,9 @@ export class DatasetMetadata extends Component {
                 descInput: ""
             });
         }
-    }
+    };
 
-    async handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
+    handleSave = async (event, isSubmittingForReview, isMarkingAsReviewed) => {
         const isUpdatingReviewState = isSubmittingForReview || isMarkingAsReviewed;
         const isAddingToCollection = !this.props.dataset.collection_id && !isUpdatingReviewState;
 
@@ -824,15 +809,15 @@ export class DatasetMetadata extends Component {
             this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
             return;
         }
-    }
+    };
 
-    handleSaveAndSubmitForReview() {
+    handleSaveAndSubmitForReview = () => {
         this.handleSave(event, true, false);
-    }
+    };
 
-    handleSaveAndMarkAsReviewed() {
+    handleSaveAndMarkAsReviewed = () => {
         this.handleSave(event, false, true);
-    }
+    };
 
     renderReviewActions() {
         if (this.state.isReadOnly || this.state.isFetchingCollectionData) {

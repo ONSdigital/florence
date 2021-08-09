@@ -21,18 +21,15 @@ export class UsageNotesController extends Component {
             note: props.note,
             id: props.id || uuid()
         };
-
-        this.handleChange = this.handleChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleChange(property, event) {
+    handleChange = (property, event) => {
         this.setState({
             [property]: event.target.value
         });
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
 
         this.props.onSave({
@@ -40,7 +37,7 @@ export class UsageNotesController extends Component {
             title: this.state.title,
             note: this.state.note
         });
-    }
+    };
 
     render() {
         return (

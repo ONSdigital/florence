@@ -44,12 +44,6 @@ export class ScheduleByRelease extends Component {
         };
 
         this.searchTimeout = null;
-
-        this.loadMoreReleases = this.loadMoreReleases.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleReleaseSelect = this.handleReleaseSelect.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.shouldSubmitBeDisabled = this.shouldSubmitBeDisabled.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -120,14 +114,14 @@ export class ScheduleByRelease extends Component {
         return rows;
     }
 
-    handleSearch(event) {
+    handleSearch = event => {
         const searchQuery = event.target.value;
 
         clearTimeout(this.searchTimeout);
         this.searchTimeout = setTimeout(() => {
             this.searchReleases(searchQuery);
         }, this.state.searchSubmitDelay);
-    }
+    };
 
     searchReleases(query) {
         this.setState({
@@ -171,7 +165,7 @@ export class ScheduleByRelease extends Component {
             });
     }
 
-    loadMoreReleases() {
+    loadMoreReleases = () => {
         this.setState({ isFetchingExtraReleases: true });
         releases
             .getUpcoming(this.state.currentPage + 1, this.state.searchQuery, this.state.releasesPerPage)
@@ -203,7 +197,7 @@ export class ScheduleByRelease extends Component {
                 log.event("Error fetching extra upcoming releases for 'scheduled by release' functionality", log.error(error));
                 console.error("Error fetching extra upcoming releases for 'scheduled by release' functionality", error);
             });
-    }
+    };
 
     renderQueryText() {
         if (this.state.isFetchingSearchedReleases) {
@@ -230,7 +224,7 @@ export class ScheduleByRelease extends Component {
         );
     }
 
-    async handleReleaseSelect(release) {
+    handleReleaseSelect = async release => {
         this.setState({ selectedRelease: release });
 
         if (this.state.selectedRelease.uri === release.uri) {
@@ -251,7 +245,7 @@ export class ScheduleByRelease extends Component {
             });
             this.setState({ tableData: newTableData });
         }
-    }
+    };
 
     checkReleaseIsInCollection(release) {
         const collectionName = collections.checkContentIsInCollection(release.uri).then(response => {
@@ -265,7 +259,7 @@ export class ScheduleByRelease extends Component {
         return collectionName;
     }
 
-    shouldSubmitBeDisabled() {
+    shouldSubmitBeDisabled = () => {
         const releaseIsInCollection = this.state.tableData.find(release => {
             return this.state.selectedRelease.uri === release.id && release.status;
         });
@@ -275,11 +269,11 @@ export class ScheduleByRelease extends Component {
         }
 
         return true;
-    }
+    };
 
-    handleSubmit() {
+    handleSubmit = () => {
         this.props.onSubmit(this.state.selectedRelease);
-    }
+    };
 
     render() {
         return (

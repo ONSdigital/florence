@@ -36,9 +36,6 @@ class DatasetEdition extends Component {
             error: null,
             datasetTitle: null
         };
-
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -108,7 +105,7 @@ class DatasetEdition extends Component {
         });
     }
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
 
         if (!this.state.edition) {
@@ -118,14 +115,14 @@ class DatasetEdition extends Component {
         }
 
         this.props.dispatch(push(url.resolve("whats-changed")));
-    }
+    };
 
-    handleSelectChange(event) {
+    handleSelectChange = event => {
         this.setState({
             error: "",
             edition: event.target.value
         });
-    }
+    };
 
     render() {
         return (

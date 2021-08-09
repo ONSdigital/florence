@@ -18,12 +18,6 @@ const propTypes = {
 export class ForgottenPasswordController extends Component {
     constructor(props) {
         super(props);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.requestEmailChange = this.requestEmailChange.bind(this);
-        this.postResetPassword = this.postResetPassword.bind(this);
-        this.handleResetPasswordError = this.handleResetPasswordError.bind(this);
-        this.showValidationError = this.showValidationError.bind(this);
         this.state = {
             validationErrors: {},
             email: {
@@ -35,7 +29,7 @@ export class ForgottenPasswordController extends Component {
         };
     }
 
-    showValidationError(anError, errorContents) {
+    showValidationError = (anError, errorContents) => {
         // Switch so that it is easily expandable if we introduce new error types
         switch (anError.code) {
             case "JSONMarshalError":
@@ -53,7 +47,7 @@ export class ForgottenPasswordController extends Component {
                 this.notifyUnexpectedError();
         }
         return errorContents;
-    }
+    };
 
     notifyUnexpectedError() {
         let notification = {
@@ -66,7 +60,7 @@ export class ForgottenPasswordController extends Component {
         notifications.add(notification);
     }
 
-    handleResetPasswordError(error, stateToSet) {
+    handleResetPasswordError = (error, stateToSet) => {
         if (error.status != null) {
             if (error.status >= 400 && error.status < 500) {
                 let errorContents = { errorsForBody: [], emailMessage: "" };
@@ -95,13 +89,13 @@ export class ForgottenPasswordController extends Component {
         }
 
         return stateToSet;
-    }
+    };
 
-    postResetPassword(body) {
+    postResetPassword = body => {
         return http.post("/password-reset", body, true, true);
-    }
+    };
 
-    requestEmailChange(email) {
+    requestEmailChange = email => {
         const body = { email: email };
         this.postResetPassword(body)
             .then(response => {
@@ -118,18 +112,18 @@ export class ForgottenPasswordController extends Component {
                     isSubmitting: false
                 });
             });
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         this.setState({
             email: {
                 value: event.target.value,
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
         const email = this.state.email.value;
 
@@ -142,7 +136,7 @@ export class ForgottenPasswordController extends Component {
                 this.requestEmailChange(email);
             }
         );
-    }
+    };
 
     render() {
         // Type text as we don't want the browser validation as it is not the most accessible

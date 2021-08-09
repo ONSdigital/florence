@@ -62,15 +62,6 @@ export class CollectionEditController extends Component {
                 errorMsg: ""
             }
         };
-
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
-        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
-        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handleAddTeam = this.handleAddTeam.bind(this);
-        this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -136,16 +127,16 @@ export class CollectionEditController extends Component {
             });
     }
 
-    handleNameChange(name) {
+    handleNameChange = name => {
         this.setState({
             name: {
                 value: name,
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handleAddTeam(teamID) {
+    handleAddTeam = teamID => {
         const currentTeams = this.state.updatedTeamsList || this.props.teams || [];
 
         if (!teamID) {
@@ -196,9 +187,9 @@ export class CollectionEditController extends Component {
                 allTeams
             };
         });
-    }
+    };
 
-    handleRemoveTeam(teamID) {
+    handleRemoveTeam = teamID => {
         const currentTeams = this.state.updatedTeamsList || this.props.teams || [];
 
         this.setState(state => {
@@ -225,40 +216,40 @@ export class CollectionEditController extends Component {
                 allTeams
             };
         });
-    }
+    };
 
-    handlePublishTypeChange(publishType) {
+    handlePublishTypeChange = publishType => {
         if (publishType !== "manual" && publishType !== "scheduled") {
             log.event(`Attempt to select a publish type that isn't recognised`, log.warn(), log.data({ publish_type: publishType }));
             console.warn("Attempt to select a publish type that isn't recognised: ", publishType);
             return;
         }
         this.setState({ publishType });
-    }
+    };
 
-    handlePublishDateChange(date) {
+    handlePublishDateChange = date => {
         this.setState({
             publishDate: {
                 value: date,
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handlePublishTimeChange(time) {
+    handlePublishTimeChange = time => {
         this.setState({
             publishTime: {
                 value: time,
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handleCancel() {
+    handleCancel = () => {
         this.props.dispatch(push(url.resolve("../")));
-    }
+    };
 
-    handleSave() {
+    handleSave = () => {
         let hasError = false;
 
         const validatedName = collectionValidation.name(this.state.name.value);
@@ -400,7 +391,7 @@ export class CollectionEditController extends Component {
                 log.event("Error saving collection details", log.error(error), log.data({ collection_id: this.props.id }));
                 console.error("Error saving collection details update", error);
             });
-    }
+    };
 
     teamsHaveChanged(state) {
         if (state.addedTeams.size > 0 || state.removedTeams.size > 0) {

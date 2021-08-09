@@ -43,10 +43,6 @@ class DatasetUploadController extends Component {
         };
 
         let intervalID = 0;
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
-        this.handleRetryClick = this.handleRetryClick.bind(this);
-        this.getUploadStatus = this.getUploadStatus.bind(this);
-        this.repeatUploadStatusCheck = this.repeatUploadStatusCheck.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -104,7 +100,7 @@ class DatasetUploadController extends Component {
         this.bindInputs();
     }
 
-    repeatUploadStatusCheck() {
+    repeatUploadStatusCheck = () => {
         this.setState(
             {
                 isFetchingDataset: true,
@@ -121,9 +117,9 @@ class DatasetUploadController extends Component {
                 });
             }
         }, 5000);
-    }
+    };
 
-    getUploadStatus() {
+    getUploadStatus = () => {
         const APIResponses = {};
         datasetImport
             .get(this.props.params.jobID)
@@ -194,7 +190,7 @@ class DatasetUploadController extends Component {
                 console.error("Error getting job and recipe data: ", error);
             });
         return APIResponses;
-    }
+    };
 
     bindInputs() {
         document.querySelectorAll('input[type="file"]').forEach(input => {
@@ -429,7 +425,7 @@ class DatasetUploadController extends Component {
             });
     }
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
         if (this.state.isCantabular) {
             this.props.dispatch(push(`${location.pathname}`));
@@ -461,9 +457,9 @@ class DatasetUploadController extends Component {
         }
 
         this.props.dispatch(push(`${location.pathname}/metadata`));
-    }
+    };
 
-    handleRetryClick(aliasName) {
+    handleRetryClick = aliasName => {
         const files = this.state.activeDataset.files.map(currentFile => {
             if (currentFile.alias_name === aliasName) {
                 currentFile.progress = null;
@@ -477,7 +473,7 @@ class DatasetUploadController extends Component {
         };
 
         this.setState({ activeDataset });
-    }
+    };
 
     renderFileInputs() {
         if (!this.state.activeDataset) {

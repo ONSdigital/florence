@@ -26,8 +26,6 @@ class DatasetsController extends Component {
             collections: [],
             isFetchingDatasets: false
         };
-        this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
-        this.handleInstanceURL = this.handleInstanceURL.bind(this);
     }
 
     UNSAFE_componentWillMount() {
@@ -134,7 +132,7 @@ class DatasetsController extends Component {
         }
     }
 
-    mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
+    mapResponseToTableData = (datasets, instances, collections, activeCollectionID) => {
         try {
             const values = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
@@ -178,9 +176,9 @@ class DatasetsController extends Component {
             console.error("Error mapping dataset API responses to view", error);
             return [];
         }
-    }
+    };
 
-    handleInstanceURL(state, collection, dataset, instance, edition, version) {
+    handleInstanceURL = (state, collection, dataset, instance, edition, version) => {
         let urlPath = "";
         if (state === "completed") {
             urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`);
@@ -191,7 +189,7 @@ class DatasetsController extends Component {
             urlPath = urlPath + "?collection=" + collection;
         }
         return urlPath;
-    }
+    };
 
     render() {
         return (
