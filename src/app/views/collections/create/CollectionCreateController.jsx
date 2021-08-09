@@ -75,7 +75,7 @@ export class CollectionCreateController extends Component {
         this.handleSelectRelease = this.handleSelectRelease.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.getAllTeams();
     }
 

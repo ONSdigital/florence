@@ -30,7 +30,7 @@ export class CreateDatasetController extends Component {
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this.getAllUncreatedDatasetFromRecipeOutputs();
     };
 

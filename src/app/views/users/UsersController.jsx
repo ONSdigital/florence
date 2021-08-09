@@ -37,7 +37,7 @@ export class UsersController extends Component {
         this.isAdmin = auth.isAdmin(this.props.loggedInUser);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.isAdmin && !this.props.params.userID) {
             this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`));
         }

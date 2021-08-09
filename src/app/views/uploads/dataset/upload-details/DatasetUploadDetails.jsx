@@ -49,7 +49,7 @@ class DatasetUploadController extends Component {
         this.repeatUploadStatusCheck = this.repeatUploadStatusCheck.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.recipes || this.props.recipes.length === 0) {
             this.repeatUploadStatusCheck();
         } else {

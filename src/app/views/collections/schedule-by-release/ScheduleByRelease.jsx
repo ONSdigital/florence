@@ -52,7 +52,7 @@ export class ScheduleByRelease extends Component {
         this.shouldSubmitBeDisabled = this.shouldSubmitBeDisabled.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingReleases: true });
         releases
             .getUpcoming(null, null, this.state.releasesPerPage)

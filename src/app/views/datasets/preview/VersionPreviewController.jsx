@@ -58,7 +58,7 @@ class VersionPreviewController extends Component {
         this.backLinkPath = url.resolve(`metadata?collection=${this.props.collectionID}`, !this.props.collectionID);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isLoadingPreview: true });
 
         if (!this.props.collectionID) {

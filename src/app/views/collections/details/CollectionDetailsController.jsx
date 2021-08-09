@@ -94,7 +94,7 @@ export class CollectionDetailsController extends Component {
         this.handleRestoreSingleDeletedContentSuccess = this.handleRestoreSingleDeletedContentSuccess.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!auth.canViewCollectionsDetails(this.props.user)) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
             return;
@@ -109,7 +109,7 @@ export class CollectionDetailsController extends Component {
         }
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // Open and close edit collection modal
         if (nextProps.routes[nextProps.routes.length - 1].path === "edit") {
             this.setState({ isEditingCollection: true });

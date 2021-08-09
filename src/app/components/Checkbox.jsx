@@ -23,7 +23,7 @@ class Checkbox extends Component {
         this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isChecked) {
             this.setState({ value: this.props.isChecked });
         }

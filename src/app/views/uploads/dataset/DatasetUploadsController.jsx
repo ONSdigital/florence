@@ -37,7 +37,7 @@ export class DatasetUploadsController extends Component {
         this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingData: true });
 
         const getRecipes = recipes.getAll();

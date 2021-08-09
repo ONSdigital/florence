@@ -49,11 +49,11 @@ export class TeamsController extends Component {
         this.handleTeamCreateSuccess = this.handleTeamCreateSuccess.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.fetchTeams();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // Update with new active team
         const activeTeam = nextProps.allTeams.find(team => {
             return team.path === nextProps.params.team;

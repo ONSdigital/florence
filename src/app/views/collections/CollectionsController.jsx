@@ -45,11 +45,11 @@ export class CollectionsController extends Component {
         this.isViewer = this.props.user.userType === "VIEWER";
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         return this.fetchCollections();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // CollectionsController handles removing any collections from allCollections state
         // having an ID in the toDelete object means that this component needs to remove it from state
         // this stops other components having to understand and handle allCollections state.

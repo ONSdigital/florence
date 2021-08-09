@@ -47,7 +47,7 @@ export class LoginController extends Component {
         this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }

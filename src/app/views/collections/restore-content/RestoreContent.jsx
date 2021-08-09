@@ -35,7 +35,7 @@ export class RestoreContent extends Component {
         this.handleMultipleRestoredPages = this.handleMultipleRestoredPages.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.getAllDeletedContent();
     }
 

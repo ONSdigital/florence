@@ -41,7 +41,7 @@ class DatasetEdition extends Component {
         this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingInstance: true });
 
         const APIRequests = [datasets.getInstance(this.props.params.instance)];

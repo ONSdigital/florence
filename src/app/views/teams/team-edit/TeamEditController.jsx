@@ -36,7 +36,7 @@ export class TeamEditController extends Component {
         this.handleDone = this.handleDone.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({
             updatingAllUsers: true
         });
@@ -53,7 +53,7 @@ export class TeamEditController extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (nextProps.users !== this.props.users) {
             this.setState({ editedUsers: nextProps.users });
         }

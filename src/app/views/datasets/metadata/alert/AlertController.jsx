@@ -39,7 +39,7 @@ class AlertController extends Component {
         this.handleSave = this.handleSave.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.id) {
             this.setState({ newID: uuid() });
         }

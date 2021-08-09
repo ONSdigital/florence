@@ -73,7 +73,7 @@ export class CollectionEditController extends Component {
         this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
                 publishDate: {

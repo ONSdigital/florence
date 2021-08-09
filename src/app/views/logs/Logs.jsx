@@ -33,7 +33,7 @@ class Logs extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         // Add a timestamp to the URL so we know what time/date we're getting logs from
         // which prevents logs being added as when go through pages
         if (!this.props.location.query.timestamp) {
@@ -81,7 +81,7 @@ class Logs extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.page !== nextProps.page && nextProps.page === "1") {
             this.setState({ isFetchingLogs: true });
             log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {

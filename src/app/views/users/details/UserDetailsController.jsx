@@ -54,7 +54,7 @@ export class UserDetailsController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.updateStateWithUser();
     }
 

@@ -143,7 +143,7 @@ export class DatasetMetadata extends Component {
         this.editRelatedLink = this.editRelatedLink.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
         this.setState({ isFetchingDataset: true });

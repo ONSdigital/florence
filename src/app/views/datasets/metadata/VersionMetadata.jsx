@@ -149,7 +149,7 @@ export class VersionMetadata extends Component {
         this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
         this.setState({

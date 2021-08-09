@@ -86,12 +86,12 @@ const component = shallow(<UsersController {...defaultProps} />);
 describe("On mount of the users screen", () => {
     it("fetches data for all users", () => {
         const getUserCalls = user.getAll.mock.calls.length;
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
     });
 
     it("adds all users to state", () => {
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
         expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
     });
@@ -100,19 +100,19 @@ describe("On mount of the users screen", () => {
         expect(component.state("isFetchingUsers")).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(true);
     });
 
     it("updates isFetchingUsers state to show it has fetched data for all users", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(false);
     });
 
     it("updates isFetchingUsers state correctly on failure to fetch data for all users", async () => {
         user.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(false);
     });
 });

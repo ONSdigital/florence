@@ -30,7 +30,7 @@ class DatasetsController extends Component {
         this.handleInstanceURL = this.handleInstanceURL.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingDatasets: true });
 
         const fetches = [datasets.getNewVersionsAndCompletedInstances(), datasets.getAll(), collections.getAll()];
