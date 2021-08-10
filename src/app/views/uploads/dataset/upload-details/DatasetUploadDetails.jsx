@@ -38,7 +38,8 @@ class DatasetUploadController extends Component {
         this.state = {
             isFetchingDataset: false,
             loadingPageForFirstTime: false,
-            activeDataset: null
+            activeDataset: null,
+            isCantabular: false
         };
 
         let intervalID = 0;
@@ -297,18 +298,23 @@ class DatasetUploadController extends Component {
         const recipeAPIResponse = APIResponse.recipe;
         const jobAPIResponse = APIResponse.job;
         const fileURLs = new Map();
-        jobAPIResponse.files.forEach(jobFile => {
-            if (jobFile.url) {
-                fileURLs.set(jobFile.alias_name, jobFile.url);
-            }
-        });
+        let files = new Map();
+        if (jobAPIResponse.files.length > 0) {
+            jobAPIResponse.files.forEach(jobFile => {
+                if (jobFile.url) {
+                    fileURLs.set(jobFile.alias_name, jobFile.url);
+                }
+            });
+        }
 
-        const files = recipeAPIResponse.files.map(recipeFile => {
-            return {
-                alias_name: recipeFile.description,
-                url: fileURLs.get(recipeFile.description)
-            };
-        });
+        if (recipeAPIResponse.files) {
+            files = recipeAPIResponse.files.map(recipeFile => {
+                return {
+                    alias_name: recipeFile.description,
+                    url: fileURLs.get(recipeFile.description)
+                };
+            });
+        }
 
         const editionsList = recipeAPIResponse.output_instances.map((output, i) => {
             const editions = recipeAPIResponse.output_instances[i].editions;
@@ -320,6 +326,11 @@ class DatasetUploadController extends Component {
         if (jobAPIResponse.state === "completed" || jobAPIResponse.state === "error") {
             clearInterval(this.intervalID);
         }
+
+        if (recipeAPIResponse.format === "cantabular_table" || recipeAPIResponse.format === "cantabular_blob") {
+            this.setState({ isCantabular: true });
+        }
+
         return {
             recipeID: recipeAPIResponse.id,
             jobID: jobAPIResponse.id,
@@ -420,6 +431,10 @@ class DatasetUploadController extends Component {
 
     handleFormSubmit(event) {
         event.preventDefault();
+        if (this.state.isCantabular) {
+            this.props.dispatch(push(`${location.pathname}`));
+        }
+
         let filesWithoutURLS = [];
 
         for (let index = 0; index < this.state.activeDataset.files.length; index++) {
@@ -562,7 +577,7 @@ class DatasetUploadController extends Component {
                         </div>
                         <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
                             <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
-                            {this.renderFileInputs()}
+                            {!this.state.isCantabular && this.renderFileInputs()}
                             <button className="btn btn--positive" type="submit">
                                 Save and continue
                             </button>
@@ -600,6 +615,20 @@ class DatasetUploadController extends Component {
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
                         <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
+                        <p>
+                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
+                        </p>
+                    </div>
+                );
+            }
+            case "failed": {
+                return (
+                    <div>
+                        <div className="margin-top--2">
+                            &#9664; <Link to={url.resolve("../")}>Return</Link>
+                        </div>
+                        <h1 className="margin-top--1">An error has occurred</h1>
+                        <p className="margin-bottom--1">Your dataset has failed to upload</p>
                         <p>
                             Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
                         </p>
