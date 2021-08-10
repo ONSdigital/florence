@@ -128,9 +128,7 @@ describe("mapping data fetched from API to component state", () => {
         );
         const firstEntryOfaroundONS = wrapper.state("homepageData").aroundONS[0];
         expect(firstEntryOfaroundONS.simpleListHeading).toBe("Local statistics");
-        expect(firstEntryOfaroundONS.simpleListDescription).toBe(
-            "Where to find statistics covering specific areas."
-        );
+        expect(firstEntryOfaroundONS.simpleListDescription).toBe("Where to find statistics covering specific areas.");
     });
 });
 
