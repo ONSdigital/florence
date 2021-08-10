@@ -28,6 +28,7 @@ class EditHomepage extends Component {
                     maximumNumberOfEntries={this.props.maximumNumberOfEntries}
                     disableActions={this.props.disableForm}
                 />
+                <h2 className="margin-top--1">Around ONS</h2>
                 <SimpleEditableList
                     addText={"Add around ONS feature"}
                     fields={this.props.homepageData.aroundONS}
