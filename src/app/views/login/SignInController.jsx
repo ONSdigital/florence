@@ -123,7 +123,7 @@ export class LoginController extends Component {
         switch (anError.code) {
             case "InvalidEmail":
                 errorContents.errorsForBody.push(
-                    <p>
+                    <p key={"error-invalid-email"}>
                         <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
                             Enter a valid email address
                         </a>
@@ -133,7 +133,7 @@ export class LoginController extends Component {
                 break;
             case "InvalidPassword":
                 errorContents.errorsForBody.push(
-                    <p>
+                    <p key={"error-invalid-password"}>
                         <a href="javascript:document.getElementById('password').focus()" className={"colour--night-shadz"}>
                             Enter a password
                         </a>
@@ -142,10 +142,12 @@ export class LoginController extends Component {
                 errorContents.passwordMessage = "Enter a password";
                 break;
             case "NotAuthorised":
-                errorContents.errorsForBody.push(<p>Email address or password are incorrect</p>);
+                errorContents.errorsForBody.push(<p key={"error-not-authorised"}>Email address or password are incorrect</p>);
                 break;
             case "TooManyFailedAttempts":
-                errorContents.errorsForBody.push(<p>You've tried to sign in to your account too many times. Please try again later.</p>);
+                errorContents.errorsForBody.push(
+                    <p key={"error-too-many-attempts"}>You've tried to sign in to your account too many times. Please try again later.</p>
+                );
                 break;
             default:
                 // Code undefined or different to expected range of errors

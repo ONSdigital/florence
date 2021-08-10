@@ -4,7 +4,7 @@ import Panel from "../../components/panel/Panel";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
-        hading: PropTypes.string,
+        heading: PropTypes.string,
         body: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
     }),
     onSubmit: PropTypes.func,
@@ -13,9 +13,12 @@ const propTypes = {
 
 const ForgottenPasswordEmailSent = props => {
     const noEmailBody = (
-        <div>
+        <div className={"margin-top--1"}>
             <p>
-                If you did not get the email you can <a href={"/florence/forgotten-password"}>reset your password again.</a>
+                If you did not get the email you can
+                <a href={"/florence/forgotten-password"} className={"colour--primary-link"}>
+                    reset your password again.
+                </a>
             </p>
             <p>
                 Alternatively, to get help and support with your Florence account, please email&nbsp;

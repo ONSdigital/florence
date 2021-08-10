@@ -32,7 +32,7 @@ export class ForgottenPasswordController extends Component {
             case "JSONMarshalError":
             case "InvalidEmail": {
                 errorContents.errorsForBody.push(
-                    <p>
+                    <p key={"email-error"}>
                         <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
                             Enter a valid email address
                         </a>
@@ -79,13 +79,15 @@ export class ForgottenPasswordController extends Component {
                 if (error.body != null && error.body.errors != null) {
                     error.body.errors.forEach(anError => {
                         errorContents = this.showValidationError(anError, errorContents);
-                        validationErrors.heading = "Fix the following: ";
                     });
                 } else {
                     this.notifyUnexpectedError();
                 }
 
-                validationErrors.body = errorContents.errorsForBody;
+                if (errorContents.errorsForBody.length >= 1) {
+                    validationErrors.heading = "Fix the following: ";
+                    validationErrors.body = errorContents.errorsForBody;
+                }
                 stateToSet = {
                     ...this.state,
                     validationErrors

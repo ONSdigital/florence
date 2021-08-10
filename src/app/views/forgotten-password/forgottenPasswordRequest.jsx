@@ -5,8 +5,12 @@ import Panel from "../../components/panel/Panel";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
-        hading: PropTypes.string,
-        body: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+        heading: PropTypes.string,
+        body: PropTypes.oneOfType([
+            PropTypes.string,
+            PropTypes.element,
+            PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType]))
+        ])
     }),
     onSubmit: PropTypes.func,
     waitingResponse: PropTypes.bool,
@@ -20,12 +24,13 @@ const propTypes = {
 };
 
 const ForgottenPasswordRequest = props => {
+    const validationErrorsToDisplay = props.validationErrors.body && props.validationErrors.body.length > 0;
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-4">
                 <h1>Forgotten password</h1>
                 <p className={"font-size--18 margin-bottom--2"}>We'll email you a link to reset your password.</p>
-                {props.validationErrors.body && (
+                {validationErrorsToDisplay && (
                     <div className={"margin-bottom--1"}>
                         <Panel className={""} type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
                     </div>

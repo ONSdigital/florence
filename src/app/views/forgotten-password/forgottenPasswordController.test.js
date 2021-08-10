@@ -49,14 +49,14 @@ describe("When the user submits their email for a password request but the serve
     const component = mount(<ForgottenPasswordController {...props} />);
     component.setState({
         validationErrors: {
-            heading: "Fix the following",
-            body: (
-                <p>
+            heading: "Fix the following: ",
+            body: [
+                <p key={"error"}>
                     <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
                         Enter a valid email address
                     </a>
                 </p>
-            )
+            ]
         },
         email: {
             value: "foo@bar.com",
