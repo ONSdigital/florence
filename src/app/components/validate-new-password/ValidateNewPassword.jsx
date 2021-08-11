@@ -25,6 +25,12 @@ export class ValidateNewPassword extends Component {
             password: {
                 value: "",
                 type: "password"
+            },
+            ruleState: {
+                stringLenght: false,
+                upperCase: false,
+                lowerCase: false,
+                numberPresence: false
             }
         };
 
@@ -32,20 +38,60 @@ export class ValidateNewPassword extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
+    checkPasswordValidation() {
+        this.setState(
+            {
+                ruleState: {
+                    stringLenght: this.checkStringLength(),
+                    upperCase: this.checkUpperCase(),
+                    lowerCase: this.checkLowerCase(),
+                    numberPresence: this.checkNumberPresence()
+                }
+            },
+            this.checkPasswordValidation
+        );
+        console.log("password value is: " + this.state.password.value);
+        console.log("checkStringlenght: " + this.checkStringLength());
+        console.log("checkuppercase: " + this.checkUpperCase());
+        console.log("checkLowercase: " + this.checkLowerCase());
+        console.log("checkNumberpresence: " + this.checkNumberPresence());
+    }
+    checkStringLength() {
+        const charMinLength = 13;
+        console.log("I am inside check string length");
+        return this.state.password.value.length > charMinLength;
+    }
+    checkUpperCase() {
+        console.log("I am inside check upper case");
+        return /^.*[A-Z].*$/.test(this.state.password.value);
+    }
+    checkLowerCase() {
+        console.log("I am inside check lower case");
+        return /^.*[a-z].*$/.test(this.state.password.value);
+    }
+    checkNumberPresence() {
+        console.log("I am inside check number");
+        return /^.*[0-9].*$/.test(this.state.password.value);
+    }
+
     handleInputChange(event) {
         console.log("I am inside handleInputChange");
         const id = event.target.id;
         const value = event.target.value;
         const checked = event.target.checked;
+        console.log("value inside handleinputchange function" + value);
 
         switch (id) {
             case "password-input": {
-                this.setState(prevState => ({
-                    password: {
-                        ...prevState.password,
-                        value: value
-                    }
-                }));
+                this.setState(
+                    {
+                        password: {
+                            ...this.state.password,
+                            value: value
+                        }
+                    },
+                    this.checkPasswordValidation
+                );
                 break;
             }
             case "password-checkbox": {
@@ -71,7 +117,7 @@ export class ValidateNewPassword extends Component {
     }
 
     render() {
-        const validateNewPasswordPanelBody = <ValidationItemList />;
+        const validateNewPasswordPanelBody = <ValidationItemList ruleStates={this.state.ruleState} />;
         return (
             <div>
                 <Panel type={"information"} heading={"Your password must have at least:"} body={validateNewPasswordPanelBody} />
