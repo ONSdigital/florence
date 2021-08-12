@@ -54,7 +54,10 @@ test("Does password change form appear on state change", () => {
     };
     const component = mount(<LoginController {...props} />);
     expect(component.find(".modal__overlay").length).toBe(0);
-    component.setState({ requestPasswordChange: true });
+    component.setState({
+        requestPasswordChange: true,
+        validationErrors: {}
+    });
     expect(component.find(".modal__overlay").length).toBe(1);
 });
 
@@ -67,13 +70,13 @@ test("Given a missing password validation error do the warnings appear", () => {
     const state = {
         validationErrors: {
             heading: "Fix the following: ",
-            body: (
-                <p>
-                    <a href="javascript:document.getElementById('password').focus()" className={"colour--night-shadz"}>
+            body: [
+                <p key="error">
+                    <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
                         Enter a password
                     </a>
                 </p>
-            )
+            ]
         },
         email: {
             value: "foo@bar.com",
@@ -104,13 +107,13 @@ test("Given a bad email validation error do the warnings appear", () => {
     const state = {
         validationErrors: {
             heading: "Fix the following: ",
-            body: (
-                <p>
-                    <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+            body: [
+                <p key="email-error">
+                    <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                         Enter a valid email address
                     </a>
                 </p>
-            )
+            ]
         },
         email: {
             value: "foobar!baz",
@@ -142,13 +145,13 @@ test("Given a bad email and no password validation error do the warnings appear"
         validationErrors: {
             heading: "Fix the following: ",
             body: [
-                <p>
-                    <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                <p key="email-error">
+                    <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                         Enter a valid email address
                     </a>
                 </p>,
-                <p>
-                    <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                <p key="email-error-2">
+                    <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                         Enter a valid email address
                     </a>
                 </p>
@@ -183,7 +186,7 @@ test("Given a bad email and password combination validation error do the warning
     const state = {
         validationErrors: {
             heading: "Fix the following: ",
-            body: [<p>Email address or password are incorrect</p>]
+            body: [<p key="error">Email address or password are incorrect</p>]
         },
         email: {
             value: "foobar!baz",
@@ -214,7 +217,7 @@ test("Given too many attempts to sign in does validation error appear", () => {
     const state = {
         validationErrors: {
             heading: "Fix the following: ",
-            body: [<p>You've tried to sign in to your account too many times. Please try again later.</p>]
+            body: [<p key="error">You've tried to sign in to your account too many times. Please try again later.</p>]
         },
         email: {
             value: "foobar!baz",
