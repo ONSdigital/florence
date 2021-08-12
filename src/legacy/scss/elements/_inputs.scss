@@ -16,10 +16,10 @@
             content: attr(data-file-title);
             //margin: 0;
             //float: none;
-            padding: ($lineheight / 2) $gutter;
+            padding: ($lineheight * 0.5) $gutter;
             color: $mine-shaft;
             display: block;
-            margin-bottom: $lineheight / 2;
+            margin-bottom: $lineheight * 0.5;
             background-color: $white;
             line-height: $lineheight;
             border: 3px solid $scarpa-flow;

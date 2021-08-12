@@ -20,7 +20,7 @@
 
         h1 {
             margin: 0 $gutter;
-            padding-top: $lineheight / 2;
+            padding-top: $lineheight * 0.5;
             color: $cadet-blue;
             font-family: 'Open Sans', sans-serif;
             font-weight: 300;
@@ -37,7 +37,7 @@
     &__footer {
         //height: $lineheight * 4;
         background-color: $pickled-bluewood;
-        padding: ($lineheight/2) 0 $lineheight 0;
+        padding: ($lineheight*0.5) 0 $lineheight 0;
     }
 
     &__input {
@@ -106,7 +106,7 @@
             margin: $lineheight $gutter $lineheight ($gutter * 2);
 
             ul, ol {
-                margin: ($lineheight/2) $gutter ($lineheight/2) ($gutter * 2);
+                margin: ($lineheight*0.5) $gutter ($lineheight*0.5) ($gutter * 2);
             }
         }
     }
@@ -126,7 +126,7 @@
         display: none;
         float: left;
         position: static;
-        margin: ($lineheight / 2) 0 0 $gutter;
+        margin: ($lineheight * 0.5) 0 0 $gutter;
 
         &:hover {
             cursor: pointer;

@@ -12,8 +12,8 @@
         }
     
         td {
-            padding-top: ($lineheight / 2);
-            padding-bottom: ($lineheight / 2);
+            padding-top: ($lineheight * 0.5);
+            padding-bottom: ($lineheight * 0.5);
         }
     
         td, th {
@@ -175,15 +175,15 @@
 .simple-table {
 
     &__heading {
-        padding-top: $lineheight / 2;
-        padding-bottom: $lineheight /2;
-        margin-bottom: $lineheight /2;
+        padding-top: $lineheight * 0.5;
+        padding-bottom: $lineheight *0.5;
+        margin-bottom: $lineheight *0.5;
         border-bottom: 1px solid $iron-dark;
     }
 
     &__row {
-        padding-bottom: $lineheight / 2;
-        margin-bottom: $lineheight / 2;
+        padding-bottom: $lineheight * 0.5;
+        margin-bottom: $lineheight * 0.5;
         border-bottom: 1px solid $iron-dark;
 
         &:last-child {

@@ -92,7 +92,7 @@
 
     &--password {
         background: none;
-        font-size: ($lineheight / 2 ) + 2;
+        font-size: ($lineheight * 0.5 ) + 2;
         float: right;
         margin-top: -$lineheight * 2;
 
