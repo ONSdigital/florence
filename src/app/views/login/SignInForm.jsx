@@ -29,8 +29,8 @@ const LoginForm = props => {
             <div className="grid__col-3">
                 <h1>Sign in to your Florence account</h1>
                 {showValidationErrorPanel && (
-                    <div className={"margin-bottom--1"}>
-                        <Panel className={""} type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
+                    <div className="margin-bottom--1">
+                        <Panel type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
                     </div>
                 )}
                 <form className="form" onSubmit={props.onSubmit}>

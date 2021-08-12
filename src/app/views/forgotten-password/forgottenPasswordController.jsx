@@ -32,8 +32,8 @@ export class ForgottenPasswordController extends Component {
             case "JSONMarshalError":
             case "InvalidEmail": {
                 errorContents.errorsForBody.push(
-                    <p key={"email-error"}>
-                        <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                    <p key="email-error">
+                        <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                             Enter a valid email address
                         </a>
                     </p>

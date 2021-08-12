@@ -51,8 +51,8 @@ describe("When the user submits their email for a password request but the serve
         validationErrors: {
             heading: "Fix the following: ",
             body: [
-                <p key={"error"}>
-                    <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                <p key="error">
+                    <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                         Enter a valid email address
                     </a>
                 </p>
@@ -95,6 +95,11 @@ describe("When the user submits their email for a password request and the proce
         expect(component.find("h1").text()).toBe("We sent you an email");
     });
     it("Show the users email", () => {
-        expect(component.find("b").text()).toBe("foo@bar.com");
+        expect(
+            component
+                .find("strong")
+                .at(0)
+                .text()
+        ).toBe("foo@bar.com");
     });
 });

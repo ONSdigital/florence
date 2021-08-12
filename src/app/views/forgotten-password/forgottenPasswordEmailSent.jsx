@@ -13,10 +13,10 @@ const propTypes = {
 
 const ForgottenPasswordEmailSent = props => {
     const noEmailBody = (
-        <div className={"margin-top--1"}>
+        <div className="margin-top--1">
             <p>
                 If you did not get the email you can
-                <a href={"/florence/forgotten-password"} className={"colour--primary-link"}>
+                <a href={"/florence/forgotten-password"} className="colour--primary-link">
                     reset your password again.
                 </a>
             </p>
@@ -30,12 +30,12 @@ const ForgottenPasswordEmailSent = props => {
         <div className="grid grid--justify-center">
             <div className="grid__col-4">
                 <h1>We sent you an email</h1>
-                <p className={"font-size--18 margin-bottom--1"}>
-                    If you have a Florence account, we’ve sent an email to <b>{props.email}</b>.
+                <p className="font-size--18 margin-bottom--1">
+                    If you have a Florence account, we’ve sent an email to <strong>{props.email}</strong>.
                 </p>
                 <p>You need to follow the link in the email to reset your password.</p>
-                <p className={"margin-bottom--1"}>If you do not reset your password straight away, you may need to reset it again.</p>
-                <Panel type={"information"} heading={"If you did not get the email"} body={noEmailBody} />
+                <p className="margin-bottom--1">If you do not reset your password straight away, you may need to reset it again.</p>
+                <Panel type="information" heading="If you did not get the email" body={noEmailBody} />
             </div>
         </div>
     );

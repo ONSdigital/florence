@@ -31,8 +31,8 @@ const ForgottenPasswordRequest = props => {
                 <h1>Forgotten password</h1>
                 <p className={"font-size--18 margin-bottom--2"}>We'll email you a link to reset your password.</p>
                 {validationErrorsToDisplay && (
-                    <div className={"margin-bottom--1"}>
-                        <Panel className={""} type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
+                    <div className="margin-bottom--1">
+                        <Panel type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
                     </div>
                 )}
                 <form className="form" onSubmit={props.onSubmit}>
@@ -40,7 +40,7 @@ const ForgottenPasswordRequest = props => {
                     <button type="submit" className="btn btn--primary margin-top--1">
                         Send the link
                     </button>
-                    {props.waitingResponse ? <div className="form__loader loader loader--dark margin-left--1" /> : ""}
+                    {props.waitingResponse && <div className="form__loader loader loader--dark margin-left--1" />}
                 </form>
             </div>
         </div>
