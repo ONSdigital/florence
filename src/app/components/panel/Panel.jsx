@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 
 const propTypes = {
     type: PropTypes.string.isRequired,
-    body: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
+    body: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.element,
+        PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType]))
+    ]),
     heading: PropTypes.string,
     bannerHeading: PropTypes.bool,
     icon: PropTypes.oneOf(["exclamation", "tick", "arrow"]),
