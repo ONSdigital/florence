@@ -7,15 +7,7 @@ import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 import ValidationItemList from "../../components/validation-item-list/ValidationItemList";
 
-const propTypes = {
-    contents: PropTypes.array,
-    label: PropTypes.string,
-    id: PropTypes.string,
-    override: PropTypes.bool,
-    overrideLabel: PropTypes.string,
-    overrideId: PropTypes.string,
-    onChange: PropTypes.func
-};
+const propTypes = {};
 
 export class ValidateNewPassword extends Component {
     constructor(props) {
@@ -26,30 +18,73 @@ export class ValidateNewPassword extends Component {
                 value: "",
                 type: "password"
             },
-            ruleState: {
-                stringLenght: false,
-                upperCase: false,
-                lowerCase: false,
-                numberPresence: false
-            }
+            validationRules: this.validationRules
         };
 
         console.log("Validate password page called");
         this.handleInputChange = this.handleInputChange.bind(this);
     }
 
+    validationRules = [
+        {
+            name: "14 characters",
+            checked: this.checkStringLength(),
+            id: "minimum-character-limit",
+            enabled: true
+        },
+        {
+            name: "1 uppercase character",
+            checked: this.checkUpperCase(),
+            id: "uppercase-character-validation",
+            enabled: true
+        },
+        {
+            name: "1 lowercase character",
+            checked: this.checkLowerCase(),
+            id: "lowercase-character-validation",
+            enabled: true
+        },
+        {
+            name: "1 number",
+            checked: this.checkNumberPresence(),
+            id: "minimum-number-limit",
+            enabled: true
+        }
+    ];
+
     checkPasswordValidation() {
-        this.setState(
-            {
-                ruleState: {
-                    stringLenght: this.checkStringLength(),
-                    upperCase: this.checkUpperCase(),
-                    lowerCase: this.checkLowerCase(),
-                    numberPresence: this.checkNumberPresence()
+        console.log("checking validation rule index[2] " + this.state.validationRules[2].checked);
+        let newValidationRules = this.validationRules;
+        console.log("output of new validation rule: " + JSON.stringify(newValidationRules));
+        this.setState({
+            validationRules: [
+                {
+                    name: "14 characters",
+                    checked: this.checkStringLength(),
+                    id: "minimum-character-limit",
+                    enabled: true
+                },
+                {
+                    name: "1 uppercase character",
+                    checked: this.checkUpperCase(),
+                    id: "uppercase-character-validation",
+                    enabled: true
+                },
+                {
+                    name: "1 lowercase character",
+                    checked: this.checkLowerCase(),
+                    id: "lowercase-character-validation",
+                    enabled: true
+                },
+                {
+                    name: "1 number",
+                    checked: this.checkNumberPresence(),
+                    id: "minimum-number-limit",
+                    enabled: true
                 }
-            },
-            this.checkPasswordValidation
-        );
+            ]
+        });
+
         console.log("password value is: " + this.state.password.value);
         console.log("checkStringlenght: " + this.checkStringLength());
         console.log("checkuppercase: " + this.checkUpperCase());
@@ -58,19 +93,31 @@ export class ValidateNewPassword extends Component {
     }
     checkStringLength() {
         const charMinLength = 13;
-        console.log("I am inside check string length");
+        console.log("I am inside check string length ");
+        if (this.state == null || this.state.password == null || this.state.password.value == null) {
+            return false;
+        }
         return this.state.password.value.length > charMinLength;
     }
     checkUpperCase() {
         console.log("I am inside check upper case");
+        if (this.state == null || this.state.password == null || this.state.password.value == null) {
+            return false;
+        }
         return /^.*[A-Z].*$/.test(this.state.password.value);
     }
     checkLowerCase() {
         console.log("I am inside check lower case");
+        if (this.state == null || this.state.password == null || this.state.password.value == null) {
+            return false;
+        }
         return /^.*[a-z].*$/.test(this.state.password.value);
     }
     checkNumberPresence() {
         console.log("I am inside check number");
+        if (this.state == null || this.state.password == null || this.state.password.value == null) {
+            return false;
+        }
         return /^.*[0-9].*$/.test(this.state.password.value);
     }
 
@@ -117,7 +164,7 @@ export class ValidateNewPassword extends Component {
     }
 
     render() {
-        const validateNewPasswordPanelBody = <ValidationItemList ruleStates={this.state.ruleState} />;
+        const validateNewPasswordPanelBody = <ValidationItemList validationRules={this.state.validationRules} />;
         return (
             <div>
                 <Panel type={"information"} heading={"Your password must have at least:"} body={validateNewPasswordPanelBody} />
