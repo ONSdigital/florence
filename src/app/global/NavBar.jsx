@@ -1,7 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
+import { withRouter } from "react-router";
 
 import url from "../utilities/url";
 import cookies from "../utilities/cookies";
@@ -149,4 +150,4 @@ function mapStateToProps(state) {
 
 NavBar.propTypes = propTypes;
 
-export default connect(mapStateToProps)(NavBar);
+export default connect(mapStateToProps)(withRouter(NavBar));

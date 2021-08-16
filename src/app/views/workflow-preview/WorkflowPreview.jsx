@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import url from "../../utilities/url";

@@ -1,4 +1,4 @@
-import { browserHistory } from "react-router";
+import { browserHistory } from "react-router-dom";
 import uuid from "uuid/v4";
 import websocket from "./websocket";
 import storage from "./storage";

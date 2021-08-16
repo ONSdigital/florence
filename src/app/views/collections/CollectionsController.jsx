@@ -1,5 +1,8 @@
 import React, { Component } from "react";
+
 import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { useParams, useLocation } from "react-router-dom";
 import PropTypes from "prop-types";
 import { push } from "react-router-redux";
 import objectIsEmpty from "is-empty-object";
@@ -12,6 +15,13 @@ import notifications from "../../utilities/notifications";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import collectionMapper from "./mapper/collectionMapper";
 import cookies from "../../utilities/cookies";
+
+function useRouterHooks(Component) {
+    console.dir("ok");
+    const params = useParams();
+    const location = useLocation();
+    return props => withRouter(<Component {...props} params={params} location={location} />);
+}
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -30,7 +40,6 @@ const propTypes = {
     collectionsToDelete: PropTypes.object.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired
 };
-
 export class CollectionsController extends Component {
     constructor(props) {
         super(props);
@@ -233,4 +242,4 @@ export function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CollectionsController);
+export default connect(mapStateToProps)(useRouterHooks(CollectionsController));

@@ -4,15 +4,13 @@ import PropTypes from "prop-types";
 import NavBar from "./NavBar";
 
 const propTypes = {
-    children: PropTypes.node.isRequired,
-    params: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    children: PropTypes.node.isRequired
 };
 
-const Layout = ({ location, children }) => {
+const Layout = ({ children }) => {
     return (
         <div>
-            <NavBar location={location} />
+            <NavBar />
             {children}
         </div>
     );
