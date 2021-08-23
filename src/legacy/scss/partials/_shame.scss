@@ -62,8 +62,8 @@
         bottom: 0;
         height: $lineheight * 4;
         width: 100%;
-        padding-top: $lineheight / 2;
-        padding-bottom: $lineheight / 2;
+        padding-top: $lineheight * 0.5;
+        padding-bottom: $lineheight * 0.5;
         background: $gray-chateau;
     }
 
@@ -72,8 +72,8 @@
         position: absolute;
         height: $lineheight * 4;
         width: 100%;
-        padding-top: $lineheight / 2;
-        padding-bottom: $lineheight / 2;
+        padding-top: $lineheight * 0.5;
+        padding-bottom: $lineheight * 0.5;
         background: $gray-chateau;
     }
 
@@ -123,7 +123,7 @@
         }
 
         &__checkbox {
-            margin: 0 0 0 ($lineheight / 2);
+            margin: 0 0 0 ($lineheight * 0.5);
         }
 
     }
@@ -338,7 +338,7 @@
 
     &__title {
         width: 100% !important;
-        margin-bottom: $lineheight / 2 !important;
+        margin-bottom: $lineheight * 0.5 !important;
     }
 
     &__filename {

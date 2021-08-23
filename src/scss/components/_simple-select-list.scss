@@ -19,7 +19,7 @@
             font-size: 14px;
             font-family: "Open Sans", sans-serif;
             font-weight: 300;
-            line-height: $lineheight / 2;
+            line-height: $lineheight * 0.5;
         }
         // end of radio button hack
     }
