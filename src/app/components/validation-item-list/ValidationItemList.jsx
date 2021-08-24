@@ -21,13 +21,15 @@ export default class ValidationItemList extends Component {
 
     render() {
         return (
-            <div>
+            <div className="margin-bottom--1">
                 {this.props.validationRules.map(rule => {
                     let isChecked = rule.checked;
 
-                    return <ValidationItem key={rule.id} name={rule.name} defaultChecked={isChecked} id={rule.id} enabled={rule.enabled} />;
+                    return <ValidationItem key={rule.id} name={rule.name} checked={isChecked} id={rule.id} enabled={rule.enabled} />;
                 })}
-                <p>It could be a phrase that has more than 14 characters. For example, 1bought11cupsoftea.</p>
+                <p className="margin-top--1 margin-bottom--1">
+                    It could be a phrase that has more than 14 characters. For example, 1bought11cupsoftea.
+                </p>
                 <p>It can also have special chracters, for example £,?,!,%,&.</p>
             </div>
         );
