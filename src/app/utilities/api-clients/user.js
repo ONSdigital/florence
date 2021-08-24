@@ -34,6 +34,10 @@ export default class user {
         return http.get(`/zebedee/permission?email=${email}`, true, true);
     }
 
+    static signIn(body) {
+        return http.post("/tokens", body, true, true, true);
+    }
+
     static expireSession() {
         return http.delete("/tokens/self", true, true);
     }
