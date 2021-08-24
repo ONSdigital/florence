@@ -81,4 +81,20 @@ func TestDirectors(t *testing.T) {
 		identityAPIDirector("v123")(request)
 		So(request.URL.String(), ShouldEqual, "/v123/foo")
 	})
+
+	Convey("Identity API proxy director function sets the refresh headers correctly", t, func() {
+		request, err := http.NewRequest("GET", "/tokens/self", nil)
+		So(err, ShouldBeNil)
+		idTokenValue := "foo"
+		refreshTokenValue := "bar"
+		idCookie := http.Cookie{Name: "id_token", Value: idTokenValue}
+		refreshCookie := http.Cookie{Name: "refresh_token", Value: refreshTokenValue}
+		request.AddCookie(&idCookie)
+		request.AddCookie(&refreshCookie)
+		identityAPIDirector("v1")(request)
+		idHeaderValue := request.Header.Get("ID")
+		refreshHeaderValue := request.Header.Get("Refresh")
+		So(idHeaderValue, ShouldEqual, idTokenValue)
+		So(refreshHeaderValue, ShouldEqual, refreshTokenValue)
+	})
 }
