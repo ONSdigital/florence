@@ -21,16 +21,17 @@ export default class ValidationItem extends Component {
             <input
                 type="checkbox"
                 id={this.props.id}
-                checked={this.props.checked ? "checked" : ""}
+                checked={this.props.checked}
                 onClick={this.preventUserInteractions}
                 onKeyDown={this.preventUserInteractions}
+                className="readonly-checkbox"
             ></input>
         );
 
         const labelElements = <label htmlFor={this.props.id}> {this.props.name}</label>;
 
         return (
-            <div>
+            <div className="readonly-checkbox__wrapper">
                 {this.props.enabled && inputElements}
                 {this.props.enabled && labelElements}
             </div>

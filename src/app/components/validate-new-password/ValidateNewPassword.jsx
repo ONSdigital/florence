@@ -6,8 +6,11 @@ import Checkbox from "../Checkbox";
 import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 import ValidationItemList from "../../components/validation-item-list/ValidationItemList";
+import { prototype } from "../../../node_modules/handsontable/handsontable";
 
-const propTypes = {};
+const propTypes = {
+    updateValidity: PropTypes.func
+};
 
 export class ValidateNewPassword extends Component {
     constructor(props) {
@@ -56,34 +59,46 @@ export class ValidateNewPassword extends Component {
         console.log("checking validation rule index[2] " + this.state.validationRules[2].checked);
         let newValidationRules = this.validationRules;
         console.log("output of new validation rule: " + JSON.stringify(newValidationRules));
-        this.setState({
-            validationRules: [
-                {
-                    name: "14 characters",
-                    checked: this.checkStringLength(),
-                    id: "minimum-character-limit",
-                    enabled: true
-                },
-                {
-                    name: "1 uppercase character",
-                    checked: this.checkUpperCase(),
-                    id: "uppercase-character-validation",
-                    enabled: true
-                },
-                {
-                    name: "1 lowercase character",
-                    checked: this.checkLowerCase(),
-                    id: "lowercase-character-validation",
-                    enabled: true
-                },
-                {
-                    name: "1 number",
-                    checked: this.checkNumberPresence(),
-                    id: "minimum-number-limit",
-                    enabled: true
-                }
-            ]
-        });
+        this.setState(
+            {
+                validationRules: [
+                    {
+                        name: "14 characters",
+                        checked: this.checkStringLength(),
+                        id: "minimum-character-limit",
+                        enabled: true
+                    },
+                    {
+                        name: "1 uppercase character",
+                        checked: this.checkUpperCase(),
+                        id: "uppercase-character-validation",
+                        enabled: true
+                    },
+                    {
+                        name: "1 lowercase character",
+                        checked: this.checkLowerCase(),
+                        id: "lowercase-character-validation",
+                        enabled: true
+                    },
+                    {
+                        name: "1 number",
+                        checked: this.checkNumberPresence(),
+                        id: "minimum-number-limit",
+                        enabled: true
+                    }
+                ]
+            },
+
+            () => {
+                let ruleChecked = true;
+                this.state.validationRules.map(rule => {
+                    if (!rule.checked) {
+                        ruleChecked = false;
+                    }
+                });
+                this.props.updateValidity(ruleChecked);
+            }
+        );
 
         console.log("password value is: " + this.state.password.value);
         console.log("checkStringlenght: " + this.checkStringLength());
@@ -167,7 +182,9 @@ export class ValidateNewPassword extends Component {
         const validateNewPasswordPanelBody = <ValidationItemList validationRules={this.state.validationRules} />;
         return (
             <div>
-                <Panel type={"information"} heading={"Your password must have at least:"} body={validateNewPasswordPanelBody} />
+                <div className="margin-bottom--1">
+                    <Panel type={"information"} heading={"Your password must have at least:"} body={validateNewPasswordPanelBody} />
+                </div>
                 <Input
                     id={"password-input"}
                     type={this.state.password.type}
