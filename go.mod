@@ -4,8 +4,9 @@ go 1.16
 
 require (
 	github.com/ONSdigital/dp-api-clients-go v1.41.1 // indirect
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.0.1-beta
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.1.11
 	github.com/ONSdigital/dp-component-test v0.3.0
+	github.com/ONSdigital/dp-cookies v0.2.0
 	github.com/ONSdigital/dp-healthcheck v1.0.5
 	github.com/ONSdigital/dp-net/v2 v2.0.0-beta
 	github.com/ONSdigital/log.go v1.0.1
@@ -13,7 +14,6 @@ require (
 	github.com/chromedp/chromedp v0.6.8
 	github.com/cucumber/godog v0.10.0
 	github.com/gogo/protobuf v1.3.2 // indirect
-	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
 	github.com/gorilla/context v1.1.1 // 	indirect
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/pat v1.0.1
