@@ -53,12 +53,8 @@ export class LoginController extends Component {
         }
     }
 
-    postLoginCredentials(body) {
-        return http.post("/tokens", body, true, true, true);
-    }
-
     requestLogin(credentials) {
-        this.postLoginCredentials(credentials)
+        user.signIn(credentials)
             .then(() => {
                 this.handleLogin();
             })
