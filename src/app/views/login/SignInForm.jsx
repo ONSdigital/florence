@@ -3,7 +3,6 @@ import React from "react";
 import Input from "../../components/Input";
 import Panel from "../../components/panel/Panel";
 import PropTypes from "prop-types";
-import ValidateNewPassword from "../../components/validate-new-password/ValidateNewPassword";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
