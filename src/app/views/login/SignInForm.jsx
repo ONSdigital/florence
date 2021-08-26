@@ -27,7 +27,6 @@ const LoginForm = props => {
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
-                <ValidateNewPassword />
                 <h1>Sign in to your Florence account</h1>
                 {props.validationErrors.body && (
                     <div className={"margin-bottom--1"}>
