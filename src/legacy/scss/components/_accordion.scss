@@ -18,7 +18,7 @@
         // Handle different headings in accordion title
         h3 {
             margin: 0;
-            padding: ($lineheight / 2) $gutter;
+            padding: ($lineheight * 0.5) $gutter;
         }
         h4 {
             margin-top: 0;

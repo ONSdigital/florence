@@ -190,7 +190,7 @@ $size: 300px;
         position: absolute;
         width: 2px;
         height: $size;
-        left: ($size / 2) - 1px;
+        left: ($size * 0.5) - 1px;
         background-image: linear-gradient($color, transparent);
     }
 }

@@ -31,11 +31,11 @@
     }
 
     &__text {
-        padding: ($lineheight / 2) ($gutter * 2);
+        padding: ($lineheight * 0.5) ($gutter * 2);
     }
 
     &__item {
-        padding: ($lineheight / 2) ($gutter * 2);
+        padding: ($lineheight * 0.5) ($gutter * 2);
         display: flex;
         align-items: center;
         flex-direction: row;
