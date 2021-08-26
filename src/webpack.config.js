@@ -1,9 +1,9 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
+    mode: process.env.NODE_ENV,
     entry: {
         app: ['./index.js'],
         // tablebuilder: './tablebuilder/tablebuilder.js'
@@ -43,25 +43,18 @@ module.exports = {
                 } 
             },
             {
-                test: /\.(sass|css|scss)$/,
-                use: [
-                    {loader: 'style-loader'},
-                    {loader: 'css-loader'}
-                ]
+                test: /\.scss$/i,
+                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
         },
         {
             test: /\.(jpg|jpeg|png|gif|mp3|svg)$/i,
-            use: [
-              {
+            use: [{
                 loader: 'url-loader',
-                options: {
-                  limit: 100000,
-                },
-              },
+                options: { limit: 100000,},
+            },
             ],
-          },
-        ]
-    },
+        },
+    ]},
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
