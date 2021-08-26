@@ -196,7 +196,7 @@ button {
     font-size: $magicnumber1 * 2;
     font-weight: 300;
     line-height: $lineheight;
-    margin-top: $lineheight / 2;
+    margin-top: $lineheight * 0.5;
     margin-bottom: 0;
     margin-right: $gutter;
     margin-left: $gutter;

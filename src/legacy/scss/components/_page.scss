@@ -235,8 +235,8 @@
         position: absolute;
         left: calc(-100% - #{$gutter*3});
         transition: 0.5s ease-in-out;
-        top: -($lineheight / 2);
-        padding: ($lineheight / 2) $gutter;
+        top: -($lineheight * 0.5);
+        padding: ($lineheight * 0.5) $gutter;
         //background-color: $iron;
 
         &.active {
