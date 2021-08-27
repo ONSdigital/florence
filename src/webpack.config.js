@@ -7,7 +7,7 @@ module.exports = env => {
         mode: env.development ? 'development': 'production',
         entry: {
             app: ['./index.js'],
-            // tablebuilder: './tablebuilder/tablebuilder.js'
+            tablebuilder: './tablebuilder/tablebuilder.js'
         },
         output: {
             path: path.resolve(__dirname, '../dist'),
