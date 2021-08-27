@@ -22,7 +22,7 @@
 
     &__header {
         padding: $lineheight $gutter;
-        margin-bottom: $lineheight / 2;
+        margin-bottom: $lineheight * 0.5;
     }
 
     &__title {
@@ -34,7 +34,7 @@
 
     &__body {
         padding: 0 $gutter $lineheight $gutter;
-        margin-bottom: $lineheight / 2;
+        margin-bottom: $lineheight * 0.5;
     }
 
     &__footer {

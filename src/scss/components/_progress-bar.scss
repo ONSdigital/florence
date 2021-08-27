@@ -4,7 +4,7 @@
     width: 100%;
 
     &__bar {
-        height: ($lineheight / 2);
+        height: ($lineheight * 0.5);
         background-color: $como;
         transition: 0.4s linear;
         transition-property: width;

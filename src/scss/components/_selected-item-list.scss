@@ -1,12 +1,14 @@
+@use "sass:math";
+
 .selected-item-list {
 
-    margin-bottom: $lineheight / 2;
+    margin-bottom: $lineheight * 0.5;
 
     &__item {
         background-color: $slate-grey;
         color: $white;
-        padding: $lineheight / 2;
-        margin: 0 ($lineheight / 2) ($lineheight / 2) 0;
+        padding: $lineheight * 0.5;
+        margin: 0 ($lineheight * 0.5) ($lineheight * 0.5) 0;
         display: inline-block;
 
         &:hover {
@@ -19,7 +21,7 @@
         color: $white;
         font-size: 18px;
         font-weight: 700;
-        padding-left: $lineheight / 3;
+        padding-left: math.div($lineheight, 3);
 
         &:hover {
             color: $night-shadz;
