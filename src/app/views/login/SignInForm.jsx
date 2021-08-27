@@ -41,7 +41,7 @@ const LoginForm = props => {
                     <div>
                         <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
                     </div>
-                    <ButtonWithSpinner isSubmitting={props.isSubmitting} />
+                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
                 </form>
             </div>
         </div>
