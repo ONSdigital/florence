@@ -76,7 +76,16 @@ class EditHomepage extends Component {
 const propTypes = {
     homepageData: PropTypes.shape({
         featuredContent: PropTypes.array,
-        aroundONS: PropTypes.array,
+        aroundONS: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.string,
+                description: PropTypes.string,
+                uri: PropTypes.string,
+                image: PropTypes.string,
+                title: PropTypes.string,
+                simpleListHeading: PropTypes.string,
+                simpleListDescription: PropTypes.string
+            })),
         serviceMessage: PropTypes.string
     }),
     handleBackButton: PropTypes.func.isRequired,

@@ -117,8 +117,8 @@ export class EditHomepageController extends Component {
         return homepage
             .get(this.props.params.collectionID)
             .then(homepageData => {
-                const mappedFeaturedContent = this.mapFeaturedContentToState(homepageData.featuredContent);
-                const mappedAroundONS = this.mapFeaturedContentToState(homepageData.aroundONS);
+                const mappedFeaturedContent = this.mapColumnContentToState(homepageData.featuredContent);
+                const mappedAroundONS = this.mapColumnContentToState(homepageData.aroundONS);
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageFetched: true,
@@ -136,9 +136,9 @@ export class EditHomepageController extends Component {
             });
     };
 
-    mapFeaturedContentToState = featuredContent => {
+    mapColumnContentToState = columnContent => {
         try {
-            return featuredContent.map((item, index) => {
+            return columnContent.map((item, index) => {
                 return {
                     id: index,
                     description: item.description,
@@ -234,7 +234,7 @@ export class EditHomepageController extends Component {
         const newFieldState = [...this.state.homepageData[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        const mappedNewFieldState = this.mapFeaturedContentToState(newFieldState);
+        const mappedNewFieldState = this.mapColumnContentToState(newFieldState);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -248,7 +248,7 @@ export class EditHomepageController extends Component {
             }
             return field;
         });
-        const mappedNewFieldState = this.mapFeaturedContentToState(newFieldState, stateFieldName);
+        const mappedNewFieldState = this.mapColumnContentToState(newFieldState, stateFieldName);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -256,7 +256,8 @@ export class EditHomepageController extends Component {
     };
 
     checkForHomepageDataChanges = fieldName => {
-        if (fieldName === "featuredContent" || "aroundONS" || "serviceMessage") {
+        const checkedFields = ["featuredContent", "aroundONS", "serviceMessage"]
+        if (checkedFields.includes(fieldName)) {
             return true;
         }
         return this.state.hasChangesMade;
