@@ -117,8 +117,8 @@ export class EditHomepageController extends Component {
         return homepage
             .get(this.props.params.collectionID)
             .then(homepageData => {
-                const mappedFeaturedContent = this.mapColumnContentToState(homepageData.featuredContent);
-                const mappedAroundONS = this.mapColumnContentToState(homepageData.aroundONS);
+                const mappedFeaturedContent = this.mapHighlightedContentToState(homepageData.featuredContent);
+                const mappedAroundONS = this.mapHighlightedContentToState(homepageData.aroundONS);
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageFetched: true,
@@ -136,9 +136,9 @@ export class EditHomepageController extends Component {
             });
     };
 
-    mapColumnContentToState = columnContent => {
+    mapHighlightedContentToState = content => {
         try {
-            return columnContent.map((item, index) => {
+            return content.map((item, index) => {
                 return {
                     id: index,
                     description: item.description,
@@ -234,7 +234,7 @@ export class EditHomepageController extends Component {
         const newFieldState = [...this.state.homepageData[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        const mappedNewFieldState = this.mapColumnContentToState(newFieldState);
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -248,7 +248,7 @@ export class EditHomepageController extends Component {
             }
             return field;
         });
-        const mappedNewFieldState = this.mapColumnContentToState(newFieldState, stateFieldName);
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState, stateFieldName);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -300,18 +300,8 @@ export class EditHomepageController extends Component {
         this.setState({ isSaving: true });
         let saveHomepageChangesError = false;
         if (this.state.hasChangesMade) {
-            featuredContent = this.state.homepageData.featuredContent.map(entry => ({
-                title: entry.title,
-                description: entry.description,
-                uri: entry.uri,
-                image: entry.image
-            }));
-            aroundONS = this.state.homepageData.aroundONS.map(entry => ({
-                title: entry.title,
-                description: entry.description,
-                uri: entry.uri,
-                image: entry.image
-            }));
+            featuredContent = this.mapStateToHighlightedContent(this.state.homepageData.featuredContent);
+            aroundONS = this.mapStateToHighlightedContent(this.state.homepageData.aroundONS);
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
             formattedHomepageData = { ...initialHomepageData, featuredContent, aroundONS, serviceMessage };
@@ -342,6 +332,22 @@ export class EditHomepageController extends Component {
             } else {
                 this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
             }
+        }
+    };
+
+    mapStateToHighlightedContent = state => {
+        try {
+            return state.map(item => {
+                return {
+                    description: item.description,
+                    uri: item.uri,
+                    image: item.image,
+                    title: item.title
+                };
+            });
+        } catch (error) {
+            log.event("Error mapping state to highlighted content", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            throw new Error(`Error mapping state to highlighted content \n ${error}`);
         }
     };
 
