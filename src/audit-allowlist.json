@@ -2,8 +2,6 @@
     "ignore": [
         { "id": "e7bea77b-f37f-4290-a069-08fc9c4b6ac0", "package": "acorn" },
         { "id": "c08153de-a0ad-4212-963d-3de92eaab509", "package": "ini" },
-        { "id": "2053350d-b06f-4926-88ea-871760f6e5d8", "package": "lodash" },
-        { "id": "eeedfb1c-6a5e-428c-bb17-c64b66f9eced", "package": "lodash" },
         { "id": "58fdd459-8d4a-4bf6-b106-ef7cff98268c", "package": "moment" },
         { "id": "d939d5e9-46d5-4682-a6c7-756e5fea2b2b", "package": "moment" },
         { "id": "bcd8143c-e087-4471-b5ee-7537c8936296", "package": "node-fetch"},
