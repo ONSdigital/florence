@@ -8,6 +8,7 @@
         { "id": "58fdd459-8d4a-4bf6-b106-ef7cff98268c", "package": "moment" },
         { "id": "d939d5e9-46d5-4682-a6c7-756e5fea2b2b", "package": "moment" },
         { "id": "bcd8143c-e087-4471-b5ee-7537c8936296", "package": "node-fetch"},
-        { "id": "e3f310ed-219c-4087-aa58-8425b13c3ec5", "package": "postcss"}
+        { "id": "e3f310ed-219c-4087-aa58-8425b13c3ec5", "package": "postcss"},
+        { "id": "2053350d-b06f-4926-88ea-871760f6e5d8", "package": "lodash"}
     ]
 }

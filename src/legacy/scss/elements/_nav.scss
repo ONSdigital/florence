@@ -93,8 +93,8 @@
             &:after {
                 content: '';
                 position: absolute;
-                right: $gutter / 2;
-                top: $lineheight / 2;
+                right: $gutter * 0.5;
+                top: $lineheight * 0.5;
                 width: 30px;
                 height: $lineheight * 2;
                 background: transparent url(../../img/sprite.png);

@@ -5,7 +5,7 @@
     display: inline-block;
     width: 100%;
     height: $lineheight * 2;
-    padding: ($lineheight / 2) ($gutter / 2);
+    padding: ($lineheight * 0.5) ($gutter * 0.5);
     background-color: $white;
 
     &:focus {
@@ -40,7 +40,7 @@
     border-radius: 0;
     width: 100%;
     min-width: 100%;
-    padding: 7px ($gutter * 2.5) 7px ($gutter / 2);
+    padding: 7px ($gutter * 2.5) 7px ($gutter * 0.5);
     background-color: transparent;
     position: relative;
     cursor: pointer;
@@ -120,7 +120,7 @@
 
     &-details {
         border-left: 3px solid $scarpa-flow;
-        padding: ($lineheight / 2) $gutter;
+        padding: ($lineheight * 0.5) $gutter;
         margin-bottom: $lineheight;
 
     &__label {
@@ -136,7 +136,7 @@
     position: relative;
 
     padding: 0 0 0 38px;
-    margin-bottom: $lineheight / 2;
+    margin-bottom: $lineheight * 0.5;
 
     &--inline {
         display: inline-block;
