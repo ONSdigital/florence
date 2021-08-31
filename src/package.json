@@ -32,6 +32,7 @@
     "better-npm-audit": "^1.5.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^6.2.0",
+    "dev-tools": "^0.1.6",
     "enzyme": "^2.8.2",
     "enzyme-to-json": "^1.5.1",
     "eslint": "^4.19.1",

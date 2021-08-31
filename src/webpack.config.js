@@ -5,6 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = env => {
     return {
         mode: env.development ? 'development': 'production',
+        devtool: env.development ? 'source-map': false,
         entry: {
             app: ['./index.js'],
             tablebuilder: './tablebuilder/tablebuilder.js'
