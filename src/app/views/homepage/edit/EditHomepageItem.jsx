@@ -341,7 +341,8 @@ export default class EditHomepageItem extends Component {
 
     renderModalBody = isDisabled => {
         switch (this.props.params.homepageDataField) {
-            case "featuredContent": {
+            case "featuredContent":
+            case "aroundONS": {
                 return (
                     <div>
                         <Input

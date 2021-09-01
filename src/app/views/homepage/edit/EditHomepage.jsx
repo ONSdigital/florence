@@ -28,6 +28,17 @@ class EditHomepage extends Component {
                     maximumNumberOfEntries={this.props.maximumNumberOfEntries}
                     disableActions={this.props.disableForm}
                 />
+                <h2 className="margin-top--1">Around ONS</h2>
+                <SimpleEditableList
+                    addText={"Add around ONS feature"}
+                    fields={this.props.homepageData.aroundONS}
+                    editingStateFieldName="aroundONS"
+                    handleAddClick={this.props.handleSimpleEditableListAdd}
+                    handleEditClick={this.props.handleSimpleEditableListEdit}
+                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
+                    maximumNumberOfEntries={this.props.maximumNumberOfEntries}
+                    disableActions={this.props.disableForm}
+                />
                 <h2 className="margin-top--1">Service Message</h2>
                 <Input
                     id="serviceMessage"
@@ -65,6 +76,16 @@ class EditHomepage extends Component {
 const propTypes = {
     homepageData: PropTypes.shape({
         featuredContent: PropTypes.array,
+        aroundONS: PropTypes.arrayOf(
+            PropTypes.shape({
+                id: PropTypes.string,
+                description: PropTypes.string,
+                uri: PropTypes.string,
+                image: PropTypes.string,
+                title: PropTypes.string,
+                simpleListHeading: PropTypes.string,
+                simpleListDescription: PropTypes.string
+            })),
         serviceMessage: PropTypes.string
     }),
     handleBackButton: PropTypes.func.isRequired,
