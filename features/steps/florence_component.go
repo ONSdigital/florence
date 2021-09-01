@@ -35,7 +35,7 @@ type Component struct {
 	ctx          context.Context
 	FakeApi      *FakeApi
 	chrome       Chrome
-	LoggedInUser string
+	SignedInUser string
 	publisher    Publisher
 	fakeRequest  *httpfake.Request
 }
@@ -73,7 +73,7 @@ func NewFlorenceComponent() (*Component, error) {
 }
 
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
-	ctx.Step(`^I am logged in as "([^"]*)"$`, c.iAmLoggedInAs)
+	ctx.Step(`^I am signed in as "([^"]*)"$`, c.iAmSignedInAs)
 
 	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
 	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
@@ -82,15 +82,15 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 
 }
 
-// This steps actually logs in to Florence by entering a dummy username and password
-func (c *Component) iAmLoggedInAs(username string) error {
+// This steps actually signs in to Florence by entering a dummy username and password
+func (c *Component) iAmSignedInAs(username string) error {
 
-	err := c.publisher.logIn(username)
+	err := c.publisher.signIn(username)
 	if err != nil {
 		return err
 	}
 
-	c.LoggedInUser = username
+	c.SignedInUser = username
 	return nil
 }
 
