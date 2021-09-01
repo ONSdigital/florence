@@ -79,7 +79,7 @@ export class ValidateNewPassword extends Component {
                         ruleChecked = false;
                     }
                 });
-                this.props.updateValidity(ruleChecked);
+                this.props.updateValidity(ruleChecked, this.state.password.value);
             }
         );
     }
