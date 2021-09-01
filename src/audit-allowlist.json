@@ -1,7 +1,3 @@
 {
-    "ignore": [
-        { "id": "c08153de-a0ad-4212-963d-3de92eaab509", "package": "ini" },
-        { "id": "bcd8143c-e087-4471-b5ee-7537c8936296", "package": "node-fetch"},
-        { "id": "e3f310ed-219c-4087-aa58-8425b13c3ec5", "package": "postcss"}
-    ]
+    "ignore": []
 }
