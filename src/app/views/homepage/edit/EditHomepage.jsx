@@ -85,7 +85,8 @@ const propTypes = {
                 title: PropTypes.string,
                 simpleListHeading: PropTypes.string,
                 simpleListDescription: PropTypes.string
-            })),
+            })
+        ),
         serviceMessage: PropTypes.string
     }),
     handleBackButton: PropTypes.func.isRequired,

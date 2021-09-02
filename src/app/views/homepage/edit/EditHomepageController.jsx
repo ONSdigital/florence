@@ -256,7 +256,7 @@ export class EditHomepageController extends Component {
     };
 
     checkForHomepageDataChanges = fieldName => {
-        const checkedFields = ["featuredContent", "aroundONS", "serviceMessage"]
+        const checkedFields = ["featuredContent", "aroundONS", "serviceMessage"];
         if (checkedFields.includes(fieldName)) {
             return true;
         }
