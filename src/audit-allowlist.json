@@ -1,3 +1,5 @@
 {
-    "ignore": []
+    "ignore": [
+        { "id": "20b5c393-1a87-4f20-84c9-801c323489ca", "package": "xmldom" }
+    ]
 }
