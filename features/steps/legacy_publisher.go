@@ -6,16 +6,16 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-type Publisher struct {
+type LegacyPublisher struct {
 	fakeApi   *FakeApi
 	chromeCtx context.Context
 }
 
-func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
-	return &Publisher{fakeApi: api, chromeCtx: ctx}
+func NewLegacyPublisher(api *FakeApi, ctx context.Context) *LegacyPublisher {
+	return &LegacyPublisher{fakeApi: api, chromeCtx: ctx}
 }
 
-func (p *Publisher) signIn(username string) error {
+func (p *LegacyPublisher) signIn(username string) error {
 
 	// Here we are setting the fake data that would be returned from the identity-api
 	// with the permissions requires to create a new collection
@@ -37,10 +37,10 @@ func (p *Publisher) signIn(username string) error {
 	return nil
 }
 
-func (p *Publisher) setChromeCtx(ctx context.Context) {
+func (p *LegacyPublisher) setChromeCtx(ctx context.Context) {
 	p.chromeCtx = ctx
 }
 
-func (p *Publisher) setFakeApi(fakeApi *FakeApi) {
+func (p *LegacyPublisher) setFakeApi(fakeApi *FakeApi) {
 	p.fakeApi = fakeApi
 }

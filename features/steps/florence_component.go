@@ -89,7 +89,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 // This steps actually signs in to Florence by entering a dummy username and password using the old auth processes
 func (c *Component) legacyIAmSignedInAs(role, username string) error {
 
-	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
 	err := c.user.signIn(username)
 	if err != nil {
 		return err
