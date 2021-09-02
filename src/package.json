@@ -82,6 +82,7 @@
     "eslint-check": "eslint -c ./.eslintrc.json --print-config ./app | eslint-config-prettier-check"
   },
   "dependencies": {
+    "acorn": "^8.4.1",
     "dateformat": "^2.0.0",
     "dp-table-builder-ui": "^1.1.0",
     "gpu.js": "^2.11.4",
