@@ -36,3 +36,11 @@ func (p *Publisher) signIn(username string) error {
 
 	return nil
 }
+
+func (p *Publisher) setChromeCtx(ctx context.Context) {
+	p.chromeCtx = ctx
+}
+
+func (p *Publisher) setFakeApi(fakeApi *FakeApi) {
+	p.fakeApi = fakeApi
+}
