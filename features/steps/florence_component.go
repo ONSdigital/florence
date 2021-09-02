@@ -36,7 +36,7 @@ type Component struct {
 	FakeApi      *FakeApi
 	chrome       Chrome
 	SignedInUser string
-	publisher    Publisher
+	user         User
 	fakeRequest  *httpfake.Request
 }
 
@@ -166,9 +166,7 @@ func (c *Component) Reset() *Component {
 	log.Print("re-starting chrome ...")
 
 	c.chrome.ctx = ctx
-
-	c.publisher.chromeCtx = ctx
-	c.publisher.fakeApi = c.FakeApi
+	
 	return c
 }
 
