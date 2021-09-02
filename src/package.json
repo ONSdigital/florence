@@ -25,7 +25,6 @@
     "@babel/preset-env": "^7.15.0",
     "@babel/preset-react": "^7.14.5",
     "@babel/register": "^7.15.3",
-    "auditjs": "^4.0.30",
     "babel-jest": "^24.9.0",
     "babel-loader": "^8.2.2",
     "babel-regenerator-runtime": "^6.5.0",
@@ -83,6 +82,7 @@
   },
   "dependencies": {
     "acorn": "^8.4.1",
+    "auditjs": "^4.0.25",
     "dateformat": "^2.0.0",
     "dp-table-builder-ui": "^1.1.0",
     "gpu.js": "^2.11.4",
