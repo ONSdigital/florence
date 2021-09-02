@@ -73,12 +73,18 @@ func NewFlorenceComponent() (*Component, error) {
 }
 
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
-	ctx.Step(`^I am signed in as "([^"]*)"$`, c.iAmSignedInAs)
+	cfg, _ := config.Get()
+	if cfg.SharedConfig.EnableNewSignIn == false {
+		ctx.Step(`^I am signed in as "([^"]*)" user "([^"]*)"$`, c.legacyIAmSignedInAs)
+		ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
+		ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
+		ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
+		ctx.Step(`^a collection with these details should be created:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
+	} else {
+		ctx.Step(`^I am signed in as "([^"]*)" user "([^"]*)"$`, c.iAmSignedInAs)
+	}
 
-	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
-	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
-	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
-	ctx.Step(`^a collection with these details should be created:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
+
 
 }
 
@@ -166,7 +172,7 @@ func (c *Component) Reset() *Component {
 	log.Print("re-starting chrome ...")
 
 	c.chrome.ctx = ctx
-	
+
 	return c
 }
 
