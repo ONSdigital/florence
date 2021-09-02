@@ -3,6 +3,7 @@ import React from "react";
 import Input from "../../components/Input";
 import Panel from "../../components/panel/Panel";
 import PropTypes from "prop-types";
+import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
@@ -40,10 +41,7 @@ const LoginForm = props => {
                     <div>
                         <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
                     </div>
-                    <button type="submit" className="btn btn--primary margin-top--1" disabled={props.isSubmitting}>
-                        Sign in
-                    </button>
-                    {props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1" /> : ""}
+                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
                 </form>
             </div>
         </div>
