@@ -84,14 +84,25 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 		ctx.Step(`^I am signed in as "([^"]*)" user "([^"]*)"$`, c.iAmSignedInAs)
 	}
 
-
-
 }
 
-// This steps actually signs in to Florence by entering a dummy username and password
-func (c *Component) iAmSignedInAs(username string) error {
+// This steps actually signs in to Florence by entering a dummy username and password using the old auth processes
+func (c *Component) legacyIAmSignedInAs(role, username string) error {
 
-	err := c.publisher.signIn(username)
+	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	err := c.user.signIn(username)
+	if err != nil {
+		return err
+	}
+
+	c.SignedInUser = username
+	return nil
+}
+
+// This steps actually signs in to Florence by entering a dummy username and password using the new auth processes
+func (c *Component) iAmSignedInAs(role, username string) error {
+
+	err := c.user.signIn(username)
 	if err != nil {
 		return err
 	}
