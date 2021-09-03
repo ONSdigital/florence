@@ -18,7 +18,8 @@ export class SetForgottenPasswordController extends Component {
             hasSubmitted: false,
             isSubmitted: false,
             passwordIsValid: false,
-            password: ""
+            password: "",
+            showInputError: false
         };
         this.onSubmit = this.onSubmit.bind(this);
         this.validityCheck = this.validityCheck.bind(this);
@@ -26,21 +27,24 @@ export class SetForgottenPasswordController extends Component {
 
     onSubmit(event) {
         event.preventDefault();
-        console.log("submitting");
-
+        if (!this.state.passwordIsValid) {
+            this.setState({ showInputError: true });
+            return;
+        }
         const requestBody = {
             type: "ForgottenPassword",
             verification_token: this.props.location.query.vid,
+            // email: this.props.location.query.uid,
+            email: "danielwalford0n@gmail.com",
             password: this.state.password
         };
 
-        this.setState({ isSubmitting: true }, () => {
+        this.setState({ isSubmitting: true, showInputError: false }, () => {
             this.requestPasswordChange(requestBody);
         });
     }
 
     requestPasswordChange(body) {
-        console.log("submitting");
         user.setForgottenPassword(body)
             .then(() => {
                 this.setState({
@@ -99,10 +103,19 @@ export class SetForgottenPasswordController extends Component {
     }
 
     render() {
+        const setForgottenPasswordRequestProps = {
+            validityCheck: this.validityCheck,
+            isValid: this.state.passwordIsValid,
+            onSubmit: this.onSubmit,
+            heading: "Create a new password",
+            buttonText: "Confirm password",
+            showInputError: this.state.showInputError
+        };
+
         const screenToShow = this.state.hasSubmitted ? (
             <SetForgottenPasswordConfirmed />
         ) : (
-            <SetForgottenPasswordRequest validityCheck={this.validityCheck} isValid={this.state.passwordIsValid} onSubmit={this.onSubmit} />
+            <SetForgottenPasswordRequest {...setForgottenPasswordRequestProps} />
         );
         return <div>{screenToShow}</div>;
     }

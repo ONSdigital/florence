@@ -26,6 +26,7 @@ export default class ValidationItem extends Component {
                     onClick={this.preventUserInteractions}
                     onKeyDown={this.preventUserInteractions}
                     className="readonly-checkbox"
+                    tabIndex={-1}
                 />
                 <label htmlFor={this.props.id}> {this.props.name}</label>;
             </div>

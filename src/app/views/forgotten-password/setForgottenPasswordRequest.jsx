@@ -1,24 +1,26 @@
 import React from "react";
 import ValidateNewPassword from "../../components/validate-new-password/ValidateNewPassword";
 import PropTypes from "prop-types";
+import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 
 const propTypes = {
     isSubmitting: PropTypes.bool,
     onSubmit: PropTypes.func,
-    validityCheck: PropTypes.func
+    validityCheck: PropTypes.func,
+    heading: PropTypes.string,
+    buttonText: PropTypes.string,
+    showInputError: PropTypes.bool
 };
 
 const SetForgottenPasswordRequest = props => {
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
-                <h1>Create a new password</h1>
+                <h1>{props.heading}</h1>
                 <form className="form" onSubmit={props.onSubmit}>
-                    <ValidateNewPassword updateValidity={props.validityCheck} />
-                    <button type="submit" className="btn btn--primary margin-top--1" disabled={props.isSubmitting}>
-                        Sign in
-                    </button>
-                    {props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1" /> : ""}
+                    <ValidateNewPassword updateValidity={props.validityCheck} inputError={props.showInputError ? " " : ""} />
+                    {/*<ValidateNewPassword updateValidity={props.validityCheck} />*/}
+                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText={props.buttonText} />
                 </form>
             </div>
         </div>
