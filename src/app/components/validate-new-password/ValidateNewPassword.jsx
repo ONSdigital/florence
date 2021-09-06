@@ -41,8 +41,6 @@ export class ValidateNewPassword extends Component {
                 }
             ]
         };
-
-        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     checkPasswordValidation() {
@@ -101,7 +99,7 @@ export class ValidateNewPassword extends Component {
         return /^.*[0-9].*$/.test(this.state.password.value);
     }
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const id = event.target.id;
         const value = event.target.value;
         const checked = event.target.checked;
@@ -139,7 +137,7 @@ export class ValidateNewPassword extends Component {
                 notifications.add(notification);
             }
         }
-    }
+    };
 
     render() {
         const validateNewPasswordPanelBody = <ValidationItemList validationRules={this.state.validationRules} />;

@@ -13,8 +13,6 @@ const propTypes = {
 export class ForgottenPasswordController extends Component {
     constructor(props) {
         super(props);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
         this.state = {
             validationErrors: {},
             email: {
@@ -126,16 +124,16 @@ export class ForgottenPasswordController extends Component {
             });
     }
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         this.setState({
             email: {
                 value: event.target.value,
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
         const email = this.state.email.value;
         this.setState(
@@ -147,7 +145,7 @@ export class ForgottenPasswordController extends Component {
                 this.requestEmailChange(email);
             }
         );
-    }
+    };
 
     render() {
         // Type text as we don't want the browser validation as it is not the most accessible

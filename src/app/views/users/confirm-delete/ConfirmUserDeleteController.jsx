@@ -31,7 +31,7 @@ export class ConfirmUserDeleteController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.loggedInUser.isAdmin) {
             this.props.dispatch(replace(url.resolve("../")));
         }

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 
 import NavBar from "./NavBar";
@@ -9,15 +9,15 @@ const propTypes = {
     location: PropTypes.object.isRequired
 };
 
-export default class Layout extends Component {
-    render() {
-        return (
-            <div>
-                <NavBar location={this.props.location} />
-                {this.props.children}
-            </div>
-        );
-    }
-}
+const Layout = ({ location, children }) => {
+    return (
+        <div>
+            <NavBar location={location} />
+            {children}
+        </div>
+    );
+};
+
+export default Layout;
 
 Layout.propTypes = propTypes;

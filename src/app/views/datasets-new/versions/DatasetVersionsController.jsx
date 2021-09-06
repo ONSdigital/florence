@@ -31,7 +31,7 @@ export class DatasetVersionsController extends Component {
         };
     }
 
-    async componentWillMount() {
+    async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
 

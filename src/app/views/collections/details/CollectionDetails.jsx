@@ -76,21 +76,13 @@ const propTypes = {
 };
 
 export class CollectionDetails extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleRestoreContentClick = this.handleRestoreContentClick.bind(this);
-        this.handleCollectionDeleteClick = this.handleCollectionDeleteClick.bind(this);
-        this.handleCollectionApproveClick = this.handleCollectionApproveClick.bind(this);
-    }
-
-    handleCollectionDeleteClick() {
+    handleCollectionDeleteClick = () => {
         this.props.onDeleteCollectionClick(this.props.id);
-    }
+    };
 
-    handleCollectionApproveClick() {
+    handleCollectionApproveClick = () => {
         this.props.onApproveCollectionClick(this.props.id);
-    }
+    };
 
     renderLastEditText(lastEdit) {
         try {
@@ -386,9 +378,9 @@ export class CollectionDetails extends Component {
         );
     }
 
-    handleRestoreContentClick() {
+    handleRestoreContentClick = () => {
         this.props.dispatch(push(`${location.pathname}/restore-content`));
-    }
+    };
 
     renderCollectionActions() {
         if (this.props.isLoadingNameAndDate) {

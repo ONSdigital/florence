@@ -19,17 +19,11 @@ const propTypes = {
 };
 
 export default class RadioGroup extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
+    handleChange = event => {
         if (this.props.onChange) {
             this.props.onChange(event);
         }
-    }
+    };
 
     render() {
         const radioData = this.props.radioData;

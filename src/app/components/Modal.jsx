@@ -15,7 +15,7 @@ export default class Modal extends Component {
         super(props);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         // Stop background page from scrolling whilst modal is active
         document.querySelector("body").style.overflow = "hidden";
     }

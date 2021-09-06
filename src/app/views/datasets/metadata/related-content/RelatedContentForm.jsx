@@ -38,7 +38,7 @@ class RelatedContentForm extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.urlInput || this.props.titleInput || this.props.descInput) {
             this.setState({
                 titleInput: this.props.titleInput,

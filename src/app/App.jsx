@@ -25,7 +25,7 @@ class App extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         log.initialise();
 
         window.setInterval(() => {
