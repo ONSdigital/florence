@@ -35,7 +35,7 @@ class DatasetUploadMetadata extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const promises = [Promise.resolve(), Promise.resolve()];
 
         if (this.props.recipes.length === 0 || isEmptyObject(this.props.job)) {

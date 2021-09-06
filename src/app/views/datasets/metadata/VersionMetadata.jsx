@@ -130,26 +130,9 @@ export class VersionMetadata extends Component {
             formErrors: [],
             usageNotes: []
         };
-
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleRelatedContentSubmit = this.handleRelatedContentSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleReleaseDateChange = this.handleReleaseDateChange.bind(this);
-        this.handleAddRelatedClick = this.handleAddRelatedClick.bind(this);
-        this.handleDeleteRelatedClick = this.handleDeleteRelatedClick.bind(this);
-        this.handleEditRelatedClick = this.handleEditRelatedClick.bind(this);
-        this.editRelatedLink = this.editRelatedLink.bind(this);
-        this.handleSave = this.handleSave.bind(this);
-        this.handleSaveAndSubmitForReview = this.handleSaveAndSubmitForReview.bind(this);
-        this.handleSaveAndMarkAsReviewed = this.handleSaveAndMarkAsReviewed.bind(this);
-        this.handleRelatedContentCancel = this.handleRelatedContentCancel.bind(this);
-        this.handleAlertSave = this.handleAlertSave.bind(this);
-        this.handleUsageNoteSave = this.handleUsageNoteSave.bind(this);
-        this.handleBackButton = this.handleBackButton.bind(this);
-        this.populateDimensionInputs = this.populateDimensionInputs.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.removeRouteListener = this.props.router.listenBefore((nextLocation, action) => this.handleRouteChange(nextLocation, action));
 
         this.setState({
@@ -336,7 +319,7 @@ export class VersionMetadata extends Component {
         action();
     }
 
-    populateDimensionInputs() {
+    populateDimensionInputs = () => {
         this.setState({ isFetchingDimensionsData: true });
         datasets
             .getLatestVersion(this.props.params.datasetID)
@@ -362,7 +345,7 @@ export class VersionMetadata extends Component {
                     message: `Error getting latest published version to auto-populate dimensions inputs. Error: ${JSON.stringify(error)}`
                 });
             });
-    }
+    };
 
     async updateReviewStateData() {
         this.setState({ isFetchingCollectionData: true });
@@ -755,7 +738,7 @@ export class VersionMetadata extends Component {
         });
     }
 
-    handleEditRelatedClick(type, key) {
+    handleEditRelatedClick = (type, key) => {
         let newState = {
             showModal: true,
             modalType: type,
@@ -806,9 +789,9 @@ export class VersionMetadata extends Component {
         }
 
         this.setState(newState);
-    }
+    };
 
-    handleDeleteRelatedClick(type, key) {
+    handleDeleteRelatedClick = (type, key) => {
         function remove(items, key) {
             return items.filter(item => {
                 return item.key !== key;
@@ -841,9 +824,9 @@ export class VersionMetadata extends Component {
 
         console.warn("Attempt to remove a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to remove a related content type that is not recognised: '${type}'`);
-    }
+    };
 
-    editRelatedLink(type, key) {
+    editRelatedLink = (type, key) => {
         const edit = items => {
             return items.map(item => {
                 if (item.key !== key) {
@@ -886,9 +869,9 @@ export class VersionMetadata extends Component {
 
         console.warn("Attempt to edit a related content type that is not recognised", type);
         log.add(eventTypes.unexpectedRuntimeError, `Attempt to edit a related content type that is not recognised: '${type}'`);
-    }
+    };
 
-    handleBackButton() {
+    handleBackButton = () => {
         if (this.state.hasChanges) {
             this.setState({ showModal: true });
             return;
@@ -896,9 +879,9 @@ export class VersionMetadata extends Component {
 
         const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
         this.props.dispatch(push(URL));
-    }
+    };
 
-    handleRelatedContentCancel() {
+    handleRelatedContentCancel = () => {
         this.setState({
             showModal: false,
             modalType: "",
@@ -906,17 +889,17 @@ export class VersionMetadata extends Component {
             descInput: "",
             titleInput: ""
         });
-    }
+    };
 
-    handleAddRelatedClick(type, title) {
+    handleAddRelatedClick = (type, title) => {
         this.setState({
             showModal: true,
             modalType: type,
             modalTitle: title
         });
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -973,9 +956,9 @@ export class VersionMetadata extends Component {
         if (!this.state.hasChanges) {
             this.setState({ hasChanges: true });
         }
-    }
+    };
 
-    handleSelectChange(event) {
+    handleSelectChange = event => {
         const target = event.target;
         const id = target.id;
         let value = target.value;
@@ -986,9 +969,9 @@ export class VersionMetadata extends Component {
             [id]: value,
             hasChanges: true
         });
-    }
+    };
 
-    handleReleaseDateChange(event) {
+    handleReleaseDateChange = event => {
         const value = event.target.value;
         const releaseDate = value ? new Date(value) : "";
         this.setState({
@@ -996,9 +979,9 @@ export class VersionMetadata extends Component {
             releaseDate,
             hasChanges: true
         });
-    }
+    };
 
-    handleRelatedContentSubmit(event) {
+    handleRelatedContentSubmit = event => {
         event.preventDefault();
 
         if (this.state.titleInput == "" || this.state.descInput == "") {
@@ -1050,9 +1033,9 @@ export class VersionMetadata extends Component {
                 hasChanges: true
             });
         }
-    }
+    };
 
-    handleUsageNoteSave(newUsageNote) {
+    handleUsageNoteSave = newUsageNote => {
         const newState = {
             showModal: false,
             modalType: "",
@@ -1119,9 +1102,9 @@ export class VersionMetadata extends Component {
             ...newState,
             usageNotes
         });
-    }
+    };
 
-    handleAlertSave(newAlert) {
+    handleAlertSave = newAlert => {
         const newState = {
             showModal: false,
             modalType: "",
@@ -1188,7 +1171,7 @@ export class VersionMetadata extends Component {
             ...newState,
             alerts
         });
-    }
+    };
 
     addErrorToSummary(errorMsg, arr) {
         const errorAlreadyInSummary = arr.some(error => {
@@ -1217,7 +1200,7 @@ export class VersionMetadata extends Component {
         return arr;
     }
 
-    handleSave(event, isSubmittingForReview, isMarkingAsReviewed) {
+    handleSave = (event, isSubmittingForReview, isMarkingAsReviewed) => {
         event.preventDefault();
 
         let haveError = false;
@@ -1285,15 +1268,15 @@ export class VersionMetadata extends Component {
                 isMarkingAsReviewed
             );
         }
-    }
+    };
 
-    handleSaveAndSubmitForReview(event) {
+    handleSaveAndSubmitForReview = event => {
         this.handleSave(event, true, false);
-    }
+    };
 
-    handleSaveAndMarkAsReviewed(event) {
+    handleSaveAndMarkAsReviewed = event => {
         this.handleSave(event, false, true);
-    }
+    };
 
     renderReviewActions() {
         if (!this.props.instance && !this.props.version) {

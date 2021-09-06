@@ -73,7 +73,7 @@ beforeEach(() => {
 describe("On mount of the datasets controller screen", () => {
     it("fetches datasets", () => {
         const getDatasetsCalls = datasets.getAllList.mock.calls.length;
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(datasets.getAllList.mock.calls.length).toBe(getDatasetsCalls + 1);
     });
 });

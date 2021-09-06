@@ -38,13 +38,11 @@ class Select extends Component {
         this.state = {
             isFocused: false
         };
-
-        this.handleFocus = this.handleFocus.bind(this);
     }
 
-    handleFocus() {
+    handleFocus = () => {
         this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
-    }
+    };
 
     renderOptions = options => {
         return options.map((option, index) => {

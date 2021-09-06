@@ -74,7 +74,7 @@ export class DatasetMetadataController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;

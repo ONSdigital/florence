@@ -161,7 +161,7 @@ beforeEach(() => {
 describe("On mount of the collections screen", () => {
     it("fetches data for all collections", () => {
         const getCollectionsCalls = collections.getAll.mock.calls.length;
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(collections.getAll.mock.calls.length).toBe(getCollectionsCalls + 1);
     });
 
@@ -169,16 +169,16 @@ describe("On mount of the collections screen", () => {
         expect(component.state("isFetchingCollections")).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingCollections")).toBe(true);
 
         // Tests that state is set correctly after asynchronous requests were successful
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingCollections")).toBe(false);
 
         // Tests that state is set correctly when asynchronous requests failed
         collections.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingCollections")).toBe(false);
     });
 
@@ -187,7 +187,7 @@ describe("On mount of the collections screen", () => {
         // otherwise this test could give a false positive
         expect(mockedAllCollections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(true);
 
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(dispatchedActions[0].collections.length).toBe(mockedAllCollections.length - 1);
         expect(dispatchedActions[0].collections.some(collection => collection.id === "test-sau39393uyqha8aw8y3n3")).toBe(false);
     });
@@ -266,7 +266,7 @@ describe("Marking a collection to be deleted from list of collections", () => {
     });
 
     it("doesn't remove the collection if all collections are still being fetched", () => {
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingCollections")).toBe(true);
         component.setProps({
             collectionsToDelete: { "test-collection-12345": null }

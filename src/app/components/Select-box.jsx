@@ -14,18 +14,17 @@ const propTypes = {
 class Select extends Component {
     constructor(props) {
         super(props);
-        this.handleChange = this.handleChange.bind(this);
         this.state = {
             value: ""
         };
     }
 
-    handleChange(event) {
+    handleChange = event => {
         this.setState({
             value: event.target.value
         });
         this.props.onChange(event.target.value);
-    }
+    };
 
     render() {
         const element = this.props.override ? (
