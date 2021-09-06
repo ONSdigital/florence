@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 import ValidateNewPassword from "./ValidateNewPassword";
 import renderer from "react-test-renderer";
 
-let updateValidity = jest.fn(isValid => {
+let updateValidity = jest.fn((isValid, password) => {
     // do nothing
 });
 
@@ -73,7 +73,7 @@ describe("When a lowercase character is entered into the text input field", () =
         expect(minCharCheckbox.props()["checked"]).toBe(false);
     });
     it("Should fail overall validation check", () => {
-        expect(component.props().updateValidity).toHaveBeenCalledWith(false);
+        expect(component.props().updateValidity).toHaveBeenCalledWith(false, "a");
     });
     it("should match the snapshot", () => {
         const props = {
@@ -108,7 +108,7 @@ describe("When an uppercase character is entered into the text input field", () 
         expect(minCharCheckbox.props()["checked"]).toBe(false);
     });
     it("Should fail overall validation check", () => {
-        expect(component.props().updateValidity).toHaveBeenCalledWith(false);
+        expect(component.props().updateValidity).toHaveBeenCalledWith(false, "A");
     });
     it("should match the snapshot", () => {
         const props = {
@@ -143,7 +143,7 @@ describe("When a numerical character is entered into the text input field", () =
         expect(minCharCheckbox.props()["checked"]).toBe(false);
     });
     it("Should fail overall validation check", () => {
-        expect(component.props().updateValidity).toHaveBeenCalledWith(false);
+        expect(component.props().updateValidity).toHaveBeenCalledWith(false, "1");
     });
     it("should match the snapshot", () => {
         const props = {
@@ -182,7 +182,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
         expect(minCharCheckbox.props()["checked"]).toBe(true);
     });
     it("Should pass overall validation check", () => {
-        expect(component.props().updateValidity).toHaveBeenCalledWith(true);
+        expect(component.props().updateValidity).toHaveBeenCalledWith(true, "aB1cD2eF3gH4iJ");
     });
     it("should match the snapshot", () => {
         const props = {

@@ -28,7 +28,7 @@ export default class ValidationItem extends Component {
                     className="readonly-checkbox"
                     tabIndex={-1}
                 />
-                <label htmlFor={this.props.id}> {this.props.name}</label>;
+                <label htmlFor={this.props.id}> {this.props.name}</label>
             </div>
         );
     }

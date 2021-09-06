@@ -1,9 +1,11 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const ExtractTextPlugin = require("extract-text-webpack-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const isProduction = (process.env.NODE_ENV === 'production');
 
 module.exports = {
+    mode: isProduction ? 'production' : 'development',
+    devtool: isProduction ? false :'source-map',
     entry: {
         app: ['./index.js'],
         tablebuilder: './tablebuilder/tablebuilder.js'
@@ -22,50 +24,51 @@ module.exports = {
     module: {
         rules: [
             {
-                // this is so that we can compile any React,
-                // ES6 and above into normal ES5 syntax
                 test: /\.(js|jsx)$/,
-                // we do not want anything from node_modules to be compiled
-                exclude: /node_modules/,
-                use: ['babel-loader']
+                exclude: /(node_modules)/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets:
+                        [
+                            [
+                                '@babel/preset-env',
+                                {
+                                    targets: {
+                                    "esmodules": true,
+                                    },
+                                },
+                            ],
+                            '@babel/preset-react'
+                        ],
+                    }
+                }
             },
             {
-                test: /\.(js|jsx)?$/,
-                exclude: /node_modules/,
-                loader: 'eslint-loader'
+                test: /\.scss$/i,
+                use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+        },
+        {
+            test: /\.(jpg|jpeg|png|gif|mp3|svg)$/i,
+            use: [{
+                loader: 'url-loader',
+                options: { limit: 100000,},
             },
-            {
-                test: /\.scss$/,
-                use: ExtractTextPlugin.extract({ 
-                    fallback: "style-loader", 
-                    use: [
-                        {
-                            loader: "css-loader",
-                            options: {sourceMap: isProduction}
-                        },
-                        {
-                            loader: "sass-loader",
-                            options: {sourceMap: isProduction}
-                        }
-                    ]
-                })
-            },
-            {
-                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/,
-                loader: 'url-loader?limit=100000'
-            }
-        ]
-    },
+            ],
+        },
+    ]},
     plugins: [
-        new CopyWebpackPlugin([
+        new CopyWebpackPlugin({
+            patterns: [
             { from: 'refactored.html', to: 'refactored.html' },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }
-        ]),
-        new ExtractTextPlugin("css/[name].css")
+            ]
+        }),
+        new MiniCssExtractPlugin({filename: "css/[name].css"})
     ],
     externals: {
         resumeablejs: "Resumable"
     }
-};
+}

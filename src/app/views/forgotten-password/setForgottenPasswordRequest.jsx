@@ -19,7 +19,6 @@ const SetForgottenPasswordRequest = props => {
                 <h1>{props.heading}</h1>
                 <form className="form" onSubmit={props.onSubmit}>
                     <ValidateNewPassword updateValidity={props.validityCheck} inputError={props.showInputError ? " " : ""} />
-                    {/*<ValidateNewPassword updateValidity={props.validityCheck} />*/}
                     <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText={props.buttonText} />
                 </form>
             </div>
