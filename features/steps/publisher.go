@@ -20,7 +20,9 @@ func (p *Publisher) signIn(username string) error {
 
 	// Here we are setting the fake data that would be returned from the identity-api
 	// with the permissions requires to create a new collection
-	p.fakeApi.setJsonResponseForPost("/tokens", "faketoken", 200, &Header{Name: "ID", Value: "fakeIdToken"})
+	p.fakeApi.setJsonResponseForPost("/tokens", "faketoken", 200,
+		&Header{Name: "ID", Value: "fakeIdToken"}, &Header{Name: "Authorization", Value: "fakeAuthorizationToken"},
+		&Header{Name: "Refresh", Value: "fakeRefreshToken"})
 
 	err := chromedp.Run(p.chromeCtx,
 		chromedp.Navigate("http://localhost:8080/florence/login"),
