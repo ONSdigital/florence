@@ -3,12 +3,14 @@ package steps
 import (
 	"context"
 	"fmt"
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
 type LegacyPublisher struct {
 	fakeApi   *FakeApi
 	chromeCtx context.Context
+	cookies   []*network.Cookie
 }
 
 func NewLegacyPublisher(api *FakeApi, ctx context.Context) *LegacyPublisher {
@@ -35,6 +37,20 @@ func (p *LegacyPublisher) signIn(username string) error {
 	}
 
 	return nil
+}
+
+func (p *LegacyPublisher) isSignedIn() bool {
+	fmt.Println(p.chromeCtx)
+	return true
+}
+
+func (p *LegacyPublisher) signOut() {
+	p.cookies = nil
+}
+
+func (p *LegacyPublisher) resetUser(fakeApi *FakeApi, ctx context.Context) {
+	p.fakeApi = fakeApi
+	p.chromeCtx = ctx
 }
 
 func (p *LegacyPublisher) setChromeCtx(ctx context.Context) {

@@ -6,9 +6,9 @@ Feature: User sign in
     Given I am not signed in
 
   Scenario: A user signing in with valid credentials
-    When I sign in with "test username" and "test password"
+    When I sign in as "publisher" user "test username"
     Then I am signed in
 
   Scenario: A user signing in with invalid credentials
-    When I sign in with "test username" and "invalid test password"
+    When I sign in as "publisher" user "invalid test username"
     Then I am not signed in
