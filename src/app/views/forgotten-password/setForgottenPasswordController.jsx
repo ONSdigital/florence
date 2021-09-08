@@ -1,9 +1,9 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
 import SetForgottenPasswordRequest from "./setForgottenPasswordRequest";
 import SetForgottenPasswordConfirmed from "./setForgottenPasswordConfirmed";
 import user from "../../utilities/api-clients/user";
-import {errCodes} from "../../utilities/errorCodes";
+import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
 
@@ -28,19 +28,22 @@ export class SetForgottenPasswordController extends Component {
     onSubmit(event) {
         event.preventDefault();
         if (!this.state.passwordIsValid) {
-            this.setState({showInputError: true});
+            this.setState({ showInputError: true });
             return;
         }
-        // UID is sent in Email, due to a bug, for speed of first delivery UID is to be used instead of email
+        let verificationID = new URLSearchParams(location.search).get("vid");
+        let userID = new URLSearchParams(location.search).get("uid");
+        // UID is sent in Email field, for speed of first delivery it was decided UID is to be used instead of email.
+        // Eventually the backend should be changed to use the endpoint /users/{uid}/password or at least change the
+        // email field to be uid and then (TODO) this can be updated
         const requestBody = {
             type: "ForgottenPassword",
-            verification_token: this.props.location.query.vid,
-            // email: this.props.location.query.uid,
-            email: "danielwalford0n@gmail.com",
+            verification_token: verificationID,
+            email: userID,
             password: this.state.password
         };
 
-        this.setState({isSubmitting: true, showInputError: false}, () => {
+        this.setState({ isSubmitting: true, showInputError: false }, () => {
             this.requestPasswordChange(requestBody);
         });
     }
@@ -54,9 +57,7 @@ export class SetForgottenPasswordController extends Component {
                 });
             })
             .catch(error => {
-                if (error) {
-                    this.handlePasswordResetError(error);
-                }
+                this.handlePasswordResetError(error);
                 this.setState({
                     isSubmitting: false
                 });
@@ -70,7 +71,7 @@ export class SetForgottenPasswordController extends Component {
             autoDismiss: 15000
         };
 
-        if (error.status != null) {
+        if (error != null && error.status != null) {
             if (error.status === 400) {
                 // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
                 console.error("Unable to validate the type, email, password, or verification_token in the request");
@@ -99,7 +100,7 @@ export class SetForgottenPasswordController extends Component {
 
     validityCheck(isValid, password) {
         // Only show input error if user had previously tried to submit password and it is still invalid
-        const showInputError = (!isValid && this.state.showInputError);
+        const showInputError = !isValid && this.state.showInputError;
         this.setState({
             passwordIsValid: isValid,
             password: password,
@@ -119,7 +120,7 @@ export class SetForgottenPasswordController extends Component {
         };
 
         const screenToShow = this.state.hasSubmitted ? (
-            <SetForgottenPasswordConfirmed/>
+            <SetForgottenPasswordConfirmed />
         ) : (
             <SetForgottenPasswordRequest {...setForgottenPasswordRequestProps} />
         );
