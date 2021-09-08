@@ -5,13 +5,7 @@ import React from "react";
 
 describe("When the user first lands on the page", () => {
     const props = {
-        dispatch: function() {},
-        location: {
-            query: {
-                uid: "123456&uid=1234a12b-c1de-123f-g123-1hijkl1234m1",
-                vid: "123456"
-            }
-        }
+        dispatch: function() {}
     };
     const component = mount(<SetForgottenPasswordController {...props} />);
     it("Load the correct child component setForgottenPasswordRequest", () => {
