@@ -2,8 +2,10 @@ package service
 
 import (
 	"fmt"
+	"github.com/ONSdigital/dp-cookies/cookies"
 	"github.com/ONSdigital/log.go/log"
 	"net/http"
+	"regexp"
 	"strings"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
@@ -39,6 +41,26 @@ func identityAPIDirector(apiRouterVersion string) func(req *http.Request) {
 	return func(req *http.Request) {
 		director(req)
 		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
+		// regex, may be /v1/tokens/self where value after 'v' could be any positive integer
+		refreshPathRegex := "^/v\\d+/tokens/self$"
+		matched, err := regexp.MatchString(refreshPathRegex, req.URL.Path)
+		if err != nil {
+			log.Event(req.Context(), "failed to run regex on request path", log.Error(err), log.ERROR)
+		}
+		if matched {
+			if idToken, err := cookies.GetIDToken(req); err == nil && len(idToken) > 0 {
+				err := headers.SetIDTokenHeader(req, idToken)
+				if err != nil {
+					log.Event(req.Context(), "unable to set id token header", log.Error(err), log.ERROR)
+				}
+			}
+			if refreshToken, err := cookies.GetRefreshToken(req); err == nil && len(refreshToken) > 0 {
+				err := headers.SetRefreshTokenHeader(req, refreshToken)
+				if err != nil {
+					log.Event(req.Context(), "unable to set refresh token header", log.Error(err), log.ERROR)
+				}
+			}
+		}
 	}
 }
 

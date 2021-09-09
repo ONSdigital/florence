@@ -1,6 +1,4 @@
 import React, { Component } from "react";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import ForgottenPasswordRequest from "./forgottenPasswordRequest";
 import ForgottenPasswordEmailSent from "./forgottenPasswordEmailSent";
@@ -9,10 +7,7 @@ import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object
+    dispatch: PropTypes.func.isRequired
 };
 
 export class ForgottenPasswordController extends Component {
@@ -33,24 +28,37 @@ export class ForgottenPasswordController extends Component {
         // Switch so that it is easily expandable if we introduce new error types
         switch (anError.code) {
             case "JSONMarshalError":
-            case "InvalidEmail":
+            case "InvalidEmail": {
                 errorContents.errorsForBody.push(
-                    <p>
-                        <a href="javascript:document.getElementById('email').focus()" className={"colour--night-shadz"}>
+                    <p key="email-error">
+                        <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                             Enter a valid email address
                         </a>
                     </p>
                 );
                 errorContents.emailMessage = "Enter a valid email address";
                 break;
-            default:
+            }
+            case "LimitExceeded": {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT
+                };
+                console.error(errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT);
+                notifications.add(notification);
+                break;
+            }
+            default: {
                 this.notifyUnexpectedError();
+            }
         }
         return errorContents;
     };
 
     notifyUnexpectedError() {
-        let notification = {
+        const notification = {
             type: "warning",
             isDismissable: true,
             autoDismiss: 15000,
@@ -69,13 +77,15 @@ export class ForgottenPasswordController extends Component {
                 if (error.body != null && error.body.errors != null) {
                     error.body.errors.forEach(anError => {
                         errorContents = this.showValidationError(anError, errorContents);
-                        validationErrors.heading = "Fix the following: ";
                     });
                 } else {
                     this.notifyUnexpectedError();
                 }
 
-                validationErrors.body = errorContents.errorsForBody;
+                if (errorContents.errorsForBody.length >= 1) {
+                    validationErrors.heading = "Fix the following: ";
+                    validationErrors.body = errorContents.errorsForBody;
+                }
                 stateToSet = {
                     ...this.state,
                     validationErrors
@@ -98,7 +108,7 @@ export class ForgottenPasswordController extends Component {
     requestEmailChange = email => {
         const body = { email: email };
         this.postResetPassword(body)
-            .then(response => {
+            .then(() => {
                 this.setState({ isSubmitting: false, hasSubmitted: true });
             })
             .catch(error => {
@@ -126,7 +136,6 @@ export class ForgottenPasswordController extends Component {
     handleSubmit = event => {
         event.preventDefault();
         const email = this.state.email.value;
-
         this.setState(
             {
                 hasSubmitted: false,
@@ -147,23 +156,23 @@ export class ForgottenPasswordController extends Component {
             onChange: this.handleInputChange,
             error: this.state.email.errorMsg
         };
-        const screenToShow = this.state.hasSubmitted ? (
-            <ForgottenPasswordEmailSent />
-        ) : (
-            <ForgottenPasswordRequest emailInput={emailInput} validationErrors={this.state.validationErrors} onSubmit={this.handleSubmit} />
-            // <ForgottenPasswordRequest validationErrors={this.state.validationErrors} />
+        return (
+            <div>
+                {this.state.hasSubmitted ? (
+                    <ForgottenPasswordEmailSent email={this.state.email.value} />
+                ) : (
+                    <ForgottenPasswordRequest
+                        emailInput={emailInput}
+                        validationErrors={this.state.validationErrors}
+                        onSubmit={this.handleSubmit}
+                        waitingResponse={this.state.isSubmitting}
+                    />
+                )}
+            </div>
         );
-        return <div>{screenToShow}</div>;
     }
 }
 
 ForgottenPasswordController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
-    };
-}
-
-export default connect(mapStateToProps)(ForgottenPasswordController);
+export default ForgottenPasswordController;

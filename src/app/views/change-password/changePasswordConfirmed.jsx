@@ -2,11 +2,11 @@ import React from "react";
 import Panel from "../../components/panel/Panel";
 
 const ChangePasswordConfirmed = props => {
-    const changePasswordPanelBody = (
-        <p>
+    const changePasswordPanelBody = [
+        <p key="info-technical">
             If you have technical problems with your account, please email&nbsp;<a href="mailto:publishing@ons.gov.uk">publishing@ons.gov.uk</a>
         </p>
-    );
+    ];
 
     return (
         <div className="grid grid--justify-center">

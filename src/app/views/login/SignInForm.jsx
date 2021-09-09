@@ -3,11 +3,12 @@ import React from "react";
 import Input from "../../components/Input";
 import Panel from "../../components/panel/Panel";
 import PropTypes from "prop-types";
+import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
-        hading: PropTypes.string,
-        body: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+        heading: PropTypes.string,
+        body: PropTypes.arrayOf(PropTypes.elementType)
     }),
     onSubmit: PropTypes.func,
     isSubmitting: PropTypes.bool,
@@ -23,13 +24,14 @@ const propTypes = {
 };
 
 const LoginForm = props => {
+    const showValidationErrorPanel = props.validationErrors.body && props.validationErrors.body.length > 0;
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
                 <h1>Sign in to your Florence account</h1>
-                {props.validationErrors.body && (
-                    <div className={"margin-bottom--1"}>
-                        <Panel className={""} type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
+                {showValidationErrorPanel && (
+                    <div className="margin-bottom--1">
+                        <Panel type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
                     </div>
                 )}
                 <form className="form" onSubmit={props.onSubmit}>
@@ -39,10 +41,7 @@ const LoginForm = props => {
                     <div>
                         <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
                     </div>
-                    <button type="submit" className="btn btn--primary margin-top--1" disabled={props.isSubmitting}>
-                        Sign in
-                    </button>
-                    {props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1" /> : ""}
+                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
                 </form>
             </div>
         </div>

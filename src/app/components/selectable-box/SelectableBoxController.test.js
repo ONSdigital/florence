@@ -40,7 +40,8 @@ test("Clicking on a selectable item fires function from props to handle it", () 
     };
     const component = mount(<SelectableBoxController {...props} />);
     expect(itemHasBeenClicked).toBe(false);
-    component.find("#2").simulate("click");
+    const SelectableBoxItem = component.find({ name: "Item 2" });
+    SelectableBoxItem.simulate("click");
     expect(itemHasBeenClicked).toBe(true);
 });
 

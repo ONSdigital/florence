@@ -34,6 +34,7 @@ export class EditHomepageController extends Component {
             isInAnotherCollection: true,
             homepageData: {
                 featuredContent: [],
+                aroundONS: [],
                 serviceMessage: ""
             },
             collectionState: "",
@@ -116,11 +117,12 @@ export class EditHomepageController extends Component {
         return homepage
             .get(this.props.params.collectionID)
             .then(homepageData => {
-                const mappedfeaturedContent = this.mapfeaturedContentToState(homepageData.featuredContent);
+                const mappedFeaturedContent = this.mapHighlightedContentToState(homepageData.featuredContent);
+                const mappedAroundONS = this.mapHighlightedContentToState(homepageData.aroundONS);
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageFetched: true,
-                    homepageData: { featuredContent: mappedfeaturedContent, serviceMessage: homepageData.serviceMessage }
+                    homepageData: { featuredContent: mappedFeaturedContent, aroundONS: mappedAroundONS, serviceMessage: homepageData.serviceMessage }
                 });
                 return;
             })
@@ -134,9 +136,9 @@ export class EditHomepageController extends Component {
             });
     };
 
-    mapfeaturedContentToState = featuredContent => {
+    mapHighlightedContentToState = content => {
         try {
-            return featuredContent.map((item, index) => {
+            return content.map((item, index) => {
                 return {
                     id: index,
                     description: item.description,
@@ -232,7 +234,7 @@ export class EditHomepageController extends Component {
         const newFieldState = [...this.state.homepageData[stateFieldName]];
         newField.id = newFieldState.length;
         newFieldState.push(newField);
-        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState);
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -246,7 +248,7 @@ export class EditHomepageController extends Component {
             }
             return field;
         });
-        const mappedNewFieldState = this.mapfeaturedContentToState(newFieldState, stateFieldName);
+        const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState, stateFieldName);
         return {
             ...this.state.homepageData,
             [stateFieldName]: mappedNewFieldState
@@ -254,7 +256,8 @@ export class EditHomepageController extends Component {
     };
 
     checkForHomepageDataChanges = fieldName => {
-        if (fieldName === "featuredContent" || "serviceMessage") {
+        const checkedFields = ["featuredContent", "aroundONS", "serviceMessage"];
+        if (checkedFields.includes(fieldName)) {
             return true;
         }
         return this.state.hasChangesMade;
@@ -289,6 +292,7 @@ export class EditHomepageController extends Component {
 
     handleSave = async actions => {
         let featuredContent = [];
+        let aroundONS = [];
         let serviceMessage = "";
         let initialHomepageData = this.state.initialHomepageData;
         let formattedHomepageData = {};
@@ -296,15 +300,11 @@ export class EditHomepageController extends Component {
         this.setState({ isSaving: true });
         let saveHomepageChangesError = false;
         if (this.state.hasChangesMade) {
-            featuredContent = this.state.homepageData.featuredContent.map(entry => ({
-                title: entry.title,
-                description: entry.description,
-                uri: entry.uri,
-                image: entry.image
-            }));
+            featuredContent = this.mapStateToHighlightedContent(this.state.homepageData.featuredContent);
+            aroundONS = this.mapStateToHighlightedContent(this.state.homepageData.aroundONS);
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
-            formattedHomepageData = { ...initialHomepageData, featuredContent, serviceMessage };
+            formattedHomepageData = { ...initialHomepageData, featuredContent, aroundONS, serviceMessage };
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
 
@@ -332,6 +332,22 @@ export class EditHomepageController extends Component {
             } else {
                 this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
             }
+        }
+    };
+
+    mapStateToHighlightedContent = state => {
+        try {
+            return state.map(item => {
+                return {
+                    description: item.description,
+                    uri: item.uri,
+                    image: item.image,
+                    title: item.title
+                };
+            });
+        } catch (error) {
+            log.event("Error mapping state to highlighted content", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            throw new Error(`Error mapping state to highlighted content \n ${error}`);
         }
     };
 
@@ -381,14 +397,13 @@ export class EditHomepageController extends Component {
     };
 
     renderModal = () => {
-        const modal = React.Children.map(this.props.children, child => {
+        return React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
                 data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
                 handleCancelClick: this.handleSimpleEditableListEditCancel
             });
         });
-        return modal;
     };
 
     render() {

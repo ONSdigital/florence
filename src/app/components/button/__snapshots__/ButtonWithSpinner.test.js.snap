@@ -1,0 +1,23 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Button to be enabled, and spinner to be present when submitting 1`] = `
+<button
+  className="btn btn--primary margin-top--1"
+  disabled={true}
+  type="submit"
+>
+  <div
+    className="loader loader--dark"
+  />
+</button>
+`;
+
+exports[`Button to be enabled, and spinner to not be present when not submitting 1`] = `
+<button
+  className="btn btn--primary margin-top--1"
+  disabled={false}
+  type="submit"
+>
+  foo
+</button>
+`;

@@ -26,7 +26,7 @@ class App extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        //log.initialise();
+        log.initialise();
 
         window.setInterval(() => {
             ping();

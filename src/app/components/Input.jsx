@@ -18,7 +18,7 @@ const propTypes = {
     max: PropTypes.string,
     allowAutoComplete: PropTypes.bool,
     placeholder: PropTypes.string,
-    disableToggleShowPassword: PropTypes.bool,
+    disableShowPasswordText: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool
 };
 
