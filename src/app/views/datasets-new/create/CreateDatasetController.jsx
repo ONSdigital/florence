@@ -87,19 +87,15 @@ export class CreateDatasetController extends Component {
     // all possible outputs that can be created from a single recipe
     getAllOutputsFromRecipes = recipes => {
         const allOutputs = [];
-        const data = {};
         recipes.items.forEach(recipe => {
             if (recipe.output_instances.length > 1) {
                 recipe.output_instances.forEach(output => {
-                    data["outputInstance"] = output;
-                    data["format"] = recipe.format;
-                    allOutputs.push(data);
+                    allOutputs.push(Object.assign({ format: recipe.format }, output));
                 });
                 return;
             }
-            data["outputInstance"] = recipe.output_instances[0];
-            data["format"] = recipe.format;
-            allOutputs.push(data);
+
+            allOutputs.push(Object.assign({ format: recipe.format }, recipe.output_instances[0]));
         });
         return allOutputs;
     };
@@ -115,14 +111,14 @@ export class CreateDatasetController extends Component {
 
     mapOutputsToState = outputs => {
         return outputs.map(output => {
-            let outputUrl = this.props.location.pathname + "/" + output.outputInstance.dataset_id;
+            let outputUrl = `${this.props.location.pathname}/${output.dataset_id}`;
             if (output.format.includes("cantabular")) {
                 outputUrl += `/${output.format}`;
             }
 
             return {
-                title: output.outputInstance.title,
-                id: output.outputInstance.dataset_id,
+                title: output.title,
+                id: output.dataset_id,
                 url: outputUrl
             };
         });

@@ -40,17 +40,16 @@ export class CreateCantabularDatasetController extends Component {
         });
     };
 
-    makeCreateDatasetPostBody = format => {
+    makeCreateDatasetPostBody = () => {
         return {
-            type: format
+            type: this.state.format
         };
     };
 
     handleCreateClick = event => {
         event.preventDefault();
         const datasetID = this.state.datasetID;
-        const format = this.state.format;
-        const postBody = this.makeCreateDatasetPostBody(format);
+        const postBody = this.makeCreateDatasetPostBody();
         this.setState({ isPosting: true });
         return datasets
             .create(datasetID, postBody)
@@ -62,7 +61,7 @@ export class CreateCantabularDatasetController extends Component {
                     autoDismiss: 5000
                 });
                 this.setState({ isPosting: false });
-                const datasetsOverviewPageURL = url.resolve("../../");
+                const datasetsOverviewPageURL = url.resolve("../../../");
                 this.props.dispatch(push(datasetsOverviewPageURL));
             })
             .catch(error => {
@@ -104,7 +103,6 @@ export class CreateCantabularDatasetController extends Component {
     };
 
     render() {
-        console.log(this.state);
         return (
             <div className="grid grid--justify-center margin-bottom--2">
                 <div className="grid__col-9">
@@ -117,13 +115,12 @@ export class CreateCantabularDatasetController extends Component {
                     <h1 className="margin-top--1 margin-bottom--1">Create dataset</h1>
                     <p className="font-size--18  margin-bottom--1">
                         <span className="font-weight--600">for&nbsp;</span>
-                        {this.props.params.datasetID}
+                        {this.state.datasetID}
                     </p>
                     <div className="grid__col-2">
                         <button type="button" className="btn btn--positive" disabled={this.state.isPosting} onClick={this.handleCreateClick}>
-                            Create dataset
+                            {this.state.isPosting ? <div className="form__loader loader loader--dark margin-left--1"></div> : "Create"}
                         </button>
-                        {this.state.isPosting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                     </div>
                 </div>
             </div>
