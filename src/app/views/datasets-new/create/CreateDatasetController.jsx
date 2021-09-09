@@ -90,12 +90,12 @@ export class CreateDatasetController extends Component {
         recipes.items.forEach(recipe => {
             if (recipe.output_instances.length > 1) {
                 recipe.output_instances.forEach(output => {
-                    allOutputs.push(Object.assign({ format: recipe.format }, output));
+                    allOutputs.push({ ...output, format: recipe.format });
                 });
                 return;
             }
 
-            allOutputs.push(Object.assign({ format: recipe.format }, recipe.output_instances[0]));
+            allOutputs.push({ ...recipe.output_instances[0], format: recipe.format });
         });
         return allOutputs;
     };
