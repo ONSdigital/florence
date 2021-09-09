@@ -3,11 +3,8 @@ import PropTypes from "prop-types";
 
 import NotificationItem from "./NotificationItem";
 
-const propTypes = {
-    notifications: PropTypes.arrayOf(PropTypes.object)
-};
-
 const Notifications = ({ notifications }) => {
+    if (notifications.length < 1) return null;
     return (
         <ul className="notifications">
             {notifications.map(notification => {
@@ -17,6 +14,8 @@ const Notifications = ({ notifications }) => {
     );
 };
 
-Notifications.propTypes = propTypes;
+Notifications.propTypes = {
+    notifications: PropTypes.array
+};
 
 export default Notifications;

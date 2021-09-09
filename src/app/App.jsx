@@ -1,13 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 import { hasValidAuthToken } from "./utilities/hasValidAuthToken";
 import user from "./utilities/api-clients/user";
 import log from "./utilities/logging/log";
 import ping from "./utilities/api-clients/ping";
-
-import Notifications from "./global/notifications/Notifications";
+import Notifications from "./components/notifications";
 import notifications from "./utilities/notifications";
 
 const propTypes = {
