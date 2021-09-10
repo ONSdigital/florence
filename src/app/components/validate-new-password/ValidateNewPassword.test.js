@@ -19,25 +19,25 @@ describe("When the validate new password component is added", () => {
         const minCharCheckbox = component.find("#minimum-character-limit");
         expect(minCharCheckbox.exists()).toBe(true);
         expect(minCharCheckbox.props()["checked"]).toBe(false);
-        expect(component.state().validationRules[0].checked).toBe(false);
+        expect(component.state().minimumNumberLimitPassed).toBe(false);
     });
     it("should have a required uppercase character validation checkbox which is unchecked", () => {
         const upperCharCheckbox = component.find("#uppercase-character-validation");
         expect(upperCharCheckbox.exists()).toBe(true);
         expect(upperCharCheckbox.props()["checked"]).toBe(false);
-        expect(component.state().validationRules[1].checked).toBe(false);
+        expect(component.state().uppercaseCharacterValidationPassed).toBe(false);
     });
     it("should have a required lowercase character validation checkbox which is unchecked", () => {
         const lowerCharCheckbox = component.find("#lowercase-character-validation");
         expect(lowerCharCheckbox.exists()).toBe(true);
         expect(lowerCharCheckbox.props()["checked"]).toBe(false);
-        expect(component.state().validationRules[2].checked).toBe(false);
+        expect(component.state().lowercaseCharacterValidationPassed).toBe(false);
     });
     it("should have a required numerical character validation checkbox which is unchecked", () => {
         const numCharCheckbox = component.find("#minimum-number-limit");
         expect(numCharCheckbox.exists()).toBe(true);
         expect(numCharCheckbox.props()["checked"]).toBe(false);
-        expect(component.state().validationRules[3].checked).toBe(false);
+        expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
     it("should have an input field", () => {
         // Check it exists
@@ -61,10 +61,10 @@ describe("When a lowercase character is entered into the text input field", () =
         }
     });
     it("Should update the validation rule states", () => {
-        expect(component.state().validationRules[0].checked).toBe(false);
-        expect(component.state().validationRules[1].checked).toBe(false);
-        expect(component.state().validationRules[2].checked).toBe(true);
-        expect(component.state().validationRules[3].checked).toBe(false);
+        expect(component.state().minimumNumberLimitPassed).toBe(false);
+        expect(component.state().uppercaseCharacterValidationPassed).toBe(false);
+        expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
+        expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
     it("Should pass validation for lowercase character required", () => {
         expect(numCharCheckbox.props()["checked"]).toBe(false);
@@ -96,10 +96,10 @@ describe("When an uppercase character is entered into the text input field", () 
         }
     });
     it("Should update the validation rule states", () => {
-        expect(component.state().validationRules[0].checked).toBe(false);
-        expect(component.state().validationRules[1].checked).toBe(true);
-        expect(component.state().validationRules[2].checked).toBe(false);
-        expect(component.state().validationRules[3].checked).toBe(false);
+        expect(component.state().minimumNumberLimitPassed).toBe(false);
+        expect(component.state().uppercaseCharacterValidationPassed).toBe(true);
+        expect(component.state().lowercaseCharacterValidationPassed).toBe(false);
+        expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
     it("Should pass validation for Upper Case character required", () => {
         expect(numCharCheckbox.props()["checked"]).toBe(false);
@@ -131,10 +131,10 @@ describe("When a numerical character is entered into the text input field", () =
         }
     });
     it("Should update the validation rule states", () => {
-        expect(component.state().validationRules[0].checked).toBe(false);
-        expect(component.state().validationRules[1].checked).toBe(false);
-        expect(component.state().validationRules[2].checked).toBe(false);
-        expect(component.state().validationRules[3].checked).toBe(true);
+        expect(component.state().minimumNumberLimitPassed).toBe(true);
+        expect(component.state().uppercaseCharacterValidationPassed).toBe(false);
+        expect(component.state().lowercaseCharacterValidationPassed).toBe(false);
+        expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
     it("Should pass validation for numerical character required", () => {
         expect(numCharCheckbox.props()["checked"]).toBe(true);
@@ -169,10 +169,10 @@ describe("When fourteen numerical and upper as well as lower characters are ente
     it("Should update the validation rule states", () => {
         // Check that the state has been updated
         expect(component.state().password.value).toBe("aB1cD2eF3gH4iJ");
-        expect(component.state().validationRules[0].checked).toBe(true);
-        expect(component.state().validationRules[1].checked).toBe(true);
-        expect(component.state().validationRules[2].checked).toBe(true);
-        expect(component.state().validationRules[3].checked).toBe(true);
+        expect(component.state().minimumNumberLimitPassed).toBe(true);
+        expect(component.state().uppercaseCharacterValidationPassed).toBe(true);
+        expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
+        expect(component.state().minimumCharacterLimitPassed).toBe(true);
     });
     it("Should pass validation for minimum character limit required and all others", () => {
         // Check that the character limit requirement checkbox is now checked

@@ -19,66 +19,32 @@ export class ValidateNewPassword extends Component {
                 value: "",
                 type: "password"
             },
-            validationRules: [
-                {
-                    name: "14 characters",
-                    checked: false,
-                    id: "minimum-character-limit"
-                },
-                {
-                    name: "1 uppercase character",
-                    checked: false,
-                    id: "uppercase-character-validation"
-                },
-                {
-                    name: "1 lowercase character",
-                    checked: false,
-                    id: "lowercase-character-validation"
-                },
-                {
-                    name: "1 number",
-                    checked: false,
-                    id: "minimum-number-limit"
-                }
-            ]
+            minimumCharacterLimitPassed: false,
+            uppercaseCharacterValidationPassed: false,
+            lowercaseCharacterValidationPassed: false,
+            minimumNumberLimitPassed: false
         };
     }
 
     checkPasswordValidation() {
         this.setState(
             {
-                validationRules: [
-                    {
-                        name: "14 characters",
-                        checked: this.checkStringLength(),
-                        id: "minimum-character-limit"
-                    },
-                    {
-                        name: "1 uppercase character",
-                        checked: this.checkUpperCase(),
-                        id: "uppercase-character-validation"
-                    },
-                    {
-                        name: "1 lowercase character",
-                        checked: this.checkLowerCase(),
-                        id: "lowercase-character-validation"
-                    },
-                    {
-                        name: "1 number",
-                        checked: this.checkNumberPresence(),
-                        id: "minimum-number-limit"
-                    }
-                ]
+                minimumCharacterLimitPassed: this.checkStringLength(),
+                uppercaseCharacterValidationPassed: this.checkUpperCase(),
+                lowercaseCharacterValidationPassed: this.checkLowerCase(),
+                minimumNumberLimitPassed: this.checkNumberPresence()
             },
-
             () => {
-                let ruleChecked = true;
-                this.state.validationRules.map(rule => {
-                    if (!rule.checked) {
-                        ruleChecked = false;
-                    }
-                });
-                this.props.updateValidity(ruleChecked, this.state.password.value);
+                if (
+                    this.state.minimumCharacterLimitPassed === false ||
+                    this.state.uppercaseCharacterValidationPassed === false ||
+                    this.state.lowercaseCharacterValidationPassed === false ||
+                    this.state.minimumNumberLimitPassed === false
+                ) {
+                    this.props.updateValidity(false, this.state.password.value);
+                } else {
+                    this.props.updateValidity(true, this.state.password.value);
+                }
             }
         );
     }
@@ -141,7 +107,14 @@ export class ValidateNewPassword extends Component {
     };
 
     render() {
-        const validateNewPasswordPanelBody = <ValidationItemList validationRules={this.state.validationRules} />;
+        const validateNewPasswordPanelBody = (
+            <ValidationItemList
+                minimumCharacterLimitPassed={this.state.minimumCharacterLimitPassed}
+                uppercaseCharacterValidationPassed={this.state.uppercaseCharacterValidationPassed}
+                lowercaseCharacterValidationPassed={this.state.lowercaseCharacterValidationPassed}
+                minimumNumberLimitPassed={this.state.minimumNumberLimitPassed}
+            />
+        );
         return (
             <div>
                 <div className="margin-bottom--1">
