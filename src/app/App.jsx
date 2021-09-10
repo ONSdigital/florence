@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import { hasValidAuthToken } from "./utilities/hasValidAuthToken";
@@ -8,46 +8,36 @@ import ping from "./utilities/api-clients/ping";
 import Notifications from "./components/notifications";
 import notifications from "./utilities/notifications";
 
-const propTypes = {
-    children: PropTypes.node,
-    dispatch: PropTypes.func.isRequired,
-    notifications: PropTypes.arrayOf(PropTypes.object)
-};
+const App = props => {
+    const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(true);
 
-class App extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isCheckingAuthentication: false
-        };
-    }
-
-    UNSAFE_componentWillMount() {
+    useEffect(() => {
         log.initialise();
 
         window.setInterval(() => {
             ping();
         }, 10000);
+        Authenticate();
+    }, []);
 
-        this.setState({ isCheckingAuthentication: true });
+    function Authenticate() {
+        // this.setState({ isCheckingAuthentication: true });
         hasValidAuthToken().then(isValid => {
             if (isValid) {
                 const email = localStorage.getItem("loggedInAs");
                 if (!email) {
                     user.logOut();
-                    this.setState({ isCheckingAuthentication: false });
-                    console.warn(`Unable to find item 'loggedInAs' from local storage`);
-                    return;
+                    setIsCheckingAuthentication(false);
+                    return console.warn(`Unable to find item 'loggedInAs' from local storage`);
                 }
 
                 user.getPermissions(email)
                     .then(userType => {
                         user.setUserState(userType);
-                        this.setState({ isCheckingAuthentication: false });
+                        setIsCheckingAuthentication(false);
                     })
                     .catch(error => {
-                        this.setState({ isCheckingAuthentication: false });
+                        setIsCheckingAuthentication(false);
                         notifications.add({
                             type: "warning",
                             message: "Unable to start Florence due to an error getting your account's permissions. Please try refreshing Florence.",
@@ -59,27 +49,28 @@ class App extends Component {
                     });
                 return;
             }
-            this.setState({ isCheckingAuthentication: false });
+            setIsCheckingAuthentication(false);
         });
     }
 
-    render() {
-        return (
-            <div>
-                {this.state.isCheckingAuthentication ? (
-                    <div className="grid grid--align-center grid--align-self-center grid--full-height">
-                        <div className="loader loader--large loader--dark"></div>
-                    </div>
-                ) : (
-                    this.props.children
-                )}
-                <Notifications notifications={this.props.notifications} />
-            </div>
-        );
-    }
-}
+    return (
+        <div>
+            {isCheckingAuthentication && (
+                <div className="grid grid--align-center grid--align-self-center grid--full-height">
+                    <div className="loader loader--large loader--dark"></div>
+                </div>
+            )}
+            {props.children}
+            <Notifications notifications={props.notifications} />
+        </div>
+    );
+};
 
-App.propTypes = propTypes;
+App.propTypes = {
+    children: PropTypes.node,
+    dispatch: PropTypes.func.isRequired,
+    notifications: PropTypes.arrayOf(PropTypes.object)
+};
 
 function mapStateToProps(state) {
     return {
