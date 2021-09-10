@@ -42,8 +42,6 @@ export class ValidateNewPassword extends Component {
                 }
             ]
         };
-
-        this.handleInputChange = this.handleInputChange.bind(this);
     }
 
     checkPasswordValidation() {
@@ -102,7 +100,7 @@ export class ValidateNewPassword extends Component {
         return /^.*[0-9].*$/.test(this.state.password.value);
     }
 
-    handleInputChange(event) {
+    togglePasswordVisibility = event => {
         const id = event.target.id;
         const value = event.target.value;
         const checked = event.target.checked;
@@ -140,7 +138,7 @@ export class ValidateNewPassword extends Component {
                 notifications.add(notification);
             }
         }
-    }
+    };
 
     render() {
         const validateNewPasswordPanelBody = <ValidationItemList validationRules={this.state.validationRules} />;
@@ -153,7 +151,7 @@ export class ValidateNewPassword extends Component {
                     id="password-input"
                     type={this.state.password.type}
                     label="Password"
-                    onChange={this.handleInputChange}
+                    onChange={this.togglePasswordVisibility}
                     disableShowPasswordText={true}
                     value={this.state.password.value}
                     displayInputAsErrored={this.props.inputErrored}
@@ -162,7 +160,7 @@ export class ValidateNewPassword extends Component {
                     id="password-checkbox"
                     type="checkbox"
                     label="Show password"
-                    onChange={this.handleInputChange}
+                    onChange={this.togglePasswordVisibility}
                     reverseLabelOrder={true}
                     inline={true}
                 />

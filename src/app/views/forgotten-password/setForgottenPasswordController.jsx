@@ -34,29 +34,29 @@ export class SetForgottenPasswordController extends Component {
             this.setState({ showInputError: true });
             return;
         }
-        let verificationID = new URLSearchParams(location.search).get("vid");
-        let userID = new URLSearchParams(location.search).get("uid");
-        // UID is sent in Email field, for speed of first delivery it was decided UID is to be used instead of email.
-        // Eventually the backend should be changed to use the endpoint /users/{uid}/password or at least change the
-        // email field to be uid and then (TODO) this can be updated
-        const requestBody = {
-            type: "ForgottenPassword",
-            verification_token: verificationID,
-            email: userID,
-            password: this.state.password
-        };
 
         this.setState(
             {
                 status: status.SUBMITTING
             },
             () => {
-                this.requestPasswordChange(requestBody);
+                this.requestPasswordChange();
             }
         );
     };
 
-    requestPasswordChange(body) {
+    requestPasswordChange() {
+        let verificationID = new URLSearchParams(location.search).get("vid");
+        let userID = new URLSearchParams(location.search).get("uid");
+        // UID is sent in Email field, for speed of first delivery it was decided UID is to be used instead of email.
+        // Eventually the backend should be changed to use the endpoint /users/{uid}/password or at least change the
+        // email field to be uid and then (TODO) this can be updated
+        const body = {
+            type: "ForgottenPassword",
+            verification_token: verificationID,
+            email: userID,
+            password: this.state.password
+        };
         user.setForgottenPassword(body)
             .then(() => {
                 this.setState({

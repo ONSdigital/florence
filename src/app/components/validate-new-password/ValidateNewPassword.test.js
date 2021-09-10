@@ -54,7 +54,7 @@ describe("When a lowercase character is entered into the text input field", () =
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().handleInputChange({
+    component.instance().togglePasswordVisibility({
         target: {
             id: "password-input",
             value: "a"
@@ -89,7 +89,7 @@ describe("When an uppercase character is entered into the text input field", () 
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().handleInputChange({
+    component.instance().togglePasswordVisibility({
         target: {
             id: "password-input",
             value: "A"
@@ -124,7 +124,7 @@ describe("When a numerical character is entered into the text input field", () =
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().handleInputChange({
+    component.instance().togglePasswordVisibility({
         target: {
             id: "password-input",
             value: "1"
@@ -160,7 +160,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().handleInputChange({
+    component.instance().togglePasswordVisibility({
         target: {
             id: "password-input",
             value: "aB1cD2eF3gH4iJ"
