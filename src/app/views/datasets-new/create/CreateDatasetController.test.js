@@ -144,28 +144,59 @@ const mockedAllRecipesCall = {
                     ]
                 }
             ]
+        },
+        {
+            id: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
+            alias: "TEST5",
+            format: "cantabular_table",
+            files: [],
+            output_instances: [
+                {
+                    dataset_id: "test-dataset-5",
+                    editions: ["time-series"],
+                    title: "Test dataset 5",
+                    code_lists: [
+                        {
+                            id: "mmm-yy",
+                            href: "http://localhost:22400/code-lists/mmm-yy",
+                            name: "time",
+                            is_hierarchy: false
+                        }
+                    ]
+                }
+            ]
         }
     ]
 };
 
 const mockedAllOutputs = [
     {
+        format: mockedAllRecipesCall.items[0].format,
         dataset_id: mockedAllRecipesCall.items[0].output_instances[0].dataset_id,
         editions: mockedAllRecipesCall.items[0].output_instances[0].editions,
         title: mockedAllRecipesCall.items[0].output_instances[0].title,
         code_lists: mockedAllRecipesCall.items[0].output_instances[0].code_lists
     },
     {
+        format: mockedAllRecipesCall.items[0].format,
         dataset_id: mockedAllRecipesCall.items[0].output_instances[1].dataset_id,
         editions: mockedAllRecipesCall.items[0].output_instances[1].editions,
         title: mockedAllRecipesCall.items[0].output_instances[1].title,
         code_lists: mockedAllRecipesCall.items[0].output_instances[1].code_lists
     },
     {
+        format: mockedAllRecipesCall.items[1].format,
         dataset_id: mockedAllRecipesCall.items[1].output_instances[0].dataset_id,
         editions: mockedAllRecipesCall.items[1].output_instances[0].editions,
         title: mockedAllRecipesCall.items[1].output_instances[0].title,
         code_lists: mockedAllRecipesCall.items[1].output_instances[0].code_lists
+    },
+    {
+        format: mockedAllRecipesCall.items[3].format,
+        dataset_id: mockedAllRecipesCall.items[3].output_instances[0].dataset_id,
+        editions: mockedAllRecipesCall.items[3].output_instances[0].editions,
+        title: mockedAllRecipesCall.items[3].output_instances[0].title,
+        code_lists: mockedAllRecipesCall.items[3].output_instances[0].code_lists
     }
 ];
 
@@ -251,11 +282,16 @@ describe("Calling getAllUncreatedDatasetFromRecipeOutputs", () => {
     describe("on success", () => {
         it("adds outputs to state", async () => {
             component.instance().getAllUncreatedDatasetFromRecipeOutputs();
-            expect(component.state("outputs")).toHaveLength(2);
+            expect(component.state("outputs")).toHaveLength(3);
             expect(component.state("outputs")[0]).toMatchObject({
                 title: "Test dataset 3",
                 id: "test-dataset-3",
                 url: "florence/collections/12345/datasets/create/test-dataset-3"
+            });
+            expect(component.state("outputs")[2]).toMatchObject({
+                title: "Test dataset 5",
+                id: "test-dataset-5",
+                url: "florence/collections/12345/datasets/create/test-dataset-5/cantabular_table"
             });
         });
         it("updates isFetchingRecipesAndDatasets state to show it has created dataset", async () => {
@@ -282,9 +318,11 @@ describe("Calling getAllUncreatedDatasetFromRecipeOutputs", () => {
 
 test("getAllOutputsFromRecipes returns correct values", () => {
     const outputs = component.instance().getAllOutputsFromRecipes(mockedAllRecipesCall);
+    expect(outputs).toHaveLength(5);
     expect(outputs[0]).toMatchObject(mockedAllOutputs[0]);
     expect(outputs[1]).toMatchObject(mockedAllOutputs[1]);
     expect(outputs[2]).toMatchObject(mockedAllOutputs[2]);
+    expect(outputs[4]).toMatchObject(mockedAllOutputs[3]);
 });
 
 test("getOutputsWithoutExistingDataset returns correct values", () => {
