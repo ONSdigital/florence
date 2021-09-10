@@ -11,21 +11,24 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired
 };
 
+const status = {
+    WAITING_USER_INPUT: "waiting for user input",
+    SUBMITTING: "submitting",
+    SUBMITTED: "submitted"
+};
+
 export class SetForgottenPasswordController extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            hasSubmitted: false,
-            isSubmitting: false,
+            status: status.WAITING_USER_INPUT,
             passwordIsValid: false,
             password: "",
             showInputError: false
         };
-        this.onSubmit = this.onSubmit.bind(this);
-        this.validityCheck = this.validityCheck.bind(this);
     }
 
-    onSubmit(event) {
+    onSubmit = event => {
         event.preventDefault();
         if (!this.state.passwordIsValid) {
             this.setState({ showInputError: true });
@@ -43,23 +46,27 @@ export class SetForgottenPasswordController extends Component {
             password: this.state.password
         };
 
-        this.setState({ isSubmitting: true, showInputError: false }, () => {
-            this.requestPasswordChange(requestBody);
-        });
-    }
+        this.setState(
+            {
+                status: status.SUBMITTING
+            },
+            () => {
+                this.requestPasswordChange(requestBody);
+            }
+        );
+    };
 
     requestPasswordChange(body) {
         user.setForgottenPassword(body)
             .then(() => {
                 this.setState({
-                    hasSubmitted: true,
-                    isSubmitting: false
+                    stats: status.SUBMITTED
                 });
             })
             .catch(error => {
                 this.handlePasswordResetError(error);
                 this.setState({
-                    isSubmitting: false
+                    status: status.WAITING_USER_INPUT
                 });
             });
     }
@@ -70,12 +77,17 @@ export class SetForgottenPasswordController extends Component {
             isDismissable: true,
             autoDismiss: 15000
         };
+        const outputGenericError = () => {
+            console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
+            log.event(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR, log.error(error));
+            notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+        };
 
         if (error != null && error.status != null) {
             if (error.status === 400) {
                 // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
-                console.error("Unable to validate the type, email, password, or verification_token in the request");
-                log.event("Unable to validate the type, email, password, or verification_token in the request", log.error(error));
+                console.error("Unable to validate the type, UID, password, or verification_token in the request");
+                log.event("Unable to validate the type, UID, password, or verification_token in the request", log.error(error));
                 notification.message = errCodes.RESET_PASSWORD_VALIDATION_ERR;
             } else if (error.status === 500) {
                 console.error("Invalid request body");
@@ -86,19 +98,15 @@ export class SetForgottenPasswordController extends Component {
                 log.event("Requested unimplemented password change type", log.error(error));
                 notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
             } else {
-                console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
-                log.event(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR, log.error(error));
-                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+                outputGenericError();
             }
         } else {
-            console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
-            log.event(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR, log.error(error));
-            notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+            outputGenericError();
         }
         notifications.add(notification);
     }
 
-    validityCheck(isValid, password) {
+    validityCheck = (isValid, password) => {
         // Only show input error if user had previously tried to submit password and it is still invalid
         const showInputError = !isValid && this.state.showInputError;
         this.setState({
@@ -106,7 +114,7 @@ export class SetForgottenPasswordController extends Component {
             password: password,
             showInputError: showInputError
         });
-    }
+    };
 
     render() {
         const setForgottenPasswordRequestProps = {
@@ -116,15 +124,12 @@ export class SetForgottenPasswordController extends Component {
             heading: "Create a new password",
             buttonText: "Confirm password",
             showInputError: this.state.showInputError,
-            isSubmitting: this.state.isSubmitting
+            isSubmitting: this.status === status.SUBMITTING
         };
-
-        const screenToShow = this.state.hasSubmitted ? (
-            <SetForgottenPasswordConfirmed />
-        ) : (
-            <SetForgottenPasswordRequest {...setForgottenPasswordRequestProps} />
-        );
-        return <div>{screenToShow}</div>;
+        if (this.state.status === status.SUBMITTED) {
+            return <SetForgottenPasswordConfirmed />;
+        }
+        return <SetForgottenPasswordRequest {...setForgottenPasswordRequestProps} />;
     }
 }
 

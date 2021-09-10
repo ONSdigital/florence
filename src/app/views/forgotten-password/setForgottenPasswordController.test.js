@@ -3,6 +3,11 @@ import { SetForgottenPasswordController } from "./setForgottenPasswordController
 
 import React from "react";
 
+const status = {
+    WAITING_USER_INPUT: "waiting for user input",
+    SUBMITTING: "submitting",
+    SUBMITTED: "submitted"
+};
 describe("When the user first lands on the page", () => {
     const props = {
         dispatch: function() {}
@@ -35,8 +40,7 @@ describe("After the user has attempted to submit a password change without meeti
 
     const component = mount(<SetForgottenPasswordController {...props} />);
     component.setState({
-        hasSubmitted: false,
-        isSubmitting: false,
+        status: status.WAITING_USER_INPUT,
         passwordIsValid: false,
         password: "",
         showInputError: true
@@ -58,8 +62,7 @@ describe("After the user submits their new password successfully ", () => {
     };
     const component = mount(<SetForgottenPasswordController {...props} />);
     component.setState({
-        hasSubmitted: true,
-        isSubmitting: false,
+        status: status.SUBMITTED,
         passwordIsValid: true,
         password: "Foo1Bar2Baz3Qux4",
         showInputError: false

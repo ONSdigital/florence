@@ -8,7 +8,7 @@ import ValidationItemList from "../../components/validation-item-list/Validation
 
 const propTypes = {
     updateValidity: PropTypes.func,
-    inputError: PropTypes.string
+    inputErrored: PropTypes.bool
 };
 
 export class ValidateNewPassword extends Component {
@@ -156,7 +156,7 @@ export class ValidateNewPassword extends Component {
                     onChange={this.handleInputChange}
                     disableShowPasswordText={true}
                     value={this.state.password.value}
-                    error={this.props.inputError}
+                    displayInputAsErrored={this.props.inputErrored}
                 />
                 <Input
                     id="password-checkbox"

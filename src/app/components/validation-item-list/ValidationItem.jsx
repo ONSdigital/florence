@@ -12,8 +12,12 @@ export default class ValidationItem extends Component {
         super(props);
     }
 
+    // Can't prevent everything or this will become a keyboard trap
     preventUserInteractions(e) {
-        e.preventDefault();
+        const spaceKeyCode = 32;
+        if (e.keyCode === spaceKeyCode || e.type === "click") {
+            e.preventDefault();
+        }
     }
 
     render() {
@@ -26,7 +30,6 @@ export default class ValidationItem extends Component {
                     onClick={this.preventUserInteractions}
                     onKeyDown={this.preventUserInteractions}
                     className="readonly-checkbox"
-                    tabIndex={-1}
                 />
                 <label htmlFor={this.props.id}> {this.props.name}</label>
             </div>
