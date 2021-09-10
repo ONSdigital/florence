@@ -90,11 +90,12 @@ export class CreateDatasetController extends Component {
         recipes.items.forEach(recipe => {
             if (recipe.output_instances.length > 1) {
                 recipe.output_instances.forEach(output => {
-                    allOutputs.push(output);
+                    allOutputs.push({ ...output, format: recipe.format });
                 });
                 return;
             }
-            allOutputs.push(recipe.output_instances[0]);
+
+            allOutputs.push({ ...recipe.output_instances[0], format: recipe.format });
         });
         return allOutputs;
     };
@@ -110,10 +111,15 @@ export class CreateDatasetController extends Component {
 
     mapOutputsToState = outputs => {
         return outputs.map(output => {
+            let outputUrl = `${this.props.location.pathname}/${output.dataset_id}`;
+            if (output.format.includes("cantabular")) {
+                outputUrl += `/${output.format}`;
+            }
+
             return {
                 title: output.title,
                 id: output.dataset_id,
-                url: this.props.location.pathname + "/" + output.dataset_id
+                url: outputUrl
             };
         });
     };
