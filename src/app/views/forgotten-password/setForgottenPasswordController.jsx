@@ -18,11 +18,11 @@ const status = {
 };
 
 export class SetForgottenPasswordController extends Component {
+    passwordIsValid = false;
     constructor(props) {
         super(props);
         this.state = {
             status: status.WAITING_USER_INPUT,
-            passwordIsValid: false,
             password: "",
             showInputError: false
         };
@@ -30,7 +30,7 @@ export class SetForgottenPasswordController extends Component {
 
     onSubmit = event => {
         event.preventDefault();
-        if (!this.state.passwordIsValid) {
+        if (!this.passwordIsValid) {
             this.setState({ showInputError: true });
             return;
         }
@@ -109,8 +109,8 @@ export class SetForgottenPasswordController extends Component {
     validityCheck = (isValid, password) => {
         // Only show input error if user had previously tried to submit password and it is still invalid
         const showInputError = !isValid && this.state.showInputError;
+        this.passwordIsValid = isValid;
         this.setState({
-            passwordIsValid: isValid,
             password: password,
             showInputError: showInputError
         });
@@ -119,7 +119,7 @@ export class SetForgottenPasswordController extends Component {
     render() {
         const setForgottenPasswordRequestProps = {
             validityCheck: this.validityCheck,
-            isValid: this.state.passwordIsValid,
+            isValid: this.passwordIsValid,
             onSubmit: this.onSubmit,
             heading: "Create a new password",
             buttonText: "Confirm password",
