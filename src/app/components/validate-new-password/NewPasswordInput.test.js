@@ -1,6 +1,6 @@
 import React from "react";
 import { mount } from "enzyme";
-import ValidateNewPassword from "./ValidateNewPassword";
+import NewPasswordInput from "./NewPasswordInput";
 import renderer from "react-test-renderer";
 
 let updateValidity = jest.fn((isValid, password) => {
@@ -11,10 +11,7 @@ const props = {
     updateValidity: updateValidity
 };
 describe("When the validate new password component is added", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
-    it("have an initial state with no password typed yet", () => {
-        expect(component.state().password.value).toBe("");
-    });
+    const component = mount(<NewPasswordInput {...props} />);
     it("should have a character limit validation checkbox which is unchecked", () => {
         const minCharCheckbox = component.find("#minimum-character-limit");
         expect(minCharCheckbox.exists()).toBe(true);
@@ -49,14 +46,13 @@ describe("When the validate new password component is added", () => {
 });
 
 describe("When a lowercase character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("#minimum-number-limit");
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().togglePasswordVisibility({
+    component.instance().handleInputChange({
         target: {
-            id: "password-input",
             value: "a"
         }
     });
@@ -79,19 +75,18 @@ describe("When a lowercase character is entered into the text input field", () =
         const props = {
             override: true
         };
-        const component = renderer.create(<ValidateNewPassword {...props} />);
+        const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
     });
 });
 describe("When an uppercase character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("#minimum-number-limit");
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().togglePasswordVisibility({
+    component.instance().handleInputChange({
         target: {
-            id: "password-input",
             value: "A"
         }
     });
@@ -114,19 +109,18 @@ describe("When an uppercase character is entered into the text input field", () 
         const props = {
             override: true
         };
-        const component = renderer.create(<ValidateNewPassword {...props} />);
+        const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
     });
 });
 describe("When a numerical character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("#minimum-number-limit");
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().togglePasswordVisibility({
+    component.instance().handleInputChange({
         target: {
-            id: "password-input",
             value: "1"
         }
     });
@@ -149,26 +143,24 @@ describe("When a numerical character is entered into the text input field", () =
         const props = {
             override: true
         };
-        const component = renderer.create(<ValidateNewPassword {...props} />);
+        const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
     });
 });
 
 describe("When fourteen numerical and upper as well as lower characters are entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("#minimum-number-limit");
     const upperCharCheckbox = component.find("#uppercase-character-validation");
     const lowerCharCheckbox = component.find("#lowercase-character-validation");
     const minCharCheckbox = component.find("#minimum-character-limit");
-    component.instance().togglePasswordVisibility({
+    component.instance().handleInputChange({
         target: {
-            id: "password-input",
             value: "aB1cD2eF3gH4iJ"
         }
     });
     it("Should update the validation rule states", () => {
         // Check that the state has been updated
-        expect(component.state().password.value).toBe("aB1cD2eF3gH4iJ");
         expect(component.state().minimumNumberLimitPassed).toBe(true);
         expect(component.state().uppercaseCharacterValidationPassed).toBe(true);
         expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
@@ -188,7 +180,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
         const props = {
             override: true
         };
-        const component = renderer.create(<ValidateNewPassword {...props} />);
+        const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
     });
 });
