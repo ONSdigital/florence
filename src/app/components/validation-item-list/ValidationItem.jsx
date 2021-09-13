@@ -15,7 +15,7 @@ export default class ValidationItem extends Component {
     render() {
         return (
             <div className="readonly-checkbox__wrapper">
-                <input type="checkbox" id={this.props.id} checked={this.props.checked} disabled={"disabled"} className="readonly-checkbox" />
+                <input type="checkbox" id={this.props.id} checked={this.props.checked} disabled="disabled" className="readonly-checkbox" />
                 <label htmlFor={this.props.id}> {this.props.name}</label>
             </div>
         );

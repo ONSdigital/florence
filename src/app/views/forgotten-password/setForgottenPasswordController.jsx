@@ -60,7 +60,7 @@ export class SetForgottenPasswordController extends Component {
         user.setForgottenPassword(body)
             .then(() => {
                 this.setState({
-                    stats: status.SUBMITTED
+                    status: status.SUBMITTED
                 });
             })
             .catch(error => {

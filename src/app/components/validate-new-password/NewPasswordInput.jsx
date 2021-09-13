@@ -2,8 +2,6 @@ import React, { Component } from "react";
 import Panel from "../panel/Panel";
 import PropTypes from "prop-types";
 import Input from "../Input";
-import { errCodes } from "../../utilities/errorCodes";
-import notifications from "../../utilities/notifications";
 import ValidationItemList from "../../components/validation-item-list/ValidationItemList";
 
 const propTypes = {
@@ -11,14 +9,13 @@ const propTypes = {
     inputErrored: PropTypes.bool
 };
 
-export class ValidateNewPassword extends Component {
+export class NewPasswordInput extends Component {
+    passwordValue = "";
+
     constructor(props) {
         super(props);
         this.state = {
-            password: {
-                value: "",
-                type: "password"
-            },
+            type: "password",
             minimumCharacterLimitPassed: false,
             uppercaseCharacterValidationPassed: false,
             lowercaseCharacterValidationPassed: false,
@@ -35,75 +32,47 @@ export class ValidateNewPassword extends Component {
                 minimumNumberLimitPassed: this.checkNumberPresence()
             },
             () => {
+                let passwordIsValid = true;
                 if (
-                    this.state.minimumCharacterLimitPassed === false ||
-                    this.state.uppercaseCharacterValidationPassed === false ||
-                    this.state.lowercaseCharacterValidationPassed === false ||
-                    this.state.minimumNumberLimitPassed === false
+                    !this.state.minimumCharacterLimitPassed ||
+                    !this.state.uppercaseCharacterValidationPassed ||
+                    !this.state.lowercaseCharacterValidationPassed ||
+                    !this.state.minimumNumberLimitPassed
                 ) {
-                    this.props.updateValidity(false, this.state.password.value);
-                } else {
-                    this.props.updateValidity(true, this.state.password.value);
+                    passwordIsValid = false;
                 }
+                this.props.updateValidity(passwordIsValid, this.passwordValue);
             }
         );
     }
 
     checkStringLength() {
         const charMinLength = 13;
-        return this.state.password.value.length > charMinLength;
+        return this.passwordValue.length > charMinLength;
     }
 
     checkUpperCase() {
-        return /^.*[A-Z].*$/.test(this.state.password.value);
+        return /^.*[A-Z].*$/.test(this.passwordValue);
     }
 
     checkLowerCase() {
-        return /^.*[a-z].*$/.test(this.state.password.value);
+        return /^.*[a-z].*$/.test(this.passwordValue);
     }
 
     checkNumberPresence() {
-        return /^.*[0-9].*$/.test(this.state.password.value);
+        return /^.*[0-9].*$/.test(this.passwordValue);
     }
 
-    togglePasswordVisibility = event => {
-        const id = event.target.id;
-        const value = event.target.value;
-        const checked = event.target.checked;
+    handleInputChange = event => {
+        this.passwordValue = event.target.value;
+        this.checkPasswordValidation();
+    };
 
-        switch (id) {
-            case "password-input": {
-                this.setState(
-                    {
-                        password: {
-                            ...this.state.password,
-                            value: value
-                        }
-                    },
-                    this.checkPasswordValidation
-                );
-                break;
-            }
-            case "password-checkbox": {
-                this.setState(prevState => ({
-                    password: {
-                        ...prevState.password,
-                        type: checked ? "text" : "password"
-                    }
-                }));
-                break;
-            }
-            default: {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000
-                };
-                console.error(errCodes.UNEXPECTED_ERR);
-                notification.message = errCodes.UNEXPECTED_ERR;
-                notifications.add(notification);
-            }
-        }
+    togglePasswordVisibility = event => {
+        const showPassword = event.target.checked;
+        this.setState(() => ({
+            type: showPassword ? "text" : "password"
+        }));
     };
 
     render() {
@@ -122,11 +91,11 @@ export class ValidateNewPassword extends Component {
                 </div>
                 <Input
                     id="password-input"
-                    type={this.state.password.type}
+                    type={this.state.type}
                     label="Password"
-                    onChange={this.togglePasswordVisibility}
+                    onChange={this.handleInputChange}
                     disableShowPasswordText={true}
-                    value={this.state.password.value}
+                    value={this.passwordValue}
                     displayInputAsErrored={this.props.inputErrored}
                 />
                 <Input
@@ -142,5 +111,5 @@ export class ValidateNewPassword extends Component {
     }
 }
 
-ValidateNewPassword.propTypes = propTypes;
-export default ValidateNewPassword;
+NewPasswordInput.propTypes = propTypes;
+export default NewPasswordInput;
