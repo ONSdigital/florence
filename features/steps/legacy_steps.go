@@ -69,15 +69,21 @@ func (c *Component) legacyTheseCollectionCreationDetailsShouldHaveBeenSent(colle
 	return c.StepError()
 }
 
+func (c *Component) legacyIHaveAuthTokens() error {
+	c.user.setAuthCookies()
+	return nil
+}
+
 func (c *Component) legacyIAmNotSignedIn() error {
 	assert.False(c.ApiFeature, c.user.isSignedIn())
 	return nil
 }
 
 func (c *Component) legacyIAmSignedIn() error {
-	return godog.ErrUndefined
+	assert.True(c.ApiFeature, c.user.isSignedIn())
+	return nil
 }
 
 func (c *Component) legacyISignOut() error {
-	return godog.ErrPending
+	return c.user.signOut()
 }

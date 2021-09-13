@@ -15,6 +15,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 		ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.legacyIShouldBePresentedWithAEditableCollectionTitled)
 		ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.legacyTheCollectionShouldBe)
 		ctx.Step(`^a collection with these details should be created:$`, c.legacyTheseCollectionCreationDetailsShouldHaveBeenSent)
+		ctx.Step(`^I have auth tokens$`, c.legacyIHaveAuthTokens)
 		ctx.Step(`^I am not signed in$`, c.legacyIAmNotSignedIn)
 		ctx.Step(`^I am signed in$`, c.legacyIAmSignedIn)
 		ctx.Step(`^I sign out$`, c.legacyISignOut)
@@ -24,6 +25,7 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 		ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
 		ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
 		ctx.Step(`^a collection with these details should be created:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
+		ctx.Step(`^I have auth tokens$`, c.iHaveAuthTokens)
 		ctx.Step(`^I am not signed in$`, c.iAmNotSignedIn)
 		ctx.Step(`^I am signed in$`, c.iAmSignedIn)
 		ctx.Step(`^I sign out$`, c.iSignOut)
@@ -46,6 +48,11 @@ func (c *Component) iSignInAs(role, username string) error {
 	return nil
 }
 
+func (c *Component) iHaveAuthTokens() error {
+	c.user.setAuthCookies()
+	return nil
+}
+
 func (c *Component) iAmNotSignedIn() error {
 	assert.False(c.ApiFeature, c.user.isSignedIn())
 	return nil
@@ -57,6 +64,5 @@ func (c *Component) iAmSignedIn() error {
 }
 
 func (c *Component) iSignOut() error {
-	c.user.signOut()
-	return nil
+	return c.user.signOut()
 }

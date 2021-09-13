@@ -40,9 +40,23 @@ func (f *FakeApi) setJsonResponseForPost(url string, responseBody string, status
 	request := f.fakeHttp.NewHandler().Post(url).AssertHeaders("Content-Type")
 
 	request.Reply(status).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+	if additionalHeaders != nil {
+		for _, header := range additionalHeaders {
+			request.Response.SetHeader(header.Name, header.Value)
+		}
+	}
 
-	for _, header := range additionalHeaders {
-		request.Response.SetHeader(header.Name, header.Value)
+	return request
+}
+
+func (f *FakeApi) setJsonResponseForDelete(url string, responseBody string, status int, additionalHeaders ...*Header) *httpfake.Request {
+	request := f.fakeHttp.NewHandler().Delete(url).AssertHeaders("Content-Type")
+
+	request.Reply(status).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+	if additionalHeaders != nil {
+		for _, header := range additionalHeaders {
+			request.Response.SetHeader(header.Name, header.Value)
+		}
 	}
 
 	return request

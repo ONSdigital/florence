@@ -18,18 +18,20 @@ func NewLegacyPublisher(api *FakeApi, ctx context.Context) *LegacyPublisher {
 }
 
 func (p *LegacyPublisher) signIn(username string) error {
-
+	cookieFlorence := GenerateCookie("X-Florence-Token", "fakeFlorenceToken", "")
 	// Here we are setting the fake data that would be returned from the identity-api
 	// with the permissions requires to create a new collection
 	p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(200).Body([]byte(`faketoken`))
 	p.fakeApi.setJsonResponseForGet("/permission", fmt.Sprintf(`{"email":"%s","admin":true,"editor":true}`, username))
 
 	err := chromedp.Run(p.chromeCtx,
+		SetCookies(cookieFlorence),
 		chromedp.Navigate("http://localhost:8080/florence/login"),
 		chromedp.WaitVisible(`#app`),
 		chromedp.SendKeys("#email", username),
 		chromedp.SendKeys("#password", "anything"),
 		chromedp.Click(".form button"),
+		p.assignUserCookies(),
 	)
 
 	if err != nil {
@@ -39,13 +41,38 @@ func (p *LegacyPublisher) signIn(username string) error {
 	return nil
 }
 
-func (p *LegacyPublisher) isSignedIn() bool {
-	fmt.Println(p.chromeCtx)
-	return true
+func (p *LegacyPublisher) assignUserCookies() chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		cookies, err := network.GetAllCookies().Do(ctx)
+		if err != nil {
+			return err
+		}
+		p.cookies = cookies
+		return nil
+	})
 }
 
-func (p *LegacyPublisher) signOut() {
+func (p *LegacyPublisher) isSignedIn() bool {
+	for _, cookie := range p.cookies {
+		if cookie.Name == "X-Florence-Token" {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *LegacyPublisher) signOut() error {
 	p.cookies = nil
+	return nil
+}
+
+func (p *LegacyPublisher) setAuthCookies() {
+	p.cookies = append(p.cookies, &network.Cookie{
+		Name:         "X-Florence-Token",
+		Value:        "fakeFlorenceToken",
+		Domain:       "localhost",
+		Path:         "/",
+	})
 }
 
 func (p *LegacyPublisher) resetUser(fakeApi *FakeApi, ctx context.Context) {

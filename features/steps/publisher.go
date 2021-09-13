@@ -17,20 +17,22 @@ func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 }
 
 func (p *Publisher) signIn(username string) error {
+	cookieUser := GenerateCookie("user_token", "fakeAuthorizationToken", "")
+	cookieId := GenerateCookie("id_token", "fakeIDToken", "")
+	cookieRefresh := GenerateCookie("refresh_token","fakeRefreshToken", "")
 
 	// Here we are setting the fake data that would be returned from the identity-api
 	// with the permissions requires to create a new collection
-	p.fakeApi.setJsonResponseForPost("/tokens", "faketoken", 200,
-		&Header{Name: "ID", Value: "fakeIdToken"}, &Header{Name: "Authorization", Value: "fakeAuthorizationToken"},
-		&Header{Name: "Refresh", Value: "fakeRefreshToken"})
+	p.fakeApi.setJsonResponseForPost("/tokens", "faketoken", 200)
 
 	err := chromedp.Run(p.chromeCtx,
+		SetCookies(cookieUser, cookieId, cookieRefresh),
 		chromedp.Navigate("http://localhost:8080/florence/login"),
 		chromedp.WaitVisible(`#app`),
 		chromedp.SendKeys("#email", username),
 		chromedp.SendKeys("#password", "anything"),
 		chromedp.Click(".form button"),
-		ShowCookies(p),
+		p.assignUserCookies(),
 	)
 
 	if err != nil {
@@ -40,7 +42,24 @@ func (p *Publisher) signIn(username string) error {
 	return nil
 }
 
-func ShowCookies(p *Publisher) chromedp.Action {
+func (p *Publisher) signOut() error {
+	p.fakeApi.setJsonResponseForDelete("/tokens", "", 200)
+
+	err := chromedp.Run(p.chromeCtx,
+		chromedp.Navigate("http://localhost:8080/florence"),
+		chromedp.WaitVisible(`#app`),
+		chromedp.Click(".global-nav__link:last-of-type"),
+		p.assignUserCookies(),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (p *Publisher) assignUserCookies() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		cookies, err := network.GetAllCookies().Do(ctx)
 		if err != nil {
@@ -51,17 +70,34 @@ func ShowCookies(p *Publisher) chromedp.Action {
 	})
 }
 
+func (p *Publisher) setAuthCookies() {
+	p.cookies = append(p.cookies, &network.Cookie{
+		Name:         "user_token",
+		Value:        "fakeAuthorizationToken",
+		Domain:       "localhost",
+		Path:         "/",
+	})
+	p.cookies = append(p.cookies, &network.Cookie{
+		Name:         "id_token",
+		Value:        "fakeIDToken",
+		Domain:       "localhost",
+		Path:         "/",
+	})
+	p.cookies = append(p.cookies, &network.Cookie{
+		Name:         "refresh_token",
+		Value:        "fakeRefreshToken",
+		Domain:       "localhost",
+		Path:         "/",
+	})
+}
+
 func (p *Publisher) isSignedIn() bool {
 	for _, cookie := range p.cookies {
-		if cookie.Name == "Authorization" {
+		if cookie.Name == "user_token" {
 			return true
 		}
 	}
 	return false
-}
-
-func (p *Publisher) signOut() {
-	p.cookies = nil
 }
 
 func (p *Publisher) resetUser(fakeApi *FakeApi, ctx context.Context) {
