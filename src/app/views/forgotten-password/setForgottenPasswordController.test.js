@@ -17,7 +17,7 @@ describe("When the user first lands on the page", () => {
         expect(component.find("h1").text()).toBe("Create a new password");
     });
     it("Password field should be empty and not in an errored state", () => {
-        expect(component.find("#password-input").prop("value")).toBe("");
+        expect(component.find("input#password-input").prop("value")).toBe("");
         expect(
             component
                 .find(".form__input")
@@ -26,10 +26,10 @@ describe("When the user first lands on the page", () => {
         ).toBe(false);
     });
     it("Validation rules should all be in a state that is unchecked", () => {
-        expect(component.find("#minimum-character-limit").props()["checked"]).toBe(false);
-        expect(component.find("#uppercase-character-validation").props()["checked"]).toBe(false);
-        expect(component.find("#lowercase-character-validation").props()["checked"]).toBe(false);
-        expect(component.find("#minimum-number-limit").props()["checked"]).toBe(false);
+        expect(component.find("input#minimum-character-limit").props()["checked"]).toBe(false);
+        expect(component.find("input#uppercase-character-validation").props()["checked"]).toBe(false);
+        expect(component.find("input#lowercase-character-validation").props()["checked"]).toBe(false);
+        expect(component.find("input#minimum-number-limit").props()["checked"]).toBe(false);
     });
 });
 
