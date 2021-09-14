@@ -1,18 +1,17 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {push} from "react-router-redux";
 import PropTypes from "prop-types";
 
 import LoginForm from "./SignInForm";
-import Modal from "../../components/Modal";
-import ChangePasswordController from "../../components/change-password/ChangePasswordController";
 import notifications from "../../utilities/notifications";
 
-import http from "../../utilities/http";
-import { errCodes } from "../../utilities/errorCodes";
+import {errCodes} from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
+import {FirstTimeSignInPasswordReset} from "../forgotten-password/firstTimeSignInPasswordReset";
+import SetForgottenPasswordConfirmed from "../forgotten-password/setForgottenPasswordConfirmed";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -21,30 +20,33 @@ const propTypes = {
     location: PropTypes.object,
     enableNewSignIn: PropTypes.bool
 };
+const status = {
+    WAITING_USER_INITIAL_CREDS: "waiting users initial creds",
+    SUBMITTING_SIGN_IN: "submitting sign in",
+    SUBMITTING_PERMISSIONS: "submitting permissions",
+    SUBMITTED_PERMISSIONS: "submitted permissions",
+    WAITING_USER_NEW_PASSWORD: "waiting user new password",
+    SUBMITTING_PASSWORD_CHANGE: "submitting password change",
+    SUBMITTED_PASSWORD_CHANGE: "submitted password change"
+};
+
 
 export class LoginController extends Component {
+
+    validationErrors = {};
+    emailErrorMsg = "";
+    passwordErrorMsg = "";
+
     constructor(props) {
         super(props);
-
         this.state = {
-            validationErrors: {},
-            email: {
-                value: "",
-                errorMsg: ""
-            },
-            password: {
-                value: "",
-                errorMsg: "",
-                type: "password"
-            },
+            errorsPresent: false,
+            passwordValue: "",
+            emailValue: "",
+            passwordType: "",
+            status: status.WAITING_USER_INITIAL_CREDS,
             requestPasswordChange: false,
-            isSubmitting: false
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
-        this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
     componentWillMount() {
@@ -53,25 +55,34 @@ export class LoginController extends Component {
         }
     }
 
-    requestLogin(credentials) {
+    requestSignIn = (credentials) => {
         user.signIn(credentials)
-            .then(() => {
-                this.handleLogin();
+            .then((body) => {
+                if (body) {
+                    this.setState({
+                        errorsPresent: false,
+                        status: status.SUBMITTED_PERMISSIONS
+                    }, this.setPermissions)
+                } else {
+                    // TODO if first time sign in then set requestPasswordChange
+                    console.log("TODO Change password")
+                }
+
             })
             .catch(error => {
-                let stateToSet = {};
                 if (error) {
-                    stateToSet = this.handleLoginError(error, stateToSet);
+                    // TODO refactor stateToSet
+                    this.handleLoginError(error);
                 }
 
                 this.setState({
-                    ...stateToSet,
-                    isSubmitting: false
+                    errorsPresent: error != null,
+                    status: status.WAITING_USER_INITIAL_CREDS
                 });
             });
     }
 
-    handleLoginError(error, stateToSet) {
+    handleLoginError = (error) => {
         const notification = {
             type: "warning",
             isDismissable: true,
@@ -80,92 +91,84 @@ export class LoginController extends Component {
 
         if (error.status != null) {
             if (error.status >= 400 && error.status < 500) {
-                let errorContents = { errorsForBody: [], emailMessage: "", passwordMessage: "" };
-                let validationErrors = {
-                    heading: "Fix the following: "
-                };
-
+                let errorsForBody = [];
                 if (error.body != null && error.body.errors != null) {
                     error.body.errors.forEach(anError => {
-                        errorContents = this.showValidationError(anError, errorContents, notification);
+                        this.addValidationError(anError, errorsForBody, notification);
                     });
                 } else {
                     this.notifyUnexpectedError(notification);
                 }
 
-                validationErrors.body = errorContents.errorsForBody;
-                stateToSet = {
-                    ...this.state,
-                    validationErrors
+                this.validationErrors = {
+                    heading: "Fix the following: ",
+                    body: errorsForBody
                 };
-                stateToSet.email.errorMsg = errorContents.emailMessage;
-                stateToSet.password.errorMsg = errorContents.passwordMessage;
-                // Temporary code until login work is connected to dp-identity-api
-                if (error.status === 417) {
-                    stateToSet.requestPasswordChange = true;
-                }
-                // End of temporary code
             } else {
                 this.notifyUnexpectedError(notification);
             }
         } else {
             this.notifyUnexpectedError(notification);
         }
-
-        return stateToSet;
     }
 
-    showValidationError(anError, errorContents, notification) {
+    addValidationError = (anError, errorsForBody, notification) => {
         switch (anError.code) {
             case "InvalidEmail":
-                errorContents.errorsForBody.push(
+                errorsForBody.push(
                     <p key="error-invalid-email">
                         <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                             Enter a valid email address
                         </a>
                     </p>
                 );
-                errorContents.emailMessage = "Enter a valid email address";
+                this.emailErrorMsg = "Enter a valid email address";
                 break;
             case "InvalidPassword":
-                errorContents.errorsForBody.push(
+                errorsForBody.push(
                     <p key="error-invalid-password">
-                        <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
+                        <a href="javascript:document.getElementById('password').focus()"
+                           className="colour--night-shadz">
                             Enter a password
                         </a>
                     </p>
                 );
-                errorContents.passwordMessage = "Enter a password";
+                this.passwordErrorMsg = "Enter a password";
                 break;
             case "NotAuthorised":
-                errorContents.errorsForBody.push(<p key="error-not-authorised">Email address or password are incorrect</p>);
+                errorsForBody.push(<p key="error-not-authorised">Email address or password are
+                    incorrect</p>);
                 break;
             case "TooManyFailedAttempts":
-                errorContents.errorsForBody.push(
-                    <p key="error-too-many-attempts">You've tried to sign in to your account too many times. Please try again later.</p>
+                errorsForBody.push(
+                    <p key="error-too-many-attempts">You've tried to sign in to your account too many times. Please try
+                        again later.</p>
                 );
                 break;
             default:
                 // Code undefined or different to expected range of errors
                 this.notifyUnexpectedError(notification);
         }
-        return errorContents;
     }
 
-    notifyUnexpectedError(notification) {
+    notifyUnexpectedError = (notification) => {
         console.error(errCodes.LOGIN_UNEXPECTED_ERR);
         notification.message = errCodes.LOGIN_UNEXPECTED_ERR;
         notifications.add(notification);
     }
 
-    handleLogin() {
+    setPermissions = () => {
         user.getPermissions(this.state.email.value)
             .then(userType => {
-                user.setUserState(userType);
-                redirectToMainScreen(this.props.location.query.redirect);
+                this.setState({
+                    status: status.SUBMITTED_PERMISSIONS
+                }, () => {
+                    user.setUserState(userType);
+                    redirectToMainScreen(this.props.location.query.redirect);
+                })
             })
             .catch(error => {
-                this.setState({ isSubmitting: false });
+                this.setState({status: status.WAITING_USER_INITIAL_CREDS});
                 notifications.add({
                     type: "warning",
                     message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
@@ -177,81 +180,117 @@ export class LoginController extends Component {
             });
     }
 
-    handleSubmit(event) {
+    clearErrors = () => {
+        this.validationErrors = {};
+        this.emailErrorMsg = "";
+        this.passwordErrorMsg = "";
+    }
+
+    handleSubmit = (event) => {
         event.preventDefault();
 
         const credentials = {
-            email: this.state.email.value,
-            password: this.state.password.value
+            email: this.state.passwordValue,
+            password: this.state.emailValue
         };
-
-        this.setState({ isSubmitting: true });
-
-        this.requestLogin(credentials);
+        this.clearErrors();
+        this.setState({status: status.SUBMITTING_SIGN_IN}, () => {
+            this.requestSignIn(credentials)
+        });
     }
 
-    handleInputChange(event) {
-        const id = event.target.id;
+    handleEmailInputChanged = (event) => {
         const value = event.target.value;
-        const checked = event.target.checked;
-
-        switch (id) {
-            case "email": {
-                this.setState({
-                    email: {
-                        value: value,
-                        errorMsg: ""
-                    }
-                });
-                break;
-            }
-            case "password": {
-                this.setState(prevState => ({
-                    password: {
-                        ...prevState.password,
-                        value: value,
-                        errorMsg: ""
-                    }
-                }));
-                break;
-            }
-            case "toggle-password": {
-                this.setState(prevState => ({
-                    password: {
-                        ...prevState.password,
-                        type: checked && this.props.enableNewSignIn ? "text" : "password"
-                    }
-                }));
-                break;
-            }
-            default: {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000
-                };
-                console.error(errCodes.UNEXPECTED_ERR);
-                notification.message = errCodes.UNEXPECTED_ERR;
-                notifications.add(notification);
-            }
-        }
+        this.emailErrorMsg = ""
+        this.setState({
+            emailValue: value
+        });
     }
 
-    handlePasswordChangeSuccess(newPassword) {
+    handlePasswordInputChanged = (event) => {
+        const value = event.target.value;
+        this.passwordErrorMsg = ""
+        this.setState({
+            passwordValue: value
+        });
+    }
+    toggleShowHidePassword = (event) => {
+        const checked = event.target.checked;
+        this.setState({
+            passwordType: checked ? "text" : "password"
+        });
+    }
+
+    handlePasswordChangeSuccess = (newPassword) => {
         const credentials = {
             email: this.state.email.value,
             password: newPassword
         };
 
-        this.requestLogin(credentials);
+        this.requestSignIn(credentials);
     }
 
-    handlePasswordChangeCancel(event) {
+    handlePasswordChangeCancel = (event) => {
         event.preventDefault();
 
         this.setState({
             requestPasswordChange: false
         });
+    }
+
+    handlePasswordResetError = (error) => {
+        const notification = {
+            type: "warning",
+            isDismissable: true,
+            autoDismiss: 15000
+        };
+        const outputGenericError = () => {
+            console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
+            log.event(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR, log.error(error));
+            notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+        };
+
+        if (error != null && error.status != null) {
+            if (error.status === 400) {
+                // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
+                console.error("Unable to validate the type, UID, password, or verification_token in the request");
+                log.event("Unable to validate the type, UID, password, or verification_token in the request", log.error(error));
+                notification.message = errCodes.RESET_PASSWORD_VALIDATION_ERR;
+            } else if (error.status === 500) {
+                console.error("Invalid request body");
+                log.event("Invalid request body", log.error(error));
+                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+            } else if (error.status === 501) {
+                console.error("Requested unimplemented password change type");
+                log.event("Requested unimplemented password change type", log.error(error));
+                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+            } else {
+                outputGenericError();
+            }
+        } else {
+            outputGenericError();
+        }
+        notifications.add(notification);
+    }
+
+    requestPasswordChange = () => {
+        const body = {
+            type: "NewPasswordRequired",
+            email: this.state.email.value,
+            password: this.state.password.value
+        };
+        user.setForgottenPassword(body)
+            .then(() => {
+                this.setState({
+                    status: status.SUBMITTED
+                });
+            })
+            .catch(error => {
+                this.handlePasswordResetError(error);
+                this.setState({
+                    status: status.WAITING_USER_INPUT
+                });
+            });
     }
 
     render() {
@@ -260,15 +299,15 @@ export class LoginController extends Component {
                 id: "email",
                 label: "Email",
                 type: "email",
-                onChange: this.handleInputChange,
-                error: this.state.email.errorMsg
+                onChange: this.handleEmailInputChanged,
+                error: this.emailErrorMsg
             },
             {
                 id: "password",
                 label: "Password",
                 type: this.state.password.type,
-                onChange: this.handleInputChange,
-                error: this.state.password.errorMsg,
+                onChange: this.handlePasswordInputChanged,
+                error: this.passwordErrorMsg,
                 disableShowPasswordText: this.props.enableNewSignIn
             },
             {
@@ -277,33 +316,24 @@ export class LoginController extends Component {
                 type: "checkbox",
                 reverseLabelOrder: true,
                 inline: true,
-                onChange: this.handleInputChange
+                onChange: this.toggleShowHidePassword
             }
         ];
-
-        return (
-            <div>
+        if (this.state.requestPasswordChange) {
+            return (<FirstTimeSignInPasswordReset email={this.state.emailValue}
+                                                  requestPasswordChange={this.requestPasswordChange}
+                                                  changeConformation={<SetForgottenPasswordConfirmed/>}
+                                                  status={this.state.status}/>)
+        } else {
+            return (
                 <LoginForm
                     inputs={inputs}
-                    isSubmitting={this.state.isSubmitting}
+                    isSubmitting={this.status === status.SUBMITTING_SIGN_IN || this.status === status.SUBMITTING_PERMISSIONS}
                     onSubmit={this.handleSubmit}
                     validationErrors={this.state.validationErrors}
                 />
-
-                {this.state.requestPasswordChange ? (
-                    <Modal sizeClass={"grid__col-3"}>
-                        <ChangePasswordController
-                            handleCancel={this.handlePasswordChangeCancel}
-                            handleSuccess={this.handlePasswordChangeSuccess}
-                            currentPassword={this.state.password.value}
-                            email={this.state.email.value}
-                        />
-                    </Modal>
-                ) : (
-                    ""
-                )}
-            </div>
-        );
+            )
+        }
     }
 }
 
@@ -313,7 +343,6 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        enableNewSignIn: state.state.config.enableNewSignIn
     };
 }
 
