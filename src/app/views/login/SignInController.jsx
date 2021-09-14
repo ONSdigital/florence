@@ -36,6 +36,7 @@ export class LoginController extends Component {
     validationErrors = {};
     emailErrorMsg = "";
     passwordErrorMsg = "";
+    session="";
 
     constructor(props) {
         super(props);
@@ -43,7 +44,7 @@ export class LoginController extends Component {
             errorsPresent: false,
             passwordValue: "",
             emailValue: "",
-            passwordType: "",
+            passwordType: "password",
             status: status.WAITING_USER_INITIAL_CREDS,
             requestPasswordChange: false,
         };
@@ -57,15 +58,25 @@ export class LoginController extends Component {
 
     requestSignIn = (credentials) => {
         user.signIn(credentials)
-            .then((body) => {
-                if (body) {
+            .then((response) => {
+                //202
+                let newPasswordRequired = false;
+                // We only care about this one value in the whole response, no point parsing it all
+                if(response.body != null && response.body.new_password_required !== null){
+                    newPasswordRequired = JSON.parse(response.body["new_password_required"].toLowerCase());
+                }
+                if (newPasswordRequired) {
+                    if(response.body != null && response.body.session !== null)
+                    this.session = response.body.session
+                    this.setState({
+                        requestPasswordChange: true
+                    })
+                } else {
+                    console.log("shouldn't have gotten into here")
                     this.setState({
                         errorsPresent: false,
                         status: status.SUBMITTED_PERMISSIONS
                     }, this.setPermissions)
-                } else {
-                    // TODO if first time sign in then set requestPasswordChange
-                    console.log("TODO Change password")
                 }
 
             })
@@ -158,7 +169,7 @@ export class LoginController extends Component {
     }
 
     setPermissions = () => {
-        user.getPermissions(this.state.email.value)
+        user.getPermissions(this.state.emailValue)
             .then(userType => {
                 this.setState({
                     status: status.SUBMITTED_PERMISSIONS
@@ -190,8 +201,8 @@ export class LoginController extends Component {
         event.preventDefault();
 
         const credentials = {
-            email: this.state.passwordValue,
-            password: this.state.emailValue
+            email: this.state.emailValue,
+            password: this.state.passwordValue
         };
         this.clearErrors();
         this.setState({status: status.SUBMITTING_SIGN_IN}, () => {
@@ -223,7 +234,7 @@ export class LoginController extends Component {
 
     handlePasswordChangeSuccess = (newPassword) => {
         const credentials = {
-            email: this.state.email.value,
+            email: this.state.emailValue,
             password: newPassword
         };
 
@@ -276,19 +287,20 @@ export class LoginController extends Component {
     requestPasswordChange = () => {
         const body = {
             type: "NewPasswordRequired",
-            email: this.state.email.value,
-            password: this.state.password.value
+            email: this.state.emailValue,
+            password: this.state.passwordValue,
+            session: this.session
         };
         user.setForgottenPassword(body)
             .then(() => {
                 this.setState({
-                    status: status.SUBMITTED
+                    status: status.SUBMITTED_PASSWORD_CHANGE
                 });
             })
             .catch(error => {
                 this.handlePasswordResetError(error);
                 this.setState({
-                    status: status.WAITING_USER_INPUT
+                    status: status.WAITING_USER_NEW_PASSWORD
                 });
             });
     }
@@ -305,7 +317,7 @@ export class LoginController extends Component {
             {
                 id: "password",
                 label: "Password",
-                type: this.state.password.type,
+                type: this.state.passwordType,
                 onChange: this.handlePasswordInputChanged,
                 error: this.passwordErrorMsg,
                 disableShowPasswordText: this.props.enableNewSignIn
@@ -328,9 +340,9 @@ export class LoginController extends Component {
             return (
                 <LoginForm
                     inputs={inputs}
-                    isSubmitting={this.status === status.SUBMITTING_SIGN_IN || this.status === status.SUBMITTING_PERMISSIONS}
+                    isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
                     onSubmit={this.handleSubmit}
-                    validationErrors={this.state.validationErrors}
+                    validationErrors={this.validationErrors}
                 />
             )
         }
@@ -343,6 +355,7 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
         rootPath: state.state.rootPath,
+        enableNewSignIn: state.state.config.enableNewSignIn
     };
 }
 

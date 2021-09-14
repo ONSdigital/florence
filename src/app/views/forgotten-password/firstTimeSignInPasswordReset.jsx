@@ -16,8 +16,8 @@ const propTypes = {
 
 const status = {
     WAITING_USER_NEW_PASSWORD: "waiting user new password",
-    SUBMITTING_PASSWORD_CHANGE_PASSWORD_CHANGE: "submitting password change",
-    SUBMITTED_PASSWORD_CHANGE_PASSWORD_CHANGE: "submitted password change",
+    SUBMITTING_PASSWORD_CHANGE: "submitting password change",
+    SUBMITTED_PASSWORD_CHANGE: "submitted password change",
 };
 
 export class FirstTimeSignInPasswordReset extends Component {
@@ -67,7 +67,7 @@ export class FirstTimeSignInPasswordReset extends Component {
             heading: "Create a new password",
             buttonText: "Confirm password",
             showInputError: this.state.showInputError,
-            isSUBMITTING_PASSWORD_CHANGE: this.status === status.SUBMITTING_PASSWORD_CHANGE
+            isSubmitting: this.status === status.SUBMITTING_PASSWORD_CHANGE
         };
         if (this.state.status === status.SUBMITTED_PASSWORD_CHANGE) {
             return this.props.changeConformation;

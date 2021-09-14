@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 
 const propTypes = {
-    isSubmitting: PropTypes.bool,
+    IS_SUBMITTING_PASSWORD_CHANGE: PropTypes.bool,
     onSubmit: PropTypes.func,
     validityCheck: PropTypes.func,
     heading: PropTypes.string,
