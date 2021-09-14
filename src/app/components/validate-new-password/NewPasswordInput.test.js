@@ -12,6 +12,9 @@ const props = {
 };
 describe("When the validate new password component is added", () => {
     const component = mount(<NewPasswordInput {...props} />);
+    it("have an initial state with no password typed yet", () => {
+        expect(component.state().password).toBe("");
+    });
     it("should have a character limit validation checkbox which is unchecked", () => {
         const minCharCheckbox = component.find("#minimum-character-limit");
         expect(minCharCheckbox.exists()).toBe(true);
@@ -161,6 +164,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
     });
     it("Should update the validation rule states", () => {
         // Check that the state has been updated
+        expect(component.state().password).toBe("aB1cD2eF3gH4iJ");
         expect(component.state().minimumNumberLimitPassed).toBe(true);
         expect(component.state().uppercaseCharacterValidationPassed).toBe(true);
         expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
