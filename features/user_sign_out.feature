@@ -1,4 +1,4 @@
-Feature: User sign in
+Feature: User sign out
 
   As a Viewer, Publisher or Admin
 

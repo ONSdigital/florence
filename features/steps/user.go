@@ -36,7 +36,7 @@ func GenerateCookie(name, value, domain string) *http.Cookie {
 	}
 }
 
-func SetCookies(cookies ...*http.Cookie) chromedp.Action {
+func SetCookies(cookies []*http.Cookie) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		expr := cdp.TimeSinceEpoch(time.Now().Add(180 * 24 * time.Hour))
 		for _, cookie := range cookies {

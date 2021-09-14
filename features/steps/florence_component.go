@@ -28,7 +28,6 @@ type Chrome struct {
 
 type Component struct {
 	componenttest.ErrorFeature
-	ApiFeature   *componenttest.APIFeature
 	svc          *service.Service
 	errorChan    chan error
 	HTTPServer   *http.Server

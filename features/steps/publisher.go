@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
+	"net/http"
 )
 
 type Publisher struct {
@@ -17,16 +18,19 @@ func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 }
 
 func (p *Publisher) signIn(username string) error {
-	cookieUser := GenerateCookie("user_token", "fakeAuthorizationToken", "")
-	cookieId := GenerateCookie("id_token", "fakeIDToken", "")
-	cookieRefresh := GenerateCookie("refresh_token","fakeRefreshToken", "")
+	var cookies []*http.Cookie
 
-	// Here we are setting the fake data that would be returned from the identity-api
-	// with the permissions requires to create a new collection
-	p.fakeApi.setJsonResponseForPost("/tokens", "faketoken", 200)
+	if username == "not.a.publisher@ons.gov.uk" {
+		p.fakeApi.setJsonResponseForPost("/tokens", "", 401)
+	} else {
+		p.fakeApi.setJsonResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
+		cookies = append(cookies, GenerateCookie("user_token", "fakeAuthorizationToken", ""))
+		cookies = append(cookies, GenerateCookie("id_token", "fakeIDToken", ""))
+		cookies = append(cookies, GenerateCookie("refresh_token","fakeRefreshToken", ""))
+	}
 
 	err := chromedp.Run(p.chromeCtx,
-		SetCookies(cookieUser, cookieId, cookieRefresh),
+		SetCookies(cookies),
 		chromedp.Navigate("http://localhost:8080/florence/login"),
 		chromedp.WaitVisible(`#app`),
 		chromedp.SendKeys("#email", username),

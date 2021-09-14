@@ -54,13 +54,13 @@ func (c *Component) iHaveAuthTokens() error {
 }
 
 func (c *Component) iAmNotSignedIn() error {
-	assert.False(c.ApiFeature, c.user.isSignedIn())
-	return nil
+	assert.False(c, c.user.isSignedIn())
+	return c.StepError()
 }
 
 func (c *Component) iAmSignedIn() error {
-	assert.True(c.ApiFeature, c.user.isSignedIn())
-	return nil
+	assert.True(c, c.user.isSignedIn())
+	return c.StepError()
 }
 
 func (c *Component) iSignOut() error {

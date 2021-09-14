@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
+	"net/http"
 )
 
 type LegacyPublisher struct {
@@ -18,14 +19,20 @@ func NewLegacyPublisher(api *FakeApi, ctx context.Context) *LegacyPublisher {
 }
 
 func (p *LegacyPublisher) signIn(username string) error {
-	cookieFlorence := GenerateCookie("X-Florence-Token", "fakeFlorenceToken", "")
-	// Here we are setting the fake data that would be returned from the identity-api
-	// with the permissions requires to create a new collection
-	p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(200).Body([]byte(`faketoken`))
-	p.fakeApi.setJsonResponseForGet("/permission", fmt.Sprintf(`{"email":"%s","admin":true,"editor":true}`, username))
+	var cookies []*http.Cookie
+
+	if username == "not.a.publisher@ons.gov.uk" {
+		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(401).Body([]byte(``))
+	} else {
+		cookies = append(cookies, GenerateCookie("X-Florence-Token", "fakeFlorenceToken", ""))
+		// Here we are setting the fake data that would be returned from the identity-api
+		// with the permissions requires to create a new collection
+		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(200).Body([]byte(`faketoken`))
+		p.fakeApi.setJsonResponseForGet("/permission", fmt.Sprintf(`{"email":"%s","admin":true,"editor":true}`, username))
+	}
 
 	err := chromedp.Run(p.chromeCtx,
-		SetCookies(cookieFlorence),
+		SetCookies(cookies),
 		chromedp.Navigate("http://localhost:8080/florence/login"),
 		chromedp.WaitVisible(`#app`),
 		chromedp.SendKeys("#email", username),
@@ -53,13 +60,12 @@ func (p *LegacyPublisher) assignUserCookies() chromedp.Action {
 }
 
 func (p *LegacyPublisher) isSignedIn() bool {
-	//for _, cookie := range p.cookies {
-	//	if cookie.Name == "X-Florence-Token" {
-	//		return true
-	//	}
-	//}
-	//return false
-	return true
+	for _, cookie := range p.cookies {
+		if cookie.Name == "X-Florence-Token" {
+			return true
+		}
+	}
+	return false
 }
 
 func (p *LegacyPublisher) signOut() error {
