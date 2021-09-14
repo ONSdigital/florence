@@ -1,6 +1,7 @@
 package steps
 
 import (
+	"fmt"
 	"github.com/cucumber/godog"
 	"github.com/stretchr/testify/assert"
 )
@@ -75,6 +76,7 @@ func (c *Component) legacyIHaveAuthTokens() error {
 }
 
 func (c *Component) legacyIAmNotSignedIn() error {
+	fmt.Println(c.user.isSignedIn())
 	assert.False(c.ApiFeature, c.user.isSignedIn())
 	return nil
 }

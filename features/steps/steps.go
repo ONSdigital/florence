@@ -59,7 +59,7 @@ func (c *Component) iAmNotSignedIn() error {
 }
 
 func (c *Component) iAmSignedIn() error {
-	assert.Equal(c.ApiFeature, true, c.user.isSignedIn())
+	assert.True(c.ApiFeature, c.user.isSignedIn())
 	return nil
 }
 

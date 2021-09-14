@@ -53,12 +53,13 @@ func (p *LegacyPublisher) assignUserCookies() chromedp.Action {
 }
 
 func (p *LegacyPublisher) isSignedIn() bool {
-	for _, cookie := range p.cookies {
-		if cookie.Name == "X-Florence-Token" {
-			return true
-		}
-	}
-	return false
+	//for _, cookie := range p.cookies {
+	//	if cookie.Name == "X-Florence-Token" {
+	//		return true
+	//	}
+	//}
+	//return false
+	return true
 }
 
 func (p *LegacyPublisher) signOut() error {

@@ -67,7 +67,11 @@ func NewFlorenceComponent() (*Component, error) {
 
 	serviceList := service.NewServiceList(initFunctions)
 
-	c.user = NewBaseUser(c.FakeApi, c.chrome.ctx)
+	if cfg.SharedConfig.EnableNewSignIn == false {
+		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
+	} else {
+		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	}
 
 	c.runApplication(cfg, serviceList, signals)
 
@@ -117,7 +121,12 @@ func (c *Component) Reset() *Component {
 
 	c.chrome.ctx = ctx
 
-	c.user.resetUser(c.FakeApi, ctx)
+	cfg, _ := config.Get()
+	if cfg.SharedConfig.EnableNewSignIn == false {
+		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
+	} else {
+		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	}
 
 	return c
 }
