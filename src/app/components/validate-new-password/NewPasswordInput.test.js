@@ -49,7 +49,7 @@ describe("When the validate new password component is added", () => {
 });
 
 describe("When a lowercase character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("input#minimum-number-limit");
     const upperCharCheckbox = component.find("input#uppercase-character-validation");
     const lowerCharCheckbox = component.find("input#lowercase-character-validation");
@@ -83,7 +83,7 @@ describe("When a lowercase character is entered into the text input field", () =
     });
 });
 describe("When an uppercase character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("input#minimum-number-limit");
     const lowerCharCheckbox = component.find("input#lowercase-character-validation");
     const minCharCheckbox = component.find("input#minimum-character-limit");
@@ -116,7 +116,7 @@ describe("When an uppercase character is entered into the text input field", () 
     });
 });
 describe("When a numerical character is entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("input#minimum-number-limit");
     const upperCharCheckbox = component.find("input#uppercase-character-validation");
     const lowerCharCheckbox = component.find("input#lowercase-character-validation");
@@ -151,7 +151,7 @@ describe("When a numerical character is entered into the text input field", () =
 });
 
 describe("When fourteen numerical and upper as well as lower characters are entered into the text input field", () => {
-    const component = mount(<ValidateNewPassword {...props} />);
+    const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("input#minimum-number-limit");
     const upperCharCheckbox = component.find("input#uppercase-character-validation");
     const lowerCharCheckbox = component.find("input#lowercase-character-validation");
