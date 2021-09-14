@@ -10,12 +10,11 @@ const propTypes = {
 };
 
 export class NewPasswordInput extends Component {
-    passwordValue = "";
-
     constructor(props) {
         super(props);
         this.state = {
             type: "password",
+            password: "",
             minimumCharacterLimitPassed: false,
             uppercaseCharacterValidationPassed: false,
             lowercaseCharacterValidationPassed: false,
@@ -41,30 +40,33 @@ export class NewPasswordInput extends Component {
                 ) {
                     passwordIsValid = false;
                 }
-                this.props.updateValidity(passwordIsValid, this.passwordValue);
+                this.props.updateValidity(passwordIsValid, this.state.password);
             }
         );
     }
 
     checkStringLength() {
         const charMinLength = 13;
-        return this.passwordValue.length > charMinLength;
+        return this.state.password.length > charMinLength;
     }
 
     checkUpperCase() {
-        return /^.*[A-Z].*$/.test(this.passwordValue);
+        return /^.*[A-Z].*$/.test(this.state.password);
     }
 
     checkLowerCase() {
-        return /^.*[a-z].*$/.test(this.passwordValue);
+        return /^.*[a-z].*$/.test(this.state.password);
     }
 
     checkNumberPresence() {
-        return /^.*[0-9].*$/.test(this.passwordValue);
+        return /^.*[0-9].*$/.test(this.state.password);
     }
 
     handleInputChange = event => {
-        this.passwordValue = event.target.value;
+        const passwordValue = event.target.value
+        this.setState(() => ({
+            password: passwordValue
+        }))
         this.checkPasswordValidation();
     };
 
@@ -95,7 +97,7 @@ export class NewPasswordInput extends Component {
                     label="Password"
                     onChange={this.handleInputChange}
                     disableShowPasswordText={true}
-                    value={this.passwordValue}
+                    value={this.state.password}
                     displayInputAsErrored={this.props.inputErrored}
                 />
                 <Input
