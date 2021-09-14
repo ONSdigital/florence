@@ -38,6 +38,10 @@ export default class user {
         return http.post("/tokens", body, true, true, true);
     }
 
+    static setForgottenPassword(body) {
+        return http.put("/users/self/password", body, true, true);
+    }
+
     static expireSession() {
         return http.delete("/tokens/self", true, true);
     }

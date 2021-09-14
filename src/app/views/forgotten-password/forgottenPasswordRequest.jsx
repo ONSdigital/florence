@@ -1,7 +1,8 @@
 import React from "react";
-import Input from "../../components/Input";
 import PropTypes from "prop-types";
 import Panel from "../../components/panel/Panel";
+import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
+import Input from "../../components/Input";
 
 const propTypes = {
     validationErrors: PropTypes.shape({
@@ -37,10 +38,7 @@ const ForgottenPasswordRequest = props => {
                 )}
                 <form className="form" onSubmit={props.onSubmit}>
                     <Input {...props.emailInput} allowAutoComplete={true} />
-                    <button type="submit" className="btn btn--primary margin-top--1">
-                        Send the link
-                    </button>
-                    {props.waitingResponse && <div className="form__loader loader loader--dark margin-left--1" />}
+                    <ButtonWithSpinner isSubmitting={props.waitingResponse} buttonText={"Send the link"} />
                 </form>
             </div>
         </div>

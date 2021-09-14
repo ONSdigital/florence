@@ -16,7 +16,7 @@ describe("When the user first lands on the forgotten-password url", () => {
         expect(component.find(".error-msg").length).toBe(0);
     });
     it("Hide the spinning loading icon as nothing has been submitted yet", () => {
-        expect(component.find(".form__loader").length).toBe(0);
+        expect(component.find(".loader").length).toBe(0);
     });
 });
 
@@ -38,7 +38,7 @@ describe("When the user submits their email for a password request whilst waitin
         expect(component.find("h1").text()).toBe("Forgotten password");
     });
     it("Show the spinning loading icon", () => {
-        expect(component.find(".form__loader").length).toBe(1);
+        expect(component.find(".loader").length).toBe(1);
     });
 });
 
@@ -69,7 +69,7 @@ describe("When the user submits their email for a password request but the serve
         expect(component.find("h1").text()).toBe("Forgotten password");
     });
     it("Stop showing the loading icon", () => {
-        expect(component.find(".form__loader").length).toBe(0);
+        expect(component.find(".loader").length).toBe(0);
     });
     it("Show the error", () => {
         expect(component.find(".panel__error").length).toBe(1);
