@@ -63,11 +63,13 @@ export class NewPasswordInput extends Component {
     }
 
     handleInputChange = event => {
-        const passwordValue = event.target.value
-        this.setState(() => ({
-            password: passwordValue
-        }))
-        this.checkPasswordValidation();
+        const passwordValue = event.target.value;
+        this.setState(
+            () => ({
+                password: passwordValue
+            }),
+            this.checkPasswordValidation
+        );
     };
 
     togglePasswordVisibility = event => {
