@@ -52,7 +52,7 @@ import ConfirmUserDeleteController from "./app/views/users/confirm-delete/Confir
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
-
+import NotFound from './app/components/notFound'
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -78,19 +78,11 @@ const userIsAdminOrEditor = connectedReduxRedirect({
     allowRedirectBack: false
 });
 
-const UnknownRoute = () => {
-    return (
-        <div className="grid grid--justify-center">
-            <h1>Sorry, this page couldn't be found</h1>
-        </div>
-    );
-};
-
 const Index = () => {
     return (
         <Provider store={store}>
             <Router history={history}>
-                <Route component={App}>
+                <App>
                     <Route component={Layout}>
                         <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
                         <Route path={`${rootPath}/collections`} component={userIsAuthenticated(CollectionsController)}>
@@ -198,9 +190,9 @@ const Index = () => {
                         <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                         <Route path={`${rootPath}/change-password`} component={config.enableNewSignIn ? ChangeFirstPasswordController : null} />
                         <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
-                        <Route path="*" component={UnknownRoute} />
+                        <Route path="*" component={NotFound} />
                     </Route>
-                </Route>
+                </App>
             </Router>
         </Provider>
     );
