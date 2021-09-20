@@ -1,15 +1,10 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import SetForgottenPasswordRequest from "./setForgottenPasswordRequest";
 import SetForgottenPasswordConfirmed from "./setForgottenPasswordConfirmed";
 import user from "../../utilities/api-clients/user";
 import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
-
-const propTypes = {
-    dispatch: PropTypes.func.isRequired
-};
 
 const status = {
     WAITING_USER_INPUT: "waiting for user input",
@@ -45,7 +40,7 @@ export class SetForgottenPasswordController extends Component {
         );
     };
 
-    requestPasswordChange() {
+    requestPasswordChange = () => {
         let verificationID = new URLSearchParams(location.search).get("vid");
         let userID = new URLSearchParams(location.search).get("uid");
         // UID is sent in Email field, for speed of first delivery it was decided UID is to be used instead of email.
@@ -69,9 +64,9 @@ export class SetForgottenPasswordController extends Component {
                     status: status.WAITING_USER_INPUT
                 });
             });
-    }
+    };
 
-    handlePasswordResetError(error) {
+    handlePasswordResetError = error => {
         const notification = {
             type: "warning",
             isDismissable: true,
@@ -104,7 +99,7 @@ export class SetForgottenPasswordController extends Component {
             outputGenericError();
         }
         notifications.add(notification);
-    }
+    };
 
     validityCheck = (isValid, password) => {
         // Only show input error if user had previously tried to submit password and it is still invalid
@@ -132,7 +127,5 @@ export class SetForgottenPasswordController extends Component {
         return <SetForgottenPasswordRequest {...setForgottenPasswordRequestProps} />;
     }
 }
-
-SetForgottenPasswordController.propTypes = propTypes;
 
 export default SetForgottenPasswordController;
