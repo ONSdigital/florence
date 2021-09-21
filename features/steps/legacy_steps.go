@@ -2,12 +2,17 @@ package steps
 
 import (
 	"github.com/cucumber/godog"
+	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
 
 // This steps actually signs in to Florence by entering a dummy username and password using the old auth processes
 func (c *Component) legacyISignInAs(role, username string) error {
-
+	if role == "viewer" || role == "admin" {
+		return godog.ErrUndefined
+	} else if role != "publisher" {
+		return errors.New("Unhandled user type supplied")
+	}
 	c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
 	err := c.user.signIn(username)
 	if err != nil {

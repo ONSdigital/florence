@@ -21,10 +21,10 @@ func NewLegacyPublisher(api *FakeApi, ctx context.Context) *LegacyPublisher {
 func (p *LegacyPublisher) signIn(username string) error {
 	var cookies []*http.Cookie
 
-	if username == "not.a.publisher@ons.gov.uk" {
+	if username == "not.a.user@ons.gov.uk" {
 		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(401).Body([]byte(``))
 	} else {
-		cookies = append(cookies, GenerateCookie("X-Florence-Token", "fakeFlorenceToken", ""))
+		cookies = append(cookies, GenerateCookie("X-Florence-Token", "fakeFlorenceToken", "", "/", true))
 		// Here we are setting the fake data that would be returned from the identity-api
 		// with the permissions requires to create a new collection
 		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(200).Body([]byte(`faketoken`))

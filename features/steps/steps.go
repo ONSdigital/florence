@@ -35,10 +35,15 @@ func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 
 // This steps actually signs in to Florence by entering a dummy username and password using the new auth processes
 func (c *Component) iSignInAs(role, username string) error {
-	if role != "publisher" {
+	if role == "admin" {
+		return godog.ErrPending
+	} else if role == "publisher" {
+		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	} else if role == "viewer" {
+		return godog.ErrPending
+	} else {
 		return errors.New("Unhandled user type supplied")
 	}
-	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
 	err := c.user.signIn(username)
 	if err != nil {
 		return err

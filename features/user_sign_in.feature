@@ -5,10 +5,26 @@ Feature: User sign in
   Background:
     Given I am not signed in
 
-  Scenario: A user signing in with valid credentials
+  Scenario: A Publisher signing in with valid credentials
     When I sign in as "publisher" user "a.publisher@ons.gov.uk"
     Then I am signed in
 
-  Scenario: A user signing in with invalid credentials
-    When I sign in as "publisher" user "not.a.publisher@ons.gov.uk"
+  Scenario: A Publisher signing in with invalid credentials
+    When I sign in as "publisher" user "not.a.user@ons.gov.uk"
+    Then I am not signed in
+
+  Scenario: A Admin signing in with valid credentials
+    When I sign in as "admin" user "a.admin@ons.gov.uk"
+    Then I am signed in
+
+  Scenario: A Admin signing in with invalid credentials
+    When I sign in as "admin" user "not.a.user@ons.gov.uk"
+    Then I am not signed in
+
+  Scenario: A Viewer signing in with valid credentials
+    When I sign in as "viewer" user "a.viewer@ons.gov.uk"
+    Then I am signed in
+
+  Scenario: A Viewer signing in with invalid credentials
+    When I sign in as "viewer" user "not.a.user@ons.gov.uk"
     Then I am not signed in

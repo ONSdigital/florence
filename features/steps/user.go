@@ -20,16 +20,16 @@ type User interface {
 	setAuthCookies()
 }
 
-func GenerateCookie(name, value, domain string) *http.Cookie {
+func GenerateCookie(name, value, domain, path string, httpOnly bool) *http.Cookie {
 	if domain == "" {
 		domain = "localhost"
 	}
 	return &http.Cookie{
 		Name:     name,
 		Value:    value,
-		Path:     "/",
+		Path:     path,
 		Domain:   domain,
-		HttpOnly: true,
+		HttpOnly: httpOnly,
 		Secure:   true,
 		MaxAge:   0,
 		SameSite: http.SameSiteStrictMode,

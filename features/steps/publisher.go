@@ -17,16 +17,22 @@ func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 	return &Publisher{fakeApi: api, chromeCtx: ctx}
 }
 
+func generateAuthCookies() []*http.Cookie {
+	return []*http.Cookie {
+		GenerateCookie("user_token", "fakeAuthorizationToken", "", "/", true),
+		GenerateCookie("id_token", "fakeIDToken", "", "/", false),
+		GenerateCookie("refresh_token","fakeRefreshToken", "", "/tokens/self", true),
+	}
+}
+
 func (p *Publisher) signIn(username string) error {
 	var cookies []*http.Cookie
 
-	if username == "not.a.publisher@ons.gov.uk" {
+	if username == "not.a.user@ons.gov.uk" {
 		p.fakeApi.setJsonResponseForPost("/tokens", "", 401)
 	} else {
 		p.fakeApi.setJsonResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
-		cookies = append(cookies, GenerateCookie("user_token", "fakeAuthorizationToken", ""))
-		cookies = append(cookies, GenerateCookie("id_token", "fakeIDToken", ""))
-		cookies = append(cookies, GenerateCookie("refresh_token","fakeRefreshToken", ""))
+		cookies = generateAuthCookies()
 	}
 
 	err := chromedp.Run(p.chromeCtx,
@@ -36,7 +42,7 @@ func (p *Publisher) signIn(username string) error {
 		chromedp.SendKeys("#email", username),
 		chromedp.SendKeys("#password", "anything"),
 		chromedp.Click(".form button"),
-		p.assignUserCookies(),
+		p.readResponseCookies(),
 	)
 
 	if err != nil {
@@ -49,11 +55,16 @@ func (p *Publisher) signIn(username string) error {
 func (p *Publisher) signOut() error {
 	p.fakeApi.setJsonResponseForDelete("/tokens", "", 200)
 
+	// Florence backend is currently not removing the auth cookies so will be returned in the response
+	// asa a result the sign out functionality will currently fail tests
+	cookies := generateAuthCookies()
+
 	err := chromedp.Run(p.chromeCtx,
+		SetCookies(cookies),
 		chromedp.Navigate("http://localhost:8080/florence"),
 		chromedp.WaitVisible(`#app`),
 		chromedp.Click(".global-nav__link:last-of-type"),
-		p.assignUserCookies(),
+		p.readResponseCookies(),
 	)
 
 	if err != nil {
@@ -63,7 +74,7 @@ func (p *Publisher) signOut() error {
 	return nil
 }
 
-func (p *Publisher) assignUserCookies() chromedp.Action {
+func (p *Publisher) readResponseCookies() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		cookies, err := network.GetAllCookies().Do(ctx)
 		if err != nil {
