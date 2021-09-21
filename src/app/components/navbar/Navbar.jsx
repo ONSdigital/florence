@@ -5,28 +5,34 @@ import url from "../../utilities/url";
 import cookies from "../../utilities/cookies";
 import auth from "../../utilities/auth";
 import user from "../../utilities/api-clients/user";
-import PreviewNav from "./preview-nav/PreviewNav";
+import PreviewNav from "./preview-nav";
 
-const Navbar = props => {
-    handleLogoutClick = () => {
+const Navbar = ({ user, rootPath, workingOn, config, location }) => {
+    const authenticated = auth.isAuthenticated(user) || false;
+    
+    const routeIsACollectionPage = path => {
+        return path.indexOf(`/collections`) >= 0;
+    };
+
+    const handleLogoutClick = () => {
         user.logOut();
     };
 
     const renderWorkingOnItem = () => {
-        const workingOn = props.workingOn || {};
+        const workingOn = workingOn || {};
         const showWorkingOn = workingOn.id;
         if (!showWorkingOn) {
             return;
         }
 
-        const path = props.location.pathname;
+        const path = location.pathname;
         if (routeIsACollectionPage(path)) {
             return (
                 // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
                 <li className="global-nav__item global-nav__item--working-on">
-                    <Link to={url.resolve(`/collections/${props.workingOn.id}`)} className="global-nav__link selected">
+                    <Link to={url.resolve(`/collections/${workingOn.id}`)} className="global-nav__link selected">
                         Working on:&nbsp;
-                        {props.workingOn.name || (
+                        {workingOn.name || (
                             <div className="margin-left--1 inline-block">
                                 <div className="loader loader--inline loader--small"></div>
                             </div>
@@ -37,22 +43,18 @@ const Navbar = props => {
         }
     };
 
-    const routeIsACollectionPage = path => {
-        return path.indexOf(`/collections`) >= 0;
-    };
 
     const renderNavItems = () => {
-        if (!auth.isAuthenticated(props.user)) {
+        if (!authenticated) {
             return (
                 <li className="global-nav__item">
-                    <Link to={`${props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
+                    <Link to={`${rootPath}/login`} activeClassName="selected" className="global-nav__link">
                         Sign in
                     </Link>
                 </li>
             );
         }
 
-        const rootPath = props.rootPath;
         return (
             <>
                 {renderWorkingOnItem()}
@@ -61,9 +63,9 @@ const Navbar = props => {
                         Collections
                     </Link>
                 </li>
-                {auth.isAdminOrEditor(props.user) && (
+                {auth.isAdminOrEditor(user) && (
                     <>
-                        {props.config.enableDatasetImport && (
+                        {config.enableDatasetImport && (
                             <li className="global-nav__item">
                                 <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
                                     Datasets
@@ -96,7 +98,7 @@ const Navbar = props => {
                     </>
                 )}
                 <li className="global-nav__item">
-                    <Link to={url.resolve("/login")} onClick={handleLogoutClick} className="global-nav__link">
+                    <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
                         Sign out
                     </Link>
                 </li>
@@ -104,17 +106,21 @@ const Navbar = props => {
         );
     };
 
-    const regex = new RegExp(`${props.rootPath}/collections/[\\w|-]*/preview`, "g");
-    const isViewingPreview = regex.test(props.location.pathname);
+    const regex = new RegExp(`${rootPath}/collections/[\\w|-]*/preview`, "g");
+    const isViewingPreview = true //regex.test(location.pathname);
+    console.log('location', location.pathname)
     return (
         <ul className="global-nav__list">
+            Preview Nav comes here
             {isViewingPreview && <PreviewNav />}
             {renderNavItems()}
         </ul>
     );
 };
 
-NavBar.propTypes = {
+export default Navbar;
+
+Navbar.propTypes = {
     config: PropTypes.shape({
         enableDatasetImport: PropTypes.bool
     }),
@@ -125,7 +131,4 @@ NavBar.propTypes = {
     }),
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
 };
-
-export default NavBar;

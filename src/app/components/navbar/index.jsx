@@ -1,18 +1,13 @@
 import { connect } from "react-redux";
 import Navbar from "./Navbar";
-import { updateSelectedPreviewPage } from "../config/actions";
 
-function mapStateToProps(state) {
-    const user = state.state.user;
-    const rootPath = state.state.rootPath;
-    const workingOn = state.state.global ? state.state.global.workingOn : null;
-
+const mapStateToProps = state => {
     return {
-        user,
-        rootPath,
-        workingOn,
+        user: state.state.user,
+        rootPath: state.state.rootPath,
+        workingOn: state.state.global ? state.state.global.workingOn : null,
         config: state.state.config
     };
-}
+};
 
-export default connect(mapStateToProps)(NavBar);
+export default connect(mapStateToProps)(Navbar);
