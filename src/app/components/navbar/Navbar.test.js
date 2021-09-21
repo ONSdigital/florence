@@ -1,9 +1,9 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { Link } from "react-router";
-import { NavBar } from "./NavBar";
+import Navbar from "./Navbar"
 
-jest.mock("../utilities/logging/log", () => {
+jest.mock("../../utilities/logging/log", () => {
     return {
         event: function() {
             // do nothing
@@ -11,11 +11,11 @@ jest.mock("../utilities/logging/log", () => {
     };
 });
 
-jest.mock("../utilities/url", () => ({
+jest.mock("../../utilities/url", () => ({
     resolve: url => `/florence${url}`
 }));
 
-jest.mock("../utilities/auth", () => ({
+jest.mock("../../utilities/auth", () => ({
     isAuthenticated: jest.fn(() => true),
     isAdminOrEditor: jest.fn(() => true)
 }));
@@ -41,8 +41,8 @@ describe("Dataset import functionality", () => {
                 enableDatasetImport: true
             }
         };
-        const component = shallow(<NavBar {...props} />);
 
+        const component = shallow(<Navbar {...props} />);
         expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
     });
 
@@ -54,8 +54,7 @@ describe("Dataset import functionality", () => {
                 enableDatasetImport: false
             }
         };
-        const component = shallow(<NavBar {...props} />);
-
+        const component = shallow(<Navbar {...props} />);
         expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
     });
 });

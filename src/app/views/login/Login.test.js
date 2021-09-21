@@ -1,5 +1,5 @@
 import React from "react";
-import { LoginController } from "./LoginController";
+import { Login } from "./Login";
 import renderer from "react-test-renderer";
 import { mount, shallow } from "enzyme";
 
@@ -43,7 +43,7 @@ test("Check redirect doesn't work if not authenticated", () => {
         rootPath: "/florence",
         isAuthenticated: false
     };
-    const component = mount(<LoginController {...props} />);
+    const component = mount(<Login {...props} />);
     expect(component.find("h1").text()).toBe("Sign in to your Florence account");
 });
 
@@ -53,7 +53,7 @@ test("Does password change form appear on state change", () => {
         rootPath: "/florence",
         isAuthenticated: false
     };
-    const component = mount(<LoginController {...props} />);
+    const component = mount(<Login {...props} />);
     expect(component.find(".modal__overlay").length).toBe(0);
     component.setState({ requestPasswordChange: true });
     expect(component.find(".modal__overlay").length).toBe(1);

@@ -15,14 +15,7 @@ import cookies from "../../utilities/cookies";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
 
-const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    isAuthenticated: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object
-};
-
-export class LoginController extends Component {
+export class Login extends Component {
     constructor(props) {
         super(props);
 
@@ -135,7 +128,6 @@ export class LoginController extends Component {
             email: this.state.email.value,
             password: this.state.password.value
         };
-
         this.setState({ isSubmitting: true });
 
         this.handleLogin(credentials);
@@ -207,10 +199,9 @@ export class LoginController extends Component {
         };
 
         return (
-            <div>
+            <>
                 <LoginForm formData={formData} />
-
-                {this.state.requestPasswordChange ? (
+                {this.state.requestPasswordChange  && (
                     <Modal sizeClass={"grid__col-3"}>
                         <ChangePasswordController
                             handleCancel={this.handlePasswordChangeCancel}
@@ -219,21 +210,17 @@ export class LoginController extends Component {
                             email={this.state.email.value}
                         />
                     </Modal>
-                ) : (
-                    ""
                 )}
-            </div>
+            </>
         );
     }
 }
 
-LoginController.propTypes = propTypes;
+Login.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    isAuthenticated: PropTypes.bool.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    location: PropTypes.object
+};
 
-function mapStateToProps(state) {
-    return {
-        isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
-    };
-}
-
-export default connect(mapStateToProps)(LoginController);
+export default Login;
