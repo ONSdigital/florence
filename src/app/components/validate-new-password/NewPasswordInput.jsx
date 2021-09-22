@@ -55,7 +55,6 @@ export class NewPasswordInput extends Component {
     }
 
     checkLowerCase() {
-        console.log("this.state.password is: " + this.state.password)
         return /^.*[a-z].*$/.test(this.state.password);
     }
 
@@ -64,10 +63,13 @@ export class NewPasswordInput extends Component {
     }
 
     handleInputChange = event => {
-        const passwordValue = event.target.value
-        this.setState({
-            password: passwordValue
-        },  this.checkPasswordValidation)
+        const passwordValue = event.target.value;
+        this.setState(
+            {
+                password: passwordValue
+            },
+            this.checkPasswordValidation
+        );
     };
 
     togglePasswordVisibility = event => {

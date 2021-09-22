@@ -10,7 +10,7 @@ import App from "./app/App";
 import Layout from "./app/global/Layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignInController";
-import ForgottenPasswordController from "./app/views/forgotten-password/forgottenPasswordController";
+import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
@@ -32,8 +32,8 @@ import DatasetMetadata from "./app/views/datasets/metadata/DatasetMetadata";
 import VersionMetadata from "./app/views/datasets/metadata/VersionMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController";
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
-import ChangeFirstPasswordController from "./app/views/change-password/changePasswordController";
-import SetForgottenPasswordController from "./app/views/forgotten-password/setForgottenPasswordController";
+import ChangeFirstPasswordController from "./app/views/new-password/changePasswordController";
+import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 
 import Logs from "./app/views/logs/Logs";
 

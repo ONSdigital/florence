@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 
 const propTypes = {
-    IS_SUBMITTING_PASSWORD_CHANGE: PropTypes.bool,
+    isSubmitting: PropTypes.bool,
     onSubmit: PropTypes.func,
     validityCheck: PropTypes.func,
     heading: PropTypes.string,
@@ -12,7 +12,7 @@ const propTypes = {
     showInputError: PropTypes.bool
 };
 
-const SetForgottenPasswordRequest = props => {
+const ChangePasswordForm = props => {
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
@@ -25,6 +25,6 @@ const SetForgottenPasswordRequest = props => {
         </div>
     );
 };
-SetForgottenPasswordRequest.propTypes = propTypes;
+ChangePasswordForm.propTypes = propTypes;
 
-export default SetForgottenPasswordRequest;
+export default ChangePasswordForm;
