@@ -1,10 +1,17 @@
 package steps
 
 import (
+	"github.com/chromedp/cdproto/cdp"
+	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
 	"github.com/pkg/errors"
 	"github.com/stretchr/testify/assert"
 )
+
+var legacyElementMap = map[string]string {
+	"missing email": "",
+	"missing password": "#input-error-password",
+}
 
 // This steps actually signs in to Florence by entering a dummy username and password using the old auth processes
 func (c *Component) legacyISignInAs(role, username string) error {
@@ -74,21 +81,21 @@ func (c *Component) legacyTheseCollectionCreationDetailsShouldHaveBeenSent(colle
 	return c.StepError()
 }
 
-func (c *Component) legacyIHaveAuthTokens() error {
-	c.user.setAuthCookies()
-	return nil
-}
+func (c *Component) legacyIShouldSeeTheElement(elementKey string) error {
+	elementSelector := legacyElementMap[elementKey]
+	if elementSelector == "" {
+		return godog.ErrUndefined
+	}
 
-func (c *Component) legacyIAmNotSignedIn() error {
-	assert.False(c, c.user.isSignedIn())
+	var res []*cdp.Node
+	err := chromedp.Run(c.chrome.ctx,
+		chromedp.Nodes(elementSelector, &res, chromedp.AtLeast(0)),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	assert.NotEqual(c, len(res), 0)
 	return c.StepError()
-}
-
-func (c *Component) legacyIAmSignedIn() error {
-	assert.True(c, c.user.isSignedIn())
-	return c.StepError()
-}
-
-func (c *Component) legacyISignOut() error {
-	return c.user.signOut()
 }

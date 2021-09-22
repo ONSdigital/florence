@@ -30,6 +30,10 @@ func (p *Publisher) signIn(username string) error {
 
 	if username == "not.a.user@ons.gov.uk" {
 		p.fakeApi.setJsonResponseForPost("/tokens", "", 401)
+	} else if username == "" {
+		p.fakeApi.fakeHttp.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidEmail","description": "the submitted email could not be validated"}]}`))
+	} else if username == "no.password@ons.gov.uk" {
+		p.fakeApi.fakeHttp.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidPassword","description": "the submitted password could not be validated"}]}`))
 	} else {
 		p.fakeApi.setJsonResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
 		cookies = generateAuthCookies()

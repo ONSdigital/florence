@@ -23,6 +23,10 @@ func (p *LegacyPublisher) signIn(username string) error {
 
 	if username == "not.a.user@ons.gov.uk" {
 		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(401).Body([]byte(``))
+	} else if username == "" {
+		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(400).Body([]byte(``))
+	} else if username == "no.password@ons.gov.uk" {
+		p.fakeApi.fakeHttp.NewHandler().Post("/login").Reply(401).Body([]byte("Authentication failed."))
 	} else {
 		cookies = append(cookies, GenerateCookie("X-Florence-Token", "fakeFlorenceToken", "", "/", true))
 		// Here we are setting the fake data that would be returned from the identity-api
