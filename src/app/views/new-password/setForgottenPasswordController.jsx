@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import PropTypes from "prop-types";
 import user from "../../utilities/api-clients/user";
 import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";

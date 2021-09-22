@@ -10,7 +10,7 @@ import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
-import { ChangePasswordController } from "../new-password/changePasswordController";
+import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import { status } from "../../constants/Authentication";
 
@@ -48,7 +48,6 @@ export class LoginController extends Component {
     requestSignIn = credentials => {
         user.signIn(credentials)
             .then(response => {
-                //202
                 let newPasswordRequired = false;
                 // Convert new_password_required string to bool
                 if (response.body != null && response.body.new_password_required !== null) {

@@ -1,5 +1,5 @@
 import { mount } from "enzyme";
-import { SetForgottenPasswordController } from "./setForgottenPasswordController";
+import SetForgottenPasswordController from "./setForgottenPasswordController";
 import { status } from "../../constants/Authentication";
 
 import React from "react";
