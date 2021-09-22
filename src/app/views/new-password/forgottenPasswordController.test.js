@@ -1,13 +1,14 @@
-import { mount } from "enzyme";
-import { ForgottenPasswordController } from "./forgottenPasswordController";
+import {mount} from "enzyme";
+import {ForgottenPasswordController} from "./forgottenPasswordController";
 
 import React from "react";
 
 describe("When the user first lands on the forgotten-password url", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {
+        }
     };
-    const component = mount(<ForgottenPasswordController {...props} />);
+    const component = mount(<ForgottenPasswordController {...props}/>);
     it("Load the correct child component forgottenPasswordRequest", () => {
         expect(component.find("h1").text()).toBe("Forgotten password");
     });
@@ -22,9 +23,10 @@ describe("When the user first lands on the forgotten-password url", () => {
 
 describe("When the user submits their email for a password request whilst waiting a response", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {
+        }
     };
-    const component = mount(<ForgottenPasswordController {...props} />);
+    const component = mount(<ForgottenPasswordController  {...props}/>);
     component.setState({
         validationErrors: {},
         email: {
@@ -44,9 +46,10 @@ describe("When the user submits their email for a password request whilst waitin
 
 describe("When the user submits their email for a password request but the server returns a validation error", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {
+        }
     };
-    const component = mount(<ForgottenPasswordController {...props} />);
+    const component = mount(<ForgottenPasswordController {...props}/>);
     component.setState({
         validationErrors: {
             heading: "Fix the following: ",
@@ -79,9 +82,10 @@ describe("When the user submits their email for a password request but the serve
 
 describe("When the user submits their email for a password request and the process is a success", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {
+        }
     };
-    const component = mount(<ForgottenPasswordController {...props} />);
+    const component = mount(<ForgottenPasswordController {...props}/>);
     component.setState({
         validationErrors: {},
         email: {
