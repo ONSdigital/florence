@@ -286,7 +286,7 @@ export class LoginController extends Component {
     render() {
         if (this.state.firstTimeSignIn) {
             const changePasswordProps = {
-                heading:"Change your password",
+                heading: "Change your password",
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
                 changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,

@@ -1,11 +1,11 @@
 import React from "react";
-import {LoginController} from "./SignInController";
-import {mount} from "enzyme";
-import {status} from "../../constants/Authentication";
+import { LoginController } from "./SignInController";
+import { mount } from "enzyme";
+import { status } from "../../constants/Authentication";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
-        add: function () {
+        add: function() {
             // do nothing
         }
     };
@@ -13,7 +13,7 @@ jest.mock("../../utilities/notifications.js", () => {
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: function () {
+        send: function() {
             // do nothing
         }
     };
@@ -21,10 +21,10 @@ jest.mock("../../utilities/websocket", () => {
 
 jest.mock("../../utilities/api-clients/user.js", () => {
     return {
-        setUserState: function () {
+        setUserState: function() {
             // do nothing
         },
-        logOut: function () {
+        logOut: function() {
             // do nothing
         }
     };
@@ -32,7 +32,7 @@ jest.mock("../../utilities/api-clients/user.js", () => {
 
 jest.mock("../../utilities/redirectToMainScreen.js", () => {
     return {
-        redirectToMainScreen: function () {
+        redirectToMainScreen: function() {
             // do nothing
         }
     };
@@ -40,8 +40,7 @@ jest.mock("../../utilities/redirectToMainScreen.js", () => {
 
 test("Check redirect doesn't work if not authenticated", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
@@ -51,23 +50,21 @@ test("Check redirect doesn't work if not authenticated", () => {
 
 test("Does password change form appear on first time sign in", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
     const component = mount(<LoginController {...props} />);
     expect(component.find("h1").text()).toBe("Sign in to your Florence account");
     component.setState({
-        firstTimeSignIn: true,
+        firstTimeSignIn: true
     });
     expect(component.find("h1").text()).toBe("Change your password");
 });
 
 test("Given a missing password validation error do the warnings appear", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false,
         enableNewSignIn: true
@@ -92,7 +89,7 @@ test("Given a missing password validation error do the warnings appear", () => {
                 </a>
             </p>
         ]
-    }
+    };
     component.instance().passwordErrorMsg = "Enter a password";
     component.setState(state);
     expect(component.find(".panel__error").length).toBe(1);
@@ -101,8 +98,7 @@ test("Given a missing password validation error do the warnings appear", () => {
 
 xtest("Given a bad email validation error do the warnings appear", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
@@ -139,8 +135,7 @@ xtest("Given a bad email validation error do the warnings appear", () => {
 
 xtest("Given a bad email and no password validation error do the warnings appear", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
@@ -182,8 +177,7 @@ xtest("Given a bad email and no password validation error do the warnings appear
 
 xtest("Given a bad email and password combination validation error do the warnings appear", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
@@ -214,8 +208,7 @@ xtest("Given a bad email and password combination validation error do the warnin
 
 xtest("Given too many attempts to sign in does validation error appear", () => {
     const props = {
-        dispatch: function () {
-        },
+        dispatch: function() {},
         rootPath: "/florence",
         isAuthenticated: false
     };
