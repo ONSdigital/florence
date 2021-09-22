@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import ChangePasswordForm from "./changePasswordForm";
-import { status } from "../../constants/changePassword";
+import { status } from "../../constants/Authentication";
 
 const propTypes = {
     changeConformation: PropTypes.element,
@@ -9,7 +9,6 @@ const propTypes = {
     status: PropTypes.string,
     heading: PropTypes.string,
     buttonText: PropTypes.string
-
 };
 
 export class ChangePasswordController extends Component {

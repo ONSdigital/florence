@@ -6,7 +6,7 @@ import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "./changePasswordController";
 import SetForgottenPasswordConfirmed from "./setForgottenPasswordConfirmed";
-import { status } from "../../constants/changePassword";
+import { status } from "../../constants/Authentication";
 
 export class SetForgottenPasswordController extends Component {
     constructor(props) {

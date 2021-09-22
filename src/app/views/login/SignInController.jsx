@@ -12,7 +12,7 @@ import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
 import { ChangePasswordController } from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
-import { status } from "../../constants/changePassword";
+import { status } from "../../constants/Authentication";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -292,6 +292,7 @@ export class LoginController extends Component {
                 changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
                 status: this.state.status
             };
+
             return <ChangePasswordController {...changePasswordProps} />;
         } else {
             const inputs = [

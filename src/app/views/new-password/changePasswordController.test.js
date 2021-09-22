@@ -1,11 +1,10 @@
 import {mount} from "enzyme";
 import {ChangePasswordController} from "./ChangePasswordController";
-import {status} from "../../constants/changePassword";
+import {status} from "../../constants/Authentication";
 
 import React from "react";
 import ChangePasswordConfirmed from "./changePasswordConfirmed";
-import renderer from "react-test-renderer";
-import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
+
 
 let checkValidity = jest.fn((isValid, password) => ({}));
 

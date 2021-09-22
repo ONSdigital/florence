@@ -1,7 +1,7 @@
 import React from "react";
 import {LoginController} from "./SignInController";
 import {mount} from "enzyme";
-import {status} from "../../constants/changePassword";
+import {status} from "../../constants/Authentication";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
