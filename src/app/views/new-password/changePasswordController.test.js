@@ -1,5 +1,5 @@
 import {mount} from "enzyme";
-import {ChangePasswordController} from "./ChangePasswordController";
+import {ChangePasswordController} from "./changePasswordController";
 import {status} from "../../constants/Authentication";
 
 import React from "react";
