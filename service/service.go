@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"github.com/ONSdigital/florence/service/modifiers"
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
@@ -112,7 +113,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
-	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), identityResponseModifier)
+	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
 
 	router = pat.New()
 

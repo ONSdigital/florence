@@ -19,7 +19,7 @@ func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 
 func generateAuthCookies() []*http.Cookie {
 	return []*http.Cookie {
-		GenerateCookie("user_token", "fakeAuthorizationToken", "", "/", true),
+		GenerateCookie("access_token", "fakeAuthorizationToken", "", "/", true),
 		GenerateCookie("id_token", "fakeIDToken", "", "/", false),
 		GenerateCookie("refresh_token","fakeRefreshToken", "", "/tokens/self", true),
 	}
@@ -91,7 +91,7 @@ func (p *Publisher) readResponseCookies() chromedp.Action {
 
 func (p *Publisher) setAuthCookies() {
 	p.cookies = append(p.cookies, &network.Cookie{
-		Name:         "user_token",
+		Name:         "access_token",
 		Value:        "fakeAuthorizationToken",
 		Domain:       "localhost",
 		Path:         "/",
@@ -112,7 +112,7 @@ func (p *Publisher) setAuthCookies() {
 
 func (p *Publisher) isSignedIn() bool {
 	for _, cookie := range p.cookies {
-		if cookie.Name == "user_token" {
+		if cookie.Name == "access_token" {
 			return true
 		}
 	}
