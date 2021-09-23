@@ -30,7 +30,7 @@ func (c *Collection) create(collectionName string) error {
 	// including the fake collection details that will appear in the browser UI as a result
 	collectionDetailsResponse := buildCollectionDetailsResponseForId(collectionName, collectionId)
 
-	c.api.setJsonResponseForPost("/collection", collectionDetailsResponse).AssertCustom(c.api.collectOutboundRequestBodies)
+	c.api.setJsonResponseForPost("/collection", collectionDetailsResponse, 200).AssertCustom(c.api.collectOutboundRequestBodies)
 	c.api.setJsonResponseForGet("/collectionDetails/"+collectionId, collectionDetailsResponse)
 
 	// Enter the name of the collection and press the button to send the form
