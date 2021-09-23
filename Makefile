@@ -29,7 +29,7 @@ debug: generate-go-debug
 
 .PHONY: debug-run
 debug-run:
-	HUMAN_LOG=1 BINDADDR=${BIND_ADDR} go run -tags 'debug' -race $(LDFLAGS) main.go
+	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} go run -tags 'debug' -race $(LDFLAGS) main.go
 
 .PHONY: ensure-main-min-css
 ensure-main-min-css:
