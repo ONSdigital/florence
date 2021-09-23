@@ -3,11 +3,10 @@ import PreviewNav from "./PreviewNav";
 import { updateSelectedPreviewPage } from "../../../config/actions";
 
 const mapStateToProps = state => {
-    console.log('PreviewNav', state)
     return {
         preview: state.state.preview,
         rootPath: state.state.rootPath,
-        workingOn: state.state.global ? state.state.global.workingOn : {},
+        workingOn: state.state.global ? state.state.global.workingOn : {}
     };
 };
 

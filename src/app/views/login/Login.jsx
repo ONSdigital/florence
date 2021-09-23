@@ -201,7 +201,7 @@ export class Login extends Component {
         return (
             <>
                 <LoginForm formData={formData} />
-                {this.state.requestPasswordChange  && (
+                {this.state.requestPasswordChange && (
                     <Modal sizeClass={"grid__col-3"}>
                         <ChangePasswordController
                             handleCancel={this.handlePasswordChangeCancel}

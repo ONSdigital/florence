@@ -4,9 +4,9 @@ import PropTypes from "prop-types";
 import { updateSelectedPreviewPage } from "../../../config/actions";
 import Select from "../../Select";
 
-const PreviewNav = ({workingOn, preview, rootPath}) => {
-    if(!workingOn) return null
-    
+const PreviewNav = ({ workingOn, preview, rootPath }) => {
+    if (!workingOn) return null;
+
     const mapPagesToSelect = pages => {
         if (pages) {
             try {
@@ -48,7 +48,7 @@ const PreviewNav = ({workingOn, preview, rootPath}) => {
 
     const handleSelectChange = event => {
         const selection = event.target.value;
-        console.log('selection', selection)
+        console.log("selection", selection);
         if (selection === "default-option") {
             return;
         }

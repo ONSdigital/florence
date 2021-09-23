@@ -6,7 +6,6 @@ let dispatchedActions = [];
 
 const defaultProps = {
     preview: {},
-    dispatch: action => dispatchedActions.push(action),
     workingOn: {
         id: "test-collection"
     },

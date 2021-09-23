@@ -9,7 +9,7 @@ import PreviewNav from "./preview-nav";
 
 const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     const authenticated = auth.isAuthenticated(user) || false;
-    
+
     const routeIsACollectionPage = path => {
         return path.indexOf(`/collections`) >= 0;
     };
@@ -26,7 +26,8 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
         }
 
         const path = location.pathname;
-        if (routeIsACollectionPage(path)) {
+
+        if (this.routeIsACollectionPage(path)) {
             return (
                 // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
                 <li className="global-nav__item global-nav__item--working-on">
@@ -43,12 +44,11 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
         }
     };
 
-
     const renderNavItems = () => {
-        if (!authenticated) {
+        if (!user.isAuthenticated) {
             return (
                 <li className="global-nav__item">
-                    <Link to={`${rootPath}/login`} activeClassName="selected" className="global-nav__link">
+                    <Link to={`${rootPath}/login`} activeClassName="selected" className="global-nav__link sign-in">
                         Sign in
                     </Link>
                 </li>
@@ -67,7 +67,12 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
                     <>
                         {config.enableDatasetImport && (
                             <li className="global-nav__item">
-                                <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                                <Link
+                                    to={url.resolve("/uploads/data")}
+                                    data-testId="datasets"
+                                    activeClassName="selected"
+                                    className="global-nav__link"
+                                >
                                     Datasets
                                 </Link>
                             </li>
@@ -107,8 +112,7 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     };
 
     const regex = new RegExp(`${rootPath}/collections/[\\w|-]*/preview`, "g");
-    const isViewingPreview = true //regex.test(location.pathname);
-    console.log('location', location.pathname)
+    const isViewingPreview = regex.test(location.pathname);
     return (
         <ul className="global-nav__list">
             Preview Nav comes here
@@ -130,5 +134,5 @@ Navbar.propTypes = {
         name: PropTypes.string
     }),
     rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
 };
