@@ -22,11 +22,10 @@ func IdentityResponseModifier(r *http.Response) error {
 			// Attempt to delete cookies even if the response upstream was a fail
 			deleteAuthCookies(r)
 		}
-	} else if r.Request.Method == http.MethodPost {
-		if r.StatusCode >= http.StatusOK && r.StatusCode < http.StatusMultipleChoices {
-			setAuthCookies(r)
-		}
+	} else if r.StatusCode >= http.StatusOK && r.StatusCode < http.StatusMultipleChoices {
+		setAuthCookies(r)
 	}
+
 	return nil
 }
 
