@@ -6,7 +6,7 @@ import { createMockUser } from "../../tests/test-utils";
 
 const notLoggedUser = createMockUser();
 const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");
-
+const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER");
 let dispatchedActions = [];
 
 const defaultProps = {
@@ -31,7 +31,7 @@ describe("Navbar", () => {
         });
     });
 
-    describe("when user is authenticated", () => {
+    describe("when user is authenticated as Admin", () => {
         it("should render navigation with links", () => {
             const component = shallow(<Navbar {...defaultProps} user={authenticatedUser} />);
             const nav = component.find(Link);
@@ -79,5 +79,35 @@ describe("Navbar", () => {
                 expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
             });
         });
+        describe("when editing collection", () => {
+            it("should display Working On: ", () => {
+                const props = {
+                    ...defaultProps,
+                    user: authenticatedUser,
+                    workinOn: {
+                        id: "foo-1234",
+                        name: "foo"
+                    },
+                    config: {
+                        ...defaultProps.config,
+                        enableDatasetImport: true
+                    }
+                };
+                const component = shallow(<Navbar {...props} />);
+                console.log(component.debug())
+                expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
+            });
+        });
     });
+
+    describe("when user is authenticated as Viewer", () => {
+        it("should render navigation with links", () => {
+            const NavbarItems = ["Collections", "Sign out"];
+            const component = shallow(<Navbar {...defaultProps} user={authenticatedViewer} />);
+            const nav = component.find(Link);
+            expect(component.hasClass("global-nav__list")).toBe(true);
+            expect(component.find(Link)).toHaveLength(NavbarItems.length);
+            nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
+        });
+    })
 });

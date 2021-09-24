@@ -57,7 +57,6 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
 
         return (
             <>
-                {renderWorkingOnItem()}
                 <li className="global-nav__item">
                     <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">
                         Collections
@@ -115,8 +114,8 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     const isViewingPreview = regex.test(location.pathname);
     return (
         <ul className="global-nav__list">
-            Preview Nav comes here
             {isViewingPreview && <PreviewNav />}
+            {renderWorkingOnItem()}
             {renderNavItems()}
         </ul>
     );
