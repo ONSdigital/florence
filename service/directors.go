@@ -20,8 +20,8 @@ func director(req *http.Request) {
 		}
 	}
 
-	if colletionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && len(colletionCookie.Value) > 0 {
-		headers.SetCollectionID(req, colletionCookie.Value)
+	if collectionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && len(collectionCookie.Value) > 0 {
+		headers.SetCollectionID(req, collectionCookie.Value)
 	}
 }
 
