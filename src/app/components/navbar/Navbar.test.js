@@ -79,23 +79,24 @@ describe("Navbar", () => {
                 expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
             });
         });
-        describe("when editing collection", () => {
+        describe("when on collections", () => {
             it("should display Working On: ", () => {
                 const props = {
                     ...defaultProps,
                     user: authenticatedUser,
-                    workinOn: {
+                    location: {
+                        pathname: "/florence/collections/foo-1234"
+                    },
+                    workingOn: {
                         id: "foo-1234",
                         name: "foo"
-                    },
-                    config: {
-                        ...defaultProps.config,
-                        enableDatasetImport: true
                     }
                 };
-                const component = shallow(<Navbar {...props} />);
-                console.log(component.debug())
-                expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
+                const wrapper = shallow(<Navbar {...props} />);
+                expect(wrapper.find("Link[to='/florence/collections/foo-1234']").exists()).toBe(true);
+                const link = wrapper.find("Link[to='/florence/collections/foo-1234']");
+                link.getElement().props.children[0].includes("Working on:");
+                link.getElement().props.children[0].includes("foo");
             });
         });
     });
@@ -109,5 +110,5 @@ describe("Navbar", () => {
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
         });
-    })
+    });
 });

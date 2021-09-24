@@ -9,7 +9,6 @@ import PreviewNav from "./preview-nav";
 
 const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     const authenticated = auth.isAuthenticated(user) || false;
-
     const routeIsACollectionPage = path => {
         return path.indexOf(`/collections`) >= 0;
     };
@@ -18,16 +17,9 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
         user.logOut();
     };
 
-    const renderWorkingOnItem = () => {
-        const workingOn = workingOn || {};
-        const showWorkingOn = workingOn.id;
-        if (!showWorkingOn) {
-            return;
-        }
-
-        const path = location.pathname;
-
-        if (this.routeIsACollectionPage(path)) {
+    const renderWorkingOnItem = workingOn => {
+        if (!workingOn) return null;
+        if (routeIsACollectionPage(location.pathname)) {
             return (
                 // The class 'global-nav__item--working-on' is used for the acceptance tests, so we can easily select this element
                 <li className="global-nav__item global-nav__item--working-on">
@@ -113,9 +105,9 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     const regex = new RegExp(`${rootPath}/collections/[\\w|-]*/preview`, "g");
     const isViewingPreview = regex.test(location.pathname);
     return (
-        <ul className="global-nav__list">
+        <ul className="global-nav__list" role="navigation">
             {isViewingPreview && <PreviewNav />}
-            {renderWorkingOnItem()}
+            {renderWorkingOnItem(workingOn)}
             {renderNavItems()}
         </ul>
     );

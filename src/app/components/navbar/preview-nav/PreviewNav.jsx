@@ -1,11 +1,16 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-import { updateSelectedPreviewPage } from "../../../config/actions";
 import Select from "../../Select";
 
-const PreviewNav = ({ workingOn, preview, rootPath }) => {
+const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
     if (!workingOn) return null;
+    const [uri, setUri] = useState('default-option')
+
+    useEffect(()=> {
+        updateSelected(uri);
+        push(`${rootPath}/collections/${workingOn.id}/preview?url=${uri}`);
+    }, [uri])
 
     const mapPagesToSelect = pages => {
         if (pages) {
@@ -46,25 +51,14 @@ const PreviewNav = ({ workingOn, preview, rootPath }) => {
         return "";
     };
 
-    const handleSelectChange = event => {
-        const selection = event.target.value;
-        console.log("selection", selection);
-        if (selection === "default-option") {
-            return;
-        }
-        const uri = selection;
-        props.updateSelectedPreviewPage(uri);
-        push(`${rootPath}/collections/${workingOn.id}/preview?url=${uri}`);
-    };
-
     return (
         <div className="global-nav__preview-select">
             <Select
                 id="preview-select"
                 contents={mapPagesToSelect(preview.pages) || []}
-                onChange={handleSelectChange}
+                onChange={e => setUri(e.target.value)}
                 defaultOption={preview.pages ? "Select an option" : "Loading pages..."}
-                selectedOption={preview.selectedPage || ""}
+                selectedOption={uri}
             />
         </div>
     );
