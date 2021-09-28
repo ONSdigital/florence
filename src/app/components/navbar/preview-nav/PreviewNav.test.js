@@ -1,6 +1,9 @@
 import React from "react";
-import { shallow } from "enzyme";
-import { PreviewNav } from "../preview-nav";
+
+import reducer from "../../../config/reducer";
+import { shallow, mount } from "enzyme";
+import PreviewNav from "../preview-nav/PreviewNav";
+import Select from "../../Select";
 
 let dispatchedActions = [];
 

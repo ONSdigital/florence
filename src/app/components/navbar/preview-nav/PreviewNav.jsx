@@ -5,12 +5,12 @@ import Select from "../../Select";
 
 const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
     if (!workingOn) return null;
-    const [uri, setUri] = useState('default-option')
+    const [uri, setUri] = useState("default-option");
 
-    useEffect(()=> {
+    useEffect(() => {
         updateSelected(uri);
         push(`${rootPath}/collections/${workingOn.id}/preview?url=${uri}`);
-    }, [uri])
+    }, [uri]);
 
     const mapPagesToSelect = pages => {
         if (pages) {
