@@ -61,21 +61,25 @@ export class SetForgottenPasswordController extends Component {
         };
 
         if (error != null && error.status != null) {
-            if (error.status === 400) {
-                // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
-                console.error("Unable to validate the type, UID, password, or verification_token in the request");
-                log.event("Unable to validate the type, UID, password, or verification_token in the request", log.error(error));
-                notification.message = errCodes.SET_PASSWORD_VALIDATION_ERR;
-            } else if (error.status === 500) {
-                console.error("Invalid request body");
-                log.event("Invalid request body", log.error(error));
-                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
-            } else if (error.status === 501) {
-                console.error("Requested unimplemented password change type");
-                log.event("Requested unimplemented password change type", log.error(error));
-                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
-            } else {
-                outputGenericError();
+            switch (error.status) {
+                case 400:
+                    // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
+                    console.error("Unable to validate the type, UID, password, or verification_token in the request");
+                    log.event("Unable to validate the type, UID, password, or verification_token in the request", log.error(error));
+                    notification.message = errCodes.SET_PASSWORD_VALIDATION_ERR;
+                    break;
+                case 500:
+                    console.error("Invalid request body");
+                    log.event("Invalid request body", log.error(error));
+                    notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+                    break;
+                case 501:
+                    console.error("Requested unimplemented password change type");
+                    log.event("Requested unimplemented password change type", log.error(error));
+                    notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+                    break;
+                default:
+                    outputGenericError();
             }
         } else {
             outputGenericError();

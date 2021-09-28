@@ -1,11 +1,11 @@
 import React from "react";
-import {LoginController} from "./SignIn";
-import {mount} from "enzyme";
-import {status} from "../../constants/Authentication";
+import { LoginController } from "./SignIn";
+import { mount } from "enzyme";
+import { status } from "../../constants/Authentication";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
-        add: function () {
+        add: function() {
             // do nothing
         }
     };
@@ -13,7 +13,7 @@ jest.mock("../../utilities/notifications.js", () => {
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: function () {
+        send: function() {
             // do nothing
         }
     };
@@ -21,10 +21,10 @@ jest.mock("../../utilities/websocket", () => {
 
 jest.mock("../../utilities/api-clients/user.js", () => {
     return {
-        setUserState: function () {
+        setUserState: function() {
             // do nothing
         },
-        logOut: function () {
+        logOut: function() {
             // do nothing
         }
     };
@@ -32,28 +32,27 @@ jest.mock("../../utilities/api-clients/user.js", () => {
 
 jest.mock("../../utilities/redirectToMainScreen.js", () => {
     return {
-        redirectToMainScreen: function () {
+        redirectToMainScreen: function() {
             // do nothing
         }
     };
 });
 
 const props = {
-    dispatch: function () {
-    },
+    dispatch: function() {},
     rootPath: "/florence",
-    isAuthenticated: false,
+    isAuthenticated: false
 };
 describe("SignIn", () => {
     describe("when a non-authenticated user hits the screen", () => {
-        let component = mount(<LoginController {...props}/>);
+        let component = mount(<LoginController {...props} />);
         it("should not redirect them or show any errors", () => {
             expect(component.find("h1").text()).toBe("Sign in to your Florence account");
             expect(component.find(".panel__error").length).toBe(0);
             expect(component.find(".error-msg").length).toBe(0);
         });
         describe("it is the users first time signing in", () => {
-            let component = mount(<LoginController {...props}/>);
+            let component = mount(<LoginController {...props} />);
             component.setState({
                 firstTimeSignIn: true
             });
@@ -63,7 +62,7 @@ describe("SignIn", () => {
         });
         describe("and attempts to sign in", () => {
             describe("without entering a password", () => {
-                const component = mount(<LoginController {...props}/>);
+                const component = mount(<LoginController {...props} />);
                 const state = {
                     errorsPresent: true,
                     passwordValue: "",
@@ -76,8 +75,7 @@ describe("SignIn", () => {
                     heading: "Fix the following: ",
                     body: [
                         <p key="error">
-                            <a href="javascript:document.getElementById('password').focus()"
-                               className="colour--night-shadz">
+                            <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
                                 Enter a password
                             </a>
                         </p>
@@ -91,7 +89,7 @@ describe("SignIn", () => {
                 });
             });
             describe("with an invalid email", () => {
-                const component = mount(<LoginController {...props}/>);
+                const component = mount(<LoginController {...props} />);
                 const state = {
                     errorsPresent: true,
                     passwordValue: "fooBar5BazQuxQuux",
@@ -105,8 +103,7 @@ describe("SignIn", () => {
                     heading: "Fix the following: ",
                     body: [
                         <p key="email-error">
-                            <a href="javascript:document.getElementById('email').focus()"
-                               className="colour--night-shadz">
+                            <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                                 Enter a valid email address
                             </a>
                         </p>
@@ -119,7 +116,7 @@ describe("SignIn", () => {
                 });
             });
             describe("with an invalid email and no password", () => {
-                const component = mount(<LoginController {...props}/>);
+                const component = mount(<LoginController {...props} />);
                 const state = {
                     errorsPresent: true,
                     passwordValue: "",
@@ -134,14 +131,12 @@ describe("SignIn", () => {
                     heading: "Fix the following: ",
                     body: [
                         <p key="email-error">
-                            <a href="javascript:document.getElementById('email').focus()"
-                               className="colour--night-shadz">
+                            <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                                 Enter a valid email address
                             </a>
                         </p>,
                         <p key="error-invalid-password">
-                            <a href="javascript:document.getElementById('password').focus()"
-                               className="colour--night-shadz">
+                            <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
                                 Enter a password
                             </a>
                         </p>
@@ -154,7 +149,7 @@ describe("SignIn", () => {
                 });
             });
             describe("with a bad email and password combination", () => {
-                const component = mount(<LoginController {...props}/>);
+                const component = mount(<LoginController {...props} />);
                 const state = {
                     errorsPresent: true,
                     passwordValue: "aValid24Password",

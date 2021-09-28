@@ -18,7 +18,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object,
+    location: PropTypes.object
 };
 
 export class LoginController extends Component {
@@ -49,11 +49,13 @@ export class LoginController extends Component {
             .then(response => {
                 let newPasswordRequired = false;
                 // Convert new_password_required string to bool
-                if (response.body != null && response.body.new_password_required !== null) {
+                if (response.body != null && response.body.new_password_required != null) {
                     newPasswordRequired = JSON.parse(response.body["new_password_required"].toLowerCase());
                 }
                 if (newPasswordRequired) {
-                    if (response.body != null && response.body.session !== null) this.session = response.body.session;
+                    if (response.body != null && response.body.session != null) {
+                        this.session = response.body.session;
+                    }
                     this.setState({
                         firstTimeSignIn: true
                     });
@@ -225,21 +227,25 @@ export class LoginController extends Component {
         };
 
         if (error != null && error.status != null) {
-            if (error.status === 400) {
-                // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
-                console.error("Unable to validate the type, email, password, or session in the request");
-                log.event("Unable to validate the type, email, password, or session in the request", log.error(error));
-                notification.message = errCodes.SET_PASSWORD_VALIDATION_ERR;
-            } else if (error.status === 500) {
-                console.error("Invalid request body");
-                log.event("Invalid request body", log.error(error));
-                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
-            } else if (error.status === 501) {
-                console.error("Requested unimplemented password change type");
-                log.event("Requested unimplemented password change type", log.error(error));
-                notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
-            } else {
-                outputGenericError();
+            switch (error.status) {
+                case 400:
+                    // All validation errors will be captured by this; if using the web interface validation is checked before you can submit
+                    console.error("Unable to validate the type, email, password, or session in the request");
+                    log.event("Unable to validate the type, email, password, or session in the request", log.error(error));
+                    notification.message = errCodes.SET_PASSWORD_VALIDATION_ERR;
+                    break;
+                case 500:
+                    console.error("Invalid request body");
+                    log.event("Invalid request body", log.error(error));
+                    notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+                    break;
+                case 501:
+                    console.error("Requested unimplemented password change type");
+                    log.event("Requested unimplemented password change type", log.error(error));
+                    notification.message = errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR;
+                    break;
+                default:
+                    outputGenericError();
             }
         } else {
             outputGenericError();
@@ -248,12 +254,9 @@ export class LoginController extends Component {
     };
 
     passwordChangeSuccess = () => {
-        this.setState(
-            {
-                status: status.SUBMITTED_PASSWORD_CHANGE
-            },
-            () => {}
-        );
+        this.setState({
+            status: status.SUBMITTED_PASSWORD_CHANGE
+        });
     };
 
     passwordChangeFail = error => {
@@ -335,7 +338,7 @@ LoginController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath,
+        rootPath: state.state.rootPath
     };
 }
 
