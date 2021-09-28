@@ -19,7 +19,6 @@ const propTypes = {
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object,
-    enableNewSignIn: PropTypes.bool
 };
 
 export class LoginController extends Component {
@@ -308,7 +307,7 @@ export class LoginController extends Component {
                     type: this.state.passwordType,
                     onChange: this.handlePasswordInputChanged,
                     error: this.passwordErrorMsg,
-                    disableShowPasswordText: this.props.enableNewSignIn
+                    disableShowPasswordText: true
                 },
                 {
                     id: "toggle-password",
@@ -337,7 +336,6 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        enableNewSignIn: state.state.config.enableNewSignIn
     };
 }
 

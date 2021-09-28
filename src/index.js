@@ -9,7 +9,7 @@ import { setConfig } from "./app/config/actions";
 import App from "./app/App";
 import Layout from "./app/global/Layout";
 import LoginController from "./app/views/login/LoginController";
-import SignInController from "./app/views/login/SignInController";
+import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
