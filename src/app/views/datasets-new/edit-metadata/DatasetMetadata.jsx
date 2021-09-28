@@ -43,11 +43,12 @@ const propTypes = {
     handleStringInputChange: PropTypes.func.isRequired,
     handleDimensionNameChange: PropTypes.func.isRequired,
     handleDimensionDescriptionChange: PropTypes.func.isRequired,
-    handleNationalStaticticChange: PropTypes.func.isRequired,
+    handleNationalStatisticChange: PropTypes.func.isRequired,
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
     handleSimpleEditableListEdit: PropTypes.func.isRequired,
     handleSave: PropTypes.func.isRequired,
+    allowPreview: PropTypes.bool.isRequired,
     versionIsPublished: PropTypes.bool.isRequired,
     collectionState: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
@@ -212,7 +213,7 @@ class DatasetMetadata extends Component {
                         }
                     ]}
                     selectedValue={this.props.metadata.nationalStatistic ? this.props.metadata.nationalStatistic.toString() : "false"}
-                    onChange={this.props.handleNationalStaticticChange}
+                    onChange={this.props.handleNationalStatisticChange}
                     inline={true}
                     legend={"National Statistic"}
                     disabled={this.props.disableForm}
@@ -318,7 +319,11 @@ class DatasetMetadata extends Component {
                         onSubmit={this.props.handleSubmitForReviewClick}
                         onApprove={this.props.handleMarkAsReviewedClick}
                     />
-                    <Link to={`${window.location.pathname}/preview`}>Preview</Link>
+                    {this.props.allowPreview ? (
+                        <Link to={`${window.location.pathname}/preview`}>Preview</Link>
+                    ) : (
+                        <span>Preview is not available</span>
+                    )}
                     {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                 </div>
             </div>
