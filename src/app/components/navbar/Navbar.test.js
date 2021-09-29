@@ -119,7 +119,7 @@ describe("Navbar", () => {
             const NavbarItems = ["Collections", "Sign out"];
             const component = shallow(<Navbar {...defaultProps} user={authenticatedViewer} />);
             const nav = component.find(Link);
-            
+
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
@@ -127,7 +127,7 @@ describe("Navbar", () => {
         describe("when on collections url", () => {
             it("should render PreviewNav component", () => {
                 const component = shallow(<Navbar {...withPreviewNavProps} user={authenticatedViewer} />);
-                expect(component.find('Connect(PreviewNav)')).toHaveLength(1);
+                expect(component.find("Connect(PreviewNav)")).toHaveLength(1);
             });
         });
     });

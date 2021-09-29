@@ -5,7 +5,7 @@ import Select from "../../Select";
 
 const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
     if (!workingOn) return null;
-    const [uri, setUri] = useState("default-option");
+    const [uri, setUri] = useState("/");
 
     useEffect(() => {
         updateSelected(uri);
