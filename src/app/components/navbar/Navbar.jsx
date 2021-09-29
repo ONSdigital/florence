@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
@@ -12,10 +12,6 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
     const routeIsACollectionPage = path => {
         return path.indexOf(`/collections`) >= 0;
     };
-
-    // useEffect(() => {
-    //     isViewingPreview();
-    // }, [location])
 
     const handleLogoutClick = () => {
         user.logOut();
@@ -106,15 +102,11 @@ const Navbar = ({ user, rootPath, workingOn, config, location }) => {
         );
     };
 
-
-    // const isViewingPreview = () => {
-    //     const regex = new RegExp(`${rootPath}/collections/[\\w|-]*/preview`, "g");
-    //     return regex.test(location.pathname);
-    // }
-
+    const regex = new RegExp(`${rootPath}/collections/[\\w|-]*/preview`, "g");
+    const isViewingPreview = regex.test(location.pathname);
     return (
         <ul className="global-nav__list" role="navigation">
-            {<PreviewNav />}
+            {isViewingPreview && <PreviewNav />}
             {renderWorkingOnItem(workingOn)}
             {renderNavItems()}
         </ul>
