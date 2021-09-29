@@ -3,7 +3,6 @@ import React from "react";
 import reducer from "../../../config/reducer";
 import { shallow, mount } from "enzyme";
 import PreviewNav from "../preview-nav/PreviewNav";
-import Select from "../../Select";
 
 let dispatchedActions = [];
 
@@ -53,15 +52,10 @@ const withPagesProps = {
     preview: {
         ...defaultProps.preview,
         pages: pages
-    },
+    }
 };
 
 describe("PreviewNav", () => {
-    it("renders Select component", () => {
-        const wrapper = shallow(<PreviewNav {...defaultProps} />);
-        expect(wrapper.find(Select)).toBeTruthy();
-    });
-
     it("renders Select with default option selected", () => {
         const wrapper = mount(<PreviewNav {...defaultProps} />);
         expect(wrapper.find(".select").text()).toEqual("Loading pages...");
@@ -85,7 +79,7 @@ describe("PreviewNav", () => {
     });
 });
 
-// TODO: when added react-router-dom to use mock location 
+// TODO: when added react-router-dom to use mock location
 // it("routes to selected page on page selection", () => {
 //   component.handleSelectChange({ target: { value: "/test-uri" } });
 //   expect(dispatchedActions[1].type).toBe("@@router/CALL_HISTORY_METHOD");

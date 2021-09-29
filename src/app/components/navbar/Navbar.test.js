@@ -1,7 +1,8 @@
 import React from "react";
-import { shallow } from "enzyme";
+import { shallow, mount } from "enzyme";
 import { Link } from "react-router";
 import Navbar from "./Navbar";
+import PreviewNav from "./preview-nav/PreviewNav";
 import { createMockUser } from "../../tests/test-utils";
 
 const notLoggedUser = createMockUser();
@@ -17,6 +18,18 @@ const defaultProps = {
     rootPath: "/florence",
     location: {},
     dispatch: action => dispatchedActions.push(action)
+};
+
+const withPreviewNavProps = {
+    ...defaultProps,
+    location: {
+        ...defaultProps.location,
+        pathname: "/florence/collections/foo-1234/preview"
+    },
+    workingOn: {
+        id: "foo-1234",
+        name: "foo"
+    }
 };
 
 const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
@@ -106,9 +119,16 @@ describe("Navbar", () => {
             const NavbarItems = ["Collections", "Sign out"];
             const component = shallow(<Navbar {...defaultProps} user={authenticatedViewer} />);
             const nav = component.find(Link);
+            
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
+        });
+        describe("when on collections url", () => {
+            it("should render PreviewNav component", () => {
+                const component = shallow(<Navbar {...withPreviewNavProps} user={authenticatedViewer} />);
+                expect(component.find('Connect(PreviewNav)')).toHaveLength(1);
+            });
         });
     });
 });
