@@ -1,8 +1,9 @@
-package service
+package modifiers
 
 import (
 	. "github.com/smartystreets/goconvey/convey"
 	"net/http"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -20,14 +21,20 @@ func TestIdentityResponseModifier(t *testing.T) {
 			StatusCode: http.StatusCreated,
 			Body:       nil,
 			Header:     initialHeaders,
+			Request: &http.Request{
+				Method: http.MethodPut,
+				URL: &url.URL{
+					Path: "/tokens/self",
+				},
+			},
 		}
-		err := identityResponseModifier(inBoundResponse)
+		err := IdentityResponseModifier(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		var refreshTokenHeader string
 		var idTokenHeader string
 		var userAuthTokenHeader string
 		for _, c := range cookieValues {
-			if strings.Contains(c, "user_token") {
+			if strings.Contains(c, "access_token") {
 				userAuthTokenHeader = c
 			}
 			if strings.Contains(c, "refresh_token") {
@@ -39,7 +46,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 		}
 
 		So(err, ShouldBeNil)
-		So(userAuthTokenHeader, ShouldEqual, "user_token=foo; Path=/; HttpOnly; Secure; SameSite=Strict")
+		So(userAuthTokenHeader, ShouldEqual, "access_token=foo; Path=/; HttpOnly; Secure; SameSite=Strict")
 		So(idTokenHeader, ShouldEqual, "id_token=bar; Path=/; Secure; SameSite=Lax")
 		So(refreshTokenHeader, ShouldEqual, "refresh_token=baz; Path=/tokens/self; HttpOnly; Secure; SameSite=Strict")
 	})
@@ -53,8 +60,14 @@ func TestIdentityResponseModifier(t *testing.T) {
 			StatusCode: http.StatusServiceUnavailable,
 			Body:       nil,
 			Header:     initialHeaders,
+			Request: &http.Request{
+				Method: http.MethodPut,
+				URL: &url.URL{
+					Path: "/tokens/self",
+				},
+			},
 		}
-		err := identityResponseModifier(inBoundResponse)
+		err := IdentityResponseModifier(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		So(err, ShouldBeNil)
 		So(cookieValues, ShouldBeNil)
