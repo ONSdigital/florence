@@ -130,17 +130,17 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
-		if cfg.SharedConfig.EnableNewSignIn {
-			router.Handle("/tokens", identityAPIProxy)
-			router.Handle("/tokens/{uri:.*}", identityAPIProxy)
-			router.Handle("/users", identityAPIProxy)
-			router.Handle("/users/{uri:.*}", identityAPIProxy)
-			router.Handle("/groups/{uri:.*}", identityAPIProxy)
-			router.Handle("/groups", identityAPIProxy)
-			router.Handle("/password-reset", identityAPIProxy)
-			router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
-		}
 	}
+    if cfg.SharedConfig.EnableNewSignIn {
+        router.Handle("/tokens", identityAPIProxy)
+        router.Handle("/tokens/{uri:.*}", identityAPIProxy)
+        router.Handle("/users", identityAPIProxy)
+        router.Handle("/users/{uri:.*}", identityAPIProxy)
+        router.Handle("/groups/{uri:.*}", identityAPIProxy)
+        router.Handle("/groups", identityAPIProxy)
+        router.Handle("/password-reset", identityAPIProxy)
+        router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
+    }
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
