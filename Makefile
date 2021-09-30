@@ -27,6 +27,10 @@ debug: generate-go-debug
 	go build $(LDFLAGS) -tags 'debug' -o $(BINPATH)/florence
 	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
+.PHONY: debug-run
+debug-run:
+	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} go run -tags 'debug' -race $(LDFLAGS) main.go
+
 .PHONY: ensure-main-min-css
 ensure-main-min-css:
     # Sleeping for a bit if necessary as a workaround to allow time for main.min.css to finish writing
