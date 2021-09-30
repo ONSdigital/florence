@@ -37,6 +37,7 @@ export class DatasetMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
+            allowPreview: false,
             datasetCollectionState: "",
             versionCollectionState: "",
             lastEditedBy: "",
@@ -90,7 +91,7 @@ export class DatasetMetadataController extends Component {
                 this.handleGETSuccess(metadata);
             })
             .catch(error => {
-                this.setState({ isGettingMetadata: false, disableScreen: true });
+                this.setState({ isGettingMetadata: false, disableScreen: true, allowPreview: false });
                 log.event("get metadata: error GETting metadata from controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
@@ -163,6 +164,7 @@ export class DatasetMetadataController extends Component {
                 isDismissable: true
             });
         }
+        mapped.state === "created" ? this.setState({ allowPreview: false }) : this.setState({ allowPreview: true });
         this.setState({
             metadata: mapped.metadata,
             datasetIsInCollection: mapped.collection,
@@ -278,7 +280,7 @@ export class DatasetMetadataController extends Component {
         });
     };
 
-    handleNationalStaticticChange = event => {
+    handleNationalStatisticChange = event => {
         const value = event.value === "true" ? true : false;
         const newMetadataState = {
             ...this.state.metadata,
@@ -508,7 +510,7 @@ export class DatasetMetadataController extends Component {
             .putEditMetadata(datasetID, editionID, versionID, body)
             .then(() => {
                 this.setState(() => {
-                    return { isSaving: false };
+                    return { isSaving: false, allowPreview: true };
                 });
 
                 notifications.add({
@@ -522,7 +524,7 @@ export class DatasetMetadataController extends Component {
                 }
             })
             .catch(error => {
-                this.setState({ isSaving: false });
+                this.setState({ isSaving: false, allowPreview: false });
                 log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
@@ -589,11 +591,12 @@ export class DatasetMetadataController extends Component {
                     handleStringInputChange={this.handleStringInputChange}
                     handleDimensionNameChange={this.handleDimensionNameChange}
                     handleDimensionDescriptionChange={this.handleDimensionDescriptionChange}
-                    handleNationalStaticticChange={this.handleNationalStaticticChange}
+                    handleNationalStatisticChange={this.handleNationalStatisticChange}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSave={this.handleSaveClick}
+                    allowPreview={this.state.allowPreview}
                     isSaving={this.state.isSaving}
                     versionIsPublished={this.state.versionIsPublished}
                     lastEditedBy={this.state.lastEditedBy}

@@ -93,6 +93,29 @@ const mockedMetadata = {
     collection_state: "inProgress",
     collection_last_edited_by: "test@user.com"
 };
+
+const mockedCantabularDataset = {
+    dataset: {
+        id: "cantabular",
+        state: "created",
+        type: "cantabular_table"
+    },
+    version: {
+        alerts: [],
+        collection_id: "",
+        downloads: null,
+        edition: "2021",
+        id: "3be1d978-ead1-4fc5-8cd7-2bf58199728b",
+        release_date: "",
+        state: "edition-confirmed",
+        version: 1
+    },
+    dimensions: [],
+    collection_id: "",
+    collection_state: "",
+    collection_last_edited_by: "test@user.com"
+};
+
 const mockedState = {
     metadata: {
         title: mockedMetadata.dataset.title,
@@ -213,6 +236,35 @@ describe("Mapping metadata to state", () => {
     it("maps correctly", () => {
         const returnValue = component.instance().mapMetadataToState(mockedMetadata);
         expect(returnValue).toMatchObject(mockedState);
+    });
+});
+
+describe("Allowing preview functionality", () => {
+    it("enables preview on GET metadata success", () => {
+        component.instance().handleGETSuccess(mockedMetadata);
+        expect(component.state("allowPreview")).toBe(true);
+    });
+
+    it("disables preview for datasets with state of 'created'", () => {
+        component.instance().handleGETSuccess(mockedCantabularDataset);
+        expect(component.state("allowPreview")).toBe(false);
+    });
+
+    it("disables preview if GET metadata fails", async () => {
+        datasets.getEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await component.instance().getMetadata();
+        expect(component.state("allowPreview")).toBe(false);
+    });
+
+    it("disables preview if saving edits fails", async () => {
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await component.instance().saveMetadata();
+        expect(component.state("allowPreview")).toBe(false);
+    });
+
+    it("enables preview if saving edits successful", async () => {
+        await component.instance().saveMetadata();
+        expect(component.state("allowPreview")).toBe(true);
     });
 });
 
