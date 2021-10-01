@@ -1,70 +1,33 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { push } from "react-router-redux";
-import objectIsEmpty from "is-empty-object";
 import CollectionCreateController from "./create/CollectionCreateController";
 import { pagePropTypes } from "./details/CollectionDetails";
-import collections from "../../utilities/api-clients/collections";
+// import collections from "../../utilities/api-clients/collections";
 import DoubleSelectableBoxController from "../../components/selectable-box/double-column/DoubleSelectableBoxController";
-import { emptyActiveCollection, addAllCollections, deleteCollectionFromAllCollections, updateWorkingOn } from "../../config/actions";
 import notifications from "../../utilities/notifications";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import collectionMapper from "./mapper/collectionMapper";
 import cookies from "../../utilities/cookies";
 
-const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    rootPath: PropTypes.string.isRequired,
-    params: PropTypes.shape({
-        collectionID: PropTypes.string
-    }).isRequired,
-    user: PropTypes.shape({
-        userType: PropTypes.string.isRequired
-    }).isRequired,
-    collections: PropTypes.array,
-    activeCollection: PropTypes.shape({
-        inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
-        id: PropTypes.string.isRequired
-    }),
-    collectionsToDelete: PropTypes.object.isRequired,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired
-};
+const CollectionsController = props => {
+    const [isFetchingCollections, setIsFetchingCollections] = useState(false);
+    console.log("props", props);
+    const { collectionID, routes, user, rootPath, collections } = props.params;
+    const isViewer = false || (user && user.userType === "VIEWER");
 
-export class CollectionsController extends Component {
-    constructor(props) {
-        super(props);
+    useEffect(() => {
+        fetchCollections();
+    }, []);
 
-        this.state = {
-            isFetchingCollections: false
-        };
+    // useEffect(() => {
+    //     return function cleanup() {
+    //         props.emptyActiveCollection()
+    //     };
+    // },[props.activeCollection, props.collectionsToDelete]);
 
-        this.isViewer = this.props.user.userType === "VIEWER";
-    }
-
-    UNSAFE_componentWillMount() {
-        return this.fetchCollections();
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        // CollectionsController handles removing any collections from allCollections state
-        // having an ID in the toDelete object means that this component needs to remove it from state
-        // this stops other components having to understand and handle allCollections state.
-        // This helps fix any issues where other components might try to update the allCollections state
-        // without knowing that it's still being fetched.
-        if (!objectIsEmpty(nextProps.collectionsToDelete) && !this.state.isFetchingCollections) {
-            this.removeCollectionFromState(nextProps.collectionsToDelete);
-        }
-    }
-
-    componentWillUnmount() {
-        if (this.props.activeCollection) {
-            this.props.dispatch(emptyActiveCollection());
-        }
-    }
-
-    fetchCollections() {
-        this.setState({ isFetchingCollections: true });
+    function fetchCollections() {
+        setIsFetchingCollections(true);
 
         // This Promise needs to be returned so that our tests pass, otherwise they don't detect
         // the catch block properly (using 'await') and the test gets executed before the catch
@@ -72,7 +35,7 @@ export class CollectionsController extends Component {
         return collections
             .getAll()
             .then(collections => {
-                const allCollectionsVisible = this.isViewer
+                const allCollectionsVisible = isViewer
                     ? collections
                     : collections.filter(collection => {
                           return collection.approvalStatus !== "COMPLETE";
@@ -80,11 +43,11 @@ export class CollectionsController extends Component {
                 const allCollections = allCollectionsVisible.map(collection => {
                     return collectionMapper.collectionResponseToState(collection);
                 });
-                this.props.dispatch(addAllCollections(allCollections));
-                this.setState({ isFetchingCollections: false });
+                props.addAllCollections(allCollections);
+                setIsFetchingCollections(false);
             })
             .catch(error => {
-                this.setState({ isFetchingCollections: false });
+                setIsFetchingCollections(false);
                 switch (error.status) {
                     case 401: {
                         // This is handled by the request function, so do nothing here
@@ -97,7 +60,7 @@ export class CollectionsController extends Component {
                             autoDismiss: 5000
                         };
                         notifications.add(notification);
-                        this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                        push(`${rootPath}/collections`);
                         break;
                     }
                     case 403: {
@@ -107,7 +70,7 @@ export class CollectionsController extends Component {
                             autoDismiss: 5000
                         };
                         notifications.add(notification);
-                        this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                        push(`${isFetchingCollectionsrootPath}/collections`);
                         break;
                     }
                     case "RESPONSE_ERR": {
@@ -155,19 +118,19 @@ export class CollectionsController extends Component {
             });
     }
 
-    removeCollectionFromState(collectionsToDelete) {
+    const removeCollectionFromState = collectionsToDelete => {
         for (const collectionID in collectionsToDelete) {
             if (!collectionsToDelete.hasOwnProperty(collectionID)) {
                 return;
             }
-            this.props.dispatch(deleteCollectionFromAllCollections(collectionID));
+            props.deleteCollectionFromAllCollections(collectionID);
         }
-    }
+    };
 
-    handleCollectionCreateSuccess = newCollection => {
+    const handleCollectionCreateSuccess = newCollection => {
         const mappedCollection = collectionMapper.collectionResponseToState(newCollection);
-        let collections = [...this.props.collections, mappedCollection];
-        collections.sort((collection1, collection2) => {
+        let collectionsSet = [...collections, mappedCollection];
+        collectionsSet.sort((collection1, collection2) => {
             const firstID = collection1.id.toLowerCase();
             const secondID = collection2.id.toLowerCase();
             if (firstID < secondID) {
@@ -178,59 +141,45 @@ export class CollectionsController extends Component {
             }
             return 0;
         });
-        this.props.dispatch(addAllCollections(collections));
-        this.props.dispatch(push(`${this.props.rootPath}/collections/${mappedCollection.id}`));
-        this.fetchCollections();
+        props.addAllCollections(collections);
+        push(`${rootPath}/collections/${mappedCollection.id}`);
+        fetchCollections();
         document.getElementById(mappedCollection.id).scrollIntoView();
     };
 
-    handleCollectionSelection = collection => {
-        if (this.isViewer) {
+    const handleCollectionSelection = collection => {
+        if (isViewer) {
             cookies.add("collection", collection.id, null);
-            this.props.dispatch(updateWorkingOn(collection.id, collection.name));
-            this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}/preview`));
+            props.updateWorkingOn(collection.id, collection.name);
+            push(`${rootPath}/collections/${collection.id}/preview`);
             return;
         }
-        this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
+        push(`${rootPath}/collections/${collection.id}`);
     };
 
-    render() {
-        return (
-            <div>
-                <div className="grid grid--justify-space-around">
-                    <div className={this.isViewer ? "grid__col-8" : "grid__col-4"}>
-                        <h1 className="text-center">Select a collection</h1>
-                        <DoubleSelectableBoxController
-                            items={this.props.collections}
-                            activeItemID={this.props.params.collectionID}
-                            isUpdating={this.state.isFetchingCollections}
-                            headings={["Name", "Publish date"]}
-                            handleItemClick={this.handleCollectionSelection}
-                        />
-                    </div>
-                    {!this.isViewer && (
-                        <div className="grid__col-4">
-                            <h1 className="text-center">Create a collection</h1>
-                            <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess} />
-                        </div>
-                    )}
+    return (
+        <div>
+            <div className="grid grid--justify-space-around">
+                <div className={isViewer ? "grid__col-8" : "grid__col-4"}>
+                    <h1 className="text-center">Select a collection</h1>
+                    <DoubleSelectableBoxController
+                        items={props.collections}
+                        activeItemID={collectionID}
+                        isUpdating={isFetchingCollections}
+                        headings={["Name", "Publish date"]}
+                        handleItemClick={handleCollectionSelection}
+                    />
                 </div>
-                <CollectionDetailsController collectionID={this.props.params.collectionID} routes={this.props.routes} />
+                {!isViewer && (
+                    <div className="grid__col-4">
+                        <h1 className="text-center">Create a collection</h1>
+                        <CollectionCreateController user={user} onSuccess={handleCollectionCreateSuccess} />
+                    </div>
+                )}
             </div>
-        );
-    }
-}
+            <CollectionDetailsController collectionID={collectionID} routes={routes} />
+        </div>
+    );
+};
 
-CollectionsController.propTypes = propTypes;
-
-export function mapStateToProps(state) {
-    return {
-        user: state.state.user,
-        collections: state.state.collections.all,
-        activeCollection: state.state.collections.active,
-        collectionsToDelete: state.state.collections.toDelete,
-        rootPath: state.state.rootPath
-    };
-}
-
-export default connect(mapStateToProps)(CollectionsController);
+export default CollectionsController;
