@@ -58,44 +58,36 @@ class CollectionEdit extends Component {
 
         this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");
         this.maximumPublishDate = dateFormat(date.addYear(10), "yyyy-mm-dd");
-
-        this.handleTeamSelection = this.handleTeamSelection.bind(this);
-        this.handleTeamRemove = this.handleTeamRemove.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
-        this.handlePublishTypeChange = this.handlePublishTypeChange.bind(this);
-        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
-        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
     }
 
-    handleTeamSelection(event) {
+    handleTeamSelection = event => {
         this.props.onTeamSelect(event.target.value);
-    }
+    };
 
-    handleTeamRemove(team) {
+    handleTeamRemove = team => {
         this.props.onRemoveTeam(team.id);
-    }
+    };
 
-    handleNameChange(event) {
+    handleNameChange = event => {
         this.props.onNameChange(event.target.value);
-    }
+    };
 
-    handlePublishTypeChange(event) {
+    handlePublishTypeChange = event => {
         this.props.onPublishTypeChange(event.value);
-    }
+    };
 
-    handlePublishDateChange(event) {
+    handlePublishDateChange = event => {
         this.props.onPublishDateChange(event.target.value);
-    }
+    };
 
-    handlePublishTimeChange(event) {
+    handlePublishTimeChange = event => {
         this.props.onPublishTimeChange(event.target.value);
-    }
+    };
 
-    handleSave(event) {
+    handleSave = event => {
         event.preventDefault();
         this.props.onSave();
-    }
+    };
 
     renderPublishDate() {
         if (!this.props.originalPublishType) {

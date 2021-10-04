@@ -11,19 +11,13 @@ const propTypes = {
 };
 
 class Card extends Component {
-    constructor(props) {
-        super(props);
-        this.handleEditClick = this.handleEditClick.bind(this);
-        this.handleDeleteClick = this.handleDeleteClick.bind(this);
-    }
-
-    handleEditClick() {
+    handleEditClick = () => {
         this.props.onEdit(this.props.type, this.props.id);
-    }
+    };
 
-    handleDeleteClick() {
+    handleDeleteClick = () => {
         this.props.onDelete(this.props.type, this.props.id);
-    }
+    };
 
     render() {
         return (

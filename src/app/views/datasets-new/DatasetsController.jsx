@@ -35,7 +35,7 @@ export class DatasetsController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         return this.getAllDatasets();
     }
 

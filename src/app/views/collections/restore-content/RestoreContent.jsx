@@ -28,14 +28,9 @@ export class RestoreContent extends Component {
             filteredDeletedContent: [],
             activeItem: {}
         };
-
-        this.handleItemClick = this.handleItemClick.bind(this);
-        this.handleDoneClick = this.handleDoneClick.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleMultipleRestoredPages = this.handleMultipleRestoredPages.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.getAllDeletedContent();
     }
 
@@ -135,11 +130,11 @@ export class RestoreContent extends Component {
             });
     }
 
-    handleItemClick(item) {
+    handleItemClick = item => {
         this.setState({ activeItem: item });
-    }
+    };
 
-    handleDoneClick() {
+    handleDoneClick = () => {
         this.setState({ isRestoringDeletingContent: true });
         content
             .restoreDeleted(this.state.activeItem.id, this.props.activeCollection.id)
@@ -209,9 +204,9 @@ export class RestoreContent extends Component {
                 this.setState({ isRestoringDeletingContent: false });
                 console.error("Error restoring deleted content:\n", error);
             });
-    }
+    };
 
-    handleMultipleRestoredPages(collectionID) {
+    handleMultipleRestoredPages = collectionID => {
         // When restoring multiple deletes we need to check the collectionDetails end point to get
         // the names and page type because they are not contained in the response from deletedContent
         // end point. We should proably do this properly when Zebedee is replaced
@@ -232,9 +227,9 @@ export class RestoreContent extends Component {
                 notifications.add(notification);
                 this.setState({ isRestoringDeletingContent: false });
             });
-    }
+    };
 
-    handleSearch(event) {
+    handleSearch = event => {
         const searchTerm = event.target.value.toLowerCase();
         const filteredDeletes = this.state.allDeletedContent.filter(deletedContent => {
             return deletedContent.pageTitle.toLowerCase().search(searchTerm) !== -1;
@@ -243,7 +238,7 @@ export class RestoreContent extends Component {
             filteredDeletedContent: filteredDeletes,
             activeItem: {}
         });
-    }
+    };
 
     render() {
         return (

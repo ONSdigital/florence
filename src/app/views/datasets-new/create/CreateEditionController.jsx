@@ -32,7 +32,7 @@ export class CreateEditionController extends Component {
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         const datasetID = this.props.params.datasetID;
         this.getListOfEditions();
         this.getDataset(datasetID);

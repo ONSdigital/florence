@@ -22,14 +22,12 @@ class Drawer extends Component {
             // or rely on the tests running slow enough to be able to select the elements inside the drawer
             hasFinishedAnimation: false
         };
-
-        this.handleTransitionEnd = this.handleTransitionEnd.bind(this);
     }
 
-    handleTransitionEnd() {
+    handleTransitionEnd = () => {
         this.props.handleTransitionEnd();
         this.setState({ hasFinishedAnimation: true });
-    }
+    };
 
     addAnimationClasses() {
         const classes = [];
