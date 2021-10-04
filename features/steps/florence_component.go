@@ -13,7 +13,6 @@ import (
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
 	"github.com/maxcnunes/httpfake"
-	"github.com/stretchr/testify/assert"
 	"log"
 	"net/http"
 	"os"
@@ -35,8 +34,8 @@ type Component struct {
 	ctx          context.Context
 	FakeApi      *FakeApi
 	chrome       Chrome
-	LoggedInUser string
-	publisher    Publisher
+	SignedInUser string
+	user         User
 	fakeRequest  *httpfake.Request
 }
 
@@ -67,87 +66,41 @@ func NewFlorenceComponent() (*Component, error) {
 
 	serviceList := service.NewServiceList(initFunctions)
 
+	if cfg.SharedConfig.EnableNewSignIn == false {
+		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
+	} else {
+		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	}
+
 	c.runApplication(cfg, serviceList, signals)
 
 	return c, nil
 }
 
-func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
-	ctx.Step(`^I am logged in as "([^"]*)"$`, c.iAmLoggedInAs)
-
-	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
-	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
-	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
-	ctx.Step(`^a collection with these details should be created:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
-
-}
-
-// This steps actually logs in to Florence by entering a dummy username and password
-func (c *Component) iAmLoggedInAs(username string) error {
-
-	err := c.publisher.logIn(username)
-	if err != nil {
-		return err
-	}
-
-	c.LoggedInUser = username
-	return nil
-}
-
-// This step actives the browser UI, entering a collection name
-// and presses the "Create Collection" button
-// consequently, the form data is sent to Florence back and and outwards to the
-// collection creating API
+// This step needs to be implemented once the service has been updated to support new auth
 func (c *Component) iCreateANewCollectionCalledForManualPublishing(collectionName string) error {
-	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
-
-	err := collectionAction.create(collectionName)
-	if err != nil {
-		return err
-	}
-
-	return c.StepError()
+	return godog.ErrUndefined
 }
 
-// This step asserts that the instructions for creating the collection
-// have been sent correctly from Florence backend to the API that creates the collection
-func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionDetails *godog.DocString) error {
-	for _, outboundRequestBody := range c.FakeApi.outboundRequests {
-		assert.JSONEq(c, collectionDetails.Content, outboundRequestBody)
-	}
-
-	return c.StepError()
-}
-
-// This step checks that the browser UI shows the correct new
-// title of the collection
+// This step needs to be implemented once the service has been updated to support new auth
 func (c *Component) iShouldBePresentedWithAEditableCollectionTitled(collectionTitle string) error {
-
-	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
-
-	if err := collectionAction.assertHasTitle(collectionTitle); err != nil {
-		return err
-	}
-
-	return c.StepError()
+	return godog.ErrUndefined
 }
 
-// This step checks that the browser UI shows the type
-// of collection schedule created (e.g. "Manual")
+// This step needs to be implemented once the service has been updated to support new auth
 func (c *Component) theCollectionShouldBe(collectionPublishSchedule string) error {
-	collectionAction := NewCollectionAction(c.FakeApi, c.chrome.ctx)
+	return godog.ErrUndefined
+}
 
-	if err := collectionAction.assertHasPublishSchedule(collectionPublishSchedule); err != nil {
-		return err
-	}
-
-	return c.StepError()
+// This step needs to be implemented once the service has been updated to support new auth
+func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionDetails *godog.DocString) error {
+	return godog.ErrUndefined
 }
 
 func (c *Component) Reset() *Component {
 	c.FakeApi.Reset()
 
-	c.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`)
+	c.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`, 200)
 	c.FakeApi.setJsonResponseForGet("/collections", `[]`)
 	c.FakeApi.setJsonResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
 
@@ -167,8 +120,13 @@ func (c *Component) Reset() *Component {
 
 	c.chrome.ctx = ctx
 
-	c.publisher.chromeCtx = ctx
-	c.publisher.fakeApi = c.FakeApi
+	cfg, _ := config.Get()
+	if cfg.SharedConfig.EnableNewSignIn == false {
+		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
+	} else {
+		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	}
+
 	return c
 }
 

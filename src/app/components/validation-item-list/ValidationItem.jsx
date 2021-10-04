@@ -12,22 +12,11 @@ export default class ValidationItem extends Component {
         super(props);
     }
 
-    preventUserInteractions(e) {
-        e.preventDefault();
-    }
-
     render() {
         return (
             <div className="readonly-checkbox__wrapper">
-                <input
-                    type="checkbox"
-                    id={this.props.id}
-                    checked={this.props.checked}
-                    onClick={this.preventUserInteractions}
-                    onKeyDown={this.preventUserInteractions}
-                    className="readonly-checkbox"
-                />
-                <label htmlFor={this.props.id}> {this.props.name}</label>;
+                <input type="checkbox" id={this.props.id} checked={this.props.checked} disabled="disabled" className="readonly-checkbox" />
+                <label htmlFor={this.props.id}> {this.props.name}</label>
             </div>
         );
     }
