@@ -9,6 +9,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     error: PropTypes.string,
+    displayInputAsErrored: PropTypes.bool,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
     inline: PropTypes.bool,
@@ -58,7 +59,7 @@ export default class Input extends Component {
 
     getFormClasses() {
         let formClasses = "form__input";
-        if (this.props.error) {
+        if (this.props.error || this.props.displayInputAsErrored) {
             formClasses += " form__input--error";
         }
         if (this.props.inline) {

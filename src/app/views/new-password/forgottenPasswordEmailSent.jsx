@@ -15,7 +15,7 @@ const ForgottenPasswordEmailSent = props => {
     const noEmailBody = (
         <div className="margin-top--1">
             <p>
-                If you did not get the email you can
+                If you did not get the email you can&nbsp;
                 <a href={"/florence/forgotten-password"} className="colour--primary-link">
                     reset your password again.
                 </a>

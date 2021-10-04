@@ -28,3 +28,6 @@ src/package-lock.json
 
 #Jest
 src/coverage
+
+# Go
+.go/

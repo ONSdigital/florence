@@ -1,0 +1,9 @@
+FROM golang:1.17-stretch AS base
+
+ENV GOCACHE=/go/.go/cache GOPATH=/go/.go/path TZ=Europe/London
+
+RUN GOBIN=/bin go get github.com/cespare/reflex
+
+# Map between the working directories of dev and live
+RUN ln -s /go /florence
+WORKDIR /florence
