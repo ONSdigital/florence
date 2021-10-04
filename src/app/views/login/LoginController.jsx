@@ -38,14 +38,9 @@ export class LoginController extends Component {
             requestPasswordChange: false,
             isSubmitting: false
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
-        this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
@@ -133,7 +128,7 @@ export class LoginController extends Component {
             });
     }
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
 
         const credentials = {
@@ -144,9 +139,9 @@ export class LoginController extends Component {
         this.setState({ isSubmitting: true });
 
         this.handleLogin(credentials);
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const id = event.target.id;
         const value = event.target.value;
 
@@ -170,24 +165,24 @@ export class LoginController extends Component {
                 break;
             }
         }
-    }
+    };
 
-    handlePasswordChangeSuccess(newPassword) {
+    handlePasswordChangeSuccess = newPassword => {
         const credentials = {
             email: this.state.email.value,
             password: newPassword
         };
 
         this.handleLogin(credentials);
-    }
+    };
 
-    handlePasswordChangeCancel(event) {
+    handlePasswordChangeCancel = event => {
         event.preventDefault();
 
         this.setState({
             requestPasswordChange: false
         });
-    }
+    };
 
     render() {
         const formData = {

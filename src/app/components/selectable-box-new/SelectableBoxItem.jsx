@@ -22,15 +22,9 @@ const propTypes = {
 };
 
 export default class SelectableBoxItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindClick = this.bindClick.bind(this);
-    }
-
-    bindClick() {
+    bindClick = () => {
         this.props.handleClick(this.props.returnValue);
-    }
+    };
 
     renderColumns() {
         const status = this.props.status || {};

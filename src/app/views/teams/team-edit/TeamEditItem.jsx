@@ -9,18 +9,12 @@ const propTypes = {
 };
 
 class TeamEditItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleClick = this.handleClick.bind(this);
-    }
-
-    handleClick() {
+    handleClick = () => {
         this.props.onClick({
             email: this.props.email,
             action: this.props.action
         });
-    }
+    };
 
     render() {
         return (

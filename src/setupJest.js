@@ -1,3 +1,8 @@
+import Enzyme from 'enzyme';
+import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+
+Enzyme.configure({ adapter: new Adapter() });
+
 window.fetch = require('jest-fetch-mock');
 import "regenerator-runtime/runtime";
 

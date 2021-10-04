@@ -32,14 +32,9 @@ class AlertController extends Component {
         };
 
         this.maximumAlertDate = date.format(date.addYear(10), "yyyy-mm-dd");
-
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleIsCorrectionChange = this.handleIsCorrectionChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.id) {
             this.setState({ newID: uuid() });
         }
@@ -60,7 +55,7 @@ class AlertController extends Component {
         return date.format(dateObject.toISOString(), "yyyy-mm-dd'T'HH:MM");
     }
 
-    handleDateChange(event) {
+    handleDateChange = event => {
         this.setState({
             newDate: {
                 value: event.target.value || "",
@@ -68,22 +63,22 @@ class AlertController extends Component {
             },
             currentDate: ""
         });
-    }
+    };
 
-    handleDescriptionChange(event) {
+    handleDescriptionChange = event => {
         this.setState({
             newDescription: {
                 value: event.target.value || "",
                 errorMsg: ""
             }
         });
-    }
+    };
 
-    handleIsCorrectionChange(isCorrection) {
+    handleIsCorrectionChange = isCorrection => {
         this.setState({ newIsCorrectionBoolean: isCorrection });
-    }
+    };
 
-    handleSave(event) {
+    handleSave = event => {
         event.preventDefault();
         let hasError = false;
         let newState = {};
@@ -128,7 +123,7 @@ class AlertController extends Component {
             id: this.props.id || this.state.newID
         };
         this.props.onSave(alert);
-    }
+    };
 
     render() {
         return (

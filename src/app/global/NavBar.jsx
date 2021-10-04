@@ -24,15 +24,9 @@ const propTypes = {
 };
 
 export class NavBar extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleLogoutClick = this.handleLogoutClick.bind(this);
-    }
-
-    handleLogoutClick() {
+    handleLogoutClick = () => {
         user.logOut();
-    }
+    };
 
     renderWorkingOnItem() {
         const workingOn = this.props.workingOn || {};

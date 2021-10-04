@@ -197,7 +197,7 @@ beforeEach(() => {
 describe("On mount of the dataset metadata controller screen", () => {
     it("fetches metadata", () => {
         const getDatasetsCalls = datasets.getEditMetadata.mock.calls.length;
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(datasets.getEditMetadata.mock.calls.length).toBe(getDatasetsCalls + 1);
     });
 });

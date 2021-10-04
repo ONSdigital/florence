@@ -20,13 +20,9 @@ class TeamCreate extends Component {
             },
             isAwaitingResponse: false
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFormBlur = this.handleFormBlur.bind(this);
-        this.handleFormInput = this.handleFormInput.bind(this);
     }
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
 
         const isValid = this.validateTeamName();
@@ -107,23 +103,23 @@ class TeamCreate extends Component {
                     }
                 }
             });
-    }
+    };
 
-    handleFormBlur(event) {
+    handleFormBlur = event => {
         const input = {
             ...this.state.input,
             value: event.target.value.trim()
         };
         this.setState({ input });
-    }
+    };
 
-    handleFormInput(event) {
+    handleFormInput = event => {
         const input = Object.assign({}, this.state.input, {
             value: event.target.value,
             error: ""
         });
         this.setState({ input });
-    }
+    };
 
     validateTeamName() {
         const teamName = this.state.input.value;
