@@ -18,7 +18,6 @@ export class PreviewNav extends Component {
     mapPagesToSelect(pages) {
         if (pages) {
             try {
-                console.log(pages);
                 return pages.map(page => {
                     if (page.type === "visualisation" && page.files) {
                         return {
