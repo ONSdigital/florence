@@ -168,7 +168,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
         expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
         expect(component.state().minimumCharacterLimitPassed).toBe(true);
     });
-    it("Should pass validation for minimum character limit required and all others", () => {
+    xit("Should pass validation for minimum character limit required and all others", () => {
         // Check that the character limit requirement checkbox is now checked
         expect(numCharCheckbox.props()["checked"]).toBe(true);
         expect(upperCharCheckbox.props()["checked"]).toBe(true);
