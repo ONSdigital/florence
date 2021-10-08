@@ -12,6 +12,7 @@ import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
+import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
 
 const propTypes = {
@@ -48,9 +49,8 @@ export class LoginController extends Component {
         user.signIn(credentials)
             .then(response => {
                 let newPasswordRequired = false;
-                // Convert new_password_required string to bool
                 if (response.body != null && response.body.new_password_required != null) {
-                    newPasswordRequired = JSON.parse(response.body["new_password_required"].toLowerCase());
+                    newPasswordRequired = response.body.new_password_required.toLowerCase() === "true";
                 }
                 if (newPasswordRequired) {
                     if (response.body != null && response.body.session != null) {
@@ -60,6 +60,9 @@ export class LoginController extends Component {
                         firstTimeSignIn: true
                     });
                 } else {
+                    if (response.body != null) {
+                        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+                    }
                     this.setState(
                         {
                             status: status.SUBMITTING_PERMISSIONS
@@ -166,9 +169,11 @@ export class LoginController extends Component {
                 });
                 log.event("Error getting a user's permissions on login", log.error(error));
                 console.error("Error getting a user's permissions on login", error);
-                if (!this.state.firstTimeSignIn) {
-                    this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
-                }
+                user.logOut().then(() => {
+                    if (!this.state.firstTimeSignIn) {
+                        this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
+                    }
+                });
             });
     };
 

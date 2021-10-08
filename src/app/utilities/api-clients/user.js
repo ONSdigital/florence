@@ -4,6 +4,7 @@ import { reset, userLoggedIn, userLoggedOut } from "../../config/actions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
+import sessionManagement from "../sessionManagement";
 
 export default class user {
     static get(email) {
@@ -40,6 +41,10 @@ export default class user {
 
     static setForgottenPassword(body) {
         return http.put("/users/self/password", body, true, true);
+    }
+
+    static renewSession(body) {
+        return http.put("/tokens/self", body, true, false);
     }
 
     static expireSession() {
@@ -105,6 +110,7 @@ export default class user {
             user.expireSession()
                 .then(response => {
                     clearCookies();
+                    sessionManagement.removeTimers();
                 })
                 .catch(error => {
                     if (error.status === 400) {
@@ -129,6 +135,7 @@ export default class user {
                         log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
                     }
                     clearCookies();
+                    sessionManagement.removeTimers();
                 });
         } else {
             clearCookies();

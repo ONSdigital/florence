@@ -9,6 +9,7 @@ import ping from "./utilities/api-clients/ping";
 
 import Notifications from "./global/notifications/Notifications";
 import notifications from "./utilities/notifications";
+import sessionManagement from "./utilities/sessionManagement";
 
 const propTypes = {
     children: PropTypes.node,
@@ -63,6 +64,9 @@ class App extends Component {
             }
             this.setState({ isCheckingAuthentication: false });
         });
+        if (window.location.pathname !== "/florence/login") {
+            sessionManagement.startSessionExpiryTimers();
+        }
     }
 
     render() {
@@ -70,7 +74,7 @@ class App extends Component {
             <div>
                 {this.state.isCheckingAuthentication ? (
                     <div className="grid grid--align-center grid--align-self-center grid--full-height">
-                        <div className="loader loader--large loader--dark"></div>
+                        <div className="loader loader--large loader--dark" />
                     </div>
                 ) : (
                     this.props.children
