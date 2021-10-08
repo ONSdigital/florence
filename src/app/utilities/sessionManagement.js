@@ -3,7 +3,7 @@ import notifications from "./notifications";
 import { errCodes as errorCodes } from "./errorCodes";
 
 export default class sessionManagement {
-    static timers = [];
+    static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
 
     // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
@@ -12,7 +12,7 @@ export default class sessionManagement {
     // expires and can't be renewed. So we extend it one last time and let the user know they will be kicked out and
     // need to sign back in manually
     static setSessionExpiryTime = (sessionExpiryTime, refreshExpiryTime) => {
-        if (refreshExpiryTime != null) {
+        if (sessionExpiryTime != null) {
             sessionStorage.setItem("session_expiry_time", sessionExpiryTime);
         }
         if (refreshExpiryTime != null) {
@@ -26,10 +26,10 @@ export default class sessionManagement {
         sessionStorage.removeItem("refresh_expiry_time");
         this.removeInteractionMonitoring();
         this.removeWarnings();
-        this.timers.forEach(name => {
-            clearTimeout(this.timers[name]);
-        });
-        this.timers = [];
+        for (const [key, value] of Object.entries(this.timers)) {
+            clearTimeout(this.timers[key]);
+        }
+        this.timers = {};
     };
 
     static initialiseSessionExpiryTimers = () => {
