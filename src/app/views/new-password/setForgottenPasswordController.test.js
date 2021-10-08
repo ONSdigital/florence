@@ -1,16 +1,15 @@
-import { mount } from "enzyme";
-import SetForgottenPasswordController from "./setForgottenPasswordController";
-import { status } from "../../constants/Authentication";
-
 import React from "react";
+import { mount } from "enzyme";
+import { status } from "../../constants/Authentication";
+import SetForgottenPasswordController from "./setForgottenPasswordController";
 
-describe("When the user first lands on the page", () => {
+describe("SetForgottenPasswordController", () => {
     const component = mount(<SetForgottenPasswordController />);
-    it("Load the correct child component setForgottenPasswordRequest", () => {
+    it("displays Create a new password prompt", () => {
         expect(component.find("h1").text()).toBe("Create a new password");
     });
-    it("Password field should be empty and not in an errored state", () => {
-        expect(component.find("#password-input").prop("value")).toBe("");
+    it("should have empty password field and not in an errored state", () => {
+        expect(component.find("input#password-input").prop("value")).toBe("");
         expect(
             component
                 .find(".form__input")
@@ -18,20 +17,20 @@ describe("When the user first lands on the page", () => {
                 .hasClass("form__input--error")
         ).toBe(false);
     });
-    it("Validation rules should all be in a state that is unchecked", () => {
-        expect(component.find("#minimum-character-limit").props()["checked"]).toBe(false);
-        expect(component.find("#uppercase-character-validation").props()["checked"]).toBe(false);
-        expect(component.find("#lowercase-character-validation").props()["checked"]).toBe(false);
-        expect(component.find("#minimum-number-limit").props()["checked"]).toBe(false);
+    it("should have all validations rules unchecked", () => {
+        expect(component.find("input#minimum-character-limit").props()["checked"]).toBe(false);
+        expect(component.find("input#uppercase-character-validation").props()["checked"]).toBe(false);
+        expect(component.find("input#lowercase-character-validation").props()["checked"]).toBe(false);
+        expect(component.find("input#minimum-number-limit").props()["checked"]).toBe(false);
     });
 });
 
-describe("After the user submits their new password successfully ", () => {
+describe("when the user submits their new password successfully ", () => {
     const component = mount(<SetForgottenPasswordController />);
     component.setState({
         status: status.COMPLETED
     });
-    it("Show the password changed conformation page", () => {
+    it("shows the password change conformation page", () => {
         expect(component.find("h1").text()).toBe("Your password has been changed");
     });
 });

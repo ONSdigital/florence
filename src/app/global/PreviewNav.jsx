@@ -15,16 +15,9 @@ const propTypes = {
 };
 
 export class PreviewNav extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-    }
-
     mapPagesToSelect(pages) {
         if (pages) {
             try {
-                console.log(pages);
                 return pages.map(page => {
                     if (page.type === "visualisation" && page.files) {
                         return {
@@ -61,7 +54,7 @@ export class PreviewNav extends Component {
         return "";
     }
 
-    handleSelectChange(event) {
+    handleSelectChange = event => {
         const selection = event.target.value;
         if (selection === "default-option") {
             return;
@@ -69,7 +62,7 @@ export class PreviewNav extends Component {
         const uri = selection;
         this.props.dispatch(updateSelectedPreviewPage(uri));
         this.props.dispatch(push(`${this.props.rootPath}/collections/${this.props.workingOn.id}/preview?url=${uri}`));
-    }
+    };
 
     render() {
         return (

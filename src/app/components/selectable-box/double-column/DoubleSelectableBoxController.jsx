@@ -20,15 +20,9 @@ const propTypes = {
 };
 
 export default class DoubleSelectableBoxController extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindItemClick = this.bindItemClick.bind(this);
-    }
-
-    bindItemClick(itemProps) {
+    bindItemClick = itemProps => {
         this.props.handleItemClick(itemProps);
-    }
+    };
 
     renderList() {
         return (

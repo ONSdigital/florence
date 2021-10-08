@@ -33,7 +33,7 @@ export class CreateVersionController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
 

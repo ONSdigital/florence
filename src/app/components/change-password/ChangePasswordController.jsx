@@ -26,12 +26,9 @@ export default class ChangePasswordController extends Component {
                 errorMsg: ""
             }
         };
-
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
     }
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const id = event.target.id;
         const value = event.target.value;
 
@@ -46,9 +43,9 @@ export default class ChangePasswordController extends Component {
                 break;
             }
         }
-    }
+    };
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
         const newPassword = this.state.newPassword.value;
         const validatedPassword = validatePassword(newPassword);
@@ -128,7 +125,7 @@ export default class ChangePasswordController extends Component {
                     }
                 }
             });
-    }
+    };
 
     render() {
         const formData = {

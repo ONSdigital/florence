@@ -131,7 +131,7 @@ describe("Editing the collection's associated teams", () => {
     });
 
     it("on mount it updates global state with the latest list of all teams", () => {
-        editingTeamsComponent.instance().componentWillMount();
+        editingTeamsComponent.instance().UNSAFE_componentWillMount();
         expect(dispatchedAction.type).toEqual(UPDATE_ALL_TEAMS);
         expect(dispatchedAction.allTeams).toEqual(fetchedAllTeams);
     });

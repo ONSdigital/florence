@@ -31,13 +31,10 @@ export class UsersController extends Component {
             isFetchingUsers: false
         };
 
-        this.handleUserSelection = this.handleUserSelection.bind(this);
-        this.handleUserCreateSuccess = this.handleUserCreateSuccess.bind(this);
-
         this.isAdmin = auth.isAdmin(this.props.loggedInUser);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.isAdmin && !this.props.params.userID) {
             this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`));
         }
@@ -133,14 +130,14 @@ export class UsersController extends Component {
         }
     }
 
-    handleUserSelection(user) {
+    handleUserSelection = user => {
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.id}`));
-    }
+    };
 
-    handleUserCreateSuccess(user) {
+    handleUserCreateSuccess = user => {
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.email}`));
         this.getAllUsers();
-    }
+    };
 
     render() {
         return (

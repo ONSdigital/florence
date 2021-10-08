@@ -233,7 +233,7 @@ test("Dataset details page matches stored snapshot", () => {
 
 test("Dataset title updates after successful fetch from dataset API on mount", async () => {
     datasets.get.mockImplementationOnce(() => Promise.resolve({ current: exampleDataset.current }));
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update(); // update() appears to be async so we need to wait for it to finish before asserting
     expect(defaultComponent.state("title")).toBe("CPI");
 });
@@ -259,7 +259,7 @@ test("Removing the value from related QMI input updates state to be empty", asyn
             name: "relatedQMI"
         }
     };
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
     defaultComponent.instance().handleInputChange(mockTitleEvent);
@@ -268,7 +268,7 @@ test("Removing the value from related QMI input updates state to be empty", asyn
 });
 
 test("Handler for removing a related bulletin updates state correctly", async () => {
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedBulletins").length).toEqual(1);
     expect(defaultComponent.state("relatedBulletins")[0]).toMatchObject({
@@ -282,7 +282,7 @@ test("Handler for removing a related bulletin updates state correctly", async ()
 });
 
 test("Related datasets are set in state correctly on mount", async () => {
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedLinks").length).toEqual(2);
     defaultComponent.state("relatedLinks").forEach((relatedLink, index) => {
@@ -686,7 +686,7 @@ describe("Updating the review state on mount", () => {
     it("loads read-only mode if the dataset cannot be found in the current collection", async () => {
         datasets.get.mockImplementationOnce(() => Promise.reject({ status: 500, statusText: "Mocked error" }));
         defaultComponent.setState({ isReadOnly: false });
-        await defaultComponent.instance().componentWillMount();
+        await defaultComponent.instance().UNSAFE_componentWillMount();
         await defaultComponent.update();
         expect(defaultComponent.instance().state.isReadOnly).toBe(true);
     });
@@ -764,7 +764,7 @@ describe("Renders the correct buttons", () => {
     it("disables the 'save' button loading data", async () => {
         expect(defaultComponent.state("isFetchingDataset")).toBeFalsy();
         expect(defaultComponent.state("isFetchingCollectionData")).toBeFalsy();
-        defaultComponent.instance().componentWillMount();
+        defaultComponent.instance().UNSAFE_componentWillMount();
         expect(defaultComponent.state("isFetchingDataset")).toBe(true);
         expect(defaultComponent.find("#btn-save[disabled=true]").exists()).toBe(true);
 

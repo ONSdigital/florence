@@ -9,15 +9,9 @@ const propTypes = {
     onRemoveItem: PropTypes.func.isRequired
 };
 export default class SelectedItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleRemoveClick = this.handleRemoveClick.bind(this);
-    }
-
-    handleRemoveClick() {
+    handleRemoveClick = () => {
         this.props.onRemoveItem(this.props.item);
-    }
+    };
 
     render() {
         return (

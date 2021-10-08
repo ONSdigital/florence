@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { connect } from "react-redux";
@@ -59,246 +59,265 @@ const propTypes = {
     isSaving: PropTypes.bool
 };
 
-class DatasetMetadata extends Component {
-    render() {
-        return (
-            <div className="grid__col-6 margin-bottom--4">
-                <div className="margin-top--2">
-                    &#9664;{" "}
-                    <button type="button" className="btn btn--link" onClick={this.props.handleBackButton}>
-                        Back
-                    </button>
-                </div>
-                <h1 className="margin-top--1 margin-bottom--1">Edit metadata</h1>
-                <p className="margin-bottom--1 font-size--18">
-                    <span className="font-weight--600">Dataset</span>: {this.props.metadata.title ? this.props.metadata.title : "loading..."}
-                </p>
-                <p className="margin-bottom--1 font-size--18">
-                    <span className="font-weight--600">Edition</span>: {this.props.metadata.edition ? this.props.metadata.edition : "loading..."}
-                </p>
-                <p className="margin-bottom--1 font-size--18">
-                    <span className="font-weight--600">Version</span>: {this.props.metadata.version ? this.props.metadata.version : "loading..."}
-                </p>
+const DatasetMetadata = ({
+    handleBackButton,
+    metadata,
+    handleStringInputChange,
+    disableForm,
+    handleDateInputChange,
+    versionIsPublished,
+    handleSimpleEditableListAdd,
+    handleSimpleEditableListEdit,
+    handleSimpleEditableListDelete,
+    handleDimensionNameChange,
+    handleDimensionDescriptionChange,
+    handleNationalStaticticChange,
+    handleSave,
+    collectionState,
+    userEmail,
+    lastEditedBy,
+    handleSubmitForReviewClick,
+    handleMarkAsReviewedClick,
+    isSaving
+}) => {
+    return (
+        <div className="grid__col-6 margin-bottom--4">
+            <div className="margin-top--2">
+                &#9664;{" "}
+                <button type="button" className="btn btn--link" onClick={handleBackButton}>
+                    Back
+                </button>
+            </div>
+            <h1 className="margin-top--1 margin-bottom--1">Edit metadata</h1>
+            <p className="margin-bottom--1 font-size--18">
+                <span className="font-weight--600">Dataset</span>: {metadata.title ? metadata.title : "loading..."}
+            </p>
+            <p className="margin-bottom--1 font-size--18">
+                <span className="font-weight--600">Edition</span>: {metadata.edition ? metadata.edition : "loading..."}
+            </p>
+            <p className="margin-bottom--1 font-size--18">
+                <span className="font-weight--600">Version</span>: {metadata.version ? metadata.version : "loading..."}
+            </p>
 
-                <h2>Title</h2>
-                <Input id="title" value={this.props.metadata.title} onChange={this.props.handleStringInputChange} disabled={this.props.disableForm} />
+            <h2>Title</h2>
+            <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm} />
 
-                <h2>Release dates</h2>
-                <Input
-                    id="release-date"
-                    name="releaseDate"
-                    label="Release date"
-                    type="date"
-                    onChange={this.props.handleDateInputChange}
-                    value={this.props.metadata.releaseDate.value && date.format(this.props.metadata.releaseDate.value, "yyyy-mm-dd")}
-                    disabled={this.props.disableForm || this.props.versionIsPublished}
-                    error={this.props.metadata.releaseDate.error}
-                />
+            <h2>Release dates</h2>
+            <Input
+                id="release-date"
+                name="releaseDate"
+                label="Release date"
+                type="date"
+                onChange={handleDateInputChange}
+                value={metadata.releaseDate.value && date.format(metadata.releaseDate.value, "yyyy-mm-dd")}
+                disabled={disableForm || versionIsPublished}
+                error={metadata.releaseDate.error}
+            />
 
-                <Input
-                    id="next-release"
-                    name="nextReleaseDate"
-                    label="Next release date"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.nextReleaseDate}
-                    disabled={this.props.disableForm}
-                />
+            <Input
+                id="next-release"
+                name="nextReleaseDate"
+                label="Next release date"
+                onChange={handleStringInputChange}
+                value={metadata.nextReleaseDate}
+                disabled={disableForm}
+            />
 
-                <Input
-                    id="release-frequency"
-                    name="releaseFrequency"
-                    label="Release frequency"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.releaseFrequency}
-                    disabled={this.props.disableForm}
-                />
+            <Input
+                id="release-frequency"
+                name="releaseFrequency"
+                label="Release frequency"
+                onChange={handleStringInputChange}
+                value={metadata.releaseFrequency}
+                disabled={disableForm}
+            />
 
-                <h2>Notices</h2>
-                <p className="margin-bottom--1">Add an alert, correction, change summary or usage note.</p>
+            <h2>Notices</h2>
+            <p className="margin-bottom--1">Add an alert, correction, change summary or usage note.</p>
+            <SimpleEditableList
+                addText={"Add a new notice"}
+                fields={metadata.notices}
+                editingStateFieldName="notices"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm}
+            />
+
+            <h2 className="margin-top--1">About</h2>
+            <Input id="summary" label="Summary" type="textarea" value={metadata.summary} onChange={handleStringInputChange} disabled={disableForm} />
+
+            <Input
+                id="unit-of-measure"
+                name="unitOfMeasure"
+                label="Unit of measure"
+                type="input"
+                value={metadata.unitOfMeasure}
+                onChange={handleStringInputChange}
+                disabled={disableForm}
+            />
+
+            <h2>Dimensions</h2>
+            {metadata.dimensions.map(dimension => {
+                return (
+                    <div key={`dimension-${dimension.id}`}>
+                        <Input
+                            id={`dimension-title-${dimension.id}`}
+                            label="Title"
+                            value={dimension.label ? dimension.label : dimension.name}
+                            onChange={handleDimensionNameChange}
+                            disabled={disableForm || versionIsPublished}
+                        />
+                        <Input
+                            id={`dimension-description-${dimension.id}`}
+                            label="Description"
+                            type="textarea"
+                            value={dimension.description}
+                            onChange={handleDimensionDescriptionChange}
+                            disabled={disableForm || versionIsPublished}
+                        />
+                    </div>
+                );
+            })}
+
+            <h2>Meta</h2>
+            <Input id="keywords" label="Keywords" value={metadata.keywords} onChange={handleStringInputChange} disabled={disableForm} />
+
+            <Input id="licence" label="Licence" onChange={handleStringInputChange} value={metadata.licence} disabled={disableForm} />
+
+            <h3>Usage notes</h3>
+            <div className="margin-bottom--1">
                 <SimpleEditableList
-                    addText={"Add a new notice"}
-                    fields={this.props.metadata.notices}
-                    editingStateFieldName="notices"
-                    handleAddClick={this.props.handleSimpleEditableListAdd}
-                    handleEditClick={this.props.handleSimpleEditableListEdit}
-                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                    disableActions={this.props.disableForm}
+                    addText={"Add a usage note"}
+                    fields={metadata.usageNotes}
+                    editingStateFieldName="usageNotes"
+                    handleAddClick={handleSimpleEditableListAdd}
+                    handleEditClick={handleSimpleEditableListEdit}
+                    handleDeleteClick={handleSimpleEditableListDelete}
+                    disableActions={disableForm}
                 />
+            </div>
 
-                <h2 className="margin-top--1">About</h2>
-                <Input
-                    id="summary"
-                    label="Summary"
-                    type="textarea"
-                    value={this.props.metadata.summary}
-                    onChange={this.props.handleStringInputChange}
-                    disabled={this.props.disableForm}
-                />
+            <RadioGroup
+                groupName="national-statistic"
+                radioData={[
+                    {
+                        id: "national-statistic-yes",
+                        value: "true",
+                        label: "Yes"
+                    },
+                    {
+                        id: "national-statistic-no",
+                        value: "false",
+                        label: "No"
+                    }
+                ]}
+                selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
+                onChange={handleNationalStaticticChange}
+                inline={true}
+                legend={"National Statistic"}
+                disabled={disableForm}
+            />
 
-                <Input
-                    id="unit-of-measure"
-                    name="unitOfMeasure"
-                    label="Unit of measure"
-                    type="input"
-                    value={this.props.metadata.unitOfMeasure}
-                    onChange={this.props.handleStringInputChange}
-                    disabled={this.props.disableForm}
-                />
+            <RadioGroup
+                groupName="national-statistic"
+                radioData={[
+                    {
+                        id: "national-statistic-yes",
+                        value: "true",
+                        label: "Yes"
+                    },
+                    {
+                        id: "national-statistic-no",
+                        value: "false",
+                        label: "No"
+                    }
+                ]}
+                selectedValue={this.props.metadata.nationalStatistic ? this.props.metadata.nationalStatistic.toString() : "false"}
+                onChange={this.props.handleNationalStatisticChange}
+                inline={true}
+                legend={"National Statistic"}
+                disabled={this.props.disableForm}
+            />
 
-                <h2>Dimensions</h2>
-                {this.props.metadata.dimensions.map(dimension => {
-                    return (
-                        <div key={`dimension-${dimension.id}`}>
-                            <Input
-                                id={`dimension-title-${dimension.id}`}
-                                label="Title"
-                                value={dimension.label ? dimension.label : dimension.name}
-                                onChange={this.props.handleDimensionNameChange}
-                                disabled={this.props.disableForm || this.props.versionIsPublished}
-                            />
-                            <Input
-                                id={`dimension-description-${dimension.id}`}
-                                label="Description"
-                                type="textarea"
-                                value={dimension.description}
-                                onChange={this.props.handleDimensionDescriptionChange}
-                                disabled={this.props.disableForm || this.props.versionIsPublished}
-                            />
-                        </div>
-                    );
-                })}
+            <Input
+                id="contact-email"
+                name="contactEmail"
+                label="Contact email"
+                onChange={handleStringInputChange}
+                value={metadata.contactEmail}
+                disabled={disableForm}
+            />
 
-                <h2>Meta</h2>
-                <Input
-                    id="keywords"
-                    label="Keywords"
-                    value={this.props.metadata.keywords}
-                    onChange={this.props.handleStringInputChange}
-                    disabled={this.props.disableForm}
-                />
+            <Input
+                id="contact-telephone"
+                name="contactTelephone"
+                label="Contact telephone"
+                onChange={handleStringInputChange}
+                value={metadata.contactTelephone}
+                disabled={disableForm}
+            />
 
-                <Input
-                    id="licence"
-                    label="Licence"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.licence}
-                    disabled={this.props.disableForm}
-                />
+            <h2>Related links</h2>
+            <h3>Datasets</h3>
+            <SimpleEditableList
+                addText={"Add a dataset"}
+                fields={metadata.relatedDatasets}
+                editingStateFieldName="relatedDatasets"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm}
+            />
 
-                <h3>Usage notes</h3>
-                <div className="margin-bottom--1">
-                    <SimpleEditableList
-                        addText={"Add a usage note"}
-                        fields={this.props.metadata.usageNotes}
-                        editingStateFieldName="usageNotes"
-                        handleAddClick={this.props.handleSimpleEditableListAdd}
-                        handleEditClick={this.props.handleSimpleEditableListEdit}
-                        handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                        disableActions={this.props.disableForm}
-                    />
-                </div>
+            <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
+            <SimpleEditableList
+                addText={"Add a publication"}
+                fields={metadata.relatedPublications}
+                editingStateFieldName="relatedPublications"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm}
+            />
 
-                <RadioGroup
-                    groupName="national-statistic"
-                    radioData={[
-                        {
-                            id: "national-statistic-yes",
-                            value: "true",
-                            label: "Yes"
-                        },
-                        {
-                            id: "national-statistic-no",
-                            value: "false",
-                            label: "No"
-                        }
-                    ]}
-                    selectedValue={this.props.metadata.nationalStatistic ? this.props.metadata.nationalStatistic.toString() : "false"}
-                    onChange={this.props.handleNationalStatisticChange}
-                    inline={true}
-                    legend={"National Statistic"}
-                    disabled={this.props.disableForm}
-                />
+            <h3 className="margin-top--1">Quality and methodology information</h3>
+            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm} />
 
-                <h2>Contact details</h2>
-                <Input
-                    id="contact-name"
-                    name="contactName"
-                    label="Contact name"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.contactName}
-                    disabled={this.props.disableForm}
-                />
+            <h3>Methodologies</h3>
+            <SimpleEditableList
+                addText={"Add a methodology"}
+                fields={metadata.relatedMethodologies}
+                editingStateFieldName="relatedMethodologies"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm}
+            />
 
-                <Input
-                    id="contact-email"
-                    name="contactEmail"
-                    label="Contact email"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.contactEmail}
-                    disabled={this.props.disableForm}
-                />
+            <h2 className="margin-top--1">What's changed</h2>
+            <SimpleEditableList
+                addText={"Add a change"}
+                fields={metadata.latestChanges}
+                editingStateFieldName="latestChanges"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm || versionIsPublished}
+            />
 
-                <Input
-                    id="contact-telephone"
-                    name="contactTelephone"
-                    label="Contact telephone"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.contactTelephone}
-                    disabled={this.props.disableForm}
-                />
-
-                <h2>Related links</h2>
-                <h3>Datasets</h3>
-                <SimpleEditableList
-                    addText={"Add a dataset"}
-                    fields={this.props.metadata.relatedDatasets}
-                    editingStateFieldName="relatedDatasets"
-                    handleAddClick={this.props.handleSimpleEditableListAdd}
-                    handleEditClick={this.props.handleSimpleEditableListEdit}
-                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                    disableActions={this.props.disableForm}
-                />
-
-                <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
-                <SimpleEditableList
-                    addText={"Add a publication"}
-                    fields={this.props.metadata.relatedPublications}
-                    editingStateFieldName="relatedPublications"
-                    handleAddClick={this.props.handleSimpleEditableListAdd}
-                    handleEditClick={this.props.handleSimpleEditableListEdit}
-                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                    disableActions={this.props.disableForm}
-                />
-
-                <h3 className="margin-top--1">Quality and methodology information</h3>
-                <Input
-                    id="qmi"
-                    label="QMI URL"
-                    onChange={this.props.handleStringInputChange}
-                    value={this.props.metadata.qmi}
-                    disabled={this.props.disableForm}
-                />
-
-                <h3>Methodologies</h3>
-                <SimpleEditableList
-                    addText={"Add a methodology"}
-                    fields={this.props.metadata.relatedMethodologies}
-                    editingStateFieldName="relatedMethodologies"
-                    handleAddClick={this.props.handleSimpleEditableListAdd}
-                    handleEditClick={this.props.handleSimpleEditableListEdit}
-                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                    disableActions={this.props.disableForm}
-                />
-
-                <h2 className="margin-top--1">What's changed</h2>
-                <SimpleEditableList
-                    addText={"Add a change"}
-                    fields={this.props.metadata.latestChanges}
-                    editingStateFieldName="latestChanges"
-                    handleAddClick={this.props.handleSimpleEditableListAdd}
-                    handleEditClick={this.props.handleSimpleEditableListEdit}
-                    handleDeleteClick={this.props.handleSimpleEditableListDelete}
-                    disableActions={this.props.disableForm || this.props.versionIsPublished}
+            <div className="margin-top--2">
+                <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
+                    Save
+                </button>
+                <SaveAndReviewActions
+                    disabled={disableForm}
+                    reviewState={collectionState}
+                    notInCollectionYet={!collectionState}
+                    userEmail={userEmail}
+                    lastEditedBy={lastEditedBy}
+                    onSubmit={handleSubmitForReviewClick}
+                    onApprove={handleMarkAsReviewedClick}
                 />
 
                 <div className="margin-top--2">
@@ -327,9 +346,9 @@ class DatasetMetadata extends Component {
                     {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                 </div>
             </div>
-        );
-    }
-}
+        </div>
+    );
+};
 
 DatasetMetadata.propTypes = propTypes;
 

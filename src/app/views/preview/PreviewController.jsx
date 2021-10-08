@@ -29,7 +29,7 @@ export class PreviewController extends Component {
         super(props);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const collectionID = this.props.routeParams.collectionID;
         this.fetchCollectionAndPages(collectionID);
 

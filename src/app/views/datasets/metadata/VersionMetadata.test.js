@@ -198,7 +198,7 @@ test("Dataset title updates after successful fetch from dataset API on mount", a
 
     datasets.get.mockImplementationOnce(() => Promise.resolve({ current: exampleDataset.current }));
 
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     await component.update(); // update() appears to be async so we need to wait for it to finish before asserting
     expect(component.state("title")).toBe("CPI");
 });
@@ -213,7 +213,7 @@ test("Correct modal type shows when user wants to add an alert", async () => {
 test("Handler for removing a summary of changes updates state correctly", async () => {
     const component = shallow(<VersionMetadata {...defaultProps} />);
 
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     await component.update();
     expect(component.state("alerts").length).toEqual(1);
     expect(component.state("alerts")[0]).toMatchObject({
@@ -230,7 +230,7 @@ test("Handler for removing a summary of changes updates state correctly", async 
 test("Latest changes are set in state correctly on mount", async () => {
     const component = shallow(<VersionMetadata {...defaultProps} />);
 
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     await component.update();
     expect(component.state("changes").length).toEqual(1);
     component.state("changes").forEach((change, index) => {
@@ -250,7 +250,7 @@ test("Available editions maps correctly to select element", async () => {
         { id: "time-series", name: "time-series" },
         { id: "another-type", name: "another-type" }
     ];
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     await component.update();
     const createdSelectContents = component.instance().mapEditionsToSelectOptions();
     expect(createdSelectContents).toEqual(expect.arrayContaining(validSelectContents));
@@ -259,7 +259,7 @@ test("Available editions maps correctly to select element", async () => {
 test("Handle select change event updates state correctly", async () => {
     const component = shallow(<VersionMetadata {...defaultProps} />);
 
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     await component.update();
     expect(component.state("edition")).toBe("time-series");
     component.instance().handleSelectChange({ preventDefault: () => {}, target: { id: "edition", value: "another-type" } });
@@ -361,7 +361,7 @@ test("Alert items map to card element correctly", async () => {
 
 test("Dimensions map correctly to input elements", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
     let dimensionNames = [];
     dimensions.forEach((dimension, index) => {
@@ -377,7 +377,7 @@ test("Dimensions map correctly to input elements", async () => {
 
 test("Changing the dimension title value updates the dimension label in state", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
     const mockLabelEvent = {
         target: {
             value: "New label",
@@ -416,7 +416,7 @@ test("Changing the dimension title value updates the dimension label in state", 
 
 test("addErrorToSummary returns correct values when it is passed a new error message", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
 
     const testArr = ["Error message 1"];
     const newArr = component.instance().addErrorToSummary("Error message 2", testArr);
@@ -425,7 +425,7 @@ test("addErrorToSummary returns correct values when it is passed a new error mes
 
 test("addErrorToSummary returns correct values when it is passed a duplicate error message", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
 
     const testArr = ["Error message 1", "Error message 2"];
     const newArr = component.instance().addErrorToSummary("Error message 2", testArr);
@@ -434,7 +434,7 @@ test("addErrorToSummary returns correct values when it is passed a duplicate err
 
 test("removeErrorFromSummary returns correct values when it is passed an existing error message", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
 
     const testArr = ["Error message 1", "Error message 2"];
     const newArr = component.instance().removeErrorFromSummary("Error message 1", testArr);
@@ -443,7 +443,7 @@ test("removeErrorFromSummary returns correct values when it is passed an existin
 
 test("removeErrorFromSummary returns correct values when it is passed an error that doesn't exist", async () => {
     const component = await shallow(<VersionMetadata {...defaultProps} />);
-    await component.instance().componentWillMount();
+    await component.instance().UNSAFE_componentWillMount();
 
     const testArr = ["Error message 1", "Error message 2"];
     const newArr = component.instance().removeErrorFromSummary("Error message 3", testArr);

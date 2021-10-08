@@ -29,7 +29,7 @@ export class CreateCantabularDatasetController extends Component {
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this.setStateFromParameters();
     };
 
