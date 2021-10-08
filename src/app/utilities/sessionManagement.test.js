@@ -2,24 +2,24 @@ import sessionManagement from "./sessionManagement";
 
 // jest.mock('./sessionManagement')
 
-var sessionStorageMock = (function () {
+var sessionStorageMock = (function() {
     var store = {};
     return {
-        getItem: function (key) {
+        getItem: function(key) {
             return store[key];
         },
-        setItem: function (key, value) {
+        setItem: function(key, value) {
             store[key] = value.toString();
         },
-        clear: function () {
+        clear: function() {
             store = {};
         },
-        removeItem: function (key) {
+        removeItem: function(key) {
             delete store[key];
         }
     };
 })();
-Object.defineProperty(window, 'sessionStorage', {value: sessionStorageMock});
+Object.defineProperty(window, "sessionStorage", { value: sessionStorageMock });
 
 test("when no times are given to the function setSessionExpiryTime it doesn't set any timers", () => {
     sessionManagement.setSessionExpiryTime();
@@ -48,16 +48,11 @@ test("when a valid sessionExpiryTime and refreshExpiryTime are given to to the f
     expect(sessionManagement.timers["refreshTimerInvasive"]).toBeDefined();
 });
 
-
 test("given timers exist and when timers are requested to be removed they are actually removed", () => {
-    sessionManagement.timers["sessionTimerPassive"] = setTimeout(() => {
-    }, 100000);
-    sessionManagement.timers["sessionTimerInvasive"] = setTimeout(() => {
-    }, 100000);
-    sessionManagement.timers["refreshTimerPassive"] = setTimeout(() => {
-    }, 100000);
-    sessionManagement.timers["refreshTimerInvasive"] = setTimeout(() => {
-    }, 100000);
+    sessionManagement.timers["sessionTimerPassive"] = setTimeout(() => {}, 100000);
+    sessionManagement.timers["sessionTimerInvasive"] = setTimeout(() => {}, 100000);
+    sessionManagement.timers["refreshTimerPassive"] = setTimeout(() => {}, 100000);
+    sessionManagement.timers["refreshTimerInvasive"] = setTimeout(() => {}, 100000);
     sessionManagement.removeTimers();
     expect(sessionManagement.timers["sessionTimerPassive"]).toBeUndefined();
     expect(sessionManagement.timers["sessionTimerInvasive"]).toBeUndefined();
