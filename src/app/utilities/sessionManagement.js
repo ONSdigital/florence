@@ -110,7 +110,7 @@ export default class sessionManagement {
             };
             notifications.add(notification);
         };
-        user.renewSession("")
+        user.renewSession()
             .then(response => {
                 if (response.expirationTime != null) {
                     this.setSessionExpiryTime(response.expirationTime);

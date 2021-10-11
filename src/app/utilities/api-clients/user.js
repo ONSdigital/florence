@@ -108,10 +108,6 @@ export default class user {
         const config = window.getEnv();
         if (config.enableNewSignIn) {
             user.expireSession()
-                .then(response => {
-                    clearCookies();
-                    sessionManagement.removeTimers();
-                })
                 .catch(error => {
                     if (error.status === 400) {
                         const notification = {
@@ -134,6 +130,9 @@ export default class user {
                         console.error("Error occurred sending DELETE to /tokens/self");
                         log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
                     }
+                    clearCookies();
+                })
+                .finally(() => {
                     clearCookies();
                     sessionManagement.removeTimers();
                 });
