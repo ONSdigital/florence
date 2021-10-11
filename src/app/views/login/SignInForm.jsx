@@ -25,6 +25,8 @@ const propTypes = {
 
 const LoginForm = props => {
     const showValidationErrorPanel = props.validationErrors.body && props.validationErrors.body.length > 0;
+    const firstTimeSignIn = new URLSearchParams(location.search).get("first-time");
+    const isFirstTimeSignIn = firstTimeSignIn != null && firstTimeSignIn === "true";
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
@@ -38,9 +40,11 @@ const LoginForm = props => {
                     {props.inputs.map((input, index) => {
                         return <Input key={index} {...input} disabled={props.isSubmitting} allowAutoComplete={true} />;
                     })}
-                    <div>
-                        <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
-                    </div>
+                    {!isFirstTimeSignIn && (
+                        <div>
+                            <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
+                        </div>
+                    )}
                     <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
                 </form>
             </div>
