@@ -1,9 +1,7 @@
 import sessionManagement from "./sessionManagement";
 
-// jest.mock('./sessionManagement')
-
-var sessionStorageMock = (function() {
-    var store = {};
+const sessionStorageMock = (function() {
+    let store = {};
     return {
         getItem: function(key) {
             return store[key];
