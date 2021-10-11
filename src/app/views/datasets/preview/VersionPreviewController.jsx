@@ -51,14 +51,10 @@ class VersionPreviewController extends Component {
             errorFetchingDataset: false
         };
 
-        this.handleSubmitForReview = this.handleSubmitForReview.bind(this);
-        this.handleMarkAsReviewed = this.handleMarkAsReviewed.bind(this);
-        this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
-
         this.backLinkPath = url.resolve(`metadata?collection=${this.props.collectionID}`, !this.props.collectionID);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isLoadingPreview: true });
 
         if (!this.props.collectionID) {
@@ -265,19 +261,19 @@ class VersionPreviewController extends Component {
         this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
     }
 
-    handleSubmitForReview() {
+    handleSubmitForReview = () => {
         this.handleUpdateReviewState(true, false);
-    }
+    };
 
-    handleMarkAsReviewed() {
+    handleMarkAsReviewed = () => {
         this.handleUpdateReviewState(false, true);
-    }
+    };
 
-    handlePreviewLoad() {
+    handlePreviewLoad = () => {
         //TODO Preview should wait until it's fully loaded before hiding the loader - this currently breaks because React is detecting this final state change
         // on render for some reason. So 'hidden' property on the Preview component is hardcoded to true for now.
         this.setState({ isLoadingPreview: false });
-    }
+    };
 
     renderDatasetTitle() {
         if (this.state.isFetchingDatasetData) {

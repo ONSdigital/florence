@@ -38,7 +38,7 @@ export class LoginController extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }

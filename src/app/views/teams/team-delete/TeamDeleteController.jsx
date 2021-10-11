@@ -37,25 +37,21 @@ export class TeamDeleteController extends Component {
             },
             parentPath: this.props.pathname.substr(0, this.props.pathname.lastIndexOf("/delete"))
         };
-
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleFormInput = this.handleFormInput.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
-    handleCancel() {
+    handleCancel = () => {
         this.props.dispatch(push(this.state.parentPath));
-    }
+    };
 
-    handleFormInput(event) {
+    handleFormInput = event => {
         const input = Object.assign({}, this.state.input, {
             value: event.target.value,
             error: ""
         });
         this.setState({ input });
-    }
+    };
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
         if (this.state.input.value !== this.props.name) {
             log.event(
@@ -155,7 +151,7 @@ export class TeamDeleteController extends Component {
                     }
                 }
             });
-    }
+    };
 
     render() {
         return (

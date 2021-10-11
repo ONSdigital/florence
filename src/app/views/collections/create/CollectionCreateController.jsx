@@ -61,21 +61,9 @@ export class CollectionCreateController extends Component {
         };
 
         this.blankNewCollectionDetails = this.state.newCollectionDetails;
-
-        this.handleCollectionNameChange = this.handleCollectionNameChange.bind(this);
-        this.handleTeamSelection = this.handleTeamSelection.bind(this);
-        this.handleRemoveTeam = this.handleRemoveTeam.bind(this);
-        this.handleCollectionTypeChange = this.handleCollectionTypeChange.bind(this);
-        this.handleScheduleTypeChange = this.handleScheduleTypeChange.bind(this);
-        this.handlePublishDateChange = this.handlePublishDateChange.bind(this);
-        this.handlePublishTimeChange = this.handlePublishTimeChange.bind(this);
-        this.handleAddRelease = this.handleAddRelease.bind(this);
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleCloseRelease = this.handleCloseRelease.bind(this);
-        this.handleSelectRelease = this.handleSelectRelease.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.getAllTeams();
     }
 
@@ -144,7 +132,7 @@ export class CollectionCreateController extends Component {
             });
     }
 
-    handleCollectionNameChange(event) {
+    handleCollectionNameChange = event => {
         const collectionName = {
             value: event.target.value,
             errorMsg: ""
@@ -155,9 +143,9 @@ export class CollectionCreateController extends Component {
             name: collectionName
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
-    }
+    };
 
-    handleTeamSelection(event) {
+    handleTeamSelection = event => {
         if (!event.target.value) {
             return;
         }
@@ -196,9 +184,9 @@ export class CollectionCreateController extends Component {
             newCollectionDetails,
             updatedAllTeams
         });
-    }
+    };
 
-    handleRemoveTeam(teamToRemove) {
+    handleRemoveTeam = teamToRemove => {
         const updatedTeams = this.state.newCollectionDetails.teams.filter(team => {
             return team.id !== teamToRemove.id;
         });
@@ -220,9 +208,9 @@ export class CollectionCreateController extends Component {
             newCollectionDetails,
             updatedAllTeams
         });
-    }
+    };
 
-    handleCollectionTypeChange(event) {
+    handleCollectionTypeChange = event => {
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
             type: event.value,
@@ -234,17 +222,17 @@ export class CollectionCreateController extends Component {
             }
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
-    }
+    };
 
-    handleScheduleTypeChange(event) {
+    handleScheduleTypeChange = event => {
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
             scheduleType: event.value
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
-    }
+    };
 
-    handlePublishDateChange(event) {
+    handlePublishDateChange = event => {
         const publishDate = {
             value: event.target.value,
             errorMsg: ""
@@ -255,9 +243,9 @@ export class CollectionCreateController extends Component {
             publishDate: publishDate
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
-    }
+    };
 
-    handlePublishTimeChange(event) {
+    handlePublishTimeChange = event => {
         const publishTime = {
             value: event.target.value,
             errorMsg: ""
@@ -268,14 +256,14 @@ export class CollectionCreateController extends Component {
             publishTime: publishTime
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
-    }
+    };
 
-    handleAddRelease(event) {
+    handleAddRelease = event => {
         event.preventDefault();
         this.setState({ showScheduleByRelease: true });
-    }
+    };
 
-    handleSelectRelease(release) {
+    handleSelectRelease = release => {
         this.setState(state => ({
             newCollectionDetails: {
                 ...state.newCollectionDetails,
@@ -289,11 +277,11 @@ export class CollectionCreateController extends Component {
             },
             showScheduleByRelease: false
         }));
-    }
+    };
 
-    handleCloseRelease() {
+    handleCloseRelease = () => {
         this.setState({ showScheduleByRelease: false });
-    }
+    };
 
     makePublishDate() {
         if (this.state.newCollectionDetails.type !== "scheduled") {
@@ -328,7 +316,7 @@ export class CollectionCreateController extends Component {
         }
     }
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
         this.setState({ isSubmitting: true });
 
@@ -456,7 +444,7 @@ export class CollectionCreateController extends Component {
                 }
                 console.error(error);
             });
-    }
+    };
 
     handle409SubmitStatus(error) {
         if (error.body.message.includes("A collection with this name already exists")) {

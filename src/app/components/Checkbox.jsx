@@ -18,26 +18,23 @@ class Checkbox extends Component {
             isFocused: false,
             value: false
         };
-
-        this.handleFocus = this.handleFocus.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isChecked) {
             this.setState({ value: this.props.isChecked });
         }
     }
 
-    handleChange(event) {
+    handleChange = event => {
         const isChecked = event.target.checked;
         this.setState({ value: isChecked });
         this.props.onChange(isChecked);
-    }
+    };
 
-    handleFocus() {
+    handleFocus = () => {
         this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
-    }
+    };
 
     render() {
         return (

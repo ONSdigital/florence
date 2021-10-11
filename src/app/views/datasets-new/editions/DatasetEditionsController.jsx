@@ -37,7 +37,7 @@ export class DatasetEditionsController extends Component {
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         const datasetID = this.props.params.datasetID;
         this.getAllEditions(datasetID);
     };

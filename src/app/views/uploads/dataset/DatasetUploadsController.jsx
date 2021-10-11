@@ -33,11 +33,9 @@ export class DatasetUploadsController extends Component {
             filteredDatasets: [],
             searchTerm: ""
         };
-
-        this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingData: true });
 
         const getRecipes = recipes.getAll();
@@ -103,7 +101,7 @@ export class DatasetUploadsController extends Component {
             });
     }
 
-    handleNewVersionClick(event) {
+    handleNewVersionClick = event => {
         const recipeID = event.target.getAttribute("data-recipe-id");
         this.setState({ disabledDataset: recipeID });
         datasetImport
@@ -173,7 +171,7 @@ export class DatasetUploadsController extends Component {
                 }
                 console.error("Error creating new import job: ", error);
             });
-    }
+    };
 
     mapDatasetsToState = datasets => {
         try {
