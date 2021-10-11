@@ -69,13 +69,13 @@ export default class sessionManagement {
 
     static monitorInteraction = () => {
         this.eventsToMonitor.forEach(name => {
-            document.addEventListener(name, this.refreshSession, true);
+            document.addEventListener(name, this.refreshSession);
         });
     };
 
     static removeInteractionMonitoring = () => {
         this.eventsToMonitor.forEach(name => {
-            document.removeEventListener(name, this.refreshSession, true);
+            document.removeEventListener(name, this.refreshSession);
         });
     };
 
