@@ -3,7 +3,7 @@ import Drawer from "./Drawer";
 import { shallow } from "enzyme";
 
 const defaultProps = {
-    handleTransitionEnd: () => {}
+    handleTransitionEnd: () => {},
 };
 
 describe("Correct classes are set by the props", () => {
@@ -17,7 +17,7 @@ describe("Correct classes are set by the props", () => {
     it("sets the 'animatable' class when isAnimatable = true", () => {
         expect(component.hasClass("animatable")).toEqual(false);
         component.setProps({
-            isAnimatable: true
+            isAnimatable: true,
         });
         expect(component.hasClass("animatable")).toEqual(true);
     });
@@ -25,7 +25,7 @@ describe("Correct classes are set by the props", () => {
     it("removes the 'animatable' class when isAnimatable = false", () => {
         expect(component.hasClass("animatable")).toEqual(true);
         component.setProps({
-            isAnimatable: false
+            isAnimatable: false,
         });
         expect(component.hasClass("animatable")).toEqual(false);
     });
@@ -33,7 +33,7 @@ describe("Correct classes are set by the props", () => {
     it("sets the 'visible' class when isVisible = true", () => {
         expect(component.hasClass("visible")).toEqual(false);
         component.setProps({
-            isVisible: true
+            isVisible: true,
         });
         expect(component.hasClass("visible")).toEqual(true);
     });
@@ -41,7 +41,7 @@ describe("Correct classes are set by the props", () => {
     it("removes the 'visible' class when isVisible = false", () => {
         expect(component.hasClass("visible")).toEqual(true);
         component.setProps({
-            isVisible: false
+            isVisible: false,
         });
         expect(component.hasClass("visible")).toEqual(false);
     });
@@ -50,7 +50,7 @@ describe("Correct classes are set by the props", () => {
 test("Renders child components", () => {
     const props = {
         ...defaultProps,
-        children: <h1 id="heading-1">Heading 1</h1>
+        children: <h1 id="heading-1">Heading 1</h1>,
     };
     const component = shallow(<Drawer {...props} />);
 
@@ -63,7 +63,7 @@ test("Function is run at the end of the drawer being animated", () => {
         ...defaultProps,
         handleTransitionEnd: () => {
             functionHasRun = true;
-        }
+        },
     };
     const component = shallow(<Drawer {...props} />);
 

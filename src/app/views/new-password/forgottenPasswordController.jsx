@@ -7,7 +7,7 @@ import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class ForgottenPasswordController extends Component {
@@ -17,10 +17,10 @@ export class ForgottenPasswordController extends Component {
             validationErrors: {},
             email: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             hasSubmitted: false,
-            isSubmitting: false
+            isSubmitting: false,
         };
     }
 
@@ -44,7 +44,7 @@ export class ForgottenPasswordController extends Component {
                     type: "warning",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT
+                    message: errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT,
                 };
                 console.error(errCodes.RESET_PASSWORD_REQUEST_RATE_LIMIT);
                 notifications.add(notification);
@@ -62,7 +62,7 @@ export class ForgottenPasswordController extends Component {
             type: "warning",
             isDismissable: true,
             autoDismiss: 15000,
-            message: errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR
+            message: errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR,
         };
         console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
         notifications.add(notification);
@@ -88,7 +88,7 @@ export class ForgottenPasswordController extends Component {
                 }
                 stateToSet = {
                     ...this.state,
-                    validationErrors
+                    validationErrors,
                 };
                 stateToSet.email.errorMsg = errorContents.emailMessage;
             } else {
@@ -119,7 +119,7 @@ export class ForgottenPasswordController extends Component {
 
                 this.setState({
                     ...stateToSet,
-                    isSubmitting: false
+                    isSubmitting: false,
                 });
             });
     }
@@ -128,8 +128,8 @@ export class ForgottenPasswordController extends Component {
         this.setState({
             email: {
                 value: event.target.value,
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
     };
 
@@ -139,7 +139,7 @@ export class ForgottenPasswordController extends Component {
         this.setState(
             {
                 hasSubmitted: false,
-                isSubmitting: true
+                isSubmitting: true,
             },
             () => {
                 this.requestEmailChange(email);
@@ -154,7 +154,7 @@ export class ForgottenPasswordController extends Component {
             label: "Email",
             type: "text",
             onChange: this.handleInputChange,
-            error: this.state.email.errorMsg
+            error: this.state.email.errorMsg,
         };
         return (
             <div>

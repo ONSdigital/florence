@@ -17,10 +17,10 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element,
     params: PropTypes.shape({
-        userID: PropTypes.string
+        userID: PropTypes.string,
     }).isRequired,
     loggedInUser: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.shape({})).isRequired
+    users: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 export class UsersController extends Component {
@@ -28,7 +28,7 @@ export class UsersController extends Component {
         super(props);
 
         this.state = {
-            isFetchingUsers: false
+            isFetchingUsers: false,
         };
 
         this.isAdmin = auth.isAdmin(this.props.loggedInUser);
@@ -60,7 +60,7 @@ export class UsersController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to get users.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -69,7 +69,7 @@ export class UsersController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -79,7 +79,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -89,7 +89,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -100,7 +100,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -121,7 +121,7 @@ export class UsersController extends Component {
                 type: "warning",
                 message: "Error mapping users to state",
                 isDismissable: true,
-                autoDismiss: 3000
+                autoDismiss: 3000,
             };
             notifications.add(notification);
             console.error("Error mapping users to state: ", error);
@@ -148,7 +148,7 @@ export class UsersController extends Component {
                         <SelectableBox
                             columns={[
                                 { heading: "User", width: "6" },
-                                { heading: "Email", width: "6" }
+                                { heading: "Email", width: "6" },
                             ]}
                             rows={this.props.users}
                             isUpdating={this.state.isFetchingUsers}
@@ -170,7 +170,7 @@ export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         users: state.state.users.all,
-        loggedInUser: state.state.user
+        loggedInUser: state.state.user,
     };
 }
 

@@ -8,7 +8,7 @@ import ping from "./api-clients/ping";
 import cookies from "./cookies";
 
 export function hasValidAuthToken() {
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         if (!cookies.get("access_token")) {
             resolve(false);
             return;

@@ -10,7 +10,7 @@ const propTypes = {
     checked: PropTypes.bool,
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
-    subLabel: PropTypes.string
+    subLabel: PropTypes.string,
 };
 
 export default class RadioButton extends Component {
@@ -19,7 +19,7 @@ export default class RadioButton extends Component {
 
         this.state = {
             focused: false,
-            checked: props.checked
+            checked: props.checked,
         };
     }
 

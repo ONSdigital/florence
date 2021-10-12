@@ -28,7 +28,7 @@ const propTypes = {
         version: PropTypes.number,
         releaseDate: PropTypes.shape({
             value: PropTypes.string,
-            error: PropTypes.string
+            error: PropTypes.string,
         }),
         nextReleaseDate: PropTypes.string,
         unitOfMeasure: PropTypes.string,
@@ -36,7 +36,7 @@ const propTypes = {
         dimensions: PropTypes.array,
         qmi: PropTypes.string,
         latestChanges: PropTypes.array,
-        usageNotes: PropTypes.array
+        usageNotes: PropTypes.array,
     }).isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleDateInputChange: PropTypes.func.isRequired,
@@ -56,7 +56,7 @@ const propTypes = {
     handleSubmitForReviewClick: PropTypes.func.isRequired,
     handleMarkAsReviewedClick: PropTypes.func.isRequired,
     disableForm: PropTypes.bool.isRequired,
-    isSaving: PropTypes.bool
+    isSaving: PropTypes.bool,
 };
 
 const DatasetMetadata = ({
@@ -205,13 +205,13 @@ const DatasetMetadata = ({
                     {
                         id: "national-statistic-yes",
                         value: "true",
-                        label: "Yes"
+                        label: "Yes",
                     },
                     {
                         id: "national-statistic-no",
                         value: "false",
-                        label: "No"
-                    }
+                        label: "No",
+                    },
                 ]}
                 selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
                 onChange={handleNationalStatisticChange}
@@ -226,13 +226,13 @@ const DatasetMetadata = ({
                     {
                         id: "national-statistic-yes",
                         value: "true",
-                        label: "Yes"
+                        label: "Yes",
                     },
                     {
                         id: "national-statistic-no",
                         value: "false",
-                        label: "No"
-                    }
+                        label: "No",
+                    },
                 ]}
                 selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
                 onChange={handleNationalStatisticChange}
@@ -331,7 +331,7 @@ DatasetMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        userEmail: state.state.user.email
+        userEmail: state.state.user.email,
     };
 }
 

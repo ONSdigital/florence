@@ -3,7 +3,7 @@ import http from "../http";
 export default class datasetImport {
     static create(recipeID) {
         const body = {
-            recipe: recipeID
+            recipe: recipeID,
         };
         return http.post("/import/jobs", body, true).then(response => {
             return response;
@@ -13,7 +13,7 @@ export default class datasetImport {
     static addFile(jobID, fileAlias, fileURL) {
         const body = {
             alias_name: fileAlias,
-            url: fileURL
+            url: fileURL,
         };
         return http.put(`/import/jobs/${jobID}/files`, body, true).then(response => {
             return response;
@@ -26,7 +26,7 @@ export default class datasetImport {
             return Promise.reject();
         }
         const body = {
-            state: status
+            state: status,
         };
 
         if (links) {

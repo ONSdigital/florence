@@ -10,36 +10,36 @@ const mockAPIResponse = {
             title: "Weekly deaths",
             description: "The most up-to-date provisional figures for deaths involving the coronavirus (COVID-19) in England and Wales.",
             uri: "/",
-            image: null
+            image: null,
         },
         {
             title: "Coronavirus - faster indicators",
             description: "The latest data and experimental indicators on the UK economy and society.",
             uri: "/",
-            image: null
+            image: null,
         },
         {
             title: "Coronavirus roundup",
             description: "Our summary of the latest data and analysis related to the coronavirus pandemic.",
             uri: "/",
-            image: null
-        }
+            image: null,
+        },
     ],
     aroundONS: [
         {
             title: "Local statistics",
             description: "Where to find statistics covering specific areas.",
             uri: "/",
-            image: null
+            image: null,
         },
         {
             title: "Secure Research Service",
             description: "Find out how ONS secure data could help your research project.",
             uri: "/",
-            image: null
-        }
+            image: null,
+        },
     ],
-    serviceMessage: "This is a default service message for mock testing"
+    serviceMessage: "This is a default service message for mock testing",
 };
 
 const mockCollectionData = {
@@ -47,17 +47,17 @@ const mockCollectionData = {
         "/data.json": [
             {
                 type: "EDITED",
-                email: "test@email.com"
-            }
-        ]
-    }
+                email: "test@email.com",
+            },
+        ],
+    },
 };
 
 jest.mock("../../../utilities/api-clients/homepage", () => {
     return {
         get: jest.fn(() => {
             return Promise.resolve(mockAPIResponse);
-        })
+        }),
     };
 });
 
@@ -80,7 +80,7 @@ jest.mock("../../../utilities/api-clients/collections", () => {
         }),
         checkContentIsInCollection: jest.fn(() => {
             return Promise.resolve("");
-        })
+        }),
     };
 });
 
@@ -93,13 +93,13 @@ const defaultProps = {
     params: {
         collectionID: "12345",
         homepageDataField: "",
-        homepageDataFieldID: ""
+        homepageDataFieldID: "",
     },
     userEmail: "florence@test.com",
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/homepage"
-    }
+        pathname: "florence/collections/12345/homepage",
+    },
 };
 
 let wrapper;
@@ -164,7 +164,7 @@ describe("editable list handlers", () => {
             id: 1,
             title: "Title",
             description: "Description",
-            uri: "/"
+            uri: "/",
         };
         wrapper.instance().handleSimpleEditableListEdit(editedField, "featuredContent");
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
@@ -177,7 +177,7 @@ describe("editable list handlers", () => {
             id: 1,
             title: "Title",
             description: "Description",
-            uri: "/"
+            uri: "/",
         };
         wrapper.instance().handleSimpleEditableListEdit(editedField, "aroundONS");
         expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
@@ -194,7 +194,7 @@ describe("editable list handlers", () => {
 
     it("removes featuredContent element with ID of 0 when handleSimpleEditableListDelete is called", () => {
         const deletedField = {
-            id: 0
+            id: 0,
         };
         wrapper.instance().handleSimpleEditableListDelete(deletedField, "featuredContent");
         expect(wrapper.state("homepageData").featuredContent.length).toBe(2);
@@ -202,7 +202,7 @@ describe("editable list handlers", () => {
 
     it("removes aroundONS element with ID of 0 when handleSimpleEditableListDelete is called", () => {
         const deletedField = {
-            id: 0
+            id: 0,
         };
         wrapper.instance().handleSimpleEditableListDelete(deletedField, "aroundONS");
         expect(wrapper.state("homepageData").aroundONS.length).toBe(1);
@@ -212,7 +212,7 @@ describe("editable list handlers", () => {
         const newField = {
             title: "Title 2",
             description: "Description 5",
-            uri: "/"
+            uri: "/",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(newField, "featuredContent");
         expect(wrapper.state("homepageData").featuredContent.length).toBe(3);
@@ -222,7 +222,7 @@ describe("editable list handlers", () => {
         const newField = {
             title: "Title 2",
             description: "Description 5",
-            uri: "/"
+            uri: "/",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(newField, "aroundONS");
         expect(wrapper.state("homepageData").aroundONS.length).toBe(2);
@@ -233,7 +233,7 @@ describe("editable list handlers", () => {
             id: 0,
             title: "New featuredContent Title",
             description: "New featuredContent Description",
-            uri: "/new-uri"
+            uri: "/new-uri",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(updatedfield, "featuredContent");
         expect(wrapper.state("homepageData").featuredContent[0].title).toBe("New featuredContent Title");
@@ -246,7 +246,7 @@ describe("editable list handlers", () => {
             id: 0,
             title: "New aroundONS Title",
             description: "New aroundONS Description",
-            uri: "/new-uri"
+            uri: "/new-uri",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(updatedfield, "aroundONS");
         expect(wrapper.state("homepageData").aroundONS[0].title).toBe("New aroundONS Title");
@@ -261,7 +261,7 @@ describe("submit handlers", () => {
             id: 0,
             title: "New featuredContent Title",
             description: "New featuredContent Description",
-            uri: "/new-uri"
+            uri: "/new-uri",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(updatedfield, "featuredContent");
         await wrapper.instance().handleSaveAndPreview();
@@ -274,7 +274,7 @@ describe("submit handlers", () => {
             id: 0,
             title: "New aroundONS Title",
             description: "New aroundONS Description",
-            uri: "/new-uri"
+            uri: "/new-uri",
         };
         await wrapper.instance().handleSimpleEditableListEditSuccess(updatedfield, "aroundONS");
         await wrapper.instance().handleSaveAndPreview();

@@ -5,10 +5,10 @@ import Panel from "../../components/panel/Panel";
 const propTypes = {
     validationErrors: PropTypes.shape({
         heading: PropTypes.string,
-        body: PropTypes.oneOfType([PropTypes.string, PropTypes.element])
+        body: PropTypes.oneOfType([PropTypes.string, PropTypes.element]),
     }),
     onSubmit: PropTypes.func,
-    email: PropTypes.string
+    email: PropTypes.string,
 };
 
 const ForgottenPasswordEmailSent = props => {

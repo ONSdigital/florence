@@ -5,14 +5,14 @@ const propTypes = {
     email: PropTypes.string.isRequired,
     isDisabled: PropTypes.bool,
     onClick: PropTypes.func.isRequired,
-    action: PropTypes.oneOf(["add", "remove"]).isRequired
+    action: PropTypes.oneOf(["add", "remove"]).isRequired,
 };
 
 class TeamEditItem extends Component {
     handleClick = () => {
         this.props.onClick({
             email: this.props.email,
-            action: this.props.action
+            action: this.props.action,
         });
     };
 

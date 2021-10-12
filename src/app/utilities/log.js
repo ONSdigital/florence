@@ -21,7 +21,7 @@ export const eventTypes = {
     socketOpen: "SOCKET_OPEN",
     socketError: "SOCKET_ERROR",
     unexpectedRuntimeError: "UNEXPECTED_RUNTIME_ERROR",
-    runtimeWarning: "RUNTIME_WARNING"
+    runtimeWarning: "RUNTIME_WARNING",
 };
 
 const instanceID = uuid();
@@ -29,7 +29,7 @@ const instanceID = uuid();
 const excludeFromServerLogs = [
     eventTypes.pingSent,
     eventTypes.pingReceived,
-    eventTypes.socketBufferFull // This has to be excluded from being sent to the server or else we could have an infinite loop
+    eventTypes.socketBufferFull, // This has to be excluded from being sent to the server or else we could have an infinite loop
 ];
 
 export default class log {
@@ -52,7 +52,7 @@ export default class log {
             instanceID,
             created: timestamp.toISOString(),
             timestamp: timestamp.getTime(),
-            payload: payload || null
+            payload: payload || null,
         };
 
         storage.add(event);

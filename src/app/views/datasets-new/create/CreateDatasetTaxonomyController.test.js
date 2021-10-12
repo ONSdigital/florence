@@ -10,7 +10,7 @@ console.error = () => {};
 jest.mock("../../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
-        error: function() {}
+        error: function () {},
     };
 });
 
@@ -19,7 +19,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -27,14 +27,14 @@ jest.mock("../../../utilities/api-clients/taxonomy", () => {
     return {
         getAllProductPages: jest.fn(() => {
             return Promise.resolve(mockedAllTopics);
-        })
+        }),
     };
 });
 jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         create: jest.fn(() => {
             return Promise.resolve();
-        })
+        }),
     };
 });
 
@@ -45,70 +45,70 @@ const mockedAllTopics = [
     {
         _type: "product_page",
         description: {
-            title: "Activity, size and location"
+            title: "Activity, size and location",
         },
-        uri: "/businessindustryandtrade/business/activitysizeandlocation"
+        uri: "/businessindustryandtrade/business/activitysizeandlocation",
     },
     {
         _type: "product_page",
         description: {
-            title: "Adoption"
+            title: "Adoption",
         },
-        uri: "/peoplepopulationandcommunity/birthsdeathsandmarriages/adoption"
+        uri: "/peoplepopulationandcommunity/birthsdeathsandmarriages/adoption",
     },
     {
         _type: "product_page",
         description: {
-            title: "Ageing"
+            title: "Ageing",
         },
-        uri: "/peoplepopulationandcommunity/birthsdeathsandmarriages/ageing"
+        uri: "/peoplepopulationandcommunity/birthsdeathsandmarriages/ageing",
     },
     {
         _type: "product_page",
         description: {
-            title: "Balance of payments"
+            title: "Balance of payments",
         },
-        uri: "/economy/nationalaccounts/balanceofpayments"
+        uri: "/economy/nationalaccounts/balanceofpayments",
     },
     {
         _type: "product_page",
         description: {
-            title: "Bankruptcy/insolvency"
+            title: "Bankruptcy/insolvency",
         },
-        uri: "/businessindustryandtrade/changestobusiness/bankruptcyinsolvency"
+        uri: "/businessindustryandtrade/changestobusiness/bankruptcyinsolvency",
     },
     {
         _type: "product_page",
         description: {
-            title: "Business births, deaths and survival rates"
+            title: "Business births, deaths and survival rates",
         },
-        uri: "/businessindustryandtrade/changestobusiness/businessbirthsdeathsandsurvivalrates"
+        uri: "/businessindustryandtrade/changestobusiness/businessbirthsdeathsandsurvivalrates",
     },
     {
         _type: "product_page",
         description: {
-            title: "Business innovation"
+            title: "Business innovation",
         },
-        uri: "/businessindustryandtrade/business/businessinnovation"
-    }
+        uri: "/businessindustryandtrade/business/businessinnovation",
+    },
 ];
 
 const mockedMappedState = [
     {
         id: "/businessindustryandtrade/business/activitysizeandlocation",
         value: "/businessindustryandtrade/business/activitysizeandlocation",
-        label: "Activity, size and location"
+        label: "Activity, size and location",
     },
     {
         id: "/peoplepopulationandcommunity/birthsdeathsandmarriages/adoption",
         value: "/peoplepopulationandcommunity/birthsdeathsandmarriages/adoption",
-        label: "Adoption"
+        label: "Adoption",
     },
     {
         id: "/peoplepopulationandcommunity/birthsdeathsandmarriages/ageing",
         value: "/peoplepopulationandcommunity/birthsdeathsandmarriages/ageing",
-        label: "Ageing"
-    }
+        label: "Ageing",
+    },
 ];
 
 const defaultProps = {
@@ -116,11 +116,11 @@ const defaultProps = {
         dispatchedActions.push(event);
     },
     location: {
-        pathname: "florence/collections/12345/datasets/create"
+        pathname: "florence/collections/12345/datasets/create",
     },
     params: {
-        datasetID: "test-id"
-    }
+        datasetID: "test-id",
+    },
 };
 
 const component = shallow(<CreateDatasetTaxonomyController {...defaultProps} />);
@@ -137,12 +137,12 @@ describe("mapTaxonomyTopicsToState ", () => {
             expect(mapped[0]).toMatchObject({
                 id: mockedAllTopics[0].uri,
                 value: mockedAllTopics[0].uri,
-                label: mockedAllTopics[0].description.title
+                label: mockedAllTopics[0].description.title,
             });
             expect(mapped[3]).toMatchObject({
                 id: mockedAllTopics[3].uri,
                 value: mockedAllTopics[3].uri,
-                label: mockedAllTopics[3].description.title
+                label: mockedAllTopics[3].description.title,
             });
         });
     });
@@ -150,7 +150,7 @@ describe("mapTaxonomyTopicsToState ", () => {
         const brokenTopicsLists = [...mockedAllTopics];
         brokenTopicsLists.push({
             _type: "product_page",
-            uri: "/businessindustryandtrade/business/businessinnovation"
+            uri: "/businessindustryandtrade/business/businessinnovation",
         });
         it("shows notification", () => {
             component.instance().mapTaxonomyTopicsToState(brokenTopicsLists);
@@ -216,9 +216,9 @@ test("makeCreateDatasetPostBody returns correct model", () => {
     expect(postBody).toMatchObject({
         links: {
             taxonomy: {
-                href: "/test/dataset-id"
-            }
-        }
+                href: "/test/dataset-id",
+            },
+        },
     });
 });
 

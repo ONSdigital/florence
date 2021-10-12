@@ -9,7 +9,7 @@ const propTypes = {
     lastEditedBy: PropTypes.string,
     onSubmit: PropTypes.func,
     onApprove: PropTypes.func,
-    notInCollectionYet: PropTypes.bool
+    notInCollectionYet: PropTypes.bool,
 };
 
 class DatasetReviewActions extends Component {

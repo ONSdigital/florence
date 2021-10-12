@@ -17,7 +17,7 @@ const propTypes = {
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired,
         edition: PropTypes.string.isRequired,
-        version: PropTypes.string.isRequired
+        version: PropTypes.string.isRequired,
     }).isRequired,
     versionURL: PropTypes.string,
     collectionID: PropTypes.string,
@@ -26,16 +26,16 @@ const propTypes = {
         collection_id: PropTypes.string,
         links: PropTypes.shape({
             latest_version: PropTypes.shape({
-                href: PropTypes.string
-            })
+                href: PropTypes.string,
+            }),
         }),
         reviewState: PropTypes.string,
-        lastEditedBy: PropTypes.string
+        lastEditedBy: PropTypes.string,
     }),
     dataset: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired
-    })
+        title: PropTypes.string.isRequired,
+    }),
 };
 
 class VersionPreviewController extends Component {
@@ -48,7 +48,7 @@ class VersionPreviewController extends Component {
             isLoadingPreview: false,
             isFetchingCollectionData: false,
             isFetchingDatasetData: false,
-            errorFetchingDataset: false
+            errorFetchingDataset: false,
         };
 
         this.backLinkPath = url.resolve(`metadata?collection=${this.props.collectionID}`, !this.props.collectionID);
@@ -85,7 +85,7 @@ class VersionPreviewController extends Component {
                     case 403: {
                         const notification = {
                             type: "neutral",
-                            message: `You do not have permission to view dataset version '${versionURL}'`
+                            message: `You do not have permission to view dataset version '${versionURL}'`,
                         };
                         notifications.add(notification);
                         break;
@@ -93,7 +93,7 @@ class VersionPreviewController extends Component {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: `Dataset version '${versionURL}' can't be found`
+                            message: `Dataset version '${versionURL}' can't be found`,
                         };
                         notifications.add(notification);
                         break;
@@ -101,7 +101,7 @@ class VersionPreviewController extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: `There was a network error whilst getting dataset version '${versionURL}'. Please check your connection and try again`
+                            message: `There was a network error whilst getting dataset version '${versionURL}'. Please check your connection and try again`,
                         };
                         notifications.add(notification);
                         break;
@@ -109,7 +109,7 @@ class VersionPreviewController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: `An unexpected error occurred whilst getting dataset version '${versionURL}'`
+                            message: `An unexpected error occurred whilst getting dataset version '${versionURL}'`,
                         };
                         notifications.add(notification);
                     }
@@ -132,11 +132,11 @@ class VersionPreviewController extends Component {
             .catch(error => {
                 console.error("Error fetching dataset on version preview screen", error);
                 log.add(eventTypes.unexpectedRuntimeError, {
-                    message: `Error fetching dataset on version preview screen. Error:${JSON.stringify(error)}`
+                    message: `Error fetching dataset on version preview screen. Error:${JSON.stringify(error)}`,
                 });
                 this.setState({
                     isFetchingDatasetData: false,
-                    errorFetchingDataset: true
+                    errorFetchingDataset: true,
                 });
             });
     }
@@ -175,7 +175,7 @@ class VersionPreviewController extends Component {
         } catch (error) {
             this.setState({
                 isFetchingCollectionData: false,
-                isReadOnly: true
+                isReadOnly: true,
             });
             switch (error.status) {
                 case 401: {
@@ -186,7 +186,7 @@ class VersionPreviewController extends Component {
                     const notification = {
                         type: "neutral",
                         message: `You do not permission to get details for collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -195,7 +195,7 @@ class VersionPreviewController extends Component {
                     const notification = {
                         type: "warning",
                         message: `Could not find collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -204,7 +204,7 @@ class VersionPreviewController extends Component {
                     const notification = {
                         type: "warning",
                         message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -215,7 +215,7 @@ class VersionPreviewController extends Component {
                     "Unable to update metadata screen with version's review/edit status in collection " +
                     collectionID +
                     ". Error: " +
-                    JSON.stringify(error)
+                    JSON.stringify(error),
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }
@@ -236,7 +236,7 @@ class VersionPreviewController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {
                 message: `Error updating review state for dataset version '${this.props.versionURL}' to '${isSubmittingForReview ? "Complete" : ""}${
                     isMarkingAsReviewed ? "Reviewed" : ""
-                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`,
             });
             console.error(
                 `Error updating review state for dataset '${this.props.versionURL}' to '${isSubmittingForReview ? "Complete" : ""}${
@@ -316,13 +316,13 @@ function buildVersionPath(version) {
     } catch (error) {
         console.error("Error attempting to build path for a dataset version", error, version);
         log.add(eventTypes.unexpectedRuntimeError, {
-            message: `Error attempting to build path for a dataset version. Error: ${JSON.stringify(error)}. Version data: ${JSON.stringify}`
+            message: `Error attempting to build path for a dataset version. Error: ${JSON.stringify(error)}. Version data: ${JSON.stringify}`,
         });
         notifications.add({
             type: "warning",
             message: "Unable to build path for this version, so some functionality may not work as expected",
             autoDismiss: 6000,
-            isDismissable: true
+            isDismissable: true,
         });
         return "";
     }
@@ -334,7 +334,7 @@ function mapStateToProps(state) {
         dataset: state.state.datasets.activeDataset,
         versionURL: state.state.datasets.activeVersion ? buildVersionPath(state.state.datasets.activeVersion) : null,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
-        userEmail: state.state.user.email
+        userEmail: state.state.user.email,
     };
 }
 

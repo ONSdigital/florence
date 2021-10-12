@@ -12,12 +12,12 @@ import SimpleSelectableList from "../../../components/simple-selectable-list/Sim
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
     }).isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
+        pathname: PropTypes.string.isRequired,
     }).isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class DatasetEditionsController extends Component {
@@ -31,9 +31,9 @@ export class DatasetEditionsController extends Component {
                 {
                     title: "Create new edition",
                     id: "create-new-edition",
-                    url: this.props.location.pathname + "/editions"
-                }
-            ]
+                    url: this.props.location.pathname + "/editions",
+                },
+            ],
         };
     }
 
@@ -51,7 +51,7 @@ export class DatasetEditionsController extends Component {
                 this.setState({
                     isFetchingData: false,
                     editions: editionsList,
-                    datasetTitle: response.dataset_name
+                    datasetTitle: response.dataset_name,
                 });
             })
             .catch(error => {
@@ -60,7 +60,7 @@ export class DatasetEditionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available for a list of editions. Try refresh the page.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -69,7 +69,7 @@ export class DatasetEditionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get a list of editions.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -79,7 +79,7 @@ export class DatasetEditionsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the editions. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -88,7 +88,7 @@ export class DatasetEditionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get a list of editions.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -106,7 +106,7 @@ export class DatasetEditionsController extends Component {
                     id: edition.id,
                     title: edition.title,
                     url: this.props.location.pathname + "/editions/" + edition.id,
-                    details: [`Release date: ${edition.release_date || "Not yet set"}`]
+                    details: [`Release date: ${edition.release_date || "Not yet set"}`],
                 };
             });
             return editionsList;
@@ -115,7 +115,7 @@ export class DatasetEditionsController extends Component {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting mapping versions to state:\n", error);
@@ -127,7 +127,7 @@ export class DatasetEditionsController extends Component {
         editionsList.unshift({
             title: "Create new edition",
             id: "create-new-edition",
-            url: this.props.location.pathname + "/editions"
+            url: this.props.location.pathname + "/editions",
         });
         return editionsList;
     };

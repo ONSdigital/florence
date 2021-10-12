@@ -24,7 +24,7 @@ test("error panel with a heading and a bullet point list ", () => {
         type: "error",
         heading: "There are 2 problems: ",
         body: <ErrorPanelBody />,
-        bannerHeading: true
+        bannerHeading: true,
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -39,7 +39,7 @@ test("information panel with no heading and raw string for body", () => {
             "whether or not it was vital for you to spend the time to read this message until you actually " +
             "started to consume the words which this message contains. Now that you have " +
             "started to read it this message can help you realise that the nature of this message is to " +
-            "inform you that you have indeed actually now read this message."
+            "inform you that you have indeed actually now read this message.",
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -49,7 +49,7 @@ test("error type panel with a regular heading and body", () => {
     const props = {
         type: "error",
         heading: "Fix the following: ",
-        body: "Email address or password are incorrect"
+        body: "Email address or password are incorrect",
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -59,7 +59,7 @@ test("success panel with a tick icon and a raw text body", () => {
     const props = {
         type: "success",
         body: "Information has been successfully submitted",
-        icon: "tick"
+        icon: "tick",
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -75,8 +75,8 @@ test("error panel with a regular heading and an input field", () => {
             id: "number",
             type: "text",
             label: "Number of employees paid monthly",
-            inputMode: "numeric"
-        }
+            inputMode: "numeric",
+        },
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -92,7 +92,7 @@ test("announcement panel with custom html in body and an icon and no heading", (
     const props = {
         type: "announcement",
         body: <AnnouncementPanelBody />,
-        icon: "arrow"
+        icon: "arrow",
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -101,7 +101,7 @@ test("warning panel with an exclamation icon and raw string body", () => {
     const props = {
         type: "warning",
         body: "All the information about this person will be deleted",
-        icon: "exclamation"
+        icon: "exclamation",
     };
     const component = renderer.create(<Panel {...props} />);
     expect(component.toJSON()).toMatchSnapshot();

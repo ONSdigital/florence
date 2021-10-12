@@ -10,13 +10,13 @@ const propTypes = {
             id: PropTypes.string.isRequired,
             selectableBox: PropTypes.shape({
                 firstColumn: PropTypes.string.isRequired,
-                secondColumn: PropTypes.string.isRequired
-            })
+                secondColumn: PropTypes.string.isRequired,
+            }),
         })
     ).isRequired,
     activeItemID: PropTypes.string,
     handleItemClick: PropTypes.func.isRequired,
-    isUpdating: PropTypes.bool
+    isUpdating: PropTypes.bool,
 };
 
 export default class DoubleSelectableBoxController extends Component {

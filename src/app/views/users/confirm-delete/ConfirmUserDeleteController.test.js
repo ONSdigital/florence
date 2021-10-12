@@ -8,25 +8,25 @@ import notifications from "../../../utilities/notifications";
 console.error = () => {};
 
 jest.mock("../../../utilities/notifications", () => ({
-    add: jest.fn(() => {})
+    add: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/url", () => ({
-    resolve: jest.fn(string => string)
+    resolve: jest.fn(string => string),
 }));
 
 jest.mock("../../../utilities/api-clients/user", () => ({
-    remove: jest.fn().mockImplementation(() => Promise.resolve(true))
+    remove: jest.fn().mockImplementation(() => Promise.resolve(true)),
 }));
 
 const mockEvent = {
-    preventDefault: () => {}
+    preventDefault: () => {},
 };
 
 let dispatchedActions = [];
@@ -34,11 +34,11 @@ let dispatchedActions = [];
 const defaultProps = {
     dispatch: action => dispatchedActions.push(action),
     params: {
-        userID: "foobar@email.com"
+        userID: "foobar@email.com",
     },
     loggedInUser: {
-        isAdmin: true
-    }
+        isAdmin: true,
+    },
 };
 
 let component;
@@ -72,7 +72,7 @@ describe("After successfully deleting a user", () => {
     it("an action is dispatched to state to remove them from all users", async () => {
         expect(dispatchedActions.length).toBe(0);
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         await component.instance().handleSubmit(mockEvent);
         expect(dispatchedActions.length).toBeGreaterThan(0);
@@ -84,7 +84,7 @@ describe("After successfully deleting a user", () => {
     it("they are routed to the main 'users' screen", async () => {
         expect(dispatchedActions.length).toBe(0);
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         await component.instance().handleSubmit(mockEvent);
         expect(dispatchedActions.length).toBeGreaterThan(0);
@@ -95,7 +95,7 @@ describe("After successfully deleting a user", () => {
 
     it("component state updates when DELETE request is sent", () => {
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         component.instance().handleSubmit(mockEvent);
         expect(component.state("isSavingDelete")).toBe(true);
@@ -103,7 +103,7 @@ describe("After successfully deleting a user", () => {
 
     it("component state updates when DELETE request is finished", async () => {
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         await component.instance().handleSubmit(mockEvent);
         expect(component.state("isSavingDelete")).toBe(false);
@@ -120,11 +120,11 @@ describe("An error after trying to delete the user", () => {
         expect(notifications.add.mock.calls.length).toBe(0);
         user.remove.mockImplementationOnce(() =>
             Promise.reject({
-                status: 404
+                status: 404,
             })
         );
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         await component.instance().handleSubmit(mockEvent);
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -135,11 +135,11 @@ describe("An error after trying to delete the user", () => {
         expect(log.event.mock.calls.length).toBe(0);
         user.remove.mockImplementationOnce(() =>
             Promise.reject({
-                status: 404
+                status: 404,
             })
         );
         component.setState({
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
         await component.instance().handleSubmit(mockEvent);
         expect(log.event.mock.calls.length).toBe(1);
@@ -149,7 +149,7 @@ describe("An error after trying to delete the user", () => {
     it("returns an object with 'response' and 'error' properties", async () => {
         user.remove.mockImplementationOnce(() =>
             Promise.reject({
-                status: 500
+                status: 500,
             })
         );
         const response = await component.instance().deleteUser("foobar@email.com");
@@ -160,19 +160,19 @@ describe("An error after trying to delete the user", () => {
     it("returned 'error' property contains error response from the request", async () => {
         user.remove.mockImplementationOnce(() =>
             Promise.reject({
-                status: 500
+                status: 500,
             })
         );
         const response = await component.instance().deleteUser("foobar@email.com");
         expect(response.error).toEqual({
-            status: 500
+            status: 500,
         });
     });
 
     it("returned 'response' property is set to 'null'", async () => {
         user.remove.mockImplementationOnce(() =>
             Promise.reject({
-                status: 500
+                status: 500,
             })
         );
         const response = await component.instance().deleteUser("foobar@email.com");

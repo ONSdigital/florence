@@ -13,11 +13,11 @@ import notifications from "../../../utilities/notifications";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
-        userID: PropTypes.string.isRequired
+        userID: PropTypes.string.isRequired,
     }).isRequired,
     loggedInUser: PropTypes.shape({
-        isAdmin: PropTypes.bool.isRequired
-    }).isRequired
+        isAdmin: PropTypes.bool.isRequired,
+    }).isRequired,
 };
 
 export class ConfirmUserDeleteController extends Component {
@@ -27,7 +27,7 @@ export class ConfirmUserDeleteController extends Component {
         this.state = {
             email: "",
             error: "",
-            isSavingDelete: false
+            isSavingDelete: false,
         };
     }
 
@@ -43,7 +43,7 @@ export class ConfirmUserDeleteController extends Component {
                 .then(response => {
                     resolve({
                         response,
-                        error: null
+                        error: null,
                     });
                 })
                 .catch(error => reject(error));
@@ -53,13 +53,13 @@ export class ConfirmUserDeleteController extends Component {
                 "Error deleting user",
                 log.data({
                     user: userID,
-                    logged_in_user: this.props.loggedInUser.email
+                    logged_in_user: this.props.loggedInUser.email,
                 }),
                 log.error(error)
             );
             return {
                 response: null,
-                error
+                error,
             };
         });
     }
@@ -68,7 +68,7 @@ export class ConfirmUserDeleteController extends Component {
         let notification = {
             type: "warning",
             isDismissable: true,
-            message: ``
+            message: ``,
         };
 
         switch (error.status) {
@@ -93,7 +93,7 @@ export class ConfirmUserDeleteController extends Component {
                     "Unhandled error deleting user",
                     log.data({
                         user: this.props.params.userID,
-                        logged_in_user: this.props.loggedInUser.email
+                        logged_in_user: this.props.loggedInUser.email,
                     }),
                     log.error(error)
                 );
@@ -112,7 +112,7 @@ export class ConfirmUserDeleteController extends Component {
     handleChange = event => {
         this.setState({
             email: event.target.value,
-            error: ""
+            error: "",
         });
     };
 
@@ -123,14 +123,14 @@ export class ConfirmUserDeleteController extends Component {
 
         if (!this.state.email) {
             this.setState({
-                error: `You must enter the user's email address`
+                error: `You must enter the user's email address`,
             });
             return;
         }
 
         if (this.state.email !== userID) {
             this.setState({
-                error: `Email address must match '${userID}'`
+                error: `Email address must match '${userID}'`,
             });
             return;
         }
@@ -148,14 +148,14 @@ export class ConfirmUserDeleteController extends Component {
             "Successfully deleted user",
             log.data({
                 user: userID,
-                logged_in_user: this.props.loggedInUser.email
+                logged_in_user: this.props.loggedInUser.email,
             })
         );
         notifications.add({
             type: "positive",
             message: "User successfully deleted",
             autoDismiss: 7000,
-            isDismissable: true
+            isDismissable: true,
         });
         this.props.dispatch(removeUserFromAllUsers(userID));
         this.props.dispatch(push(url.resolve("../../")));
@@ -197,7 +197,7 @@ ConfirmUserDeleteController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        loggedInUser: state.state.user
+        loggedInUser: state.state.user,
     };
 }
 

@@ -8,7 +8,7 @@ import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 const propTypes = {
     validationErrors: PropTypes.shape({
         heading: PropTypes.string,
-        body: PropTypes.arrayOf(PropTypes.elementType)
+        body: PropTypes.arrayOf(PropTypes.elementType),
     }),
     onSubmit: PropTypes.func,
     isSubmitting: PropTypes.bool,
@@ -18,9 +18,9 @@ const propTypes = {
             label: PropTypes.string,
             type: PropTypes.string,
             onChange: PropTypes.func,
-            error: PropTypes.string
+            error: PropTypes.string,
         })
-    )
+    ),
 };
 
 const LoginForm = props => {

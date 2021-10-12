@@ -18,7 +18,7 @@ const propTypes = {
         pendingDeletes: PropTypes.array.isRequired,
         teams: PropTypes.array.isRequired,
         release: PropTypes.object.isRequired,
-        scheduleType: PropTypes.string.isRequired
+        scheduleType: PropTypes.string.isRequired,
     }).isRequired,
     handleCollectionNameChange: PropTypes.func.isRequired,
     handleTeamSelection: PropTypes.func.isRequired,
@@ -32,7 +32,7 @@ const propTypes = {
     allTeams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         })
     ),
     handleScheduleTypeChange: PropTypes.func.isRequired,
@@ -41,7 +41,7 @@ const propTypes = {
     handleAddRelease: PropTypes.func.isRequired,
     showScheduleByRelease: PropTypes.bool.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired
+    isSubmitting: PropTypes.bool.isRequired,
 };
 
 class CollectionCreate extends Component {
@@ -54,13 +54,13 @@ class CollectionCreate extends Component {
             {
                 id: "custom-radio",
                 value: "custom-schedule",
-                label: "Custom schedule"
+                label: "Custom schedule",
             },
             {
                 id: "calendar-radio",
                 value: "calender-entry-schedule",
-                label: "Calendar entry schedule"
-            }
+                label: "Calendar entry schedule",
+            },
         ];
 
         return (
@@ -126,9 +126,9 @@ class CollectionCreate extends Component {
             {
                 id: "scheduled-radio",
                 value: "scheduled",
-                label: "Scheduled publish"
+                label: "Scheduled publish",
             },
-            { id: "manual-radio", value: "manual", label: "Manual publish" }
+            { id: "manual-radio", value: "manual", label: "Manual publish" },
         ];
 
         return (

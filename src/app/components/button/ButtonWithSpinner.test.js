@@ -6,7 +6,7 @@ import { mount } from "enzyme";
 test("Button to be enabled, and spinner to not be present when not submitting", () => {
     const props = {
         isSubmitting: false,
-        buttonText: "foo"
+        buttonText: "foo",
     };
     let component = mount(<ButtonWithSpinner {...props} />);
     let btn = component.find(".btn");
@@ -22,7 +22,7 @@ test("Button to be enabled, and spinner to not be present when not submitting", 
 test("Button to be enabled, and spinner to be present when submitting", () => {
     const props = {
         isSubmitting: true,
-        buttonText: "foo"
+        buttonText: "foo",
     };
     let component = mount(<ButtonWithSpinner {...props} />);
     let btn = component.find(".btn");

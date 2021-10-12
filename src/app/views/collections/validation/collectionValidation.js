@@ -8,20 +8,20 @@ export default class collectionValidation {
     static name(name) {
         let response = {
             isValid: true,
-            errorMsg: ""
+            errorMsg: "",
         };
 
         if (name.match(/[^a-zA-Z0-9 ]/)) {
             response = {
                 isValid: false,
-                errorMsg: "Collection names can only contain letters and numbers. (" + name.replace(/[a-zA-Z0-9 ]/g, "") + ") are not allowed."
+                errorMsg: "Collection names can only contain letters and numbers. (" + name.replace(/[a-zA-Z0-9 ]/g, "") + ") are not allowed.",
             };
         }
 
         if (!name || name.match(/^\s*$/)) {
             response = {
                 isValid: false,
-                errorMsg: "Collections must be given a name"
+                errorMsg: "Collections must be given a name",
             };
         }
 
@@ -32,13 +32,13 @@ export default class collectionValidation {
         if (!date) {
             return {
                 isValid: false,
-                errorMsg: "Scheduled collections must be given a publish date"
+                errorMsg: "Scheduled collections must be given a publish date",
             };
         }
 
         return {
             isValid: true,
-            errorMsg: ""
+            errorMsg: "",
         };
     }
 
@@ -46,13 +46,13 @@ export default class collectionValidation {
         if (!time) {
             return {
                 isValid: false,
-                errorMsg: "Scheduled collections must be given a publish time"
+                errorMsg: "Scheduled collections must be given a publish time",
             };
         }
 
         return {
             isValid: true,
-            errorMsg: ""
+            errorMsg: "",
         };
     }
 
@@ -60,13 +60,13 @@ export default class collectionValidation {
         if (!release.uri) {
             return {
                 isValid: false,
-                errorMsg: "Must select a release"
+                errorMsg: "Must select a release",
             };
         }
 
         return {
             isValid: true,
-            errorMsg: ""
+            errorMsg: "",
         };
     }
 
@@ -74,20 +74,20 @@ export default class collectionValidation {
         if (!publishType) {
             return {
                 isValid: false,
-                errorMsg: "Collections must have a publish type"
+                errorMsg: "Collections must have a publish type",
             };
         }
 
         if (publishType !== "manual" && publishType !== "scheduled") {
             return {
                 isValid: false,
-                errorMsg: "Collections must have a publish type"
+                errorMsg: "Collections must have a publish type",
             };
         }
 
         return {
             isValid: true,
-            errorMsg: ""
+            errorMsg: "",
         };
     }
 }

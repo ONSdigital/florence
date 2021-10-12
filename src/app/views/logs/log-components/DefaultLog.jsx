@@ -8,7 +8,7 @@ const propTypes = {
     type: PropTypes.string.isRequired,
     location: PropTypes.string.isRequired,
     instanceID: PropTypes.string.isRequired,
-    isFailure: PropTypes.bool
+    isFailure: PropTypes.bool,
 };
 
 class DefaultLog extends Component {

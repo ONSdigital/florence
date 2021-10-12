@@ -8,20 +8,20 @@ const propTypes = {
     override: PropTypes.bool,
     overrideLabel: PropTypes.string,
     overrideId: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
 };
 
 class Select extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            value: ""
+            value: "",
         };
     }
 
     handleChange = event => {
         this.setState({
-            value: event.target.value
+            value: event.target.value,
         });
         this.props.onChange(event.target.value);
     };

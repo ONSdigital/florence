@@ -6,7 +6,7 @@ const propTypes = {
     minimumCharacterLimitPassed: PropTypes.bool,
     uppercaseCharacterValidationPassed: PropTypes.bool,
     lowercaseCharacterValidationPassed: PropTypes.bool,
-    minimumNumberLimitPassed: PropTypes.bool
+    minimumNumberLimitPassed: PropTypes.bool,
 };
 
 export default class ValidationItemList extends Component {

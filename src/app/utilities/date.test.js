@@ -1,7 +1,7 @@
 import date from "./date";
 
 jest.mock("../utilities/logging/log", () => ({
-    event: () => {}
+    event: () => {},
 }));
 
 test("Getting the current date and time works correctly", () => {

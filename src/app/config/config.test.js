@@ -4,10 +4,10 @@ import reducer from "./reducer";
 
 jest.mock("../utilities/log", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
         },
-        eventTypes: {}
+        eventTypes: {},
     };
 });
 
@@ -22,8 +22,8 @@ test("userLoggedIn action and USER_LOGGED_IN reducer return correct state", () =
             isAuthenticated: true,
             email: "foo@bar.com",
             userType: "PUBLISHER",
-            isAdmin: false
-        }
+            isAdmin: false,
+        },
     });
 });
 
@@ -31,7 +31,7 @@ test("userLoggedOut action and USER_LOGGED_OUT reducer return correct state", ()
     const action = userLoggedOut();
     expect(reducer({}, action)).toEqual({
         user: {
-            isAuthenticated: false
-        }
+            isAuthenticated: false,
+        },
     });
 });

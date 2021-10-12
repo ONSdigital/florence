@@ -6,17 +6,17 @@ import { mount, shallow } from "enzyme";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/log.js", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
-        }
+        },
     };
 });
 
@@ -28,36 +28,36 @@ jest.mock("../../utilities/api-clients/user", () => {
             })
             .mockImplementationOnce(() => {
                 return Promise.reject({ status: 500 });
-            })
+            }),
     };
 });
 
 const formEvent = {
-    preventDefault: () => {}
+    preventDefault: () => {},
 };
 
 const passwordToShort = {
     value: "test",
-    errorMsg: "Passwords must contain four words, separated by spaces"
+    errorMsg: "Passwords must contain four words, separated by spaces",
 };
 
 const notValidPassPhrase = {
     value: "notaValidPassPhrase",
-    errorMsg: "Passwords must contain four words, separated by spaces"
+    errorMsg: "Passwords must contain four words, separated by spaces",
 };
 
 const props = {
     email: "test@test.com",
     currentPassword: "testPassword",
-    handleSuccess: function() {},
-    handleCancel: function() {}
+    handleSuccess: function () {},
+    handleCancel: function () {},
 };
 
 const mockEvent = {
     target: {
         id: "new-password",
-        value: "updated password"
-    }
+        value: "updated password",
+    },
 };
 
 test("handleSubmit checks length of new password and displays error", async () => {

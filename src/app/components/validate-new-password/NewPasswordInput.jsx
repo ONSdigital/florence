@@ -6,7 +6,7 @@ import ValidationItemList from "../../components/validation-item-list/Validation
 
 const propTypes = {
     updateValidity: PropTypes.func,
-    inputErrored: PropTypes.bool
+    inputErrored: PropTypes.bool,
 };
 
 export class NewPasswordInput extends Component {
@@ -18,7 +18,7 @@ export class NewPasswordInput extends Component {
             minimumCharacterLimitPassed: false,
             uppercaseCharacterValidationPassed: false,
             lowercaseCharacterValidationPassed: false,
-            minimumNumberLimitPassed: false
+            minimumNumberLimitPassed: false,
         };
     }
 
@@ -28,7 +28,7 @@ export class NewPasswordInput extends Component {
                 minimumCharacterLimitPassed: this.checkStringLength(),
                 uppercaseCharacterValidationPassed: this.checkUpperCase(),
                 lowercaseCharacterValidationPassed: this.checkLowerCase(),
-                minimumNumberLimitPassed: this.checkNumberPresence()
+                minimumNumberLimitPassed: this.checkNumberPresence(),
             },
             () => {
                 let passwordIsValid = true;
@@ -66,7 +66,7 @@ export class NewPasswordInput extends Component {
         const passwordValue = event.target.value;
         this.setState(
             {
-                password: passwordValue
+                password: passwordValue,
             },
             this.checkPasswordValidation
         );
@@ -75,7 +75,7 @@ export class NewPasswordInput extends Component {
     togglePasswordVisibility = event => {
         const showPassword = event.target.checked;
         this.setState(() => ({
-            type: showPassword ? "text" : "password"
+            type: showPassword ? "text" : "password",
         }));
     };
 

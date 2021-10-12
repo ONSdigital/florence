@@ -11,12 +11,12 @@ const propTypes = {
                 label: PropTypes.string,
                 type: PropTypes.string,
                 onChange: PropTypes.func,
-                error: PropTypes.string
+                error: PropTypes.string,
             })
         ),
         onSubmit: PropTypes.func,
-        isSubmitting: PropTypes.bool
-    })
+        isSubmitting: PropTypes.bool,
+    }),
 };
 
 export default class LoginForm extends Component {

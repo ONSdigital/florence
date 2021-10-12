@@ -114,7 +114,7 @@ export default class user {
                             type: "warning",
                             message: "An error occurred during sign out 'InvalidToken', please contact a system administrator",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
@@ -124,7 +124,7 @@ export default class user {
                             type: "warning",
                             message: "Unexpected error occurred during sign out",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self");
