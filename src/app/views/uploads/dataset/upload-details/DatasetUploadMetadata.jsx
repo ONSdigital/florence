@@ -18,8 +18,8 @@ const propTypes = {
     recipes: PropTypes.array,
     job: PropTypes.object,
     params: PropTypes.shape({
-        jobID: PropTypes.string.isRequired
-    }).isRequired
+        jobID: PropTypes.string.isRequired,
+    }).isRequired,
 };
 
 class DatasetUploadMetadata extends Component {
@@ -31,7 +31,7 @@ class DatasetUploadMetadata extends Component {
             isSubmittingData: false,
             selectedEdition: null,
             recipeAlias: "",
-            isCantabular: false
+            isCantabular: false,
         };
     }
 
@@ -67,7 +67,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "You do not permission to view all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -76,7 +76,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -86,7 +86,7 @@ class DatasetUploadMetadata extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -95,7 +95,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -104,7 +104,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -135,7 +135,7 @@ class DatasetUploadMetadata extends Component {
         return editions.map(edition => ({
             id: edition,
             value: edition,
-            label: edition
+            label: edition,
         }));
     }
 
@@ -157,7 +157,7 @@ class DatasetUploadMetadata extends Component {
                     .then(() => {
                         const activeDataset = {
                             ...this.state.activeDataset,
-                            status: "submitted"
+                            status: "submitted",
                         };
                         this.setState({ activeDataset });
                     });
@@ -173,7 +173,7 @@ class DatasetUploadMetadata extends Component {
                             type: "warning",
                             message:
                                 "There was a problem with the data you tried to submit. Please check the information, fix any errors and try again.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -182,7 +182,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: `The job '${this.props.params.jobID}' was not recognised. Please check that it hasn't been submitted or deleted by someone else.`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -191,7 +191,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "You do not permission to submit this dataset to the publishing team.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -200,7 +200,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to submit to the publishing team.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -210,7 +210,7 @@ class DatasetUploadMetadata extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to submit to the publishing team. Please check you internet connection and try again.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -219,7 +219,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to submit to the publishing team.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -228,7 +228,7 @@ class DatasetUploadMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to submit to the publishing team.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -278,7 +278,7 @@ DatasetUploadMetadata.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         recipes: state.state.datasets.recipes,
-        job: state.state.datasets.activeJob
+        job: state.state.datasets.activeJob,
     };
 }
 

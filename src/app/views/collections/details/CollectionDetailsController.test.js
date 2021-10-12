@@ -7,24 +7,24 @@ import notifications from "../../../utilities/notifications";
 import {
     MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
     UPDATE_PAGES_IN_ACTIVE_COLLECTION,
-    UPDATE_ACTIVE_COLLECTION
+    UPDATE_ACTIVE_COLLECTION,
 } from "../../../config/actions";
 
 console.error = () => {};
 
 jest.mock("../../../utilities/notifications", () => ({
     add: jest.fn(() => {}),
-    remove: jest.fn(() => {})
+    remove: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../../utilities/cookies", () => ({
-    add: jest.fn(() => {})
+    add: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/api-clients/collections", () => ({
@@ -33,18 +33,18 @@ jest.mock("../../../utilities/api-clients/collections", () => ({
     }),
     delete: jest.fn(() => {
         return Promise.resolve({});
-    })
+    }),
 }));
 
 jest.mock("../../../utilities/api-clients/datasets", () => ({
     getLatestVersionURL: jest.fn(() => {
         return Promise.resolve("/datasets/cpi/editions/current/versions/2");
-    })
+    }),
 }));
 
 function setLocation(href) {
     jsdom.reconfigure({
-        url: href
+        url: href,
     });
 }
 
@@ -62,10 +62,10 @@ const defaultProps = {
     activePageURI: undefined,
     activeCollection: null,
     user: {
-        userType: ""
+        userType: "",
     },
     location: {
-        hash: ""
+        hash: "",
     },
     collections: [
         {
@@ -77,7 +77,7 @@ const defaultProps = {
             id: "anothercollection-91bc818cff240fa546c84b0cc4c3d32f0667de3068832485e254c17655d5b4ad",
             name: "Another collection",
             type: "manual",
-            teams: []
+            teams: [],
         },
         {
             approvalStatus: "IN_PROGRESS",
@@ -88,7 +88,7 @@ const defaultProps = {
             id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
             name: "asdasdasd",
             type: "manual",
-            teams: []
+            teams: [],
         },
         {
             approvalStatus: "IN_PROGRESS",
@@ -99,7 +99,7 @@ const defaultProps = {
             id: "test-collection-12345",
             name: "Test collection",
             type: "manual",
-            teams: ["cpi", "cpih"]
+            teams: ["cpi", "cpih"],
         },
         {
             approvalStatus: "ERROR",
@@ -110,7 +110,7 @@ const defaultProps = {
             id: "different-collection-12345",
             name: "Test",
             type: "manual",
-            teams: ["Team 2"]
+            teams: ["Team 2"],
         },
         {
             approvalStatus: "COMPLETE",
@@ -121,9 +121,9 @@ const defaultProps = {
             id: "test-sau39393uyqha8aw8y3n3",
             name: "Complete collection",
             type: "manual",
-            teams: ["Team 2"]
-        }
-    ]
+            teams: ["Team 2"],
+        },
+    ],
 };
 
 const component = shallow(<CollectionDetailsController {...defaultProps} />);
@@ -194,28 +194,28 @@ describe("Restore content to a collection", () => {
     const singleRestoredData = {
         uri: "/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018",
         title: "Gross Domestic Product: March 2018",
-        type: "bulletin"
+        type: "bulletin",
     };
 
     const multiRestoredData = [
         {
             uri: "/about/test",
             description: { title: "Test Page" },
-            type: "test_type"
+            type: "test_type",
         },
         {
             uri: "/about/test/two",
             description: { title: "Test Page 2" },
-            type: "test_type"
-        }
+            type: "test_type",
+        },
     ];
 
     beforeAll(() => {
         component.setProps({
             activeCollection: {
                 ...defaultProps.collections[0],
-                inProgress: []
-            }
+                inProgress: [],
+            },
         });
     });
 
@@ -320,7 +320,7 @@ describe("When fetching a collection's detail", async () => {
 describe("Selecting a page in a collection", () => {
     component.setProps({
         collectionID: "test-sau39393uyqha8aw8y3n3",
-        activePageURI: undefined
+        activePageURI: undefined,
     });
 
     setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
@@ -348,16 +348,16 @@ describe("Map state to props function", () => {
     let expectedProps = {
         activeCollection: {
             id: "a-collection-id",
-            name: "A collection"
+            name: "A collection",
         },
         rootPath: "/florence",
         activePageURI: "",
         collections: [
             {
                 id: "a-collection-id",
-                name: "A collection"
-            }
-        ]
+                name: "A collection",
+            },
+        ],
     };
     let reduxState = {
         state: {
@@ -365,26 +365,26 @@ describe("Map state to props function", () => {
             collections: {
                 active: {
                     id: "a-collection-id",
-                    name: "A collection"
+                    name: "A collection",
                 },
                 all: [
                     {
                         id: "a-collection-id",
-                        name: "A collection"
-                    }
-                ]
+                        name: "A collection",
+                    },
+                ],
             },
             rootPath: "/florence",
             config: {
                 enableDatasetImport: false,
-                enableHomepagePublishing: false
-            }
+                enableHomepagePublishing: false,
+            },
         },
         routing: {
             locationBeforeTransitions: {
-                hash: ""
-            }
-        }
+                hash: "",
+            },
+        },
     };
 
     it("maps the application state correctly", () => {
@@ -421,8 +421,8 @@ describe("Clicking 'edit' for a page", () => {
                     type: "dataset_details",
                     id: "cpi",
                     uri: "/datasets/cpi",
-                    lastEditedBy: "test.user@email.com"
-                }
+                    lastEditedBy: "test.user@email.com",
+                },
             ],
             complete: [
                 {
@@ -431,11 +431,11 @@ describe("Clicking 'edit' for a page", () => {
                     uri: "/datasets/cpi/editions/current/versions/2",
                     edition: "current",
                     version: "2",
-                    lastEditedBy: "test.user@email.com"
-                }
+                    lastEditedBy: "test.user@email.com",
+                },
             ],
-            reviewed: []
-        }
+            reviewed: [],
+        },
     };
     const editClickComponent = shallow(<CollectionDetailsController {...props} />);
 
@@ -456,7 +456,7 @@ describe("Clicking 'edit' for a page", () => {
                 uri: "/datasets/cpi/editions/current/versions/2",
                 edition: "current",
                 version: "2",
-                lastEditedBy: "test.user@email.com"
+                lastEditedBy: "test.user@email.com",
             },
             "complete"
         );
@@ -477,9 +477,9 @@ describe("Edit Homepage functionality", () => {
             ...defaultProps,
             collectionID: "test-collection-12345",
             activeCollection: {
-                id: "test-collection-12345"
+                id: "test-collection-12345",
             },
-            enableHomepagePublishing: false
+            enableHomepagePublishing: false,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
         expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(false);
@@ -489,9 +489,9 @@ describe("Edit Homepage functionality", () => {
             ...defaultProps,
             collectionID: "test-collection-12345",
             activeCollection: {
-                id: "test-collection-12345"
+                id: "test-collection-12345",
             },
-            enableHomepagePublishing: true
+            enableHomepagePublishing: true,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
         expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(true);
@@ -504,9 +504,9 @@ describe("Dataset import functionality", () => {
             ...defaultProps,
             collectionID: "test-collection-12345",
             activeCollection: {
-                id: "test-collection-12345"
+                id: "test-collection-12345",
             },
-            enableDatasetImport: false
+            enableDatasetImport: false,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
 
@@ -518,9 +518,9 @@ describe("Dataset import functionality", () => {
             ...defaultProps,
             collectionID: "test-collection-12345",
             activeCollection: {
-                id: "test-collection-12345"
+                id: "test-collection-12345",
             },
-            enableDatasetImport: true
+            enableDatasetImport: true,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
 

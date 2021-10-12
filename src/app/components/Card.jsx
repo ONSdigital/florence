@@ -7,7 +7,7 @@ const propTypes = {
     id: PropTypes.string,
     onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 class Card extends Component {

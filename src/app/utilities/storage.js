@@ -104,7 +104,7 @@ class Storage {
 
             if (requestTimestamp) {
                 query.timestamp = {
-                    $lte: requestTimestamp
+                    $lte: requestTimestamp,
                 };
             }
 

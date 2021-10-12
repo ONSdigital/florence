@@ -22,23 +22,23 @@ import DatasetReviewActions from "../DatasetReviewActions";
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
     }).isRequired,
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     userEmail: PropTypes.string.isRequired,
     collectionID: PropTypes.string,
     router: PropTypes.shape({
-        listenBefore: PropTypes.func.isRequired
+        listenBefore: PropTypes.func.isRequired,
     }).isRequired,
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
             next: PropTypes.shape({
-                title: PropTypes.string
+                title: PropTypes.string,
             }),
             current: PropTypes.shape({
-                title: PropTypes.string
-            })
+                title: PropTypes.string,
+            }),
         })
     ),
     dataset: PropTypes.shape({
@@ -53,41 +53,41 @@ const propTypes = {
             PropTypes.shape({
                 name: PropTypes.string,
                 email: PropTypes.string,
-                telephone: PropTypes.string
+                telephone: PropTypes.string,
             })
         ),
         qmi: PropTypes.shape({
-            href: PropTypes.string
+            href: PropTypes.string,
         }),
         related_datasets: PropTypes.arrayOf(
             PropTypes.shape({
                 href: PropTypes.string,
-                title: PropTypes.string
+                title: PropTypes.string,
             })
         ),
         publications: PropTypes.arrayOf(
             PropTypes.shape({
                 href: PropTypes.string,
-                title: PropTypes.string
+                title: PropTypes.string,
             })
         ),
         methodologies: PropTypes.arrayOf(
             PropTypes.shape({
                 href: PropTypes.string,
                 title: PropTypes.string,
-                description: PropTypes.string
+                description: PropTypes.string,
             })
         ),
         release_frequency: PropTypes.string,
         state: PropTypes.string,
         links: PropTypes.shape({
             latest_version: PropTypes.shape({
-                href: PropTypes.string
-            })
+                href: PropTypes.string,
+            }),
         }),
         reviewState: PropTypes.string,
-        lastEditedBy: PropTypes.string
-    })
+        lastEditedBy: PropTypes.string,
+    }),
 };
 
 export class DatasetMetadata extends Component {
@@ -124,7 +124,7 @@ export class DatasetMetadata extends Component {
             latestVersion: "",
             status: "",
             license: "",
-            nextRelease: ""
+            nextRelease: "",
         };
     }
 
@@ -142,32 +142,32 @@ export class DatasetMetadata extends Component {
 
                 if (!this.props.collectionID) {
                     this.setState({
-                        isReadOnly: true
+                        isReadOnly: true,
                     });
                     const notification = {
                         type: "neutral",
                         message: "You are not in a collection, so cannot edit this dataset.",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     log.add(eventTypes.runtimeWarning, {
-                        message: `Attempt to edit/view dataset (${this.props.params.datasetID}) without being in collection.`
+                        message: `Attempt to edit/view dataset (${this.props.params.datasetID}) without being in collection.`,
                     });
                     console.warn(`Attempt to edit/view dataset (${this.props.params.datasetID}) without being in collection.`);
                 }
 
                 if (this.props.collectionID && dataset.collection_id && this.props.collectionID !== dataset.collection_id) {
                     this.setState({
-                        isReadOnly: true
+                        isReadOnly: true,
                     });
                     const notification = {
                         type: "neutral",
                         message: "This dataset is already in a different collection, so can't be edited.",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     log.add(eventTypes.runtimeWarning, {
-                        message: `Attempt to edit/view dataset that is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`
+                        message: `Attempt to edit/view dataset that is already in collection '${dataset.collection_id}' but current collection is '${this.props.collectionID}'`,
                     });
                     console.warn("Dataset is already in collection '" + dataset.collection_id + "'");
                 }
@@ -178,48 +178,48 @@ export class DatasetMetadata extends Component {
 
                 this.setState({
                     latestVersion: dataset.links.latest_version ? dataset.links.latest_version.href : "",
-                    status: dataset.state
+                    status: dataset.state,
                 });
 
                 if (dataset && dataset.title) {
                     this.setState({
-                        title: dataset.title
+                        title: dataset.title,
                     });
                 }
 
                 if (dataset && dataset.next_release) {
                     this.setState({
-                        nextRelease: dataset.next_release
+                        nextRelease: dataset.next_release,
                     });
                 }
 
                 if (dataset && dataset.description) {
                     this.setState({
-                        description: dataset.description
+                        description: dataset.description,
                     });
                 }
 
                 if (dataset && dataset.license) {
                     this.setState({
-                        license: dataset.license
+                        license: dataset.license,
                     });
                 }
 
                 if (dataset && dataset.release_frequency) {
                     this.setState({
-                        releaseFrequency: dataset.release_frequency
+                        releaseFrequency: dataset.release_frequency,
                     });
                 }
 
                 if (dataset && dataset.national_statistic) {
                     this.setState({
-                        isNationalStat: dataset.national_statistic
+                        isNationalStat: dataset.national_statistic,
                     });
                 }
 
                 if (dataset.keywords && dataset.keywords.length > 0) {
                     this.setState({
-                        keywords: dataset.keywords.join(", ")
+                        keywords: dataset.keywords.join(", "),
                     });
                 }
 
@@ -228,7 +228,7 @@ export class DatasetMetadata extends Component {
                     this.setState({
                         contactName: contact.name,
                         contactEmail: contact.email,
-                        contactPhone: contact.telephone
+                        contactPhone: contact.telephone,
                     });
                 }
 
@@ -241,7 +241,7 @@ export class DatasetMetadata extends Component {
                         return {
                             title: item.title,
                             href: item.href,
-                            key: uuid()
+                            key: uuid(),
                         };
                     });
                     this.setState({ relatedBulletins: bulletins });
@@ -252,7 +252,7 @@ export class DatasetMetadata extends Component {
                         return {
                             title: item.title,
                             href: item.href,
-                            key: uuid()
+                            key: uuid(),
                         };
                     });
                     this.setState({ relatedLinks: links });
@@ -264,27 +264,27 @@ export class DatasetMetadata extends Component {
                             title: item.title,
                             href: item.href,
                             description: item.description,
-                            key: uuid()
+                            key: uuid(),
                         };
                     });
                     this.setState({ relatedMethodologies: methodology_links });
                 }
 
                 this.setState({
-                    isFetchingDataset: false
+                    isFetchingDataset: false,
                 });
             })
             .catch(error => {
                 this.setState({
                     isFetchingDataset: false,
-                    isReadOnly: true
+                    isReadOnly: true,
                 });
                 switch (error.status) {
                     case 403: {
                         const notification = {
                             type: "info",
                             message: "You do not permission to view this dataset",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -293,7 +293,7 @@ export class DatasetMetadata extends Component {
                         const notification = {
                             type: "info",
                             message: `Dataset ID '${this.props.params.datasetID}' was not recognised. You've been redirected to the datasets home screen`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         const URL = url.resolve("/datasets" + (this.props.collectionID ? "?collection=" + this.props.collectionID : ""));
@@ -304,14 +304,14 @@ export class DatasetMetadata extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get this dataset",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
                     }
                 }
                 log.add(eventTypes.unexpectedRuntimeError, {
-                    message: "Error getting dataset " + this.props.params.datasetID + ". Error: " + JSON.stringify(error)
+                    message: "Error getting dataset " + this.props.params.datasetID + ". Error: " + JSON.stringify(error),
                 });
                 console.error("Error has occurred:\n", error);
             });
@@ -374,7 +374,7 @@ export class DatasetMetadata extends Component {
         } catch (error) {
             this.setState({
                 isFetchingCollectionData: false,
-                isReadOnly: true
+                isReadOnly: true,
             });
             switch (error.status) {
                 case 401: {
@@ -385,7 +385,7 @@ export class DatasetMetadata extends Component {
                     const notification = {
                         type: "neutral",
                         message: `You do not permission to get details for collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -394,7 +394,7 @@ export class DatasetMetadata extends Component {
                     const notification = {
                         type: "warning",
                         message: `Could not find collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -403,7 +403,7 @@ export class DatasetMetadata extends Component {
                     const notification = {
                         type: "warning",
                         message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -414,7 +414,7 @@ export class DatasetMetadata extends Component {
                     "Unable to update metadata screen with version's review/edit status in collection " +
                     collectionID +
                     ". Error: " +
-                    JSON.stringify(error)
+                    JSON.stringify(error),
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }
@@ -426,8 +426,8 @@ export class DatasetMetadata extends Component {
                 {
                     email: this.state.contactEmail,
                     name: this.state.contactName,
-                    telephone: this.state.contactPhone
-                }
+                    telephone: this.state.contactPhone,
+                },
             ],
             description: this.state.description,
             next_release: this.state.nextRelease,
@@ -437,11 +437,11 @@ export class DatasetMetadata extends Component {
             national_statistic: this.state.isNationalStat,
             keywords: this.splitKeywordsString(this.state.keywords),
             qmi: {
-                href: this.state.relatedQMI
+                href: this.state.relatedQMI,
             },
             publications: [...this.state.relatedBulletins],
             methodologies: [...this.state.relatedMethodologies],
-            related_datasets: [...this.state.relatedLinks]
+            related_datasets: [...this.state.relatedLinks],
         };
     }
 
@@ -451,7 +451,7 @@ export class DatasetMetadata extends Component {
         return values.map(value => {
             return {
                 id: value.toLowerCase(),
-                name: value
+                name: value,
             };
         });
     }
@@ -460,7 +460,7 @@ export class DatasetMetadata extends Component {
         this.setState({
             error: "",
             releaseFrequency: event.target.value,
-            hasChanges: true
+            hasChanges: true,
         });
     };
 
@@ -474,7 +474,7 @@ export class DatasetMetadata extends Component {
     handleToggleChange = isChecked => {
         this.setState({
             isNationalStat: isChecked,
-            hasChanges: true
+            hasChanges: true,
         });
     };
 
@@ -504,7 +504,7 @@ export class DatasetMetadata extends Component {
             }
         } else {
             this.setState({
-                [name]: value
+                [name]: value,
             });
         }
     };
@@ -526,14 +526,14 @@ export class DatasetMetadata extends Component {
             editKey: "",
             urlInput: "",
             descInput: "",
-            titleInput: ""
+            titleInput: "",
         });
     };
 
     handleAddRelatedClick = type => {
         this.setState({
             showModal: true,
-            modalType: type
+            modalType: type,
         });
     };
 
@@ -563,7 +563,7 @@ export class DatasetMetadata extends Component {
             editKey: key,
             urlInput: relatedItem.href || "",
             titleInput: relatedItem.title || "",
-            descInput: relatedItem.description || ""
+            descInput: relatedItem.description || "",
         });
     };
 
@@ -576,21 +576,21 @@ export class DatasetMetadata extends Component {
 
         if (type === "bulletin") {
             this.setState({
-                relatedBulletins: remove(this.state.relatedBulletins, key)
+                relatedBulletins: remove(this.state.relatedBulletins, key),
             });
             return;
         }
 
         if (type === "link") {
             this.setState({
-                relatedLinks: remove(this.state.relatedLinks, key)
+                relatedLinks: remove(this.state.relatedLinks, key),
             });
             return;
         }
 
         if (type === "methodologies") {
             this.setState({
-                relatedMethodologies: remove(this.state.relatedMethodologies, key)
+                relatedMethodologies: remove(this.state.relatedMethodologies, key),
             });
             return;
         }
@@ -609,13 +609,13 @@ export class DatasetMetadata extends Component {
                     ...item,
                     title: this.state.titleInput,
                     href: this.state.urlInput,
-                    description: this.state.descInput
+                    description: this.state.descInput,
                 };
             });
         };
         if (type === "bulletin") {
             this.setState({
-                relatedBulletins: edit(this.state.relatedBulletins, key)
+                relatedBulletins: edit(this.state.relatedBulletins, key),
             });
             return;
         }
@@ -627,7 +627,7 @@ export class DatasetMetadata extends Component {
 
         if (type === "methodologies") {
             this.setState({
-                relatedMethodologies: edit(this.state.relatedMethodologies, key)
+                relatedMethodologies: edit(this.state.relatedMethodologies, key),
             });
             return;
         }
@@ -640,7 +640,7 @@ export class DatasetMetadata extends Component {
         return items.map(item => {
             return {
                 title: item.title,
-                id: item.key
+                id: item.key,
             };
         });
     }
@@ -654,7 +654,7 @@ export class DatasetMetadata extends Component {
     addDatasetToCollection(datasetID) {
         return collections.addDataset(this.props.collectionID, datasetID).catch(error => {
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Error adding dataset '${datasetID}' to collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+                message: `Error adding dataset '${datasetID}' to collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`,
             });
             console.error(`Error adding dataset '${datasetID}' to collection '${this.props.collectionID}'`, error);
             return error;
@@ -678,7 +678,7 @@ export class DatasetMetadata extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {
                 message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${
                     isMarkingAsReviewed ? "Reviewed" : ""
-                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`,
             });
             console.error(
                 `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${
@@ -693,7 +693,7 @@ export class DatasetMetadata extends Component {
     updateDatasetMetadata(datasetID) {
         return datasets.updateDatasetMetadata(datasetID, this.mapStateToAPIRequest()).catch(error => {
             log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Error updating metadata for dataset '${datasetID}'. Error: ${JSON.stringify(error)}`
+                message: `Error updating metadata for dataset '${datasetID}'. Error: ${JSON.stringify(error)}`,
             });
             console.error(`Error updating metadata for dataset '${datasetID}'`, error);
             return error;
@@ -706,12 +706,12 @@ export class DatasetMetadata extends Component {
         if (this.state.titleInput == "" || this.state.urlInput == "") {
             if (this.state.titleInput == "") {
                 this.setState({
-                    titleError: "You must provide a title"
+                    titleError: "You must provide a title",
                 });
             }
             if (this.state.urlInput == "") {
                 this.setState({
-                    urlError: "You must provide a url"
+                    urlError: "You must provide a url",
                 });
             }
         } else {
@@ -722,7 +722,7 @@ export class DatasetMetadata extends Component {
                     const bulletins = this.state.relatedBulletins.concat({
                         title: this.state.titleInput,
                         href: this.state.urlInput,
-                        key: uuid()
+                        key: uuid(),
                     });
                     this.setState({ relatedBulletins: bulletins });
                 }
@@ -733,7 +733,7 @@ export class DatasetMetadata extends Component {
                     const links = this.state.relatedLinks.concat({
                         title: this.state.titleInput,
                         href: this.state.urlInput,
-                        key: uuid()
+                        key: uuid(),
                     });
                     this.setState({ relatedLinks: links });
                 }
@@ -745,7 +745,7 @@ export class DatasetMetadata extends Component {
                         title: this.state.titleInput,
                         href: this.state.urlInput,
                         description: this.state.descInput,
-                        key: uuid()
+                        key: uuid(),
                     });
                     this.setState({ relatedMethodologies: methodology_links });
                 }
@@ -757,7 +757,7 @@ export class DatasetMetadata extends Component {
                 editKey: "",
                 titleInput: "",
                 urlInput: "",
-                descInput: ""
+                descInput: "",
             });
         }
     };
@@ -783,7 +783,7 @@ export class DatasetMetadata extends Component {
         [metadataUpdateError, reviewStateUpdatesError, addToCollectionError] = [
             await metadataUpdateRequest,
             await reviewStateUpdatesRequest,
-            await addToCollectionRequest
+            await addToCollectionRequest,
         ];
 
         const newState = { isSavingData: false };
@@ -1113,7 +1113,7 @@ function mapStateToProps(state) {
         userEmail: state.state.user.email,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
         datasets: state.state.datasets.all,
-        dataset: state.state.datasets.activeDataset
+        dataset: state.state.datasets.activeDataset,
     };
 }
 

@@ -6,13 +6,13 @@ import Input from "../../../components/Input";
 const propTypes = {
     input: PropTypes.shape({
         value: PropTypes.string,
-        error: PropTypes.string
+        error: PropTypes.string,
     }),
     name: PropTypes.string.isRequired,
     isPosting: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onFormSubmit: PropTypes.func.isRequired,
-    onFormInput: PropTypes.func.isRequired
+    onFormInput: PropTypes.func.isRequired,
 };
 
 class TeamDeleteForm extends Component {

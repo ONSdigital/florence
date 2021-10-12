@@ -20,13 +20,13 @@ const propTypes = {
     allowAutoComplete: PropTypes.bool,
     placeholder: PropTypes.string,
     disableShowPasswordText: PropTypes.bool,
-    reverseLabelOrder: PropTypes.bool
+    reverseLabelOrder: PropTypes.bool,
 };
 
 const defaultProps = {
     type: "text",
     disabled: false,
-    isFocused: false
+    isFocused: false,
 };
 
 export default class Input extends Component {
@@ -35,7 +35,7 @@ export default class Input extends Component {
 
         this.state = {
             type: this.props.type,
-            displayShowHide: (!this.props.disableShowPasswordText && this.props.type) === "password"
+            displayShowHide: (!this.props.disableShowPasswordText && this.props.type) === "password",
         };
     }
 
@@ -43,7 +43,7 @@ export default class Input extends Component {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-            type: this.state.type === "text" ? "password" : "text"
+            type: this.state.type === "text" ? "password" : "text",
         });
     };
 

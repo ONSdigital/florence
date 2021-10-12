@@ -20,7 +20,7 @@ import {
     updateWorkingOn,
     emptyWorkingOn,
     updateActiveDatasetReviewState,
-    updateActiveVersionReviewState
+    updateActiveVersionReviewState,
 } from "../../../config/actions";
 import cookies from "../../../utilities/cookies";
 import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
@@ -51,16 +51,16 @@ const propTypes = {
             PropTypes.shape({
                 user: PropTypes.string.isRequired,
                 root: deletedPagePropTypes,
-                totalDeletes: PropTypes.number.isRequired
+                totalDeletes: PropTypes.number.isRequired,
             })
         ),
         id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
         type: PropTypes.string.isRequired,
-        teams: PropTypes.array
+        teams: PropTypes.array,
     }),
     activePageURI: PropTypes.string,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export class CollectionDetailsController extends Component {
@@ -74,11 +74,11 @@ export class CollectionDetailsController extends Component {
             isApprovingCollection: false,
             isCancellingDelete: {
                 value: false,
-                uri: ""
+                uri: "",
             },
             pendingDeletedPages: [],
             drawerIsAnimatable: false,
-            drawerIsVisible: false
+            drawerIsVisible: false,
         };
     }
 
@@ -124,7 +124,7 @@ export class CollectionDetailsController extends Component {
             this.updateActiveCollectionGlobally(activeCollection);
             this.setState({
                 drawerIsAnimatable: true,
-                drawerIsVisible: true
+                drawerIsVisible: true,
             });
             this.fetchActiveCollection(nextProps.collectionID);
         }
@@ -132,7 +132,7 @@ export class CollectionDetailsController extends Component {
         if (this.props.collectionID && !nextProps.collectionID) {
             this.setState({
                 drawerIsAnimatable: true,
-                drawerIsVisible: false
+                drawerIsVisible: false,
             });
         }
 
@@ -221,7 +221,7 @@ export class CollectionDetailsController extends Component {
                     type: "positive",
                     message: `Collection deleted`,
                     autoDismiss: 4000,
-                    isDismissable: true
+                    isDismissable: true,
                 };
                 notifications.add(notification);
             })
@@ -239,7 +239,7 @@ export class CollectionDetailsController extends Component {
                 type: "neutral",
                 message: `Unable to approve collection '${activeCollection.name}', please check that there are no pages in progress or awaiting review`,
                 isDismissable: true,
-                autoDismiss: 4000
+                autoDismiss: 4000,
             };
             notifications.add(notification);
             return false;
@@ -253,8 +253,8 @@ export class CollectionDetailsController extends Component {
                 ...collection,
                 status: {
                     ...collection.status,
-                    neutral: true
-                }
+                    neutral: true,
+                },
             };
         });
         this.props.dispatch(addAllCollections(allCollections));
@@ -279,7 +279,7 @@ export class CollectionDetailsController extends Component {
                 type: "warning",
                 message: "Couldn't delete because of an unexpected error: unable to get URI of delete to cancel",
                 autoDismiss: 5000,
-                isDismissable: true
+                isDismissable: true,
             });
             return;
         }
@@ -287,8 +287,8 @@ export class CollectionDetailsController extends Component {
         this.setState({
             isCancellingDelete: {
                 value: true,
-                uri
-            }
+                uri,
+            },
         });
 
         const activeCollectionID = this.props.activeCollection.id;
@@ -303,15 +303,15 @@ export class CollectionDetailsController extends Component {
                 this.setState({
                     isCancellingDelete: {
                         value: false,
-                        uri: ""
-                    }
+                        uri: "",
+                    },
                 });
 
                 const updatedActiveCollection = {
                     ...this.props.activeCollection,
                     deletes: this.props.activeCollection.deletes.filter(deletedPage => {
                         return deletedPage.root.uri !== uri;
-                    })
+                    }),
                 };
                 updatedActiveCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedActiveCollection);
                 updatedActiveCollection.canBeDeleted = collectionMapper.collectionCanBeDeleted(updatedActiveCollection);
@@ -321,8 +321,8 @@ export class CollectionDetailsController extends Component {
                 this.setState({
                     isCancellingDelete: {
                         value: false,
-                        uri: ""
-                    }
+                        uri: "",
+                    },
                 });
                 collectionDetailsErrorNotifications.cancelPageDelete(error, uri, this.props.collectionID);
                 console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.collectionID}'`, error);
@@ -331,7 +331,7 @@ export class CollectionDetailsController extends Component {
 
     handleDrawerTransitionEnd = () => {
         this.setState({
-            drawerIsAnimatable: false
+            drawerIsAnimatable: false,
         });
 
         // Active collection is now hidden, so can now clear the details from the panel.
@@ -425,7 +425,7 @@ export class CollectionDetailsController extends Component {
             const pendingVersionDeleteURL = collections.getURLForVersionInCollection(datasetID, [
                 ...this.props.activeCollection.inProgress,
                 ...this.props.activeCollection.reviewed,
-                ...this.props.activeCollection.complete
+                ...this.props.activeCollection.complete,
             ]);
             if (pendingVersionDeleteURL) {
                 pendingDeletedPages = pendingDeletedPages.filter(pageURI => {
@@ -434,7 +434,7 @@ export class CollectionDetailsController extends Component {
             }
         }
         this.setState(() => ({
-            pendingDeletedPages: pendingDeletedPages
+            pendingDeletedPages: pendingDeletedPages,
         }));
         const pageRoute = `${this.props.rootPath}/collections/${this.props.activeCollection.id}#${uri}`;
         this.props.dispatch(push(pageRoute));
@@ -450,14 +450,14 @@ export class CollectionDetailsController extends Component {
             log.data({
                 url: deletedPage.uri,
                 title: deletedPage.title,
-                type: deletedPage.type
+                type: deletedPage.type,
             })
         );
         const collectionID = this.props.collectionID;
         const collectionContent = [
             ...this.props.activeCollection.inProgress,
             ...this.props.activeCollection.reviewed,
-            ...this.props.activeCollection.complete
+            ...this.props.activeCollection.complete,
         ];
         const pendingDeletes = [...this.state.pendingDeletedPages, deletedPage.uri];
         let pendingVersionDeleteURL;
@@ -469,7 +469,7 @@ export class CollectionDetailsController extends Component {
             }
         }
         this.setState(() => ({
-            pendingDeletedPages: pendingDeletes
+            pendingDeletedPages: pendingDeletes,
         }));
         const collectionURL = location.pathname.replace(`#${deletedPage.uri}`, "");
         this.props.dispatch(push(collectionURL));
@@ -495,14 +495,14 @@ export class CollectionDetailsController extends Component {
                     });
                     const updatedCollection = {
                         ...this.props.activeCollection,
-                        [state]: pages
+                        [state]: pages,
                     };
 
                     const updatedPendingDeletes = this.state.pendingDeletedPages
                         .filter(pendingDelete => pendingDelete !== deletedPage.uri)
                         .filter(pendingVersionDelete => pendingVersionDelete !== pendingVersionDeleteURL);
                     this.setState({
-                        pendingDeletedPages: updatedPendingDeletes
+                        pendingDeletedPages: updatedPendingDeletes,
                     });
 
                     updatedCollection.canBeApproved = collectionMapper.collectionCanBeApproved(updatedCollection);
@@ -514,7 +514,7 @@ export class CollectionDetailsController extends Component {
                         log.data({
                             url: deletedPage.uri,
                             title: deletedPage.title,
-                            type: deletedPage.type
+                            type: deletedPage.type,
                         })
                     );
                 })
@@ -523,7 +523,7 @@ export class CollectionDetailsController extends Component {
                         .filter(pendingDelete => pendingDelete !== deletedPage.uri)
                         .filter(pendingVersionDelete => pendingVersionDelete !== pendingVersionDeleteURL);
                     this.setState({
-                        pendingDeletedPages: updatedPendingDeletes
+                        pendingDeletedPages: updatedPendingDeletes,
                     });
                     window.clearTimeout(deletePageTimer);
                     collectionDetailsErrorNotifications.deletePage(error, deletedPage.title, this.props.collectionID);
@@ -532,7 +532,7 @@ export class CollectionDetailsController extends Component {
                         log.data({
                             url: deletedPage.uri,
                             title: deletedPage.title,
-                            type: deletedPage.type
+                            type: deletedPage.type,
                         }),
                         log.error(error)
                     );
@@ -555,17 +555,17 @@ export class CollectionDetailsController extends Component {
             buttons: [
                 {
                     text: "Undo",
-                    onClick: undoPageDelete
+                    onClick: undoPageDelete,
                 },
                 {
                     text: "OK",
-                    onClick: handleNotificationClose
-                }
+                    onClick: handleNotificationClose,
+                },
             ],
             type: "neutral",
             isDismissable: false,
             autoDismiss: 6000,
-            message: `Deleted page '${deletedPage.title}' from collection '${this.props.activeCollection.name}'`
+            message: `Deleted page '${deletedPage.title}' from collection '${this.props.activeCollection.name}'`,
         };
         const notificationID = notifications.add(notification);
 
@@ -575,7 +575,7 @@ export class CollectionDetailsController extends Component {
     handleDrawerCloseClick = () => {
         this.setState({
             drawerIsAnimatable: true,
-            drawerIsVisible: false
+            drawerIsVisible: false,
         });
         this.removeActiveCollectionGlobally();
     };
@@ -589,13 +589,13 @@ export class CollectionDetailsController extends Component {
             return {
                 uri: item.uri,
                 title: item.description.title,
-                type: item.type
+                type: item.type,
             };
         });
 
         const updatedActiveCollection = {
             ...this.props.activeCollection,
-            inProgress: [...mappedUpdatedInprogressList]
+            inProgress: [...mappedUpdatedInprogressList],
         };
 
         this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
@@ -606,12 +606,12 @@ export class CollectionDetailsController extends Component {
         const addDeleteToInProgress = {
             uri: restoredItem.uri,
             title: restoredItem.title,
-            type: restoredItem.type
+            type: restoredItem.type,
         };
 
         const updatedActiveCollection = {
             ...this.props.activeCollection,
-            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress]
+            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress],
         };
 
         this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
@@ -704,7 +704,7 @@ export function mapStateToProps(state) {
         rootPath: state.state.rootPath,
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,
-        enableHomepagePublishing: state.state.config.enableHomepagePublishing
+        enableHomepagePublishing: state.state.config.enableHomepagePublishing,
     };
 }
 

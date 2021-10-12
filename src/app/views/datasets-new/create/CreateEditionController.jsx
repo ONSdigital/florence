@@ -11,12 +11,12 @@ import Select from "../../../components/Select";
 
 const propTypes = {
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-    })
+        pathname: PropTypes.string.isRequired,
+    }),
 };
 
 export class CreateEditionController extends Component {
@@ -28,7 +28,7 @@ export class CreateEditionController extends Component {
             dataset: {},
             isFetchingEditions: false,
             editions: [],
-            selectedEdition: null
+            selectedEdition: null,
         };
     }
 
@@ -45,7 +45,7 @@ export class CreateEditionController extends Component {
             .then(dataset => {
                 this.setState({
                     isFetchingDataset: false,
-                    dataset: this.mapDatasetToState(dataset)
+                    dataset: this.mapDatasetToState(dataset),
                 });
                 return this.mapDatasetToState(dataset);
             })
@@ -55,7 +55,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -64,7 +64,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -74,7 +74,7 @@ export class CreateEditionController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -83,7 +83,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -92,7 +92,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -107,14 +107,14 @@ export class CreateEditionController extends Component {
         try {
             const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
             return {
-                title: dataset.title
+                title: dataset.title,
             };
         } catch (error) {
             const notification = {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping dataset details to state:\n", error);
@@ -128,7 +128,7 @@ export class CreateEditionController extends Component {
             .then(recipes => {
                 this.setState({
                     isFetchingEditions: false,
-                    editions: this.mapEditionsToState(recipes.items)
+                    editions: this.mapEditionsToState(recipes.items),
                 });
                 return this.mapEditionsToState(recipes.items);
             })
@@ -138,7 +138,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -147,7 +147,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -157,7 +157,7 @@ export class CreateEditionController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -166,7 +166,7 @@ export class CreateEditionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -187,7 +187,7 @@ export class CreateEditionController extends Component {
             const notification = {
                 type: "warning",
                 message: "An unexpected error occurred when trying to get editions. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting dataset details to state:\n", error);
@@ -199,7 +199,7 @@ export class CreateEditionController extends Component {
             const editionsList = recipe.output_instances[0].editions.map(edition => {
                 return {
                     id: edition,
-                    name: edition
+                    name: edition,
                 };
             });
             return editionsList;
@@ -207,7 +207,7 @@ export class CreateEditionController extends Component {
             const notification = {
                 type: "warning",
                 message: "An unexpected error occurred when trying to get editions. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting dataset details to state:\n", error);

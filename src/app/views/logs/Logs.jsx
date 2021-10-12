@@ -14,10 +14,10 @@ import log, { eventTypes } from "../../utilities/log";
 const propTypes = {
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
-        query: PropTypes.object.isRequired
+        query: PropTypes.object.isRequired,
     }).isRequired,
     page: PropTypes.string,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 class Logs extends Component {
@@ -29,7 +29,7 @@ class Logs extends Component {
             logs: null,
             logCount: null,
             pageSize: 10,
-            logsTimestamp: parseInt(this.props.location.query.timestamp) || new Date().getTime()
+            logsTimestamp: parseInt(this.props.location.query.timestamp) || new Date().getTime(),
         };
     }
 
@@ -41,8 +41,8 @@ class Logs extends Component {
                 ...this.props.location,
                 query: {
                     ...this.props.location.query,
-                    timestamp: this.state.logsTimestamp
-                }
+                    timestamp: this.state.logsTimestamp,
+                },
             };
             this.props.dispatch(push(location));
         }
@@ -56,7 +56,7 @@ class Logs extends Component {
                 log.getAll((this.props.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
-                        logs: logRange
+                        logs: logRange,
                     });
                 });
                 return;
@@ -66,7 +66,7 @@ class Logs extends Component {
                 log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
                     this.setState({
                         isFetchingLogs: false,
-                        logs: logRange
+                        logs: logRange,
                     });
                 });
                 return;
@@ -75,7 +75,7 @@ class Logs extends Component {
             log.getAll(null, null, this.state.logsTimestamp).then(logs => {
                 this.setState({
                     isFetchingLogs: false,
-                    logs
+                    logs,
                 });
             });
         });
@@ -87,7 +87,7 @@ class Logs extends Component {
             log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
-                    logs: logRange
+                    logs: logRange,
                 });
             });
             return;
@@ -98,7 +98,7 @@ class Logs extends Component {
             log.getAll((nextProps.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
                 this.setState({
                     isFetchingLogs: false,
-                    logs: logRange
+                    logs: logRange,
                 });
             });
         }
@@ -125,7 +125,7 @@ class Logs extends Component {
             eventTypes.socketError,
             eventTypes.passwordChangeError,
             eventTypes.unexpectedRuntimeError,
-            eventTypes.socketBufferFull
+            eventTypes.socketBufferFull,
         ];
         const mapUniqueLogTypesToComponents = {};
         mapUniqueLogTypesToComponents[eventTypes.changedRoute] = RouteLog;
@@ -198,7 +198,7 @@ Logs.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        page: state.routing.locationBeforeTransitions.query.page
+        page: state.routing.locationBeforeTransitions.query.page,
     };
 }
 

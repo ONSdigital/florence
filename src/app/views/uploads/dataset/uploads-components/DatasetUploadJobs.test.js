@@ -5,33 +5,33 @@ import { shallow, mount } from "enzyme";
 const jobs = [
     {
         id: "id1",
-        recipe: "recipe1"
+        recipe: "recipe1",
     },
     {
         id: "id2",
-        recipe: "recipe2"
+        recipe: "recipe2",
     },
     {
         id: "id3",
-        recipe: "recipe1"
-    }
+        recipe: "recipe1",
+    },
 ];
 
 const datasets = [
     {
         id: "recipe1",
-        alias: "Dataset 1"
+        alias: "Dataset 1",
     },
     {
         id: "recipe2",
-        alias: "Dataset 2"
-    }
+        alias: "Dataset 2",
+    },
 ];
 
 const defaultProps = {
     rootPath: "/florence",
     datasets,
-    jobs
+    jobs,
 };
 
 console.warn = jest.fn(warn => {
@@ -50,7 +50,7 @@ test("All in progress jobs are get the correct dataset alias from the recipes da
     const recipeCount = {
         1: 0,
         2: 0,
-        3: 0
+        3: 0,
     };
     items.forEach(item => {
         switch (item.text()) {
@@ -83,9 +83,9 @@ test("Attempt to render job with an unrecognised ID should show console warning"
                 ...defaultProps.jobs,
                 {
                     id: "id4",
-                    recipe: "unknown-recipe"
-                }
-            ]
+                    recipe: "unknown-recipe",
+                },
+            ],
         });
     }).toThrow();
 });

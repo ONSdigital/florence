@@ -7,7 +7,7 @@ console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
@@ -16,7 +16,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -24,7 +24,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         getEditionsList: jest.fn(() => {
             return Promise.resolve(mockedResponse);
-        })
+        }),
     };
 });
 
@@ -34,14 +34,14 @@ const mockedResponse = {
         {
             id: "edition-001",
             title: "edition-001",
-            release_date: "15 March 2021"
+            release_date: "15 March 2021",
         },
         {
             id: "edition-002",
             title: "edition-002",
-            release_date: "11 March 2021"
-        }
-    ]
+            release_date: "11 March 2021",
+        },
+    ],
 };
 
 let dispatchedActions,
@@ -53,11 +53,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/datasets/6789"
+        pathname: "florence/collections/12345/datasets/6789",
     },
     params: {
-        datasetID: "1234"
-    }
+        datasetID: "1234",
+    },
 };
 
 const component = shallow(<DatasetEditionsController {...defaultProps} />);
@@ -98,12 +98,12 @@ test("Mapping editions to state", () => {
         id: mockedResponse.editions[0].id,
         title: mockedResponse.editions[0].title,
         url: "florence/collections/12345/datasets/6789/editions/" + mockedResponse.editions[0].id,
-        details: ["Release date: " + mockedResponse.editions[0].release_date]
+        details: ["Release date: " + mockedResponse.editions[0].release_date],
     });
     expect(mapped[1]).toMatchObject({
         id: mockedResponse.editions[1].id,
         title: mockedResponse.editions[1].title,
         url: "florence/collections/12345/datasets/6789/editions/" + mockedResponse.editions[1].id,
-        details: ["Release date: " + mockedResponse.editions[1].release_date]
+        details: ["Release date: " + mockedResponse.editions[1].release_date],
     });
 });

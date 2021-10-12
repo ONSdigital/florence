@@ -7,18 +7,18 @@ const listOfTeams = [
     {
         name: "Team 1",
         id: 1,
-        path: "team_1_1"
+        path: "team_1_1",
     },
     {
         name: "Team 2",
         id: 2,
-        path: "team_2_2"
+        path: "team_2_2",
     },
     {
         name: "Team 2",
         id: 3,
-        path: "team_3_3"
-    }
+        path: "team_3_3",
+    },
 ];
 
 jest.mock("../../utilities/api-clients/teams.js", () => ({
@@ -27,20 +27,20 @@ jest.mock("../../utilities/api-clients/teams.js", () => ({
             {
                 name: "Team 1",
                 id: 1,
-                path: "team_1_1"
+                path: "team_1_1",
             },
             {
                 name: "Team 2",
                 id: 2,
-                path: "team_2_2"
+                path: "team_2_2",
             },
             {
                 name: "Team 2",
                 id: 3,
-                path: "team_3_3"
-            }
+                path: "team_3_3",
+            },
         ]);
-    })
+    }),
 }));
 
 jest.mock("../../utilities/api-clients/user.js", () => ({
@@ -48,18 +48,18 @@ jest.mock("../../utilities/api-clients/user.js", () => ({
         return Promise.resolve([
             {
                 name: "User 1",
-                email: "user.1@test.com"
+                email: "user.1@test.com",
             },
             {
                 name: "User 2",
-                email: "user.2@test.com"
+                email: "user.2@test.com",
             },
             {
                 name: "User 3",
-                email: "user.3@test.com"
-            }
+                email: "user.3@test.com",
+            },
         ]);
-    })
+    }),
 }));
 
 jest.mock("../../utilities/notifications.js", () => ({
@@ -67,13 +67,13 @@ jest.mock("../../utilities/notifications.js", () => ({
         return Promise.resolve([]);
     }),
     eventTypes: {
-        editedTeamMembers: ""
-    }
+        editedTeamMembers: "",
+    },
 }));
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
@@ -81,25 +81,25 @@ jest.mock("../../utilities/logging/log", () => {
     return {
         event: jest.fn().mockImplementation(() => {
             // do nothing
-        })
+        }),
     };
 });
 
 test("Loading state shown when fetching all teams", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
         allTeams: listOfTeams,
         params: {},
         userIsAdmin: false,
         routes: [
             {
-                path: "florence"
+                path: "florence",
             },
             {
-                path: "teams"
-            }
-        ]
+                path: "teams",
+            },
+        ],
     };
     const component = mount(<TeamsController {...props} />);
     expect(component.find(".loader").length).toBe(1);
@@ -109,19 +109,19 @@ test("Loading state shown when fetching all teams", () => {
 
 test("Renders updated list of teams", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
         allTeams: [],
         params: {},
         userIsAdmin: false,
         routes: [
             {
-                path: "florence"
+                path: "florence",
             },
             {
-                path: "teams"
-            }
-        ]
+                path: "teams",
+            },
+        ],
     };
     const component = mount(<TeamsController {...props} />);
     expect(component.find("li").length).toBe(0);
@@ -132,7 +132,7 @@ test("Renders updated list of teams", () => {
 
 test("Correctly renders when the active team is changed", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
         allTeams: listOfTeams,
         params: {},
@@ -140,12 +140,12 @@ test("Correctly renders when the active team is changed", () => {
         userIsAdmin: false,
         routes: [
             {
-                path: "florence"
+                path: "florence",
             },
             {
-                path: "teams"
-            }
-        ]
+                path: "teams",
+            },
+        ],
     };
     const component = mount(<TeamsController {...props} />);
     component.setState({ isUpdatingAllTeams: false });
@@ -154,8 +154,8 @@ test("Correctly renders when the active team is changed", () => {
         activeTeam: {
             name: "Team 1",
             id: 1,
-            members: ["tester 1", "tester 2"]
-        }
+            members: ["tester 1", "tester 2"],
+        },
     });
     expect(component.find(".selected").length).toBe(1);
     component.setProps({ activeTeam: {} });
@@ -164,26 +164,26 @@ test("Correctly renders when the active team is changed", () => {
 
 test("Non-admin users can't view option to edit teams", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
         allTeams: listOfTeams,
         params: {
-            team: "team_1_1"
+            team: "team_1_1",
         },
         activeTeam: {
             name: "Team 1",
             id: 1,
-            members: ["tester 1", "tester 2"]
+            members: ["tester 1", "tester 2"],
         },
         userIsAdmin: false,
         routes: [
             {
-                path: "florence"
+                path: "florence",
             },
             {
-                path: "teams"
-            }
-        ]
+                path: "teams",
+            },
+        ],
     };
     const component = renderer.create(<TeamsController {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -191,26 +191,26 @@ test("Non-admin users can't view option to edit teams", () => {
 
 test("Admin users have option to edit teams", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
         allTeams: listOfTeams,
         params: {
-            team: "team_1_1"
+            team: "team_1_1",
         },
         activeTeam: {
             name: "Team 1",
             id: 1,
-            members: ["tester 1", "tester 2"]
+            members: ["tester 1", "tester 2"],
         },
         userIsAdmin: true,
         routes: [
             {
-                path: "florence"
+                path: "florence",
             },
             {
-                path: "teams"
-            }
-        ]
+                path: "teams",
+            },
+        ],
     };
     const component = renderer.create(<TeamsController {...props} />);
     expect(component.toJSON()).toMatchSnapshot();

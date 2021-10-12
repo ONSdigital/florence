@@ -129,7 +129,7 @@ export default class datasets {
     static updateDimensionLabelAndDescription(instanceID, dimension, name, description) {
         const body = {
             label: name,
-            description: description
+            description: description,
         };
 
         return http.put(`/instances/${instanceID}/dimensions/${dimension}`, body, true).then(response => {
@@ -148,7 +148,7 @@ export default class datasets {
 
     static updateInstanceEdition(instanceID, edition) {
         const body = {
-            edition: edition
+            edition: edition,
         };
         return http.put(`/dataset/instances/${instanceID}`, body, true).then(response => {
             return response;
@@ -158,12 +158,12 @@ export default class datasets {
     static confirmEditionAndCreateVersion(instanceID, edition, metadata) {
         let body = {
             edition: edition,
-            state: "edition-confirmed"
+            state: "edition-confirmed",
         };
         if (metadata && typeof metadata === "object") {
             body = {
                 ...body,
-                ...metadata
+                ...metadata,
             };
         }
         return http.put(`/dataset/instances/${instanceID}`, body, true);

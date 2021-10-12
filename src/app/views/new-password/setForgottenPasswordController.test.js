@@ -10,12 +10,7 @@ describe("SetForgottenPasswordController", () => {
     });
     it("should have empty password field and not in an errored state", () => {
         expect(component.find("input#password-input").prop("value")).toBe("");
-        expect(
-            component
-                .find(".form__input")
-                .at(0)
-                .hasClass("form__input--error")
-        ).toBe(false);
+        expect(component.find(".form__input").at(0).hasClass("form__input--error")).toBe(false);
     });
     it("should have all validations rules unchecked", () => {
         expect(component.find("input#minimum-character-limit").props()["checked"]).toBe(false);
@@ -28,7 +23,7 @@ describe("SetForgottenPasswordController", () => {
 describe("when the user submits their new password successfully ", () => {
     const component = mount(<SetForgottenPasswordController />);
     component.setState({
-        status: status.COMPLETED
+        status: status.COMPLETED,
     });
     it("shows the password change conformation page", () => {
         expect(component.find("h1").text()).toBe("Your password has been changed");

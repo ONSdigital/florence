@@ -2,24 +2,24 @@ import url from "./url";
 
 function setLocation(href) {
     jsdom.reconfigure({
-        url: href
+        url: href,
     });
 }
 setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
 
 jest.mock("../utilities/logging/log", () => {
     return {
-        event: function() {
+        event: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../utilities/notifications", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
-        }
+        },
     };
 });
 

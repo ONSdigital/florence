@@ -2,14 +2,14 @@ import cookies from "./cookies";
 
 function setLocation(href) {
     jsdom.reconfigure({
-        url: href
+        url: href,
     });
 }
 
 function resetCookie() {
     Object.defineProperty(window.document, "cookie", {
         writable: true,
-        value: ""
+        value: "",
     });
 }
 
@@ -27,8 +27,8 @@ describe("given cookie options to the add function", () => {
             sameSite: "Strict",
             secure: true,
             path: "/",
-            domain: "baz"
-        }
+            domain: "baz",
+        },
     };
     it("should add the cookie to client", () => {
         cookies.add(cookieToAdd.name, cookieToAdd.value, cookieToAdd.cookieAttributes);
@@ -40,7 +40,7 @@ describe("given cookie minimum options to the add function", () => {
     var cookieToAdd = {
         name: "foo",
         value: "bar",
-        cookieAttributes: {}
+        cookieAttributes: {},
     };
     it("should add the cookie to client", () => {
         cookies.add(cookieToAdd.name, cookieToAdd.value, cookieToAdd.cookieAttributes);
@@ -51,7 +51,7 @@ describe("given cookie minimum options to the add function", () => {
 describe("given cookie options with a missing mandatory field 'value' passed to the add function", () => {
     var cookieToAdd = {
         name: "foo",
-        cookieAttributes: {}
+        cookieAttributes: {},
     };
     it("no cookies should be set but false returned from add function", () => {
         const result = cookies.add(cookieToAdd.name, cookieToAdd.value, cookieToAdd.cookieAttributes);
@@ -63,7 +63,7 @@ describe("given cookie options with a missing mandatory field 'value' passed to 
 describe("given cookie options with a missing mandatory field 'name' passed to the add function", () => {
     var cookieToAdd = {
         value: "bar",
-        cookieAttributes: {}
+        cookieAttributes: {},
     };
     it("no cookies should be set but false returned from add function", () => {
         const result = cookies.add(cookieToAdd.name, cookieToAdd.value, cookieToAdd.cookieAttributes);
@@ -76,7 +76,7 @@ describe("given cookie options with but attribute object set to null, passed to 
     var cookieToAdd = {
         name: "foo",
         value: "bar",
-        cookieAttributes: null
+        cookieAttributes: null,
     };
     it("should add the cookie to client", () => {
         cookies.add(cookieToAdd.name, cookieToAdd.value, cookieToAdd.cookieAttributes);

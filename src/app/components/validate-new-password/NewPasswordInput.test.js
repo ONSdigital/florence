@@ -8,7 +8,7 @@ let updateValidity = jest.fn((isValid, password) => {
 });
 
 const props = {
-    updateValidity: updateValidity
+    updateValidity: updateValidity,
 };
 describe("NewPasswordInput", () => {
     const component = mount(<NewPasswordInput {...props} />);
@@ -55,8 +55,8 @@ describe("When a lowercase character is entered into the text input field", () =
     const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
-            value: "a"
-        }
+            value: "a",
+        },
     });
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(false);
@@ -75,7 +75,7 @@ describe("When a lowercase character is entered into the text input field", () =
     });
     it("should match the snapshot", () => {
         const props = {
-            override: true
+            override: true,
         };
         const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
@@ -88,8 +88,8 @@ describe("When an uppercase character is entered into the text input field", () 
     const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
-            value: "A"
-        }
+            value: "A",
+        },
     });
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(false);
@@ -108,7 +108,7 @@ describe("When an uppercase character is entered into the text input field", () 
     });
     it("should match the snapshot", () => {
         const props = {
-            override: true
+            override: true,
         };
         const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
@@ -122,8 +122,8 @@ describe("When a numerical character is entered into the text input field", () =
     const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
-            value: "1"
-        }
+            value: "1",
+        },
     });
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(true);
@@ -142,7 +142,7 @@ describe("When a numerical character is entered into the text input field", () =
     });
     it("should match the snapshot", () => {
         const props = {
-            override: true
+            override: true,
         };
         const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();
@@ -157,8 +157,8 @@ describe("When fourteen numerical and upper as well as lower characters are ente
     const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
-            value: "aB1cD2eF3gH4iJ"
-        }
+            value: "aB1cD2eF3gH4iJ",
+        },
     });
     it("Should update the validation rule states", () => {
         // Check that the state has been updated
@@ -180,7 +180,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
     });
     it("should match the snapshot", () => {
         const props = {
-            override: true
+            override: true,
         };
         const component = renderer.create(<NewPasswordInput {...props} />);
         expect(component.toJSON()).toMatchSnapshot();

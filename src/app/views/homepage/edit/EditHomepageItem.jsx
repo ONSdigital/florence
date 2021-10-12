@@ -13,17 +13,17 @@ import { bindFileUploadInput } from "../../../components/file-upload/bind";
 const propTypes = {
     params: PropTypes.shape({
         homepageDataField: PropTypes.string.isRequired,
-        collectionID: PropTypes.string.isRequired
+        collectionID: PropTypes.string.isRequired,
     }),
     data: PropTypes.shape({
         id: PropTypes.number,
         description: PropTypes.string,
         uri: PropTypes.string,
         image: PropTypes.string,
-        title: PropTypes.string
+        title: PropTypes.string,
     }),
     handleSuccessClick: PropTypes.func.isRequired,
-    handleCancelClick: PropTypes.func.isRequired
+    handleCancelClick: PropTypes.func.isRequired,
 };
 
 const FILE_UPLOAD_ID = "image-file-upload";
@@ -45,7 +45,7 @@ export default class EditHomepageItem extends Component {
             uri: this.props.data ? this.props.data.uri : "",
             title: this.props.data ? this.props.data.title : "",
             imageData: {
-                url: ""
+                url: "",
             },
             imageState: "",
             upload: {},
@@ -54,7 +54,7 @@ export default class EditHomepageItem extends Component {
             isUploadingImage: false,
             isGettingImage: false,
             isImportingImage: false,
-            imageImportStatus: STATUS_IMAGE_RECORD_CREATED
+            imageImportStatus: STATUS_IMAGE_RECORD_CREATED,
         };
     }
 
@@ -75,7 +75,7 @@ export default class EditHomepageItem extends Component {
     updateUploadState = upload => {
         const newUploadState = {
             ...this.state.upload,
-            ...upload
+            ...upload,
         };
         this.setState({ upload: newUploadState });
     };
@@ -107,7 +107,7 @@ export default class EditHomepageItem extends Component {
         const imageProps = {
             state: "created",
             collection_id: this.props.params.collectionID,
-            type: "eye-candy"
+            type: "eye-candy",
         };
         return image
             .create(imageProps)
@@ -124,7 +124,7 @@ export default class EditHomepageItem extends Component {
                 notifications.add({
                     type: "warning",
                     message: "There was an error creating the image record. Please refresh the page",
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -141,8 +141,8 @@ export default class EditHomepageItem extends Component {
             state: "uploaded",
             filename: this.state.upload ? this.state.upload.filename : imageKey,
             upload: {
-                path: imageKey
-            }
+                path: imageKey,
+            },
         };
         this.setState({ imageImportStatus: STATUS_IMPORTING_IMAGE, isUpdatingImageRecord: true });
         return image
@@ -155,7 +155,7 @@ export default class EditHomepageItem extends Component {
                 this.stopPollingForUpdates(imageID);
                 this.setState({
                     imageData: {
-                        url: ""
+                        url: "",
                     },
                     imageState: "created",
                     upload: {},
@@ -163,7 +163,7 @@ export default class EditHomepageItem extends Component {
                     isUploadingImage: false,
                     isGettingImage: false,
                     isImportingImage: false,
-                    imageImportStatus: STATUS_IMAGE_RECORD_CREATED
+                    imageImportStatus: STATUS_IMAGE_RECORD_CREATED,
                 });
                 await this.createImageRecord();
                 this.bindInput();
@@ -179,7 +179,7 @@ export default class EditHomepageItem extends Component {
                 notifications.add({
                     type: "warning",
                     message: "There was an error creating the image record. Please try again",
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -219,7 +219,7 @@ export default class EditHomepageItem extends Component {
                 notifications.add({
                     type: "warning",
                     message: "There was an error getting the image. You can still edit this item.",
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -257,7 +257,7 @@ export default class EditHomepageItem extends Component {
                 notifications.add({
                     type: "warning",
                     message: "There was an error getting the image. You can still edit this item.",
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -265,7 +265,7 @@ export default class EditHomepageItem extends Component {
     mapImageToState = image => {
         try {
             return {
-                url: image.href
+                url: image.href,
             };
         } catch (error) {
             log.event("error mapping image data to state", log.error(error));
@@ -282,7 +282,7 @@ export default class EditHomepageItem extends Component {
     handleRetryClick = () => {
         this.setState({
             imageState: "created",
-            upload: {}
+            upload: {},
         });
         this.bindInput();
     };
@@ -291,10 +291,10 @@ export default class EditHomepageItem extends Component {
         this.setState({
             image: "",
             imageData: {
-                url: ""
+                url: "",
             },
             upload: {},
-            imageImportStatus: STATUS_IMAGE_RECORD_CREATED
+            imageImportStatus: STATUS_IMAGE_RECORD_CREATED,
         });
         await this.createImageRecord();
         this.bindInput();

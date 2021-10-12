@@ -11,15 +11,15 @@ import notifications from "../../utilities/notifications";
 
 const propTypes = {
     params: PropTypes.shape({
-        collectionID: PropTypes.string.isRequired
+        collectionID: PropTypes.string.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
+        pathname: PropTypes.string.isRequired,
     }),
     rootPath: PropTypes.string.isRequired,
     workingOn: PropTypes.shape(),
-    children: PropTypes.element
+    children: PropTypes.element,
 };
 
 export class CollectionRoutesWrapper extends Component {
@@ -52,7 +52,7 @@ export class CollectionRoutesWrapper extends Component {
                         const notification = {
                             type: "neutral",
                             message: "The collection couldn't be found so you've been redirected to the collections screen",
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(replace(`${this.props.rootPath}/collections`));
@@ -62,7 +62,7 @@ export class CollectionRoutesWrapper extends Component {
                         const notification = {
                             type: "neutral",
                             message: "You don't have permissions to access this collection so you've been redirect to the collections screen",
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(replace(`${this.props.rootPath}/collections`));
@@ -73,7 +73,7 @@ export class CollectionRoutesWrapper extends Component {
                             type: "warning",
                             message:
                                 "There was a network error whilst getting details about this collection, please check your connection and refresh the page",
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -82,7 +82,7 @@ export class CollectionRoutesWrapper extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error occurred whilst getting details about this collection, please refresh the page",
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -98,7 +98,7 @@ export class CollectionRoutesWrapper extends Component {
                 id: collection.id,
                 name: collection.name,
                 url: `${this.props.rootPath}/collections/${collection.id}`,
-                error: false
+                error: false,
             };
         } catch (error) {
             log.event(
@@ -106,18 +106,18 @@ export class CollectionRoutesWrapper extends Component {
                 log.error(error),
                 log.data({
                     collectionID: this.props.params.collectionID,
-                    url: this.props.location.pathname
+                    url: this.props.location.pathname,
                 })
             );
             console.error("error mapping collection response to 'working on' state", error);
             const notification = {
                 type: "warning",
                 message: "An unexpected error occurred whilst getting details about this collection, please refresh the page",
-                autoDismiss: 5000
+                autoDismiss: 5000,
             };
             notifications.add(notification);
             return {
-                error: true
+                error: true,
             };
         }
     };
@@ -132,7 +132,7 @@ CollectionRoutesWrapper.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         workingOn: state.state.global.workingOn,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
     };
 }
 

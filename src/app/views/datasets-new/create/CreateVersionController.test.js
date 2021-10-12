@@ -8,7 +8,7 @@ console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
@@ -17,7 +17,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -37,7 +37,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         }),
         getCompletedInstancesForDataset: jest.fn(() => {
             return Promise.resolve(mockedCompletedInstancesCall);
-        })
+        }),
     };
 });
 
@@ -46,8 +46,8 @@ const mockedDataset = {
     current: {
         collection_id: "1234567890",
         id: "test-dataset-1",
-        title: "Test Dataset 1"
-    }
+        title: "Test Dataset 1",
+    },
 };
 
 const mockedEdition = {
@@ -57,11 +57,11 @@ const mockedEdition = {
         links: {
             latest_version: {
                 href: "test/3",
-                id: "3"
-            }
+                id: "3",
+            },
         },
-        state: "published"
-    }
+        state: "published",
+    },
 };
 
 const mockedVersions = [
@@ -71,7 +71,7 @@ const mockedVersions = [
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
         release_date: "2018-09-07T00:00:00.000Z",
         state: "published",
-        version: 1
+        version: 1,
     },
     {
         alerts: [],
@@ -79,8 +79,8 @@ const mockedVersions = [
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
         release_date: "2018-09-07T00:00:00.000Z",
         state: "published",
-        version: 2
-    }
+        version: 2,
+    },
 ];
 
 const mockedCompletedInstancesCall = {
@@ -91,32 +91,32 @@ const mockedCompletedInstancesCall = {
                     links: {
                         code_list: {},
                         options: {},
-                        version: {}
+                        version: {},
                     },
                     href: "http://localhost:22400/code-lists/mmm-yy",
                     id: "mmm-yy",
-                    name: "time"
+                    name: "time",
                 },
                 {
                     links: {
                         code_list: {},
                         options: {},
-                        version: {}
+                        version: {},
                     },
                     href: "http://localhost:22400/code-lists/uk-only",
                     id: "uk-only",
-                    name: "geography"
+                    name: "geography",
                 },
                 {
                     links: {
                         code_list: {},
                         options: {},
-                        version: {}
+                        version: {},
                     },
                     href: "http://localhost:22400/code-lists/cpih1dim1aggid",
                     id: "cpih1dim1aggid",
-                    name: "aggregate"
-                }
+                    name: "aggregate",
+                },
             ],
             edition: "time-series",
             headers: ["V4_0", "time", "time", "uk-only", "geography", "cpih1dim1aggid", "aggregate"],
@@ -125,39 +125,39 @@ const mockedCompletedInstancesCall = {
                     {
                         code_list_id: "cpih1dim1aggid",
                         dimension_name: "aggregate",
-                        state: "completed"
-                    }
+                        state: "completed",
+                    },
                 ],
                 build_search_indexes: [
                     {
                         dimension_name: "aggregate",
-                        state: "completed"
-                    }
+                        state: "completed",
+                    },
                 ],
                 import_observations: {
                     total_inserted_observations: 21855,
-                    state: "completed"
-                }
+                    state: "completed",
+                },
             },
             id: "4fc447fe-ebaf-4c29-a363-fc0a8aefaec1",
             last_updated: "2019-01-14T09:25:51.271Z",
             links: {
                 dataset: {
                     href: "http://localhost:22000/datasets/cpih01",
-                    id: "cpih01"
+                    id: "cpih01",
                 },
                 job: {
                     href: "http://localhost:21800/jobs/49863913-008c-4ee5-86e9-80b12f28a2ec",
-                    id: "49863913-008c-4ee5-86e9-80b12f28a2ec"
+                    id: "49863913-008c-4ee5-86e9-80b12f28a2ec",
                 },
                 self: {
-                    href: "http://localhost:22000/instances/4fc447fe-ebaf-4c29-a363-fc0a8aefaec1"
-                }
+                    href: "http://localhost:22000/instances/4fc447fe-ebaf-4c29-a363-fc0a8aefaec1",
+                },
             },
             state: "completed",
-            total_observations: 21855
-        }
-    ]
+            total_observations: 21855,
+        },
+    ],
 };
 
 let dispatchedActions,
@@ -169,12 +169,12 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/datasets/6789"
+        pathname: "florence/collections/12345/datasets/6789",
     },
     params: {
         datasetID: "test-dataset-1",
-        editionID: "test-edition-1"
-    }
+        editionID: "test-edition-1",
+    },
 };
 
 const component = shallow(<CreateVersionController {...defaultProps} />);

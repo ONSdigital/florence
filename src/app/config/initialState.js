@@ -2,42 +2,42 @@ export const initialState = {
     config: {
         enableDatasetImport: false,
         enableHomepagePublishing: false,
-        enableNewSignIn: false
+        enableNewSignIn: false,
     },
     user: {
         isAuthenticated: false,
         email: "",
         userType: "",
-        isAdmin: false
+        isAdmin: false,
     },
     global: {
-        workingOn: null
+        workingOn: null,
     },
     rootPath: "/florence",
     teams: {
         active: {},
         all: [],
         allIDsAndNames: [],
-        users: []
+        users: [],
     },
     users: {
         active: {},
-        all: []
+        all: [],
     },
     datasets: {
         all: [],
         jobs: [],
         activeInstance: {},
         recipes: [],
-        activeJob: {}
+        activeJob: {},
     },
     collections: {
         all: [],
         active: null,
-        toDelete: {}
+        toDelete: {},
     },
     notifications: [],
     preview: {
-        selectedPage: null
-    }
+        selectedPage: null,
+    },
 };

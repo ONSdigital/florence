@@ -12,16 +12,16 @@ import collectionValidation from "../validation/collectionValidation";
 
 const propTypes = {
     user: PropTypes.shape({
-        userType: PropTypes.string.isRequired
+        userType: PropTypes.string.isRequired,
     }).isRequired,
     onSuccess: PropTypes.func.isRequired,
     allTeams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         })
     ),
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class CollectionCreateController extends Component {
@@ -32,16 +32,16 @@ export class CollectionCreateController extends Component {
             newCollectionDetails: {
                 name: {
                     value: "",
-                    errorMsg: ""
+                    errorMsg: "",
                 },
                 type: "scheduled",
                 publishDate: {
                     value: "",
-                    errorMsg: ""
+                    errorMsg: "",
                 },
                 publishTime: {
                     value: "09:30",
-                    errorMsg: ""
+                    errorMsg: "",
                 },
                 pendingDeletes: [],
                 teams: [],
@@ -50,14 +50,14 @@ export class CollectionCreateController extends Component {
                     title: "",
                     uri: "",
                     isProvisional: null,
-                    errorMsg: ""
+                    errorMsg: "",
                 },
-                scheduleType: "custom-schedule"
+                scheduleType: "custom-schedule",
             },
             isGettingTeams: true,
             isSubmitting: false,
             showScheduleByRelease: false,
-            updatedAllTeams: null
+            updatedAllTeams: null,
         };
 
         this.blankNewCollectionDetails = this.state.newCollectionDetails;
@@ -75,7 +75,7 @@ export class CollectionCreateController extends Component {
                     const notification = {
                         type: "warning",
                         message: "Failed to get teams. You should be able to add teams after creating the collection or you can try refreshing",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     this.setState({ isGettingTeams: false });
@@ -85,7 +85,7 @@ export class CollectionCreateController extends Component {
                     return { id: team.id.toString(), name: team.name };
                 });
                 this.setState({
-                    isGettingTeams: false
+                    isGettingTeams: false,
                 });
                 this.props.dispatch(updateAllTeamIDsAndNames(allTeams));
 
@@ -102,7 +102,7 @@ export class CollectionCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -112,7 +112,7 @@ export class CollectionCreateController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get teams. You can still create the collection without teams, or refresh",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -121,7 +121,7 @@ export class CollectionCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to get teams. Try refresh the page",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -135,12 +135,12 @@ export class CollectionCreateController extends Component {
     handleCollectionNameChange = event => {
         const collectionName = {
             value: event.target.value,
-            errorMsg: ""
+            errorMsg: "",
         };
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            name: collectionName
+            name: collectionName,
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
     };
@@ -168,7 +168,7 @@ export class CollectionCreateController extends Component {
             if (team.id == teamID) {
                 return {
                     ...team,
-                    disabled: true
+                    disabled: true,
                 };
             }
             return team;
@@ -178,11 +178,11 @@ export class CollectionCreateController extends Component {
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            teams: teams
+            teams: teams,
         };
         this.setState({
             newCollectionDetails,
-            updatedAllTeams
+            updatedAllTeams,
         });
     };
 
@@ -194,7 +194,7 @@ export class CollectionCreateController extends Component {
             if (team.id === teamToRemove.id) {
                 return {
                     ...team,
-                    disabled: false
+                    disabled: false,
                 };
             }
             return team;
@@ -202,11 +202,11 @@ export class CollectionCreateController extends Component {
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            teams: updatedTeams
+            teams: updatedTeams,
         };
         this.setState({
             newCollectionDetails,
-            updatedAllTeams
+            updatedAllTeams,
         });
     };
 
@@ -218,8 +218,8 @@ export class CollectionCreateController extends Component {
                 uri: "",
                 date: "",
                 title: "",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
     };
@@ -227,7 +227,7 @@ export class CollectionCreateController extends Component {
     handleScheduleTypeChange = event => {
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            scheduleType: event.value
+            scheduleType: event.value,
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
     };
@@ -235,12 +235,12 @@ export class CollectionCreateController extends Component {
     handlePublishDateChange = event => {
         const publishDate = {
             value: event.target.value,
-            errorMsg: ""
+            errorMsg: "",
         };
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            publishDate: publishDate
+            publishDate: publishDate,
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
     };
@@ -248,12 +248,12 @@ export class CollectionCreateController extends Component {
     handlePublishTimeChange = event => {
         const publishTime = {
             value: event.target.value,
-            errorMsg: ""
+            errorMsg: "",
         };
 
         const newCollectionDetails = {
             ...this.state.newCollectionDetails,
-            publishTime: publishTime
+            publishTime: publishTime,
         };
         this.setState({ newCollectionDetails: newCollectionDetails });
     };
@@ -272,10 +272,10 @@ export class CollectionCreateController extends Component {
                     title: release.title,
                     date: release.releaseDate,
                     isProvisional: release.isProvisional,
-                    errorMsg: ""
-                }
+                    errorMsg: "",
+                },
             },
-            showScheduleByRelease: false
+            showScheduleByRelease: false,
         }));
     };
 
@@ -308,7 +308,7 @@ export class CollectionCreateController extends Component {
                 }),
                 collectionOwner: this.props.user.userType,
                 releaseUri:
-                    this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null
+                    this.state.newCollectionDetails.scheduleType === "calender-entry-schedule" ? this.state.newCollectionDetails.release.uri : null,
             };
         } catch (error) {
             log.event("Error mapping new collection state to POST body", log.error(error));
@@ -327,12 +327,12 @@ export class CollectionCreateController extends Component {
         if (!validatedName.isValid) {
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
-                errorMsg: validatedName.errorMsg
+                errorMsg: validatedName.errorMsg,
             };
 
             newCollectionDetails = {
                 ...newCollectionDetails,
-                name: collectionName
+                name: collectionName,
             };
             hasError = true;
         }
@@ -342,12 +342,12 @@ export class CollectionCreateController extends Component {
             if (!validatedDate.isValid) {
                 const collectionDate = {
                     value: this.state.newCollectionDetails.publishDate.value,
-                    errorMsg: validatedDate.errorMsg
+                    errorMsg: validatedDate.errorMsg,
                 };
 
                 newCollectionDetails = {
                     ...newCollectionDetails,
-                    publishDate: collectionDate
+                    publishDate: collectionDate,
                 };
                 hasError = true;
             }
@@ -358,16 +358,16 @@ export class CollectionCreateController extends Component {
             if (!validatedTime.isValid) {
                 const collectionTime = {
                     value: this.state.newCollectionDetails.publishTime.value,
-                    errorMsg: validatedTime.errorMsg
+                    errorMsg: validatedTime.errorMsg,
                 };
 
                 newCollectionDetails = {
                     ...newCollectionDetails,
-                    publishTime: collectionTime
+                    publishTime: collectionTime,
                 };
                 this.setState({
                     newCollectionDetails: newCollectionDetails,
-                    isSubmitting: false
+                    isSubmitting: false,
                 });
                 hasError = true;
             }
@@ -379,16 +379,16 @@ export class CollectionCreateController extends Component {
             if (!validatedRelease.isValid) {
                 const collectionRelease = {
                     ...release,
-                    errorMsg: validatedRelease.errorMsg
+                    errorMsg: validatedRelease.errorMsg,
                 };
 
                 newCollectionDetails = {
                     ...newCollectionDetails,
-                    release: collectionRelease
+                    release: collectionRelease,
                 };
                 this.setState({
                     newCollectionDetails,
-                    isSubmitting: false
+                    isSubmitting: false,
                 });
                 hasError = true;
             }
@@ -397,7 +397,7 @@ export class CollectionCreateController extends Component {
         if (hasError) {
             this.setState({
                 newCollectionDetails,
-                isSubmitting: false
+                isSubmitting: false,
             });
             return;
         }
@@ -408,7 +408,7 @@ export class CollectionCreateController extends Component {
                 this.setState({
                     newCollectionDetails: this.blankNewCollectionDetails,
                     isSubmitting: false,
-                    updatedAllTeams: null
+                    updatedAllTeams: null,
                 });
                 this.props.onSuccess(response);
             })
@@ -423,7 +423,7 @@ export class CollectionCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There was an error creating the collection. Please check inputs and try again.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -436,7 +436,7 @@ export class CollectionCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `An unexpected error has occured whilst creating collection`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -452,20 +452,20 @@ export class CollectionCreateController extends Component {
                 `error creating collection: collection name already exists`,
                 log.error(error),
                 log.data({
-                    collection_name: this.state.newCollectionDetails.name.value
+                    collection_name: this.state.newCollectionDetails.name.value,
                 })
             );
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
-                errorMsg: "A collection with this name already exists"
+                errorMsg: "A collection with this name already exists",
             };
             const newCollectionDetails = {
                 ...this.state.newCollectionDetails,
-                name: collectionName
+                name: collectionName,
             };
             this.setState({
                 newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
+                isSubmitting: false,
             });
             return;
         }
@@ -477,20 +477,20 @@ export class CollectionCreateController extends Component {
                 log.data({
                     collection_name: this.state.newCollectionDetails.name.value,
                     release_name: this.state.newCollectionDetails.release.name,
-                    release_url: this.state.newCollectionDetails.release.uri
+                    release_url: this.state.newCollectionDetails.release.uri,
                 })
             );
             const collectionRelease = {
                 ...this.state.newCollectionDetails.release,
-                errorMsg: "Release is already in use in another collection"
+                errorMsg: "Release is already in use in another collection",
             };
             const newCollectionDetails = {
                 ...this.state.newCollectionDetails,
-                release: collectionRelease
+                release: collectionRelease,
             };
             this.setState({
                 newCollectionDetails: newCollectionDetails,
-                isSubmitting: false
+                isSubmitting: false,
             });
             return;
         }
@@ -528,7 +528,7 @@ CollectionCreateController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        allTeams: state.state.teams.allIDsAndNames
+        allTeams: state.state.teams.allIDsAndNames,
     };
 }
 

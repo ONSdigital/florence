@@ -5,28 +5,28 @@ jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {
             //
-        })
+        }),
     };
 });
 const errors = {
     badRequest: {
-        status: 400
+        status: 400,
     },
     unauthorised: {
-        status: 401
+        status: 401,
     },
     forbidden: {
-        status: 403
+        status: 403,
     },
     notFound: {
-        status: 404
+        status: 404,
     },
     networkErr: {
-        status: "FETCH_ERR"
+        status: "FETCH_ERR",
     },
     unexpected: {
-        status: 500
-    }
+        status: 500,
+    },
 };
 
 describe("Errors when updating the review state or saving metadata updates", () => {

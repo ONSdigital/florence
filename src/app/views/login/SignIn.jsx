@@ -18,7 +18,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object
+    location: PropTypes.object,
 };
 
 export class LoginController extends Component {
@@ -34,7 +34,7 @@ export class LoginController extends Component {
             emailValue: "",
             passwordType: "password",
             status: status.WAITING_USER_INITIAL_CREDS,
-            firstTimeSignIn: false
+            firstTimeSignIn: false,
         };
     }
 
@@ -57,12 +57,12 @@ export class LoginController extends Component {
                         this.session = response.body.session;
                     }
                     this.setState({
-                        firstTimeSignIn: true
+                        firstTimeSignIn: true,
                     });
                 } else {
                     this.setState(
                         {
-                            status: status.SUBMITTING_PERMISSIONS
+                            status: status.SUBMITTING_PERMISSIONS,
                         },
                         this.setPermissions
                     );
@@ -74,7 +74,7 @@ export class LoginController extends Component {
                 }
 
                 this.setState({
-                    status: status.WAITING_USER_INITIAL_CREDS
+                    status: status.WAITING_USER_INITIAL_CREDS,
                 });
             });
     };
@@ -83,7 +83,7 @@ export class LoginController extends Component {
         const notification = {
             type: "warning",
             isDismissable: true,
-            autoDismiss: 15000
+            autoDismiss: 15000,
         };
 
         if (error.status != null) {
@@ -99,7 +99,7 @@ export class LoginController extends Component {
 
                 this.validationErrors = {
                     heading: "Fix the following: ",
-                    body: errorsForBody
+                    body: errorsForBody,
                 };
             } else {
                 this.notifyUnexpectedError(notification);
@@ -162,7 +162,7 @@ export class LoginController extends Component {
                     type: "warning",
                     message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
                     autoDismiss: 8000,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 log.event("Error getting a user's permissions on login", log.error(error));
                 console.error("Error getting a user's permissions on login", error);
@@ -183,7 +183,7 @@ export class LoginController extends Component {
 
         const credentials = {
             email: this.state.emailValue,
-            password: this.state.passwordValue
+            password: this.state.passwordValue,
         };
         this.clearErrors();
         this.setState({ status: status.SUBMITTING_SIGN_IN }, () => {
@@ -195,7 +195,7 @@ export class LoginController extends Component {
         const value = event.target.value;
         this.emailErrorMsg = "";
         this.setState({
-            emailValue: value
+            emailValue: value,
         });
     };
 
@@ -203,14 +203,14 @@ export class LoginController extends Component {
         const value = event.target.value;
         this.passwordErrorMsg = "";
         this.setState({
-            passwordValue: value
+            passwordValue: value,
         });
     };
 
     toggleShowHidePassword = event => {
         const checked = event.target.checked;
         this.setState({
-            passwordType: checked ? "text" : "password"
+            passwordType: checked ? "text" : "password",
         });
     };
 
@@ -218,7 +218,7 @@ export class LoginController extends Component {
         const notification = {
             type: "warning",
             isDismissable: true,
-            autoDismiss: 15000
+            autoDismiss: 15000,
         };
         const outputGenericError = () => {
             console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
@@ -255,14 +255,14 @@ export class LoginController extends Component {
 
     passwordChangeSuccess = () => {
         this.setState({
-            status: status.SUBMITTED_PASSWORD_CHANGE
+            status: status.SUBMITTED_PASSWORD_CHANGE,
         });
     };
 
     passwordChangeFail = error => {
         this.handlePasswordResetError(error);
         this.setState({
-            status: status.WAITING_USER_NEW_PASSWORD
+            status: status.WAITING_USER_NEW_PASSWORD,
         });
     };
 
@@ -272,7 +272,7 @@ export class LoginController extends Component {
                 type: "NewPasswordRequired",
                 email: this.state.emailValue,
                 password: newPassword,
-                session: this.session
+                session: this.session,
             };
             user.setForgottenPassword(body)
                 .then(() => {
@@ -291,7 +291,7 @@ export class LoginController extends Component {
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
                 changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
-                status: this.state.status
+                status: this.state.status,
             };
 
             return <ChangePasswordController {...changePasswordProps} />;
@@ -302,7 +302,7 @@ export class LoginController extends Component {
                     label: "Email",
                     type: "email",
                     onChange: this.handleEmailInputChanged,
-                    error: this.emailErrorMsg
+                    error: this.emailErrorMsg,
                 },
                 {
                     id: "password",
@@ -310,7 +310,7 @@ export class LoginController extends Component {
                     type: this.state.passwordType,
                     onChange: this.handlePasswordInputChanged,
                     error: this.passwordErrorMsg,
-                    disableShowPasswordText: true
+                    disableShowPasswordText: true,
                 },
                 {
                     id: "toggle-password",
@@ -318,8 +318,8 @@ export class LoginController extends Component {
                     type: "checkbox",
                     reverseLabelOrder: true,
                     inline: true,
-                    onChange: this.toggleShowHidePassword
-                }
+                    onChange: this.toggleShowHidePassword,
+                },
             ];
             return (
                 <LoginForm
@@ -338,7 +338,7 @@ LoginController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
     };
 }
 

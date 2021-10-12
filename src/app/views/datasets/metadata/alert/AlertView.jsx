@@ -8,20 +8,20 @@ const propTypes = {
     date: PropTypes.shape({
         onChange: PropTypes.func.isRequired,
         value: PropTypes.string,
-        errorMsg: PropTypes.string
+        errorMsg: PropTypes.string,
     }).isRequired,
     description: PropTypes.shape({
         onChange: PropTypes.func.isRequired,
         value: PropTypes.string,
-        errorMsg: PropTypes.string
+        errorMsg: PropTypes.string,
     }).isRequired,
     isCorrection: PropTypes.shape({
         onChange: PropTypes.func.isRequired,
-        value: PropTypes.bool
+        value: PropTypes.bool,
     }).isRequired,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    isEditing: PropTypes.bool
+    isEditing: PropTypes.bool,
 };
 
 class AlertView extends Component {

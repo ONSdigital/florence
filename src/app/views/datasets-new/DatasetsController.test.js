@@ -7,21 +7,21 @@ console.error = () => {};
 
 jest.mock("../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
 jest.mock("../../utilities/log", () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        add: function () {},
+        eventTypes: {},
     };
 });
 
 jest.mock("../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -29,23 +29,23 @@ jest.mock("../../utilities/api-clients/datasets", () => {
     return {
         getAllList: jest.fn(() => {
             return Promise.resolve(mockedAllDatasets);
-        })
+        }),
     };
 });
 
 const mockedAllDatasets = [
     {
         id: "test-dataset-1",
-        title: "Test Dataset 1"
+        title: "Test Dataset 1",
     },
     {
         id: "test-dataset-2",
-        title: "Test Datatset 2"
+        title: "Test Datatset 2",
     },
     {
         id: "test-dataset-3",
-        title: ""
-    }
+        title: "",
+    },
 ];
 
 let dispatchedActions = [];
@@ -56,8 +56,8 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/datasets"
-    }
+        pathname: "florence/collections/12345/datasets",
+    },
 };
 
 const mountComponent = () => {
@@ -112,23 +112,23 @@ describe("Mapping datasets to state", () => {
             {
                 title: "Create new dataset",
                 id: "create-new-dataset",
-                url: defaultProps.location.pathname + "/create"
+                url: defaultProps.location.pathname + "/create",
             },
             {
                 title: mockedAllDatasets[0].title,
                 id: mockedAllDatasets[0].id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets[0].id
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[0].id,
             },
             {
                 title: mockedAllDatasets[1].title,
                 id: mockedAllDatasets[1].id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets[1].id
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[1].id,
             },
             {
                 title: mockedAllDatasets[2].id,
                 id: mockedAllDatasets[2].id,
-                url: defaultProps.location.pathname + "/" + mockedAllDatasets[2].id
-            }
+                url: defaultProps.location.pathname + "/" + mockedAllDatasets[2].id,
+            },
         ];
         const returnValue = component.instance().mapDatasetsToState(mockedAllDatasets);
         expect(returnValue[0]).toMatchObject(expectedValue[0]);

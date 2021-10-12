@@ -8,32 +8,32 @@ import { ChangeUserPasswordController, mapStateToProps } from "./ChangeUserPassw
 import validatePassword from "../../../components/change-password/validatePassword";
 
 jest.mock("../../../utilities/websocket", () => ({
-    send: jest.fn(() => {})
+    send: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/notifications", () => ({
-    add: jest.fn(() => {})
+    add: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/url", () => ({
-    resolve: jest.fn(string => string)
+    resolve: jest.fn(string => string),
 }));
 
 jest.mock("../../../utilities/api-clients/user", () => ({
     updatePassword: jest.fn().mockImplementation(() => Promise.resolve(true)),
-    logOut: jest.fn().mockImplementation(() => {})
+    logOut: jest.fn().mockImplementation(() => {}),
 }));
 
 jest.mock("../../../components/change-password/validatePassword", () =>
     jest.fn(() => ({
         isValid: true,
-        error: null
+        error: null,
     }))
 );
 
@@ -44,29 +44,29 @@ let dispatchedActions = [];
 const defaultProps = {
     dispatch: action => dispatchedActions.push(action),
     params: {
-        userID: "foobar@email.com"
+        userID: "foobar@email.com",
     },
     loggedInUser: {
         isAdmin: false,
-        email: "foobar@email.com"
-    }
+        email: "foobar@email.com",
+    },
 };
 const publisherProps = {
     ...defaultProps,
     loggedInUser: {
         ...defaultProps.loggedInUser,
-        isAdmin: false
-    }
+        isAdmin: false,
+    },
 };
 const adminProps = {
     ...defaultProps,
     loggedInUser: {
         ...defaultProps.loggedInUser,
-        isAdmin: true
-    }
+        isAdmin: true,
+    },
 };
 const mockEvent = {
-    preventDefault: () => {}
+    preventDefault: () => {},
 };
 
 beforeEach(() => {
@@ -98,8 +98,8 @@ describe("Publisher changing their own password", () => {
             input.onChange(
                 {
                     target: {
-                        value: `a mocked value (${index})`
-                    }
+                        value: `a mocked value (${index})`,
+                    },
                 },
                 input.id
             );
@@ -123,8 +123,8 @@ describe("Publisher changing their own password", () => {
         publisherComponent.setState({
             newPassword: {
                 value: "foobar foobar foobar foobar",
-                error: ""
-            }
+                error: "",
+            },
         });
         publisherComponent.instance().handleSubmit(mockEvent);
         expect(validatePassword.mock.calls.length).toBe(1);
@@ -135,12 +135,12 @@ describe("Publisher changing their own password", () => {
         publisherComponent.setState({
             newPassword: {
                 value: "foobar foobar foobar foobar",
-                error: ""
+                error: "",
             },
             currentPassword: {
                 value: "barfoo barfoo barfoo barfoo",
-                error: ""
-            }
+                error: "",
+            },
         });
         expect(user.updatePassword.mock.calls.length).toBe(0);
         publisherComponent.instance().handleSubmit(mockEvent);
@@ -150,17 +150,17 @@ describe("Publisher changing their own password", () => {
     it("doesn't send the request when current password and new password aren't valid", () => {
         validatePassword.mockImplementationOnce(() => ({
             isValid: false,
-            error: "An error message"
+            error: "An error message",
         }));
         publisherComponent.setState({
             newPassword: {
                 value: "foobar foobar",
-                error: ""
+                error: "",
             },
             currentPassword: {
                 value: "",
-                error: ""
-            }
+                error: "",
+            },
         });
         expect(user.updatePassword.mock.calls.length).toBe(0);
         publisherComponent.instance().handleSubmit(mockEvent);
@@ -171,12 +171,12 @@ describe("Publisher changing their own password", () => {
         publisherComponent.setState({
             newPassword: {
                 value: "foobar foobar foobar foobar",
-                error: ""
+                error: "",
             },
             currentPassword: {
                 value: "",
-                error: ""
-            }
+                error: "",
+            },
         });
         expect(user.updatePassword.mock.calls.length).toBe(0);
         publisherComponent.instance().handleSubmit(mockEvent);
@@ -186,17 +186,17 @@ describe("Publisher changing their own password", () => {
     it("doesn't send the request when new password isn't valid", () => {
         validatePassword.mockImplementationOnce(() => ({
             isValid: false,
-            error: "An error message"
+            error: "An error message",
         }));
         publisherComponent.setState({
             newPassword: {
                 value: "f b e r",
-                error: ""
+                error: "",
             },
             currentPassword: {
                 value: "barfoo barfoo barfoo barfoo",
-                error: ""
-            }
+                error: "",
+            },
         });
         expect(user.updatePassword.mock.calls.length).toBe(0);
         publisherComponent.instance().handleSubmit(mockEvent);
@@ -231,8 +231,8 @@ describe("Admin changing a user's password", () => {
         adminComponent.setState({
             newPassword: {
                 value: "my new password",
-                error: ""
-            }
+                error: "",
+            },
         });
         adminComponent.instance().handleSubmit(mockEvent);
         expect(validatePassword.mock.calls.length).toBe(1);
@@ -244,8 +244,8 @@ describe("Admin changing a user's password", () => {
         adminComponent.setState({
             newPassword: {
                 value: "foobar foobar foobar foobar",
-                error: ""
-            }
+                error: "",
+            },
         });
         adminComponent.instance().handleSubmit(mockEvent);
         expect(user.updatePassword.mock.calls.length).toBe(1);
@@ -254,7 +254,7 @@ describe("Admin changing a user's password", () => {
     it("doesn't send the request when the new password isn't valid", () => {
         validatePassword.mockImplementationOnce(() => ({
             isValid: false,
-            error: "An error message"
+            error: "An error message",
         }));
         expect(user.updatePassword.mock.calls.length).toBe(0);
         adminComponent.instance().handleSubmit(mockEvent);
@@ -280,18 +280,18 @@ describe("Sending the request to change password", () => {
     it("publishers see an inline error message if the current password is wrong (401 response)", async () => {
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: 401
+                status: 401,
             })
         );
         publisherComponent.setState({
             currentPassword: {
                 value: "bad password",
-                error: ""
+                error: "",
             },
             newPassword: {
                 value: "foobar foobar foobar foobar",
-                error: ""
-            }
+                error: "",
+            },
         });
 
         expect(user.updatePassword.mock.calls.length).toBe(0);
@@ -304,7 +304,7 @@ describe("Sending the request to change password", () => {
     it("admins are logged out if they receive a 401 response", async () => {
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: 401
+                status: 401,
             })
         );
 
@@ -318,7 +318,7 @@ describe("Sending the request to change password", () => {
     it("user's are notified if the request errors", async () => {
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: 500
+                status: 500,
             })
         );
 
@@ -332,7 +332,7 @@ describe("Sending the request to change password", () => {
     it("errors are logged", async () => {
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: 404
+                status: 404,
             })
         );
 
@@ -342,7 +342,7 @@ describe("Sending the request to change password", () => {
 
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: "undefined"
+                status: "undefined",
             })
         );
 
@@ -377,7 +377,7 @@ describe("Sending the request to change password", () => {
     it("component's state is updated to reflect that the request has finished with an error", async () => {
         user.updatePassword.mockImplementationOnce(() =>
             Promise.reject({
-                status: 500
+                status: 500,
             })
         );
 
@@ -390,12 +390,12 @@ describe("Sending the request to change password", () => {
         component.setState({
             currentPassword: {
                 value: "current password is correct",
-                error: ""
+                error: "",
             },
             newPassword: {
                 value: "a new password foobar",
-                error: ""
-            }
+                error: "",
+            },
         });
 
         expect(user.updatePassword.mock.calls.length).toBe(0);
@@ -406,21 +406,21 @@ describe("Sending the request to change password", () => {
         expect(requestBody).toEqual({
             oldPassword: "current password is correct",
             password: "a new password foobar",
-            email: "foobar@email.com"
+            email: "foobar@email.com",
         });
     });
 
     it("when an admin the component's state is mapped to the request bodies expected structure", () => {
         component.setProps({
             params: {
-                userID: "differentuser@email.com"
-            }
+                userID: "differentuser@email.com",
+            },
         });
         component.setState({
             newPassword: {
                 value: "a new password foobar",
-                error: ""
-            }
+                error: "",
+            },
         });
 
         expect(user.updatePassword.mock.calls.length).toBe(0);
@@ -431,7 +431,7 @@ describe("Sending the request to change password", () => {
         expect(requestBody).toEqual({
             oldPassword: "",
             password: "a new password foobar",
-            email: "differentuser@email.com"
+            email: "differentuser@email.com",
         });
     });
 });
@@ -459,7 +459,7 @@ describe("Change password form props", () => {
 
     it("passes in this.state.isSubmitting for 'isSubmitting'", () => {
         component.setState({
-            isSubmitting: "is submitting state"
+            isSubmitting: "is submitting state",
         });
         expect(component.instance().render().props.children.props.formData.isSubmitting).toBe("is submitting state");
     });
@@ -491,8 +491,8 @@ describe("On input change component state updates", () => {
         component.setState({
             currentPassword: {
                 value: "",
-                error: "An inline error"
-            }
+                error: "An inline error",
+            },
         });
         expect(component.state("currentPassword").error).toBe("An inline error");
         component.instance().handleInputChange("a current password value", "currentPassword");
@@ -509,8 +509,8 @@ describe("On input change component state updates", () => {
         component.setState({
             newPassword: {
                 value: "",
-                error: "An inline error"
-            }
+                error: "An inline error",
+            },
         });
         expect(component.state("newPassword").error).toBe("An inline error");
         component.instance().handleInputChange("a new password value", "newPassword");
@@ -529,9 +529,9 @@ describe("Mapping state to props", () => {
         const state = {
             state: {
                 user: {
-                    isAdmin: true
-                }
-            }
+                    isAdmin: true,
+                },
+            },
         };
         const mappedProps = mapStateToProps(state);
         expect(mappedProps.loggedInUser).toBeTruthy();

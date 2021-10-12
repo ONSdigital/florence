@@ -15,13 +15,13 @@ let createComponent = (password, showInputError, statusToSet) => {
         requestPasswordChange: checkValidity,
         status: statusToSet,
         buttonText: "Confirm password",
-        heading: "Create a new password"
+        heading: "Create a new password",
     };
 
     let component = mount(<ChangePasswordController {...props} />);
     component.setState({
         password: password,
-        showInputError: showInputError
+        showInputError: showInputError,
     });
 
     return component;
@@ -31,12 +31,7 @@ describe("On initial load", () => {
     let component = createComponent("", false, status.WAITING_USER_NEW_PASSWORD);
     it("They should not have an 'errored' input box", async () => {
         expect(component.find("h1").text()).toBe("Create a new password");
-        expect(
-            component
-                .find(".form__input")
-                .at(0)
-                .hasClass("form__input--error")
-        ).toBe(false);
+        expect(component.find(".form__input").at(0).hasClass("form__input--error")).toBe(false);
     });
 });
 
@@ -44,12 +39,7 @@ describe("After the user has attempted to submit a password change without meeti
     let component = createComponent("", true, status.WAITING_USER_NEW_PASSWORD);
     it("They should have an 'errored' input box", async () => {
         expect(component.find("h1").text()).toBe("Create a new password");
-        expect(
-            component
-                .find(".form__input")
-                .at(0)
-                .hasClass("form__input--error")
-        ).toBe(true);
+        expect(component.find(".form__input").at(0).hasClass("form__input--error")).toBe(true);
     });
 });
 
@@ -57,11 +47,6 @@ describe("When submitting a valid password", () => {
     let component = createComponent("a1B123456abcdefg", false, status.SUBMITTING_PASSWORD_CHANGE);
     it("They should not have an 'errored' input box", async () => {
         expect(component.find("h1").text()).toBe("Create a new password");
-        expect(
-            component
-                .find(".form__input")
-                .at(0)
-                .hasClass("form__input--error")
-        ).toBe(false);
+        expect(component.find(".form__input").at(0).hasClass("form__input--error")).toBe(false);
     });
 });

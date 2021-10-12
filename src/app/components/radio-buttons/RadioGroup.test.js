@@ -8,19 +8,19 @@ const defaultProps = {
         {
             id: "test-radio1",
             value: "test-value1",
-            label: "Test radio 1"
+            label: "Test radio 1",
         },
         {
             id: "test-radio2",
             value: "test-value2",
-            label: "Test radio 2"
-        }
+            label: "Test radio 2",
+        },
     ],
     legend: "Select a test radio",
     groupName: "test-group",
     onChange: () => {},
     selectedValue: "test-value1",
-    inline: false
+    inline: false,
 };
 
 const mockedEvent = { id: "test-radio2", checked: true, value: "test-value2" };
@@ -40,6 +40,6 @@ test("Handle change passes correct value caller onChange method", () => {
     expect(passedToParent).toMatchObject({
         id: "test-radio2",
         checked: true,
-        value: "test-value2"
+        value: "test-value2",
     });
 });

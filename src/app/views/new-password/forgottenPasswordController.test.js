@@ -5,7 +5,7 @@ import React from "react";
 
 describe("When the user first lands on the forgotten-password url", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {},
     };
     const component = mount(<ForgottenPasswordController {...props} />);
     it("Load the correct child component forgottenPasswordRequest", () => {
@@ -22,17 +22,17 @@ describe("When the user first lands on the forgotten-password url", () => {
 
 describe("When the user submits their email for a password request whilst waiting a response", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {},
     };
     const component = mount(<ForgottenPasswordController {...props} />);
     component.setState({
         validationErrors: {},
         email: {
             value: "",
-            errorMsg: ""
+            errorMsg: "",
         },
         hasSubmitted: false,
-        isSubmitting: true
+        isSubmitting: true,
     });
     it("Continue to show the forgottenPasswordRequest component", () => {
         expect(component.find("h1").text()).toBe("Forgotten password");
@@ -44,7 +44,7 @@ describe("When the user submits their email for a password request whilst waitin
 
 describe("When the user submits their email for a password request but the server returns a validation error", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {},
     };
     const component = mount(<ForgottenPasswordController {...props} />);
     component.setState({
@@ -55,15 +55,15 @@ describe("When the user submits their email for a password request but the serve
                     <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                         Enter a valid email address
                     </a>
-                </p>
-            ]
+                </p>,
+            ],
         },
         email: {
             value: "foo@bar.com",
-            errorMsg: "Enter a valid email address"
+            errorMsg: "Enter a valid email address",
         },
         hasSubmitted: false,
-        isSubmitting: false
+        isSubmitting: false,
     });
     it("Continue to show the forgottenPasswordRequest component", () => {
         expect(component.find("h1").text()).toBe("Forgotten password");
@@ -79,27 +79,22 @@ describe("When the user submits their email for a password request but the serve
 
 describe("When the user submits their email for a password request and the process is a success", () => {
     const props = {
-        dispatch: function() {}
+        dispatch: function () {},
     };
     const component = mount(<ForgottenPasswordController {...props} />);
     component.setState({
         validationErrors: {},
         email: {
             value: "foo@bar.com",
-            errorMsg: ""
+            errorMsg: "",
         },
         hasSubmitted: true,
-        isSubmitting: false
+        isSubmitting: false,
     });
     it("Show the forgottenPasswordEmailSent component", () => {
         expect(component.find("h1").text()).toBe("We sent you an email");
     });
     it("Show the users email", () => {
-        expect(
-            component
-                .find("strong")
-                .at(0)
-                .text()
-        ).toBe("foo@bar.com");
+        expect(component.find("strong").at(0).text()).toBe("foo@bar.com");
     });
 });

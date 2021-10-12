@@ -11,7 +11,7 @@ jest.mock("../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
         data: jest.fn(() => {}),
-        error: jest.fn(() => {})
+        error: jest.fn(() => {}),
     };
 });
 
@@ -19,19 +19,19 @@ jest.mock("../../utilities/notifications", () => {
     return {
         add: jest.fn(event => {
             mockedNotifications.push(event);
-        })
+        }),
     };
 });
 
 jest.mock("../../utilities/api-clients/collections", () => ({
     get: jest.fn(() => {
         return Promise.resolve(mockedCollection);
-    })
+    }),
 }));
 
 const mockedCollection = {
     id: "test-collection-1",
-    name: "Test Collection"
+    name: "Test Collection",
 };
 
 let dispatchedActions,
@@ -43,11 +43,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     params: {
-        collectionID: "test-collection-1"
+        collectionID: "test-collection-1",
     },
     location: {
-        pathname: "/florence/test-collection-1/"
-    }
+        pathname: "/florence/test-collection-1/",
+    },
 };
 
 const component = shallow(<CollectionRoutesWrapper {...defaultProps} />);
@@ -105,14 +105,14 @@ describe("Mapping collection to working on state", () => {
             id: "test-collection-1",
             name: "Test Collection",
             url: "/florence/collections/test-collection-1",
-            error: false
+            error: false,
         });
     });
 
     it("returns the correct object on error", () => {
         const mappedObject = component.instance().mapCollectionResponseToWorkingOnState();
         expect(mappedObject).toMatchObject({
-            error: true
+            error: true,
         });
     });
 

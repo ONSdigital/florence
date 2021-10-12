@@ -7,7 +7,7 @@ const propTypes = {
     fields: PropTypes.arrayOf(
         PropTypes.shape({
             simpleListHeading: PropTypes.string.isRequired,
-            simpleListDescription: PropTypes.string
+            simpleListDescription: PropTypes.string,
         })
     ).isRequired,
     editingStateFieldName: PropTypes.string.isRequired,
@@ -17,7 +17,7 @@ const propTypes = {
     handleEditClick: PropTypes.func.isRequired,
     handleDeleteClick: PropTypes.func.isRequired,
     disableActions: PropTypes.bool,
-    maximumNumberOfEntries: PropTypes.number
+    maximumNumberOfEntries: PropTypes.number,
 };
 
 export default class SimpleEditableList extends Component {

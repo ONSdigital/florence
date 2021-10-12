@@ -10,8 +10,8 @@ const propTypes = {
     location: PropTypes.string.isRequired,
     instanceID: PropTypes.string.isRequired,
     payload: PropTypes.shape({
-        message: PropTypes.string.isRequired
-    }).isRequired
+        message: PropTypes.string.isRequired,
+    }).isRequired,
 };
 
 class RuntimeErrorLog extends Component {

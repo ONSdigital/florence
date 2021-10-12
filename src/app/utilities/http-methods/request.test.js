@@ -11,7 +11,7 @@ jest.mock("../logging/log", () => {
         data: jest.fn(() => {}),
         http: jest.fn(() => {}),
         error: jest.fn(() => {}),
-        warn: jest.fn(() => {})
+        warn: jest.fn(() => {}),
     };
 });
 console.error = jest.fn();
@@ -26,9 +26,9 @@ jest.useFakeTimers();
 test("Request doesn't retry when the fetch resolves", async () => {
     fetch.mockResponse("{}", {
         headers: new Headers({
-            "content-type": "application/json"
+            "content-type": "application/json",
         }),
-        status: 200
+        status: 200,
     });
     let retries = 0;
     expect(fetch).toHaveBeenCalledTimes(0);
@@ -36,7 +36,7 @@ test("Request doesn't retry when the fetch resolves", async () => {
         "GET",
         "/foobar",
         true,
-        function() {
+        function () {
             jest.runOnlyPendingTimers();
             retries++;
         },
@@ -56,7 +56,7 @@ test("Request back-off attempts 5 retries when fetches fail", async () => {
             "GET",
             "/foobar",
             true,
-            function() {
+            function () {
                 jest.runOnlyPendingTimers();
                 retries++;
             },
@@ -77,15 +77,15 @@ test("Request back-off resolves as soon as a fetch is successful", async () => {
             "GET",
             "/foobar",
             true,
-            function(retryCount) {
+            function (retryCount) {
                 jest.runOnlyPendingTimers();
                 // Make sure the next attempted fetch is successful so we can check that it doesn't attempt any more fetches
                 if (retryCount === 2) {
                     fetch.mockResponse(JSON.stringify({}), {
                         headers: new Headers({
-                            "content-type": "application/json"
+                            "content-type": "application/json",
                         }),
-                        status: 200
+                        status: 200,
                     });
                 }
             },
@@ -100,9 +100,9 @@ test("Request back-off resolves as soon as a fetch is successful", async () => {
 test("Request returns to caller to handle 401 if callerHandles401 flag is set", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({
-            "content-type": "application/json"
+            "content-type": "application/json",
         }),
-        status: 401
+        status: 401,
     });
 
     expect(fetch).toHaveBeenCalledTimes(0);
@@ -123,7 +123,7 @@ test("Request back-off won't retry failed fetch if willRetry flag is set to fals
             "GET",
             "/foobar",
             false,
-            function() {
+            function () {
                 jest.runOnlyPendingTimers();
             },
             null
@@ -138,9 +138,9 @@ test("Request back-off won't retry failed fetch if willRetry flag is set to fals
 test("Request back-off won't retry successful fetch if willRetry flag is set to false", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({
-            "content-type": "application/json"
+            "content-type": "application/json",
         }),
-        status: 200
+        status: 200,
     });
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
@@ -148,7 +148,7 @@ test("Request back-off won't retry successful fetch if willRetry flag is set to 
             "GET",
             "/foobar",
             false,
-            function() {
+            function () {
                 fail("A retry was attempted despite willRetry being set to false");
             },
             null
@@ -164,9 +164,9 @@ test("Request back-off won't retry successful fetch if willRetry flag is set to 
 test("PUT/POST request response without a JSON body but with an 'application/json' header still executes and resolves", async () => {
     fetch.mockResponse("", {
         headers: new Headers({
-            "content-type": "application/json"
+            "content-type": "application/json",
         }),
-        status: 200
+        status: 200,
     });
 
     await expect(request("PUT", "/foobar")).resolves.toBe(undefined);
@@ -176,7 +176,7 @@ test("PUT/POST request response without a JSON body but with an 'application/jso
 test("GET request response without a 'content-type' header logs an error", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({}),
-        status: 200
+        status: 200,
     });
 
     let runtimeErrors = log.event.mock.calls.filter(call => {
@@ -198,20 +198,20 @@ test("GET request response without a 'content-type' header logs an error", async
 test.skip("GET request response without a 'content-type' header returns a RUNTIME_ERROR to the caller", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({}),
-        status: 200
+        status: 200,
     });
     await expect(request("GET", "/foobar")).rejects.toEqual({
         status: "RUNTIME_ERROR",
-        message: "Error trying to parse response's content-type header"
+        message: "Error trying to parse response's content-type header",
     });
 });
 
 test("GET request response without an 'application/json' header logs a warning", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({
-            "content-type": ""
+            "content-type": "",
         }),
-        status: 200
+        status: 200,
     });
     let runtimeWarnings = log.event.mock.calls.filter(call => {
         return call[0] === "Received request response for method that didn't have the 'application/json' header";
@@ -228,9 +228,9 @@ test("GET request response without an 'application/json' header logs a warning",
 test("PUT request response without an 'application/json' header doesn't log a warning", async () => {
     fetch.mockResponse(JSON.stringify({}), {
         headers: new Headers({
-            "content-type": ""
+            "content-type": "",
         }),
-        status: 200
+        status: 200,
     });
 
     let runtimeWarnings = log.event.mock.calls.filter(call => {
@@ -247,9 +247,9 @@ test("PUT request response without an 'application/json' header doesn't log a wa
 test("GET request response with 200 status, no JSON body but an 'application/json' header rejects", async () => {
     fetch.mockResponse("", {
         headers: new Headers({
-            "content-type": "application/json"
+            "content-type": "application/json",
         }),
-        status: 200
+        status: 200,
     });
 
     const failedRequest = request("GET", "/foobar");

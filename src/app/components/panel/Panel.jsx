@@ -6,7 +6,7 @@ const propTypes = {
     body: PropTypes.oneOfType([
         PropTypes.string,
         PropTypes.element,
-        PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType]))
+        PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType])),
     ]),
     heading: PropTypes.string,
     bannerHeading: PropTypes.bool,
@@ -16,8 +16,8 @@ const propTypes = {
         type: PropTypes.string,
         id: PropTypes.string,
         pattern: PropTypes.string,
-        inputMode: PropTypes.string
-    })
+        inputMode: PropTypes.string,
+    }),
 };
 const Panel = props => {
     let panelClass = `panel`;

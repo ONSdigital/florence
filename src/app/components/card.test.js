@@ -5,7 +5,7 @@ import { shallow } from "enzyme";
 const props = {
     title: "Card title",
     onEdit: () => {},
-    onDelete: () => {}
+    onDelete: () => {},
 };
 
 test("Renders the title for the card", () => {

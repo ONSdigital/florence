@@ -11,11 +11,11 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired,
-        format: PropTypes.string.isRequired
+        format: PropTypes.string.isRequired,
     }),
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-    })
+        pathname: PropTypes.string.isRequired,
+    }),
 };
 
 export class CreateCantabularDatasetController extends Component {
@@ -25,7 +25,7 @@ export class CreateCantabularDatasetController extends Component {
         this.state = {
             isPosting: false,
             datasetID: "",
-            format: ""
+            format: "",
         };
     }
 
@@ -36,13 +36,13 @@ export class CreateCantabularDatasetController extends Component {
     setStateFromParameters = () => {
         this.setState({
             datasetID: this.props.params.datasetID,
-            format: this.props.params.format
+            format: this.props.params.format,
         });
     };
 
     makeCreateDatasetPostBody = () => {
         return {
-            type: this.state.format
+            type: this.state.format,
         };
     };
 
@@ -58,7 +58,7 @@ export class CreateCantabularDatasetController extends Component {
                     type: "positive",
                     message: "Dataset created.",
                     isDismissable: true,
-                    autoDismiss: 5000
+                    autoDismiss: 5000,
                 });
                 this.setState({ isPosting: false });
                 const datasetsOverviewPageURL = url.resolve("../../../");
@@ -89,7 +89,7 @@ export class CreateCantabularDatasetController extends Component {
                     type: "warning",
                     message: notificationMessage,
                     isDismissable: true,
-                    autoDismiss: 10000
+                    autoDismiss: 10000,
                 });
                 this.setState({ isPosting: false });
                 log.event("Error creating dataset", log.error(error));

@@ -14,9 +14,9 @@ const propTypes = {
                 PropTypes.shape({
                     id: PropTypes.string.isRequired,
                     name: PropTypes.string.isRequired,
-                    disabled: PropTypes.bool
+                    disabled: PropTypes.bool,
                 })
-            )
+            ),
         })
     ).isRequired,
     name: PropTypes.string,
@@ -24,11 +24,11 @@ const propTypes = {
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 const defaultProps = {
-    disabled: false
+    disabled: false,
 };
 
 class Select extends Component {
@@ -36,7 +36,7 @@ class Select extends Component {
         super(props);
 
         this.state = {
-            isFocused: false
+            isFocused: false,
         };
     }
 

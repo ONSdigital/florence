@@ -10,19 +10,19 @@ jest.mock("../config/store", () => ({
         getState: jest.fn().mockImplementation(() => {
             return {
                 state: {
-                    notifications: mockNotificationsState
-                }
+                    notifications: mockNotificationsState,
+                },
             };
-        })
-    }
+        }),
+    },
 }));
 
 jest.mock("./logging/log", () => {
     return {
-        event: function() {
+        event: function () {
             // do nothing
         },
-        data: function() {}
+        data: function () {},
     };
 });
 
@@ -42,18 +42,18 @@ jest.mock("../config/actions", () => ({
             }
             return notification;
         });
-    })
+    }),
 }));
 
 test("Auto dismiss configuration option automatically removes notification from state", () => {
     const mockNotifications = [
         {
-            message: "Message 1"
+            message: "Message 1",
         },
         {
             message: "Message 2",
-            autoDismiss: 1000
-        }
+            autoDismiss: 1000,
+        },
     ];
     jest.useFakeTimers();
     notifications.add(mockNotifications[0]);
@@ -71,16 +71,16 @@ test("Auto dismiss configuration option automatically removes notification from 
 test("Button to dismiss notification is added to config correctly and included by default", () => {
     const mockNotifications = [
         {
-            message: "Message 1"
+            message: "Message 1",
         },
         {
             message: "Message 2",
-            isDismissable: false
+            isDismissable: false,
         },
         {
             message: "Message 2",
-            isDismissable: true
-        }
+            isDismissable: true,
+        },
     ];
 
     notifications.add(mockNotifications[0]);
@@ -99,8 +99,8 @@ test("Click 'dismiss' button removes that notfication from state", () => {
     const mockNotifications = [
         {
             message: "Message 1",
-            isDismissable: true
-        }
+            isDismissable: true,
+        },
     ];
     jest.useFakeTimers();
 

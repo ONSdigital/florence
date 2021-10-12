@@ -5,12 +5,12 @@ import releases from "../../../utilities/api-clients/releases";
 
 jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../../utilities/date", () => ({
-    format: () => "a formatted date"
+    format: () => "a formatted date",
 }));
 
 jest.mock("../../../utilities/api-clients/releases", () => ({
@@ -23,35 +23,35 @@ jest.mock("../../../utilities/api-clients/releases", () => ({
                         description: {
                             title: "My release",
                             releaseDate: "2018-05-17T09:30:54.928Z",
-                            finalised: true
-                        }
+                            finalised: true,
+                        },
                     },
                     {
                         uri: "/releases/my-second-release",
                         description: {
                             title: "My second release",
                             releaseDate: "2018-05-20T09:30:54.928Z",
-                            finalised: true
-                        }
+                            finalised: true,
+                        },
                     },
                     {
                         uri: "/releases/my-third-release",
                         description: {
                             title: "My third release",
                             releaseDate: "2018-05-21T09:30:54.928Z",
-                            finalised: true
-                        }
-                    }
+                            finalised: true,
+                        },
+                    },
                 ],
-                numberOfResults: 3
-            }
+                numberOfResults: 3,
+            },
         });
-    })
+    }),
 }));
 
 const props = {
     onClose: () => {},
-    onSubmit: () => {}
+    onSubmit: () => {},
 };
 
 const component = shallow(<ScheduleByRelease {...props} />);
@@ -62,25 +62,25 @@ const mockedReleases = [
         description: {
             title: "My release",
             releaseDate: "2018-05-17T09:30:54.928Z",
-            finalised: true
-        }
+            finalised: true,
+        },
     },
     {
         uri: "/releases/my-second-release",
         description: {
             title: "My second release",
             releaseDate: "2018-05-20T09:30:54.928Z",
-            finalised: true
-        }
+            finalised: true,
+        },
     },
     {
         uri: "/releases/my-third-release",
         description: {
             title: "My third release",
             releaseDate: "2018-05-21T09:30:54.928Z",
-            finalised: true
-        }
-    }
+            finalised: true,
+        },
+    },
 ];
 
 describe("Mapping releases response to table", () => {
@@ -93,8 +93,8 @@ describe("Mapping releases response to table", () => {
                     uri: "/releases/my-release",
                     releaseDate: "2018-05-17T09:30:54.928Z",
                     title: "My release",
-                    isProvisional: false
-                }
+                    isProvisional: false,
+                },
             },
             {
                 id: "/releases/my-second-release",
@@ -103,8 +103,8 @@ describe("Mapping releases response to table", () => {
                     uri: "/releases/my-second-release",
                     releaseDate: "2018-05-20T09:30:54.928Z",
                     title: "My second release",
-                    isProvisional: false
-                }
+                    isProvisional: false,
+                },
             },
             {
                 id: "/releases/my-third-release",
@@ -113,9 +113,9 @@ describe("Mapping releases response to table", () => {
                     uri: "/releases/my-third-release",
                     releaseDate: "2018-05-21T09:30:54.928Z",
                     title: "My third release",
-                    isProvisional: false
-                }
-            }
+                    isProvisional: false,
+                },
+            },
         ];
 
         expect(component.instance().mapReleasesToTableRows(mockedReleases)).toEqual(expectedTableData);
@@ -128,9 +128,9 @@ describe("Mapping releases response to table", () => {
                 description: {
                     title: "My release",
                     releaseDate: "2018-05-21T09:30:54.928Z",
-                    finalised: false
-                }
-            }
+                    finalised: false,
+                },
+            },
         ];
 
         expect(component.instance().mapReleasesToTableRows(releasesWithProvisional)[0].returnValue.isProvisional).toBe(true);
@@ -145,9 +145,9 @@ describe("Mapping releases response to table", () => {
                     title: "My cancelled release",
                     releaseDate: "2018-05-21T09:30:54.928Z",
                     finalised: false,
-                    cancelled: true
-                }
-            }
+                    cancelled: true,
+                },
+            },
         ];
         const mappedReleases = component.instance().mapReleasesToTableRows(releasesWithCancelled);
 
@@ -165,9 +165,9 @@ describe("Mapping releases response to table", () => {
                     title: "My published release",
                     releaseDate: "2018-05-21T09:30:54.928Z",
                     finalised: false,
-                    cancelled: true
-                }
-            }
+                    cancelled: true,
+                },
+            },
         ];
         const mappedReleases = component.instance().mapReleasesToTableRows(releasesWithPublished);
 
@@ -183,9 +183,9 @@ describe("Mapping releases response to table", () => {
                 description: {
                     title: "My tagged <strong>release</strong>",
                     releaseDate: "2018-05-21T09:30:54.928Z",
-                    finalised: true
-                }
-            }
+                    finalised: true,
+                },
+            },
         ];
 
         expect(component.instance().mapReleasesToTableRows(releasesWithHTMLTags)[0].returnValue.title).toBe("My tagged release");
@@ -200,9 +200,9 @@ describe("Searching releases", () => {
                     results: [],
                     numberOfResults: 50,
                     paginator: {
-                        numberOfPages: 5
-                    }
-                }
+                        numberOfPages: 5,
+                    },
+                },
             })
         );
         component.setState({ numberOfPages: 0 });
@@ -263,31 +263,31 @@ describe("Loading more releases", () => {
                             description: {
                                 title: "My fourth release",
                                 releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true
-                            }
+                                finalised: true,
+                            },
                         },
                         {
                             uri: "/releases/my-fifth-release",
                             description: {
                                 title: "My fifth release",
                                 releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true
-                            }
+                                finalised: true,
+                            },
                         },
                         {
                             uri: "/releases/my-sixth-release",
                             description: {
                                 title: "My sixth release",
                                 releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true
-                            }
-                        }
+                                finalised: true,
+                            },
+                        },
                     ],
                     numberOfResults: 6,
                     paginator: {
-                        numberOfPages: 2
-                    }
-                }
+                        numberOfPages: 2,
+                    },
+                },
             })
         );
 
@@ -314,8 +314,8 @@ describe("Loading more releases", () => {
                 uri: "/releases/my-fifth-release",
                 releaseDate: "2018-05-17T09:30:54.928Z",
                 title: "My fifth release",
-                isProvisional: false
-            }
+                isProvisional: false,
+            },
         });
     });
 

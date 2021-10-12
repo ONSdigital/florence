@@ -5,11 +5,11 @@ const propTypes = {
     isVisible: PropTypes.bool,
     isAnimatable: PropTypes.bool,
     handleTransitionEnd: PropTypes.func,
-    children: PropTypes.node
+    children: PropTypes.node,
 };
 
 const defaultProps = {
-    handleTransitionEnd: () => {}
+    handleTransitionEnd: () => {},
 };
 
 class Drawer extends Component {
@@ -20,7 +20,7 @@ class Drawer extends Component {
             // This classes is added because it's useful for testing to have something in the DOM
             // that signifies when the animation is finished. It means we don't have to inputs timeouts
             // or rely on the tests running slow enough to be able to select the elements inside the drawer
-            hasFinishedAnimation: false
+            hasFinishedAnimation: false,
         };
     }
 

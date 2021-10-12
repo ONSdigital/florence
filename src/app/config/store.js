@@ -15,7 +15,7 @@ const enhancer = composeWithDevTools(applyMiddleware(thunkMiddleware, routingMid
 export const store = createStore(
     combineReducers({
         state: reducer,
-        routing: routerReducer
+        routing: routerReducer,
     }),
     enhancer
 );
