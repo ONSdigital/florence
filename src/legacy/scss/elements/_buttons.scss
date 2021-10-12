@@ -47,6 +47,13 @@ button {
         background-color: $tawny-port;
     }
 
+    &--invert-primary {
+        color: $astral;
+        background-color: $concrete;
+        border: 2px solid $astral;
+        box-sizing: border-box;
+    }
+
     &--subtle {
         color: $mirage;
         background-color: $cadet-blue;

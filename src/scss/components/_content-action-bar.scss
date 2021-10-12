@@ -1,0 +1,13 @@
+.content-action-bar {
+  list-style: none;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  z-index: 3;
+  background-color: $grey5;
+
+  &__warn {
+    align-self: center;
+    margin-left: $magicnumber1;
+  }
+}
