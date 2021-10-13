@@ -1,0 +1,32 @@
+.chip {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: $magicnumber1;
+  background-color: $grey5;
+  color: $grey2;
+  width: max-content;
+
+  &--blue {
+    background-color: #D8DDF0;
+    color: $pickled-bluewood;
+  }
+
+  &--green {
+    //background-color: #E8F5E9;
+    background-color: tint($leaf-green, 70);
+    color: $como;
+
+  }
+
+  &--red {
+    background-color: #F8F2F3;
+    color: $tawny-port;
+
+  }
+
+  &__text {
+    padding-left: $magicnumber1;
+    padding-right: $magicnumber1;
+  }
+}
