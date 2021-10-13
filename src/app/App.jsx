@@ -64,7 +64,7 @@ class App extends Component {
             }
             this.setState({ isCheckingAuthentication: false });
         });
-        if (window.location.pathname !== "/florence/login" && this.state.enableNewSignIn) {
+        if (this.props.location.pathname !== "/florence/login" && this.state.enableNewSignIn) {
             sessionManagement.startSessionExpiryTimers();
         }
     }
