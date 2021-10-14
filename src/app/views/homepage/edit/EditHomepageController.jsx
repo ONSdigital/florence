@@ -434,7 +434,7 @@ export class EditHomepageController extends Component {
 
 function mapStateToProps(state) {
     return {
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
         currentCollection: state.state.global.workingOn,
     };
 }

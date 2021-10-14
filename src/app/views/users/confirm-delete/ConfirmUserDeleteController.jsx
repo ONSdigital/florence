@@ -197,7 +197,7 @@ ConfirmUserDeleteController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        loggedInUser: state.state.user,
+        loggedInUser: state.user,
     };
 }
 

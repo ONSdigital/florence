@@ -334,7 +334,7 @@ function mapStateToProps(state) {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
         rootPath: state.state.rootPath,
-        users: state.state.users.all,
+        users: state.users.all,
     };
 }
 

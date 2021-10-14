@@ -3,7 +3,7 @@ import NavBar from "./NavBar";
 
 const mapStateToProps = state => {
     return {
-        user: state.state.user,
+        user: state.user,
         rootPath: state.state.rootPath,
         workingOn: state.state.global ? state.state.global.workingOn : null,
         config: state.state.config,

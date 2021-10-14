@@ -265,7 +265,7 @@ function mapStateToProps(state) {
                 ? url.resolve(state.state.datasets.activeDataset.links.latest_version.href)
                 : null,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
     };
 }
 

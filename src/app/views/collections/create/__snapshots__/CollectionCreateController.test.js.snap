@@ -53,7 +53,7 @@ exports[`Create collection form matches stored snapshot 1`] = `
             value="default-option"
           >
             <option
-              value="default-option"
+              value="Loading teams..."
             >
               Loading teams...
             </option>

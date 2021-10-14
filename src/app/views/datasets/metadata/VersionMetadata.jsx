@@ -1527,7 +1527,7 @@ VersionMetadata.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
         instance: state.state.datasets.activeInstance,
         version: state.state.datasets.activeVersion,

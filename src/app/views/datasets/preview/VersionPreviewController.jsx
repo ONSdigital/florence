@@ -334,7 +334,7 @@ function mapStateToProps(state) {
         dataset: state.state.datasets.activeDataset,
         versionURL: state.state.datasets.activeVersion ? buildVersionPath(state.state.datasets.activeVersion) : null,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
     };
 }
 

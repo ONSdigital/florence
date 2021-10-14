@@ -79,7 +79,7 @@ const DatasetMetadata = ({
     handleSubmitForReviewClick,
     handleMarkAsReviewedClick,
     isSaving,
-    allowPreview
+    allowPreview,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -331,7 +331,7 @@ DatasetMetadata.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
     };
 }
 

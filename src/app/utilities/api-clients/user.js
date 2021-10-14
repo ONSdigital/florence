@@ -1,6 +1,7 @@
 import http from "../http";
 import { store } from "../../config/store";
-import { reset, userLoggedIn, userLoggedOut } from "../../config/actions";
+import { reset } from "../../config/actions";
+import { userLoggedIn, userLoggedOut } from "../../config/user/userActions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";

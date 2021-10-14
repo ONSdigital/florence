@@ -4,12 +4,6 @@ export const initialState = {
         enableHomepagePublishing: false,
         enableNewSignIn: false,
     },
-    user: {
-        isAuthenticated: false,
-        email: "",
-        userType: "",
-        isAdmin: false,
-    },
     global: {
         workingOn: null,
     },

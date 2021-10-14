@@ -92,7 +92,7 @@ class Select extends Component {
                         onBlur={this.handleFocus}
                         value={this.props.selectedOption}
                     >
-                        <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
+                        <option value={this.props.defaultOption}>{this.props.defaultOption || "Select an option"}</option>
                         {this.renderOptions(this.props.contents)}
                     </select>
                 </div>

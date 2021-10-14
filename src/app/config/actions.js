@@ -1,8 +1,5 @@
 export const SET_CONFIG = "SET_CONFIG";
 
-export const USER_LOGGED_IN = "USER_LOGGED_IN";
-export const USER_LOGGED_OUT = "USER_LOGGED_OUT";
-
 export const ADD_ALL_COLLECTIONS = "ADD_ALL_COLLECTIONS";
 export const MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS = "MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS";
 export const DELETE_COLLECTION_FROM_ALL_COLLECTIONS = "DELETE_COLLECTION_FROM_ALL_COLLECTIONS";
@@ -59,21 +56,6 @@ export function setConfig(config) {
     return {
         type: SET_CONFIG,
         config,
-    };
-}
-
-export function userLoggedIn(email, userType, isAdmin) {
-    return {
-        type: USER_LOGGED_IN,
-        email: email,
-        userType: userType,
-        isAdmin: isAdmin,
-    };
-}
-
-export function userLoggedOut() {
-    return {
-        type: USER_LOGGED_OUT,
     };
 }
 

@@ -1,17 +1,19 @@
 import { connect } from "react-redux";
 import PreviewNav from "./PreviewNav";
+import { updateSelectedPreviewPage } from "../../config/actions";
 
-function mapStateToProps(state) {
-    const user = state.state.user;
-    const rootPath = state.state.rootPath;
-    const workingOn = state.state.global ? state.state.global.workingOn : null;
-
+export const mapStateToProps = state => {
     return {
-        user,
-        rootPath,
-        workingOn,
-        config: state.state.config,
+        preview: state.state.preview,
+        rootPath: state.state.rootPath,
+        workingOn: state.state.global.workingOn || {},
     };
-}
+};
 
-export default connect(mapStateToProps)(PreviewNav);
+const mapDispatchToProps = dispatch => {
+    return {
+        updateSelected: uri => dispatch(updateSelectedPreviewPage(uri)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(PreviewNav);

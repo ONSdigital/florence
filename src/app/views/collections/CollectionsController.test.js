@@ -277,8 +277,8 @@ describe("Marking a collection to be deleted from list of collections", () => {
 
 describe("mapStateToProps function", () => {
     const state = {
+        user: { userType: "ADMIN" },
         state: {
-            user: { userType: "ADMIN" },
             collections: {
                 all: [{ id: "an-example-collection-12345" }, { id: "deleted-example-collection-12345" }],
                 active: { id: "an-example-collection-12345" },

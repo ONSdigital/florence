@@ -396,7 +396,7 @@ function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
         allTeams: state.state.teams.all,
-        userIsAdmin: state.state.user.isAdmin,
+        userIsAdmin: state.user.isAdmin,
         rootPath: state.state.rootPath,
     };
 }
