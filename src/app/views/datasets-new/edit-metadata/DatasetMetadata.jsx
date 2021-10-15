@@ -71,14 +71,15 @@ const DatasetMetadata = ({
     handleSimpleEditableListDelete,
     handleDimensionNameChange,
     handleDimensionDescriptionChange,
-    handleNationalStaticticChange,
+    handleNationalStatisticChange,
     handleSave,
     collectionState,
     userEmail,
     lastEditedBy,
     handleSubmitForReviewClick,
     handleMarkAsReviewedClick,
-    isSaving
+    isSaving,
+    allowPreview
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -213,7 +214,7 @@ const DatasetMetadata = ({
                     }
                 ]}
                 selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
-                onChange={handleNationalStaticticChange}
+                onChange={handleNationalStatisticChange}
                 inline={true}
                 legend={"National Statistic"}
                 disabled={disableForm}
@@ -233,11 +234,11 @@ const DatasetMetadata = ({
                         label: "No"
                     }
                 ]}
-                selectedValue={this.props.metadata.nationalStatistic ? this.props.metadata.nationalStatistic.toString() : "false"}
-                onChange={this.props.handleNationalStatisticChange}
+                selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
+                onChange={handleNationalStatisticChange}
                 inline={true}
                 legend={"National Statistic"}
-                disabled={this.props.disableForm}
+                disabled={disableForm}
             />
 
             <Input
@@ -321,29 +322,20 @@ const DatasetMetadata = ({
                 />
 
                 <div className="margin-top--2">
-                    <button
-                        type="button"
-                        className="btn btn--primary margin-right--1"
-                        onClick={this.props.handleSave}
-                        disabled={this.props.disableForm}
-                    >
+                    <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
                         Save
                     </button>
                     <SaveAndReviewActions
-                        disabled={this.props.disableForm}
-                        reviewState={this.props.collectionState}
-                        notInCollectionYet={!this.props.collectionState}
-                        userEmail={this.props.userEmail}
-                        lastEditedBy={this.props.lastEditedBy}
-                        onSubmit={this.props.handleSubmitForReviewClick}
-                        onApprove={this.props.handleMarkAsReviewedClick}
+                        disabled={disableForm}
+                        reviewState={collectionState}
+                        notInCollectionYet={!collectionState}
+                        userEmail={userEmail}
+                        lastEditedBy={lastEditedBy}
+                        onSubmit={handleSubmitForReviewClick}
+                        onApprove={handleMarkAsReviewedClick}
                     />
-                    {this.props.allowPreview ? (
-                        <Link to={`${window.location.pathname}/preview`}>Preview</Link>
-                    ) : (
-                        <span>Preview is not available</span>
-                    )}
-                    {this.props.isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
+                    {allowPreview ? <Link to={`${window.location.pathname}/preview`}>Preview</Link> : <span>Preview is not available</span>}
+                    {isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
                 </div>
             </div>
         </div>
