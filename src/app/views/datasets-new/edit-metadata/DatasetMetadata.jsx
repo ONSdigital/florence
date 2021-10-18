@@ -320,23 +320,8 @@ const DatasetMetadata = ({
                     onSubmit={handleSubmitForReviewClick}
                     onApprove={handleMarkAsReviewedClick}
                 />
-
-                <div className="margin-top--2">
-                    <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
-                        Save
-                    </button>
-                    <SaveAndReviewActions
-                        disabled={disableForm}
-                        reviewState={collectionState}
-                        notInCollectionYet={!collectionState}
-                        userEmail={userEmail}
-                        lastEditedBy={lastEditedBy}
-                        onSubmit={handleSubmitForReviewClick}
-                        onApprove={handleMarkAsReviewedClick}
-                    />
-                    {allowPreview ? <Link to={`${window.location.pathname}/preview`}>Preview</Link> : <span>Preview is not available</span>}
-                    {isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
-                </div>
+                {allowPreview ? <Link to={`${window.location.pathname}/preview`}>Preview</Link> : <span>Preview is not available</span>}
+                {isSaving && <div className="form__loader loader loader--dark margin-left--1"></div>}
             </div>
         </div>
     );
