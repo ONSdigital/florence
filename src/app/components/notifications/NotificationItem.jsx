@@ -9,6 +9,7 @@ const NotificationItem = ({ isVisible = false, type, message, buttons = [] }) =>
             return (
                 <button key={`button${i}`} className="notifications__button" onClick={button.onClick}>
                     {button.text}
+                    {button.icon}
                 </button>
             );
         })}
@@ -24,6 +25,7 @@ NotificationItem.propTypes = {
         PropTypes.shape({
             onClick: PropTypes.func.isRequired,
             text: PropTypes.string.isRequired,
+            icon: PropTypes.element
         })
     ),
 };

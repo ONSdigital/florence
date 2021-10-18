@@ -1,4 +1,5 @@
 import { addNotification, removeNotification, toggleNotificationVisibility } from "../config/actions";
+import React, { Fragment } from "react";
 import { store } from "../config/store";
 import log from "./logging/log";
 
@@ -41,8 +42,22 @@ export default class notifications {
 
         if (config.isDismissable) {
             config.buttons.push({
-                text: "Close",
-                onClick: function () {
+                text: "Hide",
+                icon: (
+                    <svg
+                        className="svg-icon--hide-notification"
+                        viewBox="0 0 14 14"
+                        xmlns="http://www.w3.org/2000/svg"
+                        role="img"
+                        aria-label="Hide icon"
+                    >
+                        <path
+                            d="M14 1.41L12.59 0L7 5.59L1.41 0L0 1.41L5.59 7L0 12.59L1.41 14L7 8.41L12.59 14L14 12.59L8.41 7L14 1.41Z"
+                            fill="#FFFFFF"
+                        />
+                    </svg>
+                ),
+                onClick: function() {
                     notifications.remove(config.id);
                 },
             });
