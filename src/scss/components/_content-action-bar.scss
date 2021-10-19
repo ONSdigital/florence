@@ -1,18 +1,20 @@
 .content-action-bar {
   background-color: $grey5;
+  display: flex;
+  padding-top: 21px;
+  padding-bottom: 21px;
+  padding-left: $gutter * 8 ;
 
   &--bottom-fixed {
-    list-style: none;
     position: fixed;
     width: 100%;
     bottom: 0;
-    z-index: 3;
   }
 
   &__warn {
     align-self: center;
     vertical-align: middle;
-    margin-left: $magicnumber1 * 2;
+    margin-left: $gutter;
 
     &__text {
       margin-left: $magicnumber1;

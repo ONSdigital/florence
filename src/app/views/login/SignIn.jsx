@@ -1,19 +1,20 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import React, {Component} from "react";
+import {connect} from "react-redux";
+import {push} from "react-router-redux";
 import PropTypes from "prop-types";
 
 import LoginForm from "./SignInForm";
 import notifications from "../../utilities/notifications";
 
-import { errCodes } from "../../utilities/errorCodes";
+import {errCodes} from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import redirectToMainScreen from "../../utilities/redirectToMainScreen";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
-import { status } from "../../constants/Authentication";
+import {status} from "../../constants/Authentication";
+import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -127,7 +128,8 @@ export class LoginController extends Component {
             case "InvalidPassword":
                 errorsForBody.push(
                     <p key="error-invalid-password">
-                        <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
+                        <a href="javascript:document.getElementById('password').focus()"
+                           className="colour--night-shadz">
                             Enter a password
                         </a>
                     </p>
@@ -139,7 +141,8 @@ export class LoginController extends Component {
                 break;
             case "TooManyFailedAttempts":
                 errorsForBody.push(
-                    <p key="error-too-many-attempts">You've tried to sign in to your account too many times. Please try again later.</p>
+                    <p key="error-too-many-attempts">You've tried to sign in to your account too many times. Please try
+                        again later.</p>
                 );
                 break;
             default:
@@ -171,7 +174,7 @@ export class LoginController extends Component {
                 console.error("Error getting a user's permissions on login", error);
                 user.logOut();
                 if (!this.state.firstTimeSignIn) {
-                    this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
+                    this.setState({status: status.WAITING_USER_INITIAL_CREDS});
                 }
             });
     };
@@ -190,7 +193,7 @@ export class LoginController extends Component {
             password: this.state.passwordValue
         };
         this.clearErrors();
-        this.setState({ status: status.SUBMITTING_SIGN_IN }, () => {
+        this.setState({status: status.SUBMITTING_SIGN_IN}, () => {
             this.requestSignIn(credentials);
         });
     };
@@ -271,7 +274,7 @@ export class LoginController extends Component {
     };
 
     requestPasswordChange = newPassword => {
-        this.setState({ status: status.SUBMITTING_PASSWORD_CHANGE }, () => {
+        this.setState({status: status.SUBMITTING_PASSWORD_CHANGE}, () => {
             const body = {
                 type: "NewPasswordRequired",
                 email: this.state.emailValue,
@@ -294,7 +297,7 @@ export class LoginController extends Component {
                 heading: "Change your password",
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
-                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
+                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions}/>,
                 status: this.state.status
             };
 
@@ -326,12 +329,35 @@ export class LoginController extends Component {
                 }
             ];
             return (
-                <LoginForm
-                    inputs={inputs}
-                    isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
-                    onSubmit={this.submitSignIn}
-                    validationErrors={this.validationErrors}
-                />
+                <div>
+                    <LoginForm
+                        inputs={inputs}
+                        isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
+                        onSubmit={this.submitSignIn}
+                        validationErrors={this.validationErrors}
+                    />
+                    <ContentActionBar buttons={[{
+                        id: "meh",
+                        text: "Save content",
+                        interactionCallback: () => {
+                        },
+                        style: "positive",
+                        disabled: false
+                    },{
+                        id: "meh-2",
+                        text: "Preview",
+                        interactionCallback: () => {
+                        },
+                        style: "primary",
+                        disabled: false
+                    }]}
+                                      cancelCallback={() => {
+                                      }}
+                                      cancelDisabled={false}
+                                      stickToBottom={true}
+                                      unsavedChanges={true}
+                    />
+                </div>
             );
         }
     }
