@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 
 const defaultProps = {
-    marginBottom: "margin-bottom--1"
+    marginBottom: "margin-bottom--1",
 };
 
 const propTypes = {
     title: PropTypes.string.isRequired,
     content: PropTypes.string.isRequired,
-    marginBottom: PropTypes.string
+    marginBottom: PropTypes.string,
 };
 
 class Definition extends Component {

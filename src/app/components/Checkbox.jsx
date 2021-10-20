@@ -7,7 +7,7 @@ const propTypes = {
     onChange: PropTypes.func,
     error: PropTypes.string,
     isChecked: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 class Checkbox extends Component {
@@ -16,7 +16,7 @@ class Checkbox extends Component {
 
         this.state = {
             isFocused: false,
-            value: false
+            value: false,
         };
     }
 

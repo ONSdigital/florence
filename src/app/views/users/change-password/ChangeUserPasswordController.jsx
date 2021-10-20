@@ -14,13 +14,13 @@ import notifications from "../../../utilities/notifications";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
-        userID: PropTypes.string.isRequired
+        userID: PropTypes.string.isRequired,
     }).isRequired,
     loggedInUser: PropTypes.shape({
         isAdmin: PropTypes.bool.isRequired,
-        email: PropTypes.string.isRequired
+        email: PropTypes.string.isRequired,
     }).isRequired,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
 };
 
 export class ChangeUserPasswordController extends Component {
@@ -30,13 +30,13 @@ export class ChangeUserPasswordController extends Component {
         this.state = {
             currentPassword: {
                 value: "",
-                error: ""
+                error: "",
             },
             newPassword: {
                 value: "",
-                error: ""
+                error: "",
             },
-            isSubmitting: false
+            isSubmitting: false,
         };
     }
 
@@ -58,8 +58,8 @@ export class ChangeUserPasswordController extends Component {
         this.setState({
             [property]: {
                 value,
-                error: ""
-            }
+                error: "",
+            },
         });
     };
 
@@ -73,8 +73,8 @@ export class ChangeUserPasswordController extends Component {
                 ...newState,
                 currentPassword: {
                     ...newState.currentPassword,
-                    error: "You must enter your current password"
-                }
+                    error: "You must enter your current password",
+                },
             };
             hasError = true;
         }
@@ -85,8 +85,8 @@ export class ChangeUserPasswordController extends Component {
                 ...newState,
                 newPassword: {
                     ...newState.newPassword,
-                    error: validatedPassword.error
-                }
+                    error: validatedPassword.error,
+                },
             };
             hasError = true;
         }
@@ -99,7 +99,7 @@ export class ChangeUserPasswordController extends Component {
         const passwordUpdate = {
             oldPassword: this.state.currentPassword.value,
             password: this.state.newPassword.value,
-            email: this.props.params.userID
+            email: this.props.params.userID,
         };
         this.setState({ isSubmitting: true });
         return user
@@ -110,7 +110,7 @@ export class ChangeUserPasswordController extends Component {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 7000,
-                    message: "Password successfully changed"
+                    message: "Password successfully changed",
                 });
                 log.event("Successfully changed password of user", log.data({ user: passwordUpdate.email }));
             })
@@ -121,7 +121,7 @@ export class ChangeUserPasswordController extends Component {
                     log.data({
                         user: passwordUpdate.email,
                         logged_in_user: this.props.loggedInUser.email,
-                        is_admin: this.props.loggedInUser.isAdmin
+                        is_admin: this.props.loggedInUser.isAdmin,
                     }),
                     log.error(error)
                 );
@@ -130,8 +130,8 @@ export class ChangeUserPasswordController extends Component {
                     this.setState(state => ({
                         currentPassword: {
                             ...state.currentPassword,
-                            error: "Incorrect password"
-                        }
+                            error: "Incorrect password",
+                        },
                     }));
                     return;
                 }
@@ -144,7 +144,7 @@ export class ChangeUserPasswordController extends Component {
                 let notification = {
                     type: "warning",
                     isDismissable: true,
-                    message: ""
+                    message: "",
                 };
                 switch (error.status) {
                     case 403: {
@@ -182,8 +182,8 @@ export class ChangeUserPasswordController extends Component {
                 label: "New password",
                 type: "password",
                 onChange: e => this.handleInputChange(e.target.value, "newPassword"),
-                error: this.state.newPassword.error
-            }
+                error: this.state.newPassword.error,
+            },
         ];
 
         if (!this.props.loggedInUser.isAdmin) {
@@ -192,7 +192,7 @@ export class ChangeUserPasswordController extends Component {
                 label: "Current password",
                 type: "password",
                 onChange: e => this.handleInputChange(e.target.value, "currentPassword"),
-                error: this.state.currentPassword.error
+                error: this.state.currentPassword.error,
             });
         }
 
@@ -207,7 +207,7 @@ export class ChangeUserPasswordController extends Component {
                         inputs: this.formInputs(),
                         onSubmit: this.handleSubmit,
                         onCancel: this.handleCancel,
-                        isSubmitting: this.state.isSubmitting
+                        isSubmitting: this.state.isSubmitting,
                     }}
                 />
             </Modal>
@@ -220,7 +220,7 @@ ChangeUserPasswordController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        loggedInUser: state.state.user
+        loggedInUser: state.state.user,
     };
 }
 

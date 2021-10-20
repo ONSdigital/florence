@@ -8,10 +8,10 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
         target: "/upload",
         chunkSize: 5 * 1024 * 1024,
         query: {
-            aliasName: ""
+            aliasName: "",
         },
         forceChunkSize: true,
-        simultaneousUploads: 1
+        simultaneousUploads: 1,
     });
     r.assignBrowse(input);
     r.assignDrop(input);
@@ -37,7 +37,7 @@ function beginUploadAndUpdateComponentState(resumable, file, updateState) {
         aliasName: aliasName,
         progress: 0,
         error: null,
-        filename: file.fileName
+        filename: file.fileName,
     };
 
     updateState(fileUpload);
@@ -47,7 +47,7 @@ function updateComponentState(file, updateState) {
     const progressPercentage = Math.round(Number(file.progress() * 100));
     const fileUpload = {
         progress: progressPercentage,
-        filename: file.fileName
+        filename: file.fileName,
     };
     updateState(fileUpload);
 }
@@ -55,7 +55,7 @@ function updateComponentState(file, updateState) {
 function handleErrorAndUpdateComponentState(file, updateState, onError) {
     const fileUpload = {
         error: "An error occurred whilst uploading this file.",
-        filename: file.fileName
+        filename: file.fileName,
     };
 
     console.error("Error uploading file to server");
@@ -71,7 +71,7 @@ function handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updat
                 aliasName: aliasName,
                 progress: 0,
                 url: response.url,
-                filename: file.fileName
+                filename: file.fileName,
             };
 
             updateState(fileUpload);
@@ -81,7 +81,7 @@ function handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updat
         .catch(error => {
             const fileUpload = {
                 error: "An error occurred whilst uploading this file",
-                filename: file.fileName
+                filename: file.fileName,
             };
 
             console.error("Error fetching uploaded file's URL: ", error);

@@ -9,7 +9,7 @@ const propTypes = {
     validityCheck: PropTypes.func,
     heading: PropTypes.string,
     buttonText: PropTypes.string,
-    showInputError: PropTypes.bool
+    showInputError: PropTypes.bool,
 };
 
 const ChangePasswordForm = props => {

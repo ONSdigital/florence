@@ -20,20 +20,20 @@ jest.mock("../../../utilities/api-clients/images", () => {
         }),
         getDownloads: jest.fn(() => {
             return Promise.resolve();
-        })
+        }),
     };
 });
 
 jest.mock("../../../components/file-upload/bind", () => {
     return {
-        bindFileUploadInput: jest.fn(() => {})
+        bindFileUploadInput: jest.fn(() => {}),
     };
 });
 jest.mock("../../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
         data: jest.fn(() => {}),
-        error: jest.fn(() => {})
+        error: jest.fn(() => {}),
     };
 });
 
@@ -42,7 +42,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -51,10 +51,10 @@ console.error = () => {};
 const nullParamProps = {
     params: {
         homepageDataField: null,
-        homepageDataFieldID: null
+        homepageDataFieldID: null,
     },
     handleSuccessClick: () => {},
-    handleCancelClick: () => {}
+    handleCancelClick: () => {},
 };
 
 const successRouteProps = {
@@ -63,28 +63,28 @@ const successRouteProps = {
         description: "Test description",
         uri: "/",
         title: "Test title",
-        image: ""
+        image: "",
     },
     params: {
         homepageDataField: "featuredContent",
         homepageDataFieldID: 0,
-        collectionID: "test-collection"
+        collectionID: "test-collection",
     },
     handleSuccessClick: jest.fn(),
-    handleCancelClick: jest.fn()
+    handleCancelClick: jest.fn(),
 };
 
 const propsWithImage = {
     ...successRouteProps,
     data: {
         ...successRouteProps.data,
-        image: "test-id"
-    }
+        image: "test-id",
+    },
 };
 
 const mockImage = {
     id: "test-image-001",
-    upload: { path: "fake/upload/path" }
+    upload: { path: "fake/upload/path" },
 };
 
 let mockNotifications = [];
@@ -121,8 +121,8 @@ describe("event handlers", () => {
         const mockEvent = {
             target: {
                 value: "New value",
-                name: "title"
-            }
+                name: "title",
+            },
         };
         wrapper.instance().handleInputChange(mockEvent);
         expect(wrapper.state("title")).toBe("New value");

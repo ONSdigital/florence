@@ -5,11 +5,11 @@ const propTypes = {
     path: PropTypes.string,
     onChange: PropTypes.func,
     onLoad: PropTypes.func,
-    hidden: PropTypes.bool
+    hidden: PropTypes.bool,
 };
 
 const defaultProps = {
-    path: "/"
+    path: "/",
 };
 
 export default class Preview extends Component {

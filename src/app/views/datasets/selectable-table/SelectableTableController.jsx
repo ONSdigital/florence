@@ -16,11 +16,11 @@ const propTypes = {
                     date: PropTypes.string,
                     edition: PropTypes.string.isRequired,
                     version: PropTypes.oneOfType([PropTypes.string.isRequired, PropTypes.number.isRequired]),
-                    status: PropTypes.string
+                    status: PropTypes.string,
                 })
-            )
+            ),
         })
-    )
+    ),
 };
 
 export default class SelectableTableController extends Component {

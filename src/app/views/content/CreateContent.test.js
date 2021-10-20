@@ -7,7 +7,7 @@ console.error = () => {};
 
 jest.mock("../../utilities/url", () => {
     return {
-        resolve: function() {}
+        resolve: function () {},
     };
 });
 
@@ -15,18 +15,18 @@ const contentTypes = [
     {
         title: "Bulletin",
         id: "content-type-1",
-        url: url.resolve("../") + "/bulletins"
+        url: url.resolve("../") + "/bulletins",
     },
     {
         title: "Dataset",
         id: "dataset-cmd",
-        url: url.resolve("../") + "/datasets"
+        url: url.resolve("../") + "/datasets",
     },
     {
         title: "Static content",
         id: "static-content",
-        url: url.resolve("../") + "/static"
-    }
+        url: url.resolve("../") + "/static",
+    },
 ];
 
 const defaultProps = {
@@ -35,11 +35,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     params: {
-        collectionID: "test-collection"
+        collectionID: "test-collection",
     },
     location: {
-        pathname: "florence/collections/12345/datasets"
-    }
+        pathname: "florence/collections/12345/datasets",
+    },
 };
 
 const mountComponent = () => {

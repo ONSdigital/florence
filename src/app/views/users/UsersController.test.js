@@ -9,14 +9,14 @@ jest.mock("../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
         data: jest.fn(() => {}),
-        error: jest.fn(() => {})
+        error: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -24,7 +24,7 @@ jest.mock("../../utilities/api-clients/user", () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedAllUsers);
-        })
+        }),
     };
 });
 
@@ -32,7 +32,7 @@ jest.mock("../../utilities/auth", () => {
     return {
         isAdmin: jest.fn(() => {
             return true;
-        })
+        }),
     };
 });
 
@@ -44,8 +44,8 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
+            rawJson: false,
+        },
     },
     {
         name: "Test user 2",
@@ -54,8 +54,8 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
+            rawJson: false,
+        },
     },
     {
         name: "Test user 3",
@@ -64,9 +64,9 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
-    }
+            rawJson: false,
+        },
+    },
 ];
 
 let dispatchedActions = [];
@@ -77,8 +77,8 @@ const defaultProps = {
     },
     rootPath: "/florence",
     params: {
-        userID: ""
-    }
+        userID: "",
+    },
 };
 
 const component = shallow(<UsersController {...defaultProps} />);
@@ -135,7 +135,7 @@ describe("Mapping users to state", () => {
             ...mockedAllUsers[0],
             id: mockedAllUsers[0].email,
             columnValues: [mockedAllUsers[0].name, mockedAllUsers[0].email],
-            returnValue: { id: mockedAllUsers[0].email }
+            returnValue: { id: mockedAllUsers[0].email },
         };
         const returnValue = component.instance().mapUserToState(mockedAllUsers[0]);
         expect(returnValue).toMatchObject(expectedValue);

@@ -18,14 +18,14 @@ export default class collectionMapper {
                     neutral: publishStates.inProgress,
                     warning: publishStates.thrownError,
                     success: publishStates.completed,
-                    message: publishStates.message
+                    message: publishStates.message,
                 },
                 type: collection.type,
                 isForcedManualType: this.isForcedManualType(collection), // the collection has been made 'manual' programatically because 'scheduled' wasn't possible
                 release: collection.releaseUri,
                 selectableBox: {
                     firstColumn: collection.name,
-                    secondColumn: this.publishDate(collection)
+                    secondColumn: this.publishDate(collection),
                 },
                 canBeApproved: false,
                 canBeDeleted: false,
@@ -37,17 +37,17 @@ export default class collectionMapper {
                 teams: collection.teamsDetails
                     ? collection.teamsDetails.map(team => ({
                           id: team.id.toString(),
-                          name: team.name
+                          name: team.name,
                       }))
                     : [],
-                deletes: collection.pendingDeletes
+                deletes: collection.pendingDeletes,
             };
         } catch (error) {
             const notification = {
                 type: "warning",
                 message: "Error whilst mapping list of collections to screen",
                 isDismissable: true,
-                autoDismiss: 3000
+                autoDismiss: 3000,
             };
             notifications.add(notification);
             console.error("Error mapping collections to component state: ", error);
@@ -71,12 +71,12 @@ export default class collectionMapper {
                         updatedPage = {
                             lastEdit: {
                                 email: page.events && page.events.length > 0 ? page.events[0].email : "",
-                                date: page.events && page.events.length > 0 ? page.events[0].date : ""
+                                date: page.events && page.events.length > 0 ? page.events[0].date : "",
                             },
                             title: page.description.title,
                             edition: page.description.edition || "",
                             uri: page.uri,
-                            type: page.type
+                            type: page.type,
                         };
                     } catch (error) {
                         log.event("Error mapping a page to Florence's state", log.error(error));
@@ -91,13 +91,13 @@ export default class collectionMapper {
                 canBeDeleted,
                 inProgress: mapPageToState(collection.inProgress),
                 complete: mapPageToState(collection.complete),
-                reviewed: mapPageToState(collection.reviewed)
+                reviewed: mapPageToState(collection.reviewed),
             };
             const collectionWithDatasetsAndPages = this.datasetsToCollectionState(collectionWithPages);
             return {
                 ...collectionWithDatasetsAndPages,
                 canBeDeleted: this.collectionCanBeDeleted(collectionWithDatasetsAndPages),
-                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages)
+                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages),
             };
         } catch (error) {
             log.event("Error mapping collection GET response to Florence's state", log.error(error));
@@ -116,7 +116,7 @@ export default class collectionMapper {
                 id: `${version.id}/editions/${version.edition}/versions/${version.version}`,
                 type: "dataset_version",
                 uri: `/datasets/${version.id}/editions/${version.edition}/versions/${version.version}`,
-                lastEditedBy: version.lastEditedBy
+                lastEditedBy: version.lastEditedBy,
             });
 
             const mapDataset = dataset => ({
@@ -124,7 +124,7 @@ export default class collectionMapper {
                 type: "dataset_details",
                 id: dataset.id,
                 uri: `/datasets/${dataset.id}`,
-                lastEditedBy: dataset.lastEditedBy
+                lastEditedBy: dataset.lastEditedBy,
             });
 
             const mapDatasets = () => {
@@ -185,7 +185,7 @@ export default class collectionMapper {
             thrownError: false,
             completed: false,
             notStarted: false,
-            message: ""
+            message: "",
         };
         try {
             switch (collection.approvalStatus) {

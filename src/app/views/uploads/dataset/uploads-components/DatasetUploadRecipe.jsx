@@ -4,10 +4,10 @@ import PropTypes from "prop-types";
 const propTypes = {
     dataset: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        alias: PropTypes.string.isRequired
+        alias: PropTypes.string.isRequired,
     }),
     onNewVersionClick: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool
+    isLoading: PropTypes.bool,
 };
 
 class DatasetItem extends Component {

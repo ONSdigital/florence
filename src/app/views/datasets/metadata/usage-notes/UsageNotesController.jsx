@@ -9,7 +9,7 @@ const propTypes = {
     onSave: PropTypes.func.isRequired,
     title: PropTypes.string,
     note: PropTypes.string,
-    id: PropTypes.string.isRequired
+    id: PropTypes.string.isRequired,
 };
 
 export class UsageNotesController extends Component {
@@ -19,13 +19,13 @@ export class UsageNotesController extends Component {
         this.state = {
             title: props.title,
             note: props.note,
-            id: props.id || uuid()
+            id: props.id || uuid(),
         };
     }
 
     handleChange = (property, event) => {
         this.setState({
-            [property]: event.target.value
+            [property]: event.target.value,
         });
     };
 
@@ -35,7 +35,7 @@ export class UsageNotesController extends Component {
         this.props.onSave({
             id: this.state.id,
             title: this.state.title,
-            note: this.state.note
+            note: this.state.note,
         });
     };
 

@@ -29,13 +29,13 @@ export default function handleMetadataSaveErrors(
             type: "warning",
             message: getErrorMessage(metadataUpdateFailure, {}, isSubmittingForReview, isMarkingAsReviewed, collectionID),
             isDismissable: true,
-            autoDismiss: 8000
+            autoDismiss: 8000,
         };
         const reviewStateUpdateNotification = {
             type: "warning",
             message: getErrorMessage({}, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
             isDismissable: true,
-            autoDismiss: 8000
+            autoDismiss: 8000,
         };
 
         notifications.add(metadataUpdateNotification);
@@ -49,7 +49,7 @@ export default function handleMetadataSaveErrors(
             type: "warning",
             message: getErrorMessage(metadataUpdateFailure, collectionUpdateFailure, isSubmittingForReview, isMarkingAsReviewed, collectionID),
             isDismissable: true,
-            autoDismiss: 8000
+            autoDismiss: 8000,
         };
         notifications.add(notification);
         return true;

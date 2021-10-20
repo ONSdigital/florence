@@ -8,7 +8,7 @@ import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 const propTypes = {
     validationErrors: PropTypes.shape({
         heading: PropTypes.string,
-        body: PropTypes.arrayOf(PropTypes.elementType)
+        body: PropTypes.arrayOf(PropTypes.elementType),
     }),
     onSubmit: PropTypes.func,
     isSubmitting: PropTypes.bool,
@@ -18,9 +18,9 @@ const propTypes = {
             label: PropTypes.string,
             type: PropTypes.string,
             onChange: PropTypes.func,
-            error: PropTypes.string
+            error: PropTypes.string,
         })
-    )
+    ),
 };
 
 const LoginForm = props => {
@@ -33,19 +33,20 @@ const LoginForm = props => {
                 <h1>Sign in to your Florence account</h1>
                 {showValidationErrorPanel && (
                     <div className="margin-bottom--1">
-                        <Panel type={"error"} heading={props.validationErrors.heading} body={props.validationErrors.body} />
+                        <Panel type={"error"} heading={props.validationErrors.heading}
+                               body={props.validationErrors.body}/>
                     </div>
                 )}
                 <form className="form" onSubmit={props.onSubmit}>
                     {props.inputs.map((input, index) => {
-                        return <Input key={index} {...input} disabled={props.isSubmitting} allowAutoComplete={true} />;
+                        return <Input key={index} {...input} disabled={props.isSubmitting} allowAutoComplete={true}/>;
                     })}
                     {!isFirstTimeSignIn && (
                         <div>
                             <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
                         </div>
                     )}
-                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
+                    <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in"/>
                 </form>
             </div>
         </div>

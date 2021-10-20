@@ -3,7 +3,7 @@ import { TeamEditController } from "./TeamEditController";
 import { mount, shallow } from "enzyme";
 
 jest.mock("../../../utilities/notifications.js", () => ({
-    add: jest.fn().mockImplementation(() => {})
+    add: jest.fn().mockImplementation(() => {}),
 }));
 
 jest.mock("../../../utilities/logging/log", () => {
@@ -16,7 +16,7 @@ jest.mock("../../../utilities/logging/log", () => {
         }),
         error: jest.fn().mockImplementation(() => {
             // do nothing
-        })
+        }),
     };
 });
 
@@ -25,26 +25,26 @@ jest.mock("../../../utilities/api-clients/user.js", () => ({
         return Promise.resolve([
             {
                 name: "User 1",
-                email: "user.1@test.com"
+                email: "user.1@test.com",
             },
             {
                 name: "User 3",
-                email: "user.3@test.com"
+                email: "user.3@test.com",
             },
             {
                 name: "User 2",
-                email: "user.2@test.com"
+                email: "user.2@test.com",
             },
             {
                 name: "User 5",
-                email: "user.5@test.com"
+                email: "user.5@test.com",
             },
             {
                 name: "User 4",
-                email: "user.4@test.com"
-            }
+                email: "user.4@test.com",
+            },
         ]);
-    })
+    }),
 }));
 
 jest.mock("../../../utilities/api-clients/teams.js", () => ({
@@ -53,30 +53,30 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
     }),
     removeMember: jest.fn().mockImplementation(() => {
         return Promise.resolve();
-    })
+    }),
 }));
 
 const users = [
     {
         name: "User 1",
-        email: "user.1@test.com"
+        email: "user.1@test.com",
     },
     {
         name: "User 2",
-        email: "user.2@test.com"
+        email: "user.2@test.com",
     },
     {
         name: "User 4",
-        email: "user.4@test.com"
+        email: "user.4@test.com",
     },
     {
         name: "User 5",
-        email: "user.5@test.com"
+        email: "user.5@test.com",
     },
     {
         name: "User 3",
-        email: "user.3@test.com"
-    }
+        email: "user.3@test.com",
+    },
 ];
 const name = "A test team";
 const isUpdatingMembers = false;
@@ -86,7 +86,7 @@ const defaultProps = {
     members,
     dispatch,
     name,
-    isUpdatingMembers
+    isUpdatingMembers,
 };
 
 function dispatch() {}
@@ -132,7 +132,7 @@ test("Adding and removing a user to/from a team updates the 'All users' list acc
 test("Lists of members and users are sorted into alphanumerical order", () => {
     const unsortedMembers = ["user.3@test.com", "user.1@test.com", "user.2@test.com"];
     const props = Object.assign({}, defaultProps, {
-        members: unsortedMembers
+        members: unsortedMembers,
     });
     const component = shallow(<TeamEditController {...props} />);
 
@@ -150,7 +150,7 @@ test("Lists of members and users are sorted into alphanumerical order", () => {
 
 test("List of 'All users' doesn't show users that are already a member of the team", async () => {
     const props = Object.assign({}, defaultProps, {
-        members: ["user.3@test.com", "user.1@test.com", "user.2@test.com"]
+        members: ["user.3@test.com", "user.1@test.com", "user.2@test.com"],
     });
     const component = mount(<TeamEditController {...props} />);
 

@@ -8,7 +8,7 @@ jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {
             //
-        })
+        }),
     };
 });
 
@@ -22,13 +22,13 @@ jest.mock("../../../utilities/date", () => {
         }),
         addYear: jest.fn(() => {
             //
-        })
+        }),
     };
 });
 
 jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
@@ -37,25 +37,25 @@ jest.mock("../../../utilities/api-clients/teams", () => {
         getAll: jest.fn(() => {
             return Promise.resolve([
                 { id: 1, name: "Team 1" },
-                { id: 2, name: "Team 2" }
+                { id: 2, name: "Team 2" },
             ]);
-        })
+        }),
     };
 });
 
 const newCollectionDetails = {
     name: {
         value: "",
-        errorMsg: ""
+        errorMsg: "",
     },
     type: "scheduled",
     publishDate: {
         value: "",
-        errorMsg: ""
+        errorMsg: "",
     },
     publishTime: {
         value: "09:30",
-        errorMsg: ""
+        errorMsg: "",
     },
     scheduleType: "custom-schedule",
     pendingDeletes: [],
@@ -65,8 +65,8 @@ const newCollectionDetails = {
         uri: "",
         date: "",
         title: "",
-        errorMsg: ""
-    }
+        errorMsg: "",
+    },
 };
 
 const expectedPostBody = {
@@ -75,26 +75,26 @@ const expectedPostBody = {
     publishDate: "2017-12-07T09:30:00.000Z",
     releaseUri: null,
     teams: ["Team 1"],
-    type: "scheduled"
+    type: "scheduled",
 };
 
 const mockedTeams = [
     { id: "1", name: "Team 1" },
-    { id: "2", name: "Team 2" }
+    { id: "2", name: "Team 2" },
 ];
 
 const defaultProps = {
     user: {
-        userType: "ADMIN"
+        userType: "ADMIN",
     },
-    onSuccess: function() {},
+    onSuccess: function () {},
     dispatch: () => {},
-    allTeams: []
+    allTeams: [],
 };
 
 test("Create collection form matches stored snapshot", () => {
-    const component = renderer.create(<CollectionCreateController {...defaultProps} />);
-    expect(component.toJSON()).toMatchSnapshot();
+    const tree = renderer.create(<CollectionCreateController {...defaultProps} />);
+    expect(tree.toJSON()).toMatchSnapshot();
 });
 
 test("Handle collection name change updates state correctly", () => {

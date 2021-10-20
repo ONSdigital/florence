@@ -9,7 +9,7 @@ import Select from "../../../components/Select";
 
 const propTypes = {
     params: PropTypes.shape({
-        metadataField: PropTypes.string.isRequired
+        metadataField: PropTypes.string.isRequired,
     }),
     data: PropTypes.shape({
         id: PropTypes.string,
@@ -18,10 +18,10 @@ const propTypes = {
         note: PropTypes.string,
         href: PropTypes.string,
         date: PropTypes.string,
-        title: PropTypes.string
+        title: PropTypes.string,
     }),
     handleSuccessClick: PropTypes.func.isRequired,
-    handleCancelClick: PropTypes.func.isRequired
+    handleCancelClick: PropTypes.func.isRequired,
 };
 
 export default class EditMetadatItem extends Component {
@@ -35,7 +35,7 @@ export default class EditMetadatItem extends Component {
             note: this.props.data ? this.props.data.note : "",
             href: this.props.data ? this.props.data.href : "",
             date: this.props.data ? this.props.data.date : "",
-            title: this.props.data ? this.props.data.title : ""
+            title: this.props.data ? this.props.data.title : "",
         };
     }
 
@@ -73,7 +73,7 @@ export default class EditMetadatItem extends Component {
                             label="Type"
                             contents={[
                                 { id: "alert", name: "Alert" },
-                                { id: "correction", name: "Correction" }
+                                { id: "correction", name: "Correction" },
                             ]}
                             onChange={this.handleSelectChange}
                         />

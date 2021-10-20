@@ -8,7 +8,7 @@ console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
@@ -17,7 +17,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -28,7 +28,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         }),
         getEditions: jest.fn(() => {
             return Promise.resolve(mockedEditions);
-        })
+        }),
     };
 });
 
@@ -36,7 +36,7 @@ jest.mock("../../../utilities/api-clients/recipes", () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedRecipeCall);
-        })
+        }),
     };
 });
 
@@ -45,8 +45,8 @@ const mockedDataset = {
     current: {
         collection_id: "1234567890",
         id: "test-dataset-1",
-        title: "Test Dataset 1"
-    }
+        title: "Test Dataset 1",
+    },
 };
 
 const mockedEditions = {
@@ -58,11 +58,11 @@ const mockedEditions = {
                 links: {
                     latest_version: {
                         href: "test/3",
-                        id: "3"
-                    }
+                        id: "3",
+                    },
                 },
-                state: "published"
-            }
+                state: "published",
+            },
         },
         {
             id: "test-2",
@@ -71,13 +71,13 @@ const mockedEditions = {
                 links: {
                     latest_version: {
                         href: "test/3",
-                        id: "12"
-                    }
+                        id: "12",
+                    },
                 },
-                state: "published"
-            }
-        }
-    ]
+                state: "published",
+            },
+        },
+    ],
 };
 
 const mockedRecipeCall = {
@@ -88,8 +88,8 @@ const mockedRecipeCall = {
             format: "v4",
             files: [
                 {
-                    description: "CPI COICOP v4"
-                }
+                    description: "CPI COICOP v4",
+                },
             ],
             output_instances: [
                 {
@@ -101,23 +101,23 @@ const mockedRecipeCall = {
                             id: "64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             href: "http://localhost:22400/code-lists/64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             name: "time",
-                            is_hierarchy: false
+                            is_hierarchy: false,
                         },
                         {
                             id: "65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
                             href: "http://localhost:22400/code-lists/65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
                             name: "geography",
-                            is_hierarchy: false
+                            is_hierarchy: false,
                         },
                         {
                             id: "e44de4c4-d39e-4e2f-942b-3ca10584d078",
                             href: "http://localhost:22400/code-lists/e44de4c4-d39e-4e2f-942b-3ca10584d078",
                             name: "aggregate",
-                            is_hierarchy: true
-                        }
-                    ]
-                }
-            ]
+                            is_hierarchy: true,
+                        },
+                    ],
+                },
+            ],
         },
         {
             id: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
@@ -125,8 +125,8 @@ const mockedRecipeCall = {
             format: "v4",
             files: [
                 {
-                    description: "CPIH v4"
-                }
+                    description: "CPIH v4",
+                },
             ],
             output_instances: [
                 {
@@ -138,25 +138,25 @@ const mockedRecipeCall = {
                             id: "mmm-yy",
                             href: "http://localhost:22400/code-lists/mmm-yy",
                             name: "time",
-                            is_hierarchy: false
+                            is_hierarchy: false,
                         },
                         {
                             id: "uk-only",
                             href: "http://localhost:22400/code-lists/uk-only",
                             name: "geography",
-                            is_hierarchy: false
+                            is_hierarchy: false,
                         },
                         {
                             id: "cpih1dim1aggid",
                             href: "http://localhost:22400/code-lists/cpih1dim1aggid",
                             name: "aggregate",
-                            is_hierarchy: true
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+                            is_hierarchy: true,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 let dispatchedActions,
@@ -168,11 +168,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/datasets/6789"
+        pathname: "florence/collections/12345/datasets/6789",
     },
     params: {
-        datasetID: "test-dataset-1"
-    }
+        datasetID: "test-dataset-1",
+    },
 };
 
 const component = shallow(<CreateEditionController {...defaultProps} />);
@@ -219,7 +219,7 @@ describe("Calling getListOfEditions", () => {
         const editions = await component.instance().getListOfEditions();
         expect(editions[0]).toMatchObject({
             id: mockedRecipeCall.items[0].output_instances[0].editions[0],
-            name: mockedRecipeCall.items[0].output_instances[0].editions[0]
+            name: mockedRecipeCall.items[0].output_instances[0].editions[0],
         });
     });
 
@@ -260,7 +260,7 @@ describe("Mapping edition to state", () => {
         const mappedEditions = component.instance().mapEditionsToState(mockedRecipeCall.items);
         expect(mappedEditions[0]).toMatchObject({
             id: mockedRecipeCall.items[0].output_instances[0].editions[0],
-            name: mockedRecipeCall.items[0].output_instances[0].editions[0]
+            name: mockedRecipeCall.items[0].output_instances[0].editions[0],
         });
     });
 
@@ -275,7 +275,7 @@ test("Map recipe to state", () => {
     const mappedRecipe = component.instance().filterEditionsListFromRecipe(mockedRecipeCall.items[0]);
     expect(mappedRecipe[0]).toMatchObject({
         id: mockedRecipeCall.items[0].output_instances[0].editions[0],
-        name: mockedRecipeCall.items[0].output_instances[0].editions[0]
+        name: mockedRecipeCall.items[0].output_instances[0].editions[0],
     });
 });
 

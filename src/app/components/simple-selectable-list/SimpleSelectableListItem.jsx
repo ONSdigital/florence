@@ -8,11 +8,11 @@ const propTypes = {
     url: PropTypes.string.isRequired,
     externalLink: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 const defaultProps = {
-    externalLink: false
+    externalLink: false,
 };
 
 export default class SimpleSelectableListItem extends Component {

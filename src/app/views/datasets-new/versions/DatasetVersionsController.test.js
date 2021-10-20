@@ -7,7 +7,7 @@ console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
@@ -16,7 +16,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -24,13 +24,13 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         getVersionsList: jest.fn(() => {
             return Promise.resolve(mockedResponse);
-        })
+        }),
     };
 });
 
 const mockedDataset = {
     title: "Test Dataset 1",
-    id: "test-dataset-001"
+    id: "test-dataset-001",
 };
 
 const mockedResponse = {
@@ -42,16 +42,16 @@ const mockedResponse = {
             id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
             release_date: "",
             state: "published",
-            version: 2
+            version: 2,
         },
         {
             title: "Version: 1 (published)",
             id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
             release_date: "15 March 2021",
             state: "published",
-            version: 1
-        }
-    ]
+            version: 1,
+        },
+    ],
 };
 
 let dispatchedActions,
@@ -63,11 +63,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/12345/datasets/6789"
+        pathname: "florence/collections/12345/datasets/6789",
     },
     routeParams: {
-        datasetID: "1234"
-    }
+        datasetID: "1234",
+    },
 };
 
 const component = shallow(<DatasetVersionsController {...defaultProps} />);
@@ -108,12 +108,12 @@ test("Mapping response to state", () => {
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
         title: "Version: 2 (published)",
         url: "florence/collections/12345/datasets/6789/versions/2",
-        details: ["Release date: Not yet set"]
+        details: ["Release date: Not yet set"],
     });
     expect(mapped[1]).toMatchObject({
         id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
         title: "Version: 1 (published)",
         url: "florence/collections/12345/datasets/6789/versions/1",
-        details: ["Release date: 15 March 2021"]
+        details: ["Release date: 15 March 2021"],
     });
 });

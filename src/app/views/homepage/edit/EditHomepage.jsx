@@ -21,7 +21,7 @@ const EditHomepage = ({
     lastEditedBy,
     handleMarkAsReviewedClick,
     handleSubmitForReviewClick,
-    isSaving
+    isSaving,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -93,10 +93,10 @@ const propTypes = {
                 image: PropTypes.string,
                 title: PropTypes.string,
                 simpleListHeading: PropTypes.string,
-                simpleListDescription: PropTypes.string
+                simpleListDescription: PropTypes.string,
             })
         ),
-        serviceMessage: PropTypes.string
+        serviceMessage: PropTypes.string,
     }),
     handleBackButton: PropTypes.func.isRequired,
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
@@ -111,7 +111,7 @@ const propTypes = {
     lastEditedBy: PropTypes.string,
     maximumNumberOfEntries: PropTypes.number,
     disableForm: PropTypes.bool.isRequired,
-    isSaving: PropTypes.bool.isRequired
+    isSaving: PropTypes.bool.isRequired,
 };
 
 EditHomepage.propTypes = propTypes;

@@ -17,18 +17,18 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     params: PropTypes.shape({
-        collectionID: PropTypes.string
+        collectionID: PropTypes.string,
     }).isRequired,
     user: PropTypes.shape({
-        userType: PropTypes.string.isRequired
+        userType: PropTypes.string.isRequired,
     }).isRequired,
     collections: PropTypes.array,
     activeCollection: PropTypes.shape({
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
     }),
     collectionsToDelete: PropTypes.object.isRequired,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export class CollectionsController extends Component {
@@ -36,7 +36,7 @@ export class CollectionsController extends Component {
         super(props);
 
         this.state = {
-            isFetchingCollections: false
+            isFetchingCollections: false,
         };
 
         this.isViewer = this.props.user.userType === "VIEWER";
@@ -94,7 +94,7 @@ export class CollectionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to get collections.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -104,7 +104,7 @@ export class CollectionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `You don't have permissions to view collections`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -115,7 +115,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -125,7 +125,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -135,7 +135,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -145,7 +145,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -225,11 +225,11 @@ CollectionsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        user: state.state.user,
+        user: state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
         collectionsToDelete: state.state.collections.toDelete,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
     };
 }
 

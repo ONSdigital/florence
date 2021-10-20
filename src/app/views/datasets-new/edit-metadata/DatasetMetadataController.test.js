@@ -7,16 +7,16 @@ console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function() {},
-        data: function() {},
-        error: function() {}
+        event: function () {},
+        data: function () {},
+        error: function () {},
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        add: function () {},
+        eventTypes: {},
     };
 });
 
@@ -25,7 +25,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockedNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -36,7 +36,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         }),
         putEditMetadata: jest.fn(() => {
             return Promise.resolve();
-        })
+        }),
     };
 });
 
@@ -50,9 +50,9 @@ const mockedMetadata = {
             {
                 name: "Person",
                 telephone: "0385927492083820",
-                email: "email@email.com"
-            }
-        ]
+                email: "email@email.com",
+            },
+        ],
     },
     version: {
         alerts: [],
@@ -65,13 +65,13 @@ const mockedMetadata = {
         usage_notes: [
             {
                 note: "usage note 1",
-                title: "usage note title 1"
+                title: "usage note title 1",
             },
             {
                 note: "usage note 2",
-                title: "usage note title 2"
-            }
-        ]
+                title: "usage note title 2",
+            },
+        ],
     },
     dimensions: [
         {
@@ -79,26 +79,26 @@ const mockedMetadata = {
             name: "time",
             description: "This is time",
             label: "Time",
-            href: "/code-lists/mmm-yy"
+            href: "/code-lists/mmm-yy",
         },
         {
             id: "uk-only",
             name: "geography",
             description: "Geography",
             label: "Geography",
-            href: "/code-lists/uk-only"
-        }
+            href: "/code-lists/uk-only",
+        },
     ],
     collection_id: "123",
     collection_state: "inProgress",
-    collection_last_edited_by: "test@user.com"
+    collection_last_edited_by: "test@user.com",
 };
 
 const mockedCantabularDataset = {
     dataset: {
         id: "cantabular",
         state: "created",
-        type: "cantabular_table"
+        type: "cantabular_table",
     },
     version: {
         alerts: [],
@@ -108,12 +108,12 @@ const mockedCantabularDataset = {
         id: "3be1d978-ead1-4fc5-8cd7-2bf58199728b",
         release_date: "",
         state: "edition-confirmed",
-        version: 1
+        version: 1,
     },
     dimensions: [],
     collection_id: "",
     collection_state: "",
-    collection_last_edited_by: "test@user.com"
+    collection_last_edited_by: "test@user.com",
 };
 
 const mockedState = {
@@ -144,21 +144,21 @@ const mockedState = {
                 note: "usage note 1",
                 simpleListDescription: "usage note 1",
                 simpleListHeading: "usage note title 1",
-                title: "usage note title 1"
+                title: "usage note title 1",
             },
             {
                 id: 1,
                 note: "usage note 2",
                 simpleListDescription: "usage note 2",
                 simpleListHeading: "usage note title 2",
-                title: "usage note title 2"
-            }
+                title: "usage note title 2",
+            },
         ],
-        latestChanges: []
+        latestChanges: [],
     },
     datasetCollectionState: mockedMetadata.collection_state,
     versionCollectionState: mockedMetadata.collection_state,
-    lastEditedBy: mockedMetadata.collection_last_edited_by
+    lastEditedBy: mockedMetadata.collection_last_edited_by,
 };
 
 let mockedNotifications = [];
@@ -174,14 +174,14 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/123/datasets/456/editions/789/version/1"
+        pathname: "florence/collections/123/datasets/456/editions/789/version/1",
     },
     params: {
         collectionID: "123",
         datasetID: "456",
         editionID: "789",
-        versionID: "1"
-    }
+        versionID: "1",
+    },
 };
 
 const mountComponent = () => {

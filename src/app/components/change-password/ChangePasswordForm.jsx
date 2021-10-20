@@ -11,13 +11,13 @@ const propTypes = {
                 label: PropTypes.string.isRequired,
                 type: PropTypes.string,
                 onChange: PropTypes.func,
-                error: PropTypes.string
+                error: PropTypes.string,
             })
         ),
         onSubmit: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired,
-        isSubmitting: PropTypes.bool
-    }).isRequired
+        isSubmitting: PropTypes.bool,
+    }).isRequired,
 };
 
 export default class ChangePasswordForm extends Component {

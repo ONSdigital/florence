@@ -68,7 +68,7 @@ export default class url {
             console.error("Error trying to parse relative URL:\n", error);
             const notification = {
                 type: "warning",
-                message: `There was an unexpected error trying to resolve the path '${path}' ... ¯\\_(ツ)_/¯`
+                message: `There was an unexpected error trying to resolve the path '${path}' ... ¯\\_(ツ)_/¯`,
             };
             notifications.add(notification);
             log.event("Error trying to parse relative URL", log.error(error));

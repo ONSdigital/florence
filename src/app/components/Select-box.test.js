@@ -8,7 +8,7 @@ const contentsList = ["a", "b", "c"];
 test("Renders a select element when override is false", () => {
     const props = {
         override: false,
-        contents: contentsList
+        contents: contentsList,
     };
     const component = renderer.create(<Select {...props} />);
     expect(component.toJSON()).toMatchSnapshot();
@@ -16,7 +16,7 @@ test("Renders a select element when override is false", () => {
 
 test("Renders an input element when override is true", () => {
     const props = {
-        override: true
+        override: true,
     };
     const component = renderer.create(<Select {...props} />);
     expect(component.toJSON()).toMatchSnapshot();

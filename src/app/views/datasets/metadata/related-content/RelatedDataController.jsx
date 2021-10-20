@@ -7,7 +7,7 @@ import RelatedContentForm from "./RelatedContentForm";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    pathname: PropTypes.string.isRequired
+    pathname: PropTypes.string.isRequired,
 };
 
 export class RelatedDataController extends Component {
@@ -26,7 +26,7 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         rootPath: state.state.rootPath,
-        pathname: state.routing.locationBeforeTransitions.pathname
+        pathname: state.routing.locationBeforeTransitions.pathname,
     };
 }
 

@@ -15,8 +15,8 @@ const propTypes = {
         URI: PropTypes.string,
         method: PropTypes.string,
         retryCount: PropTypes.number,
-        willRetry: PropTypes.bool
-    })
+        willRetry: PropTypes.bool,
+    }),
 };
 
 class RouteLog extends Component {

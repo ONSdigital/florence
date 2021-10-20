@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const propTypes = {
     name: PropTypes.string,
     checked: PropTypes.bool,
-    id: PropTypes.string
+    id: PropTypes.string,
 };
 
 export default class ValidationItem extends Component {

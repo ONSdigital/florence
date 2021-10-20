@@ -15,7 +15,7 @@ const propTypes = {
     errorFetchingUserDetails: PropTypes.bool,
     errorFetchingUserPermissions: PropTypes.bool,
     showChangePassword: PropTypes.bool,
-    showFooter: PropTypes.bool
+    showFooter: PropTypes.bool,
 };
 
 export class UserDetails extends Component {

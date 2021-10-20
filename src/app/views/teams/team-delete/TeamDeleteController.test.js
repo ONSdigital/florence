@@ -4,9 +4,9 @@ import { mount, shallow } from "enzyme";
 
 jest.mock("../../../utilities/notifications.js", () => {
     return {
-        add: function(notification) {
+        add: function (notification) {
             mockNotifications.push(notification);
-        }
+        },
     };
 });
 
@@ -20,7 +20,7 @@ jest.mock("../../../utilities/logging/log", () => {
         }),
         error: jest.fn().mockImplementation(() => {
             // do nothing
-        })
+        }),
     };
 });
 
@@ -31,14 +31,14 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
         })
         .mockImplementationOnce(() => {
             return Promise.reject({ status: 500 });
-        })
+        }),
 }));
 
 jest.mock("../../../config/actions.js", () => {
     return {
-        updateAllTeams: function(payload) {
+        updateAllTeams: function (payload) {
             return payload;
-        }
+        },
     };
 });
 
@@ -49,33 +49,33 @@ const defaultProps = {
             id: 25,
             name: "A new team",
             members: [],
-            path: "a_new_team_25"
+            path: "a_new_team_25",
         },
         {
             id: 15,
             name: "crispin",
             members: ["admin@test.com", "data@vis.com"],
-            path: "crispin_15"
+            path: "crispin_15",
         },
         {
             id: 23,
             name: "crumpet",
             members: [],
-            path: "crumpet_23"
+            path: "crumpet_23",
         },
         {
             id: 1,
             name: "Test Team",
             members: [],
-            path: "test_team_1"
-        }
+            path: "test_team_1",
+        },
     ],
     dispatch: action => {
         stateUpdates.push(action);
     },
     onDeleteSuccess: () => {},
     rootPath: "/florence",
-    pathname: ""
+    pathname: "",
 };
 
 let stateUpdates = [];
@@ -89,11 +89,11 @@ test("User is given a notification if the team delete fails", async () => {
     const component = shallow(<TeamDeleteController {...defaultProps} />);
     const inputEvent = {
         target: {
-            value: "Test Team"
-        }
+            value: "Test Team",
+        },
     };
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
 
     component.instance().handleFormInput(inputEvent);
@@ -107,11 +107,11 @@ test("Error is displayed if team name and input value don't match", () => {
     const component = shallow(<TeamDeleteController {...defaultProps} />);
     const inputEvent = {
         target: {
-            value: "Test Team 1"
-        }
+            value: "Test Team 1",
+        },
     };
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
 
     component.instance().handleFormInput(inputEvent);
@@ -125,11 +125,11 @@ test("Team removal request is sent to server and removed from state when input v
     const component = shallow(<TeamDeleteController {...defaultProps} />);
     const inputEvent = {
         target: {
-            value: "Test Team"
-        }
+            value: "Test Team",
+        },
     };
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
     const testTeamIsInState = component.instance().props.teams.some(team => {
         return team.name === "Test Team";
@@ -157,21 +157,21 @@ test("Team removal request is sent to server and removed from state when input v
 test("Parent path is the team path with '/delete' removed", () => {
     const props1 = {
         ...defaultProps,
-        pathname: `/florence/teams/test-team-1/delete`
+        pathname: `/florence/teams/test-team-1/delete`,
     };
     const component1 = shallow(<TeamDeleteController {...props1} />);
     expect(component1.state("parentPath")).toBe("/florence/teams/test-team-1");
 
     const props2 = {
         ...defaultProps,
-        pathname: `/florence/teams/delete-team-23/delete`
+        pathname: `/florence/teams/delete-team-23/delete`,
     };
     const component2 = shallow(<TeamDeleteController {...props2} />);
     expect(component2.state("parentPath")).toBe("/florence/teams/delete-team-23");
 
     const props3 = {
         ...defaultProps,
-        pathname: `/florence/teams/delete/delete`
+        pathname: `/florence/teams/delete/delete`,
     };
     const component3 = shallow(<TeamDeleteController {...props3} />);
     expect(component3.state("parentPath")).toBe("/florence/teams/delete");

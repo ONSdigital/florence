@@ -6,15 +6,15 @@ const propTypes = {
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            alias: PropTypes.string.isRequired
+            alias: PropTypes.string.isRequired,
         })
     ),
     jobs: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            recipe: PropTypes.string.isRequired
+            recipe: PropTypes.string.isRequired,
         })
-    )
+    ),
 };
 
 class DatasetUploadJobs extends Component {

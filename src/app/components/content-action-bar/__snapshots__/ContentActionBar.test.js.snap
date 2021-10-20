@@ -1,0 +1,67 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ContentActionBar with a different set of props passed to it matches the snapshot 1`] = `
+<div
+  className="content-action-bar "
+>
+  <a
+    className="btn btn--margin-right btn--warning"
+    href="/"
+    id="bar-id"
+  >
+    bar
+  </a>
+  <a
+    className="btn btn--margin-right btn--primary"
+    href="/"
+    id="baz-id"
+  >
+    baz
+  </a>
+</div>
+`;
+
+exports[`ContentActionBar with a set of props passed to it matches the snapshot 1`] = `
+<div
+  className="content-action-bar content-action-bar--bottom-fixed"
+>
+  <button
+    className="btn btn--margin-right btn--positive"
+    disabled={false}
+    id="foo-id"
+    onClick={[Function]}
+    type="button"
+  >
+    foo
+  </button>
+  <button
+    className="btn btn--invert-primary"
+    id="btn-cancel"
+    onClick={[Function]}
+    type="button"
+  >
+    Cancel
+  </button>
+  <span
+    className="content-action-bar__warn"
+  >
+    <svg
+      aria-label="warning icon"
+      className="svg-icon--action-bar"
+      focusable="false"
+      role="img"
+      viewBox="0 0 512 512"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M256,34.297L0,477.703h512L256,34.297z M256,422.05c-9.22,0-16.696-7.475-16.696-16.696s7.475-16.696,16.696-16.696 c9.22,0,16.696,7.475,16.696,16.696S265.22,422.05,256,422.05z M239.304,344.137V177.181h33.391v166.956H239.304z"
+      />
+    </svg>
+    <span
+      className="content-action-bar__warn__text"
+    >
+       You have unsaved changes
+    </span>
+  </span>
+</div>
+`;

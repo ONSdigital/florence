@@ -27,20 +27,20 @@ const propTypes = {
     teams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         })
     ),
     allTeams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired
+            name: PropTypes.string.isRequired,
         })
     ),
     publishType: PropTypes.string.isRequired,
     originalPublishType: PropTypes.string.isRequired,
     originalPublishDate: PropTypes.string.isRequired,
     isFetchingAllTeams: PropTypes.bool,
-    isSavingEdits: PropTypes.bool
+    isSavingEdits: PropTypes.bool,
 };
 
 class CollectionEdit extends Component {
@@ -51,9 +51,9 @@ class CollectionEdit extends Component {
             {
                 id: "edit-type-schedule",
                 value: "scheduled",
-                label: "Scheduled"
+                label: "Scheduled",
             },
-            { id: "edit-type-manual", value: "manual", label: "Manual" }
+            { id: "edit-type-manual", value: "manual", label: "Manual" },
         ];
 
         this.minimumPublishDate = dateFormat(date.getNow(), "yyyy-mm-dd");

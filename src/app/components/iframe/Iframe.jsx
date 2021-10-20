@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 const propTypes = {
     path: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
 };
 
 const defaultProps = {
-    path: "/"
+    path: "/",
 };
 
 export default class Iframe extends Component {

@@ -8,8 +8,8 @@ export default () => next => action => {
             ...action,
             payload: {
                 ...action.payload,
-                previousPathname
-            }
+                previousPathname,
+            },
         };
         previousPathname = action.payload.pathname;
         return next(newAction);
