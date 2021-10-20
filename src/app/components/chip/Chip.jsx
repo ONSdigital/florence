@@ -10,7 +10,7 @@ const propTypes = {
     link: PropTypes.string,
     removeFunc: PropTypes.func,
     style: PropTypes.oneOf(["standard", "green", "blue", "red"]),
-    text: PropTypes.string.isRequired
+    text: PropTypes.string.isRequired,
 };
 
 const Chip = props => {
@@ -36,13 +36,13 @@ const Chip = props => {
     }
     switch (props.icon) {
         case "shield-person":
-            icon = <PersonInShield classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Person inside shield icon"} />
+            icon = <PersonInShield classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Person inside shield icon"} />;
             break;
         case "shield-tick":
-            icon = <TickInShield classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Tick inside shield icon"} />
+            icon = <TickInShield classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Tick inside shield icon"} />;
             break;
         case "person":
-            icon = <Person classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Person icon"} />
+            icon = <Person classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Person icon"} />;
             break;
     }
 

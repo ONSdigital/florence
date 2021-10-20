@@ -1,13 +1,13 @@
 import React from "react";
 import Chip from "./Chip";
 import renderer from "react-test-renderer";
-import {mount} from "enzyme";
+import { mount } from "enzyme";
 
 describe("Chip", () => {
     describe("given props for a non interactive blue chip ", () => {
         const chipProps = {
             style: "blue",
-            text: "foo"
+            text: "foo",
         };
         const component = mount(<Chip {...chipProps} />);
         it("should display a blue chip with just text", () => {
@@ -29,7 +29,7 @@ describe("Chip", () => {
                 icon: "shield-person",
                 link: "/",
                 style: "red",
-                text: "bar"
+                text: "bar",
             };
             const component = mount(<Chip {...chipProps} />);
             it("should display an icon, text, close button and the text should be a link", () => {

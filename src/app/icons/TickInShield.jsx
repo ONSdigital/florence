@@ -5,7 +5,7 @@ const propTypes = {
     classes: PropTypes.string,
     fillColor: PropTypes.string,
     ariaLabel: PropTypes.string,
-    viewBox: PropTypes.string.isRequired
+    viewBox: PropTypes.string.isRequired,
 };
 const TickInShield = props => {
     return (

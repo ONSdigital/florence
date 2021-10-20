@@ -1,7 +1,7 @@
 import React from "react";
 import ContentActionBar from "./ContentActionBar.jsx";
 import renderer from "react-test-renderer";
-import {mount} from "enzyme";
+import { mount } from "enzyme";
 
 describe("ContentActionBar", () => {
     describe("with a set of props passed to it", () => {
@@ -12,12 +12,12 @@ describe("ContentActionBar", () => {
                     text: "foo",
                     interactionCallback: () => {},
                     style: "positive",
-                    disabled: false
-                }
+                    disabled: false,
+                },
             ],
             cancelCallback: () => {},
             stickToBottom: true,
-            unsavedChanges: true
+            unsavedChanges: true,
         };
 
         const component = mount(<ContentActionBar {...contentActionBarProps} />);
@@ -43,18 +43,18 @@ describe("ContentActionBar", () => {
                     text: "bar",
                     link: "/",
                     style: "warning",
-                    disabled: false
+                    disabled: false,
                 },
                 {
                     id: "baz-id",
                     text: "baz",
                     link: "/",
                     style: "primary",
-                    disabled: false
-                }
+                    disabled: false,
+                },
             ],
             stickToBottom: false,
-            unsavedChanges: false
+            unsavedChanges: false,
         };
         const component = mount(<ContentActionBar {...contentActionBarProps} />);
         it("should display different elements and props", () => {
@@ -74,6 +74,6 @@ describe("ContentActionBar", () => {
         it("matches the snapshot", () => {
             const componentForSnapshot = renderer.create(<ContentActionBar {...contentActionBarProps} />);
             expect(componentForSnapshot.toJSON()).toMatchSnapshot();
-        })
+        });
     });
 });
