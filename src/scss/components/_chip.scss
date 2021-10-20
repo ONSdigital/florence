@@ -1,0 +1,83 @@
+.chip {
+  display: inline-block;
+  padding: $magicnumber1 * 1.5;
+  background-color: $grey5;
+  color: $black;
+  width: max-content;
+
+  &--blue {
+    background-color: tint($sky-blue, 70);
+    color: $night-blue;
+  }
+
+  &--green {
+    color: $leaf-green;
+    background-color: tint($spring-green, 70);
+  }
+
+  &--red {
+    //#F8F2F3
+    background-color: tint($ruby-red, 70);
+    color: $tawny-port;
+
+  }
+
+  &__icon {
+    vertical-align: middle;
+    width: 1em;
+    height: 1em;
+  }
+
+  &__text {
+    margin-left: $magicnumber1 * 1.5;
+    margin-right: $magicnumber1 * 1.5;
+
+
+    &:visited {
+      color: $ocean-blue;
+    }
+
+    &:focus {
+      background-color: $focus;
+      border: none;
+    }
+  }
+
+  &__remove-container {
+    position: relative;
+  }
+
+  &__remove {
+    width: 18px;
+    height: 18px;
+    vertical-align: middle;
+    background: none;
+
+    &:hover {
+      background: $grey3;
+      opacity: 1;
+    }
+
+    &:focus {
+      border: 2px solid $focus;
+    }
+
+    &:before, &:after {
+      position: absolute;
+      left: 8px;
+      top: 5px;
+      content: ' ';
+      height: 12px;
+      width: 2px;
+      background-color: #333;
+    }
+
+    &:before {
+      transform: rotate(45deg);
+    }
+
+    &:after {
+      transform: rotate(-45deg);
+    }
+  }
+}
