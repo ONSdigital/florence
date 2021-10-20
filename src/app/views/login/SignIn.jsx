@@ -297,7 +297,7 @@ export class LoginController extends Component {
                 heading: "Change your password",
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
-                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
+                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions}/>,
                 status: this.state.status,
             };
 
@@ -329,35 +329,12 @@ export class LoginController extends Component {
                 },
             ];
             return (
-                <div>
-                    <LoginForm
-                        inputs={inputs}
-                        isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
-                        onSubmit={this.submitSignIn}
-                        validationErrors={this.validationErrors}
-                    />
-                    <ContentActionBar buttons={[{
-                        id: "meh",
-                        text: "Save content",
-                        interactionCallback: () => {
-                        },
-                        style: "positive",
-                        disabled: false
-                    },{
-                        id: "meh-2",
-                        text: "Preview",
-                        interactionCallback: () => {
-                        },
-                        style: "primary",
-                        disabled: false
-                    }]}
-                                      cancelCallback={() => {
-                                      }}
-                                      cancelDisabled={false}
-                                      stickToBottom={true}
-                                      unsavedChanges={true}
-                    />
-                </div>
+                <LoginForm
+                    inputs={inputs}
+                    isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
+                    onSubmit={this.submitSignIn}
+                    validationErrors={this.validationErrors}
+                />
             );
         }
     }
