@@ -12,13 +12,13 @@ import date from "../../../utilities/date";
 export const pagePropTypes = {
     lastEdit: PropTypes.shape({
         email: PropTypes.string,
-        date: PropTypes.string
+        date: PropTypes.string,
     }),
     uri: PropTypes.string.isRequired,
     title: PropTypes.string.isRequired,
     edition: PropTypes.string,
     version: PropTypes.string,
-    type: PropTypes.string
+    type: PropTypes.string,
 };
 
 export const deletedPagePropTypes = PropTypes.shape({
@@ -27,11 +27,11 @@ export const deletedPagePropTypes = PropTypes.shape({
     description: PropTypes.shape({
         title: PropTypes.string.isRequired,
         edition: PropTypes.string,
-        language: PropTypes.string
+        language: PropTypes.string,
     }),
     children: PropTypes.arrayOf(PropTypes.object),
     deleteMarker: PropTypes.bool.isRequired,
-    contentPath: PropTypes.string.isRequired
+    contentPath: PropTypes.string.isRequired,
 });
 
 const propTypes = {
@@ -51,7 +51,7 @@ const propTypes = {
     isLoadingDetails: PropTypes.bool,
     isCancellingDelete: PropTypes.shape({
         value: PropTypes.bool.isRequired,
-        uri: PropTypes.string.isRequired
+        uri: PropTypes.string.isRequired,
     }),
     isApprovingCollection: PropTypes.bool,
     canBeDeleted: PropTypes.bool,
@@ -63,16 +63,16 @@ const propTypes = {
         PropTypes.shape({
             user: PropTypes.string.isRequired,
             root: deletedPagePropTypes,
-            totalDeletes: PropTypes.number.isRequired
+            totalDeletes: PropTypes.number.isRequired,
         })
     ),
     status: PropTypes.shape({
         neutral: PropTypes.bool,
-        warning: PropTypes.bool
+        warning: PropTypes.bool,
     }),
     type: PropTypes.string,
     publishDate: PropTypes.string,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class CollectionDetails extends Component {

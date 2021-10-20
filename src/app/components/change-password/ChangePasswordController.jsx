@@ -12,7 +12,7 @@ const propTypes = {
     email: PropTypes.string.isRequired,
     currentPassword: PropTypes.string.isRequired,
     handleSuccess: PropTypes.func.isRequired,
-    handleCancel: PropTypes.func.isRequired
+    handleCancel: PropTypes.func.isRequired,
 };
 
 export default class ChangePasswordController extends Component {
@@ -23,8 +23,8 @@ export default class ChangePasswordController extends Component {
             isSubmitting: false,
             newPassword: {
                 value: "",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         };
     }
 
@@ -37,8 +37,8 @@ export default class ChangePasswordController extends Component {
                 this.setState({
                     newPassword: {
                         value: value,
-                        errorMsg: ""
-                    }
+                        errorMsg: "",
+                    },
                 });
                 break;
             }
@@ -54,8 +54,8 @@ export default class ChangePasswordController extends Component {
             this.setState(state => ({
                 newPassword: {
                     ...state.newPassword,
-                    errorMsg: validatedPassword.error
-                }
+                    errorMsg: validatedPassword.error,
+                },
             }));
             return;
         }
@@ -63,7 +63,7 @@ export default class ChangePasswordController extends Component {
         const postBody = {
             password: this.state.newPassword.value,
             email: this.props.email,
-            oldPassword: this.props.currentPassword
+            oldPassword: this.props.currentPassword,
         };
 
         this.setState({ isSubmitting: true });
@@ -72,14 +72,14 @@ export default class ChangePasswordController extends Component {
             .then(() => {
                 this.props.handleSuccess(this.state.newPassword.value);
                 const eventPayload = {
-                    email: this.props.email
+                    email: this.props.email,
                 };
                 log.add(eventTypes.passwordChangeSuccess, eventPayload);
                 const notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: "Password successfully changed"
+                    message: "Password successfully changed",
                 };
                 notifications.add(notification);
             })
@@ -87,7 +87,7 @@ export default class ChangePasswordController extends Component {
                 const notification = {
                     type: "warning",
                     isDismissable: true,
-                    autoDismiss: 15000
+                    autoDismiss: 15000,
                 };
                 switch (error.status) {
                     case 404: {
@@ -135,12 +135,12 @@ export default class ChangePasswordController extends Component {
                     label: "New password",
                     type: "password",
                     onChange: this.handleInputChange,
-                    error: this.state.newPassword.errorMsg
-                }
+                    error: this.state.newPassword.errorMsg,
+                },
             ],
             onSubmit: this.handleSubmit,
             onCancel: this.props.handleCancel,
-            isSubmitting: this.state.isSubmitting
+            isSubmitting: this.state.isSubmitting,
         };
         return <ChangePasswordForm formData={formData} />;
     }

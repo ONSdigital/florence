@@ -10,8 +10,8 @@ import Input from "../../components/Input";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-    }).isRequired
+        pathname: PropTypes.string.isRequired,
+    }).isRequired,
 };
 
 export class CreateContent extends Component {
@@ -25,22 +25,22 @@ export class CreateContent extends Component {
                     id: "workspace",
                     details: ["Create/edit content via the old workspace"],
                     url: `${url.resolve("../../../")}/workspace?collection=${this.props.params.collectionID}`,
-                    externalLink: true
+                    externalLink: true,
                 },
                 {
                     title: "Filterable dataset",
                     id: "cmd-filterable-datasets",
                     details: ["Create/edit datasets and/or versions for filterable (CMD) datasets"],
-                    url: url.resolve("../") + "/datasets"
+                    url: url.resolve("../") + "/datasets",
                 },
                 {
                     title: "Homepage",
                     id: "homepage",
-                    url: url.resolve("../") + "/homepage"
-                }
+                    url: url.resolve("../") + "/homepage",
+                },
             ],
             filteredContentTypes: [],
-            searchTerm: ""
+            searchTerm: "",
         };
     }
 
@@ -56,7 +56,7 @@ export class CreateContent extends Component {
         );
         this.setState({
             filteredContentTypes,
-            searchTerm
+            searchTerm,
         });
     };
 

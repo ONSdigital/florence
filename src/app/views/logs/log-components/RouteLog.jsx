@@ -11,8 +11,8 @@ const propTypes = {
     instanceID: PropTypes.string.isRequired,
     payload: PropTypes.shape({
         pathname: PropTypes.string,
-        search: PropTypes.string
-    })
+        search: PropTypes.string,
+    }),
 };
 
 class RouteLog extends Component {

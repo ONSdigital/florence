@@ -11,17 +11,17 @@ import { connect } from "react-redux";
 
 const propTypes = {
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
+        pathname: PropTypes.string.isRequired,
     }),
     params: PropTypes.shape({
         collectionID: PropTypes.string.isRequired,
         homepageDataField: PropTypes.string,
-        homepageDataFieldID: PropTypes.string
+        homepageDataFieldID: PropTypes.string,
     }),
     userEmail: PropTypes.string,
     currentCollection: PropTypes.object,
     children: PropTypes.element,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class EditHomepageController extends Component {
@@ -35,14 +35,14 @@ export class EditHomepageController extends Component {
             homepageData: {
                 featuredContent: [],
                 aroundONS: [],
-                serviceMessage: ""
+                serviceMessage: "",
             },
             collectionState: "",
             lastEditedBy: "",
             formIsDisabled: true,
             hasChangesMade: false,
             maximumNumberOfEntries: 8,
-            isSaving: false
+            isSaving: false,
         };
     }
 
@@ -88,17 +88,17 @@ export class EditHomepageController extends Component {
 
                     this.setState({
                         lastEditedBy: lastEvent.email,
-                        collectionState
+                        collectionState,
                     });
                 }
                 this.setState({
-                    collectionDetailsFetched: true
+                    collectionDetailsFetched: true,
                 });
                 return this.checkIfHomepageIsInAnotherCollection();
             })
             .catch(error => {
                 this.setState({
-                    collectionDetailsFetched: false
+                    collectionDetailsFetched: false,
                 });
                 log.event(
                     "error retrieving the homepage's collection state",
@@ -108,7 +108,7 @@ export class EditHomepageController extends Component {
                 notifications.add({
                     type: "warning",
                     message: `Error retrieving the homepage's collection state. Please try refreshing the page.`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -122,7 +122,7 @@ export class EditHomepageController extends Component {
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageFetched: true,
-                    homepageData: { featuredContent: mappedFeaturedContent, aroundONS: mappedAroundONS, serviceMessage: homepageData.serviceMessage }
+                    homepageData: { featuredContent: mappedFeaturedContent, aroundONS: mappedAroundONS, serviceMessage: homepageData.serviceMessage },
                 });
                 return;
             })
@@ -131,7 +131,7 @@ export class EditHomepageController extends Component {
                 notifications.add({
                     type: "warning",
                     message: "An error occurred whilst trying to get homepage data.",
-                    isDismissable: true
+                    isDismissable: true,
                 });
             });
     };
@@ -146,7 +146,7 @@ export class EditHomepageController extends Component {
                     image: item.image,
                     title: item.title,
                     simpleListHeading: item.title,
-                    simpleListDescription: item.description
+                    simpleListDescription: item.description,
                 };
             });
         } catch (error) {
@@ -171,7 +171,7 @@ export class EditHomepageController extends Component {
                 notifications.add({
                     type: "neutral",
                     message: `The homepage is already being edited in another collection: ${response}`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 this.setState({ isInAnotherCollection: true });
                 return;
@@ -180,7 +180,7 @@ export class EditHomepageController extends Component {
                 notifications.add({
                     type: "warning",
                     message: `An error occurred when trying to check if the homepage is in another collection: ${error}`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 log.event("error occurred when trying to check if homepage is being edited in another collection", log.error(error));
             });
@@ -204,11 +204,11 @@ export class EditHomepageController extends Component {
         const newFieldState = this.state.homepageData[stateFieldName].filter(item => item.id !== deletedField.id);
         const newHomepageDataState = {
             ...this.state.homepageData,
-            [stateFieldName]: newFieldState
+            [stateFieldName]: newFieldState,
         };
         this.setState({
             homepageData: newHomepageDataState,
-            hasChangesMade: true
+            hasChangesMade: true,
         });
     };
 
@@ -225,7 +225,7 @@ export class EditHomepageController extends Component {
         }
         this.setState({
             homepageData: newHomepageDataState,
-            hasChangesMade: this.checkForHomepageDataChanges(stateFieldName)
+            hasChangesMade: this.checkForHomepageDataChanges(stateFieldName),
         });
         this.props.dispatch(push(url.resolve("../../../")));
     };
@@ -237,7 +237,7 @@ export class EditHomepageController extends Component {
         const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState);
         return {
             ...this.state.homepageData,
-            [stateFieldName]: mappedNewFieldState
+            [stateFieldName]: mappedNewFieldState,
         };
     };
 
@@ -251,7 +251,7 @@ export class EditHomepageController extends Component {
         const mappedNewFieldState = this.mapHighlightedContentToState(newFieldState, stateFieldName);
         return {
             ...this.state.homepageData,
-            [stateFieldName]: mappedNewFieldState
+            [stateFieldName]: mappedNewFieldState,
         };
     };
 
@@ -269,7 +269,7 @@ export class EditHomepageController extends Component {
         const newHomepageDataState = { ...this.state.homepageData, [fieldName]: value };
         this.setState({
             homepageData: newHomepageDataState,
-            hasChangesMade: this.checkForHomepageDataChanges(fieldName)
+            hasChangesMade: this.checkForHomepageDataChanges(fieldName),
         });
     };
 
@@ -277,7 +277,7 @@ export class EditHomepageController extends Component {
     handleSaveAndPreview = async () => {
         const options = {
             isPreviewing: true,
-            isSubmittingForReview: false
+            isSubmittingForReview: false,
         };
         this.handleSave(options);
     };
@@ -285,7 +285,7 @@ export class EditHomepageController extends Component {
     handleSubmitForReview = async () => {
         const options = {
             isPreviewing: false,
-            isSubmittingForReview: true
+            isSubmittingForReview: true,
         };
         this.handleSave(options);
     };
@@ -323,7 +323,7 @@ export class EditHomepageController extends Component {
             notifications.add({
                 type: "positive",
                 message: `Homepage content saved!`,
-                isDismissable: true
+                isDismissable: true,
             });
 
             if (sendToReviewError) {
@@ -342,7 +342,7 @@ export class EditHomepageController extends Component {
                     description: item.description,
                     uri: item.uri,
                     image: item.image,
-                    title: item.title
+                    title: item.title,
                 };
             });
         } catch (error) {
@@ -375,7 +375,7 @@ export class EditHomepageController extends Component {
             log.event(
                 "Error reviewing homepage content",
                 log.data({
-                    collectionID: this.props.params.collectionID
+                    collectionID: this.props.params.collectionID,
                 }),
                 log.error(error)
             );
@@ -388,7 +388,7 @@ export class EditHomepageController extends Component {
         notifications.add({
             type: "warning",
             message: `${message}. You can try again by pressing save.`,
-            isDismissable: true
+            isDismissable: true,
         });
     };
 
@@ -401,7 +401,7 @@ export class EditHomepageController extends Component {
             return React.cloneElement(child, {
                 data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
-                handleCancelClick: this.handleSimpleEditableListEditCancel
+                handleCancelClick: this.handleSimpleEditableListEditCancel,
             });
         });
     };
@@ -434,8 +434,8 @@ export class EditHomepageController extends Component {
 
 function mapStateToProps(state) {
     return {
-        userEmail: state.state.user.email,
-        currentCollection: state.state.global.workingOn
+        userEmail: state.user.email,
+        currentCollection: state.state.global.workingOn,
     };
 }
 

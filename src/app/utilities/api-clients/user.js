@@ -1,6 +1,7 @@
 import http from "../http";
 import { store } from "../../config/store";
-import { reset, userLoggedIn, userLoggedOut } from "../../config/actions";
+import { reset } from "../../config/actions";
+import { userLoggedIn, userLoggedOut } from "../../config/user/userActions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
@@ -114,7 +115,7 @@ export default class user {
                             type: "warning",
                             message: "An error occurred during sign out 'InvalidToken', please contact a system administrator",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
@@ -124,7 +125,7 @@ export default class user {
                             type: "warning",
                             message: "Unexpected error occurred during sign out",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self");

@@ -15,12 +15,12 @@ const propTypes = {
     dataset: PropTypes.shape({
         collection_id: PropTypes.string,
         lastEditedBy: PropTypes.string,
-        reviewState: PropTypes.string
+        reviewState: PropTypes.string,
     }),
     title: PropTypes.string.isRequired,
     backLinkPath: PropTypes.string.isRequired,
     onSubmitForReview: PropTypes.func,
-    onMarkAsReviewed: PropTypes.func
+    onMarkAsReviewed: PropTypes.func,
 };
 
 class DatasetPreview extends Component {

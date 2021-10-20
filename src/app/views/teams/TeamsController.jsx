@@ -24,7 +24,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     userIsAdmin: PropTypes.bool.isRequired,
-    params: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired,
 };
 
 export class TeamsController extends Component {
@@ -37,7 +37,7 @@ export class TeamsController extends Component {
             drawerIsAnimatable: false,
             clearActiveTeam: false,
             isEditingTeam: false,
-            isDeletingTeam: false
+            isDeletingTeam: false,
         };
     }
 
@@ -65,7 +65,7 @@ export class TeamsController extends Component {
         if (!nextProps.params.team && nextProps.activeTeam && nextProps.activeTeam.id) {
             this.setState({
                 drawerIsAnimatable: true,
-                clearActiveTeam: true
+                clearActiveTeam: true,
             });
         }
 
@@ -140,7 +140,7 @@ export class TeamsController extends Component {
             type: "positive",
             message: `Team '${this.props.activeTeam.name}' successfully deleted`,
             isDismissable: true,
-            autoDismiss: 15000
+            autoDismiss: 15000,
         };
         notifications.add(notification);
         this.fetchTeams();
@@ -159,7 +159,7 @@ export class TeamsController extends Component {
                 const allTeamsWithProps = allTeams.map(team => {
                     const path = url.sanitise(team.name + "_" + team.id);
                     return Object.assign({}, team, {
-                        path: path
+                        path: path,
                     });
                 });
 
@@ -184,7 +184,7 @@ export class TeamsController extends Component {
                             message: `Team '${teamParameter}' is not recognised so you've been redirected to the teams screen`,
                             type: "neutral",
                             autoDismiss: 15000,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(url.resolve("../")));
@@ -203,7 +203,7 @@ export class TeamsController extends Component {
                             type: "warning",
                             message:
                                 "An error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -213,7 +213,7 @@ export class TeamsController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information but won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -223,7 +223,7 @@ export class TeamsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -233,7 +233,7 @@ export class TeamsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been an error fetching the teams. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -264,7 +264,7 @@ export class TeamsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `Couldn't find members for the team: '${teamName}'. This team may have been deleted.`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -273,7 +273,7 @@ export class TeamsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `An error's occurred whilst trying to get the members for the team '${teamName}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -282,7 +282,7 @@ export class TeamsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `An unexpected error's occurred whilst trying to get the members for the team '${teamName}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -291,7 +291,7 @@ export class TeamsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `There's been a network error whilst trying to get the members for the team '${teamName}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -301,14 +301,14 @@ export class TeamsController extends Component {
                             `Unhandled error fetching team`,
                             log.data({
                                 status_code: error.status,
-                                team: teamName
+                                team: teamName,
                             }),
                             log.error(error)
                         );
                         const notification = {
                             type: "warning",
                             message: "There's been an error fetching the members of team '${teamName}'",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -396,8 +396,8 @@ function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
         allTeams: state.state.teams.all,
-        userIsAdmin: state.state.user.isAdmin,
-        rootPath: state.state.rootPath
+        userIsAdmin: state.user.isAdmin,
+        rootPath: state.state.rootPath,
     };
 }
 

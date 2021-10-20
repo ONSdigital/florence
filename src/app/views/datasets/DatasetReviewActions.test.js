@@ -11,7 +11,7 @@ const defaultProps = {
     lastEditedBy: undefined,
     onSubmit: undefined,
     onApprove: undefined,
-    notInCollectionYet: false
+    notInCollectionYet: false,
 };
 
 const defaultComponent = shallow(<DatasetReviewActions {...defaultProps} />);
@@ -19,7 +19,7 @@ const defaultComponent = shallow(<DatasetReviewActions {...defaultProps} />);
 const inProgressProps = {
     ...defaultProps,
     reviewState: "inProgress",
-    lastEditedBy: "user-1@email.com"
+    lastEditedBy: "user-1@email.com",
 };
 
 const inProgressComponent = shallow(<DatasetReviewActions {...inProgressProps} />);
@@ -27,7 +27,7 @@ const inProgressComponent = shallow(<DatasetReviewActions {...inProgressProps} /
 const completeProps = {
     ...defaultProps,
     reviewState: "complete",
-    lastEditedBy: "user-1@email.com"
+    lastEditedBy: "user-1@email.com",
 };
 
 const completeComponent = shallow(<DatasetReviewActions {...completeProps} />);
@@ -35,7 +35,7 @@ const completeComponent = shallow(<DatasetReviewActions {...completeProps} />);
 const reviewedProps = {
     ...defaultProps,
     reviewState: "reviewed",
-    lastEditedBy: "user-2@email.com"
+    lastEditedBy: "user-2@email.com",
 };
 
 const reviewedComponent = shallow(<DatasetReviewActions {...reviewedProps} />);
@@ -106,7 +106,7 @@ describe("Run the approve/review handlers", () => {
             onSubmit: () => {
                 functionHasRun = true;
             },
-            userEmail: "user1@email.com"
+            userEmail: "user1@email.com",
         });
         expect(functionHasRun).toBe(false);
 
@@ -121,7 +121,7 @@ describe("Run the approve/review handlers", () => {
             onApprove: () => {
                 functionHasRun = true;
             },
-            userEmail: "user2@email.com"
+            userEmail: "user2@email.com",
         });
         expect(functionHasRun).toBe(false);
 
@@ -139,7 +139,7 @@ describe("Correctly includes/excludes 'save' text in labels", () => {
 
     it("'submit for review' button includes when opted for", () => {
         inProgressComponent.setProps({
-            includeSaveLabels: true
+            includeSaveLabels: true,
         });
         const label = inProgressComponent.text();
         expect(label.toLowerCase().includes("save")).toBe(true);
@@ -152,7 +152,7 @@ describe("Correctly includes/excludes 'save' text in labels", () => {
 
     it("'mark as reviewed' button includes when opted for", () => {
         completeComponent.setProps({
-            includeSaveLabels: true
+            includeSaveLabels: true,
         });
         const label = completeComponent.text();
         expect(label.toLowerCase().includes("save")).toBe(true);

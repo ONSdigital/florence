@@ -9,7 +9,7 @@ export default function ping() {
     const fetchConfig = {
         credentials: "include",
         method: "POST",
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
     };
 
     return fetch("/zebedee/ping", fetchConfig)

@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const propTypes = {
     isSubmitting: PropTypes.bool.isRequired,
-    buttonText: PropTypes.string.isRequired
+    buttonText: PropTypes.string.isRequired,
 };
 
 const ButtonWithSpinner = props => (

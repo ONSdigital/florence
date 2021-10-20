@@ -9,7 +9,7 @@ import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 
 const propTypes = {
-    onCreateSuccess: PropTypes.func.isRequired
+    onCreateSuccess: PropTypes.func.isRequired,
 };
 
 class UsersCreateController extends Component {
@@ -20,19 +20,19 @@ class UsersCreateController extends Component {
             newUser: {
                 username: {
                     value: "",
-                    error: ""
+                    error: "",
                 },
                 email: {
                     value: "",
-                    error: ""
+                    error: "",
                 },
                 password: {
                     value: "",
-                    error: ""
+                    error: "",
                 },
-                type: "viewer"
+                type: "viewer",
             },
-            isSubmitting: false
+            isSubmitting: false,
         };
 
         this.blankNewUserDetails = this.state.newUser;
@@ -44,12 +44,12 @@ class UsersCreateController extends Component {
 
         const newPropertyState = {
             value: value,
-            error: ""
+            error: "",
         };
 
         const newUserState = {
             ...this.state.newUser,
-            [propertyName]: newPropertyState
+            [propertyName]: newPropertyState,
         };
 
         this.setState({ newUser: newUserState });
@@ -60,7 +60,7 @@ class UsersCreateController extends Component {
 
         const newUserState = {
             ...this.state.newUser,
-            type: value
+            type: value,
         };
 
         this.setState({ newUser: newUserState });
@@ -74,11 +74,11 @@ class UsersCreateController extends Component {
             log.event("valiation error: no username entered");
             const usernameState = {
                 ...newUser.username,
-                error: "You must enter a username"
+                error: "You must enter a username",
             };
             const newUserState = {
                 ...newUser,
-                username: usernameState
+                username: usernameState,
             };
             this.setState({ newUser: newUserState });
             return;
@@ -88,11 +88,11 @@ class UsersCreateController extends Component {
             log.event("valiation error: no email address entered");
             const emailState = {
                 ...newUser.email,
-                error: "You must enter a email"
+                error: "You must enter a email",
             };
             const newUserState = {
                 ...newUser,
-                email: emailState
+                email: emailState,
             };
             this.setState({ newUser: newUserState });
             return;
@@ -102,11 +102,11 @@ class UsersCreateController extends Component {
             log.event("valiation error: no password entered");
             const passwordState = {
                 ...newUser.password,
-                error: "You must enter a password"
+                error: "You must enter a password",
             };
             const newUserState = {
                 ...newUser,
-                password: passwordState
+                password: passwordState,
             };
             this.setState({ newUser: newUserState });
             return;
@@ -119,11 +119,11 @@ class UsersCreateController extends Component {
         if (createdUser) {
             this.setState({
                 newUser: this.blankNewUserDetails,
-                isSubmitting: false
+                isSubmitting: false,
             });
             this.props.onCreateSuccess({
                 name: newUser.username.value,
-                email: newUser.email.value
+                email: newUser.email.value,
             });
             log.event("Successfully created user", log.data({ user: newUser.email.value }));
             return;
@@ -142,7 +142,7 @@ class UsersCreateController extends Component {
             const notification = {
                 type: "warning",
                 message: "Error mapping user details to PostBody",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping user details to PostBody");
@@ -151,7 +151,7 @@ class UsersCreateController extends Component {
                 log.data({
                     username: newUserDetails.username || null,
                     user_email: newUserDetails.email || null,
-                    message: newUserDetailsResponse.error.body.message
+                    message: newUserDetailsResponse.error.body.message,
                 }),
                 log.error(newUserDetailsResponse.error)
             );
@@ -163,7 +163,7 @@ class UsersCreateController extends Component {
             const notification = {
                 type: "warning",
                 message: "Error mapping user password to PostBody",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping user password to PostBody");
@@ -172,7 +172,7 @@ class UsersCreateController extends Component {
                 log.data({
                     user_password: newUserPassword.password || null,
                     user_email: newUserPassword.email || null,
-                    message: newUserPasswordResponse.error.body.message
+                    message: newUserPasswordResponse.error.body.message,
                 }),
                 log.error()
             );
@@ -185,7 +185,7 @@ class UsersCreateController extends Component {
             const notification = {
                 type: "warning",
                 message: "Error mapping user permissions to PostBody",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping user permissions to PostBody");
@@ -195,7 +195,7 @@ class UsersCreateController extends Component {
                     isAdmin: newUserPerrmissions.admin || false,
                     isEditor: newUserPerrmissions.editor || false,
                     user_email: newUserPerrmissions.email || null,
-                    message: newUserPerrmissionsResponse.error.body.message
+                    message: newUserPerrmissionsResponse.error.body.message,
                 }),
                 log.error()
             );
@@ -209,14 +209,14 @@ class UsersCreateController extends Component {
     mapUserDetailsPostBody = user => {
         return {
             name: user.username.value,
-            email: user.email.value
+            email: user.email.value,
         };
     };
 
     mapUserPasswordPostBody = user => {
         return {
             email: user.email.value,
-            password: user.password.value
+            password: user.password.value,
         };
     };
 
@@ -224,7 +224,7 @@ class UsersCreateController extends Component {
         return {
             email: user.email.value,
             admin: user.type === "admin",
-            editor: user.type === "publisher"
+            editor: user.type === "publisher",
         };
     };
 
@@ -241,7 +241,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `You don't have permission to create users.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -250,7 +250,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to create users.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -259,7 +259,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `User email "${newUserDetails.email}" already exists.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -268,7 +268,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to create a user.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -277,7 +277,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to create a user.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -286,7 +286,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to create a user.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -296,14 +296,14 @@ class UsersCreateController extends Component {
                             "Unhandled error creating user",
                             log.data({
                                 status_code: error.status,
-                                user: newUserDetails.email
+                                user: newUserDetails.email,
                             }),
                             log.error(error)
                         );
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to create a user.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -327,7 +327,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `You don't have permission to set users' password.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -336,7 +336,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to set users' password.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -345,7 +345,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to set users' password.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -354,7 +354,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to set users' password.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -363,7 +363,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to set users' password.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -373,14 +373,14 @@ class UsersCreateController extends Component {
                             "Unhandled error seting user password",
                             log.data({
                                 status_code: error.status,
-                                user: newUserPassword.email
+                                user: newUserPassword.email,
                             }),
                             log.error(error)
                         );
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to set users' password.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -404,7 +404,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `You don't have permission to set users' permission.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -413,7 +413,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to set users' permission.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -422,7 +422,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to set users' permission.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -431,7 +431,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to set users' permission.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -440,7 +440,7 @@ class UsersCreateController extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to set users' permission.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -450,14 +450,14 @@ class UsersCreateController extends Component {
                             "Unhandled error seting user permissions",
                             log.data({
                                 status_code: error.status,
-                                user: newUserPerrmissions.email
+                                user: newUserPerrmissions.email,
                             }),
                             log.error(error)
                         );
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to set users' permission.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -478,7 +478,7 @@ class UsersCreateController extends Component {
                 notifications.add({
                     type: "warning",
                     message: "An error has occurred, the user has been created but will not work",
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 console.error("Error deleting errored user:\n", error);
                 return { response: null, error: error };
@@ -520,9 +520,9 @@ class UsersCreateController extends Component {
                             {
                                 id: "publisher",
                                 value: "publisher",
-                                label: "Publisher"
+                                label: "Publisher",
                             },
-                            { id: "viewer", value: "viewer", label: "Viewer" }
+                            { id: "viewer", value: "viewer", label: "Viewer" },
                         ]}
                         groupName="user-type"
                         legend="User type"

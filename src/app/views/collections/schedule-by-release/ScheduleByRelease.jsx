@@ -11,18 +11,18 @@ import notifications from "../../../utilities/notifications";
 
 const propTypes = {
     onClose: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
 };
 
 const columns = [
     {
         width: "9",
-        heading: "Name"
+        heading: "Name",
     },
     {
         width: "3",
-        heading: "Publish date"
-    }
+        heading: "Publish date",
+    },
 ];
 
 export class ScheduleByRelease extends Component {
@@ -40,7 +40,7 @@ export class ScheduleByRelease extends Component {
             releasesPerPage: 10,
             searchSubmitDelay: 300,
             searchQuery: "",
-            selectedRelease: ""
+            selectedRelease: "",
         };
 
         this.searchTimeout = null;
@@ -57,7 +57,7 @@ export class ScheduleByRelease extends Component {
                     numberOfReleases: upcomingReleases.result.numberOfResults,
                     numberOfPages: upcomingReleases.result.paginator ? upcomingReleases.result.paginator.numberOfPages : 1,
                     currentPage: 1,
-                    tableData
+                    tableData,
                 });
             })
             .catch(error => {
@@ -65,14 +65,14 @@ export class ScheduleByRelease extends Component {
                     const notification = {
                         type: "warning",
                         message: "There was a network error whilst getting upcoming releases, please check your connection and try again",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 } else {
                     const notification = {
                         type: "warning",
                         message: "An unexpected error occured whilst trying to get upcoming releases",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 }
@@ -106,8 +106,8 @@ export class ScheduleByRelease extends Component {
                         uri: release.uri,
                         releaseDate: release.description.releaseDate,
                         title,
-                        isProvisional: !release.description.finalised
-                    }
+                        isProvisional: !release.description.finalised,
+                    },
                 };
             });
 
@@ -126,7 +126,7 @@ export class ScheduleByRelease extends Component {
     searchReleases(query) {
         this.setState({
             isFetchingSearchedReleases: true,
-            searchQuery: query
+            searchQuery: query,
         });
 
         releases
@@ -139,7 +139,7 @@ export class ScheduleByRelease extends Component {
                     numberOfPages: searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
                     currentPage: 1,
                     searchQuery: query, // just incase a request takes ages this means the state is true about what query is actually being shown
-                    tableData
+                    tableData,
                 });
             })
             .catch(error => {
@@ -147,14 +147,14 @@ export class ScheduleByRelease extends Component {
                     const notification = {
                         type: "warning",
                         message: "There was a network error whilst getting upcoming releases, please check your connection and try again",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 } else {
                     const notification = {
                         type: "warning",
                         message: "An unexpected error occured whilst trying to get upcoming releases",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 }
@@ -173,7 +173,7 @@ export class ScheduleByRelease extends Component {
                 this.setState(state => ({
                     isFetchingExtraReleases: false,
                     currentPage: state.currentPage + 1,
-                    tableData: [...state.tableData, ...this.mapReleasesToTableRows(upcomingReleases.result.results)]
+                    tableData: [...state.tableData, ...this.mapReleasesToTableRows(upcomingReleases.result.results)],
                 }));
             })
             .catch(error => {
@@ -181,14 +181,14 @@ export class ScheduleByRelease extends Component {
                     const notification = {
                         type: "warning",
                         message: "There was a network error whilst getting more upcoming releases, please check your connection and try again",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 } else {
                     const notification = {
                         type: "warning",
                         message: "An unexpected error occured whilst trying to get more upcoming releases",
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                 }

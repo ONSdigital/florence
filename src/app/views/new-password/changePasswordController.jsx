@@ -8,7 +8,7 @@ const propTypes = {
     requestPasswordChange: PropTypes.func,
     status: PropTypes.string,
     heading: PropTypes.string,
-    buttonText: PropTypes.string
+    buttonText: PropTypes.string,
 };
 
 export class ChangePasswordController extends Component {
@@ -18,7 +18,7 @@ export class ChangePasswordController extends Component {
         super(props);
         this.state = {
             password: "",
-            showInputError: false
+            showInputError: false,
         };
     }
 
@@ -37,7 +37,7 @@ export class ChangePasswordController extends Component {
         this.passwordIsValid = isValid;
         this.setState({
             password: password,
-            showInputError: showInputError
+            showInputError: showInputError,
         });
     };
 
@@ -48,7 +48,7 @@ export class ChangePasswordController extends Component {
             heading: this.props.heading,
             buttonText: this.props.buttonText,
             showInputError: this.state.showInputError,
-            isSubmitting: this.props.status === status.SUBMITTING_PASSWORD_CHANGE
+            isSubmitting: this.props.status === status.SUBMITTING_PASSWORD_CHANGE,
         };
         if (this.props.status === status.COMPLETED || this.props.status === status.SUBMITTED_PASSWORD_CHANGE) {
             return this.props.changeConformation;

@@ -5,43 +5,43 @@ import { mount, shallow } from "enzyme";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: function() {
+        send: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/api-clients/user.js", () => {
     return {
-        setUserState: function() {
+        setUserState: function () {
             // do nothing
         },
-        logOut: function() {
+        logOut: function () {
             // do nothing
-        }
+        },
     };
 });
 jest.mock("../../utilities/redirectToMainScreen.js", () => {
     return {
-        redirectToMainScreen: function() {
+        redirectToMainScreen: function () {
             // do nothing
-        }
+        },
     };
 });
 
 test("Check redirect doesn't work if not authenticated", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
-        isAuthenticated: false
+        isAuthenticated: false,
     };
     const component = mount(<LoginController {...props} />);
     expect(component.find("h1").text()).toBe("Sign in to your Florence account");
@@ -49,9 +49,9 @@ test("Check redirect doesn't work if not authenticated", () => {
 
 test("Does password change form appear on state change", () => {
     const props = {
-        dispatch: function() {},
+        dispatch: function () {},
         rootPath: "/florence",
-        isAuthenticated: false
+        isAuthenticated: false,
     };
     const component = mount(<LoginController {...props} />);
     expect(component.find(".modal__overlay").length).toBe(0);

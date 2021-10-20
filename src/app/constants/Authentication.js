@@ -6,5 +6,5 @@ export const status = {
     WAITING_USER_NEW_PASSWORD: "waiting user new password",
     SUBMITTING_PASSWORD_CHANGE: "submitting password change",
     SUBMITTED_PASSWORD_CHANGE: "submitted password change",
-    COMPLETED: "completed"
+    COMPLETED: "completed",
 };

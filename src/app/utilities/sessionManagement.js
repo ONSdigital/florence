@@ -106,7 +106,7 @@ export default class sessionManagement {
                 type: "warning",
                 message: errorCodes.REFRESH_SESSION_ERROR,
                 isDismissable: true,
-                autoDismiss: 20000
+                autoDismiss: 20000,
             };
             notifications.add(notification);
         };

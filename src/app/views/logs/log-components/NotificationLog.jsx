@@ -11,8 +11,8 @@ const propTypes = {
     instanceID: PropTypes.string.isRequired,
     payload: PropTypes.shape({
         type: PropTypes.string || PropTypes.number,
-        message: PropTypes.string
-    })
+        message: PropTypes.string,
+    }),
 };
 
 class NotificationLog extends Component {

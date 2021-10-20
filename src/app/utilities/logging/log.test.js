@@ -5,13 +5,13 @@ console.error = () => {};
 
 jest.mock("../websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
 jest.mock("../storage", () => {
     return {
-        add: jest.fn(() => {})
+        add: jest.fn(() => {}),
     };
 });
 
@@ -26,7 +26,7 @@ const simpleLogEvent = {
     created_at: currentDateISO,
     namespace: "florence",
     client_loaded_at: currentDateISO,
-    severity: 3
+    severity: 3,
 };
 
 const httpLogEvent = {
@@ -41,15 +41,15 @@ const httpLogEvent = {
         status_code: 200,
         started_at: "2017-10-06T13:45:28.975Z",
         ended_at: "2017-10-06T13:45:33.975Z",
-        duration: 5000
-    }
+        duration: 5000,
+    },
 };
 
 const mockError = new Error("Test error");
 const mockSplitStackTrace = mockError.stack.split("\n");
 const mockStackTrace = mockSplitStackTrace.map(line => {
     return {
-        line: line.trim()
+        line: line.trim(),
     };
 });
 
@@ -58,21 +58,21 @@ const errorLogEvent = {
     severity: 1,
     error: {
         message: "Test error",
-        stack_trace: mockStackTrace
-    }
+        stack_trace: mockStackTrace,
+    },
 };
 
 const dataLogEvent = {
     ...simpleLogEvent,
     data: {
-        test: "test"
-    }
+        test: "test",
+    },
 };
 
 const complexLogEvent = {
     ...httpLogEvent,
     ...dataLogEvent,
-    ...errorLogEvent
+    ...errorLogEvent,
 };
 
 describe("calling log.event", () => {
@@ -121,20 +121,20 @@ describe("construct error event", () => {
     it("returns correct error object", () => {
         expect(constructEventError(mockError)).toMatchObject({
             message: "Test error",
-            stack_trace: mockStackTrace
+            stack_trace: mockStackTrace,
         });
     });
 
     it("returns raw type if error on split", () => {
         const mockError = {
             message: "Test error",
-            stack: { test: "test" }
+            stack: { test: "test" },
         };
         expect(constructEventError(mockError)).toMatchObject({
             message: "Test error",
             stack_trace: {
-                test: "test"
-            }
+                test: "test",
+            },
         });
     });
 });

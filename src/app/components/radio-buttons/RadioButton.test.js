@@ -10,7 +10,7 @@ const defaultProps = {
     group: "test-group",
     onChange: () => {},
     checked: false,
-    inline: false
+    inline: false,
 };
 
 test("Radio button matches stored snapshot", () => {
@@ -29,7 +29,7 @@ test("Handle change passes correct value to parent onChange method", () => {
     expect(passedToParent).toMatchObject({
         id: "test-radio",
         checked: true,
-        value: "test-value"
+        value: "test-value",
     });
 });
 

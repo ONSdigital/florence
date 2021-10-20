@@ -6,13 +6,13 @@ const propTypes = {
     contents: PropTypes.arrayOf(
         PropTypes.shape({
             title: PropTypes.string,
-            id: PropTypes.string
+            id: PropTypes.string,
         })
     ),
     type: PropTypes.string.isRequired,
     onEdit: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 class CardList extends Component {

@@ -9,21 +9,21 @@ console.error = () => {};
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../utilities/log", () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        add: function () {},
+        eventTypes: {},
     };
 });
 
 jest.mock("../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -59,14 +59,14 @@ jest.mock("../../utilities/api-clients/collections", () => {
         },
         removeDatasetVersion: () => {
             return Promise.resolve();
-        }
+        },
     };
 });
 
 jest.mock("./mapper/collectionMapper.js", () => ({
     collectionResponseToState: jest.fn(collection => ({
-        id: collection.id
-    }))
+        id: collection.id,
+    })),
 }));
 
 const mockedAllCollections = [
@@ -79,7 +79,7 @@ const mockedAllCollections = [
         id: "anothercollection-91bc818cff240fa546c84b0cc4c3d32f0667de3068832485e254c17655d5b4ad",
         name: "Another collection",
         type: "manual",
-        teams: []
+        teams: [],
     },
     {
         approvalStatus: "IN_PROGRESS",
@@ -90,7 +90,7 @@ const mockedAllCollections = [
         id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
         name: "asdasdasd",
         type: "manual",
-        teams: []
+        teams: [],
     },
     {
         approvalStatus: "IN_PROGRESS",
@@ -101,7 +101,7 @@ const mockedAllCollections = [
         id: "test-collection-12345",
         name: "Test collection",
         type: "manual",
-        teams: ["cpi", "cpih"]
+        teams: ["cpi", "cpih"],
     },
     {
         approvalStatus: "ERROR",
@@ -112,7 +112,7 @@ const mockedAllCollections = [
         id: "different-collection-12345",
         name: "Test",
         type: "manual",
-        teams: ["Team 2"]
+        teams: ["Team 2"],
     },
     {
         approvalStatus: "COMPLETE",
@@ -123,8 +123,8 @@ const mockedAllCollections = [
         id: "test-sau39393uyqha8aw8y3n3",
         name: "Complete collection",
         type: "manual",
-        teams: ["Team 2"]
-    }
+        teams: ["Team 2"],
+    },
 ];
 
 let dispatchedActions = [];
@@ -136,14 +136,14 @@ const defaultProps = {
     rootPath: "/florence",
     params: {},
     user: {
-        userType: "ADMIN"
+        userType: "ADMIN",
     },
     collections: [],
     activeCollection: null,
     collectionsToDelete: {},
     routes: [{}],
     enableDatasetImport: false,
-    enableHomepagePublishing: false
+    enableHomepagePublishing: false,
 };
 
 const component = shallow(<CollectionsController {...defaultProps} />);
@@ -198,8 +198,8 @@ describe("On unmount of the collections screen", () => {
         component.setProps({
             activeCollection: {
                 id: "test-collection-12345",
-                name: "Test collection"
-            }
+                name: "Test collection",
+            },
         });
         component.instance().componentWillUnmount();
         expect(dispatchedActions[0].type).toBe(EMPTY_ACTIVE_COLLECTION);
@@ -230,7 +230,7 @@ describe("On creation of a collection", () => {
         publishComplete: false,
         teams: [],
         timeseriesImportFiles: [],
-        type: "manual"
+        type: "manual",
     };
 
     it("adds the new collection to the list of all collections in state", () => {
@@ -259,7 +259,7 @@ describe("On creation of a collection", () => {
 describe("Marking a collection to be deleted from list of collections", () => {
     it("removes the collection from state", () => {
         component.setProps({
-            collectionsToDelete: { "test-collection-12345": null }
+            collectionsToDelete: { "test-collection-12345": null },
         });
         expect(dispatchedActions[0].type).toBe(DELETE_COLLECTION_FROM_ALL_COLLECTIONS);
         expect(dispatchedActions[0].collectionID).toBe("test-collection-12345");
@@ -269,7 +269,7 @@ describe("Marking a collection to be deleted from list of collections", () => {
         component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingCollections")).toBe(true);
         component.setProps({
-            collectionsToDelete: { "test-collection-12345": null }
+            collectionsToDelete: { "test-collection-12345": null },
         });
         expect(dispatchedActions).toMatchObject([]);
     });
@@ -277,26 +277,26 @@ describe("Marking a collection to be deleted from list of collections", () => {
 
 describe("mapStateToProps function", () => {
     const state = {
+        user: { userType: "ADMIN" },
         state: {
-            user: { userType: "ADMIN" },
             collections: {
                 all: [{ id: "an-example-collection-12345" }, { id: "deleted-example-collection-12345" }],
                 active: { id: "an-example-collection-12345" },
-                toDelete: { "deleted-example-collection-12345": null }
+                toDelete: { "deleted-example-collection-12345": null },
             },
             rootPath: "/florence",
             config: {
                 enableDatasetImport: false,
-                enableHomepagePublishing: false
-            }
-        }
+                enableHomepagePublishing: false,
+            },
+        },
     };
 
     const mappedProps = mapStateToProps(state);
 
     it("returns the 'user' object", () => {
         expect(mappedProps.user).toMatchObject({
-            userType: "ADMIN"
+            userType: "ADMIN",
         });
     });
 

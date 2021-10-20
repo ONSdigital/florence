@@ -15,7 +15,7 @@ const propTypes = {
     onUsersSearch: PropTypes.func,
     onMembersChange: PropTypes.func.isRequired,
     onDone: PropTypes.func.isRequired,
-    searchTerm: PropTypes.string
+    searchTerm: PropTypes.string,
 };
 
 class TeamEdit extends Component {

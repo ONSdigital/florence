@@ -15,18 +15,18 @@ jest.mock("uuid/v4", () => () => {
 
 jest.mock("../../../utilities/url", () => {
     return {
-        resolve: function() {
+        resolve: function () {
             return "test";
         },
-        parent: function() {}
+        parent: function () {},
     };
 });
 
 jest.mock("../../../utilities/date", () => {
     return {
-        format: function() {
+        format: function () {
             return "a formatted date";
-        }
+        },
     };
 });
 
@@ -34,39 +34,39 @@ jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {
             //
-        })
+        }),
     };
 });
 
 jest.mock("../../../utilities/http", () => {
     return {
-        resolve: function() {
+        resolve: function () {
             //
-        }
+        },
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function() {
+        add: function () {
             //
         },
-        eventTypes: {}
+        eventTypes: {},
     };
 });
 
 jest.mock("../../../utilities/api-clients/recipes", () => ({
     getAll: jest.fn(() => {
         return Promise.resolve({
-            items: []
+            items: [],
         });
-    })
+    }),
 }));
 
 jest.mock("../../../utilities/api-clients/datasets", () => ({
     get: jest.fn(() => {
         return Promise.resolve({
-            next: {}
+            next: {},
         });
     }),
     getVersion: jest.fn(() => {
@@ -74,11 +74,11 @@ jest.mock("../../../utilities/api-clients/datasets", () => ({
     }),
     getInstance: jest.fn(() => {
         return Promise.resolve({});
-    })
+    }),
 }));
 
 const mockEvent = {
-    preventDefault: function() {}
+    preventDefault: function () {},
 };
 
 const exampleDataset = {
@@ -88,15 +88,15 @@ const exampleDataset = {
         license: "Open Government License",
         links: {
             editions: {
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions"
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions",
             },
             latest_version: {
                 id: "efcc4581-30b1-463b-b85b-2e2d85c4918b",
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1"
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1",
             },
             self: {
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-            }
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+            },
         },
         next_release: "pudding",
         keywords: ["keyword1", "keyword2"],
@@ -105,14 +105,14 @@ const exampleDataset = {
             {
                 email: "test@email.com",
                 name: "foo bar",
-                telephone: "01633 123456"
-            }
+                telephone: "01633 123456",
+            },
         ],
         release_frequency: "Monthly",
         state: "published",
         title: "CPI",
-        uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices"
-    }
+        uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices",
+    },
 };
 
 const exampleInstance = {
@@ -123,22 +123,22 @@ const exampleInstance = {
             href: "http://localhost:22400/code-lists/64d384f1-ea3b-445c-8fb8-aa453f96e58a",
             id: "64d384f1-ea3b-445c-8fb8-aa453f96e58a",
             name: "time",
-            label: ""
+            label: "",
         },
         {
             description: "dsdsdsd",
             href: "http://localhost:22400/code-lists/65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
             id: "65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
             name: "geography",
-            label: ""
+            label: "",
         },
         {
             description: "dssdsds",
             href: "http://localhost:22400/code-lists/e44de4c4-d39e-4e2f-942b-3ca10584d078",
             id: "e44de4c4-d39e-4e2f-942b-3ca10584d078",
             name: "aggregate",
-            label: ""
-        }
+            label: "",
+        },
     ],
     state: "associated",
     edition: "time-series",
@@ -146,22 +146,22 @@ const exampleInstance = {
         {
             date: "21/10/2018",
             description: "This an alert",
-            type: "correction"
-        }
+            type: "correction",
+        },
     ],
     latest_changes: [
         {
             description: "Big change!",
             name: "Test change",
-            type: "summary of changes"
-        }
+            type: "summary of changes",
+        },
     ],
     version: 1,
-    collection_id: "acceptancetestcollection-e329dda6d14eb3a280eb8536230ebdc1ee48751bccc4df87ee12059bcceae0e8"
+    collection_id: "acceptancetestcollection-e329dda6d14eb3a280eb8536230ebdc1ee48751bccc4df87ee12059bcceae0e8",
 };
 
 const defaultProps = {
-    dispatch: function() {},
+    dispatch: function () {},
     dataset: { ...exampleDataset.current },
     instance: { ...exampleInstance },
     version: { ...exampleInstance },
@@ -170,22 +170,22 @@ const defaultProps = {
             output_instances: [
                 {
                     editions: ["time-series", "another-type"],
-                    dataset_id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-                }
-            ]
-        }
+                    dataset_id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+                },
+            ],
+        },
     ],
     params: {
         datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
         version: "1",
-        edition: "time-series"
+        edition: "time-series",
     },
     location: {
-        query: { collection: "a-collection-id" }
+        query: { collection: "a-collection-id" },
     },
     router: {
-        listenBefore: () => {}
-    }
+        listenBefore: () => {},
+    },
 };
 
 test("Dataset version metadata page matches stored snapshot", () => {
@@ -220,7 +220,7 @@ test("Handler for removing a summary of changes updates state correctly", async 
         key: "12345",
         date: exampleInstance.alerts[0].date,
         description: exampleInstance.alerts[0].description,
-        type: exampleInstance.alerts[0].type
+        type: exampleInstance.alerts[0].type,
     });
     await component.instance().handleDeleteRelatedClick("alerts", "12345");
     await component.update();
@@ -238,7 +238,7 @@ test("Latest changes are set in state correctly on mount", async () => {
             key: "12345",
             name: exampleInstance.latest_changes[0].name,
             description: exampleInstance.latest_changes[0].description,
-            type: exampleInstance.latest_changes[0].type
+            type: exampleInstance.latest_changes[0].type,
         });
     });
 });
@@ -248,7 +248,7 @@ test("Available editions maps correctly to select element", async () => {
 
     const validSelectContents = [
         { id: "time-series", name: "time-series" },
-        { id: "another-type", name: "another-type" }
+        { id: "another-type", name: "another-type" },
     ];
     await component.instance().UNSAFE_componentWillMount();
     await component.update();
@@ -294,14 +294,14 @@ test("Input errors are added on submit and then removed on change of that input"
     const mockTitleEvent = {
         target: {
             value: "Some free text",
-            name: "add-related-content-title"
-        }
+            name: "add-related-content-title",
+        },
     };
     const mockDescEvent = {
         target: {
             value: "Some description",
-            name: "add-related-content-desc"
-        }
+            name: "add-related-content-desc",
+        },
     };
 
     expect(component.state("titleInput")).toBe("");
@@ -354,7 +354,7 @@ test("Alert items map to card element correctly", async () => {
     component.state("alerts").forEach((alert, index) => {
         expect(cardProps[index]).toMatchObject({
             title: "a formatted date",
-            id: alert.key
+            id: alert.key,
         });
     });
 });
@@ -370,7 +370,7 @@ test("Dimensions map correctly to input elements", async () => {
 
     component.state("dimensions").forEach((dimension, index) => {
         expect(dimensionNames[index]).toMatchObject({
-            id: dimension.id
+            id: dimension.id,
         });
     });
 });
@@ -382,8 +382,8 @@ test("Changing the dimension title value updates the dimension label in state", 
         target: {
             value: "New label",
             name: "dimension-name",
-            id: "time"
-        }
+            id: "time",
+        },
     };
     const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
     expect(component.state("dimensions")[0].label).toBe("");

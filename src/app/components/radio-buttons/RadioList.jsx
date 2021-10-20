@@ -7,7 +7,7 @@ const propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             value: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired
+            label: PropTypes.string.isRequired,
         })
     ).isRequired,
     legend: PropTypes.string,
@@ -15,7 +15,7 @@ const propTypes = {
     onChange: PropTypes.func,
     selectedValue: PropTypes.string,
     disabled: PropTypes.bool,
-    showLoadingState: PropTypes.bool
+    showLoadingState: PropTypes.bool,
 };
 
 export default class RadioList extends Component {

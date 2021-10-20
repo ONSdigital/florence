@@ -10,8 +10,8 @@ const propTypes = {
         body: PropTypes.oneOfType([
             PropTypes.string,
             PropTypes.element,
-            PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType]))
-        ])
+            PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element, PropTypes.elementType])),
+        ]),
     }),
     onSubmit: PropTypes.func,
     waitingResponse: PropTypes.bool,
@@ -20,8 +20,8 @@ const propTypes = {
         label: PropTypes.string,
         type: PropTypes.string,
         onChange: PropTypes.func,
-        error: PropTypes.string
-    })
+        error: PropTypes.string,
+    }),
 };
 
 const ForgottenPasswordRequest = props => {

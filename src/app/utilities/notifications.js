@@ -29,7 +29,7 @@ export default class notifications {
             id: uuid(),
             buttons: notification.buttons || [],
             isVisible: false,
-            isDismissable: notification.isDismissable != null ? notification.isDismissable : true
+            isDismissable: notification.isDismissable != null ? notification.isDismissable : true,
         };
 
         if (notification.autoDismiss && notification.autoDismiss > 0) {
@@ -42,9 +42,9 @@ export default class notifications {
         if (config.isDismissable) {
             config.buttons.push({
                 text: "Close",
-                onClick: function() {
+                onClick: function () {
                     notifications.remove(config.id);
-                }
+                },
             });
         }
 

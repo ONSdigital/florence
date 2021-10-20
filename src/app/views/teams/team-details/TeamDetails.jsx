@@ -10,7 +10,7 @@ const propTypes = {
     onCancel: PropTypes.func.isRequired,
     onDelete: PropTypes.func.isRequired,
     isShowingLoader: PropTypes.bool,
-    isReadOnly: PropTypes.bool
+    isReadOnly: PropTypes.bool,
 };
 
 class TeamDetails extends Component {

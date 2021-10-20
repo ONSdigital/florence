@@ -8,13 +8,13 @@ console.error = () => {};
 jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -31,63 +31,63 @@ jest.mock("../../../utilities/api-clients/user", () => {
         }),
         remove: jest.fn(() => {
             return Promise.resolve({});
-        })
+        }),
     };
 });
 
 const defaultProps = {
-    onCreateSuccess: jest.fn(() => {})
+    onCreateSuccess: jest.fn(() => {}),
 };
 
 const defaultState = {
     newUser: {
         username: {
             value: "",
-            error: ""
+            error: "",
         },
         email: {
             value: "",
-            error: ""
+            error: "",
         },
         password: {
             value: "",
-            error: ""
+            error: "",
         },
-        type: "viewer"
+        type: "viewer",
     },
-    isSubmitting: false
+    isSubmitting: false,
 };
 
 const testNewUser = {
     username: {
         value: "test-user",
-        error: ""
+        error: "",
     },
     email: {
         value: "test-email@email.com",
-        error: ""
+        error: "",
     },
     password: {
         value: "test-password",
-        error: ""
+        error: "",
     },
-    type: "viewer"
+    type: "viewer",
 };
 
 const testNewAdminUser = {
     username: {
         value: "test-user",
-        error: ""
+        error: "",
     },
     email: {
         value: "test-admin-email@email.com",
-        error: ""
+        error: "",
     },
     password: {
         value: "test-password",
-        error: ""
+        error: "",
     },
-    type: "admin"
+    type: "admin",
 };
 
 // create a copy
@@ -166,8 +166,8 @@ describe("Handle submit", () => {
             user.create.mockImplementationOnce(() =>
                 Promise.reject({
                     body: {
-                        message: "mock message"
-                    }
+                        message: "mock message",
+                    },
                 })
             );
         });
@@ -217,7 +217,7 @@ describe("Create new user", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         user.setPassword.mockImplementationOnce(() => Promise.resolve("Password updated for mock@email.test"));
@@ -230,8 +230,8 @@ describe("Create new user", () => {
         user.create.mockImplementationOnce(() =>
             Promise.reject({
                 body: {
-                    message: "mock message"
-                }
+                    message: "mock message",
+                },
             })
         );
         const result = await component.instance().createNewUser(testNewUser);
@@ -245,14 +245,14 @@ describe("Create new user", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         user.setPassword.mockImplementationOnce(() =>
             Promise.reject({
                 body: {
-                    message: "mock message"
-                }
+                    message: "mock message",
+                },
             })
         );
         expect(user.remove.mock.calls.length).toBe(0);
@@ -268,15 +268,15 @@ describe("Create new user", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         user.setPassword.mockImplementationOnce(() => Promise.resolve("Password updated for mock@email.test"));
         user.setPermissions.mockImplementationOnce(() =>
             Promise.reject({
                 body: {
-                    message: "mock message"
-                }
+                    message: "mock message",
+                },
             })
         );
         expect(user.remove.mock.calls.length).toBe(0);
@@ -294,12 +294,12 @@ describe("Posting new user details", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         const postNewDetailsBody = {
             name: testNewUser.username.value,
-            email: testNewUser.email.value
+            email: testNewUser.email.value,
         };
         const response = await component.instance().postNewUserDetails(postNewDetailsBody);
         expect(response.response).toBeTruthy();
@@ -308,7 +308,7 @@ describe("Posting new user details", () => {
     it("returns error on failure", async () => {
         const postNewDetailsBody = {
             name: testNewUser.username.value,
-            email: testNewUser.email.value
+            email: testNewUser.email.value,
         };
         user.create.mockImplementationOnce(() => Promise.reject({}));
         const response = await component.instance().postNewUserDetails(postNewDetailsBody);
@@ -324,12 +324,12 @@ describe("Posting new user password", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         const postNewPasswordBody = {
             email: testNewUser.email.value,
-            password: testNewUser.password.value
+            password: testNewUser.password.value,
         };
         const response = await component.instance().postNewUserDetails(postNewPasswordBody);
         expect(response.response).toBeTruthy();
@@ -342,12 +342,12 @@ describe("Posting new user password", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         const postNewPasswordBody = {
             email: testNewUser.email.value,
-            password: testNewUser.password.value
+            password: testNewUser.password.value,
         };
         user.setPassword.mockImplementationOnce(() => Promise.reject({}));
         const response = await component.instance().postNewUserDetails(postNewPasswordBody);
@@ -364,13 +364,13 @@ describe("Posting new user permission", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         const postNewPermissionsBody = {
             email: testNewUser.email.value,
             admin: false,
-            editor: true
+            editor: true,
         };
         const response = await component.instance().postNewUserDetails(postNewPermissionsBody);
         expect(response.response).toBeTruthy();
@@ -383,13 +383,13 @@ describe("Posting new user permission", () => {
                 inactive: true,
                 lastAdmin: "mockAdmin@email.test",
                 name: "mockName",
-                temporaryPassword: true
+                temporaryPassword: true,
             })
         );
         const postNewPermissionsBody = {
             email: testNewUser.email.value,
             admin: false,
-            editor: true
+            editor: true,
         };
         user.setPassword.mockImplementationOnce(() => Promise.reject({}));
         const response = await component.instance().postNewUserDetails(postNewPermissionsBody);

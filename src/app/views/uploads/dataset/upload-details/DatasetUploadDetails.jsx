@@ -17,18 +17,18 @@ const propTypes = {
     recipes: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            alias: PropTypes.string.isRequired
+            alias: PropTypes.string.isRequired,
         })
     ),
     jobs: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            recipe: PropTypes.string.isRequired
+            recipe: PropTypes.string.isRequired,
         })
     ),
     params: PropTypes.shape({
-        jobID: PropTypes.string
-    }).isRequired
+        jobID: PropTypes.string,
+    }).isRequired,
 };
 
 class DatasetUploadController extends Component {
@@ -39,7 +39,7 @@ class DatasetUploadController extends Component {
             isFetchingDataset: false,
             loadingPageForFirstTime: false,
             activeDataset: null,
-            isCantabular: false
+            isCantabular: false,
         };
 
         let intervalID = 0;
@@ -61,7 +61,7 @@ class DatasetUploadController extends Component {
                 const notification = {
                     type: "neutral",
                     message: "This dataset was not recognised, so you've been redirected to the main screen",
-                    isDismissable: true
+                    isDismissable: true,
                 };
                 notifications.add(notification);
                 this.props.dispatch(push(url.resolve("../")));
@@ -89,7 +89,7 @@ class DatasetUploadController extends Component {
             datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    dimensions: []
+                    dimensions: [],
                 };
                 response.map(dimension => {
                     activeDataset.dimensions.push(dimension.name);
@@ -104,7 +104,7 @@ class DatasetUploadController extends Component {
         this.setState(
             {
                 isFetchingDataset: true,
-                loadingPageForFirstTime: true
+                loadingPageForFirstTime: true,
             },
             () => {
                 this.getUploadStatus();
@@ -131,7 +131,7 @@ class DatasetUploadController extends Component {
                 APIResponses.recipe = recipe;
                 const activeDataset = this.mapAPIResponsesToState({
                     recipe: APIResponses.recipe,
-                    job: APIResponses.job
+                    job: APIResponses.job,
                 });
                 this.setState({ activeDataset, isFetchingDataset: false, loadingPageForFirstTime: false });
             })
@@ -143,7 +143,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "neutral",
                             message: `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(url.resolve("../")));
@@ -153,7 +153,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get this job.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -163,7 +163,7 @@ class DatasetUploadController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get this job. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -172,7 +172,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get this job.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -181,7 +181,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get this job.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -198,10 +198,10 @@ class DatasetUploadController extends Component {
                 target: "/upload",
                 chunkSize: 5 * 1024 * 1024,
                 query: {
-                    aliasName: ""
+                    aliasName: "",
                 },
                 forceChunkSize: true,
-                simultaneousUploads: 1
+                simultaneousUploads: 1,
             });
             r.assignBrowse(input);
             r.assignDrop(input);
@@ -218,7 +218,7 @@ class DatasetUploadController extends Component {
                 });
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    files
+                    files,
                 };
                 this.setState({ activeDataset });
             });
@@ -232,7 +232,7 @@ class DatasetUploadController extends Component {
                 });
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    files
+                    files,
                 };
                 this.setState({ activeDataset });
             });
@@ -245,7 +245,7 @@ class DatasetUploadController extends Component {
                 });
                 const activeDataset = {
                     ...this.state.activeDataset,
-                    files
+                    files,
                 };
 
                 console.error("Error uploading file to server");
@@ -264,7 +264,7 @@ class DatasetUploadController extends Component {
                         });
                         const activeDataset = {
                             ...this.state.activeDataset,
-                            files
+                            files,
                         };
 
                         this.setState({ activeDataset });
@@ -280,7 +280,7 @@ class DatasetUploadController extends Component {
                         });
                         const activeDataset = {
                             ...this.state.activeDataset,
-                            files
+                            files,
                         };
 
                         console.error("Error fetching uploaded file's URL: ", error);
@@ -307,7 +307,7 @@ class DatasetUploadController extends Component {
             files = recipeAPIResponse.files.map(recipeFile => {
                 return {
                     alias_name: recipeFile.description,
-                    url: fileURLs.get(recipeFile.description)
+                    url: fileURLs.get(recipeFile.description),
                 };
             });
         }
@@ -336,7 +336,7 @@ class DatasetUploadController extends Component {
             instanceID: jobAPIResponse.links.instances ? jobAPIResponse.links.instances[0].id : "",
             files,
             editionsList,
-            editionOverride
+            editionOverride,
         };
     }
 
@@ -351,7 +351,7 @@ class DatasetUploadController extends Component {
                             type: "warning",
                             message:
                                 "There was an error when trying to add this file to your job. Please fix any errors and attempt to re-upload it.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -360,7 +360,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "neutral",
                             message: "This job was not recognised, another user may have deleted it.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -369,7 +369,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error occurred because this file was too big.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -378,7 +378,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error occurred because this file-type is not supported.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -387,7 +387,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to upload this file.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -397,7 +397,7 @@ class DatasetUploadController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to upload this file. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -406,7 +406,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to upload this file.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -415,7 +415,7 @@ class DatasetUploadController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to upload this file.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -449,7 +449,7 @@ class DatasetUploadController extends Component {
             });
             const activeDataset = {
                 ...this.state.activeDataset,
-                files
+                files,
             };
 
             this.setState({ activeDataset });
@@ -469,7 +469,7 @@ class DatasetUploadController extends Component {
         });
         const activeDataset = {
             ...this.state.activeDataset,
-            files
+            files,
         };
 
         this.setState({ activeDataset });
@@ -655,7 +655,7 @@ DatasetUploadController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
-        jobs: state.state.datasets.jobs
+        jobs: state.state.datasets.jobs,
     };
 }
 

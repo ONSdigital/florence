@@ -4,11 +4,11 @@ import PropTypes from "prop-types";
 const propTypes = {
     field: PropTypes.shape({
         simpleListHeading: PropTypes.string.isRequired,
-        simpleListDescription: PropTypes.string
+        simpleListDescription: PropTypes.string,
     }),
     handleEditClick: PropTypes.func.isRequired,
     handleDeleteClick: PropTypes.func.isRequired,
-    disabled: PropTypes.bool.isRequired
+    disabled: PropTypes.bool.isRequired,
 };
 
 export default class SimpleEditableListItemItem extends Component {
