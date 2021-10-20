@@ -17,13 +17,15 @@
 
   &--red {
     //#F8F2F3
-    background-color: tint(white, $ruby-red, 70);
+    background-color: tint($ruby-red, 70);
     color: $tawny-port;
 
   }
 
   &__icon {
     vertical-align: middle;
+    width: 1em;
+    height: 1em;
   }
 
   &__text {
