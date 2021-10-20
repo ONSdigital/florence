@@ -1,10 +1,10 @@
 import React from "react";
 import ContentActionBar from "./ContentActionBar.jsx";
 import renderer from "react-test-renderer";
-import { mount } from "enzyme";
+import {mount} from "enzyme";
 
 describe("ContentActionBar", () => {
-    describe("is created stuck at bottom with a single action button, cancel and with unsaved changes", () => {
+    describe("with a set of props passed to it", () => {
         const contentActionBarProps = {
             buttons: [
                 {
@@ -21,7 +21,7 @@ describe("ContentActionBar", () => {
         };
 
         const component = mount(<ContentActionBar {...contentActionBarProps} />);
-        it("should display 2 buttons, be attached at the bottom and have a warning that there are unsaved changes", () => {
+        it("should display relevant elements and classes based on the props", () => {
             expect(component.find(".content-action-bar--bottom-fixed").length).toBe(1);
             expect(component.find(".btn").length).toBe(2);
             expect(component.find("#btn-cancel").exists()).toBe(true);
@@ -30,10 +30,12 @@ describe("ContentActionBar", () => {
             expect(fooButton.hasClass("btn--positive")).toEqual(true);
             expect(component.find(".content-action-bar__warn").exists()).toBe(true);
         });
-        const componentForSnapshot = renderer.create(<ContentActionBar {...contentActionBarProps} />);
-        expect(componentForSnapshot.toJSON()).toMatchSnapshot();
+        it("matches the snapshot", () => {
+            const componentForSnapshot = renderer.create(<ContentActionBar {...contentActionBarProps} />);
+            expect(componentForSnapshot.toJSON()).toMatchSnapshot();
+        });
     });
-    describe("is created floating with two links", () => {
+    describe("with a different set of props passed to it", () => {
         const contentActionBarProps = {
             buttons: [
                 {
@@ -55,7 +57,7 @@ describe("ContentActionBar", () => {
             unsavedChanges: false
         };
         const component = mount(<ContentActionBar {...contentActionBarProps} />);
-        it("should display 2 anchors and be floating", () => {
+        it("should display different elements and props", () => {
             expect(component.find(".content-action-bar--bottom-fixed").length).toBe(0);
             expect(component.find(".btn").length).toBe(2);
             expect(component.find("a").length).toBe(2);
@@ -69,7 +71,9 @@ describe("ContentActionBar", () => {
             expect(component.find("#baz-id").exists()).toBe(true);
             expect(component.find(".content-action-bar__warn").exists()).toBe(false);
         });
-        const componentForSnapshot = renderer.create(<ContentActionBar {...contentActionBarProps} />);
-        expect(componentForSnapshot.toJSON()).toMatchSnapshot();
+        it("matches the snapshot", () => {
+            const componentForSnapshot = renderer.create(<ContentActionBar {...contentActionBarProps} />);
+            expect(componentForSnapshot.toJSON()).toMatchSnapshot();
+        })
     });
 });
