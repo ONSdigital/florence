@@ -4,7 +4,7 @@ import { store } from "../config/store";
 import log from "./logging/log";
 
 import uuid from "uuid/v4";
-import CrossIcon from "../components/icons/CrossIcon";
+import Cross from "../components/icons/Cross";
 
 export default class notifications {
     /**
@@ -44,7 +44,7 @@ export default class notifications {
         if (config.isDismissable) {
             config.buttons.push({
                 text: "Hide",
-                icon: <CrossIcon />,
+                icon: <Cross />,
                 onClick: function() {
                     notifications.remove(config.id);
                 },
