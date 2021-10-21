@@ -25,7 +25,7 @@ NotificationItem.propTypes = {
         PropTypes.shape({
             onClick: PropTypes.func.isRequired,
             text: PropTypes.string.isRequired,
-            icon: PropTypes.element
+            icon: PropTypes.element,
         })
     ),
 };

@@ -44,8 +44,8 @@ export default class notifications {
         if (config.isDismissable) {
             config.buttons.push({
                 text: "Hide",
-                icon: <Cross />,
-                onClick: function() {
+                icon: <Cross classes="svg-icon--hide-notification" ariaLabel="Hide icon" fill="#FFFFFF" viewBox="0 0 14 14" />,
+                onClick: function () {
                     notifications.remove(config.id);
                 },
             });

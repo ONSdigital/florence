@@ -5,14 +5,7 @@ const propTypes = {
     classes: PropTypes.string,
     ariaLabel: PropTypes.string,
     fill: PropTypes.string,
-    viewBox: PropTypes.string
-};
-
-const defaultProps = {
-    classes: "svg-icon--hide-notification",
-    ariaLabel: "Hide icon",
-    fill: "#FFFFFF",
-    viewBox: "0 0 14 14"
+    viewBox: PropTypes.string,
 };
 
 const Cross = props => {
@@ -24,6 +17,5 @@ const Cross = props => {
 };
 
 Cross.propTypes = propTypes;
-Cross.defaultProps = defaultProps;
 
 export default Cross;
