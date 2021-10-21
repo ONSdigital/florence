@@ -1,9 +1,10 @@
 import React, { Component, useEffect, useState } from "react";
 import { hasValidAuthToken } from "../../utilities/hasValidAuthToken";
 import log from "../../utilities/logging/log";
-import user from "../../utilities/api-clients/user";
-import ping from "../../utilities/api-clients/ping";
 import notifications from "../../utilities/notifications";
+import ping from "../../utilities/api-clients/ping";
+import sessionManagement from "../../utilities/sessionManagement";
+import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 
@@ -50,7 +51,18 @@ const Layout = props => {
             }
             setIsCheckingAuthentication(false);
         });
+
+        if (props.location.pathname !== "/florence/login" && props.enableNewSignIn) {
+            sessionManagement.startSessionExpiryTimers();
+        }
     };
+
+    if (isCheckingAuthentication)
+        return (
+            <div className="grid grid--align-center grid--align-self-center grid--full-height">
+                <div className="loader loader--large loader--dark" />
+            </div>
+        );
 
     return (
         <div>

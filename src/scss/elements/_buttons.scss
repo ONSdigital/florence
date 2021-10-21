@@ -57,6 +57,14 @@
         }
     }
 
+    &--invert-primary,
+    &--invert-primary:visited {
+        color: $astral;
+        background-color: $concrete;
+        border: 2px solid $astral;
+        box-sizing: border-box;
+    }
+
     &--link {
         color: $primary-link;
         text-decoration: underline;

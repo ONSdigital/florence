@@ -698,7 +698,7 @@ CollectionDetailsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        user: state.state.user,
+        user: state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,

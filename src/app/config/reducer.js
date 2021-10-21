@@ -51,23 +51,6 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case "USER_LOGGED_IN": {
-            return Object.assign({}, state, {
-                user: Object.assign({}, state.user, {
-                    isAuthenticated: true,
-                    email: action.email,
-                    userType: action.userType,
-                    isAdmin: action.isAdmin,
-                }),
-            });
-        }
-        case "USER_LOGGED_OUT": {
-            return Object.assign({}, state, {
-                user: Object.assign({}, state.user, {
-                    isAuthenticated: false,
-                }),
-            });
-        }
         case ADD_ALL_COLLECTIONS: {
             return {
                 ...state,

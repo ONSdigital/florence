@@ -1110,7 +1110,7 @@ DatasetMetadata.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        userEmail: state.state.user.email,
+        userEmail: state.user.email,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
         datasets: state.state.datasets.all,
         dataset: state.state.datasets.activeDataset,

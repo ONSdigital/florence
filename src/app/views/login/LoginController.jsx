@@ -231,7 +231,7 @@ LoginController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        isAuthenticated: state.state.user.isAuthenticated,
+        isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
     };
 }

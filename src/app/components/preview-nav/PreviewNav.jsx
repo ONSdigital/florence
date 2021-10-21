@@ -57,7 +57,7 @@ const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
                 id="preview-select"
                 contents={mapPagesToSelect(preview.pages) || []}
                 onChange={e => setUri(e.target.value)}
-                defaultOption={preview.pages ? "Select an option" : "Loading pages..."}
+                defaultOption={preview.pages ? "" : "Loading pages..."}
                 selectedOption={uri}
             />
         </div>

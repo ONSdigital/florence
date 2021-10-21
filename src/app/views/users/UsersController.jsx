@@ -170,7 +170,7 @@ export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         users: state.state.users.all,
-        loggedInUser: state.state.user,
+        loggedInUser: state.user,
     };
 }
 

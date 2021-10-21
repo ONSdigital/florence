@@ -327,7 +327,7 @@ UserDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active,
-        loggedInUser: state.state.user,
+        loggedInUser: state.user,
         arrivedByRedirect: state.routing.locationBeforeTransitions.action === "REPLACE",
         previousPathname: state.routing.locationBeforeTransitions.previousPathname,
         rootPath: state.state.rootPath,

@@ -93,8 +93,8 @@ const defaultProps = {
 };
 
 test("Create collection form matches stored snapshot", () => {
-    const component = renderer.create(<CollectionCreateController {...defaultProps} />);
-    expect(component.toJSON()).toMatchSnapshot();
+    const tree = renderer.create(<CollectionCreateController {...defaultProps} />);
+    expect(tree.toJSON()).toMatchSnapshot();
 });
 
 test("Handle collection name change updates state correctly", () => {

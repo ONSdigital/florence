@@ -1,5 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
+import renderer from "react-test-renderer";
+import { mapStateToProps } from "../preview-nav";
 import PreviewNav from "../preview-nav/PreviewNav";
 
 const pages = [
@@ -52,7 +54,33 @@ const withPagesProps = {
 };
 
 describe("PreviewNav", () => {
-    it("renders Select with default option selected", () => {
+    it("should match the snapshot", async () => {
+        const tree = renderer.create(<PreviewNav {...defaultProps} />);
+        expect(tree).toMatchSnapshot();
+    });
+
+    it("should map state to props", () => {
+        const state = {
+            state: {
+                preview: {},
+                rootPath: "/foo",
+                global: {
+                    workingOn: { id: "baz" },
+                },
+            },
+        };
+
+        const props = {
+            preview: {},
+            rootPath: "/foo",
+            workingOn: { id: "baz" },
+        };
+
+        const componentState = mapStateToProps(state, props);
+        expect(componentState).toEqual(props);
+    });
+
+    it("renders select with default option selected", () => {
         const wrapper = mount(<PreviewNav {...defaultProps} />);
         expect(wrapper.find(".select").text()).toEqual("Loading pages...");
     });
@@ -70,9 +98,7 @@ describe("PreviewNav", () => {
     it("allows to select page", () => {
         const wrapper = mount(<PreviewNav {...withPagesProps} />);
         expect(wrapper.find("select").props().value).toBe("/");
-
         wrapper.find("select").simulate("change", { target: { value: "/test-uri" } });
-
         expect(wrapper.find("select").props().value).toBe("/test-uri");
     });
 });
