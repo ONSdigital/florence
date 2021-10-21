@@ -10,6 +10,7 @@ import NavBar from "../../components/navbar";
 
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
+    
     useEffect(() => {
         log.initialise();
 
