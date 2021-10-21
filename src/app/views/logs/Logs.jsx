@@ -1,9 +1,8 @@
-import React, { Component } from "react";
+import React, { useEffect, useState }  from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-import { Link } from "react-router";
-import PropTypes from "prop-types";
-
 import DefaultLog from "./log-components/DefaultLog";
 import RouteLog from "./log-components/RouteLog";
 import RequestLog from "./log-components/RequestLog";
@@ -11,114 +10,75 @@ import Notification from "./log-components/NotificationLog";
 import RuntimeErrorLog from "./log-components/RuntimeErrorLog";
 import log, { eventTypes } from "../../utilities/log";
 
-const propTypes = {
-    location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired,
-        query: PropTypes.object.isRequired,
-    }).isRequired,
-    page: PropTypes.string,
-    dispatch: PropTypes.func.isRequired,
-};
+const Logs = props => {
+    const [isFetchingLogs, setIsFetchingLogs] = useState(false);
+    const [logs, setLogs] = useState(null);
+    const [logCount, setLogCount] = useState(null);
+    const [pageSize, setPageSize] = useState(10);
+    const [logsTimestamp, setLogsTimestamp] = useState(parseInt(props.location.query.timestamp) || new Date().getTime());
 
-class Logs extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            isFetchingLogs: false,
-            logs: null,
-            logCount: null,
-            pageSize: 10,
-            logsTimestamp: parseInt(this.props.location.query.timestamp) || new Date().getTime(),
-        };
-    }
-
-    UNSAFE_componentWillMount() {
+    useEffect(() => {
         // Add a timestamp to the URL so we know what time/date we're getting logs from
         // which prevents logs being added as when go through pages
-        if (!this.props.location.query.timestamp) {
+        if (!props.location.query.timestamp) {
             const location = {
-                ...this.props.location,
+                ...props.location,
                 query: {
-                    ...this.props.location.query,
-                    timestamp: this.state.logsTimestamp,
+                    ...props.location.query,
+                    timestamp: logsTimestamp,
                 },
             };
-            this.props.dispatch(push(location));
+            props.dispatch(push(location));
         }
 
-        this.setState({ isFetchingLogs: true });
+        setIsFetchingLogs(true)
         log.length().then(count => {
-            this.setState({ logCount: count });
+            setLogCount(count)
             // TODO fix blank page when you go directly to a page number when there aren't enough pages for that to have any data
             // we should be redirecting them to just '/logs' instead
-            if (this.props.page && this.props.page !== "1") {
-                log.getAll((this.props.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
-                    this.setState({
-                        isFetchingLogs: false,
-                        logs: logRange,
-                    });
+            if (props.page && props.page !== "1") {
+                log.getAll((props.page - 1) * 10, pageSize, logsTimestamp).then(logRange => {
+                    setIsFetchingLogs(false)
+                    setLogs(logRange)
                 });
                 return;
             }
 
             if (count > 10) {
-                log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
-                    this.setState({
-                        isFetchingLogs: false,
-                        logs: logRange,
-                    });
+                log.getAll(0, 10, logsTimestamp).then(logRange => {
+                    setIsFetchingLogs(false)
+                    setLogs(logRange)
                 });
                 return;
             }
 
-            log.getAll(null, null, this.state.logsTimestamp).then(logs => {
-                this.setState({
-                    isFetchingLogs: false,
-                    logs,
-                });
+            log.getAll(null, null, logsTimestamp).then(logs => {
+                setIsFetchingLogs(false)
+                setLogs(null)
             });
         });
-    }
+    }, []);
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (this.props.page !== nextProps.page && nextProps.page === "1") {
-            this.setState({ isFetchingLogs: true });
-            log.getAll(0, 10, this.state.logsTimestamp).then(logRange => {
-                this.setState({
-                    isFetchingLogs: false,
-                    logs: logRange,
-                });
+    useEffect(() => {
+        if (props.page !== nextProps.page && nextProps.page === "1") {
+            setIsFetchingLogs(true)
+            log.getAll(0, 10, logsTimestamp).then(logRange => {
+                setIsFetchingLogs(false)
+                setLogs(logRange)
             });
             return;
         }
 
-        if (this.props.page !== nextProps.page) {
-            this.setState({ isFetchingLogs: true });
-            log.getAll((nextProps.page - 1) * 10, this.state.pageSize, this.state.logsTimestamp).then(logRange => {
-                this.setState({
-                    isFetchingLogs: false,
-                    logs: logRange,
-                });
+        if (props.page !== nextProps.page) {
+            setIsFetchingLogs(true)
+            log.getAll((nextProps.page - 1) * 10, pageSize, logsTimestamp).then(logRange => {
+                setIsFetchingLogs(false)
+                setLogs(logRange)
             });
         }
-    }
+    }, [props.page]);
 
-    // Not currently needed (was used for development), but we might want to include a 'clear logs' CTA somewhere
-    /*
-    clearLogs() {
-        this.setState({isFetchingLogs: true});
-        log.removeAll().then(() => {
-            this.setState({
-                isFetchingLogs: false,
-                logs: [],
-                logCount: 0
-            });
-        });
-    }
-    */
-
-    mapLogToComponent(log, index) {
+    const mapLogToComponent = (log, index) => {
         const failureEventTypes = [
             eventTypes.pingFailed,
             eventTypes.requestFailed,
@@ -143,63 +103,68 @@ class Logs extends Component {
         }
 
         return <DefaultLog key={index} {...log} isFailure={failureEventTypes.includes(log.type)} />;
-    }
+    };
 
-    renderPagination() {
-        const pageCount = Math.ceil(this.state.logCount / 10);
+    const renderPagination = () => {
+        const pageCount = Math.ceil(logCount / 10);
         const pagination = [...Array(pageCount)];
         const pageNumbers = pagination.map((_, index) => {
             return (
                 <li className="pagination__item" key={index}>
-                    {this.renderPageLink(index + 1)}
+                    {renderPageLink(index + 1)}
                 </li>
             );
         });
 
         return <ul className="pagination">{pageNumbers}</ul>;
-    }
+    };
 
-    renderPageLink(pageNumber) {
-        if ((pageNumber === 1 && !this.props.page) || pageNumber === parseInt(this.props.page)) {
+    const renderPageLink = pageNumber => {
+        if ((pageNumber === 1 && props.page) || pageNumber === parseInt(props.page)) {
             return <span className="pagination__link pagination__link--active">{pageNumber}</span>;
         }
 
         return (
-            <Link className="pagination__link" to={`${this.props.location.pathname}?page=${pageNumber}&timestamp=${this.state.logsTimestamp}`}>
+            <Link className="pagination__link" to={`${props.location.pathname}?page=${pageNumber}&timestamp=${logsTimestamp}`}>
                 {pageNumber}
             </Link>
         );
-    }
-
-    render() {
-        return (
-            <div className="grid grid--justify-center">
-                <div className="grid__col-4">
-                    {!this.state.isFetchingLogs ? (
-                        <div className="logs">
-                            {this.state.logs.map((log, index) => {
-                                return this.mapLogToComponent(log, index);
-                            })}
-                            {this.state.logCount > 10 && this.renderPagination()}
-                            {this.state.logCount === 0 && <p>No logs to display</p>}
-                        </div>
-                    ) : (
-                        <div className="margin-top--2">
-                            <div className="loader loader--dark"></div>
-                        </div>
-                    )}
-                </div>
-            </div>
-        );
-    }
-}
-
-Logs.propTypes = propTypes;
-
-function mapStateToProps(state) {
-    return {
-        page: state.routing.locationBeforeTransitions.query.page,
     };
-}
+
+    const mapStateToProps = state => {
+        return {
+            page: state.routing.locationBeforeTransitions.query.page,
+        };
+    };
+
+    return (
+        <div className="grid grid--justify-center">
+            <div className="grid__col-4">
+                {!isFetchingLogs ? (
+                    <div className="logs">
+                        {logs.map((log, index) => {
+                            return mapLogToComponent(log, index);
+                        })}
+                        {logCount > 10 && renderPagination()}
+                        {logCount === 0 && <p>No logs to display</p>}
+                    </div>
+                ) : (
+                    <div className="margin-top--2">
+                        <div className="loader loader--dark"></div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+};
+
+Logs.propTypes = {
+    location: PropTypes.shape({
+        pathname: PropTypes.string.isRequired,
+        query: PropTypes.object.isRequired,
+    }).isRequired,
+    page: PropTypes.string,
+    dispatch: PropTypes.func.isRequired,
+};
 
 export default connect(mapStateToProps)(Logs);
