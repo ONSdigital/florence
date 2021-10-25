@@ -17,18 +17,18 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     params: PropTypes.shape({
-        collectionID: PropTypes.string
+        collectionID: PropTypes.string,
     }).isRequired,
     user: PropTypes.shape({
-        userType: PropTypes.string.isRequired
+        userType: PropTypes.string.isRequired,
     }).isRequired,
     collections: PropTypes.array,
     activeCollection: PropTypes.shape({
         inProgress: PropTypes.arrayOf(PropTypes.shape(pagePropTypes)),
-        id: PropTypes.string.isRequired
+        id: PropTypes.string.isRequired,
     }),
     collectionsToDelete: PropTypes.object.isRequired,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
 };
 
 export class CollectionsController extends Component {
@@ -36,20 +36,17 @@ export class CollectionsController extends Component {
         super(props);
 
         this.state = {
-            isFetchingCollections: false
+            isFetchingCollections: false,
         };
-
-        this.handleCollectionSelection = this.handleCollectionSelection.bind(this);
-        this.handleCollectionCreateSuccess = this.handleCollectionCreateSuccess.bind(this);
 
         this.isViewer = this.props.user.userType === "VIEWER";
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         return this.fetchCollections();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         // CollectionsController handles removing any collections from allCollections state
         // having an ID in the toDelete object means that this component needs to remove it from state
         // this stops other components having to understand and handle allCollections state.
@@ -97,7 +94,7 @@ export class CollectionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to get collections.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -107,7 +104,7 @@ export class CollectionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: `You don't have permissions to view collections`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -118,7 +115,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -128,7 +125,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -138,7 +135,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -148,7 +145,7 @@ export class CollectionsController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -167,7 +164,7 @@ export class CollectionsController extends Component {
         }
     }
 
-    handleCollectionCreateSuccess(newCollection) {
+    handleCollectionCreateSuccess = newCollection => {
         const mappedCollection = collectionMapper.collectionResponseToState(newCollection);
         let collections = [...this.props.collections, mappedCollection];
         collections.sort((collection1, collection2) => {
@@ -185,9 +182,9 @@ export class CollectionsController extends Component {
         this.props.dispatch(push(`${this.props.rootPath}/collections/${mappedCollection.id}`));
         this.fetchCollections();
         document.getElementById(mappedCollection.id).scrollIntoView();
-    }
+    };
 
-    handleCollectionSelection(collection) {
+    handleCollectionSelection = collection => {
         if (this.isViewer) {
             cookies.add("collection", collection.id, null);
             this.props.dispatch(updateWorkingOn(collection.id, collection.name));
@@ -195,7 +192,7 @@ export class CollectionsController extends Component {
             return;
         }
         this.props.dispatch(push(`${this.props.rootPath}/collections/${collection.id}`));
-    }
+    };
 
     render() {
         return (
@@ -228,11 +225,11 @@ CollectionsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        user: state.state.user,
+        user: state.user,
         collections: state.state.collections.all,
         activeCollection: state.state.collections.active,
         collectionsToDelete: state.state.collections.toDelete,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
     };
 }
 

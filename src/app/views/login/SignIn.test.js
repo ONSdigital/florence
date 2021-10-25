@@ -5,43 +5,43 @@ import { status } from "../../constants/Authentication";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
-        add: function() {
+        add: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/websocket", () => {
     return {
-        send: function() {
+        send: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/api-clients/user.js", () => {
     return {
-        setUserState: function() {
+        setUserState: function () {
             // do nothing
         },
-        logOut: function() {
+        logOut: function () {
             // do nothing
-        }
+        },
     };
 });
 
 jest.mock("../../utilities/redirectToMainScreen.js", () => {
     return {
-        redirectToMainScreen: function() {
+        redirectToMainScreen: function () {
             // do nothing
-        }
+        },
     };
 });
 
 const props = {
-    dispatch: function() {},
+    dispatch: function () {},
     rootPath: "/florence",
-    isAuthenticated: false
+    isAuthenticated: false,
 };
 describe("SignIn", () => {
     describe("when a non-authenticated user hits the screen", () => {
@@ -54,7 +54,7 @@ describe("SignIn", () => {
         describe("it is the users first time signing in", () => {
             let component = mount(<LoginController {...props} />);
             component.setState({
-                firstTimeSignIn: true
+                firstTimeSignIn: true,
             });
             it("password change form should appear", () => {
                 expect(component.find("h1").text()).toBe("Change your password");
@@ -69,7 +69,7 @@ describe("SignIn", () => {
                     emailValue: "foo@bar.com",
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
-                    firstTimeSignIn: false
+                    firstTimeSignIn: false,
                 };
                 component.instance().validationErrors = {
                     heading: "Fix the following: ",
@@ -78,8 +78,8 @@ describe("SignIn", () => {
                             <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
                                 Enter a password
                             </a>
-                        </p>
-                    ]
+                        </p>,
+                    ],
                 };
                 component.instance().passwordErrorMsg = "Enter a password";
                 component.setState(state);
@@ -96,7 +96,7 @@ describe("SignIn", () => {
                     emailValue: "foobar!baz",
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
-                    firstTimeSignIn: false
+                    firstTimeSignIn: false,
                 };
                 component.instance().emailErrorMsg = "Enter a valid email address";
                 component.instance().validationErrors = {
@@ -106,8 +106,8 @@ describe("SignIn", () => {
                             <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
                                 Enter a valid email address
                             </a>
-                        </p>
-                    ]
+                        </p>,
+                    ],
                 };
                 component.setState(state);
                 it("should show an error", () => {
@@ -123,7 +123,7 @@ describe("SignIn", () => {
                     emailValue: "foobar!baz",
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
-                    firstTimeSignIn: false
+                    firstTimeSignIn: false,
                 };
                 component.instance().emailErrorMsg = "Enter a valid email address";
                 component.instance().passwordErrorMsg = "Enter a password";
@@ -139,8 +139,8 @@ describe("SignIn", () => {
                             <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
                                 Enter a password
                             </a>
-                        </p>
-                    ]
+                        </p>,
+                    ],
                 };
                 component.setState(state);
                 it("should show multiple errors", () => {
@@ -156,11 +156,11 @@ describe("SignIn", () => {
                     emailValue: "foobar@ons.gov.uk",
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
-                    firstTimeSignIn: false
+                    firstTimeSignIn: false,
                 };
                 component.instance().validationErrors = {
                     heading: "Fix the following: ",
-                    body: [<p key="error">Email address or password are incorrect</p>]
+                    body: [<p key="error">Email address or password are incorrect</p>],
                 };
                 component.setState(state);
                 it("should show an error", () => {

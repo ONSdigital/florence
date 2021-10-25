@@ -7,7 +7,7 @@ const propTypes = {
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             value: PropTypes.string.isRequired,
-            label: PropTypes.string.isRequired
+            label: PropTypes.string.isRequired,
         })
     ).isRequired,
     legend: PropTypes.string,
@@ -15,21 +15,15 @@ const propTypes = {
     onChange: PropTypes.func,
     selectedValue: PropTypes.string,
     inline: PropTypes.bool,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 export default class RadioGroup extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleChange = this.handleChange.bind(this);
-    }
-
-    handleChange(event) {
+    handleChange = event => {
         if (this.props.onChange) {
             this.props.onChange(event);
         }
-    }
+    };
 
     render() {
         const radioData = this.props.radioData;

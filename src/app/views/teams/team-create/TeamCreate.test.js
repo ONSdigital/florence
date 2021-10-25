@@ -4,9 +4,9 @@ import { mount, shallow } from "enzyme";
 
 jest.mock("../../../utilities/notifications.js", () => {
     return {
-        add: function(notification) {
+        add: function (notification) {
             mockNotifications.push(notification);
-        }
+        },
     };
 });
 
@@ -20,7 +20,7 @@ jest.mock("../../../utilities/logging/log", () => {
         }),
         error: jest.fn().mockImplementation(() => {
             // do nothing
-        })
+        }),
     };
 });
 
@@ -37,12 +37,12 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
         })
         .mockImplementationOnce(() => {
             return Promise.reject({ status: 409 });
-        })
+        }),
 }));
 
 const mockNotifications = [];
 const defaultProps = {
-    onCreateSuccess: () => {}
+    onCreateSuccess: () => {},
 };
 
 test("A team name with no characters is not valid", () => {
@@ -50,8 +50,8 @@ test("A team name with no characters is not valid", () => {
     component.setState({
         input: {
             value: "",
-            error: ""
-        }
+            error: "",
+        },
     });
     expect(component.instance().validateTeamName(component.state("input"))).toBe(false);
 });
@@ -61,8 +61,8 @@ test("A team name with no characters other than whitespace is not valid", () => 
     component.setState({
         input: {
             value: "  ",
-            error: ""
-        }
+            error: "",
+        },
     });
     expect(component.instance().validateTeamName(component.state("input"))).toBe(false);
 });
@@ -71,27 +71,25 @@ test("A team name with 255 characters or more is not valid", () => {
     const component = shallow(<TeamCreate {...defaultProps} />);
     component.setState({
         input: {
-            value:
-                "V7i0FbcdRKCktPlxJk2GjcO3ydrOQsQgVgWiZHnyKojo8M1z613Om1KqOG74MPdlNxqDl1PPsXMJOjvy9PftwQtTctJSg6td4aEiBaSoDkthd2FIC3Qk1UQ9xQbdBL5QLgedFDo0pstSnt3yNRgIGmWCILFvmGKCiU2BFSGYc29CUDDBb1GqEintmDAeeprwsCRZfDGVZjIxdO96WUGyiLBYes40S5HVIiiywffKWYhRYOB0ur7MbfyQbsFylCe",
-            error: ""
-        }
+            value: "V7i0FbcdRKCktPlxJk2GjcO3ydrOQsQgVgWiZHnyKojo8M1z613Om1KqOG74MPdlNxqDl1PPsXMJOjvy9PftwQtTctJSg6td4aEiBaSoDkthd2FIC3Qk1UQ9xQbdBL5QLgedFDo0pstSnt3yNRgIGmWCILFvmGKCiU2BFSGYc29CUDDBb1GqEintmDAeeprwsCRZfDGVZjIxdO96WUGyiLBYes40S5HVIiiywffKWYhRYOB0ur7MbfyQbsFylCe",
+            error: "",
+        },
     });
     expect(component.instance().validateTeamName(component.state("input"))).toBe(false);
 
     component.setState({
         input: {
-            value:
-                "V7i0FbcdRKCktPlxJk2GjcO3ydrOQsQgVgWiZHnyKojo8M1z613Om1KqOG74MPdlNxqDl1PPsXMJOjvy9PftwQtTctJSg6td4aEiBaSoDkthd2FIC3Qk1UQ9xQbdBL5QLgedFDo0pstSnt3yNRgIGmWCILFvmGKCiU2BFSGYc29CUDDBb1GqEintmDAeeprwsCRZfDGVZjIxdO96WUGyiLBYes40S5HVIiiywffKWYhRYOB0ur7MbfyQbsFylCemorecharacters",
-            error: ""
-        }
+            value: "V7i0FbcdRKCktPlxJk2GjcO3ydrOQsQgVgWiZHnyKojo8M1z613Om1KqOG74MPdlNxqDl1PPsXMJOjvy9PftwQtTctJSg6td4aEiBaSoDkthd2FIC3Qk1UQ9xQbdBL5QLgedFDo0pstSnt3yNRgIGmWCILFvmGKCiU2BFSGYc29CUDDBb1GqEintmDAeeprwsCRZfDGVZjIxdO96WUGyiLBYes40S5HVIiiywffKWYhRYOB0ur7MbfyQbsFylCemorecharacters",
+            error: "",
+        },
     });
     expect(component.instance().validateTeamName(component.state("input"))).toBe(false);
 
     component.setState({
         input: {
             value: "only16characters",
-            error: ""
-        }
+            error: "",
+        },
     });
     expect(component.instance().validateTeamName(component.state("input"))).toBe(true);
 });
@@ -101,8 +99,8 @@ test("Error message is given when an invalid team name is submitted", () => {
     component.setState({
         input: {
             ...component.state("input"),
-            value: ""
-        }
+            value: "",
+        },
     });
 
     component.instance().validateTeamName(component.state("input"));
@@ -113,13 +111,13 @@ test("Error message given if user tries to create a team but doesn't have permis
     const promise = Promise.resolve();
     const component = shallow(<TeamCreate {...defaultProps} />);
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
     component.setState({
         input: {
             ...component.state("input"),
-            value: "A new team"
-        }
+            value: "A new team",
+        },
     });
 
     expect(component.state("input").error).toEqual("");
@@ -133,13 +131,13 @@ test("Error message given if user tries to create a team that already exists", a
     const promise = Promise.resolve();
     const component = shallow(<TeamCreate {...defaultProps} />);
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
     component.setState({
         input: {
             ...component.state("input"),
-            value: "A new team"
-        }
+            value: "A new team",
+        },
     });
 
     expect(component.state("input").error).toBe("");
@@ -153,13 +151,13 @@ test("Notification is shown if there is any unexpected error during the HTTP req
     const promise = Promise.resolve();
     const component = shallow(<TeamCreate {...defaultProps} />);
     const formEvent = {
-        preventDefault: () => {}
+        preventDefault: () => {},
     };
     component.setState({
         input: {
             ...component.state("input"),
-            value: "A new team"
-        }
+            value: "A new team",
+        },
     });
 
     expect(mockNotifications.length).toEqual(0);

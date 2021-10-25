@@ -19,7 +19,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
-    location: PropTypes.object
+    location: PropTypes.object,
 };
 
 export class LoginController extends Component {
@@ -29,23 +29,18 @@ export class LoginController extends Component {
         this.state = {
             email: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             password: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             requestPasswordChange: false,
-            isSubmitting: false
+            isSubmitting: false,
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
-        this.handlePasswordChangeCancel = this.handlePasswordChangeCancel.bind(this);
-        this.handlePasswordChangeSuccess = this.handlePasswordChangeSuccess.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
@@ -70,7 +65,7 @@ export class LoginController extends Component {
                             type: "warning",
                             message: "Unable to sign in due to an error getting your account's permissions. Please refresh and try again.",
                             autoDismiss: 8000,
-                            isDismissable: true
+                            isDismissable: true,
                         });
                         log.event("Error getting a user's permissions on sign in", log.error(error));
                         console.error("Error getting a user's permissions on sign in", error);
@@ -81,17 +76,17 @@ export class LoginController extends Component {
                     const notification = {
                         type: "warning",
                         isDismissable: true,
-                        autoDismiss: 15000
+                        autoDismiss: 15000,
                     };
 
                     switch (error.status) {
                         case 404: {
                             const email = Object.assign({}, this.state.email, {
-                                errorMsg: "Email address not recognised"
+                                errorMsg: "Email address not recognised",
                             });
                             this.setState({
                                 email: email,
-                                isSubmitting: false
+                                isSubmitting: false,
                             });
                             break;
                         }
@@ -99,13 +94,13 @@ export class LoginController extends Component {
                             const password = Object.assign({}, this.state.email, { errorMsg: "Incorrect password" });
                             this.setState({
                                 password: password,
-                                isSubmitting: false
+                                isSubmitting: false,
                             });
                             break;
                         }
                         case 417: {
                             this.setState({
-                                requestPasswordChange: true
+                                requestPasswordChange: true,
                             });
                             break;
                         }
@@ -133,20 +128,20 @@ export class LoginController extends Component {
             });
     }
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
 
         const credentials = {
             email: this.state.email.value,
-            password: this.state.password.value
+            password: this.state.password.value,
         };
 
         this.setState({ isSubmitting: true });
 
         this.handleLogin(credentials);
-    }
+    };
 
-    handleInputChange(event) {
+    handleInputChange = event => {
         const id = event.target.id;
         const value = event.target.value;
 
@@ -155,8 +150,8 @@ export class LoginController extends Component {
                 this.setState({
                     email: {
                         value: value,
-                        errorMsg: ""
-                    }
+                        errorMsg: "",
+                    },
                 });
                 break;
             }
@@ -164,30 +159,30 @@ export class LoginController extends Component {
                 this.setState({
                     password: {
                         value: value,
-                        errorMsg: ""
-                    }
+                        errorMsg: "",
+                    },
                 });
                 break;
             }
         }
-    }
+    };
 
-    handlePasswordChangeSuccess(newPassword) {
+    handlePasswordChangeSuccess = newPassword => {
         const credentials = {
             email: this.state.email.value,
-            password: newPassword
+            password: newPassword,
         };
 
         this.handleLogin(credentials);
-    }
+    };
 
-    handlePasswordChangeCancel(event) {
+    handlePasswordChangeCancel = event => {
         event.preventDefault();
 
         this.setState({
-            requestPasswordChange: false
+            requestPasswordChange: false,
         });
-    }
+    };
 
     render() {
         const formData = {
@@ -197,18 +192,18 @@ export class LoginController extends Component {
                     label: "Email",
                     type: "email",
                     onChange: this.handleInputChange,
-                    error: this.state.email.errorMsg
+                    error: this.state.email.errorMsg,
                 },
                 {
                     id: "password",
                     label: "Password",
                     type: "password",
                     onChange: this.handleInputChange,
-                    error: this.state.password.errorMsg
-                }
+                    error: this.state.password.errorMsg,
+                },
             ],
             onSubmit: this.handleSubmit,
-            isSubmitting: this.state.isSubmitting
+            isSubmitting: this.state.isSubmitting,
         };
 
         return (
@@ -236,8 +231,8 @@ LoginController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        isAuthenticated: state.state.user.isAuthenticated,
-        rootPath: state.state.rootPath
+        isAuthenticated: state.user.isAuthenticated,
+        rootPath: state.state.rootPath,
     };
 }
 

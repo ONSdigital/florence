@@ -10,7 +10,7 @@ const propTypes = {
     isCorrection: PropTypes.bool,
     onCancel: PropTypes.func.isRequired,
     onSave: PropTypes.func.isRequired,
-    id: PropTypes.string
+    id: PropTypes.string,
 };
 
 class AlertController extends Component {
@@ -21,38 +21,33 @@ class AlertController extends Component {
             currentDate: "",
             newDate: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             newDescription: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             newID: "",
-            newIsCorrectionBoolean: null
+            newIsCorrectionBoolean: null,
         };
 
         this.maximumAlertDate = date.format(date.addYear(10), "yyyy-mm-dd");
-
-        this.handleDateChange = this.handleDateChange.bind(this);
-        this.handleDescriptionChange = this.handleDescriptionChange.bind(this);
-        this.handleIsCorrectionChange = this.handleIsCorrectionChange.bind(this);
-        this.handleSave = this.handleSave.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.props.id) {
             this.setState({ newID: uuid() });
         }
 
         if (this.props.date) {
             this.setState({
-                currentDate: this.formatDateToInput(new Date(this.props.date))
+                currentDate: this.formatDateToInput(new Date(this.props.date)),
             });
             return;
         }
 
         this.setState({
-            currentDate: this.formatDateToInput(new Date())
+            currentDate: this.formatDateToInput(new Date()),
         });
     }
 
@@ -60,30 +55,30 @@ class AlertController extends Component {
         return date.format(dateObject.toISOString(), "yyyy-mm-dd'T'HH:MM");
     }
 
-    handleDateChange(event) {
+    handleDateChange = event => {
         this.setState({
             newDate: {
                 value: event.target.value || "",
-                errorMsg: ""
+                errorMsg: "",
             },
-            currentDate: ""
+            currentDate: "",
         });
-    }
+    };
 
-    handleDescriptionChange(event) {
+    handleDescriptionChange = event => {
         this.setState({
             newDescription: {
                 value: event.target.value || "",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
-    }
+    };
 
-    handleIsCorrectionChange(isCorrection) {
+    handleIsCorrectionChange = isCorrection => {
         this.setState({ newIsCorrectionBoolean: isCorrection });
-    }
+    };
 
-    handleSave(event) {
+    handleSave = event => {
         event.preventDefault();
         let hasError = false;
         let newState = {};
@@ -93,8 +88,8 @@ class AlertController extends Component {
                 ...newState,
                 newDate: {
                     ...this.state.newDate,
-                    errorMsg: "A date and time must be chosen"
-                }
+                    errorMsg: "A date and time must be chosen",
+                },
             };
             hasError = true;
         }
@@ -104,8 +99,8 @@ class AlertController extends Component {
                 ...newState,
                 newDescription: {
                     ...this.state.newDescription,
-                    errorMsg: "An alert must have a description"
-                }
+                    errorMsg: "An alert must have a description",
+                },
             };
             hasError = true;
         }
@@ -125,10 +120,10 @@ class AlertController extends Component {
             description: this.state.newDescription.value || this.props.description || "",
             date: new Date(this.state.newDate.value || this.state.currentDate).toISOString(),
             isCorrection,
-            id: this.props.id || this.state.newID
+            id: this.props.id || this.state.newID,
         };
         this.props.onSave(alert);
-    }
+    };
 
     render() {
         return (
@@ -136,16 +131,16 @@ class AlertController extends Component {
                 date={{
                     value: this.state.newDate.value || this.state.currentDate,
                     errorMsg: this.state.newDate.errorMsg,
-                    onChange: this.handleDateChange
+                    onChange: this.handleDateChange,
                 }}
                 description={{
                     value: this.state.newDescription.value || this.props.description,
                     errorMsg: this.state.newDescription.errorMsg,
-                    onChange: this.handleDescriptionChange
+                    onChange: this.handleDescriptionChange,
                 }}
                 isCorrection={{
                     value: this.state.newIsCorrectionBoolean || this.props.isCorrection,
-                    onChange: this.handleIsCorrectionChange
+                    onChange: this.handleIsCorrectionChange,
                 }}
                 onSave={this.handleSave}
                 onCancel={this.props.onCancel}

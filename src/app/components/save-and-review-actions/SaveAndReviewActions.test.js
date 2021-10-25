@@ -9,7 +9,7 @@ const defaultProps = {
     lastEditedBy: undefined,
     onSubmit: undefined,
     onApprove: undefined,
-    notInCollectionYet: false
+    notInCollectionYet: false,
 };
 
 const defaultComponent = shallow(<SaveAndReviewActions {...defaultProps} />);
@@ -17,7 +17,7 @@ const defaultComponent = shallow(<SaveAndReviewActions {...defaultProps} />);
 const inProgressProps = {
     ...defaultProps,
     reviewState: "inProgress",
-    lastEditedBy: "user-1@email.com"
+    lastEditedBy: "user-1@email.com",
 };
 
 const inProgressComponent = shallow(<SaveAndReviewActions {...inProgressProps} />);
@@ -25,7 +25,7 @@ const inProgressComponent = shallow(<SaveAndReviewActions {...inProgressProps} /
 const completeProps = {
     ...defaultProps,
     reviewState: "complete",
-    lastEditedBy: "user-1@email.com"
+    lastEditedBy: "user-1@email.com",
 };
 
 const completeComponent = shallow(<SaveAndReviewActions {...completeProps} />);
@@ -33,7 +33,7 @@ const completeComponent = shallow(<SaveAndReviewActions {...completeProps} />);
 const reviewedProps = {
     ...defaultProps,
     reviewState: "reviewed",
-    lastEditedBy: "user-2@email.com"
+    lastEditedBy: "user-2@email.com",
 };
 
 const reviewedComponent = shallow(<SaveAndReviewActions {...reviewedProps} />);
@@ -104,7 +104,7 @@ describe("Run the approve/review handlers", () => {
             onSubmit: () => {
                 functionHasRun = true;
             },
-            userEmail: "user1@email.com"
+            userEmail: "user1@email.com",
         });
         expect(functionHasRun).toBe(false);
 
@@ -119,7 +119,7 @@ describe("Run the approve/review handlers", () => {
             onApprove: () => {
                 functionHasRun = true;
             },
-            userEmail: "user2@email.com"
+            userEmail: "user2@email.com",
         });
         expect(functionHasRun).toBe(false);
 

@@ -12,9 +12,9 @@ import RadioList from "../../../components/radio-buttons/RadioList";
 const propTypes = {
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired,
-        editionID: PropTypes.string.isRequired
+        editionID: PropTypes.string.isRequired,
     }),
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class CreateVersionController extends Component {
@@ -29,11 +29,11 @@ export class CreateVersionController extends Component {
             isFetchingInstances: false,
             instances: [],
             selectedInstance: null,
-            isSaving: false
+            isSaving: false,
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
 
@@ -49,7 +49,7 @@ export class CreateVersionController extends Component {
             .then(dataset => {
                 this.setState({
                     isFetchingDataset: false,
-                    dataset: this.mapDatasetToState(dataset)
+                    dataset: this.mapDatasetToState(dataset),
                 });
                 return this.mapDatasetToState(dataset);
             })
@@ -59,7 +59,7 @@ export class CreateVersionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available for a list of datasets. You should still be able to use this page, or you can refresh.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -68,7 +68,7 @@ export class CreateVersionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -78,7 +78,7 @@ export class CreateVersionController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -87,7 +87,7 @@ export class CreateVersionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -96,7 +96,7 @@ export class CreateVersionController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get a list of datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -111,14 +111,14 @@ export class CreateVersionController extends Component {
         try {
             const dataset = datasetResponse.current || datasetResponse.next || datasetResponse;
             return {
-                title: dataset.title
+                title: dataset.title,
             };
         } catch (error) {
             const notification = {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get dataset details, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting dataset details to state:\n", error);
@@ -132,7 +132,7 @@ export class CreateVersionController extends Component {
             .then(edition => {
                 this.setState({
                     isFetchingEdition: false,
-                    edition: this.mapDatasetEditionToState(edition)
+                    edition: this.mapDatasetEditionToState(edition),
                 });
                 return this.mapDatasetEditionToState(edition);
             })
@@ -146,14 +146,14 @@ export class CreateVersionController extends Component {
         try {
             const edition = editionResponse.current || editionResponse.next || editionResponse;
             return {
-                title: edition.edition
+                title: edition.edition,
             };
         } catch (error) {
             const notification = {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get edition details, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting mapping edition to state:\n", error);
@@ -168,7 +168,7 @@ export class CreateVersionController extends Component {
                 const sortedInstancesByLastUpdated = instances.items.sort(this.sortByLastUpdated);
                 this.setState({
                     isFetchingInstances: false,
-                    instances: this.mapInstancesToState(sortedInstancesByLastUpdated)
+                    instances: this.mapInstancesToState(sortedInstancesByLastUpdated),
                 });
             })
             .catch(error => {
@@ -185,7 +185,7 @@ export class CreateVersionController extends Component {
                     id: instance.id,
                     value: instance.id,
                     label: `New data ${latest ? latest : ""}`,
-                    subLabel: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`
+                    subLabel: `Upload date: ${date.format(instance.last_updated, "h:MMtt dd mmmm yyyy")}`,
                 };
             });
             return instancesList;
@@ -193,7 +193,7 @@ export class CreateVersionController extends Component {
             const notification = {
                 type: "warning",
                 message: "An unexpected error occurred when trying to get instances. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting mapping instances to state:\n", error);
@@ -233,7 +233,7 @@ export class CreateVersionController extends Component {
                             message:
                                 "Unable to create version due to invalid values being submitted. Please check your updates for any issues and try again",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;
@@ -243,7 +243,7 @@ export class CreateVersionController extends Component {
                             type: "neutral",
                             message: "Unable to create version because you do not have the correct permissions",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;
@@ -253,7 +253,7 @@ export class CreateVersionController extends Component {
                             type: "warning",
                             message: "Unable to create version because this version couldn't be found",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;
@@ -263,7 +263,7 @@ export class CreateVersionController extends Component {
                             type: "warning",
                             message: "Unable to create version because a version already exists in this collection",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;
@@ -273,7 +273,7 @@ export class CreateVersionController extends Component {
                             type: "warning",
                             message: "Unable to create version due to a network issue. Please check your internet connection and try again",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;
@@ -283,7 +283,7 @@ export class CreateVersionController extends Component {
                             type: "warning",
                             message: "Unable to create version due to an unexpected error",
                             isDismissable: true,
-                            autoDismiss: 10000
+                            autoDismiss: 10000,
                         };
                         notifications.add(notification);
                         break;

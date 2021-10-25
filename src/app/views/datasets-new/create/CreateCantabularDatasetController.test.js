@@ -10,7 +10,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -18,7 +18,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         create: jest.fn(() => {
             return Promise.resolve();
-        })
+        }),
     };
 });
 
@@ -30,12 +30,12 @@ const defaultProps = {
         dispatchedActions.push(event);
     },
     location: {
-        pathname: "florence/collections/12345/datasets/create"
+        pathname: "florence/collections/12345/datasets/create",
     },
     params: {
         datasetID: "test-id",
-        format: "test_format"
-    }
+        format: "test_format",
+    },
 };
 
 const component = shallow(<CreateCantabularDatasetController {...defaultProps} />);
@@ -49,7 +49,7 @@ test("makeCreateDatasetPostBody returns correct model", () => {
     component.setState({ format: "test_format" });
     const postBody = component.instance().makeCreateDatasetPostBody();
     expect(postBody).toMatchObject({
-        type: "test_format"
+        type: "test_format",
     });
 });
 

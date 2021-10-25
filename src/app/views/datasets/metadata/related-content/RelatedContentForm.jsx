@@ -20,7 +20,7 @@ const propTypes = {
     urlError: PropTypes.string,
     descError: PropTypes.string,
     requiresDescription: PropTypes.bool,
-    requiresURL: PropTypes.bool
+    requiresURL: PropTypes.bool,
 };
 
 class RelatedContentForm extends Component {
@@ -34,11 +34,11 @@ class RelatedContentForm extends Component {
             urlLabel: "",
             urlInput: "",
             descLabel: "",
-            descInput: ""
+            descInput: "",
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (this.props.urlInput || this.props.titleInput || this.props.descInput) {
             this.setState({
                 titleInput: this.props.titleInput,
@@ -47,7 +47,7 @@ class RelatedContentForm extends Component {
                 titleLabel: this.props.titleLabel,
                 urlLabel: this.props.urlLabel,
                 descLabel: this.props.descLabel,
-                formTitle: this.props.formTitle
+                formTitle: this.props.formTitle,
             });
         }
     }

@@ -11,14 +11,14 @@ export class SetForgottenPasswordController extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            status: status.WAITING_USER_NEW_PASSWORD
+            status: status.WAITING_USER_NEW_PASSWORD,
         };
     }
 
     requestPasswordChange = newPassword => {
         this.setState(
             {
-                status: status.SUBMITTING_PASSWORD_CHANGE
+                status: status.SUBMITTING_PASSWORD_CHANGE,
             },
             () => {
                 let verificationID = new URLSearchParams(location.search).get("vid");
@@ -30,18 +30,18 @@ export class SetForgottenPasswordController extends Component {
                     type: "ForgottenPassword",
                     verification_token: verificationID,
                     email: userID,
-                    password: newPassword
+                    password: newPassword,
                 };
                 user.setForgottenPassword(body)
                     .then(() => {
                         this.setState({
-                            status: status.COMPLETED
+                            status: status.COMPLETED,
                         });
                     })
                     .catch(error => {
                         this.handlePasswordResetError(error);
                         this.setState({
-                            status: status.WAITING_USER_NEW_PASSWORD
+                            status: status.WAITING_USER_NEW_PASSWORD,
                         });
                     });
             }
@@ -52,7 +52,7 @@ export class SetForgottenPasswordController extends Component {
         const notification = {
             type: "warning",
             isDismissable: true,
-            autoDismiss: 15000
+            autoDismiss: 15000,
         };
         const outputGenericError = () => {
             console.error(errCodes.RESET_PASSWORD_REQUEST_UNEXPECTED_ERR);
@@ -93,7 +93,7 @@ export class SetForgottenPasswordController extends Component {
             requestPasswordChange: this.requestPasswordChange,
             status: this.state.status,
             heading: "Create a new password",
-            buttonText: "Confirm password"
+            buttonText: "Confirm password",
         };
         return <ChangePasswordController {...changePasswordProps} />;
     }

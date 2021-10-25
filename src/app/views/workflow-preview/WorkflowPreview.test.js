@@ -6,7 +6,7 @@ console.error = () => {};
 
 jest.mock("../../utilities/logging/log", () => {
     return {
-        event: function() {}
+        event: function () {},
     };
 });
 
@@ -15,7 +15,7 @@ jest.mock("../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -28,11 +28,11 @@ const defaultProps = {
     },
     rootPath: "/florence",
     location: {
-        pathname: "florence/collections/testcollection-001/test-content/preview"
+        pathname: "florence/collections/testcollection-001/test-content/preview",
     },
     params: {
-        collectionID: "testcollection-001"
-    }
+        collectionID: "testcollection-001",
+    },
 };
 
 const component = shallow(<WorkflowPreview {...defaultProps} />);
@@ -47,10 +47,10 @@ describe("getting preview iframe url", () => {
             { path: "/florence/collections/collection-001/homepage/preview", expected: "/" },
             {
                 path: "/florence/collections/collection-002/datasets/cpih01/editions/time-series/version/2/preview",
-                expected: "/datasets/cpih01/editions/time-series/version/2"
+                expected: "/datasets/cpih01/editions/time-series/version/2",
             },
             { path: "/florence/collections/collection-003/bulletins/cpih01/preview", expected: "/bulletins/cpih01" },
-            { path: "/florence/collections/collection-003/test/test/test/preview", expected: "/test/test/test" }
+            { path: "/florence/collections/collection-003/test/test/test/preview", expected: "/test/test/test" },
         ];
         testURLs.forEach(url => {
             const path = component.instance().getPreviewIframeURL(url.path);

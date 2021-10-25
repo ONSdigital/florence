@@ -10,7 +10,7 @@ console.warn = () => {};
 
 jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
@@ -19,20 +19,20 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
         Promise.resolve([
             { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
             { id: "2", name: "Team 2", members: [] },
-            { id: "3", name: "Team 3", members: ["member2@email.com"] }
-        ])
+            { id: "3", name: "Team 3", members: ["member2@email.com"] },
+        ]),
 }));
 
 jest.mock("../../../utilities/date.js", () => ({
     format: () => {
         return "formatted date"; // we're mocking date.format() so don't care that the value isn't right - that is covered in date class tests
-    }
+    },
 }));
 
 jest.mock("../../../utilities/api-clients/collections.js", () => ({
     update: jest.fn(() => {
         return Promise.resolve();
-    })
+    }),
 }));
 
 let dispatchedAction;
@@ -44,18 +44,18 @@ const defaultProps = {
         dispatchedAction = action;
     },
     teams: [],
-    publishType: "manual"
+    publishType: "manual",
 };
 
 const propsWithScheduleDetails = {
     ...defaultProps,
     publishType: "scheduled",
-    publishDate: "2017-06-12T12:30:00.000Z"
+    publishDate: "2017-06-12T12:30:00.000Z",
 };
 
 const propsWithTeams = {
     ...defaultProps,
-    teams: [{ id: "2", name: "Team 2" }]
+    teams: [{ id: "2", name: "Team 2" }],
 };
 
 const defaultComponent = shallow(<CollectionEditController {...defaultProps} />);
@@ -66,31 +66,31 @@ describe("Passing a scheduled publish type and date as props", () => {
     it("sets the publish date value", () => {
         expect(scheduledComponent.state("publishDate")).toMatchObject({
             value: "formatted date",
-            errorMsg: ""
+            errorMsg: "",
         });
     });
 
     it("sets the publish time value", () => {
         expect(scheduledComponent.state("publishTime")).toMatchObject({
             value: "formatted date",
-            errorMsg: ""
+            errorMsg: "",
         });
     });
 
     it("still renders the component even if the publish date is missing", () => {
         const propsWithNoPublishDate = {
             ...propsWithScheduleDetails,
-            publishDate: ""
+            publishDate: "",
         };
         const componentWithNoPublishDate = shallow(<CollectionEditController {...propsWithNoPublishDate} />);
 
         expect(componentWithNoPublishDate.state("publishDate")).toMatchObject({
             value: "",
-            errorMsg: ""
+            errorMsg: "",
         });
         expect(componentWithNoPublishDate.state("publishDate")).toMatchObject({
             value: "",
-            errorMsg: ""
+            errorMsg: "",
         });
     });
 });
@@ -105,12 +105,12 @@ describe("Editing the collection name", () => {
         defaultComponent.setState({
             name: {
                 value: "",
-                errorMsg: "An error message"
+                errorMsg: "An error message",
             },
             publishDate: {
                 value: "",
-                errorMsg: "Another error message"
-            }
+                errorMsg: "Another error message",
+            },
         });
         defaultComponent.instance().handleNameChange("Edited test collection");
         expect(defaultComponent.state("name").errorMsg).toEqual("");
@@ -122,7 +122,7 @@ describe("Editing the collection's associated teams", () => {
     const fetchedAllTeams = [
         { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
         { id: "2", name: "Team 2", members: [] },
-        { id: "3", name: "Team 3", members: ["member2@email.com"] }
+        { id: "3", name: "Team 3", members: ["member2@email.com"] },
     ];
     let editingTeamsComponent;
 
@@ -131,7 +131,7 @@ describe("Editing the collection's associated teams", () => {
     });
 
     it("on mount it updates global state with the latest list of all teams", () => {
-        editingTeamsComponent.instance().componentWillMount();
+        editingTeamsComponent.instance().UNSAFE_componentWillMount();
         expect(dispatchedAction.type).toEqual(UPDATE_ALL_TEAMS);
         expect(dispatchedAction.allTeams).toEqual(fetchedAllTeams);
     });
@@ -332,13 +332,13 @@ describe("Data sent as request body on save", () => {
         scheduledComponent.setState({
             publishDate: {
                 value: "2018-05-15",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishTime: {
                 value: "09:30",
-                errorMsg: ""
+                errorMsg: "",
             },
-            publishType: "scheduled"
+            publishType: "scheduled",
         });
         const request = scheduledComponent.instance().mapEditsToAPIRequestBody(scheduledComponent.state());
         expect(request.publishDate).toEqual("2018-05-15T08:30:00.000Z");
@@ -348,13 +348,13 @@ describe("Data sent as request body on save", () => {
         scheduledComponent.setState({
             publishDate: {
                 value: "2018-05-15",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishTime: {
                 value: "09:30",
-                errorMsg: ""
+                errorMsg: "",
             },
-            publishType: "manual"
+            publishType: "manual",
         });
         const request = scheduledComponent.instance().mapEditsToAPIRequestBody(scheduledComponent.state());
         expect(request.publishDate).toBeFalsy();
@@ -362,13 +362,13 @@ describe("Data sent as request body on save", () => {
 
     it("publish type matches the property the API expects", () => {
         scheduledComponent.setState({
-            publishType: "manual"
+            publishType: "manual",
         });
         const request = scheduledComponent.instance().mapEditsToAPIRequestBody(scheduledComponent.state());
         expect(request.type).toEqual("manual");
 
         scheduledComponent.setState({
-            publishType: "scheduled"
+            publishType: "scheduled",
         });
     });
 });
@@ -378,16 +378,16 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             name: {
                 value: "Edited collection name",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishDate: {
                 value: "2018-01-12",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishTime: {
                 value: "09:30",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
         expect(collections.update.mock.calls.length).toEqual(0);
         defaultComponent.instance().handleSave();
@@ -399,8 +399,8 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             name: {
                 value: "",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
         defaultComponent.instance().handleSave();
         expect(defaultComponent.state("name").errorMsg).toBeTruthy();
@@ -410,9 +410,9 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             publishDate: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
-            publishType: "scheduled"
+            publishType: "scheduled",
         });
         defaultComponent.instance().handleSave();
         expect(defaultComponent.state("publishDate").errorMsg).toBeTruthy();
@@ -422,9 +422,9 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             publishTime: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
-            publishType: "scheduled"
+            publishType: "scheduled",
         });
         defaultComponent.instance().handleSave();
         expect(defaultComponent.state("publishTime").errorMsg).toBeTruthy();
@@ -434,9 +434,9 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             name: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
-            publishType: "manual"
+            publishType: "manual",
         });
         expect(collections.update.mock.calls.length).toEqual(0);
         defaultComponent.instance().handleSave();
@@ -445,17 +445,17 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             name: {
                 value: "A name",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishType: "scheduled",
             publishDate: {
                 value: "",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishTime: {
                 value: "09:30am",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
         expect(collections.update.mock.calls.length).toEqual(0);
         defaultComponent.instance().handleSave();
@@ -464,17 +464,17 @@ describe("Validating the edited collection", () => {
         defaultComponent.setState({
             name: {
                 value: "A name",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishType: "scheduled",
             publishDate: {
                 value: "2018-01-12",
-                errorMsg: ""
+                errorMsg: "",
             },
             publishTime: {
                 value: "",
-                errorMsg: ""
-            }
+                errorMsg: "",
+            },
         });
         expect(collections.update.mock.calls.length).toEqual(0);
         defaultComponent.instance().handleSave();
@@ -489,21 +489,21 @@ describe("The mapPropsToState function", () => {
                 active: {
                     type: "scheduled",
                     publishDate: "2018-01-12T09:30:00.000Z",
-                    teams: ["Team 2", "Team 3"]
-                }
+                    teams: ["Team 2", "Team 3"],
+                },
             },
             teams: {
                 allIDsAndNames: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
-                    { id: "3", name: "Team 3", members: [] }
-                ]
-            }
+                    { id: "3", name: "Team 3", members: [] },
+                ],
+            },
         };
         const expectProps = {
             publishType: "scheduled",
             publishDate: "2018-01-12T09:30:00.000Z",
-            teams: ["Team 2", "Team 3"]
+            teams: ["Team 2", "Team 3"],
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -515,14 +515,14 @@ describe("The mapPropsToState function", () => {
                 allIDsAndNames: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
-                    { id: "3", name: "Team 3", members: [] }
-                ]
-            }
+                    { id: "3", name: "Team 3", members: [] },
+                ],
+            },
         };
         const expectProps = {
             publishType: undefined,
             publishDate: undefined,
-            teams: undefined
+            teams: undefined,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });

@@ -9,14 +9,14 @@ jest.mock("../../utilities/logging/log", () => {
     return {
         event: jest.fn(() => {}),
         data: jest.fn(() => {}),
-        error: jest.fn(() => {})
+        error: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -24,7 +24,7 @@ jest.mock("../../utilities/api-clients/user", () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedAllUsers);
-        })
+        }),
     };
 });
 
@@ -32,7 +32,7 @@ jest.mock("../../utilities/auth", () => {
     return {
         isAdmin: jest.fn(() => {
             return true;
-        })
+        }),
     };
 });
 
@@ -44,8 +44,8 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
+            rawJson: false,
+        },
     },
     {
         name: "Test user 2",
@@ -54,8 +54,8 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
+            rawJson: false,
+        },
     },
     {
         name: "Test user 3",
@@ -64,9 +64,9 @@ const mockedAllUsers = [
         temporaryPassword: false,
         lastAdmin: "test@test.com",
         adminOptions: {
-            rawJson: false
-        }
-    }
+            rawJson: false,
+        },
+    },
 ];
 
 let dispatchedActions = [];
@@ -77,8 +77,8 @@ const defaultProps = {
     },
     rootPath: "/florence",
     params: {
-        userID: ""
-    }
+        userID: "",
+    },
 };
 
 const component = shallow(<UsersController {...defaultProps} />);
@@ -86,12 +86,12 @@ const component = shallow(<UsersController {...defaultProps} />);
 describe("On mount of the users screen", () => {
     it("fetches data for all users", () => {
         const getUserCalls = user.getAll.mock.calls.length;
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
     });
 
     it("adds all users to state", () => {
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
         expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
     });
@@ -100,19 +100,19 @@ describe("On mount of the users screen", () => {
         expect(component.state("isFetchingUsers")).toBe(false);
 
         // Tests that state is set correctly before asynchronous requests have finished
-        component.instance().componentWillMount();
+        component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(true);
     });
 
     it("updates isFetchingUsers state to show it has fetched data for all users", async () => {
         // Tests that state is set correctly after asynchronous requests were successful
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(false);
     });
 
     it("updates isFetchingUsers state correctly on failure to fetch data for all users", async () => {
         user.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(false);
     });
 });
@@ -135,7 +135,7 @@ describe("Mapping users to state", () => {
             ...mockedAllUsers[0],
             id: mockedAllUsers[0].email,
             columnValues: [mockedAllUsers[0].name, mockedAllUsers[0].email],
-            returnValue: { id: mockedAllUsers[0].email }
+            returnValue: { id: mockedAllUsers[0].email },
         };
         const returnValue = component.instance().mapUserToState(mockedAllUsers[0]);
         expect(returnValue).toMatchObject(expectedValue);

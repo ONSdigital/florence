@@ -14,11 +14,11 @@ import Input from "../../../components/Input";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
     }),
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-    })
+        pathname: PropTypes.string.isRequired,
+    }),
 };
 
 export class CreateDatasetTaxonomyController extends Component {
@@ -31,11 +31,11 @@ export class CreateDatasetTaxonomyController extends Component {
             filteredTopics: [],
             searchTerm: "",
             selectedTopicURL: "",
-            isPosting: false
+            isPosting: false,
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this.getTaxonomyNodes();
     };
 
@@ -45,7 +45,7 @@ export class CreateDatasetTaxonomyController extends Component {
                 return {
                     id: topic.uri,
                     value: topic.uri,
-                    label: topic.description.title
+                    label: topic.description.title,
                 };
             });
         } catch (error) {
@@ -53,7 +53,7 @@ export class CreateDatasetTaxonomyController extends Component {
             const notification = {
                 type: "warning",
                 message: "An error occurred when trying to get available taxonomy nodes. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping taxonomy topics to state:\n", error);
@@ -74,7 +74,7 @@ export class CreateDatasetTaxonomyController extends Component {
                 const notification = {
                     type: "warning",
                     message: "An error occurred when trying to get available taxonomy nodes. Try refreshing the page",
-                    isDismissable: true
+                    isDismissable: true,
                 };
                 notifications.add(notification);
                 console.error("Error getting taxonomy nodes:\n", error);
@@ -93,7 +93,7 @@ export class CreateDatasetTaxonomyController extends Component {
         });
         this.setState({
             filteredTopics,
-            searchTerm
+            searchTerm,
         });
     };
 
@@ -101,9 +101,9 @@ export class CreateDatasetTaxonomyController extends Component {
         return {
             links: {
                 taxonomy: {
-                    href: this.state.selectedTopicURL
-                }
-            }
+                    href: this.state.selectedTopicURL,
+                },
+            },
         };
     };
 
@@ -119,7 +119,7 @@ export class CreateDatasetTaxonomyController extends Component {
                     type: "positive",
                     message: "Dataset created.",
                     isDismissable: true,
-                    autoDismiss: 5000
+                    autoDismiss: 5000,
                 });
                 this.setState({ isPosting: false });
                 const datasetsOverviewPageURL = url.resolve("../../");
@@ -150,7 +150,7 @@ export class CreateDatasetTaxonomyController extends Component {
                     type: "warning",
                     message: notificationMessage,
                     isDismissable: true,
-                    autoDismiss: 10000
+                    autoDismiss: 10000,
                 });
                 this.setState({ isPosting: false });
                 log.event("Error creating dataset", log.error(error));

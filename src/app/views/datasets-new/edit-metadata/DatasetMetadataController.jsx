@@ -12,7 +12,7 @@ import DatasetMetadata from "./DatasetMetadata";
 
 const propTypes = {
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
+        pathname: PropTypes.string.isRequired,
     }),
     params: PropTypes.shape({
         collectionID: PropTypes.string.isRequired,
@@ -20,10 +20,10 @@ const propTypes = {
         editionID: PropTypes.string.isRequired,
         versionID: PropTypes.string.isRequired,
         metadataField: PropTypes.string,
-        metadataItemID: PropTypes.string
+        metadataItemID: PropTypes.string,
     }),
     children: PropTypes.element,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class DatasetMetadataController extends Component {
@@ -62,7 +62,7 @@ export class DatasetMetadataController extends Component {
                 versionID: "",
                 releaseDate: {
                     value: "",
-                    error: ""
+                    error: "",
                 },
                 nextReleaseDate: "",
                 unitOfMeasure: "",
@@ -70,12 +70,12 @@ export class DatasetMetadataController extends Component {
                 dimensions: [],
                 usageNotes: [],
                 latestChanges: [],
-                qmi: ""
-            }
+                qmi: "",
+            },
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
@@ -96,7 +96,7 @@ export class DatasetMetadataController extends Component {
                 notifications.add({
                     type: "warning",
                     message: `An error occured when getting information about this dataset version metadata. Please try refresh the page`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 console.error("get metadata: error GETting metadata from controller", error);
             });
@@ -127,7 +127,7 @@ export class DatasetMetadataController extends Component {
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
                 dimensions: dimensions.length ? dimensions : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
-                latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : []
+                latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
             };
             if (dataset.contacts) {
                 mappedMetadata.contactName = dataset.contacts[0].name ? dataset.contacts[0].name : "";
@@ -141,14 +141,14 @@ export class DatasetMetadataController extends Component {
                 versionCollectionState: metadata.collection_state.charAt(0).toLowerCase() + metadata.collection_state.slice(1) || "",
                 lastEditedBy: metadata.collection_last_edited_by || null,
                 versionIsPublished: version.state === "published",
-                state: dataset.state
+                state: dataset.state,
             };
         } catch (error) {
             log.event("error mapping metadata to to state", log.data({ datasetID: dataset.id, versionID: version.id }), log.error(error));
             notifications.add({
                 type: "warning",
                 message: `An unexpected error occurred when trying to get data for this dataset version. Try refreshing the page`,
-                isDismissable: true
+                isDismissable: true,
             });
             console.error(`Error mapping metadata to to state. \n ${error}`);
         }
@@ -161,7 +161,7 @@ export class DatasetMetadataController extends Component {
             notifications.add({
                 type: "neutral",
                 message: `This dataset is in another collection.`,
-                isDismissable: true
+                isDismissable: true,
             });
         }
         mapped.state === "created" ? this.setState({ allowPreview: false }) : this.setState({ allowPreview: true });
@@ -172,7 +172,7 @@ export class DatasetMetadataController extends Component {
             versionCollectionState: mapped.versionCollectionState,
             datasetState: mapped.state,
             lastEditedBy: mapped.lastEditedBy,
-            versionIsPublished: mapped.versionIsPublished
+            versionIsPublished: mapped.versionIsPublished,
         });
     };
 
@@ -185,7 +185,7 @@ export class DatasetMetadataController extends Component {
                     href: link.href,
                     title: link.title,
                     simpleListHeading: link.title,
-                    simpleListDescription: link.description
+                    simpleListDescription: link.description,
                 };
             });
         } catch (error) {
@@ -205,7 +205,7 @@ export class DatasetMetadataController extends Component {
                     date: notice.date,
                     description: notice.description,
                     simpleListHeading: `${notice.type} (${date.format(notice.date, "dd mmmm yyyy")})`,
-                    simpleListDescription: notice.description
+                    simpleListDescription: notice.description,
                 };
             });
         } catch (error) {
@@ -224,7 +224,7 @@ export class DatasetMetadataController extends Component {
                     title: note.title,
                     note: note.note,
                     simpleListHeading: note.title,
-                    simpleListDescription: note.note
+                    simpleListDescription: note.note,
                 };
             });
         } catch (error) {
@@ -243,7 +243,7 @@ export class DatasetMetadataController extends Component {
                     title: latestChange.title,
                     description: latestChange.description,
                     simpleListHeading: latestChange.title,
-                    simpleListDescription: latestChange.description
+                    simpleListDescription: latestChange.description,
                 };
             });
         } catch (error) {
@@ -261,7 +261,7 @@ export class DatasetMetadataController extends Component {
         this.setState({
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
         });
     };
 
@@ -271,12 +271,12 @@ export class DatasetMetadataController extends Component {
         const ISODate = new Date(value).toISOString();
         const newMetadataState = {
             ...this.state.metadata,
-            [fieldName]: { value: ISODate, error: "" }
+            [fieldName]: { value: ISODate, error: "" },
         };
         this.setState({
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName)
+            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
         });
     };
 
@@ -284,11 +284,11 @@ export class DatasetMetadataController extends Component {
         const value = event.value === "true" ? true : false;
         const newMetadataState = {
             ...this.state.metadata,
-            nationalStatistic: value
+            nationalStatistic: value,
         };
         this.setState({
             metadata: newMetadataState,
-            datasetMetadataHasChanges: true
+            datasetMetadataHasChanges: true,
         });
     };
 
@@ -303,7 +303,7 @@ export class DatasetMetadataController extends Component {
         });
         const newMetadataState = {
             ...this.state.metadata,
-            dimensions: newDimensionMetadata
+            dimensions: newDimensionMetadata,
         };
         this.setState({ metadata: newMetadataState, dimensionsUpdated: true });
     };
@@ -319,7 +319,7 @@ export class DatasetMetadataController extends Component {
         });
         const newMetadataState = {
             ...this.state.metadata,
-            dimensions: newDimensionMetadata
+            dimensions: newDimensionMetadata,
         };
         this.setState({ metadata: newMetadataState, dimensionsUpdated: true });
     };
@@ -336,12 +336,12 @@ export class DatasetMetadataController extends Component {
         const newFieldState = this.state.metadata[stateFieldName].filter(item => item.id !== deletedField.id);
         const newMetadataState = {
             ...this.state.metadata,
-            [stateFieldName]: newFieldState
+            [stateFieldName]: newFieldState,
         };
         this.setState({
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges(stateFieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName)
+            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName),
         });
     };
 
@@ -355,7 +355,7 @@ export class DatasetMetadataController extends Component {
         this.setState({
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges(stateFieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName)
+            versionMetadataHasChanges: this.versionMetadataHasChanges(stateFieldName),
         });
         this.props.dispatch(push(url.resolve("../../../")));
     };
@@ -367,7 +367,7 @@ export class DatasetMetadataController extends Component {
         const mappedNewFieldState = this.mapMetadataFieldToState(newFieldState, stateFieldName);
         return {
             ...this.state.metadata,
-            [stateFieldName]: mappedNewFieldState
+            [stateFieldName]: mappedNewFieldState,
         };
     };
 
@@ -381,7 +381,7 @@ export class DatasetMetadataController extends Component {
         const mappedNewFieldState = this.mapMetadataFieldToState(newFieldState, stateFieldName);
         return {
             ...this.state.metadata,
-            [stateFieldName]: mappedNewFieldState
+            [stateFieldName]: mappedNewFieldState,
         };
     };
 
@@ -406,7 +406,7 @@ export class DatasetMetadataController extends Component {
                 notifications.add({
                     type: "warning",
                     message: `An when adding metadata item, changes or additions won't be save. Refresh the page and try again`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 console.error(`Error mapping metadata field to state. Unknown field name '${stateFieldName}'`);
             }
@@ -465,29 +465,29 @@ export class DatasetMetadataController extends Component {
                 publications: this.state.metadata.relatedPublications,
                 methodologies: this.state.metadata.relatedMethodologies,
                 qmi: {
-                    href: this.state.metadata.qmi
+                    href: this.state.metadata.qmi,
                 },
                 release_frequency: this.state.metadata.releaseFrequency,
                 contacts: [
                     {
                         name: this.state.metadata.contactName,
                         email: this.state.metadata.contactEmail,
-                        telephone: this.state.metadata.contactTelephone
-                    }
+                        telephone: this.state.metadata.contactTelephone,
+                    },
                 ],
                 next_release: this.state.metadata.nextReleaseDate,
-                unit_of_measure: this.state.metadata.unitOfMeasure
+                unit_of_measure: this.state.metadata.unitOfMeasure,
             },
             version: {
                 id: this.state.metadata.versionID,
                 release_date: this.state.metadata.releaseDate.value,
                 alerts: this.state.metadata.notices,
                 usage_notes: this.state.metadata.usageNotes,
-                lastest_changes: this.state.metadata.latestChanges
+                lastest_changes: this.state.metadata.latestChanges,
             },
             dimensions: [...this.state.metadata.dimensions],
             collection_id: this.props.params.collectionID,
-            collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed)
+            collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
         };
     };
 
@@ -516,7 +516,7 @@ export class DatasetMetadataController extends Component {
                 notifications.add({
                     type: "positive",
                     message: `${this.state.metadata.title} saved!`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
 
                 if (isMarkingAsReviewed || isSubmittingForReview) {
@@ -529,7 +529,7 @@ export class DatasetMetadataController extends Component {
                 notifications.add({
                     type: "warning",
                     message: `An error occured when saving this dataset version metadata. Please try again`,
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 console.error("save metadata: error PUTting metadata to controller", error);
             });
@@ -539,11 +539,11 @@ export class DatasetMetadataController extends Component {
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
-                error: "You must set a release date"
+                error: "You must set a release date",
             };
             const newMetadataState = {
                 ...this.state.metadata,
-                releaseDate: newReleaseDateState
+                releaseDate: newReleaseDateState,
             };
             this.setState({ metadata: newMetadataState });
             window.scrollTo(0, 0);
@@ -575,7 +575,7 @@ export class DatasetMetadataController extends Component {
             return React.cloneElement(child, {
                 data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
-                handleCancelClick: this.handleSimpleEditableListEditCancel
+                handleCancelClick: this.handleSimpleEditableListEditCancel,
             });
         });
         return modal;

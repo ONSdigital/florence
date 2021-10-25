@@ -8,7 +8,7 @@ import ButtonWithSpinner from "../../components/button/ButtonWithSpinner";
 const propTypes = {
     validationErrors: PropTypes.shape({
         heading: PropTypes.string,
-        body: PropTypes.arrayOf(PropTypes.elementType)
+        body: PropTypes.arrayOf(PropTypes.elementType),
     }),
     onSubmit: PropTypes.func,
     isSubmitting: PropTypes.bool,
@@ -18,13 +18,15 @@ const propTypes = {
             label: PropTypes.string,
             type: PropTypes.string,
             onChange: PropTypes.func,
-            error: PropTypes.string
+            error: PropTypes.string,
         })
-    )
+    ),
 };
 
 const LoginForm = props => {
     const showValidationErrorPanel = props.validationErrors.body && props.validationErrors.body.length > 0;
+    const firstTimeSignIn = new URLSearchParams(location.search).get("first-time");
+    const isFirstTimeSignIn = firstTimeSignIn != null && firstTimeSignIn === "true";
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
@@ -38,9 +40,11 @@ const LoginForm = props => {
                     {props.inputs.map((input, index) => {
                         return <Input key={index} {...input} disabled={props.isSubmitting} allowAutoComplete={true} />;
                     })}
-                    <div>
-                        <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
-                    </div>
+                    {!isFirstTimeSignIn && (
+                        <div>
+                            <a href={"/florence/forgotten-password"}>Forgotten your password?</a>
+                        </div>
+                    )}
                     <ButtonWithSpinner isSubmitting={props.isSubmitting} buttonText="Sign in" />
                 </form>
             </div>

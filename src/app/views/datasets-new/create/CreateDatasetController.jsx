@@ -14,8 +14,8 @@ import Input from "../../../components/Input";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-    })
+        pathname: PropTypes.string.isRequired,
+    }),
 };
 
 export class CreateDatasetController extends Component {
@@ -26,11 +26,11 @@ export class CreateDatasetController extends Component {
             isFetchingRecipesAndDatasets: false,
             filteredOutputs: [],
             outputs: [],
-            searchTerm: ""
+            searchTerm: "",
         };
     }
 
-    componentWillMount = () => {
+    UNSAFE_componentWillMount = () => {
         this.getAllUncreatedDatasetFromRecipeOutputs();
     };
 
@@ -75,7 +75,7 @@ export class CreateDatasetController extends Component {
                 const notification = {
                     type: "warning",
                     message: "An error occurred when trying to get available datatsets. Try refreshing the page",
-                    isDismissable: true
+                    isDismissable: true,
                 };
                 notifications.add(notification);
                 console.error("Error getting outputs with no created dataset:\n", error);
@@ -119,7 +119,7 @@ export class CreateDatasetController extends Component {
             return {
                 title: output.title,
                 id: output.dataset_id,
-                url: outputUrl
+                url: outputUrl,
             };
         });
     };
@@ -131,7 +131,7 @@ export class CreateDatasetController extends Component {
         });
         this.setState({
             filteredOutputs,
-            searchTerm
+            searchTerm,
         });
     };
 

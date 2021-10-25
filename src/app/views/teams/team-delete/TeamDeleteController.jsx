@@ -17,12 +17,12 @@ const propTypes = {
             id: PropTypes.number,
             name: PropTypes.string.isRequired,
             members: PropTypes.arrayOf(PropTypes.string),
-            path: PropTypes.string
+            path: PropTypes.string,
         })
     ),
     dispatch: PropTypes.func.isRequired,
     onDeleteSuccess: PropTypes.func.isRequired,
-    pathname: PropTypes.string.isRequired
+    pathname: PropTypes.string.isRequired,
 };
 
 export class TeamDeleteController extends Component {
@@ -33,40 +33,36 @@ export class TeamDeleteController extends Component {
             formIsPosting: false,
             input: {
                 value: "",
-                error: ""
+                error: "",
             },
-            parentPath: this.props.pathname.substr(0, this.props.pathname.lastIndexOf("/delete"))
+            parentPath: this.props.pathname.substr(0, this.props.pathname.lastIndexOf("/delete")),
         };
-
-        this.handleCancel = this.handleCancel.bind(this);
-        this.handleFormInput = this.handleFormInput.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
-    handleCancel() {
+    handleCancel = () => {
         this.props.dispatch(push(this.state.parentPath));
-    }
+    };
 
-    handleFormInput(event) {
+    handleFormInput = event => {
         const input = Object.assign({}, this.state.input, {
             value: event.target.value,
-            error: ""
+            error: "",
         });
         this.setState({ input });
-    }
+    };
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
         if (this.state.input.value !== this.props.name) {
             log.event(
                 `error deleting team. The team name provided doesn't match the one user is trying to delete`,
                 log.data({
                     user_inputted_value: this.state.input.value,
-                    team: this.props.name
+                    team: this.props.name,
                 })
             );
             const input = Object.assign({}, this.state.input, {
-                error: "The team name you've provided doesn't match the one you're trying to delete"
+                error: "The team name you've provided doesn't match the one you're trying to delete",
             });
             this.setState({ input });
             return;
@@ -90,7 +86,7 @@ export class TeamDeleteController extends Component {
                     `Error deleting team`,
                     log.data({
                         status_code: error.status,
-                        team: this.props.name
+                        team: this.props.name,
                     }),
                     log.error(error)
                 );
@@ -104,7 +100,7 @@ export class TeamDeleteController extends Component {
                         const notification = {
                             type: "warning",
                             message: `The team '${this.props.name}' doesn't exist - another user may have deleted it`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -113,7 +109,7 @@ export class TeamDeleteController extends Component {
                         const notification = {
                             type: "warning",
                             message: `An error occurred whilst trying to delete team '${this.props.name}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -122,7 +118,7 @@ export class TeamDeleteController extends Component {
                         const notification = {
                             type: "warning",
                             message: `A network error occurred whilst trying to delete team '${this.props.name}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -131,7 +127,7 @@ export class TeamDeleteController extends Component {
                         const notification = {
                             type: "warning",
                             message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -141,21 +137,21 @@ export class TeamDeleteController extends Component {
                             `Unhandled error whilst deleteing team's`,
                             log.data({
                                 status_code: error.status,
-                                team: this.props.name
+                                team: this.props.name,
                             }),
                             log.error(error)
                         );
                         const notification = {
                             type: "warning",
                             message: `An unexpected error occurred whilst trying to delete team '${this.props.name}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
                     }
                 }
             });
-    }
+    };
 
     render() {
         return (
@@ -177,7 +173,7 @@ function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
         teams: state.state.teams.all,
-        pathname: state.routing.locationBeforeTransitions.pathname
+        pathname: state.routing.locationBeforeTransitions.pathname,
     };
 }
 

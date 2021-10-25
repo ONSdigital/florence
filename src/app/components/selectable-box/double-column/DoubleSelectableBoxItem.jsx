@@ -5,27 +5,21 @@ const propTypes = {
     id: PropTypes.any.isRequired,
     selectableBox: PropTypes.shape({
         firstColumn: PropTypes.string.isRequired,
-        secondColumn: PropTypes.string.isRequired
+        secondColumn: PropTypes.string.isRequired,
     }),
     status: PropTypes.shape({
         neutral: PropTypes.bool.isRequired,
         warning: PropTypes.bool.isRequired,
-        message: PropTypes.string.isRequired
+        message: PropTypes.string.isRequired,
     }),
     handleClick: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool
+    isSelected: PropTypes.bool,
 };
 
 export default class DoubleSelectableBoxItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindClick = this.bindClick.bind(this);
-    }
-
-    bindClick() {
+    bindClick = () => {
         this.props.handleClick(this.props);
-    }
+    };
 
     render() {
         return (

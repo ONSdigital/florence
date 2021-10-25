@@ -5,19 +5,13 @@ const propTypes = {
     name: PropTypes.string.isRequired,
     id: PropTypes.any.isRequired,
     handleClick: PropTypes.func.isRequired,
-    isSelected: PropTypes.bool
+    isSelected: PropTypes.bool,
 };
 
 export default class SelectableBoxItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindClick = this.bindClick.bind(this);
-    }
-
-    bindClick() {
+    bindClick = () => {
         this.props.handleClick(this.props);
-    }
+    };
 
     render() {
         return (

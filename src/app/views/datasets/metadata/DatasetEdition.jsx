@@ -12,18 +12,18 @@ import url from "../../../utilities/url";
 
 const propTypes = {
     params: PropTypes.shape({
-        instance: PropTypes.string
+        instance: PropTypes.string,
     }),
     dispatch: PropTypes.func.isRequired,
     instance: PropTypes.shape({
-        editions: PropTypes.arrayOf(PropTypes.string)
+        editions: PropTypes.arrayOf(PropTypes.string),
     }),
     datasets: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            title: PropTypes.string.isRequired
+            title: PropTypes.string.isRequired,
         })
-    )
+    ),
 };
 
 class DatasetEdition extends Component {
@@ -34,14 +34,11 @@ class DatasetEdition extends Component {
             isFetchingInstance: false,
             edition: null,
             error: null,
-            datasetTitle: null
+            datasetTitle: null,
         };
-
-        this.handleSelectChange = this.handleSelectChange.bind(this);
-        this.handleFormSubmit = this.handleFormSubmit.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingInstance: true });
 
         const APIRequests = [datasets.getInstance(this.props.params.instance)];
@@ -60,7 +57,7 @@ class DatasetEdition extends Component {
                 });
                 this.setState({
                     isFetchingInstance: false,
-                    datasetTitle: activeDataset.title
+                    datasetTitle: activeDataset.title,
                 });
             })
             .catch(error => {
@@ -69,7 +66,7 @@ class DatasetEdition extends Component {
                         const notification = {
                             type: "neutral",
                             message: "You do not permission to view the edition metadata for this dataset",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -78,7 +75,7 @@ class DatasetEdition extends Component {
                         const notification = {
                             type: "neutral",
                             message: `Dataset ID '${this.props.params.instance}' was not recognised. You've been redirected to the datasets home screen`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         this.props.dispatch(push(url.resolve("../../")));
@@ -88,7 +85,7 @@ class DatasetEdition extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get this dataset",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -103,29 +100,29 @@ class DatasetEdition extends Component {
         return this.props.instance.editions.map((edition, index) => {
             return {
                 id: `recipe-${index}`,
-                name: edition
+                name: edition,
             };
         });
     }
 
-    handleFormSubmit(event) {
+    handleFormSubmit = event => {
         event.preventDefault();
 
         if (!this.state.edition) {
             this.setState({
-                error: "You must select an edition"
+                error: "You must select an edition",
             });
         }
 
         this.props.dispatch(push(url.resolve("whats-changed")));
-    }
+    };
 
-    handleSelectChange(event) {
+    handleSelectChange = event => {
         this.setState({
             error: "",
-            edition: event.target.value
+            edition: event.target.value,
         });
-    }
+    };
 
     render() {
         return (
@@ -165,7 +162,7 @@ DatasetEdition.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         instance: state.state.datasets.activeInstance,
-        datasets: state.state.datasets.all
+        datasets: state.state.datasets.all,
     };
 }
 

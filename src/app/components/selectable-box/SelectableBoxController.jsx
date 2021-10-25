@@ -8,19 +8,13 @@ const propTypes = {
     items: PropTypes.arrayOf(PropTypes.object),
     activeItem: PropTypes.object,
     handleItemClick: PropTypes.func.isRequired,
-    isUpdating: PropTypes.bool
+    isUpdating: PropTypes.bool,
 };
 
 export default class SelectableBoxController extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindItemClick = this.bindItemClick.bind(this);
-    }
-
-    bindItemClick(itemProps) {
+    bindItemClick = itemProps => {
         this.props.handleItemClick(itemProps);
-    }
+    };
 
     renderList() {
         return (

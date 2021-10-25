@@ -14,7 +14,7 @@ const propTypes = {
     activeCollection: PropTypes.object.isRequired,
     onClose: PropTypes.func.isRequired,
     onMultiFileSuccess: PropTypes.func.isRequired,
-    onSingleFileSuccess: PropTypes.func.isRequired
+    onSingleFileSuccess: PropTypes.func.isRequired,
 };
 
 export class RestoreContent extends Component {
@@ -26,16 +26,11 @@ export class RestoreContent extends Component {
             isRestoringDeletingContent: false,
             allDeletedContent: [],
             filteredDeletedContent: [],
-            activeItem: {}
+            activeItem: {},
         };
-
-        this.handleItemClick = this.handleItemClick.bind(this);
-        this.handleDoneClick = this.handleDoneClick.bind(this);
-        this.handleSearch = this.handleSearch.bind(this);
-        this.handleMultipleRestoredPages = this.handleMultipleRestoredPages.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.getAllDeletedContent();
     }
 
@@ -51,15 +46,15 @@ export class RestoreContent extends Component {
                         {deletedContent.uri}
                     </span>,
                     deletedContent.deletedFiles.length.toString(),
-                    deletedContent.eventDate
+                    deletedContent.eventDate,
                 ],
                 returnValue: {
                     id: deletedContent.id.toString(),
                     uri: deletedContent.uri,
                     title: deletedContent.pageTitle,
                     type: deletedContent.type,
-                    isMultiDelete: deletedContent.deletedFiles.length > 1
-                }
+                    isMultiDelete: deletedContent.deletedFiles.length > 1,
+                },
             };
         } catch (error) {
             log.event(
@@ -67,7 +62,7 @@ export class RestoreContent extends Component {
                 log.error(error),
                 log.data({
                     deleted_content_id: deletedContent.id,
-                    deleted_content_page_title: deletedContent.pageTitle
+                    deleted_content_page_title: deletedContent.pageTitle,
                 })
             );
             console.error(`Error mapping deleted content (id: ${deletedContent.id}, title: ${deletedContent.pageTitle})to state. ${error}`);
@@ -84,7 +79,7 @@ export class RestoreContent extends Component {
                 });
                 this.setState({
                     isGettingDeletedContent: false,
-                    allDeletedContent: allDeletes || []
+                    allDeletedContent: allDeletes || [],
                 });
             })
             .catch(error => {
@@ -98,7 +93,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to get deleted content.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -107,7 +102,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -116,7 +111,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -125,7 +120,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to get deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -135,11 +130,11 @@ export class RestoreContent extends Component {
             });
     }
 
-    handleItemClick(item) {
+    handleItemClick = item => {
         this.setState({ activeItem: item });
-    }
+    };
 
-    handleDoneClick() {
+    handleDoneClick = () => {
         this.setState({ isRestoringDeletingContent: true });
         content
             .restoreDeleted(this.state.activeItem.id, this.props.activeCollection.id)
@@ -164,7 +159,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: `Deleted content not found`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -173,7 +168,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: `The collection "${this.props.activeCollection.name}" you are trying to restore deleted content into was not found. It may have been deleted`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -182,7 +177,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to restore deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -191,7 +186,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to restore deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -200,7 +195,7 @@ export class RestoreContent extends Component {
                         const notification = {
                             type: "warning",
                             message: "There's been a network error whilst trying to restore deleted content.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -209,9 +204,9 @@ export class RestoreContent extends Component {
                 this.setState({ isRestoringDeletingContent: false });
                 console.error("Error restoring deleted content:\n", error);
             });
-    }
+    };
 
-    handleMultipleRestoredPages(collectionID) {
+    handleMultipleRestoredPages = collectionID => {
         // When restoring multiple deletes we need to check the collectionDetails end point to get
         // the names and page type because they are not contained in the response from deletedContent
         // end point. We should proably do this properly when Zebedee is replaced
@@ -227,23 +222,23 @@ export class RestoreContent extends Component {
                 const notification = {
                     type: "warning",
                     message: `We were unable to get all deletes, but they will have been restored. Refresh the page to see the full list of restored deletes`,
-                    autoDismiss: 5000
+                    autoDismiss: 5000,
                 };
                 notifications.add(notification);
                 this.setState({ isRestoringDeletingContent: false });
             });
-    }
+    };
 
-    handleSearch(event) {
+    handleSearch = event => {
         const searchTerm = event.target.value.toLowerCase();
         const filteredDeletes = this.state.allDeletedContent.filter(deletedContent => {
             return deletedContent.pageTitle.toLowerCase().search(searchTerm) !== -1;
         });
         this.setState({
             filteredDeletedContent: filteredDeletes,
-            activeItem: {}
+            activeItem: {},
         });
-    }
+    };
 
     render() {
         return (
@@ -263,7 +258,7 @@ export class RestoreContent extends Component {
                         columns={[
                             { heading: "Deleted page and URI", width: "6" },
                             { heading: "No. of deleted pages", width: "3" },
-                            { heading: "Date of delete", width: "3" }
+                            { heading: "Date of delete", width: "3" },
                         ]}
                         handleItemClick={this.handleItemClick}
                         activeRowID={this.state.activeItem.id}
@@ -295,7 +290,7 @@ RestoreContent.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        activeCollection: state.state.collections.active
+        activeCollection: state.state.collections.active,
     };
 }
 

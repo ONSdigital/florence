@@ -10,12 +10,12 @@ import Iframe from "../../components/iframe/Iframe";
 
 const propTypes = {
     location: PropTypes.PropTypes.shape({
-        pathname: PropTypes.string
+        pathname: PropTypes.string,
     }),
     params: PropTypes.shape({
-        collectionID: PropTypes.string.isRequired
+        collectionID: PropTypes.string.isRequired,
     }),
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class WorkflowPreview extends Component {
@@ -47,7 +47,7 @@ export class WorkflowPreview extends Component {
                 type: "warning",
                 message:
                     "There was an error previewing this content so you've been directed to the homepage. You can navigate to the content or refresh Florence.",
-                isDismissable: true
+                isDismissable: true,
             });
             return "/";
         }

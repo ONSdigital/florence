@@ -14,7 +14,7 @@ import url from "../../utilities/url";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    collectionID: PropTypes.string.isRequired
+    collectionID: PropTypes.string.isRequired,
 };
 
 class DatasetsController extends Component {
@@ -24,13 +24,11 @@ class DatasetsController extends Component {
         this.state = {
             tableValues: [],
             collections: [],
-            isFetchingDatasets: false
+            isFetchingDatasets: false,
         };
-        this.mapResponseToTableData = this.mapResponseToTableData.bind(this);
-        this.handleInstanceURL = this.handleInstanceURL.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingDatasets: true });
 
         const fetches = [datasets.getNewVersionsAndCompletedInstances(), datasets.getAll(), collections.getAll()];
@@ -39,7 +37,7 @@ class DatasetsController extends Component {
                 this.setState({
                     isFetchingDatasets: false,
                     collections: responses[2],
-                    tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID)
+                    tableValues: this.mapResponseToTableData(responses[1].items, responses[0].items, responses[2], this.props.collectionID),
                 });
                 this.props.dispatch(updateAllDatasets(responses[1].items));
             })
@@ -49,7 +47,7 @@ class DatasetsController extends Component {
                         const notification = {
                             type: "neutral",
                             message: "You do not permission to view submitted datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -58,7 +56,7 @@ class DatasetsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available to get all submitted datasets",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -67,7 +65,7 @@ class DatasetsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get the submitted datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -77,7 +75,7 @@ class DatasetsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the submitted datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -86,7 +84,7 @@ class DatasetsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get the submitted datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -95,7 +93,7 @@ class DatasetsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get the submitted datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -114,7 +112,7 @@ class DatasetsController extends Component {
                     type: "warning",
                     message:
                         "An unexpected error occurred when trying to get dataset recipes, so some functionality in Florence may not work as expected.",
-                    isDismissable: true
+                    isDismissable: true,
                 };
                 notifications.add(notification);
                 console.error("Error getting dataset recipes:\n", error);
@@ -134,7 +132,7 @@ class DatasetsController extends Component {
         }
     }
 
-    mapResponseToTableData(datasets, instances, collections, activeCollectionID) {
+    mapResponseToTableData = (datasets, instances, collections, activeCollectionID) => {
         try {
             const values = datasets.map(dataset => {
                 dataset = dataset.current || dataset.next || dataset;
@@ -156,7 +154,7 @@ class DatasetsController extends Component {
                                 instance.edition,
                                 instance.version
                             ),
-                            status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections)
+                            status: this.handleInstanceStatusMessage(instance.state, instance.collection_id, collections),
                         });
                     }
                 });
@@ -165,22 +163,22 @@ class DatasetsController extends Component {
                     title: dataset.title || dataset.id,
                     id: dataset.id,
                     instances: datasetInstances,
-                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + collectionParameter
+                    datasetURL: url.resolve(`datasets/${dataset.id}/metadata`) + collectionParameter,
                 };
             });
             return values;
         } catch (error) {
             const notification = {
                 type: "warning",
-                message: "Error trying to map the datasets data to the table structure. Please refresh the page."
+                message: "Error trying to map the datasets data to the table structure. Please refresh the page.",
             };
             notifications.add(notification);
             console.error("Error mapping dataset API responses to view", error);
             return [];
         }
-    }
+    };
 
-    handleInstanceURL(state, collection, dataset, instance, edition, version) {
+    handleInstanceURL = (state, collection, dataset, instance, edition, version) => {
         let urlPath = "";
         if (state === "completed") {
             urlPath = url.resolve(`datasets/${dataset}/instances/${instance}/metadata`);
@@ -191,7 +189,7 @@ class DatasetsController extends Component {
             urlPath = urlPath + "?collection=" + collection;
         }
         return urlPath;
-    }
+    };
 
     render() {
         return (
@@ -214,7 +212,7 @@ DatasetsController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        collectionID: state.routing.locationBeforeTransitions.query.collection
+        collectionID: state.routing.locationBeforeTransitions.query.collection,
     };
 }
 export default connect(mapStateToProps)(DatasetsController);

@@ -12,48 +12,48 @@ jest.mock("../../../utilities/api-clients/user", () => ({
         Promise.resolve({
             email: "foo@bar.com",
             name: "Foo Bar",
-            temporaryPassword: false
+            temporaryPassword: false,
         })
     ),
     getPermissions: jest.fn().mockImplementation(email =>
         Promise.resolve({
             email,
             admin: false,
-            editor: true
+            editor: true,
         })
     ),
-    getUserRole: jest.fn(() => "PUBLISHER")
+    getUserRole: jest.fn(() => "PUBLISHER"),
 }));
 
 jest.mock("../../../utilities/notifications", () => ({
-    add: jest.fn(() => {})
+    add: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/websocket", () => ({
-    send: jest.fn(() => {})
+    send: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/logging/log", () => ({
     event: jest.fn(() => {}),
     data: jest.fn(() => {}),
-    error: jest.fn(() => {})
+    error: jest.fn(() => {}),
 }));
 
 jest.mock("../../../utilities/auth", () => ({
     isAdmin: jest.fn(() => {
         return true;
-    })
+    }),
 }));
 
 let dispatchedActions = [];
 const defaultProps = {
     dispatch: action => dispatchedActions.push(action),
     params: {
-        userID: "foo@bar.com"
+        userID: "foo@bar.com",
     },
     activeUser: {},
     loggedInUser: {},
-    rootPath: "/florence"
+    rootPath: "/florence",
 };
 
 let component = shallow(<UserDetailsController {...defaultProps} />);
@@ -203,8 +203,8 @@ describe("After the component updates", () => {
     beforeEach(() => {
         mountedComponent.setProps({
             params: {
-                userID: defaultProps.params.userID
-            }
+                userID: defaultProps.params.userID,
+            },
         });
     });
 
@@ -213,8 +213,8 @@ describe("After the component updates", () => {
         const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
         mountedComponent.setProps({
             params: {
-                userID: "foo2@bar.com"
-            }
+                userID: "foo2@bar.com",
+            },
         });
         expect(user.get.mock.calls.length).toBe(noOfDetailsRequests + 1);
         expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests + 1);
@@ -225,8 +225,8 @@ describe("After the component updates", () => {
         const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
         mountedComponent.setProps({
             params: {
-                userID: "foo@bar.com"
-            }
+                userID: "foo@bar.com",
+            },
         });
         expect(user.get.mock.calls.length).toBe(noOfDetailsRequests);
         expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests);
@@ -240,12 +240,12 @@ describe("Mapping API response to state", () => {
         inactive: false,
         lastAdmin: "florence@magicroundabout.ons.gov.uk",
         name: "Foo Bar",
-        temporaryPassword: false
+        temporaryPassword: false,
     };
     const userPermissionsResponse = {
         admin: false,
         editor: true,
-        email: "foo@bar.com"
+        email: "foo@bar.com",
     };
 
     it("defines 'name', 'email', 'hasTemporaryPassword' and 'role' correctly", () => {
@@ -254,7 +254,7 @@ describe("Mapping API response to state", () => {
             email: "foo@bar.com",
             name: "Foo Bar",
             role: "PUBLISHER",
-            hasTemporaryPassword: false
+            hasTemporaryPassword: false,
         });
     });
 
@@ -262,11 +262,11 @@ describe("Mapping API response to state", () => {
         const emptyUserDetailsResponse = {
             ...userDetailsResponse,
             email: "",
-            name: ""
+            name: "",
         };
         const emptyUserPermissionsResponse = {
             ...userPermissionsResponse,
-            email: ""
+            email: "",
         };
         const mappedToState = component.instance().mapUserResponsesToState(emptyUserDetailsResponse, emptyUserPermissionsResponse);
         expect(mappedToState.email).toBe("");
@@ -277,7 +277,7 @@ describe("Mapping API response to state", () => {
         const emptyUserDetailsResponse = {
             ...userDetailsResponse,
             email: "",
-            name: ""
+            name: "",
         };
         const mappedToState = component.instance().mapUserResponsesToState(emptyUserDetailsResponse, userPermissionsResponse);
         expect(mappedToState.email).toBe("foo@bar.com");
@@ -300,7 +300,7 @@ describe("Drawer on mount", () => {
         const props = {
             ...defaultProps,
             arrivedByRedirect: false,
-            previousPathname: ""
+            previousPathname: "",
         };
         const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
@@ -311,7 +311,7 @@ describe("Drawer on mount", () => {
         const props = {
             ...defaultProps,
             arrivedByRedirect: false,
-            previousPathname: "/florence/teams/team-12345"
+            previousPathname: "/florence/teams/team-12345",
         };
         const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
@@ -322,7 +322,7 @@ describe("Drawer on mount", () => {
         const props = {
             ...defaultProps,
             arrivedByRedirect: true,
-            previousPathname: "/florence/users"
+            previousPathname: "/florence/users",
         };
         const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
@@ -333,7 +333,7 @@ describe("Drawer on mount", () => {
         const props = {
             ...defaultProps,
             arrivedByRedirect: false,
-            previousPathname: "/florence/users"
+            previousPathname: "/florence/users",
         };
         const alternativeComponent = shallow(<UserDetailsController {...props} />);
 
@@ -349,16 +349,16 @@ describe("Mapping state to component props", () => {
                     hasTemporaryPassword: false,
                     name: "Foo Bar",
                     email: "foo@bar.com",
-                    role: "PUBLISHER"
-                }
-            }
+                    role: "PUBLISHER",
+                },
+            },
         },
         routing: {
             locationBeforeTransitions: {
                 action: "PUSH",
-                previousPathname: "/florence/users"
-            }
-        }
+                previousPathname: "/florence/users",
+            },
+        },
     };
 
     it("includes the active user", () => {
@@ -366,7 +366,7 @@ describe("Mapping state to component props", () => {
             hasTemporaryPassword: false,
             name: "Foo Bar",
             email: "foo@bar.com",
-            role: "PUBLISHER"
+            role: "PUBLISHER",
         });
     });
 
@@ -381,9 +381,9 @@ describe("Mapping state to component props", () => {
                 ...state.routing,
                 locationBeforeTransitions: {
                     ...state.routing.locationBeforeTransitions,
-                    action: "REPLACE"
-                }
-            }
+                    action: "REPLACE",
+                },
+            },
         };
         expect(mapStateToProps(redirectedState).arrivedByRedirect).toBe(true);
 
@@ -393,9 +393,9 @@ describe("Mapping state to component props", () => {
                 ...state.routing,
                 locationBeforeTransitions: {
                     ...state.routing.locationBeforeTransitions,
-                    action: "PUSH"
-                }
-            }
+                    action: "PUSH",
+                },
+            },
         };
         expect(mapStateToProps(pushedState).arrivedByRedirect).toBe(false);
 
@@ -405,9 +405,9 @@ describe("Mapping state to component props", () => {
                 ...state.routing,
                 locationBeforeTransitions: {
                     ...state.routing.locationBeforeTransitions,
-                    action: "POP"
-                }
-            }
+                    action: "POP",
+                },
+            },
         };
         expect(mapStateToProps(poppedState).arrivedByRedirect).toBe(false);
     });

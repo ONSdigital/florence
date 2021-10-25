@@ -5,21 +5,21 @@ import notifications from "../../../utilities/notifications";
 
 jest.mock("../../../utilities/websocket", () => {
     return {
-        send: jest.fn(() => {})
+        send: jest.fn(() => {}),
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function() {},
-        eventTypes: {}
+        add: function () {},
+        eventTypes: {},
     };
 });
 
 jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {}),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -32,7 +32,7 @@ const mockAllDeletedContent = [
         id: 1,
         pageTitle: "Deleted page 1",
         type: "static_page",
-        uri: "/test/deletes/1"
+        uri: "/test/deletes/1",
     },
     {
         collectionId: "testdeletes2",
@@ -42,7 +42,7 @@ const mockAllDeletedContent = [
         id: 2,
         pageTitle: "Deleted page 2",
         type: "static_page",
-        uri: "/test/deletes/2"
+        uri: "/test/deletes/2",
     },
     {
         collectionId: "testdeletes3",
@@ -52,8 +52,8 @@ const mockAllDeletedContent = [
         id: 3,
         pageTitle: "Deleted page 3",
         type: "static_page",
-        uri: "/test/deletes/3"
-    }
+        uri: "/test/deletes/3",
+    },
 ];
 
 jest.mock("../../../utilities/api-clients/content", () => {
@@ -82,7 +82,7 @@ jest.mock("../../../utilities/api-clients/content", () => {
             }),
         get: () => {
             return Promise.reject({ status: 404 });
-        }
+        },
     };
 });
 
@@ -90,7 +90,7 @@ jest.mock("../../../utilities/api-clients/collections", () => {
     return {
         getInProgressContent: () => {
             return Promise.resolve(mockAllDeletedContent);
-        }
+        },
     };
 });
 
@@ -98,20 +98,20 @@ const defaultProps = {
     activeCollection: {},
     onClose: () => {},
     onSingleFileSuccess: jest.fn(),
-    onMultiFileSuccess: jest.fn()
+    onMultiFileSuccess: jest.fn(),
 };
 
 const mockClickedItem = {
     id: "1",
     uri: "/test/deletes/1",
     title: "Deleted page 1",
-    type: "static_page"
+    type: "static_page",
 };
 
 const mockSearchTerm = {
     target: {
-        value: "2"
-    }
+        value: "2",
+    },
 };
 
 test("Map deleted content item to state", () => {
@@ -125,9 +125,9 @@ test("Map deleted content item to state", () => {
                 {"/test/deletes/1"}
             </span>,
             "2",
-            "Tue, 16 Jan 2018 15:50:19 GMT"
+            "Tue, 16 Jan 2018 15:50:19 GMT",
         ],
-        returnValue: { id: "1", uri: "/test/deletes/1", title: "Deleted page 1", type: "static_page" }
+        returnValue: { id: "1", uri: "/test/deletes/1", title: "Deleted page 1", type: "static_page" },
     };
 
     const component = shallow(<RestoreContent {...defaultProps} />);
@@ -145,7 +145,7 @@ test("Handle item click updates state correctly", () => {
         id: "1",
         uri: "/test/deletes/1",
         title: "Deleted page 1",
-        type: "static_page"
+        type: "static_page",
     });
 });
 
@@ -160,11 +160,11 @@ describe("Searching for deleted content", () => {
                     /test/deletes/2
                 </span>,
                 "2",
-                "Tue, 16 Jan 2018 15:50:19 GMT"
+                "Tue, 16 Jan 2018 15:50:19 GMT",
             ],
             id: "2",
             pageTitle: "Deleted page 2",
-            returnValue: { id: "2", title: "Deleted page 2", isMultiDelete: true, type: "static_page", uri: "/test/deletes/2" }
+            returnValue: { id: "2", title: "Deleted page 2", isMultiDelete: true, type: "static_page", uri: "/test/deletes/2" },
         };
         component.instance().handleSearch(mockSearchTerm);
         expect(component.update().state().filteredDeletedContent).toContainEqual(expectedFilteredDeletedContent);

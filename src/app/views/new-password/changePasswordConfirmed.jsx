@@ -3,14 +3,14 @@ import Panel from "../../components/panel/Panel";
 import PropTypes from "prop-types";
 
 const propTypes = {
-    handleClick: PropTypes.func
+    handleClick: PropTypes.func,
 };
 
 const ChangePasswordConfirmed = props => {
     const changePasswordPanelBody = [
         <p key="info-technical">
             If you have technical problems with your account, please email&nbsp;<a href="mailto:publishing@ons.gov.uk">publishing@ons.gov.uk</a>
-        </p>
+        </p>,
     ];
 
     return (

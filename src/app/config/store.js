@@ -4,8 +4,8 @@ import { syncHistoryWithStore, routerReducer, routerMiddleware } from "react-rou
 import thunkMiddleware from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import previousLocationMiddleware from "./previous-route-middleware";
-
 import reducer from "./reducer";
+import userReducer from "./user/userReducer";
 
 export const baseHistory = browserHistory;
 const routingMiddleware = routerMiddleware(baseHistory);
@@ -15,7 +15,8 @@ const enhancer = composeWithDevTools(applyMiddleware(thunkMiddleware, routingMid
 export const store = createStore(
     combineReducers({
         state: reducer,
-        routing: routerReducer
+        user: userReducer,
+        routing: routerReducer,
     }),
     enhancer
 );

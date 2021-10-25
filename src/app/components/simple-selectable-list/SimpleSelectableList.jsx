@@ -10,10 +10,10 @@ const propTypes = {
             id: PropTypes.string.isRequired,
             url: PropTypes.string.isRequired,
             externalLink: PropTypes.bool,
-            details: PropTypes.arrayOf(PropTypes.string)
+            details: PropTypes.arrayOf(PropTypes.string),
         })
     ).isRequired,
-    showLoadingState: PropTypes.bool
+    showLoadingState: PropTypes.bool,
 };
 
 export default class SimpleSelectableList extends Component {

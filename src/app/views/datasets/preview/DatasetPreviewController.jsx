@@ -15,7 +15,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     userEmail: PropTypes.string.isRequired,
     params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired
+        datasetID: PropTypes.string.isRequired,
     }).isRequired,
     versionURL: PropTypes.string,
     collectionID: PropTypes.string,
@@ -24,12 +24,12 @@ const propTypes = {
         collection_id: PropTypes.string,
         links: PropTypes.shape({
             latest_version: PropTypes.shape({
-                href: PropTypes.string
-            })
+                href: PropTypes.string,
+            }),
         }),
         reviewState: PropTypes.string,
-        lastEditedBy: PropTypes.string
-    })
+        lastEditedBy: PropTypes.string,
+    }),
 };
 
 class DatasetPreviewController extends Component {
@@ -40,17 +40,13 @@ class DatasetPreviewController extends Component {
             isSavingData: false,
             isReadOnly: false,
             isLoadingPreview: false,
-            isFetchingCollectionData: false
+            isFetchingCollectionData: false,
         };
-
-        this.handleSubmitForReview = this.handleSubmitForReview.bind(this);
-        this.handleMarkAsReviewed = this.handleMarkAsReviewed.bind(this);
-        this.handlePreviewLoad = this.handlePreviewLoad.bind(this);
 
         this.backLinkPath = url.resolve(`metadata?collection=${this.props.collectionID}`, !this.props.collectionID);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isLoadingPreview: true });
 
         if (!this.props.collectionID) {
@@ -73,7 +69,7 @@ class DatasetPreviewController extends Component {
                     case 403: {
                         const notification = {
                             type: "neutral",
-                            message: `You do not have permission to view dataset '${this.props.params.datasetID}'`
+                            message: `You do not have permission to view dataset '${this.props.params.datasetID}'`,
                         };
                         notifications.add(notification);
                         break;
@@ -81,7 +77,7 @@ class DatasetPreviewController extends Component {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: `Dataset ID '${this.props.params.datasetID}' can't be found`
+                            message: `Dataset ID '${this.props.params.datasetID}' can't be found`,
                         };
                         notifications.add(notification);
                         break;
@@ -89,7 +85,7 @@ class DatasetPreviewController extends Component {
                     case "FETCH_ERR": {
                         const notification = {
                             type: "warning",
-                            message: `There was a network error whilst getting dataset '${this.props.params.datasetID}'. Please check your connection and try again`
+                            message: `There was a network error whilst getting dataset '${this.props.params.datasetID}'. Please check your connection and try again`,
                         };
                         notifications.add(notification);
                         break;
@@ -97,7 +93,7 @@ class DatasetPreviewController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: `An unexpected error occurred whilst getting dataset '${this.props.params.datasetID}'`
+                            message: `An unexpected error occurred whilst getting dataset '${this.props.params.datasetID}'`,
                         };
                         notifications.add(notification);
                     }
@@ -139,7 +135,7 @@ class DatasetPreviewController extends Component {
         } catch (error) {
             this.setState({
                 isFetchingCollectionData: false,
-                isReadOnly: true
+                isReadOnly: true,
             });
             switch (error.status) {
                 case 401: {
@@ -150,7 +146,7 @@ class DatasetPreviewController extends Component {
                     const notification = {
                         type: "neutral",
                         message: `You do not permission to get details for collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -159,7 +155,7 @@ class DatasetPreviewController extends Component {
                     const notification = {
                         type: "warning",
                         message: `Could not find collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -168,7 +164,7 @@ class DatasetPreviewController extends Component {
                     const notification = {
                         type: "warning",
                         message: `An unexpected error's occurred whilst trying to get the collection '${collectionID}'`,
-                        isDismissable: true
+                        isDismissable: true,
                     };
                     notifications.add(notification);
                     break;
@@ -179,7 +175,7 @@ class DatasetPreviewController extends Component {
                     "Unable to update metadata screen with version's review/edit status in collection " +
                     collectionID +
                     ". Error: " +
-                    JSON.stringify(error)
+                    JSON.stringify(error),
             });
             console.error("Unable to update metadata screen with version's review/edit status in collection '" + collectionID + "'", error);
         }
@@ -200,7 +196,7 @@ class DatasetPreviewController extends Component {
             log.add(eventTypes.unexpectedRuntimeError, {
                 message: `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${
                     isMarkingAsReviewed ? "Reviewed" : ""
-                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`
+                }' in collection '${this.props.collectionID}'. Error: ${JSON.stringify(error)}`,
             });
             console.error(
                 `Error updating review state for dataset '${datasetID}' to '${isSubmittingForReview ? "Complete" : ""}${
@@ -225,19 +221,19 @@ class DatasetPreviewController extends Component {
         this.props.dispatch(push(url.resolve(`/collections/${this.props.collectionID}`)));
     }
 
-    handleSubmitForReview() {
+    handleSubmitForReview = () => {
         this.handleUpdateReviewState(true, false);
-    }
+    };
 
-    handleMarkAsReviewed() {
+    handleMarkAsReviewed = () => {
         this.handleUpdateReviewState(false, true);
-    }
+    };
 
-    handlePreviewLoad() {
+    handlePreviewLoad = () => {
         //TODO Preview should wait until it's fully loaded before hiding the loader - this currently breaks because React is detecting this final state change
         // on render for some reason. So 'hidden' property on the Preview component is hardcoded to true for now.
         this.setState({ isLoadingPreview: false });
-    }
+    };
 
     render() {
         return (
@@ -269,7 +265,7 @@ function mapStateToProps(state) {
                 ? url.resolve(state.state.datasets.activeDataset.links.latest_version.href)
                 : null,
         collectionID: state.routing.locationBeforeTransitions.query.collection,
-        userEmail: state.state.user.email
+        userEmail: state.user.email,
     };
 }
 

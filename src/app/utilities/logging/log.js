@@ -22,7 +22,7 @@ export default class log {
             created_at: new Date(Date.now()).toISOString(),
             namespace: "florence",
             client_loaded_at: client_loaded_at,
-            severity: 3
+            severity: 3,
         };
 
         if (opts) {
@@ -112,7 +112,7 @@ class Http {
             status_code: this.statusCode,
             started_at: this.startedAt,
             ended_at: this.endedAt,
-            duration: duration || undefined
+            duration: duration || undefined,
         };
         return event;
     };
@@ -175,7 +175,7 @@ export function constructEventError(error) {
             const splitStackTrace = error.stack.split("\n");
             stackTrace = splitStackTrace.map(line => {
                 return {
-                    line: line.trim()
+                    line: line.trim(),
                 };
             });
         } catch (err) {
@@ -185,6 +185,6 @@ export function constructEventError(error) {
     }
     return {
         message: error.message,
-        stack_trace: stackTrace
+        stack_trace: stackTrace,
     };
 }

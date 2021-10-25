@@ -4,20 +4,14 @@ import PropTypes from "prop-types";
 const propTypes = {
     item: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired
+        name: PropTypes.string.isRequired,
     }).isRequired,
-    onRemoveItem: PropTypes.func.isRequired
+    onRemoveItem: PropTypes.func.isRequired,
 };
 export default class SelectedItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.handleRemoveClick = this.handleRemoveClick.bind(this);
-    }
-
-    handleRemoveClick() {
+    handleRemoveClick = () => {
         this.props.onRemoveItem(this.props.item);
-    }
+    };
 
     render() {
         return (

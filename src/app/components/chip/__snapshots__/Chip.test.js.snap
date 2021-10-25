@@ -1,0 +1,50 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Chip given props for a non interactive blue chip  given props for a red chip with close, link and an icon  matches the snapshot 1`] = `
+<span
+  className="chip chip--clickable chip--red"
+>
+  <svg
+    aria-label="Person inside shield icon"
+    className="chip__icon"
+    fill="none"
+    role="img"
+    viewBox="0 0 15 15"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      clipRule="evenodd"
+      d="M6 .167 0 2.833v4c0 3.7 2.56 7.16 6 8 3.44-.84 6-4.3 6-8v-4L6 .167Zm2 5a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm1.858 5.007A4.704 4.704 0 0 0 6 8.167a4.704 4.704 0 0 0-3.858 2.007C2.99 11.749 4.383 12.956 6 13.428c1.617-.472 3.011-1.68 3.858-3.254Z"
+      fill="#6D272B"
+      fillRule="evenodd"
+    />
+  </svg>
+  <a
+    className="chip__text"
+    href="/"
+  >
+    bar
+  </a>
+  <span
+    className="chip__remove-container"
+  >
+    <button
+      aria-label="remove"
+      className="chip__remove"
+      onClick={[Function]}
+    />
+  </span>
+</span>
+`;
+
+exports[`Chip given props for a non interactive blue chip  matches the snapshot 1`] = `
+<span
+  className="chip chip--blue"
+>
+  <span
+    className="chip__text"
+  >
+    foo
+  </span>
+</span>
+`;

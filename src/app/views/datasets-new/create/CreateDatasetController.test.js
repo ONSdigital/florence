@@ -9,7 +9,7 @@ console.error = () => {};
 jest.mock("../../../utilities/logging/log", () => {
     return {
         event: () => {},
-        error: () => {}
+        error: () => {},
     };
 });
 
@@ -18,7 +18,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockNotifications.push(notification);
         }),
-        remove: () => {}
+        remove: () => {},
     };
 });
 
@@ -26,7 +26,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         getAllList: jest.fn(() => {
             return Promise.resolve(mockedAllDatasetsCall);
-        })
+        }),
     };
 });
 
@@ -34,7 +34,7 @@ jest.mock("../../../utilities/api-clients/recipes", () => {
     return {
         getAll: jest.fn(() => {
             return Promise.resolve(mockedAllRecipesCall);
-        })
+        }),
     };
 });
 
@@ -42,11 +42,11 @@ let mockNotifications = [];
 
 const mockedAllDatasetsCall = [
     {
-        id: "test-dataset-1"
+        id: "test-dataset-1",
     },
     {
-        id: "test-dataset-2"
-    }
+        id: "test-dataset-2",
+    },
 ];
 
 const mockedAllRecipesCall = {
@@ -57,8 +57,8 @@ const mockedAllRecipesCall = {
             format: "v4",
             files: [
                 {
-                    description: "CPI COICOP v4"
-                }
+                    description: "CPI COICOP v4",
+                },
             ],
             output_instances: [
                 {
@@ -70,9 +70,9 @@ const mockedAllRecipesCall = {
                             id: "64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             href: "http://localhost:22400/code-lists/64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             name: "time",
-                            is_hierarchy: false
-                        }
-                    ]
+                            is_hierarchy: false,
+                        },
+                    ],
                 },
                 {
                     dataset_id: "test-dataset-2",
@@ -83,17 +83,17 @@ const mockedAllRecipesCall = {
                             id: "64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             href: "http://localhost:22400/code-lists/64d384f1-ea3b-445c-8fb8-aa453f96e58a",
                             name: "time",
-                            is_hierarchy: false
+                            is_hierarchy: false,
                         },
                         {
                             id: "65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
                             href: "http://localhost:22400/code-lists/65107A9F-7DA3-4B41-A410-6F6D9FBD68C3",
                             name: "geography",
-                            is_hierarchy: false
-                        }
-                    ]
-                }
-            ]
+                            is_hierarchy: false,
+                        },
+                    ],
+                },
+            ],
         },
         {
             id: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
@@ -101,8 +101,8 @@ const mockedAllRecipesCall = {
             format: "v4",
             files: [
                 {
-                    description: "CPIH v4"
-                }
+                    description: "CPIH v4",
+                },
             ],
             output_instances: [
                 {
@@ -114,11 +114,11 @@ const mockedAllRecipesCall = {
                             id: "mmm-yy",
                             href: "http://localhost:22400/code-lists/mmm-yy",
                             name: "time",
-                            is_hierarchy: false
-                        }
-                    ]
-                }
-            ]
+                            is_hierarchy: false,
+                        },
+                    ],
+                },
+            ],
         },
         {
             id: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
@@ -126,8 +126,8 @@ const mockedAllRecipesCall = {
             format: "v4",
             files: [
                 {
-                    description: "CPIH v4"
-                }
+                    description: "CPIH v4",
+                },
             ],
             output_instances: [
                 {
@@ -139,11 +139,11 @@ const mockedAllRecipesCall = {
                             id: "mmm-yy",
                             href: "http://localhost:22400/code-lists/mmm-yy",
                             name: "time",
-                            is_hierarchy: false
-                        }
-                    ]
-                }
-            ]
+                            is_hierarchy: false,
+                        },
+                    ],
+                },
+            ],
         },
         {
             id: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
@@ -160,13 +160,13 @@ const mockedAllRecipesCall = {
                             id: "mmm-yy",
                             href: "http://localhost:22400/code-lists/mmm-yy",
                             name: "time",
-                            is_hierarchy: false
-                        }
-                    ]
-                }
-            ]
-        }
-    ]
+                            is_hierarchy: false,
+                        },
+                    ],
+                },
+            ],
+        },
+    ],
 };
 
 const mockedAllOutputs = [
@@ -175,54 +175,54 @@ const mockedAllOutputs = [
         dataset_id: mockedAllRecipesCall.items[0].output_instances[0].dataset_id,
         editions: mockedAllRecipesCall.items[0].output_instances[0].editions,
         title: mockedAllRecipesCall.items[0].output_instances[0].title,
-        code_lists: mockedAllRecipesCall.items[0].output_instances[0].code_lists
+        code_lists: mockedAllRecipesCall.items[0].output_instances[0].code_lists,
     },
     {
         format: mockedAllRecipesCall.items[0].format,
         dataset_id: mockedAllRecipesCall.items[0].output_instances[1].dataset_id,
         editions: mockedAllRecipesCall.items[0].output_instances[1].editions,
         title: mockedAllRecipesCall.items[0].output_instances[1].title,
-        code_lists: mockedAllRecipesCall.items[0].output_instances[1].code_lists
+        code_lists: mockedAllRecipesCall.items[0].output_instances[1].code_lists,
     },
     {
         format: mockedAllRecipesCall.items[1].format,
         dataset_id: mockedAllRecipesCall.items[1].output_instances[0].dataset_id,
         editions: mockedAllRecipesCall.items[1].output_instances[0].editions,
         title: mockedAllRecipesCall.items[1].output_instances[0].title,
-        code_lists: mockedAllRecipesCall.items[1].output_instances[0].code_lists
+        code_lists: mockedAllRecipesCall.items[1].output_instances[0].code_lists,
     },
     {
         format: mockedAllRecipesCall.items[3].format,
         dataset_id: mockedAllRecipesCall.items[3].output_instances[0].dataset_id,
         editions: mockedAllRecipesCall.items[3].output_instances[0].editions,
         title: mockedAllRecipesCall.items[3].output_instances[0].title,
-        code_lists: mockedAllRecipesCall.items[3].output_instances[0].code_lists
-    }
+        code_lists: mockedAllRecipesCall.items[3].output_instances[0].code_lists,
+    },
 ];
 
 const mockedMappedState = [
     {
         title: "Test output 1",
         id: "001",
-        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/001"
+        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/001",
     },
     {
         title: "Test output 2",
         id: "002",
-        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/002"
+        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/002",
     },
     {
         title: "Test output 3",
         id: "003",
-        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/001"
-    }
+        url: "/florence/collections/testcollection-6be55693d6216162fdb844cb14155f91efe1bb3f09f6a42f5740a2cc739c7f6c/datasets/create/001",
+    },
 ];
 
 const defaultProps = {
     dispatch: () => {},
     location: {
-        pathname: "florence/collections/12345/datasets/create"
-    }
+        pathname: "florence/collections/12345/datasets/create",
+    },
 };
 
 const component = shallow(<CreateDatasetController {...defaultProps} />);
@@ -246,7 +246,7 @@ describe("calling getRecipes", () => {
                 console.log(error);
                 expect(error).toMatchObject({
                     error: { status: 500 },
-                    message: "An error occured trying to retrieve all recipes"
+                    message: "An error occured trying to retrieve all recipes",
                 });
             });
     });
@@ -266,7 +266,7 @@ describe("calling getDatasets", () => {
             .catch(error => {
                 expect(error).toMatchObject({
                     error: { status: 404 },
-                    message: "An error occured trying to retrieve all datasets"
+                    message: "An error occured trying to retrieve all datasets",
                 });
             });
     });
@@ -286,12 +286,12 @@ describe("Calling getAllUncreatedDatasetFromRecipeOutputs", () => {
             expect(component.state("outputs")[0]).toMatchObject({
                 title: "Test dataset 3",
                 id: "test-dataset-3",
-                url: "florence/collections/12345/datasets/create/test-dataset-3"
+                url: "florence/collections/12345/datasets/create/test-dataset-3",
             });
             expect(component.state("outputs")[2]).toMatchObject({
                 title: "Test dataset 5",
                 id: "test-dataset-5",
-                url: "florence/collections/12345/datasets/create/test-dataset-5/cantabular_table"
+                url: "florence/collections/12345/datasets/create/test-dataset-5/cantabular_table",
             });
         });
         it("updates isFetchingRecipesAndDatasets state to show it has created dataset", async () => {

@@ -17,9 +17,9 @@ const propTypes = {
     recipes: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            alias: PropTypes.string
+            alias: PropTypes.string,
         })
-    )
+    ),
 };
 
 export class DatasetUploadsController extends Component {
@@ -31,13 +31,11 @@ export class DatasetUploadsController extends Component {
             disabledDataset: "",
             datasets: [],
             filteredDatasets: [],
-            searchTerm: ""
+            searchTerm: "",
         };
-
-        this.handleNewVersionClick = this.handleNewVersionClick.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.setState({ isFetchingData: true });
 
         const getRecipes = recipes.getAll();
@@ -47,7 +45,7 @@ export class DatasetUploadsController extends Component {
                 this.props.dispatch(updateAllRecipes(response.items));
                 this.setState({
                     isFetchingData: false,
-                    datasets: this.mapDatasetsToState(response.items)
+                    datasets: this.mapDatasetsToState(response.items),
                 });
             })
             .catch(error => {
@@ -56,7 +54,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "You do not permission to view all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -65,7 +63,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -75,7 +73,7 @@ export class DatasetUploadsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get all datasets. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -84,7 +82,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -93,7 +91,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get all datasets.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -103,7 +101,7 @@ export class DatasetUploadsController extends Component {
             });
     }
 
-    handleNewVersionClick(event) {
+    handleNewVersionClick = event => {
         const recipeID = event.target.getAttribute("data-recipe-id");
         this.setState({ disabledDataset: recipeID });
         datasetImport
@@ -119,7 +117,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "You do not have permission to upload a new version of this dataset.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -128,7 +126,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "This dataset was not recognised.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -137,7 +135,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to create a new version of this dataset.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -147,7 +145,7 @@ export class DatasetUploadsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to create a new version of this dataset. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -156,7 +154,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error has occurred whilst trying to create a new version of this dataset.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -165,7 +163,7 @@ export class DatasetUploadsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to create a new version of this dataset.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -173,7 +171,7 @@ export class DatasetUploadsController extends Component {
                 }
                 console.error("Error creating new import job: ", error);
             });
-    }
+    };
 
     mapDatasetsToState = datasets => {
         try {
@@ -182,7 +180,7 @@ export class DatasetUploadsController extends Component {
             return datasets.map(dataset => {
                 return {
                     alias: dataset.alias || dataset.id,
-                    id: dataset.id
+                    id: dataset.id,
                 };
             });
         } catch (error) {
@@ -191,7 +189,7 @@ export class DatasetUploadsController extends Component {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get datasets, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error mapping datasets to state:\n", error);
@@ -205,7 +203,7 @@ export class DatasetUploadsController extends Component {
         });
         this.setState({
             filteredDatasets,
-            searchTerm
+            searchTerm,
         });
     };
 
@@ -245,7 +243,7 @@ DatasetUploadsController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        recipes: state.state.datasets.recipes
+        recipes: state.state.datasets.recipes,
     };
 }
 

@@ -7,31 +7,25 @@ const propTypes = {
     columns: PropTypes.arrayOf(
         PropTypes.shape({
             heading: PropTypes.string.isRequired,
-            width: PropTypes.string.isRequired
+            width: PropTypes.string.isRequired,
         })
     ).isRequired,
     rows: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             columnValues: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element])),
-            returnValue: PropTypes.object.isRequired
+            returnValue: PropTypes.object.isRequired,
         })
     ).isRequired,
     activeRowID: PropTypes.string,
     handleItemClick: PropTypes.func.isRequired,
-    isUpdating: PropTypes.bool.isRequired
+    isUpdating: PropTypes.bool.isRequired,
 };
 
 export default class SelectableBox extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindItemClick = this.bindItemClick.bind(this);
-    }
-
-    bindItemClick(clickedItem) {
+    bindItemClick = clickedItem => {
         this.props.handleItemClick(clickedItem);
-    }
+    };
 
     renderList() {
         return (

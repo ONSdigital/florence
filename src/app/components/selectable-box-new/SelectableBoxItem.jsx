@@ -6,7 +6,7 @@ const propTypes = {
     columns: PropTypes.arrayOf(
         PropTypes.shape({
             heading: PropTypes.string.isRequired,
-            width: PropTypes.string.isRequired
+            width: PropTypes.string.isRequired,
         })
     ).isRequired,
     columnValues: PropTypes.arrayOf(PropTypes.oneOfType([PropTypes.string, PropTypes.element])),
@@ -17,20 +17,14 @@ const propTypes = {
         neutral: PropTypes.bool,
         warning: PropTypes.bool,
         success: PropTypes.bool,
-        message: PropTypes.string
-    })
+        message: PropTypes.string,
+    }),
 };
 
 export default class SelectableBoxItem extends Component {
-    constructor(props) {
-        super(props);
-
-        this.bindClick = this.bindClick.bind(this);
-    }
-
-    bindClick() {
+    bindClick = () => {
         this.props.handleClick(this.props.returnValue);
-    }
+    };
 
     renderColumns() {
         const status = this.props.status || {};

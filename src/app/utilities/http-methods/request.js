@@ -3,6 +3,7 @@ import log from "../logging/log";
 import uuid from "uuid/v4";
 import user from "../api-clients/user";
 import notifications from "../notifications";
+import { errCodes } from "../errorCodes";
 
 /**
  *
@@ -23,7 +24,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
     const maxRetries = 5;
     let retryCount = 0;
 
-    return new Promise(function(resolve, reject) {
+    return new Promise(function (resolve, reject) {
         tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
     });
 
@@ -37,8 +38,8 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             headers: {
                 "Content-Type": "application/json",
                 "Request-ID": UID,
-                "internal-token": "FD0108EA-825D-411C-9B1D-41EF7727F465"
-            }
+                "internal-token": "FD0108EA-825D-411C-9B1D-41EF7727F465",
+            },
         };
 
         if (method === "POST" || method === "PUT") {
@@ -63,7 +64,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             reject({
                                 status: response.status,
                                 message: response.statusText,
-                                body: parseBodyAsJson(body)
+                                body: parseBodyAsJson(body),
                             });
                         });
                         return;
@@ -73,15 +74,15 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     // here (ie at the lowest level possible)
                     const notification = {
                         type: "neutral",
-                        message: "Your session has expired so you've been redirected to the sign in screen",
+                        message: errCodes.SESSION_EXPIRED,
                         isDismissable: true,
-                        autoDismiss: 20000
+                        autoDismiss: 20000,
                     };
                     user.logOut();
                     notifications.add(notification);
                     reject({
                         status: response.status,
-                        message: response.statusText
+                        message: response.statusText,
                     });
                     return;
                 }
@@ -91,7 +92,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         reject({
                             status: response.status,
                             message: response.statusText,
-                            body: parseBodyAsJson(body)
+                            body: parseBodyAsJson(body),
                         });
                     });
                     return;
@@ -100,7 +101,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 if (response.status === 204) {
                     resolve({
                         status: response.status,
-                        message: response.statusText
+                        message: response.statusText,
                     });
                     return;
                 }
@@ -116,7 +117,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         "Error trying to parse content-type header",
                         log.error(error),
                         log.data({
-                            header_content_type: response.headers.get("content-type")
+                            header_content_type: response.headers.get("content-type"),
                         })
                     );
 
@@ -129,7 +130,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                     reject({
                         status: "RUNTIME_ERROR",
-                        message: `Error trying to parse response's content-type header`
+                        message: `Error trying to parse response's content-type header`,
                     });
                     return;
                 }
@@ -159,7 +160,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                             reject({
                                 status: response.status,
-                                message: "Text response body couldn't be parsed"
+                                message: "Text response body couldn't be parsed",
                             });
                         }
                     })();
@@ -187,7 +188,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         // which means this request is a failure and the promise should be rejected
                         reject({
                             status: response.status,
-                            message: "JSON response body couldn't be parsed"
+                            message: "JSON response body couldn't be parsed",
                         });
                     }
                 })();
@@ -198,7 +199,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 if (willRetry) {
                     // retry post
                     if (retryCount < maxRetries) {
-                        setTimeout(function() {
+                        setTimeout(function () {
                             tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
                         }, interval);
                         retryCount++;
@@ -213,13 +214,13 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             // unexpected response
                             reject({
                                 status: "RESPONSE_ERR",
-                                error: fetchError
+                                error: fetchError,
                             });
                         } else {
                             // unexpected error
                             reject({
                                 status: "UNEXPECTED_ERR",
-                                error: fetchError
+                                error: fetchError,
                             });
                         }
 

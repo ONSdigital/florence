@@ -16,12 +16,12 @@ const propTypes = {
     selectedPageUri: PropTypes.string,
     workingOn: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        name: PropTypes.string
+        name: PropTypes.string,
     }),
     enableDatasetImport: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class PreviewController extends Component {
@@ -29,7 +29,7 @@ export class PreviewController extends Component {
         super(props);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         const collectionID = this.props.routeParams.collectionID;
         this.fetchCollectionAndPages(collectionID);
 
@@ -64,7 +64,7 @@ export class PreviewController extends Component {
                         addPreviewCollection({
                             collectionID,
                             name: collection.name,
-                            pages
+                            pages,
                         })
                     );
                 } else {
@@ -73,7 +73,7 @@ export class PreviewController extends Component {
                         addPreviewCollection({
                             collectionID,
                             name: collection.name,
-                            pages
+                            pages,
                         })
                     );
                 }
@@ -85,7 +85,7 @@ export class PreviewController extends Component {
                 const notification = {
                     type: "warning",
                     message: "There was an error getting data for this collection. Please try refreshing the page",
-                    isDismissable: true
+                    isDismissable: true,
                 };
 
                 switch (error.status) {
@@ -137,7 +137,7 @@ export class PreviewController extends Component {
                     type: "warning",
                     message:
                         "There was a problem getting visualisations in this collection so they will not appear in the list. Refresh the page to try again.",
-                    isDismissable: true
+                    isDismissable: true,
                 });
                 return {};
             });
@@ -150,8 +150,8 @@ export class PreviewController extends Component {
                     uri: new URL(page.uri).pathname,
                     description: {
                         title: page.title || {},
-                        edition: page.version ? "version " + page.version : null
-                    }
+                        edition: page.version ? "version " + page.version : null,
+                    },
                 };
             });
         } catch (error) {
@@ -179,7 +179,7 @@ export function mapStateToProps(state) {
         selectedPageUri: state.state.preview.selectedPage,
         workingOn: state.state.global.workingOn,
         rootPath: state.state.rootPath,
-        enableDatasetImport: state.state.config.enableDatasetImport
+        enableDatasetImport: state.state.config.enableDatasetImport,
     };
 }
 

@@ -20,13 +20,13 @@ const propTypes = {
     allowAutoComplete: PropTypes.bool,
     placeholder: PropTypes.string,
     disableShowPasswordText: PropTypes.bool,
-    reverseLabelOrder: PropTypes.bool
+    reverseLabelOrder: PropTypes.bool,
 };
 
 const defaultProps = {
     type: "text",
     disabled: false,
-    isFocused: false
+    isFocused: false,
 };
 
 export default class Input extends Component {
@@ -35,27 +35,24 @@ export default class Input extends Component {
 
         this.state = {
             type: this.props.type,
-            displayShowHide: (!this.props.disableShowPasswordText && this.props.type) === "password"
+            displayShowHide: (!this.props.disableShowPasswordText && this.props.type) === "password",
         };
-
-        this.showHide = this.showHide.bind(this);
-        this.moveCaretToEnd = this.moveCaretToEnd.bind(this);
     }
 
-    showHide(e) {
+    showHide = e => {
         e.preventDefault();
         e.stopPropagation();
         this.setState({
-            type: this.state.type === "text" ? "password" : "text"
+            type: this.state.type === "text" ? "password" : "text",
         });
-    }
+    };
 
-    moveCaretToEnd(event) {
+    moveCaretToEnd = event => {
         // Move caret to the end of the value on input focus
         const val = event.target.value;
         event.target.value = "";
         event.target.value = val;
-    }
+    };
 
     getFormClasses() {
         let formClasses = "form__input";

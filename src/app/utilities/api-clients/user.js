@@ -1,9 +1,11 @@
 import http from "../http";
 import { store } from "../../config/store";
-import { reset, userLoggedIn, userLoggedOut } from "../../config/actions";
+import { reset } from "../../config/actions";
+import { userLoggedIn, userLoggedOut } from "../../config/user/userActions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
+import sessionManagement from "../sessionManagement";
 
 export default class user {
     static get(email) {
@@ -40,6 +42,10 @@ export default class user {
 
     static setForgottenPassword(body) {
         return http.put("/users/self/password", body, true, true);
+    }
+
+    static renewSession(body) {
+        return http.put("/tokens/self", body, true, false);
     }
 
     static expireSession() {
@@ -103,16 +109,13 @@ export default class user {
         const config = window.getEnv();
         if (config.enableNewSignIn) {
             user.expireSession()
-                .then(response => {
-                    clearCookies();
-                })
                 .catch(error => {
                     if (error.status === 400) {
                         const notification = {
                             type: "warning",
                             message: "An error occurred during sign out 'InvalidToken', please contact a system administrator",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
@@ -122,13 +125,17 @@ export default class user {
                             type: "warning",
                             message: "Unexpected error occurred during sign out",
                             isDismissable: true,
-                            autoDismiss: 20000
+                            autoDismiss: 20000,
                         };
                         notifications.add(notification);
                         console.error("Error occurred sending DELETE to /tokens/self");
                         log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
                     }
                     clearCookies();
+                })
+                .finally(() => {
+                    clearCookies();
+                    sessionManagement.removeTimers();
                 });
         } else {
             clearCookies();

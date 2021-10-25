@@ -10,7 +10,7 @@ const propTypes = {
     checked: PropTypes.bool,
     inline: PropTypes.bool,
     disabled: PropTypes.bool,
-    subLabel: PropTypes.string
+    subLabel: PropTypes.string,
 };
 
 export default class RadioButton extends Component {
@@ -19,15 +19,11 @@ export default class RadioButton extends Component {
 
         this.state = {
             focused: false,
-            checked: props.checked
+            checked: props.checked,
         };
-
-        this.handleFocus = this.handleFocus.bind(this);
-        this.handleBlur = this.handleBlur.bind(this);
-        this.handleChange = this.handleChange.bind(this);
     }
 
-    handleChange(event) {
+    handleChange = event => {
         const checked = event.target.checked;
         const id = this.props.id;
         const value = this.props.value;
@@ -35,15 +31,15 @@ export default class RadioButton extends Component {
         if (onChange) {
             onChange({ id, checked, value });
         }
-    }
+    };
 
-    handleFocus() {
+    handleFocus = () => {
         this.setState({ focused: true });
-    }
+    };
 
-    handleBlur() {
+    handleBlur = () => {
         this.setState({ focused: false });
-    }
+    };
 
     render() {
         return (

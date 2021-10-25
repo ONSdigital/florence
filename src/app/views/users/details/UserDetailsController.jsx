@@ -16,22 +16,22 @@ import auth from "../../../utilities/auth";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
-        userID: PropTypes.string.isRequired
+        userID: PropTypes.string.isRequired,
     }).isRequired,
     activeUser: PropTypes.shape({
         email: PropTypes.string,
         name: PropTypes.string,
         hasTemporaryPassword: PropTypes.bool,
-        role: PropTypes.string
+        role: PropTypes.string,
     }),
     loggedInUser: PropTypes.shape({
         email: PropTypes.string.isRequired,
-        isAdmin: PropTypes.bool.isRequired
+        isAdmin: PropTypes.bool.isRequired,
     }).isRequired,
     children: PropTypes.element,
     previousPathname: PropTypes.string,
     rootPath: PropTypes.string.isRequired,
-    arrivedByRedirect: PropTypes.bool
+    arrivedByRedirect: PropTypes.bool,
 };
 
 export class UserDetailsController extends Component {
@@ -50,11 +50,11 @@ export class UserDetailsController extends Component {
             isDeletingUser: false,
             isChangingPassword: false,
             errorFetchingUserDetails: false,
-            errorFetchingUserPermissions: false
+            errorFetchingUserPermissions: false,
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.updateStateWithUser();
     }
 
@@ -75,7 +75,7 @@ export class UserDetailsController extends Component {
         if (responses[0].error || responses[1].error || !responses[0].response || !responses[1].response) {
             this.setState({
                 errorFetchingUserDetails: responses[0].error || !responses[0].response ? true : false,
-                errorFetchingUserPermissions: responses[1].error || !responses[1].response ? true : false
+                errorFetchingUserPermissions: responses[1].error || !responses[1].response ? true : false,
             });
             this.handleGetUserError(responses[0].error, responses[1].error, userID);
         }
@@ -94,7 +94,7 @@ export class UserDetailsController extends Component {
                 .then(userDetails => {
                     resolve({
                         response: userDetails,
-                        error: null
+                        error: null,
                     });
                 })
                 .catch(error => reject(error));
@@ -103,7 +103,7 @@ export class UserDetailsController extends Component {
             log.event("Error getting user", log.data({ user: userID }), log.error(error));
             return {
                 response: null,
-                error
+                error,
             };
         });
     }
@@ -117,12 +117,12 @@ export class UserDetailsController extends Component {
                     // working users it should always be populated
                     if (!userPermissions.email) {
                         reject({
-                            status: 404
+                            status: 404,
                         });
                     }
                     resolve({
                         response: userPermissions,
-                        error: null
+                        error: null,
                     });
                 })
                 .catch(error => reject(error));
@@ -131,7 +131,7 @@ export class UserDetailsController extends Component {
             log.event("Error getting permissions for user", log.data({ user: userID }), log.error(error));
             return {
                 response: null,
-                error
+                error,
             };
         });
     }
@@ -142,14 +142,14 @@ export class UserDetailsController extends Component {
                 name: userDetails ? userDetails.name : "",
                 email: userDetails ? userDetails.email || userPermissions.email : "",
                 role: userPermissions ? user.getUserRole(userPermissions.admin, userPermissions.editor) : "",
-                hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false
+                hasTemporaryPassword: userDetails ? userDetails.temporaryPassword : false,
             };
         } catch (error) {
             const notification = {
                 type: "warning",
                 message: "Error mapping user details to state",
                 isDismissable: true,
-                autoDismiss: 3000
+                autoDismiss: 3000,
             };
             notifications.add(notification);
             console.error("Error mapping user details to state: ", error);
@@ -164,7 +164,7 @@ export class UserDetailsController extends Component {
         let notification = {
             type: "warning",
             isDismissable: true,
-            message: ``
+            message: ``,
         };
 
         if (bothErrored && haveMatchingStatus) {
@@ -196,7 +196,7 @@ export class UserDetailsController extends Component {
                         log.data({
                             user: userID,
                             logged_in_user: this.props.loggedInUser.email,
-                            status_code: userDetailsError.status
+                            status_code: userDetailsError.status,
                         }),
                         log.error()
                     );
@@ -212,7 +212,7 @@ export class UserDetailsController extends Component {
                 "Unexpected error geting user's details",
                 log.data({
                     user: userID,
-                    logged_in_user: this.props.loggedInUser.email
+                    logged_in_user: this.props.loggedInUser.email,
                 }),
                 log.error()
             );
@@ -250,7 +250,7 @@ export class UserDetailsController extends Component {
                         "Unhandled error geting user's details",
                         log.data({
                             user: userID,
-                            logged_in_user: this.props.loggedInUser.email
+                            logged_in_user: this.props.loggedInUser.email,
                         }),
                         log.error()
                     );
@@ -273,7 +273,7 @@ export class UserDetailsController extends Component {
     handleTransitionExit = () => {
         this.setState({
             isVisible: false,
-            isAnimatable: true
+            isAnimatable: true,
         });
     };
 
@@ -327,10 +327,10 @@ UserDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         activeUser: state.state.users.active,
-        loggedInUser: state.state.user,
+        loggedInUser: state.user,
         arrivedByRedirect: state.routing.locationBeforeTransitions.action === "REPLACE",
         previousPathname: state.routing.locationBeforeTransitions.previousPathname,
-        rootPath: state.state.rootPath
+        rootPath: state.state.rootPath,
     };
 }
 

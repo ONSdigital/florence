@@ -1,0 +1,36 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`PreviewNav should match the snapshot 1`] = `
+<div
+  className="global-nav__preview-select"
+>
+  <div
+    className="form__input"
+  >
+    <label
+      className="form__label"
+      htmlFor="preview-select"
+    />
+    <div
+      className="select-wrap "
+    >
+      <select
+        className="select"
+        disabled={false}
+        id="preview-select"
+        name="preview-select"
+        onBlur={[Function]}
+        onChange={[Function]}
+        onFocus={[Function]}
+        value="/"
+      >
+        <option
+          value="Loading pages..."
+        >
+          Loading pages...
+        </option>
+      </select>
+    </div>
+  </div>
+</div>
+`;

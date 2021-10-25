@@ -14,9 +14,9 @@ const propTypes = {
                 PropTypes.shape({
                     id: PropTypes.string.isRequired,
                     name: PropTypes.string.isRequired,
-                    disabled: PropTypes.bool
+                    disabled: PropTypes.bool,
                 })
-            )
+            ),
         })
     ).isRequired,
     name: PropTypes.string,
@@ -24,11 +24,11 @@ const propTypes = {
     defaultOption: PropTypes.string,
     onChange: PropTypes.func,
     error: PropTypes.string,
-    disabled: PropTypes.bool
+    disabled: PropTypes.bool,
 };
 
 const defaultProps = {
-    disabled: false
+    disabled: false,
 };
 
 class Select extends Component {
@@ -36,15 +36,13 @@ class Select extends Component {
         super(props);
 
         this.state = {
-            isFocused: false
+            isFocused: false,
         };
-
-        this.handleFocus = this.handleFocus.bind(this);
     }
 
-    handleFocus() {
+    handleFocus = () => {
         this.state.isFocused ? this.setState({ isFocused: false }) : this.setState({ isFocused: true });
-    }
+    };
 
     renderOptions = options => {
         return options.map((option, index) => {
@@ -94,7 +92,7 @@ class Select extends Component {
                         onBlur={this.handleFocus}
                         value={this.props.selectedOption}
                     >
-                        <option value="default-option">{this.props.defaultOption || "Select an option"}</option>
+                        <option value={this.props.defaultOption}>{this.props.defaultOption || "Select an option"}</option>
                         {this.renderOptions(this.props.contents)}
                     </select>
                 </div>

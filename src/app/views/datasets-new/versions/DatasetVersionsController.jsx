@@ -11,12 +11,12 @@ import SimpleSelectableList from "../../../components/simple-selectable-list/Sim
 const propTypes = {
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired,
-        editionID: PropTypes.string.isRequired
+        editionID: PropTypes.string.isRequired,
     }).isRequired,
     location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
+        pathname: PropTypes.string.isRequired,
     }).isRequired,
-    dispatch: PropTypes.func.isRequired
+    dispatch: PropTypes.func.isRequired,
 };
 
 export class DatasetVersionsController extends Component {
@@ -27,11 +27,11 @@ export class DatasetVersionsController extends Component {
             isFetchingData: false,
             datasetTitle: "",
             editionTitle: "",
-            versions: []
+            versions: [],
         };
     }
 
-    async componentWillMount() {
+    async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
 
@@ -48,7 +48,7 @@ export class DatasetVersionsController extends Component {
                     isFetchingData: false,
                     versions: versionsList,
                     datasetTitle: response.dataset_name,
-                    editionTitle: response.edition_name
+                    editionTitle: response.edition_name,
                 });
             })
             .catch(error => {
@@ -57,7 +57,7 @@ export class DatasetVersionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "No API route available for a list of versions. You should still be able to use this page, or you can refresh.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -66,7 +66,7 @@ export class DatasetVersionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get a list of versions.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -76,7 +76,7 @@ export class DatasetVersionsController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get the versions. Please check you internet connection and try again in a few moments.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -85,7 +85,7 @@ export class DatasetVersionsController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An unexpected error's occurred whilst trying to get a list of versions.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -106,7 +106,7 @@ export class DatasetVersionsController extends Component {
             id: "create-new-version",
             url: this.props.location.pathname + "/instances",
             details: [includesUnpublishedVersion ? "A version for this edition already exists in a collection" : null],
-            disabled: includesUnpublishedVersion ? true : false
+            disabled: includesUnpublishedVersion ? true : false,
         });
         return versionsList;
     };
@@ -119,7 +119,7 @@ export class DatasetVersionsController extends Component {
                     title: version.title,
                     url: this.props.location.pathname + "/versions/" + version.version,
                     version: version.version,
-                    details: [`Release date: ${version.release_date || "Not yet set"}`]
+                    details: [`Release date: ${version.release_date || "Not yet set"}`],
                 };
             });
             return versionsList;
@@ -128,7 +128,7 @@ export class DatasetVersionsController extends Component {
                 type: "warning",
                 message:
                     "An unexpected error occurred when trying to get versions, so some functionality in Florence may not work as expected. Try refreshing the page",
-                isDismissable: true
+                isDismissable: true,
             };
             notifications.add(notification);
             console.error("Error getting mapping versions to state:\n", error);

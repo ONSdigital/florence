@@ -17,10 +17,10 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     children: PropTypes.element,
     params: PropTypes.shape({
-        userID: PropTypes.string
+        userID: PropTypes.string,
     }).isRequired,
     loggedInUser: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.shape({})).isRequired
+    users: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
 };
 
 export class UsersController extends Component {
@@ -28,16 +28,13 @@ export class UsersController extends Component {
         super(props);
 
         this.state = {
-            isFetchingUsers: false
+            isFetchingUsers: false,
         };
-
-        this.handleUserSelection = this.handleUserSelection.bind(this);
-        this.handleUserCreateSuccess = this.handleUserCreateSuccess.bind(this);
 
         this.isAdmin = auth.isAdmin(this.props.loggedInUser);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         if (!this.isAdmin && !this.props.params.userID) {
             this.props.dispatch(replace(`${this.props.rootPath}/users/${this.props.loggedInUser.email}`));
         }
@@ -63,7 +60,7 @@ export class UsersController extends Component {
                         const notification = {
                             type: "warning",
                             message: `No API route available to get users.`,
-                            autoDismiss: 5000
+                            autoDismiss: 5000,
                         };
                         notifications.add(notification);
                         break;
@@ -72,7 +69,7 @@ export class UsersController extends Component {
                         const notification = {
                             type: "warning",
                             message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -82,7 +79,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -92,7 +89,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -103,7 +100,7 @@ export class UsersController extends Component {
                             type: "warning",
                             message:
                                 "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
@@ -124,7 +121,7 @@ export class UsersController extends Component {
                 type: "warning",
                 message: "Error mapping users to state",
                 isDismissable: true,
-                autoDismiss: 3000
+                autoDismiss: 3000,
             };
             notifications.add(notification);
             console.error("Error mapping users to state: ", error);
@@ -133,14 +130,14 @@ export class UsersController extends Component {
         }
     }
 
-    handleUserSelection(user) {
+    handleUserSelection = user => {
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.id}`));
-    }
+    };
 
-    handleUserCreateSuccess(user) {
+    handleUserCreateSuccess = user => {
         this.props.dispatch(push(`${this.props.rootPath}/users/${user.email}`));
         this.getAllUsers();
-    }
+    };
 
     render() {
         return (
@@ -151,7 +148,7 @@ export class UsersController extends Component {
                         <SelectableBox
                             columns={[
                                 { heading: "User", width: "6" },
-                                { heading: "Email", width: "6" }
+                                { heading: "Email", width: "6" },
                             ]}
                             rows={this.props.users}
                             isUpdating={this.state.isFetchingUsers}
@@ -173,7 +170,7 @@ export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
         users: state.state.users.all,
-        loggedInUser: state.state.user
+        loggedInUser: state.user,
     };
 }
 

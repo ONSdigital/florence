@@ -16,24 +16,24 @@ jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {
             //
-        })
+        }),
     };
 });
 
 jest.mock("../../../utilities/http", () => {
     return {
-        resolve: function() {
+        resolve: function () {
             //
-        }
+        },
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function() {
+        add: function () {
             //
         },
-        eventTypes: {}
+        eventTypes: {},
     };
 });
 
@@ -46,41 +46,41 @@ jest.mock("../../../utilities/api-clients/datasets", () => ({
                 license: "Open Government License",
                 links: {
                     editions: {
-                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions"
+                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions",
                     },
                     latest_version: {
                         id: "efcc4581-30b1-463b-b85b-2e2d85c4918b",
-                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1"
+                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1",
                     },
                     self: {
-                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-                    }
+                        href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+                    },
                 },
                 qmi: {
-                    href: "http://localhost:8080/datasets/12345"
+                    href: "http://localhost:8080/datasets/12345",
                 },
                 related_datasets: [
                     {
                         href: "http://localhost:8080/datasets/6789910",
-                        title: "Crime in the UK"
+                        title: "Crime in the UK",
                     },
                     {
                         href: "http://localhost:8080/datasets/6789910",
-                        title: "More Crime in the UK"
-                    }
+                        title: "More Crime in the UK",
+                    },
                 ],
                 publications: [
                     {
                         href: "http://www.localhost:8080/datasets/173849jf8j238d",
-                        title: "An example publication"
-                    }
+                        title: "An example publication",
+                    },
                 ],
                 methodologies: [
                     {
                         href: "http://www.localhost:8080/datasets/173849jf8j238d",
                         title: "An example methodology",
-                        description: "A description"
-                    }
+                        description: "A description",
+                    },
                 ],
                 next_release: "pudding",
                 keywords: ["keyword1", "keyword2"],
@@ -89,21 +89,21 @@ jest.mock("../../../utilities/api-clients/datasets", () => ({
                     {
                         email: "test@email.com",
                         name: "foo bar",
-                        telephone: "01633 123456"
-                    }
+                        telephone: "01633 123456",
+                    },
                 ],
                 state: "published",
                 title: "CPI",
-                uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices"
-            }
+                uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices",
+            },
         });
     }),
     getAll: jest.fn(() => {
         return Promise.resolve({
-            items: []
+            items: [],
         });
     }),
-    updateDatasetMetadata: jest.fn(() => Promise.resolve())
+    updateDatasetMetadata: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("../../../utilities/api-clients/collections", () => ({
@@ -114,14 +114,14 @@ jest.mock("../../../utilities/api-clients/collections", () => ({
                 {
                     id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
                     state: "InProgress",
-                    lastEditedBy: "user@email.com"
-                }
+                    lastEditedBy: "user@email.com",
+                },
             ],
-            datasetVersions: []
+            datasetVersions: [],
         })
     ),
     setDatasetStatusToComplete: jest.fn(() => Promise.resolve()),
-    setDatasetStatusToReviewed: jest.fn(() => Promise.resolve())
+    setDatasetStatusToReviewed: jest.fn(() => Promise.resolve()),
 }));
 
 jest.mock("./datasetHandleMetadataSaveErrors.js", () => {
@@ -129,11 +129,11 @@ jest.mock("./datasetHandleMetadataSaveErrors.js", () => {
 });
 
 jest.mock("../../../utilities/url.js", () => ({
-    resolve: jest.fn(() => "/florence/collections/my-collection-12345")
+    resolve: jest.fn(() => "/florence/collections/my-collection-12345"),
 }));
 
 const mockEvent = {
-    preventDefault: function() {}
+    preventDefault: function () {},
 };
 
 const exampleDataset = {
@@ -143,41 +143,41 @@ const exampleDataset = {
         license: "Open Government License",
         links: {
             editions: {
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions"
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions",
             },
             latest_version: {
                 id: "efcc4581-30b1-463b-b85b-2e2d85c4918b",
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1"
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68/editions/2016/versions/1",
             },
             self: {
-                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-            }
+                href: "http://localhost:22000/datasets/931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+            },
         },
         qmi: {
-            href: "http://localhost:8080/datasets/12345"
+            href: "http://localhost:8080/datasets/12345",
         },
         related_datasets: [
             {
                 href: "http://localhost:8080/datasets/6789910",
-                title: "Crime in the UK"
+                title: "Crime in the UK",
             },
             {
                 href: "http://localhost:8080/datasets/6789910",
-                title: "More Crime in the UK"
-            }
+                title: "More Crime in the UK",
+            },
         ],
         publications: [
             {
                 href: "http://www.localhost:8080/datasets/173849jf8j238d",
-                title: "An example publication"
-            }
+                title: "An example publication",
+            },
         ],
         methodologies: [
             {
                 href: "http://www.localhost:8080/datasets/173849jf8j238d",
                 title: "An example methodology",
-                description: "A description"
-            }
+                description: "A description",
+            },
         ],
         next_release: "pudding",
         keywords: ["keyword1", "keyword2"],
@@ -186,13 +186,13 @@ const exampleDataset = {
             {
                 email: "test@email.com",
                 name: "foo bar",
-                telephone: "01633 123456"
-            }
+                telephone: "01633 123456",
+            },
         ],
         state: "published",
         title: "CPI",
-        uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices"
-    }
+        uri: "/economy/inflationandpricesindices/datasets/consumerpriceindices",
+    },
 };
 
 let dispatchedAction = null;
@@ -206,22 +206,22 @@ const defaultProps = {
     datasets: [
         {
             next: {
-                title: "Dataset 1"
+                title: "Dataset 1",
             },
             current: {
-                title: "Dataset 2"
-            }
-        }
+                title: "Dataset 2",
+            },
+        },
     ],
     dataset: { ...exampleDataset.current },
     params: {
-        datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
+        datasetID: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
     },
     userEmail: "user@email.com",
     routes: [{}],
     router: {
-        listenBefore: () => {}
-    }
+        listenBefore: () => {},
+    },
 };
 
 const defaultComponent = shallow(<DatasetMetadata {...defaultProps} />);
@@ -233,7 +233,7 @@ test("Dataset details page matches stored snapshot", () => {
 
 test("Dataset title updates after successful fetch from dataset API on mount", async () => {
     datasets.get.mockImplementationOnce(() => Promise.resolve({ current: exampleDataset.current }));
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update(); // update() appears to be async so we need to wait for it to finish before asserting
     expect(defaultComponent.state("title")).toBe("CPI");
 });
@@ -248,7 +248,7 @@ test("Correct modal type shows when user wants to add a related bulletin", () =>
     // Reset state for future tests
     defaultComponent.setState({
         modalType: "",
-        showModal: false
+        showModal: false,
     });
 });
 
@@ -256,10 +256,10 @@ test("Removing the value from related QMI input updates state to be empty", asyn
     const mockTitleEvent = {
         target: {
             value: "",
-            name: "relatedQMI"
-        }
+            name: "relatedQMI",
+        },
     };
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedQMI")).toBe(exampleDataset.current.qmi.href);
     defaultComponent.instance().handleInputChange(mockTitleEvent);
@@ -268,13 +268,13 @@ test("Removing the value from related QMI input updates state to be empty", asyn
 });
 
 test("Handler for removing a related bulletin updates state correctly", async () => {
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedBulletins").length).toEqual(1);
     expect(defaultComponent.state("relatedBulletins")[0]).toMatchObject({
         key: "12345",
         title: exampleDataset.current.publications[0].title,
-        href: exampleDataset.current.publications[0].href
+        href: exampleDataset.current.publications[0].href,
     });
     await defaultComponent.instance().handleDeleteRelatedClick("bulletin", "12345");
     await defaultComponent.update();
@@ -282,14 +282,14 @@ test("Handler for removing a related bulletin updates state correctly", async ()
 });
 
 test("Related datasets are set in state correctly on mount", async () => {
-    await defaultComponent.instance().componentWillMount();
+    await defaultComponent.instance().UNSAFE_componentWillMount();
     await defaultComponent.update();
     expect(defaultComponent.state("relatedLinks").length).toEqual(2);
     defaultComponent.state("relatedLinks").forEach((relatedLink, index) => {
         expect(relatedLink).toMatchObject({
             key: "12345",
             title: exampleDataset.current.related_datasets[index].title,
-            href: exampleDataset.current.related_datasets[index].href
+            href: exampleDataset.current.related_datasets[index].href,
         });
     });
 });
@@ -304,8 +304,8 @@ test("Changing an input value updates the state to show a change has been made",
         ...mockEvent,
         target: {
             value: "A new description",
-            name: "description"
-        }
+            name: "description",
+        },
     };
 
     await asyncComponent.update();
@@ -326,8 +326,8 @@ test("Warning modal shown when unsaved changes have been made", async () => {
         ...mockEvent,
         target: {
             value: "test-value",
-            name: "test-name"
-        }
+            name: "test-name",
+        },
     };
     defaultComponent.instance().handleInputChange(inputChangeEvent);
     defaultComponent.instance().handleBackButton();
@@ -340,16 +340,16 @@ test("Available release frequencies maps correctly to select element", () => {
     const validSelectContents = [
         {
             id: "weekly",
-            name: "Weekly"
+            name: "Weekly",
         },
         {
             id: "monthly",
-            name: "Monthly"
+            name: "Monthly",
         },
         {
             id: "annually",
-            name: "Annually"
-        }
+            name: "Annually",
+        },
     ];
 
     const createdSelectContents = defaultComponent.instance().mapReleaseFreqToSelectOptions();
@@ -374,14 +374,14 @@ test("Handle input change updates relevant state correctly", () => {
     const mockTitleEvent = {
         target: {
             value: "Some free text",
-            name: "add-related-content-title"
-        }
+            name: "add-related-content-title",
+        },
     };
     const mockURLEvent = {
         target: {
             value: "https://url.com",
-            name: "add-related-content-url"
-        }
+            name: "add-related-content-url",
+        },
     };
 
     expect(defaultComponent.state("titleInput")).toBe("");
@@ -397,7 +397,7 @@ test("Handle input change updates relevant state correctly", () => {
         urlInput: "",
         urlError: "",
         titleInput: "",
-        titleError: ""
+        titleError: "",
     });
 });
 
@@ -405,14 +405,14 @@ test("Input errors are added on submit and then removed on change of that input"
     const mockTitleEvent = {
         target: {
             value: "Some free text",
-            name: "add-related-content-title"
-        }
+            name: "add-related-content-title",
+        },
     };
     const mockURLEvent = {
         target: {
             value: "https://url.com",
-            name: "add-related-content-url"
-        }
+            name: "add-related-content-url",
+        },
     };
 
     expect(defaultComponent.state("titleInput")).toBe("");
@@ -437,9 +437,9 @@ test("Handler to edit a related item updates the state with new values", () => {
     defaultComponent.setState({
         relatedBulletins: [
             {
-                key: "12345"
-            }
-        ]
+                key: "12345",
+            },
+        ],
     });
     defaultComponent.setState({ titleInput: "Some new words" });
     defaultComponent.instance().editRelatedLink("bulletin", "12345");
@@ -454,9 +454,9 @@ test("Handler for editing a related link opens modal with existing values", () =
             {
                 key: "12345",
                 href: exampleDataset.current.publications[0].href,
-                title: exampleDataset.current.publications[0].title
-            }
-        ]
+                title: exampleDataset.current.publications[0].title,
+            },
+        ],
     });
     defaultComponent.instance().handleEditRelatedClick("bulletin", "12345");
     expect(defaultComponent.state("showModal")).toBe(true);
@@ -479,7 +479,7 @@ test("Related items map to card element correctly", () => {
     defaultComponent.state("relatedLinks").forEach((dataset, index) => {
         expect(cardProps[index]).toMatchObject({
             title: dataset.title,
-            id: dataset.key
+            id: dataset.key,
         });
     });
 });
@@ -489,7 +489,7 @@ test("Methodologies items map to card element correctly", () => {
     defaultComponent.state("relatedMethodologies").forEach((dataset, index) => {
         expect(cardProps[index]).toMatchObject({
             title: dataset.title,
-            id: dataset.key
+            id: dataset.key,
         });
     });
 });
@@ -499,12 +499,12 @@ describe("Component's state maps to API request correctly when", () => {
         const mockState = {
             contactEmail: "foobar@email.com",
             contactPhone: "01234 567890",
-            contactName: "Bob Jones"
+            contactName: "Bob Jones",
         };
         const mockRequestContactsObject = {
             email: "foobar@email.com",
             telephone: "01234 567890",
-            name: "Bob Jones"
+            name: "Bob Jones",
         };
 
         defaultComponent.setState(mockState);
@@ -515,7 +515,7 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("description data has been updated", () => {
         const mockState = {
-            description: "This is a stubbed description"
+            description: "This is a stubbed description",
         };
 
         defaultComponent.setState(mockState);
@@ -527,14 +527,14 @@ describe("Component's state maps to API request correctly when", () => {
             relatedBulletins: [
                 {
                     title: "A publication title",
-                    href: "/economy/gdp/bulletins/july2016"
+                    href: "/economy/gdp/bulletins/july2016",
                 },
                 {
                     title: "A publication title",
                     href: "/economy/gdp/bulletins/july2016",
-                    description: "Words words words and more words"
-                }
-            ]
+                    description: "Words words words and more words",
+                },
+            ],
         };
 
         defaultComponent.setState(mockPublicationsState);
@@ -549,9 +549,9 @@ describe("Component's state maps to API request correctly when", () => {
             relatedLinks: [
                 {
                     title: "GOV.UK",
-                    href: "https://gov.uk"
-                }
-            ]
+                    href: "https://gov.uk",
+                },
+            ],
         };
 
         defaultComponent.setState(mockLinksState);
@@ -566,9 +566,9 @@ describe("Component's state maps to API request correctly when", () => {
                 {
                     title: "New methodology",
                     href: "https://ons.gov.uk",
-                    description: "A new description"
-                }
-            ]
+                    description: "A new description",
+                },
+            ],
         };
 
         defaultComponent.setState(mockState);
@@ -579,10 +579,10 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("related QMI data has been updated", () => {
         const mockQMIState = {
-            relatedQMI: "/economy/gdp/methodology/gdpqmi"
+            relatedQMI: "/economy/gdp/methodology/gdpqmi",
         };
         const mockRequestQMIObject = {
-            href: mockQMIState.relatedQMI
+            href: mockQMIState.relatedQMI,
         };
 
         defaultComponent.setState(mockQMIState);
@@ -591,7 +591,7 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("national statistic data has been updated", () => {
         const mockNationalStatState = {
-            isNationalStat: false
+            isNationalStat: false,
         };
 
         defaultComponent.setState(mockNationalStatState);
@@ -600,7 +600,7 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("keywords data has been updated", () => {
         const mockKeywordsState = {
-            keywords: "foo , bar,more, two words, another"
+            keywords: "foo , bar,more, two words, another",
         };
 
         defaultComponent.setState(mockKeywordsState);
@@ -611,7 +611,7 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("title data has been updated", () => {
         const mockTitleState = {
-            title: "Foobar"
+            title: "Foobar",
         };
 
         defaultComponent.setState(mockTitleState);
@@ -620,7 +620,7 @@ describe("Component's state maps to API request correctly when", () => {
 
     it("usage information has been updated", () => {
         const mockTitleState = {
-            license: "Foobar"
+            license: "Foobar",
         };
 
         defaultComponent.setState(mockTitleState);
@@ -686,7 +686,7 @@ describe("Updating the review state on mount", () => {
     it("loads read-only mode if the dataset cannot be found in the current collection", async () => {
         datasets.get.mockImplementationOnce(() => Promise.reject({ status: 500, statusText: "Mocked error" }));
         defaultComponent.setState({ isReadOnly: false });
-        await defaultComponent.instance().componentWillMount();
+        await defaultComponent.instance().UNSAFE_componentWillMount();
         await defaultComponent.update();
         expect(defaultComponent.instance().state.isReadOnly).toBe(true);
     });
@@ -700,9 +700,9 @@ describe("Updating the review state on mount", () => {
                     {
                         state: "Complete",
                         lastEditedBy: "user-2@email.com",
-                        id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-                    }
-                ]
+                        id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+                    },
+                ],
             })
         );
 
@@ -719,9 +719,9 @@ describe("Updating the review state on mount", () => {
                     {
                         state: "Complete",
                         lastEditedBy: "user@email.com",
-                        id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68"
-                    }
-                ]
+                        id: "931a8a2a-0dc8-42b6-a884-7b6054ed3b68",
+                    },
+                ],
             })
         );
 
@@ -736,8 +736,8 @@ describe("Renders the correct buttons", () => {
         dataset: {
             ...exampleDataset.current,
             reviewState: "complete",
-            lastEditedBy: "user-2@email.com"
-        }
+            lastEditedBy: "user-2@email.com",
+        },
     };
     const completeComponent = shallow(<DatasetMetadata {...completeProps} />);
 
@@ -746,8 +746,8 @@ describe("Renders the correct buttons", () => {
         dataset: {
             ...exampleDataset.current,
             reviewState: "inProgress",
-            lastEditedBy: "user-2@email.com"
-        }
+            lastEditedBy: "user-2@email.com",
+        },
     };
     const inProgressComponent = shallow(<DatasetMetadata {...inProgressProps} />);
 
@@ -756,15 +756,15 @@ describe("Renders the correct buttons", () => {
         dataset: {
             ...exampleDataset.current,
             reviewState: "reviewed",
-            lastEditedBy: "user-2@email.com"
-        }
+            lastEditedBy: "user-2@email.com",
+        },
     };
     const reviewedComponent = shallow(<DatasetMetadata {...reviewedProps} />);
 
     it("disables the 'save' button loading data", async () => {
         expect(defaultComponent.state("isFetchingDataset")).toBeFalsy();
         expect(defaultComponent.state("isFetchingCollectionData")).toBeFalsy();
-        defaultComponent.instance().componentWillMount();
+        defaultComponent.instance().UNSAFE_componentWillMount();
         expect(defaultComponent.state("isFetchingDataset")).toBe(true);
         expect(defaultComponent.find("#btn-save[disabled=true]").exists()).toBe(true);
 

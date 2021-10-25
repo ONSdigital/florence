@@ -6,7 +6,7 @@ import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
 
 const propTypes = {
-    onCreateSuccess: PropTypes.func.isRequired
+    onCreateSuccess: PropTypes.func.isRequired,
 };
 
 class TeamCreate extends Component {
@@ -16,17 +16,13 @@ class TeamCreate extends Component {
         this.state = {
             input: {
                 value: "",
-                error: ""
+                error: "",
             },
-            isAwaitingResponse: false
+            isAwaitingResponse: false,
         };
-
-        this.handleSubmit = this.handleSubmit.bind(this);
-        this.handleFormBlur = this.handleFormBlur.bind(this);
-        this.handleFormInput = this.handleFormInput.bind(this);
     }
 
-    handleSubmit(event) {
+    handleSubmit = event => {
         event.preventDefault();
 
         const isValid = this.validateTeamName();
@@ -39,19 +35,19 @@ class TeamCreate extends Component {
             isAwaitingResponse: true,
             input: {
                 ...this.state.input,
-                value: newTeamName
-            }
+                value: newTeamName,
+            },
         });
         teams
             .add(newTeamName)
             .then(() => {
                 const input = Object.assign({}, this.state.input, {
                     value: "",
-                    error: ""
+                    error: "",
                 });
                 this.setState({
                     input,
-                    isAwaitingResponse: false
+                    isAwaitingResponse: false,
                 });
                 this.props.onCreateSuccess();
                 log.event(`Successfully created team`, log.data({ team: newTeamName }));
@@ -66,19 +62,19 @@ class TeamCreate extends Component {
                     }
                     case 403: {
                         const input = Object.assign({}, this.state.input, {
-                            error: `You don't have permission to create a team`
+                            error: `You don't have permission to create a team`,
                         });
                         this.setState({
-                            input
+                            input,
                         });
                         break;
                     }
                     case 409: {
                         const input = Object.assign({}, this.state.input, {
-                            error: `Team '${newTeamName}' already exists`
+                            error: `Team '${newTeamName}' already exists`,
                         });
                         this.setState({
-                            input
+                            input,
                         });
                         break;
                     }
@@ -87,49 +83,49 @@ class TeamCreate extends Component {
                             `Unhandled error creating team`,
                             log.data({
                                 status_code: error.status,
-                                team: newTeamName
+                                team: newTeamName,
                             }),
                             log.error(error)
                         );
                         const input = Object.assign({}, this.state.input, {
-                            error: `An unexpected error has occured`
+                            error: `An unexpected error has occured`,
                         });
                         this.setState({
-                            input
+                            input,
                         });
                         const notification = {
                             type: "warning",
                             message: `An unexpected error has occured whilst creating team '${newTeamName}'`,
-                            isDismissable: true
+                            isDismissable: true,
                         };
                         notifications.add(notification);
                         break;
                     }
                 }
             });
-    }
+    };
 
-    handleFormBlur(event) {
+    handleFormBlur = event => {
         const input = {
             ...this.state.input,
-            value: event.target.value.trim()
+            value: event.target.value.trim(),
         };
         this.setState({ input });
-    }
+    };
 
-    handleFormInput(event) {
+    handleFormInput = event => {
         const input = Object.assign({}, this.state.input, {
             value: event.target.value,
-            error: ""
+            error: "",
         });
         this.setState({ input });
-    }
+    };
 
     validateTeamName() {
         const teamName = this.state.input.value;
         const updateErrorMsg = msg => {
             const input = Object.assign({}, this.state.input, {
-                error: msg
+                error: msg,
             });
             this.setState({ input });
         };

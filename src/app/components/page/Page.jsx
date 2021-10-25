@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 const propTypes = {
     type: PropTypes.string,
     title: PropTypes.oneOfType([PropTypes.string, PropTypes.element]).isRequired,
-    isActive: PropTypes.bool
+    isActive: PropTypes.bool,
 };
 
 export class Page extends Component {
