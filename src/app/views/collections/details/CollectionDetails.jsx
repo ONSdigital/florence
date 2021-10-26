@@ -371,6 +371,9 @@ export class CollectionDetails extends Component {
                             >
                                 Restore page
                             </button>
+                            <Link id="preview" to={`${location.pathname}/preview`} className="margin-left--1 btn btn--primary">
+                                Preview
+                            </Link>
                         </div>
                     </div>
                 </div>
