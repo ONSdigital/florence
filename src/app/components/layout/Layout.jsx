@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useMemo, useState } from "react";
 import { hasValidAuthToken } from "../../utilities/hasValidAuthToken";
 import log from "../../utilities/logging/log";
 import notifications from "../../utilities/notifications";
@@ -11,17 +11,7 @@ import NavBar from "../../components/navbar";
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
 
-    useEffect(() => {
-        log.initialise();
-
-        window.setInterval(() => {
-            ping();
-        }, 10000);
-
-        checkAuthentication();
-    }, []);
-
-    const checkAuthentication = () => {
+    useMemo(() => {
         setIsCheckingAuthentication(true);
         hasValidAuthToken().then(isValid => {
             if (isValid) {
@@ -52,11 +42,19 @@ const Layout = props => {
             }
             setIsCheckingAuthentication(false);
         });
+    }, []);
+
+    useEffect(() => {
+        log.initialise();
+
+        window.setInterval(() => {
+            ping();
+        }, 10000);
 
         if (props.location.pathname !== "/florence/login" && props.enableNewSignIn) {
             sessionManagement.startSessionExpiryTimers();
         }
-    };
+    }, []);
 
     if (isCheckingAuthentication)
         return (
