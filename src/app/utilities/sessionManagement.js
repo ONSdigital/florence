@@ -1,10 +1,16 @@
 import user from "./api-clients/user";
 import notifications from "./notifications";
 import { errCodes as errorCodes } from "./errorCodes";
+import { store } from "../config/store";
+import { addPopout, removePopouts } from "../config/actions";
 
 export default class sessionManagement {
     static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
+    static timeOffsets = {
+        passiveRenewal: 300000,
+        invasiveRenewal: 120000,
+    };
 
     // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
     // used to get a new session token. The session token is what gives the user access to the system and has a very
@@ -37,15 +43,15 @@ export default class sessionManagement {
         const refreshExpiryTime = sessionStorage.getItem("refresh_expiry_time");
         if (sessionExpiryTime != null) {
             // Timer to start monitoring user interaction to add additional time to their session
-            this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, 300000, this.monitorInteraction);
+            this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
             // Timer to tell the user their session is about to expire unless they interact with the page
-            this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, 120000, this.warnSessionSoonExpire);
+            this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.warnSessionSoonExpire);
         }
         if (refreshExpiryTime != null) {
             // Timer to start monitoring user interaction to add a final extra amount of time to their session
-            this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, 300000, this.monitorInteraction);
+            this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
             // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-            this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, 120000, this.warnRefreshSoonExpire);
+            this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
         }
     };
 
@@ -80,18 +86,64 @@ export default class sessionManagement {
     };
 
     static warnSessionSoonExpire = () => {
-        // TODO function as part of a future ticket
-        console.log("Session will expire soon");
+        // const popoutOptions = {
+        //     id: "panic-kick-all-users-confirm",
+        //     title: "Are you sure you want to sign out all users?",
+        //     body: "Users will need to sign back in again and may lose unsaved changes",
+        //     isVisible: true,
+        //     buttons: [{
+        //         onClick: () => {
+        //             console.log("sign users out")
+        //         },
+        //         text: "Sign out all users",
+        //         style:"primary"
+        //     },
+        //     {
+        //         onClick: () => {
+        //             console.log("cancel")
+        //         },
+        //         text: "Cancel",
+        //         style:"invert-primary"
+        //     }]
+        // }
+        const popoutOptions = {
+            id: "session-expire-soon",
+            title: "Your session will end in 1 minute",
+            body: "This is because you have been inactive. If you want to continue using Florence you must stay signed in. If not, you will be signed out and will need to sign in again.",
+            buttons: [
+                {
+                    onClick: () => {
+                        this.refreshSession();
+                    },
+                    text: "Stay signed in",
+                    style: "primary",
+                },
+            ],
+        };
+        store.dispatch(addPopout(popoutOptions));
     };
 
     static warnRefreshSoonExpire = () => {
-        // TODO function as part of a future ticket
-        console.log("Session will expire soon");
+        const popoutOptions = {
+            id: "refresh-expire-soon",
+            title: "Sorry, you need to sign again",
+            body: "This is because you have been signed in for the maximum amount of time possible. Please save your work and sign back in to continue using Florence.",
+            buttons: [
+                {
+                    onClick: () => {
+                        // One final refresh before it expires to give the user as much time as possible to save their work
+                        this.refreshSession();
+                    },
+                    text: "Ok",
+                    style: "primary",
+                },
+            ],
+        };
+        store.dispatch(addPopout(popoutOptions));
     };
 
     static removeWarnings = () => {
-        // TODO function as part of a future ticket
-        console.log("Remove warnings");
+        store.dispatch(removePopouts(["session-expire-soon", "refresh-expire-soon"])); // Todo all
     };
 
     static refreshSession = () => {
@@ -123,3 +175,6 @@ export default class sessionManagement {
             });
     };
 }
+
+// TODO remove this is a DEBUGGING LINE
+window.sessionManagement = sessionManagement;

@@ -1,5 +1,8 @@
 import sessionManagement from "./sessionManagement";
 
+jest.useFakeTimers();
+jest.spyOn(global, "setTimeout");
+
 const sessionStorageMock = (function () {
     let store = {};
     return {
@@ -17,9 +20,35 @@ const sessionStorageMock = (function () {
         },
     };
 })();
+
+jest.mock("../sessionManagement", () => {
+    // Require the original module to not be mocked...
+    const originalModule = jest.requireActual(sessionManagement);
+    return {
+        // __esModule: true, // Use it when dealing with esModules
+        ...originalModule,
+        warnSessionSoonExpire: jest.fn(),
+        warnRefreshSoonExpire: jest.fn(),
+        monitorInteraction: jest.fn(),
+    };
+});
+
+// jest.mock("./sessionManagement", () => ({
+//     ...jest.requireActual('./sessionManagement.js'),
+//     warnSessionSoonExpire: jest.fn().mockImplementation(() => {
+//         // do nothing
+//     }),
+//     warnRefreshSoonExpire: jest.fn().mockImplementation(() => {
+//         // do nothing
+//     }),
+//     monitorInteraction: jest.fn().mockImplementation(() => {
+//         // do nothing
+//     }),
+// }))
+
 Object.defineProperty(window, "sessionStorage", { value: sessionStorageMock });
 
-test("when no times are given to the function setSessionExpiryTime it doesn't set any timers", () => {
+test("when no times are given to the function setSessionExpiryTime, it doesn't set any timers", () => {
     sessionManagement.setSessionExpiryTime();
     expect(sessionStorage.getItem("session_expiry_time")).toBeUndefined();
     expect(sessionStorage.getItem("refresh_expiry_time")).toBeUndefined();
@@ -29,7 +58,7 @@ test("when no times are given to the function setSessionExpiryTime it doesn't se
     expect(sessionManagement.timers["refreshTimerInvasive"]).toBeUndefined();
 });
 
-test("when a valid sessionExpiryTime and refreshExpiryTime are given to to the function setSessionExpiryTime it sets the session timers", () => {
+describe("when a valid sessionExpiryTime and refreshExpiryTime are given to the function setSessionExpiryTime, it sets the session timers", () => {
     let sessionExpiryTime = new Date();
     let refreshExpiryTime = new Date();
     sessionExpiryTime = sessionExpiryTime.setHours(sessionExpiryTime.getHours() + 1);
@@ -38,12 +67,24 @@ test("when a valid sessionExpiryTime and refreshExpiryTime are given to to the f
     sessionExpiryTime = new Date(sessionExpiryTime).toISOString().replace(/Z/, " +0000 UTC");
     refreshExpiryTime = new Date(refreshExpiryTime).toISOString().replace(/Z/, " +0000 UTC");
     sessionManagement.setSessionExpiryTime(sessionExpiryTime, refreshExpiryTime);
-    expect(sessionStorage.getItem("session_expiry_time")).toBe(sessionExpiryTime);
-    expect(sessionStorage.getItem("refresh_expiry_time")).toBe(refreshExpiryTime);
-    expect(sessionManagement.timers["sessionTimerPassive"]).toBeDefined();
-    expect(sessionManagement.timers["sessionTimerInvasive"]).toBeDefined();
-    expect(sessionManagement.timers["refreshTimerPassive"]).toBeDefined();
-    expect(sessionManagement.timers["refreshTimerInvasive"]).toBeDefined();
+    it("sets session storage with the expiry times", () => {
+        expect(sessionStorage.getItem("session_expiry_time")).toBe(sessionExpiryTime);
+        expect(sessionStorage.getItem("refresh_expiry_time")).toBe(refreshExpiryTime);
+    });
+    it("creates the timers", () => {
+        expect(sessionManagement.timers["sessionTimerPassive"]).toBeDefined();
+        expect(sessionManagement.timers["sessionTimerInvasive"]).toBeDefined();
+        expect(sessionManagement.timers["refreshTimerPassive"]).toBeDefined();
+        expect(sessionManagement.timers["refreshTimerInvasive"]).toBeDefined();
+    });
+    describe("timers expire", () => {
+        jest.runOnlyPendingTimers();
+        it("timer callbacks are triggered", () => {
+            expect(sessionManagement.warnSessionSoonExpire).toHaveBeenCalledTimes(1);
+            expect(sessionManagement.warnRefreshSoonExpire).toHaveBeenCalledTimes(1);
+            expect(sessionManagement.monitorInteraction).toHaveBeenCalledTimes(2);
+        });
+    });
 });
 
 test("given timers exist and when timers are requested to be removed they are actually removed", () => {
