@@ -13,9 +13,10 @@ import log, { eventTypes } from "../../utilities/log";
 const Logs = props => {
     const [isFetchingLogs, setIsFetchingLogs] = useState(false);
     const [logs, setLogs] = useState(null);
-    const [logCount, setLogCount] = useState(null);
-    const [pageSize, setPageSize] = useState(10);
-    const [logsTimestamp, setLogsTimestamp] = useState(parseInt(props.location.query.timestamp) || new Date().getTime());
+    const [logCount, setLogCount] = useState([]);
+
+    const pageSize = 10;
+    const logsTimestamp = useState(parseInt(props.location.query.timestamp) || new Date().getTime());
 
     useEffect(() => {
         // Add a timestamp to the URL so we know what time/date we're getting logs from
@@ -131,12 +132,6 @@ const Logs = props => {
         );
     };
 
-    const mapStateToProps = state => {
-        return {
-            page: state.routing.locationBeforeTransitions.query.page,
-        };
-    };
-
     return (
         <div className="grid grid--justify-center">
             <div className="grid__col-4">
@@ -165,6 +160,12 @@ Logs.propTypes = {
     }).isRequired,
     page: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
+};
+
+const mapStateToProps = state => {
+    return {
+        page: state.routing.locationBeforeTransitions.query.page,
+    };
 };
 
 export default connect(mapStateToProps)(Logs);
