@@ -13,7 +13,7 @@ describe("Popouts", () => {
         });
     });
 
-    describe("when popout props Popouts", () => {
+    describe("when popouts props given to Popout", () => {
         const popouts = [
             {
                 id: "foo",

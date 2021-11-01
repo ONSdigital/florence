@@ -8,7 +8,9 @@ const propTypes = {
 };
 
 const Popouts = props => {
-    if (props.popouts.length === 0) return null;
+    if (props.popouts.length === 0) {
+        return null;
+    }
 
     const modalChild = (
         <div className="">
