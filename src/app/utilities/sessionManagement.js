@@ -86,26 +86,6 @@ export default class sessionManagement {
     };
 
     static warnSessionSoonExpire = () => {
-        // const popoutOptions = {
-        //     id: "panic-kick-all-users-confirm",
-        //     title: "Are you sure you want to sign out all users?",
-        //     body: "Users will need to sign back in again and may lose unsaved changes",
-        //     isVisible: true,
-        //     buttons: [{
-        //         onClick: () => {
-        //             console.log("sign users out")
-        //         },
-        //         text: "Sign out all users",
-        //         style:"primary"
-        //     },
-        //     {
-        //         onClick: () => {
-        //             console.log("cancel")
-        //         },
-        //         text: "Cancel",
-        //         style:"invert-primary"
-        //     }]
-        // }
         const popoutOptions = {
             id: "session-expire-soon",
             title: "Your session will end in 1 minute",
@@ -126,7 +106,7 @@ export default class sessionManagement {
     static warnRefreshSoonExpire = () => {
         const popoutOptions = {
             id: "refresh-expire-soon",
-            title: "Sorry, you need to sign again",
+            title: "Sorry, you need to sign back in again",
             body: "This is because you have been signed in for the maximum amount of time possible. Please save your work and sign back in to continue using Florence.",
             buttons: [
                 {
@@ -175,6 +155,3 @@ export default class sessionManagement {
             });
     };
 }
-
-// TODO remove this is a DEBUGGING LINE
-window.sessionManagement = sessionManagement;
