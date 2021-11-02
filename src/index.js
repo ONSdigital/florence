@@ -11,7 +11,7 @@ import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
-import CollectionsController from "./app/views/collections/CollectionsController";
+import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
@@ -91,10 +91,10 @@ const Index = () => {
             <Router history={history}>
                 <Route component={Layout}>
                     <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
-                    <Route path={`${rootPath}/collections`} component={userIsAuthenticated(CollectionsController)}>
-                        <Route path=":collectionID" component={userIsAuthenticated(CollectionsController)}>
-                            <Route path="edit" component={userIsAuthenticated(CollectionsController)} />
-                            <Route path="restore-content" component={userIsAuthenticated(CollectionsController)} />
+                    <Route path={`${rootPath}/collections`} component={userIsAuthenticated(Collections)}>
+                        <Route path=":collectionID" component={userIsAuthenticated(Collections)}>
+                            <Route path="edit" component={userIsAuthenticated(Collections)} />
+                            <Route path="restore-content" component={userIsAuthenticated(Collections)} />
                         </Route>
                     </Route>
                     <Route component={CollectionRoutesWrapper}>

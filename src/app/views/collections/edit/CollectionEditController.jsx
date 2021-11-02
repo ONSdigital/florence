@@ -3,23 +3,17 @@ import { push } from "react-router-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import dateFormat from "dateformat";
-
-import CollectionEdit from "./CollectionEdit";
 import url from "../../../utilities/url";
 import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
-import notifications from "../../../utilities/notifications";
-import {
-    updateAllTeams,
-    updateActiveCollection,
-    addAllCollections,
-    updatePagesInActiveCollection,
-    updateTeamsInActiveCollection,
-} from "../../../config/actions";
-import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
+import notifications from "../../../utilities/notifications";
+import collectionValidation from "../validation/collectionValidation";
 import collectionMapper from "../mapper/collectionMapper";
+import { updateAllTeams } from "../../../config/actions";
+import { updateActiveCollection, updateTeamsInActiveCollection, updatePagesInActiveCollection } from "../../../config/collections/actions";
+import CollectionEdit from "./CollectionEdit";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -316,7 +310,7 @@ export class CollectionEditController extends Component {
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));
                 this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
-                this.props.dispatch(addAllCollections(allCollections));
+                // this.props.dispatch(addAllCollections(allCollections));
                 this.props.dispatch(push(url.resolve("../")));
             })
             .catch(error => {

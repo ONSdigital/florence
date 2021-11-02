@@ -2,34 +2,28 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-import objectIsEmpty from "is-empty-object";
-
-import Drawer from "../../../components/drawer/Drawer";
-import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
-import CollectionEditController from "../edit/CollectionEditController";
-import collections from "../../../utilities/api-clients/collections";
-import datasets from "../../../utilities/api-clients/datasets";
-import notifications from "../../../utilities/notifications";
+import { updateWorkingOn, emptyWorkingOn, updateActiveDatasetReviewState, updateActiveVersionReviewState } from "../../../config/actions";
 import {
     updateActiveCollection,
     emptyActiveCollection,
-    addAllCollections,
-    markCollectionForDeleteFromAllCollections,
+    markCollectionForDelete,
     updatePagesInActiveCollection,
-    updateTeamsInActiveCollection,
-    updateWorkingOn,
-    emptyWorkingOn,
-    updateActiveDatasetReviewState,
-    updateActiveVersionReviewState,
-} from "../../../config/actions";
+} from "../../../config/collections/actions";
+import objectIsEmpty from "is-empty-object";
+import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
+import collections from "../../../utilities/api-clients/collections";
+import datasets from "../../../utilities/api-clients/datasets";
+import notifications from "../../../utilities/notifications";
 import cookies from "../../../utilities/cookies";
-import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
-import collectionMapper from "../mapper/collectionMapper";
-import Modal from "../../../components/Modal";
-import RestoreContent from "../restore-content/RestoreContent";
 import url from "../../../utilities/url";
 import auth from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
+import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
+import collectionMapper from "../mapper/collectionMapper";
+import RestoreContent from "../restore-content/RestoreContent";
+import CollectionEditController from "../edit/CollectionEditController";
+import Modal from "../../../components/Modal";
+import Drawer from "../../../components/drawer/Drawer";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -215,7 +209,7 @@ export class CollectionDetailsController extends Component {
                 // We mark the collection as ready to be removed from all collections. This means that
                 // the collectionsController, which owns the allCollections state can react to this state event
                 // however it needs to (rather than the collectionDetails having to understand what to do)
-                this.props.dispatch(markCollectionForDeleteFromAllCollections(collectionID));
+                this.props.dispatch(markCollectionForDelete(collectionID));
 
                 const notification = {
                     type: "positive",
@@ -257,7 +251,7 @@ export class CollectionDetailsController extends Component {
                 },
             };
         });
-        this.props.dispatch(addAllCollections(allCollections));
+        // this.props.dispatch(addAllCollections(allCollections));
 
         this.setState({ isApprovingCollection: true });
         collections
@@ -699,8 +693,8 @@ CollectionDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         user: state.user,
-        collections: state.state.collections.all,
-        activeCollection: state.state.collections.active,
+        collections: state.collections && state.collections.all,
+        activeCollection: state.collections && state.collections.active,
         rootPath: state.state.rootPath,
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,

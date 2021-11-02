@@ -7,6 +7,7 @@ import sessionManagement from "../../utilities/sessionManagement";
 import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
+import Loader from "../loader";
 import Popouts from "../popouts/Popouts";
 
 const Layout = props => {
@@ -57,12 +58,7 @@ const Layout = props => {
         }
     }, []);
 
-    if (isCheckingAuthentication)
-        return (
-            <div className="grid grid--align-center grid--align-self-center grid--full-height">
-                <div className="loader loader--large loader--dark" />
-            </div>
-        );
+    if (isCheckingAuthentication) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
 
     return (
         <div>

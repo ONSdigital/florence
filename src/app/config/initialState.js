@@ -25,11 +25,6 @@ export const initialState = {
         recipes: [],
         activeJob: {},
     },
-    collections: {
-        all: [],
-        active: null,
-        toDelete: {},
-    },
     notifications: [],
     popouts: [],
     preview: {
