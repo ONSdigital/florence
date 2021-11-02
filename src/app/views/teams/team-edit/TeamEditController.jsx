@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-
 import { updateActiveTeamMembers, addAllUsers } from "../../../config/actions";
 import user from "../../../utilities/api-clients/user";
 import teams from "../../../utilities/api-clients/teams";
 import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
-
 import TeamEdit from "./TeamEdit";
 
 const propTypes = {
@@ -334,7 +332,7 @@ function mapStateToProps(state) {
         name: state.state.teams.active.name,
         members: state.state.teams.active.members,
         rootPath: state.state.rootPath,
-        users: state.users.all,
+        users: state.state.users.all,
     };
 }
 
