@@ -80,11 +80,13 @@ export default class sessionManagement {
     };
 
     static warnSessionSoonExpire = () => {
+        this.removeInteractionMonitoring();
         // TODO function as part of a future ticket
         console.log("Session will expire soon");
     };
 
     static warnRefreshSoonExpire = () => {
+        this.removeInteractionMonitoring();
         // TODO function as part of a future ticket
         console.log("Session will expire soon");
     };

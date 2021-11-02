@@ -144,7 +144,14 @@ function setupFlorence() {
 
     $('body').append(florence);
     Florence.refreshAdminMenu();
-
+    // TODO add check back in, removed for debugging and testing
+    // if (Florence.globalVars.config.enableNewSignIn) {
+    // Florence.sessionManagement.initialiseSessionExpiryTimers();
+    Florence.sessionManagement = {
+        timers: {}
+    };
+    initialiseSessionExpiryTimers();
+    // }
     var adminMenu = $('.js-nav');
     // dirty checks on admin menu
     adminMenu.on('click', '.js-nav-item', function () {
@@ -293,7 +300,7 @@ function setupFlorence() {
     // Alert user if ping states that their session is going to log out (log out if it's run out too)
     var countdownIsShown = false,
         secondCounter = 0;
-
+    // Legacy code doesn't look like this is even used anymore... but refraining from deleting until new work has completly shifted
     function checkSessionTimeout(sessionData) {
         var currentDateTime = new Date(),
             sessionExpiry = new Date(sessionData.sessionExpiryDate),

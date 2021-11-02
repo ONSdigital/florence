@@ -63,6 +63,8 @@ Florence.Authentication = {
     }
 };
 
+// Florence.SessionManagement = _sessionManagement
+
 Florence.ping = {
     get: function() {
         return this.entries[this.latestEntryIndex-1];
