@@ -46,4 +46,9 @@
         }
     }
 
+    &__button-container {
+        display: flex;
+        margin-top: $lineheight;
+    }
+
 }
