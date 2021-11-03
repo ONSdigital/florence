@@ -1,4 +1,4 @@
-import React, { useEffect, useState }  from "react";
+import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { connect } from "react-redux";
@@ -12,8 +12,8 @@ import log, { eventTypes } from "../../utilities/log";
 
 const Logs = props => {
     const [isFetchingLogs, setIsFetchingLogs] = useState(false);
-    const [logs, setLogs] = useState(null);
-    const [logCount, setLogCount] = useState([]);
+    const [logs, setLogs] = useState([]);
+    const [logCount, setLogCount] = useState(null);
 
     const pageSize = 10;
     const logsTimestamp = useState(parseInt(props.location.query.timestamp) || new Date().getTime());
@@ -32,49 +32,47 @@ const Logs = props => {
             props.dispatch(push(location));
         }
 
-        setIsFetchingLogs(true)
+        setIsFetchingLogs(true);
         log.length().then(count => {
-            setLogCount(count)
+            setLogCount(count);
             // TODO fix blank page when you go directly to a page number when there aren't enough pages for that to have any data
             // we should be redirecting them to just '/logs' instead
             if (props.page && props.page !== "1") {
                 log.getAll((props.page - 1) * 10, pageSize, logsTimestamp).then(logRange => {
-                    setIsFetchingLogs(false)
-                    setLogs(logRange)
+                    setIsFetchingLogs(false);
+                    setLogs(logRange);
                 });
                 return;
             }
 
             if (count > 10) {
                 log.getAll(0, 10, logsTimestamp).then(logRange => {
-                    setIsFetchingLogs(false)
-                    setLogs(logRange)
+                    setIsFetchingLogs(false);
+                    setLogs(logRange);
                 });
                 return;
             }
 
             log.getAll(null, null, logsTimestamp).then(logs => {
-                setIsFetchingLogs(false)
-                setLogs(null)
+                setIsFetchingLogs(false);
+                setLogs(null);
             });
         });
     }, []);
 
     useEffect(() => {
-        if (props.page !== nextProps.page && nextProps.page === "1") {
-            setIsFetchingLogs(true)
+        if (props.page === "1") {
+            setIsFetchingLogs(true);
             log.getAll(0, 10, logsTimestamp).then(logRange => {
-                setIsFetchingLogs(false)
-                setLogs(logRange)
+                setIsFetchingLogs(false);
+                setLogs(logRange);
             });
             return;
-        }
-
-        if (props.page !== nextProps.page) {
-            setIsFetchingLogs(true)
-            log.getAll((nextProps.page - 1) * 10, pageSize, logsTimestamp).then(logRange => {
-                setIsFetchingLogs(false)
-                setLogs(logRange)
+        } else {
+            setIsFetchingLogs(true);
+            log.getAll((props.page - 1) * 10, pageSize, logsTimestamp).then(logRange => {
+                setIsFetchingLogs(false);
+                setLogs(logRange);
             });
         }
     }, [props.page]);
