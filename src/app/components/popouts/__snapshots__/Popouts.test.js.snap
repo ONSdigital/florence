@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Popouts when popout props Popouts matches the snapshot 1`] = `
+exports[`Popouts when popouts props given to Popout matches the snapshot 1`] = `
 <div
   className="modal__overlay"
 >
