@@ -9,11 +9,14 @@
         padding: $lineheight ($gutter * 8);
         background-color: $ship-grey;
         color: $iron;
-        font-size: 16px;
+        font-size: 18px;
         margin-top: $magicnumber2;
         -webkit-transform: translateY(103%);
         transform: translateY(103%);
         transition: all 100ms ease-out;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
 
         &--warning {
             background-color: $night-shadz;
@@ -35,7 +38,7 @@
         padding: 0;
         float: right;
         font-size: 16px;
-        text-transform: uppercase;
+        text-decoration: underline;
 
         &:first-of-type {
             margin-left: ($gutter * 2);

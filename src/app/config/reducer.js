@@ -38,6 +38,7 @@ export default function reducer(state = initialState, action) {
             return {
                 ...initialState,
                 notifications: state.notifications,
+                popouts: state.popouts,
                 config: state.config,
             };
         }
@@ -370,6 +371,18 @@ export default function reducer(state = initialState, action) {
                     }
                     notification.isVisible = !notification.isVisible;
                     return notification;
+                }),
+            });
+        }
+        case "ADD_POPOUT": {
+            return Object.assign({}, state, {
+                popouts: [...state.popouts, action.popout],
+            });
+        }
+        case "REMOVE_POPOUTS": {
+            return Object.assign({}, state, {
+                popouts: state.popouts.filter(popout => {
+                    return !new Set(action.popoutIDs).has(popout.id);
                 }),
             });
         }

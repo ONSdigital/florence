@@ -41,6 +41,9 @@ export const ADD_NOTIFICATION = "ADD_NOTIFICATION";
 export const REMOVE_NOTIFICATION = "REMOVE_NOTIFICATION";
 export const TOGGLE_NOTIFICATION_VISIBILITY = "TOGGLE_NOTIFICATION_VISIBILITY";
 
+export const ADD_POPOUT = "ADD_POPOUT";
+export const REMOVE_POPOUTS = "REMOVE_POPOUTS";
+
 export const ADD_PREVIEW_COLLECTION = "ADD_PREVIEW_COLLECTION";
 export const REMOVE_PREVIEW_COLLECTION = "REMOVE_PREVIEW_COLLECTION";
 export const UPDATE_PREVIEW_SELECTED_PAGE = "UPDATE_PREVIEW_SELECTED_PAGE";
@@ -285,6 +288,20 @@ export function removeNotification(notificationID) {
     return {
         type: REMOVE_NOTIFICATION,
         notificationID,
+    };
+}
+
+export function addPopout(popout) {
+    return {
+        type: ADD_POPOUT,
+        popout,
+    };
+}
+
+export function removePopouts(popoutIDs) {
+    return {
+        type: REMOVE_POPOUTS,
+        popoutIDs,
     };
 }
 

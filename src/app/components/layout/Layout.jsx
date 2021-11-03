@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { Component, useEffect, useMemo, useState } from "react";
 import { hasValidAuthToken } from "../../utilities/hasValidAuthToken";
 import log from "../../utilities/logging/log";
 import notifications from "../../utilities/notifications";
@@ -7,21 +7,12 @@ import sessionManagement from "../../utilities/sessionManagement";
 import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
+import Popouts from "../popouts/Popouts";
 
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
 
-    useEffect(() => {
-        log.initialise();
-
-        window.setInterval(() => {
-            ping();
-        }, 10000);
-
-        checkAuthentication();
-    }, []);
-
-    const checkAuthentication = () => {
+    useMemo(() => {
         setIsCheckingAuthentication(true);
         hasValidAuthToken().then(isValid => {
             if (isValid) {
@@ -52,11 +43,19 @@ const Layout = props => {
             }
             setIsCheckingAuthentication(false);
         });
+    }, []);
+
+    useEffect(() => {
+        log.initialise();
+
+        window.setInterval(() => {
+            ping();
+        }, 10000);
 
         if (props.location.pathname !== "/florence/login" && props.enableNewSignIn) {
             sessionManagement.startSessionExpiryTimers();
         }
-    };
+    }, []);
 
     if (isCheckingAuthentication)
         return (
@@ -70,6 +69,7 @@ const Layout = props => {
             <NavBar location={props.location} />
             {props.children}
             {props.notifications && <Notifications notifications={props.notifications} />}
+            {props.popouts && <Popouts popouts={props.popouts} />}
         </div>
     );
 };

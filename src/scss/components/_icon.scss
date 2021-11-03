@@ -378,7 +378,11 @@ $col: 16px;
       width: 1.5em;
       vertical-align: middle;
     }
+
+    &--hide-notification {
+      width: 0.8em;
+      vertical-align: middle;
+      margin-left: 0.5em;
+    }
   }
 }
-
-
