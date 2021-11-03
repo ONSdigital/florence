@@ -109,7 +109,7 @@ function setupFlorence() {
     Handlebars.registerHelper('parent_dir', function (uri) {
         var pathSections = uri.split("/");
         if (pathSections.length > 0) {
-            return "/" + pathSections[pathSections.length -1];
+            return "/" + pathSections[pathSections.length - 1];
         }
         return "";
     });
@@ -144,14 +144,12 @@ function setupFlorence() {
 
     $('body').append(florence);
     Florence.refreshAdminMenu();
-    // TODO add check back in, removed for debugging and testing
-    // if (Florence.globalVars.config.enableNewSignIn) {
-    // Florence.sessionManagement.initialiseSessionExpiryTimers();
-    Florence.sessionManagement = {
-        timers: {}
-    };
-    initialiseSessionExpiryTimers();
-    // }
+    if (Florence.globalVars.config.enableNewSignIn) {
+        Florence.sessionManagement = {
+            timers: {}
+        };
+        initialiseSessionExpiryTimers();
+    }
     var adminMenu = $('.js-nav');
     // dirty checks on admin menu
     adminMenu.on('click', '.js-nav-item', function () {
@@ -199,7 +197,7 @@ function setupFlorence() {
     };
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
     viewController(mapPathToViewID(path));
-    
+
     window.onpopstate = function() {
         var newPath = (document.location.pathname).replace('/florence/', '');
         $('.js-nav-item--collection').hide();
@@ -304,7 +302,7 @@ function setupFlorence() {
     function checkSessionTimeout(sessionData) {
         var currentDateTime = new Date(),
             sessionExpiry = new Date(sessionData.sessionExpiryDate),
-            timeLeftInSession = parseInt((sessionExpiry - currentDateTime)/1000);
+            timeLeftInSession = parseInt((sessionExpiry - currentDateTime) / 1000);
 
         if (timeLeftInSession <= 31 && !countdownIsShown) {
             // Session is going to expire soon, warn user and give them option to reset session timer
@@ -406,7 +404,7 @@ function setupFlorence() {
 
     // FIXME this break the chart builder data input, if it starts with whitespace (which it often needs to for formating)
     // I've commented the function out for now so a release can go live, but we should fix this properly.
-    
+
     // function trimInputWhitespace($input) {
     //     // We don't trim on the file input type because it's value
     //     // can't be set for security reasons, which it causes a runtime error
