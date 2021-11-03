@@ -31,6 +31,7 @@ export const initialState = {
         toDelete: {},
     },
     notifications: [],
+    popouts: [],
     preview: {
         selectedPage: null,
     },

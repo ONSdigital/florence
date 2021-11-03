@@ -4,6 +4,7 @@ import Layout from "./Layout";
 function mapStateToProps(state) {
     return {
         notifications: state.state.notifications,
+        popouts: state.state.popouts,
     };
 }
 
