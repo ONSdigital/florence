@@ -7,6 +7,7 @@ import sessionManagement from "../../utilities/sessionManagement";
 import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
+import Popouts from "../popouts/Popouts";
 
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
@@ -68,6 +69,7 @@ const Layout = props => {
             <NavBar location={props.location} />
             {props.children}
             {props.notifications && <Notifications notifications={props.notifications} />}
+            {props.popouts && <Popouts popouts={props.popouts} />}
         </div>
     );
 };

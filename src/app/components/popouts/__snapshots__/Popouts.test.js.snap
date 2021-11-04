@@ -1,0 +1,42 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Popouts when popouts props given to Popout matches the snapshot 1`] = `
+<div
+  className="modal__overlay"
+>
+  <div
+    className="modal__inner grid__col-4"
+  >
+    <div
+      className=""
+    >
+      <div>
+        <div
+          className="modal__header"
+        >
+          <h1
+            className="modal__title"
+          >
+            bar
+          </h1>
+        </div>
+        <div
+          className="modal__body"
+        >
+          baz
+          <div
+            className="modal__button-container"
+          >
+            <button
+              className="btn btn--margin-right btn--primary"
+              onClick={[Function]}
+            >
+              Qux
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
