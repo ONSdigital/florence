@@ -8,6 +8,8 @@ const propTypes = {
     url: PropTypes.string.isRequired,
     externalLink: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
+    extraDetails: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.string)),
+    colCount: PropTypes.number.isRequired,
     disabled: PropTypes.bool,
 };
 
@@ -42,11 +44,28 @@ export default class SimpleSelectableListItem extends Component {
 
     render() {
         const details = this.props.details || [];
+        const extraDetails = this.props.extraDetails || [];
+        const colCount = this.props.colCount;
         return (
             <li className="simple-select-list__item">
-                {this.renderTitle()}
-                {details.map((detail, i) => {
-                    return <p key={`detail-${i}`}>{detail}</p>;
+                <div className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
+                    {this.renderTitle()}
+                    {details.map((detail, i) => {
+                        return <p key={`detail-${i}`}>{detail}</p>;
+                    })}
+                </div>
+                {extraDetails.map((column, i) => {
+                    return (
+                        <div key={`detail-${i}`} className={`simple-select-list__cols-${colCount}`}>
+                            {column.map((detail, j) => {
+                                return (
+                                    <span key={`detail-${j}`} className={detail.classes}>
+                                        {detail.content}
+                                    </span>
+                                );
+                            })}
+                        </div>
+                    );
                 })}
             </li>
         );

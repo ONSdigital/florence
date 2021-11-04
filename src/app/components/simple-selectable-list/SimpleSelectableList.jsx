@@ -24,11 +24,12 @@ export default class SimpleSelectableList extends Component {
     render() {
         const showLoadingState = this.props.showLoadingState;
         const hasRows = this.props.rows.length;
+        const colCount = hasRows && this.props.rows[0].extraDetails ? this.props.rows[0].extraDetails.length + 1 : 1;
         return (
             <ul className="list list--neutral simple-select-list">
                 {hasRows
                     ? this.props.rows.map(row => {
-                          return <SimpleSelectableListItem key={row.id} {...row} />;
+                          return <SimpleSelectableListItem key={row.id} colCount={colCount} {...row} />;
                       })
                     : null}
                 {showLoadingState && <span className="margin-top--1 loader loader--dark" />}
