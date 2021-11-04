@@ -5,7 +5,7 @@ import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router
 import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
-import {setConfig} from "./app/config/actions";
+import { setConfig } from "./app/config/actions";
 import auth from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
@@ -45,9 +45,8 @@ import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
 import "./scss/main.scss";
-import {errCodes} from "./app/utilities/errorCodes";
+import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
-console.log('testing loading')
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
