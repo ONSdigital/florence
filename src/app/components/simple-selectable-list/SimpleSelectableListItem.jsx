@@ -56,7 +56,7 @@ export default class SimpleSelectableListItem extends Component {
                 </div>
                 {extraDetails.map((column, i) => {
                     return (
-                        <div key={`detail-${i}`} className={`simple-select-list__cols-${colCount}`}>
+                        <div key={`detail-${i}`} className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
                             {column.map((detail, j) => {
                                 return (
                                     <span key={`detail-${j}`} className={detail.classes}>
