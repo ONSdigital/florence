@@ -220,7 +220,7 @@ ChangeUserPasswordController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         rootPath: state.state.rootPath,
-        loggedInUser: state.state.user,
+        loggedInUser: state.user,
     };
 }
 
