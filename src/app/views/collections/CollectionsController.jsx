@@ -211,7 +211,11 @@ export class CollectionsController extends Component {
                     {!this.isViewer && (
                         <div className="grid__col-4">
                             <h1 className="text-center">Create a collection</h1>
-                            <CollectionCreateController user={this.props.user} onSuccess={this.handleCollectionCreateSuccess} />
+                            <CollectionCreateController
+                                collections={this.props.collections}
+                                user={this.props.user}
+                                onSuccess={this.handleCollectionCreateSuccess}
+                            />
                         </div>
                     )}
                 </div>
