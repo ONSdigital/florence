@@ -45,7 +45,8 @@ import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
 import "./scss/main.scss";
-
+import { errCodes } from "./app/utilities/errorCodes";
+import notifications from "./app/utilities/notifications";
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -69,6 +70,20 @@ const userIsAdminOrEditor = connectedReduxRedirect({
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
 });
+
+const hasRedirect = () => {
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    if (redirect) {
+        const notification = {
+            type: "neutral",
+            message: errCodes.SESSION_EXPIRED,
+            isDismissable: true,
+            autoDismiss: 20000,
+        };
+        notifications.add(notification);
+    }
+    return config.enableNewSignIn ? SignInController : LoginController;
+};
 
 const Index = () => {
     return (
@@ -175,7 +190,7 @@ const Index = () => {
                     )}
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
-                    <Route path={`${rootPath}/login`} component={config.enableNewSignIn ? SignInController : LoginController} />
+                    <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
                     <Route path="*" component={NotFound} />

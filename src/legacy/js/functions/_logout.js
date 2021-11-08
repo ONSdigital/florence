@@ -1,7 +1,7 @@
 /**
  * Logout the current user and return to the login screen.
  */
-async function logout() {
+async function logout(currentPath) {
     if (Florence.globalVars.config.enableNewSignIn) {
         const response = await fetch('/tokens/self', {
             method: 'DELETE',
@@ -24,8 +24,12 @@ async function logout() {
     localStorage.setItem("loggedInAs", "");
     localStorage.setItem("userType", "");
 
-    // Redirect to refactored login page
-    window.location.pathname = "/florence/login";
+    // Redirect to login page adding an address to return to on login if one provided.
+    if (currentPath) {
+        window.location.href = "/florence/login?redirect=" + currentPath;
+    } else {
+        window.location.pathname = "/florence/login";
+    }
 }
 
 function delete_cookie(name) {
