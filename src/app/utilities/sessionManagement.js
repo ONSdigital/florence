@@ -86,6 +86,7 @@ export default class sessionManagement {
     };
 
     static warnSessionSoonExpire = () => {
+        this.removeInteractionMonitoring();
         const popoutOptions = {
             id: "session-expire-soon",
             title: "Your session will end in 1 minute",
@@ -104,6 +105,7 @@ export default class sessionManagement {
     };
 
     static warnRefreshSoonExpire = () => {
+        this.removeInteractionMonitoring();
         const popoutOptions = {
             id: "refresh-expire-soon",
             title: "Sorry, you need to sign back in again",

@@ -17,6 +17,7 @@ async function logout(currentPath) {
             sweetAlert("Unexpected error occurred during sign out");
             console.error("Error occurred sending DELETE to /tokens/self");
         }
+        removeTimers();
     }
     delete_cookie('access_token');
     delete_cookie('collection');
