@@ -11,9 +11,10 @@ const DoubleSelectableBox = ({ items, activeItemID, handleItemClick, headings, i
             {items.map(item => {
                 return (
                     <Item
-                        id={item.id}
-                        selectableBox={item.selectableBox}
                         key={item.id}
+                        id={item.id}
+                        name={item.name}
+                        type={item.type}
                         status={item.status}
                         isSelected={activeItemID && item.id === activeItemID}
                         handleClick={handleItemClick}

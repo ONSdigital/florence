@@ -14,7 +14,6 @@ export const loadCollectionsRequest = () => async (dispatch, getState) => {
     }
 };
 
-
 export const displayAlert = text => {
     console.log(text);
 };
