@@ -1,0 +1,13 @@
+.back-button {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &__icon {
+    width: 0.8em;
+    vertical-align: middle;
+    margin-right: 0.25em;
+  }
+}
