@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
-import PropTypes from "prop-types";
 
 import Resumable from "resumeablejs";
 import recipes from "../../../../utilities/api-clients/recipes";
@@ -12,109 +12,64 @@ import http from "../../../../utilities/http";
 import FileUpload from "../../../../components/file-upload/FileUpload";
 import url from "../../../../utilities/url";
 
-const propTypes = {
-    dispatch: PropTypes.func.isRequired,
-    recipes: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            alias: PropTypes.string.isRequired,
-        })
-    ),
-    jobs: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            recipe: PropTypes.string.isRequired,
-        })
-    ),
-    params: PropTypes.shape({
-        jobID: PropTypes.string,
-    }).isRequired,
-};
+const DatasetUploadController = props => {
+    const [isFetchingDataset, setIsFetchingDataset] = useState(false);
+    const [loadingPageForFirstTime, setLoadingPageForFirstTime] = useState(false);
+    const [activeDataset, setActiveDataset] = useState(null);
+    const [isCantabular, setIsCantabular] = useState(false);
 
-class DatasetUploadController extends Component {
-    constructor(props) {
-        super(props);
+    const intervalID = 0;
 
-        this.state = {
-            isFetchingDataset: false,
-            loadingPageForFirstTime: false,
-            activeDataset: null,
-            isCantabular: false,
-        };
-
-        let intervalID = 0;
-    }
-
-    UNSAFE_componentWillMount() {
-        if (!this.props.recipes || this.props.recipes.length === 0) {
-            this.repeatUploadStatusCheck();
+    useEffect(() => {
+        if (!props.recipes || props.recipes.length === 0) {
+            repeatUploadStatusCheck();
         } else {
-            const job = this.props.jobs.find(job => {
-                return job.id === this.props.params.jobID;
+            const job = props.jobs.find(job => {
+                return job.id === props.params.jobID;
             });
-            const recipe = this.props.recipes.find(dataset => {
+            const recipe = props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
             });
-            const activeDataset = this.mapAPIResponsesToState({ recipe, job });
+            const activeDatasetAPIResponse = mapAPIResponsesToState({ recipe, job });
 
-            if (!activeDataset) {
+            if (!activeDatasetAPIResponse) {
                 const notification = {
                     type: "neutral",
                     message: "This dataset was not recognised, so you've been redirected to the main screen",
                     isDismissable: true,
                 };
                 notifications.add(notification);
-                this.props.dispatch(push(url.resolve("../")));
+                props.dispatch(push(url.resolve("../")));
                 return;
             }
+            setActiveDataset({ activeDatasetAPIResponse });
 
-            this.setState({ activeDataset });
-        }
-    }
-
-    componentDidMount() {
-        if (!this.state.activeDataset) {
-            return;
-        }
-
-        this.bindInputs();
-    }
-
-    componentDidUpdate() {
-        if (!this.state.activeDataset) {
-            return;
-        }
-
-        if (this.state.activeDataset.status === "completed" && !this.state.activeDataset.dimensions) {
-            datasetImport.getDimensions(this.state.activeDataset.instanceID).then(response => {
-                const activeDataset = {
-                    ...this.state.activeDataset,
-                    dimensions: [],
-                };
-                response.map(dimension => {
-                    activeDataset.dimensions.push(dimension.name);
+            // Line 48-60 may be candidate for it's own useEffect based around activeDataset
+            if (activeDataset.status === "completed" && !activeDataset.dimensions) {
+                datasetImport.getDimensions(activeDataset.instanceID).then(response => {
+                    const activeDatasetWithDimensions = {
+                        ...activeDataset,
+                        dimensions: [],
+                    };
+                    response.map(dimension => {
+                        activeDatasetWithDimensions.dimensions.push(dimension.name);
+                    });
+                    setActiveDataset({ activeDatasetWithDimensions });
                 });
-                this.setState({ activeDataset });
-            });
+            }
+            bindInputs();
         }
-        this.bindInputs();
-    }
+    }, []);
 
     repeatUploadStatusCheck = () => {
-        this.setState(
-            {
-                isFetchingDataset: true,
-                loadingPageForFirstTime: true,
-            },
-            () => {
-                this.getUploadStatus();
-            }
-        );
-        this.intervalID = setInterval(async () => {
-            if (!this.state.isFetchingDataset) {
-                this.setState({ isFetchingDataset: true }, () => {
-                    this.getUploadStatus();
-                });
+        setIsFetchingDataset(true)
+        setLoadingPageForFirstTime(true)
+        getUploadStatus();
+
+        intervalID = setInterval(async () => {
+            if (!isFetchingDataset) {
+                setIsFetchingDataset(true)
+                getUploadStatus()
             }
         }, 5000);
     };
@@ -122,31 +77,34 @@ class DatasetUploadController extends Component {
     getUploadStatus = () => {
         const APIResponses = {};
         datasetImport
-            .get(this.props.params.jobID)
+            .get(props.params.jobID)
             .then(job => {
                 APIResponses.job = job;
                 return recipes.get(job.recipe);
             })
             .then(recipe => {
                 APIResponses.recipe = recipe;
-                const activeDataset = this.mapAPIResponsesToState({
+                const activeDatasetAPIResponse = mapAPIResponsesToState({
                     recipe: APIResponses.recipe,
                     job: APIResponses.job,
                 });
-                this.setState({ activeDataset, isFetchingDataset: false, loadingPageForFirstTime: false });
+                setActiveDataset(activeDatasetAPIResponse)
+                setIsFetchingDataset(false)
+                setLoadingPageForFirstTime(false)
             })
             .catch(error => {
-                this.setState({ isFetchingDataset: false, loadingPageForFirstTime: false });
-                clearInterval(this.intervalID);
+                setIsFetchingDataset(false)
+                setLoadingPageForFirstTime(false)
+                clearInterval(intervalID);
                 switch (error.status) {
                     case 404: {
                         const notification = {
                             type: "neutral",
-                            message: `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
+                            message: `The job '${props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
                             isDismissable: true,
                         };
                         notifications.add(notification);
-                        this.props.dispatch(push(url.resolve("../")));
+                        props.dispatch(push(url.resolve("../")));
                         break;
                     }
                     case "RESPONSE_ERR": {
@@ -192,7 +150,7 @@ class DatasetUploadController extends Component {
         return APIResponses;
     };
 
-    bindInputs() {
+    bindInputs = () => {
         document.querySelectorAll('input[type="file"]').forEach(input => {
             const r = new Resumable({
                 target: "/upload",
@@ -209,88 +167,84 @@ class DatasetUploadController extends Component {
                 const aliasName = file.container.name;
                 r.opts.query.aliasName = aliasName;
                 r.upload();
-                const files = this.state.activeDataset.files.map(currentFile => {
+                const files = activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === aliasName) {
                         currentFile.progress = 0;
                         currentFile.error = null;
                     }
                     return currentFile;
                 });
-                const activeDataset = {
-                    ...this.state.activeDataset,
+                const activeDatasetFiles = {
+                    ...activeDataset,
                     files,
                 };
-                this.setState({ activeDataset });
+                setActiveDataset(activeDatasetFiles);
             });
             r.on("fileProgress", file => {
                 const progressPercentage = Math.round(Number(file.progress() * 100));
-                const files = this.state.activeDataset.files.map(currentFile => {
+                const files = activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
                         currentFile.progress = progressPercentage;
                     }
                     return currentFile;
                 });
-                const activeDataset = {
-                    ...this.state.activeDataset,
+                const activeDatasetFiles = {
+                    ...activeDataset,
                     files,
                 };
-                this.setState({ activeDataset });
+                setActiveDataset(activeDatasetFiles);
             });
             r.on("fileError", file => {
-                const files = this.state.activeDataset.files.map(currentFile => {
+                const files = activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
                         currentFile.error = "An error occurred whilst uploading this file.";
                     }
                     return currentFile;
                 });
-                const activeDataset = {
-                    ...this.state.activeDataset,
+                const activeDatasetFiles = {
+                    ...activeDataset,
                     files,
                 };
-
+                setActiveDataset(activeDatasetFiles);
                 console.error("Error uploading file to server");
-                this.setState({ activeDataset });
             });
             r.on("fileSuccess", file => {
                 const aliasName = file.resumableObj.opts.query.aliasName;
                 http.get(`/upload/${file.uniqueIdentifier}`)
                     .then(response => {
-                        const files = this.state.activeDataset.files.map(currentFile => {
+                        const files = activeDataset.files.map(currentFile => {
                             if (currentFile.alias_name === aliasName) {
                                 currentFile.progress = null;
                                 currentFile.url = response.url;
                             }
                             return currentFile;
                         });
-                        const activeDataset = {
-                            ...this.state.activeDataset,
+                        const activeDatasetFiles = {
+                            ...activeDataset,
                             files,
                         };
-
-                        this.setState({ activeDataset });
-
-                        this.addUploadedFileToJob(aliasName, response.url);
+                        setActiveDataset(activeDatasetFiles);
+                        addUploadedFileToJob(aliasName, response.url);
                     })
                     .catch(error => {
-                        const files = this.state.activeDataset.files.map(currentFile => {
+                        const files = activeDataset.files.map(currentFile => {
                             if (currentFile.alias_name === aliasName) {
                                 currentFile.error = "An error occurred whilst uploading this file";
                             }
                             return currentFile;
                         });
-                        const activeDataset = {
-                            ...this.state.activeDataset,
+                        const activeDatasetFiles = {
+                            ...activeDataset,
                             files,
                         };
-
+                        setActiveDataset(activeDatasetFiles);
                         console.error("Error fetching uploaded file's URL: ", error);
-                        this.setState({ activeDataset });
                     });
             });
         });
     }
 
-    mapAPIResponsesToState(APIResponse) {
+    mapAPIResponsesToState = (APIResponse) => {
         const recipeAPIResponse = APIResponse.recipe;
         const jobAPIResponse = APIResponse.job;
         const fileURLs = new Map();
@@ -320,11 +274,11 @@ class DatasetUploadController extends Component {
         const editionOverride = recipeAPIResponse.output_instances.editions_override;
 
         if (jobAPIResponse.state === "completed" || jobAPIResponse.state === "error") {
-            clearInterval(this.intervalID);
+            clearInterval(intervalID);
         }
 
         if (recipeAPIResponse.format === "cantabular_table" || recipeAPIResponse.format === "cantabular_blob") {
-            this.setState({ isCantabular: true });
+            setIsCantabular(true)
         }
 
         return {
@@ -340,9 +294,9 @@ class DatasetUploadController extends Component {
         };
     }
 
-    addUploadedFileToJob(fileAlias, fileURL) {
+    addUploadedFileToJob = (fileAlias, fileURL) => {
         datasetImport
-            .addFile(this.state.activeDataset.jobID, fileAlias, fileURL)
+            .addFile(activeDataset.jobID, fileAlias, fileURL)
             .then()
             .catch(error => {
                 switch (error.status) {
@@ -421,66 +375,64 @@ class DatasetUploadController extends Component {
                         break;
                     }
                 }
-                console.error(`Error adding file to job "${this.state.activeDataset.jobID}": `, error);
+                console.error(`Error adding file to job "${activeDataset.jobID}": `, error);
             });
     }
 
     handleFormSubmit = event => {
         event.preventDefault();
-        if (this.state.isCantabular) {
-            this.props.dispatch(push(`${location.pathname}`));
+        if (isCantabular) {
+            props.dispatch(push(`${location.pathname}`));
         }
 
         let filesWithoutURLS = [];
 
-        for (let index = 0; index < this.state.activeDataset.files.length; index++) {
-            const file = this.state.activeDataset.files[index];
+        for (let index = 0; index < activeDataset.files.length; index++) {
+            const file = activeDataset.files[index];
             if (!file.url) {
                 filesWithoutURLS.push(file.alias_name);
             }
         }
 
         if (filesWithoutURLS.length > 0) {
-            const files = this.state.activeDataset.files.map(currentFile => {
+            const files = activeDataset.files.map(currentFile => {
                 if (filesWithoutURLS.indexOf(currentFile.alias_name) >= 0) {
                     currentFile.error = "You must upload this file before submitting to publishing";
                 }
                 return currentFile;
             });
-            const activeDataset = {
-                ...this.state.activeDataset,
+            const activeDatasetFiles = {
+                ...activeDataset,
                 files,
             };
-
-            this.setState({ activeDataset });
+            setActiveDataset(activeDatasetFiles);
             return;
         }
 
-        this.props.dispatch(push(`${location.pathname}/metadata`));
+        props.dispatch(push(`${location.pathname}/metadata`));
     };
 
     handleRetryClick = aliasName => {
-        const files = this.state.activeDataset.files.map(currentFile => {
+        const files = activeDataset.files.map(currentFile => {
             if (currentFile.alias_name === aliasName) {
                 currentFile.progress = null;
                 currentFile.error = "";
             }
             return currentFile;
         });
-        const activeDataset = {
-            ...this.state.activeDataset,
+        const activeDatasetFiles = {
+            ...activeDataset,
             files,
         };
-
-        this.setState({ activeDataset });
+        setActiveDataset(activeDatasetFiles);
     };
 
-    renderFileInputs() {
-        if (!this.state.activeDataset) {
+    renderFileInputs = () => {
+        if (activeDataset) {
             return;
         }
 
-        return this.state.activeDataset.files.map((file, index) => {
+        return activeDataset.files.map((file, index) => {
             return (
                 <FileUpload
                     label={file.alias_name}
@@ -492,13 +444,13 @@ class DatasetUploadController extends Component {
                     extension={file.extension || null}
                     error={file.error || null}
                     progress={file.progress >= 0 ? file.progress : null}
-                    onRetry={this.handleRetryClick}
+                    onRetry={handleRetryClick}
                 />
             );
         });
     }
 
-    renderSubmittedScreen() {
+    renderSubmittedScreen = () => {
         return (
             <div>
                 <p className="margin-bottom--2">Your files are being processed.</p>
@@ -517,7 +469,7 @@ class DatasetUploadController extends Component {
         );
     }
 
-    renderCompletedScreen() {
+    renderCompletedScreen = () => {
         return (
             <div>
                 <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
@@ -533,14 +485,14 @@ class DatasetUploadController extends Component {
                 </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions
-                    {this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0 && (
-                        <span> ({this.state.activeDataset.dimensions.length})</span>
+                    {activeDataset.dimensions && activeDataset.dimensions.length > 0 && (
+                        <span> ({activeDataset.dimensions.length})</span>
                     )}
                 </h2>
                 <div className="margin-bottom--2">
-                    {this.state.activeDataset.dimensions ? (
+                    {activeDataset.dimensions ? (
                         <ul className="list">
-                            {this.state.activeDataset.dimensions.map((dimension, index) => {
+                            {activeDataset.dimensions.map((dimension, index) => {
                                 return (
                                     <li key={index} className="list__item">
                                         {dimension}
@@ -556,8 +508,8 @@ class DatasetUploadController extends Component {
         );
     }
 
-    renderDatasetState() {
-        switch (this.state.activeDataset.status) {
+    renderDatasetState = () => {
+        switch (activeDataset.status) {
             case "created": {
                 return (
                     <div>
@@ -568,12 +520,12 @@ class DatasetUploadController extends Component {
                             <h1 className="margin-top--1 margin-bottom--1">Uploads</h1>
                             <p className="font-size--18">
                                 <span className="font-weight--600">Dataset</span>:{" "}
-                                {this.state.activeDataset.alias ? this.state.activeDataset.alias : "loading..."}
+                                {activeDataset.alias ? activeDataset.alias : "loading..."}
                             </p>
                         </div>
-                        <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
+                        <form className="simple-select-list__item" onSubmit={handleFormSubmit}>
                             <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
-                            {!this.state.isCantabular && this.renderFileInputs()}
+                            {!isCantabular && renderFileInputs()}
                             <button className="btn btn--positive" type="submit">
                                 Save and continue
                             </button>
@@ -588,7 +540,7 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">Your dataset has been submitted</h1>
-                        {this.renderSubmittedScreen()}
+                        {renderSubmittedScreen()}
                     </div>
                 );
             }
@@ -599,7 +551,7 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">Your dataset upload is complete</h1>
-                        {this.renderCompletedScreen()}
+                        {renderCompletedScreen()}
                     </div>
                 );
             }
@@ -634,12 +586,12 @@ class DatasetUploadController extends Component {
         }
     }
 
-    render() {
+    render = () => {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
-                    {this.state.activeDataset && this.renderDatasetState()}
-                    {this.state.loadingPageForFirstTime && (
+                    {activeDataset && renderDatasetState()}
+                    {loadingPageForFirstTime && (
                         <div className="grid--align-center grid--align-self-center">
                             <div className="loader loader--large loader--dark"></div>
                         </div>
@@ -650,13 +602,30 @@ class DatasetUploadController extends Component {
     }
 }
 
-DatasetUploadController.propTypes = propTypes;
+DatasetUploadController.propTypes = {
+    dispatch: PropTypes.func.isRequired,
+    recipes: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            alias: PropTypes.string.isRequired,
+        })
+    ),
+    jobs: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            recipe: PropTypes.string.isRequired,
+        })
+    ),
+    params: PropTypes.shape({
+        jobID: PropTypes.string,
+    }).isRequired,
+};
 
-function mapStateToProps(state) {
+const mapStateToProps = state => {
     return {
         datasets: state.state.datasets.all,
         jobs: state.state.datasets.jobs,
     };
-}
+};
 
 export default connect(mapStateToProps)(DatasetUploadController);
