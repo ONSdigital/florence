@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TextArea Given props that do not include the error attribute matches the snapshot 1`] = `
+<div
+  className="form__input"
+>
+  <label
+    className="form__label"
+    htmlFor="feedback"
+  >
+    Please provide some feedback
+  </label>
+  <div>
+    For example, describe any difficulties you experienced in the use of this service
+  </div>
+  <textarea
+    aria-describedby="feedback-char-limit-remaining"
+    className="input input__textarea"
+    id="feedback"
+    maxLength={200}
+    name="feedback"
+    onChange={[Function]}
+    placeholder="Please provide your feedback"
+    rows={8}
+    value=""
+  />
+  <div
+    id="feedback-char-limit-remaining"
+  >
+    <b>
+      You have 
+      200
+       characters remaining
+    </b>
+  </div>
+</div>
+`;
+
+exports[`TextArea Given props which include the error attribute matches the snapshot 1`] = `
+<div
+  className="error"
+>
+  <div
+    className=""
+  >
+    <div
+      className="panel panel--error panel--no-title"
+    >
+      <span
+        className="visually-hidden"
+      >
+        error
+      </span>
+      <div
+        className="panel__body"
+      >
+        <p
+          className="panel__error"
+        >
+          <strong
+            className="font-weight--600"
+          >
+            Something went wrong
+          </strong>
+        </p>
+        <div
+          className="form__input form__input--error"
+        >
+          <label
+            className="form__label"
+            htmlFor="feedback"
+          >
+            Please provide some feedback
+          </label>
+          <div>
+            For example, describe any difficulties you experienced in the use of this service
+          </div>
+          <textarea
+            aria-describedby="feedback-char-limit-remaining"
+            className="input input__textarea"
+            id="feedback"
+            maxLength={200}
+            name="feedback"
+            onChange={[Function]}
+            placeholder="Please provide your feedback"
+            rows={8}
+            value="Foo"
+          />
+          <div
+            id="feedback-char-limit-remaining"
+          >
+            <b>
+              You have 
+              197
+               characters remaining
+            </b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

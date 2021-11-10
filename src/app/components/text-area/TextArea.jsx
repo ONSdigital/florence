@@ -18,29 +18,37 @@ const propTypes = {
 
 const TextArea = props => {
     const charactersRemaining = props.maxLength - props.text.length;
-    const formClasses = clsx("form__input", {"form__input--error": props.error});
-    const textAreaBody =
+    const formClasses = clsx("form__input", { "form__input--error": props.error });
+    const textAreaBody = (
         <div className={formClasses}>
-            <label htmlFor={props.name} className="form__label">{props.title}</label>
+            <label htmlFor={props.name} className="form__label">
+                {props.title}
+            </label>
             <div>{props.descriptionHint}</div>
-            <textarea id={props.name} name={props.name} className="input input__textarea" value={props.text}
-                      onChange={e => props.textChange(e.target.value)} placeholder={props.placeholder}
-                      aria-describedby={`${props.name}-char-limit-remaining`} rows={props.rows}
-                      maxLength={props.maxLength}/>
+            <textarea
+                id={props.name}
+                name={props.name}
+                className="input input__textarea"
+                value={props.text}
+                onChange={e => props.textChange(e.target.value)}
+                placeholder={props.placeholder}
+                aria-describedby={`${props.name}-char-limit-remaining`}
+                rows={props.rows}
+                maxLength={props.maxLength}
+            />
             {props.maxLength && (
                 <div id={`${props.name}-char-limit-remaining`}>
                     <b>You have {charactersRemaining} characters remaining</b>
                 </div>
             )}
         </div>
+    );
 
     // If there is an error then render the text-area within an error panel
     if (props.error) {
-        return <Panel type="error"
-                      heading={props.error}
-                      body={textAreaBody}/>
+        return <Panel type="error" heading={props.error} body={textAreaBody} />;
     }
-    return textAreaBody
+    return textAreaBody;
 };
 
 const defaultProps = {

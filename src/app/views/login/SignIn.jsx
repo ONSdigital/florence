@@ -258,7 +258,7 @@ export class LoginController extends Component {
         notifications.add(notification);
     };
 
-    passwordChangeSuccess = (response) => {
+    passwordChangeSuccess = response => {
         sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
         this.setState({
             status: status.SUBMITTED_PASSWORD_CHANGE,
@@ -281,7 +281,7 @@ export class LoginController extends Component {
                 session: this.session,
             };
             user.setForgottenPassword(body)
-                .then((response) => {
+                .then(response => {
                     this.passwordChangeSuccess(response);
                 })
                 .catch(error => {
