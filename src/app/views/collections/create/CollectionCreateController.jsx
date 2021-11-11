@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 import collections from "../../../utilities/api-clients/collections";
 import teams from "../../../utilities/api-clients/teams";
 import notifications from "../../../utilities/notifications";
@@ -132,6 +131,23 @@ export class CollectionCreateController extends Component {
             });
     }
 
+    handleCollectionNameValidation = event => {
+        const name = event.target.value.trim();
+        const nameTaken = this.props.collections.some(c => c.name === name);
+
+        if (nameTaken) {
+            const collectionName = {
+                value: name,
+                errorMsg: "A collection with this name already exists",
+            };
+            const newCollectionDetails = {
+                ...this.state.newCollectionDetails,
+                name: collectionName,
+            };
+            this.setState({ newCollectionDetails });
+        }
+    };
+
     handleCollectionNameChange = event => {
         const collectionName = {
             value: event.target.value,
@@ -142,7 +158,7 @@ export class CollectionCreateController extends Component {
             ...this.state.newCollectionDetails,
             name: collectionName,
         };
-        this.setState({ newCollectionDetails: newCollectionDetails });
+        this.setState({ newCollectionDetails });
     };
 
     handleTeamSelection = event => {
@@ -322,8 +338,8 @@ export class CollectionCreateController extends Component {
 
         let hasError = false;
         let newCollectionDetails = this.state.newCollectionDetails;
-
         const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
+
         if (!validatedName.isValid) {
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
@@ -502,6 +518,7 @@ export class CollectionCreateController extends Component {
                 <CollectionCreate
                     newCollectionDetails={this.state.newCollectionDetails}
                     handleCollectionNameChange={this.handleCollectionNameChange}
+                    handleCollectionNameValidation={this.handleCollectionNameValidation}
                     handleTeamSelection={this.handleTeamSelection}
                     handleRemoveTeam={this.handleRemoveTeam}
                     handleCollectionTypeChange={this.handleCollectionTypeChange}

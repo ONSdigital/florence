@@ -527,7 +527,7 @@ describe("On input change component state updates", () => {
 describe("Mapping state to props", () => {
     it("logged in user details from state are mapped to 'loggedInUser' prop", () => {
         const state = {
-            state: {rootPath: "/florence"},
+            state: { rootPath: "/florence" },
             user: {
                 isAdmin: true,
             },
