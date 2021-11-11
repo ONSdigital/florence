@@ -226,7 +226,7 @@ const DatasetMetadata = ({
                 label="Contact name"
                 onChange={handleStringInputChange}
                 value={metadata.contactName}
-                disabled={props.disableForm}
+                disabled={disableForm}
                 />
             <Input
                 id="contact-email"
