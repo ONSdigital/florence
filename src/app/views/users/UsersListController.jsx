@@ -134,7 +134,7 @@ export class UsersListController extends Component {
     handleSearchInput = event => {
         const searchTerm = event.target.value.toLowerCase();
         const filteredUsers = this.props.users.filter(
-          user => user.title.toLowerCase().search(searchTerm) !== -1 || user.email.toLowerCase().search(searchTerm) !== -1
+            user => user.title.toLowerCase().search(searchTerm) !== -1 || user.email.toLowerCase().search(searchTerm) !== -1
         );
         this.setState({
             filteredUsers,
@@ -147,15 +147,13 @@ export class UsersListController extends Component {
             <div>
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-9">
-                        <BackButton fill='#000000' url={`${this.props.rootPath}/collections`} />
+                        <BackButton fill="#000000" url={`${this.props.rootPath}/collections`} />
                         <div className="grid grid--align-baseline">
                             <div className="grid__col-1">
                                 <h1>Users</h1>
                             </div>
                             <div className="grid__col-1">
-                                <a href='#'>
-                                    Create new user
-                                </a>
+                                <a href="#">Create new user</a>
                             </div>
                         </div>
                         <div className="grid">

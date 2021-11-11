@@ -47,6 +47,7 @@ import NotFound from "./app/components/not-found";
 import "./scss/main.scss";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
+import UsersListController from "./app/views/users/UsersListController";
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -142,7 +143,7 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
-                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersController))}>
+                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersListController : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
                                 path="change-password"

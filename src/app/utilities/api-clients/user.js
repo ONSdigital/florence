@@ -6,6 +6,7 @@ import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
+const config = window.getEnv();
 
 export default class user {
     static get(email) {
@@ -13,6 +14,9 @@ export default class user {
     }
 
     static getAll() {
+        if (config.enableNewSignIn) {
+            return http.get(`/users`);
+        }
         return http.get(`/zebedee/users`);
     }
 
