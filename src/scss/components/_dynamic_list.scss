@@ -1,0 +1,30 @@
+.dynamic-list {
+  overflow: hidden;
+  overflow-y: scroll;
+
+  &__title {
+    font-size: 21px;
+    line-height: 28px;
+    font-weight: 400;
+  }
+}
+
+.dynamic-list-item {
+  list-style: none;
+  padding: $magicnumber1;
+  border-top: 1px solid $grey4;
+
+  &__icon {
+    margin-right: $magicnumber2;
+  }
+
+  &__title {
+    font-weight: 600;
+  }
+
+  &__btn {
+    float: right;
+    padding: $magicnumber1;
+    background-color: $grey5;
+  }
+}
