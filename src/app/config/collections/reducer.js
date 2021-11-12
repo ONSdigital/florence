@@ -85,11 +85,11 @@ const reducer = (state = initialState, action) => {
         }
 
         case LOAD_COLLECTIONS_SUCCESS: {
-            console.log("DUDUDUDUDUUD", action);
+            const { collections } = action;
             return {
                 ...state,
                 isLoading: false,
-                all: action.collections,
+                all: collections,
             };
         }
 

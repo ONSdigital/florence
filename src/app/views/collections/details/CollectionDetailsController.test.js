@@ -76,7 +76,9 @@ beforeEach(() => {
 describe("CollectionDetailsController", () => {
     describe("When the active collection parameter changes", () => {
         it("from collections root to a collection ID it sets the collection details to show", () => {
-            component.setProps({ collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+            component.setProps({
+                collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+            });
             expect(component.state("drawerIsVisible")).toBe(true);
             expect(component.state("drawerIsAnimatable")).toBe(true);
             component.instance().handleDrawerTransitionEnd();
@@ -98,7 +100,9 @@ describe("CollectionDetailsController", () => {
 
         it("from one collection ID to another, it updates collection name and date instantly", () => {
             component.setProps({ collectionID: "different-collection-12345" });
-            component.setProps({ collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+            component.setProps({
+                collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+            });
             const updateActiveCollectionAction = dispatchedActions.filter(action => action.type === UPDATE_ACTIVE_COLLECTION);
             const action = updateActiveCollectionAction[updateActiveCollectionAction.length - 1];
 
@@ -119,7 +123,9 @@ describe("CollectionDetailsController", () => {
 
     describe("Collection details are hidden", () => {
         it("when 'Close' is clicked", () => {
-            component.setProps({ collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+            component.setProps({
+                collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+            });
             expect(component.state("drawerIsVisible")).toBe(true);
 
             component.instance().handleDrawerCloseClick();
@@ -159,7 +165,9 @@ describe("CollectionDetailsController", () => {
         });
 
         afterAll(() => {
-            component.setProps({ activeCollection: defaultProps.activeCollection });
+            component.setProps({
+                activeCollection: defaultProps.activeCollection,
+            });
         });
 
         describe("When restoring single file", () => {
@@ -224,8 +232,13 @@ describe("CollectionDetailsController", () => {
     });
 
     describe("When fetching a collection's detail", () => {
-        component.setProps({ collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
-        const getCollectionResponse = () => Promise.resolve({ id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+        component.setProps({
+            collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+        });
+        const getCollectionResponse = () =>
+            Promise.resolve({
+                id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c",
+            });
 
         it("has isFetchingCollectionDetails state true", () => {
             collections.get.mockImplementation(getCollectionResponse);
@@ -268,7 +281,10 @@ describe("CollectionDetailsController", () => {
         });
 
         it("updates the route with the new page's ID", () => {
-            component.setProps({ activePageURI: "test-page-1", collectionID: "test-sau39393uyqha8aw8y3n3" });
+            component.setProps({
+                activePageURI: "test-page-1",
+                collectionID: "test-sau39393uyqha8aw8y3n3",
+            });
             const newURL = component.instance().handleCollectionPageClick("test-page-2");
             expect(newURL).toBe("/florence/collections/test-sau39393uyqha8aw8y3n3#test-page-2");
         });
@@ -376,12 +392,15 @@ describe("CollectionDetailsController", () => {
         const editClickComponent = shallow(<CollectionDetailsController {...props} />);
 
         it("routes to the datasets screen for dataset/versions", async () => {
-            const datasetURL = await editClickComponent
-                .instance()
-                .handleCollectionPageEditClick(
-                    { type: "dataset_details", id: "cpi", uri: "/datasets/cpi", lastEditedBy: "test.user@email.com" },
-                    "inProgress"
-                );
+            const datasetURL = await editClickComponent.instance().handleCollectionPageEditClick(
+                {
+                    type: "dataset_details",
+                    id: "cpi",
+                    uri: "/datasets/cpi",
+                    lastEditedBy: "test.user@email.com",
+                },
+                "inProgress"
+            );
             expect(datasetURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2");
 
             const versionURL = await editClickComponent.instance().handleCollectionPageEditClick(
@@ -400,9 +419,10 @@ describe("CollectionDetailsController", () => {
         });
 
         it("routes to the workspace for a non-dataset pages", async () => {
-            const pageURL = await editClickComponent
-                .instance()
-                .handleCollectionPageEditClick({ type: "article", uri: "/economy/grossdomesticproductgdp/articles/ansarticle" });
+            const pageURL = await editClickComponent.instance().handleCollectionPageEditClick({
+                type: "article",
+                uri: "/economy/grossdomesticproductgdp/articles/ansarticle",
+            });
             expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
         });
     });

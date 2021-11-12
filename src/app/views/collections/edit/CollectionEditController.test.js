@@ -17,7 +17,11 @@ jest.mock("../../../utilities/websocket", () => {
 jest.mock("../../../utilities/api-clients/teams.js", () => ({
     getAll: () =>
         Promise.resolve([
-            { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
+            {
+                id: "1",
+                name: "Team 1",
+                members: ["member1@email.com", "member2@email.com"],
+            },
             { id: "2", name: "Team 2", members: [] },
             { id: "3", name: "Team 3", members: ["member2@email.com"] },
         ]),
@@ -120,7 +124,11 @@ describe("Editing the collection name", () => {
 
 describe("Editing the collection's associated teams", () => {
     const fetchedAllTeams = [
-        { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
+        {
+            id: "1",
+            name: "Team 1",
+            members: ["member1@email.com", "member2@email.com"],
+        },
         { id: "2", name: "Team 2", members: [] },
         { id: "3", name: "Team 3", members: ["member2@email.com"] },
     ];

@@ -69,14 +69,18 @@ test("handleSubmit checks length of new password and displays error", async () =
 
 test("handleSubmit checks if new password is a valid pass phrase and displays error", async () => {
     const component = mount(<ChangePasswordController {...props} />);
-    component.setState({ newPassword: { value: "notaValidPassPhrase", errorMsg: "" } });
+    component.setState({
+        newPassword: { value: "notaValidPassPhrase", errorMsg: "" },
+    });
     await component.instance().handleSubmit(formEvent);
     expect(component.state("newPassword")).toMatchObject(notValidPassPhrase);
 });
 
 test("handleSubmit posts if no validation errors", async () => {
     const component = mount(<ChangePasswordController {...props} />);
-    component.setState({ newPassword: { value: "a valid pass phrase", errorMsg: "" } });
+    component.setState({
+        newPassword: { value: "a valid pass phrase", errorMsg: "" },
+    });
     await component.instance().handleSubmit(formEvent);
     expect(user.updatePassword.mock.calls.length).toBe(1);
 });
@@ -85,5 +89,8 @@ test("handleInputChange updates state", async () => {
     const component = mount(<ChangePasswordController {...props} />);
     expect(component.state("newPassword")).toEqual({ value: "", errorMsg: "" });
     await component.instance().handleInputChange(mockEvent);
-    expect(component.state("newPassword")).toEqual({ value: "updated password", errorMsg: "" });
+    expect(component.state("newPassword")).toEqual({
+        value: "updated password",
+        errorMsg: "",
+    });
 });

@@ -128,7 +128,10 @@ describe("Selecting/removing a team", () => {
         expect(component.prop("allTeams").length).toBe(2);
         expect(component.state("updatedAllTeams")).toBe(null);
 
-        component.instance().handleTeamSelection({ preventDefault: () => {}, target: { value: selectedTeamID } });
+        component.instance().handleTeamSelection({
+            preventDefault: () => {},
+            target: { value: selectedTeamID },
+        });
 
         expect(component.state("updatedAllTeams")).toBeTruthy();
         expect(getDisabledTeams().length).toBe(1);
@@ -142,7 +145,10 @@ describe("Selecting/removing a team", () => {
 
         // Ensure that the component has the state and props we'd expect at this point
         expect(component.state("updatedAllTeams")).toBe(null);
-        component.instance().handleTeamSelection({ preventDefault: () => {}, target: { value: removedTeam.id } });
+        component.instance().handleTeamSelection({
+            preventDefault: () => {},
+            target: { value: removedTeam.id },
+        });
         expect(getDisabledTeams().length).toBe(1);
         expect(component.state("updatedAllTeams")).toBeTruthy();
 
@@ -158,7 +164,10 @@ test("Handle team selection doesn't add a team that is already in the collection
     const newCollection = { ...newCollectionDetails, teams: teams };
     component.setState({ newCollectionDetails: newCollection });
     expect(component.update().state().newCollectionDetails.teams).toHaveLength(1);
-    component.instance().handleTeamSelection({ preventDefault: () => {}, target: { value: "1" } });
+    component.instance().handleTeamSelection({
+        preventDefault: () => {},
+        target: { value: "1" },
+    });
     expect(component.update().state().newCollectionDetails.teams).toHaveLength(1);
 });
 
@@ -203,7 +212,12 @@ test("Handle submit validates that a scheduled collection has a time", () => {
     const name = { value: "Test Collection", errorMsg: "" };
     const date = { value: "2017-12-07", errorMsg: "" };
     const time = { value: "", errorMsg: "" };
-    const newCollection = { ...newCollectionDetails, name: name, publishDate: date, publishTime: time };
+    const newCollection = {
+        ...newCollectionDetails,
+        name: name,
+        publishDate: date,
+        publishTime: time,
+    };
     component.setState({ newCollectionDetails: newCollection });
     component.instance().handleSubmit({ preventDefault: () => {} });
     expect(component.update().state().newCollectionDetails.publishTime.errorMsg).toBe("Scheduled collections must be given a publish time");
@@ -213,7 +227,11 @@ test("Make publish date returns correct date value", () => {
     const component = shallow(<CollectionCreateController {...defaultProps} />);
     const date = { value: "2017-12-07", errorMsg: "" };
     const time = { value: "09:30", errorMsg: "" };
-    const newCollection = { ...newCollectionDetails, publishDate: date, publishTime: time };
+    const newCollection = {
+        ...newCollectionDetails,
+        publishDate: date,
+        publishTime: time,
+    };
     component.setState({ newCollectionDetails: newCollection });
     const makePublishDate = component.instance().makePublishDate();
     expect(makePublishDate).toEqual("2017-12-07T09:30:00.000Z");
@@ -225,7 +243,13 @@ test("Map state to post body returns correct object", () => {
     const date = { value: "2017-12-07", errorMsg: "" };
     const time = { value: "09:30", errorMsg: "" };
     const teams = [{ id: "1", name: "Team 1" }];
-    const newCollection = { ...newCollectionDetails, name: name, publishDate: date, publishTime: time, teams: teams };
+    const newCollection = {
+        ...newCollectionDetails,
+        name: name,
+        publishDate: date,
+        publishTime: time,
+        teams: teams,
+    };
     component.setState({ newCollectionDetails: newCollection });
     const makePublishDate = component.instance().mapStateToPostBody();
     expect(makePublishDate).toEqual(expectedPostBody);

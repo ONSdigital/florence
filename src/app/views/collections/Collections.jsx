@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import { push } from "react-router-redux";
+import PropTypes from "prop-types";
 import isEmptyObject from "is-empty-object";
 import CollectionCreateController from "./create/CollectionCreateController";
 import { pagePropTypes } from "./details/CollectionDetails";
@@ -12,7 +12,7 @@ import collectionMapper from "./mapper/collectionMapper";
 import cookies from "../../utilities/cookies";
 
 const Collections = props => {
-    console.log("Collections==>", props);
+    console.log("Collections props==>", props);
     const { user, collections, loadCollections, isLoading } = props;
     const isViewer = user && user.userType === "VIEWER";
 
@@ -157,14 +157,14 @@ const Collections = props => {
         document.getElementById(mappedCollection.id).scrollIntoView();
     };
 
-    const handleCollectionSelection = collection => {
+    const handleCollectionClick = id => {
         if (isViewer) {
-            cookies.add("collection", collection.id, null);
-            props.updateWorkingOn(collection.id, collection.name);
-            push(`${props.rootPath}/collections/${collection.id}/preview`);
+            cookies.add("collection", id, null);
+            // props.updateWorkingOn(id);
+            props.dispatch.push(`${props.rootPath}/collections/${id}/preview`);
             return;
         }
-        push(`${props.rootPath}/collections/${collection.id}`);
+        props.dispatch(push(`${props.rootPath}/collections/${id}`));
     };
 
     return (
@@ -174,9 +174,10 @@ const Collections = props => {
                     <h1 className="text-center">Select a collection</h1>
                     <DoubleSelectableBox
                         items={props.collections}
+                        activeItemID={props.params.collectionID}
                         isLoading={isLoading}
                         headings={["Name", "Publish date"]}
-                        handleItemClick={handleCollectionSelection}
+                        handleItemClick={handleCollectionClick}
                     />
                 </div>
                 {!isViewer && (

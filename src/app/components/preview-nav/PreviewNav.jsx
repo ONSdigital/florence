@@ -22,7 +22,10 @@ const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
                             name: createPageTitle(page),
                             isGroup: true,
                             groupOptions: page.files.map(file => {
-                                return { id: `${page.contentPath}/${file}`, name: file };
+                                return {
+                                    id: `${page.contentPath}/${file}`,
+                                    name: file,
+                                };
                             }),
                         };
                     }

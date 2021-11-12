@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import Item from "./Item";
 
 const DoubleSelectableBox = ({ items, activeItemID, handleItemClick, headings, isLoading }) => {
-    console.log("items", items);
     if (!items) return null;
 
     const renderList = () => (
@@ -13,8 +12,7 @@ const DoubleSelectableBox = ({ items, activeItemID, handleItemClick, headings, i
                     <Item
                         key={item.id}
                         id={item.id}
-                        name={item.name}
-                        type={item.type}
+                        selectableBox={item.selectableBox}
                         status={item.status}
                         isSelected={activeItemID && item.id === activeItemID}
                         handleClick={handleItemClick}
