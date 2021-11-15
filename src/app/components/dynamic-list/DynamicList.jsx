@@ -13,13 +13,13 @@ const propTypes = {
 };
 
 const DynamicList = props => {
+    const searchID = `${props.title.replace(/\s+/g, "-").toLowerCase()}-search-content-types`;
     let list;
-    let searchID = `${props.title.replace(/\s+/g, "-").toLowerCase()}-search-content-types`;
     if (props.listItems.length > 0) {
         list = (
             <ul className={`dynamic-list__container ${props.listHeightClass}`}>
                 {props.listItems.map((row, index) => {
-                    return <DynamicListItem key={`dynamicListRow-${index}`} {...row} />;
+                    return <DynamicListItem key={`dynamic-list-row-${index}`} {...row} />;
                 })}
             </ul>
         );

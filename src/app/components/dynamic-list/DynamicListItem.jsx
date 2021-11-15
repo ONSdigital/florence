@@ -31,14 +31,11 @@ const DynamicListItem = props => {
     return (
         <li className="dynamic-list-item">
             {icon}
-            <div className="dynamic-list-item__title">{props.title}</div>
+            <span className="dynamic-list-item__title">{props.title}</span>
             {props.desc && (
                 <>
-                    <div className="dynamic-list-item__separator" aria-hidden="true">
-                        {" "}
-                        •
-                    </div>
-                    <div className="dynamic-list-item__desc">{props.desc}</div>
+                    <span className="dynamic-list-item__separator" aria-hidden="true"> • </span>
+                    <span className="dynamic-list-item__desc">{props.desc}</span>
                 </>
             )}
             {props.buttonName && (

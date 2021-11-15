@@ -35,6 +35,7 @@
     margin-top: auto;
     margin-bottom: auto;
     margin-right: $magicnumber1;
+    overflow-wrap: anywhere;
   }
 
   &__btn {
@@ -52,8 +53,4 @@
     margin: auto $magicnumber1 auto $magicnumber1;
     font-weight: 600;
   }
-}
-
-.fifthHeight {
-  height: 25vh
 }

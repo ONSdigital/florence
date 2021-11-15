@@ -9,7 +9,7 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
   </span>
   <label
     className="visually-hidden"
-    htmlFor="Add member to team-search-content-types"
+    htmlFor="add-member-to-team-search-content-types"
   >
     Search viewers by name or email
   </label>
@@ -54,23 +54,24 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
           fill="#000000"
         />
       </svg>
-      <div
+      <span
         className="dynamic-list-item__title"
       >
         Simon Davies
-      </div>
-      <div
+      </span>
+      <span
         aria-hidden="true"
         className="dynamic-list-item__separator"
       >
          
         •
-      </div>
-      <div
+         
+      </span>
+      <span
         className="dynamic-list-item__desc"
       >
          Simon.davies@ons.gov.uk
-      </div>
+      </span>
       <button
         aria-label="Add Simon Davies"
         className="dynamic-list-item__btn"
@@ -96,23 +97,24 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
           fill="#000000"
         />
       </svg>
-      <div
+      <span
         className="dynamic-list-item__title"
       >
         Michael Miller
-      </div>
-      <div
+      </span>
+      <span
         aria-hidden="true"
         className="dynamic-list-item__separator"
       >
          
         •
-      </div>
-      <div
+         
+      </span>
+      <span
         className="dynamic-list-item__desc"
       >
          Michael.miller@ons.gov.uk
-      </div>
+      </span>
       <button
         aria-label="Add Michael Miller"
         className="dynamic-list-item__btn"

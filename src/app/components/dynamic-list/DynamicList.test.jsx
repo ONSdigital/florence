@@ -34,9 +34,6 @@ describe("DynamicList", () => {
         const component = mount(<DynamicList {...dynamicListProps} />);
         it("should display a dynamic list", () => {
             expect(component.find(".dynamic-list__title").length).toBe(1);
-            expect(component.find("#add-member-to-team-search-content-types").length).toBe(1);
-            // expect(component.find("#add-member-to-team-search-content-types").at(0).type()).toBe("label");
-            // expect(component.find("#add-member-to-team-search-content-types").at(1).type()).toBe("input");
             expect(component.find(".dynamic-list-item").length).toBe(2);
             expect(component.find(".dynamic-list-item__btn").length).toBe(2);
         });
