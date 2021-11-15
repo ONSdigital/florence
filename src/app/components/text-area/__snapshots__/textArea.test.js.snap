@@ -27,11 +27,11 @@ exports[`TextArea Given props that do not include the error attribute matches th
   <div
     id="feedback-char-limit-remaining"
   >
-    <b>
+    <strong>
       You have 
       200
        characters remaining
-    </b>
+    </strong>
   </div>
 </div>
 `;
@@ -89,11 +89,11 @@ exports[`TextArea Given props which include the error attribute matches the snap
           <div
             id="feedback-char-limit-remaining"
           >
-            <b>
+            <strong>
               You have 
               197
                characters remaining
-            </b>
+            </strong>
           </div>
         </div>
       </div>

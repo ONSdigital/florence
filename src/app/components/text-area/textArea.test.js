@@ -9,12 +9,12 @@ describe("TextArea", () => {
             title: "Please provide some feedback",
             name: "feedback",
             text: "",
-            textChange: () => {},
             descriptionHint: "For example, describe any difficulties you experienced in the use of this service",
             maxLength: 200,
             placeholder: "Please provide your feedback",
             rows: 8,
             error: "",
+            handleChange: () => {},
         };
         const component = shallow(<TextArea {...textAreaProps} />);
         it("Should render the textArea", () => {
@@ -34,12 +34,12 @@ describe("TextArea", () => {
             title: "Please provide some feedback",
             name: "feedback",
             text: "Foo",
-            textChange: () => {},
             descriptionHint: "For example, describe any difficulties you experienced in the use of this service",
             maxLength: 200,
             placeholder: "Please provide your feedback",
             rows: 8,
             error: "Something went wrong",
+            handleChange: () => {},
         };
         it("matches the snapshot", () => {
             const componentForSnapshot = renderer.create(<TextArea {...textAreaProps} />);

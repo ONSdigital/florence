@@ -1,5 +1,4 @@
 import React from "react";
-
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import Panel from "../panel/Panel";
@@ -7,7 +6,7 @@ import Panel from "../panel/Panel";
 const propTypes = {
     name: PropTypes.string.isRequired,
     text: PropTypes.string.isRequired,
-    textChange: PropTypes.func.isRequired,
+    handleChange: PropTypes.func.isRequired,
     title: PropTypes.string.isRequired,
     descriptionHint: PropTypes.string,
     error: PropTypes.string,
@@ -18,9 +17,8 @@ const propTypes = {
 
 const TextArea = props => {
     const charactersRemaining = props.maxLength - props.text.length;
-    const formClasses = clsx("form__input", { "form__input--error": props.error });
     const textAreaBody = (
-        <div className={formClasses}>
+        <div className={clsx("form__input", { "form__input--error": props.error })}>
             <label htmlFor={props.name} className="form__label">
                 {props.title}
             </label>
@@ -30,15 +28,15 @@ const TextArea = props => {
                 name={props.name}
                 className="input input__textarea"
                 value={props.text}
-                onChange={e => props.textChange(e.target.value)}
                 placeholder={props.placeholder}
                 aria-describedby={`${props.name}-char-limit-remaining`}
                 rows={props.rows}
                 maxLength={props.maxLength}
+                onChange={e => props.handleChange(e.target.value)}
             />
             {props.maxLength && (
                 <div id={`${props.name}-char-limit-remaining`}>
-                    <b>You have {charactersRemaining} characters remaining</b>
+                    <strong>You have {charactersRemaining} characters remaining</strong>
                 </div>
             )}
         </div>
@@ -51,11 +49,6 @@ const TextArea = props => {
     return textAreaBody;
 };
 
-const defaultProps = {
-    rows: 8,
-};
-
 TextArea.propTypes = propTypes;
-TextArea.defaultProps = defaultProps;
 
 export default TextArea;
