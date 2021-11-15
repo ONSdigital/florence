@@ -6,18 +6,18 @@ import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
-const config = window.getEnv();
 
 export default class user {
     static get(email) {
         return http.get(`/zebedee/users?email=${email}`);
     }
 
-    static getAll() {
-        if (config.enableNewSignIn) {
-            return http.get(`/users`);
-        }
+    static getAllZebedee() {
         return http.get(`/zebedee/users`);
+    }
+
+    static getAll() {
+        return http.get(`/users`);
     }
 
     static create(body) {

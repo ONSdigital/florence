@@ -44,7 +44,7 @@ export class UsersController extends Component {
     getAllUsers() {
         this.setState({ isFetchingUsers: true });
         return users
-            .getAll()
+            .getAllZebedee()
             .then(allUsersResponse => {
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user);
