@@ -96,7 +96,7 @@ describe("On mount of the users screen", () => {
     it("adds all users to state", () => {
         component.instance().UNSAFE_componentWillMount();
         expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
-        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
+        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.users.length);
     });
 
     it("updates isFetchingUsers state to show it's fetching data for all users", () => {
@@ -120,28 +120,16 @@ describe("On mount of the users screen", () => {
     });
 });
 
-describe("Selecting a user", () => {
-    beforeAll(() => {
-        dispatchedActions = [];
-    });
-    it("routes to the users details page", () => {
-        component.instance().handleUserSelection({ id: "user1" });
-        expect(dispatchedActions[0].type).toBe("@@router/CALL_HISTORY_METHOD");
-        expect(dispatchedActions[0].payload.method).toBe("push");
-        expect(dispatchedActions[0].payload.args[0]).toBe("/florence/users/user1");
-    });
-});
-
 describe("Mapping users to state", () => {
     it("maps correctly", () => {
         const expectedValue = {
-            ...mockedAllUsers[0],
-            id: mockedAllUsers[0].email,
-            details: [mockedAllUsers[0].email],
-            title: `${mockedAllUsers[0].forename} ${mockedAllUsers[0].lastname}`,
-            url: `/florence/users/${mockedAllUsers[0].email}`,
+            ...mockedAllUsers.users[0],
+            id: mockedAllUsers.users[0].email,
+            details: [mockedAllUsers.users[0].email],
+            title: `${mockedAllUsers.users[0].forename} ${mockedAllUsers.users[0].lastname}`,
+            url: `/florence/users/${mockedAllUsers.users[0].email}`,
         };
-        const returnValue = component.instance().mapUserToState(mockedAllUsers[0]);
+        const returnValue = component.instance().mapUserToState(mockedAllUsers.users[0]);
         expect(returnValue).toMatchObject(expectedValue);
     });
 });
