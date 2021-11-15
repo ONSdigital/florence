@@ -5,6 +5,8 @@
     &__item {
         border-bottom: $iron-dark solid 1px;
         padding: $lineheight 0;
+        display: flex;
+        justify-content: space-between;
 
         // This is a bit of a hack to show radio buttons
         // as if they are simple-select-list items
@@ -22,6 +24,43 @@
             line-height: $lineheight * 0.5;
         }
         // end of radio button hack
+    }
+
+    &__col {
+        &:last-of-type {
+            text-align: right;
+        }
+
+        &:first-of-type {
+            text-align: left;
+        }
+    }
+
+    //To keep the column size consistent between rows in the list.
+    &__cols {
+        &-1 {
+            width: 100%;
+        }
+
+        &-2 {
+            width: 50%;
+        }
+
+        &-3 {
+            width: 33%;
+        }
+
+        &-4 {
+            width: 25%;
+        }
+
+        &-5 {
+            width: 20%;
+        }
+
+        &-6 {
+            width: 16.6%;
+        }
     }
 
     &__title {
