@@ -14,7 +14,7 @@ const propTypes = {
 
 const DynamicList = props => {
     let list;
-    let searchID = `${props.title.replace(/\s+/g, '-').toLowerCase()}-search-content-types`
+    let searchID = `${props.title.replace(/\s+/g, "-").toLowerCase()}-search-content-types`;
     if (props.listItems.length > 0) {
         list = (
             <ul className={`dynamic-list__container ${props.listHeightClass}`}>
@@ -34,8 +34,7 @@ const DynamicList = props => {
                     <label htmlFor={searchID} className="visually-hidden">
                         {props.filterPlaceholder}
                     </label>
-                    <Input id={searchID}
-                           placeholder={props.filterPlaceholder} onChange={props.handleSearchInput}/>
+                    <Input id={searchID} placeholder={props.filterPlaceholder} onChange={props.handleSearchInput} />
                 </>
             )}
             {list}
