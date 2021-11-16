@@ -7,12 +7,14 @@ const propTypes = {
     title: PropTypes.string.isRequired,
     listHeightClass: PropTypes.string,
     filterPlaceholder: PropTypes.string,
+    headingLevel: PropTypes.oneOf(["1", "2", "3", "4", "5", "6"]).isRequired,
     noResultsText: PropTypes.string,
     handleSearchInput: PropTypes.func,
     listItems: PropTypes.arrayOf(PropTypes.shape(DynamicListItem.propTypes)).isRequired,
 };
 
 const DynamicList = props => {
+    const HeadingLevel = `h${props.headingLevel}`;
     const searchID = `${props.title.replace(/\s+/g, "-").toLowerCase()}-search-content-types`;
     let list;
     if (props.listItems.length > 0) {
@@ -24,11 +26,11 @@ const DynamicList = props => {
             </ul>
         );
     } else {
-        list = <div role="alert">{props.noResultsText}</div>;
+        list = <div aria-live="assertive">{props.noResultsText}</div>;
     }
     return (
         <div>
-            <span className="dynamic-list__title">{props.title}</span>
+            <HeadingLevel className="dynamic-list__title">{props.title}</HeadingLevel>
             {props.handleSearchInput && (
                 <>
                     <label htmlFor={searchID} className="visually-hidden">

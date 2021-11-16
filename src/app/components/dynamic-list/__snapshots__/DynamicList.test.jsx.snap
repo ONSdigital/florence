@@ -2,11 +2,11 @@
 
 exports[`DynamicList given props does it create a list matches the snapshot 1`] = `
 <div>
-  <span
+  <h1
     className="dynamic-list__title"
   >
     Add member to team
-  </span>
+  </h1>
   <label
     className="visually-hidden"
     htmlFor="add-member-to-team-search-content-types"

@@ -16,16 +16,17 @@ const propTypes = {
 
 const DynamicListItem = props => {
     const colorBlack = "#000000";
+    const viewBox = "0 0 15 15";
     let icon;
     switch (props.icon) {
         case "Shield-person":
-            icon = <PersonInShield classes="dynamic-list-item__icon" viewBox="0 0 15 15" fillColor={colorBlack} ariaLabel={props.iconName} />;
+            icon = <PersonInShield classes="dynamic-list-item__icon" viewBox={viewBox} fillColor={colorBlack} ariaLabel={props.iconName} />;
             break;
         case "Shield-tick":
-            icon = <TickInShield classes="dynamic-list-item__icon" viewBox="0 0 15 15" fillColor={colorBlack} ariaLabel={props.iconName} />;
+            icon = <TickInShield classes="dynamic-list-item__icon" viewBox={viewBox} fillColor={colorBlack} ariaLabel={props.iconName} />;
             break;
         case "Person":
-            icon = <Person classes="dynamic-list-item__icon" viewBox="0 0 15 15" fillColor={colorBlack} ariaLabel={props.iconName} />;
+            icon = <Person classes="dynamic-list-item__icon" viewBox={viewBox} fillColor={colorBlack} ariaLabel={props.iconName} />;
             break;
     }
     return (

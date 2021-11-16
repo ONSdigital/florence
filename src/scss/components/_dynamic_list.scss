@@ -3,6 +3,7 @@
     font-size: 21px;
     line-height: 28px;
     font-weight: 400;
+    margin: 0;
   }
 
   &__container {
@@ -50,7 +51,7 @@
   }
 
   &__separator {
-    margin: auto $magicnumber1 auto $magicnumber1;
+    margin: auto $magicnumber1;
     font-weight: 600;
   }
 }

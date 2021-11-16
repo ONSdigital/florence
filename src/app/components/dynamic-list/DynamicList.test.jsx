@@ -29,6 +29,7 @@ describe("DynamicList", () => {
             listHeightClass: "fifthHeight",
             noResultsText: "No viewers found",
             filterPlaceholder: "Search viewers by name or email",
+            headingLevel: "1",
             handleSearchInput: () => {},
         };
         const component = mount(<DynamicList {...dynamicListProps} />);
