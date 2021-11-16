@@ -4,7 +4,7 @@ import { store } from "../config/store";
 import log from "./logging/log";
 
 import uuid from "uuid/v4";
-import Cross from "../components/icons/Cross";
+import Cross from "../icons/Cross";
 
 export default class notifications {
     /**
