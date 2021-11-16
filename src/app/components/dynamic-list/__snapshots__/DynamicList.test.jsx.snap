@@ -1,0 +1,129 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DynamicList given props does it create a list matches the snapshot 1`] = `
+<div>
+  <h1
+    className="dynamic-list__title"
+  >
+    Add member to team
+  </h1>
+  <label
+    className="visually-hidden"
+    htmlFor="add-member-to-team-search-content-types"
+  >
+    Search viewers by name or email
+  </label>
+  <div
+    className="form__input"
+  >
+    <label
+      className="form__label"
+      htmlFor="add-member-to-team-search-content-types"
+    />
+    
+    <input
+      autoComplete="new-password"
+      autoFocus={false}
+      className="input"
+      disabled={false}
+      id="add-member-to-team-search-content-types"
+      name="add-member-to-team-search-content-types"
+      onChange={[Function]}
+      onFocus={[Function]}
+      placeholder="Search viewers by name or email"
+      type="text"
+    />
+    
+  </div>
+  <ul
+    className="dynamic-list__container fifthHeight"
+  >
+    <li
+      className="dynamic-list-item"
+    >
+      <svg
+        aria-label="Viewer"
+        className="dynamic-list-item__icon"
+        fill="none"
+        role="img"
+        viewBox="0 0 15 15"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6.667 7.5a3.332 3.332 0 1 0 0-6.667 3.332 3.332 0 1 0 0 6.667Zm0 1.667C4.442 9.167 0 10.283 0 12.5v1.667h13.333V12.5c0-2.217-4.441-3.333-6.666-3.333Z"
+          fill="#000000"
+        />
+      </svg>
+      <span
+        className="dynamic-list-item__title"
+      >
+        Simon Davies
+      </span>
+      <span
+        aria-hidden="true"
+        className="dynamic-list-item__separator"
+      >
+         
+        •
+         
+      </span>
+      <span
+        className="dynamic-list-item__desc"
+      >
+         Simon.davies@ons.gov.uk
+      </span>
+      <button
+        aria-label="Add Simon Davies"
+        className="dynamic-list-item__btn"
+        onClick={[Function]}
+        type="button"
+      >
+        Add
+      </button>
+    </li>
+    <li
+      className="dynamic-list-item"
+    >
+      <svg
+        aria-label="Viewer"
+        className="dynamic-list-item__icon"
+        fill="none"
+        role="img"
+        viewBox="0 0 15 15"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path
+          d="M6.667 7.5a3.332 3.332 0 1 0 0-6.667 3.332 3.332 0 1 0 0 6.667Zm0 1.667C4.442 9.167 0 10.283 0 12.5v1.667h13.333V12.5c0-2.217-4.441-3.333-6.666-3.333Z"
+          fill="#000000"
+        />
+      </svg>
+      <span
+        className="dynamic-list-item__title"
+      >
+        Michael Miller
+      </span>
+      <span
+        aria-hidden="true"
+        className="dynamic-list-item__separator"
+      >
+         
+        •
+         
+      </span>
+      <span
+        className="dynamic-list-item__desc"
+      >
+         Michael.miller@ons.gov.uk
+      </span>
+      <button
+        aria-label="Add Michael Miller"
+        className="dynamic-list-item__btn"
+        onClick={[Function]}
+        type="button"
+      >
+        Add
+      </button>
+    </li>
+  </ul>
+</div>
+`;
