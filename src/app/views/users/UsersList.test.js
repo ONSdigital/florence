@@ -1,9 +1,18 @@
 import React from "react";
-import { UsersListController } from "./UsersListController";
-import { shallow } from "enzyme";
+import {UsersList, getAllUsers, mapUserToState} from "./UsersList";
 import user from "../../utilities/api-clients/user";
+import renderer from "react-test-renderer";
+import {mount} from "enzyme";
 
 console.error = () => {};
+
+const withTimeout = (done, fn) => {
+    const timeoutId = setTimeout(() => {
+        fn();
+        clearTimeout(timeoutId);
+        done();
+    });
+};
 
 jest.mock("../../utilities/logging/log", () => {
     return {
@@ -74,49 +83,30 @@ const mockedAllUsers = {
 
 let dispatchedActions = [];
 
+const mockDispatch = event => {
+    dispatchedActions.push(event);
+};
+const rootPath = "/florence";
+
 const defaultProps = {
-    dispatch: event => {
-        dispatchedActions.push(event);
-    },
-    rootPath: "/florence",
+    dispatch: mockDispatch,
+    rootPath: rootPath,
     params: {
         userID: "",
     },
 };
 
-const component = shallow(<UsersListController {...defaultProps} />);
-
-describe("On mount of the users screen", () => {
-    it("fetches data for all users", () => {
+describe("Calling getAllUsers function", () => {
+    it("fetches data for all users", (done) => withTimeout(done, () => {
         const getUserCalls = user.getAll.mock.calls.length;
-        component.instance().UNSAFE_componentWillMount();
+        getAllUsers(mockDispatch, rootPath, () => {});
         expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
-    });
+    }));
 
     it("adds all users to state", () => {
-        component.instance().UNSAFE_componentWillMount();
+        getAllUsers(mockDispatch, rootPath, () => {});
         expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
         expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.users.length);
-    });
-
-    it("updates isFetchingUsers state to show it's fetching data for all users", () => {
-        expect(component.state("isFetchingUsers")).toBe(false);
-
-        // Tests that state is set correctly before asynchronous requests have finished
-        component.instance().UNSAFE_componentWillMount();
-        expect(component.state("isFetchingUsers")).toBe(true);
-    });
-
-    it("updates isFetchingUsers state to show it has fetched data for all users", async () => {
-        // Tests that state is set correctly after asynchronous requests were successful
-        await component.instance().UNSAFE_componentWillMount();
-        expect(component.state("isFetchingUsers")).toBe(false);
-    });
-
-    it("updates isFetchingUsers state correctly on failure to fetch data for all users", async () => {
-        user.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().UNSAFE_componentWillMount();
-        expect(component.state("isFetchingUsers")).toBe(false);
     });
 });
 
@@ -129,7 +119,31 @@ describe("Mapping users to state", () => {
             title: `${mockedAllUsers.users[0].forename} ${mockedAllUsers.users[0].lastname}`,
             url: `/florence/users/${mockedAllUsers.users[0].email}`,
         };
-        const returnValue = component.instance().mapUserToState(mockedAllUsers.users[0]);
+        const returnValue = mapUserToState("/florence", mockedAllUsers.users[0]);
         expect(returnValue).toMatchObject(expectedValue);
+    });
+});
+
+describe("UsersList", () => {
+    const mappedUser1 = mapUserToState("/florence", mockedAllUsers.users[0]);
+    const mappedUser2 = mapUserToState("/florence", mockedAllUsers.users[1]);
+    const defaultProps = {
+        dispatch: mockDispatch,
+        rootPath: rootPath,
+        params: {
+            userID: "",
+        },
+        users: [mappedUser1, mappedUser2]
+    };
+
+    const component = mount(<UsersList {...defaultProps} />);
+    it("should display a simple selectable list", () => {
+        expect(component.find(".simple-select-list").length).toBe(1);
+        expect(component.find(".simple-select-list__item").length).toBe(2);
+    });
+
+    it("matches the snapshot", () => {
+        const componentForSnapshot = renderer.create(<UsersList {...defaultProps} />);
+        expect(componentForSnapshot.toJSON()).toMatchSnapshot();
     });
 });
