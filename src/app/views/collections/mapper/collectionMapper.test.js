@@ -44,7 +44,7 @@ const exampleUnmappedPages = [
         description: {
             title: "Environmental accounts",
         },
-        events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z" }],
+        events: [{ email: "test@test.com", date: "2018-05-29T13:41:40.536Z", type: "EDITED"}],
         type: "taxonomy_landing_page",
     },
     {
@@ -54,7 +54,7 @@ const exampleUnmappedPages = [
         description: {
             title: "Economy",
         },
-        events: [{ email: "test@test.com", date: "2018-05-28T10:23:13.569Z" }],
+        events: [{ email: "test@test.com", date: "2018-05-28T10:23:13.569Z", type: "EDITED" }],
         type: "taxonomy_landing_page",
     },
 ];
@@ -489,7 +489,7 @@ describe("Mapping a collections pages to state", () => {
                         title: "Second estimate of GDP",
                         edition: "October to December 2017",
                     },
-                    events: [{ email: "test@test.com", date: "2018-05-29T13:42:23.909Z" }],
+                    events: [{ email: "test@test.com", date: "2018-05-29T13:42:23.909Z", type: 'EDITED'}],
                     type: "bulletin",
                 },
             ],

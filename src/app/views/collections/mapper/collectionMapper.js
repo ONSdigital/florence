@@ -66,12 +66,13 @@ export default class collectionMapper {
                     return null;
                 }
                 return pagesArray.map(page => {
+                    const lastEditedEvent = page.events && page.events.filter(e => e.type === "EDITED").pop(); //events coming sorted
                     let updatedPage = {};
                     try {
                         updatedPage = {
                             lastEdit: {
-                                email: page.events && page.events.length > 0 ? page.events[0].email : "",
-                                date: page.events && page.events.length > 0 ? page.events[0].date : "",
+                                email: lastEditedEvent && lastEditedEvent.email || "",
+                                date: lastEditedEvent && lastEditedEvent.date || ""
                             },
                             title: page.description.title,
                             edition: page.description.edition || "",

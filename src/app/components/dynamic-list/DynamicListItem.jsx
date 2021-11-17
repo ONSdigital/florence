@@ -35,7 +35,10 @@ const DynamicListItem = props => {
             <span className="dynamic-list-item__title">{props.title}</span>
             {props.desc && (
                 <>
-                    <span className="dynamic-list-item__separator" aria-hidden="true"> • </span>
+                    <span className="dynamic-list-item__separator" aria-hidden="true">
+                        {" "}
+                        •{" "}
+                    </span>
                     <span className="dynamic-list-item__desc">{props.desc}</span>
                 </>
             )}

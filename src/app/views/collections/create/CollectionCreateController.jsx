@@ -132,6 +132,7 @@ export class CollectionCreateController extends Component {
     }
 
     handleCollectionNameValidation = event => {
+        if (!collections) return;
         const name = event.target.value.trim();
         const nameTaken = this.props.collections.some(c => c.name === name);
 
