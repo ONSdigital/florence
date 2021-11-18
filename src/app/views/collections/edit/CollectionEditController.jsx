@@ -3,7 +3,6 @@ import { push } from "react-router-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import dateFormat from "dateformat";
-
 import CollectionEdit from "./CollectionEdit";
 import url from "../../../utilities/url";
 import teams from "../../../utilities/api-clients/teams";
@@ -119,13 +118,33 @@ export class CollectionEditController extends Component {
 
                 const notification = {
                     type: "warning",
-                    message: "An unexpected error occured getting the list all teams, if you need to  edit the teams please try refreshing Florence",
+                    message: "An unexpected error occurred getting the list all teams, if you need to  edit the teams please try refreshing Florence",
                     autoDismiss: 5000,
                     isDismissable: true,
                 };
                 notifications.add(notification);
             });
     }
+
+    handleCollectionNameValidation = event => {
+        if (!this.props.collections) return;
+
+        const name = event.target.value.trim();
+        if (name === this.props.name.trim()) return;
+
+        const nameTaken = this.props.collections.some(c => c.name === name);
+
+        if (nameTaken) {
+            this.setState(prevState => ({
+                ...prevState,
+                name: {
+                    ...prevState.name,
+                    value: "",
+                    errorMsg: "A collection with this name already exists.",
+                },
+            }));
+        }
+    };
 
     handleNameChange = name => {
         this.setState({
@@ -460,6 +479,7 @@ export class CollectionEditController extends Component {
                 onPublishTimeChange={this.handlePublishTimeChange}
                 originalName={this.props.name}
                 name={this.state.name.value}
+                handleCollectionNameValidation={this.handleCollectionNameValidation}
                 nameErrorMsg={this.state.name.errorMsg}
                 originalPublishType={this.props.publishType}
                 publishType={this.state.publishType}

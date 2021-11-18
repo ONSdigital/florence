@@ -132,6 +132,7 @@ class CollectionEdit extends Component {
                                 value={this.props.name}
                                 error={this.props.nameErrorMsg}
                                 onChange={this.handleNameChange}
+                                onBlur={this.props.handleCollectionNameValidation}
                             />
                             <Select
                                 id="collection-edit-teams"

@@ -132,20 +132,23 @@ export class CollectionCreateController extends Component {
     }
 
     handleCollectionNameValidation = event => {
-        if (!collections) return;
+        if (!this.props.collections) return;
+
         const name = event.target.value.trim();
         const nameTaken = this.props.collections.some(c => c.name === name);
 
         if (nameTaken) {
-            const collectionName = {
-                value: name,
-                errorMsg: "A collection with this name already exists",
-            };
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
-                name: collectionName,
-            };
-            this.setState({ newCollectionDetails });
+            this.setState(prevState => ({
+                ...prevState,
+                newCollectionDetails: {
+                    ...prevState.newCollectionDetails,
+                    name: {
+                        ...prevState.newCollectionDetails.name,
+                        value: "",
+                        errorMsg: "A collection with this name already exists",
+                    },
+                },
+            }));
         }
     };
 

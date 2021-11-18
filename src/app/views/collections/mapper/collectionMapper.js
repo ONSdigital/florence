@@ -71,8 +71,8 @@ export default class collectionMapper {
                     try {
                         updatedPage = {
                             lastEdit: {
-                                email: lastEditedEvent && lastEditedEvent.email || "",
-                                date: lastEditedEvent && lastEditedEvent.date || ""
+                                email: (lastEditedEvent && lastEditedEvent.email) || "",
+                                date: (lastEditedEvent && lastEditedEvent.date) || "",
                             },
                             title: page.description.title,
                             edition: page.description.edition || "",
