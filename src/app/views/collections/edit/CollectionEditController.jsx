@@ -19,6 +19,7 @@ import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -126,33 +127,14 @@ export class CollectionEditController extends Component {
             });
     }
 
-    handleCollectionNameValidation = event => {
-        if (!this.props.collections) return;
-
-        const name = event.target.value.trim();
-        if (name === this.props.name.trim()) return;
-
-        const nameTaken = this.props.collections.some(c => c.name === name);
-
-        if (nameTaken) {
-            this.setState(prevState => ({
-                ...prevState,
-                name: {
-                    ...prevState.name,
-                    value: "",
-                    errorMsg: "A collection with this name already exists.",
-                },
-            }));
-        }
-    };
-
     handleNameChange = name => {
-        this.setState({
+        this.setState(prevState => ({
+            ...prevState.name,
             name: {
                 value: name,
                 errorMsg: "",
             },
-        });
+        }));
     };
 
     handleAddTeam = teamID => {
@@ -270,12 +252,14 @@ export class CollectionEditController extends Component {
 
     handleSave = () => {
         let hasError = false;
+        if (this.state.name.value === this.props.name) return;
 
-        const validatedName = collectionValidation.name(this.state.name.value);
+        const validatedName = collectionValidation.name(this.state.name.value, this.props.collections);
+
         if (!validatedName.isValid) {
-            this.setState(state => ({
+            this.setState(prevState => ({
                 name: {
-                    ...state.name,
+                    ...prevState.name,
                     errorMsg: validatedName.errorMsg,
                 },
             }));
@@ -391,7 +375,7 @@ export class CollectionEditController extends Component {
                         this.setState(state => ({
                             name: {
                                 value: state.name.value,
-                                errorMsg: "A collection with this name already exists",
+                                errorMsg: UNIQ_NAME_ERROR,
                             },
                         }));
                         break;
@@ -399,7 +383,7 @@ export class CollectionEditController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: `An unexpected error occured whilst saving the edits to collection '${this.props.name}'`,
+                            message: `An unexpected error occurred whilst saving the edits to collection '${this.props.name}'`,
                             isDismissable: true,
                             autoDismiss: 4000,
                         };
@@ -479,7 +463,6 @@ export class CollectionEditController extends Component {
                 onPublishTimeChange={this.handlePublishTimeChange}
                 originalName={this.props.name}
                 name={this.state.name.value}
-                handleCollectionNameValidation={this.handleCollectionNameValidation}
                 nameErrorMsg={this.state.name.errorMsg}
                 originalPublishType={this.props.publishType}
                 publishType={this.state.publishType}

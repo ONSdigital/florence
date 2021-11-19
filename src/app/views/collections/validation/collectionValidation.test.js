@@ -1,6 +1,9 @@
 import collectionValidation from "./collectionValidation";
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 
 describe("Validating the collection name", () => {
+    const collections = [{ name: "Foo" }, { name: "Boo" }];
+
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
     });
@@ -25,9 +28,20 @@ describe("Validating the collection name", () => {
         expect(collectionValidation.name("My collection").isValid).toBe(true);
     });
 
-    // TODO these should probably be written in a string sanitise function, which is not done yet
-    // it("trims whitespace from the beginning and end of the name")
-    // it("replaces double whitespace with single whitespace from the within the name")
+    it("returns false isValid and an error message if the collection name is already taken", () => {
+        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo", collections).isValid).toBe(false);
+    });
+
+    it("returns true and no error message if the collection name isn't in collections array", () => {
+        expect(collectionValidation.name("Bar", collections).errorMsg).toBeFalsy();
+        expect(collectionValidation.name("Bar", collections).isValid).toBe(true);
+    });
+
+    it("returns false and error message if the collection name difference with wite space only", () => {
+        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo ", collections).isValid).toBe(false);
+    });
 });
 
 describe("Validating the collection publish date", () => {
