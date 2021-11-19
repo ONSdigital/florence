@@ -359,7 +359,7 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__banner">
                 <div className="grid grid--justify-space-around">
-                    <div className="grid__col-8 grid--align-start margin-top--1 margin-bottom--1">
+                    <div className="grid__col-12 grid--align-center margin-top--1 margin-bottom--1">
                         <div>
                             <Link id="create-edit-content" to={`${location.pathname}/create`} className="btn btn--primary">
                                 Create/edit content
