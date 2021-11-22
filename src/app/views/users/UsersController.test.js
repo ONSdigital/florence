@@ -22,7 +22,7 @@ jest.mock("../../utilities/notifications", () => {
 
 jest.mock("../../utilities/api-clients/user", () => {
     return {
-        getAllZebedee: jest.fn(() => {
+        getAll: jest.fn(() => {
             return Promise.resolve(mockedAllUsers);
         }),
     };
@@ -85,9 +85,9 @@ const component = shallow(<UsersController {...defaultProps} />);
 
 describe("On mount of the users screen", () => {
     it("fetches data for all users", () => {
-        const getUserCalls = user.getAllZebedee.mock.calls.length;
+        const getUserCalls = user.getAll.mock.calls.length;
         component.instance().UNSAFE_componentWillMount();
-        expect(user.getAllZebedee.mock.calls.length).toBe(getUserCalls + 1);
+        expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
     });
 
     it("adds all users to state", () => {
@@ -111,7 +111,7 @@ describe("On mount of the users screen", () => {
     });
 
     it("updates isFetchingUsers state correctly on failure to fetch data for all users", async () => {
-        user.getAllZebedee.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getAll.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().UNSAFE_componentWillMount();
         expect(component.state("isFetchingUsers")).toBe(false);
     });

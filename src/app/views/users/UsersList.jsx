@@ -1,6 +1,6 @@
-import React, {Component, useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import { connect } from "react-redux";
-import { push, replace } from "react-router-redux";
+import { replace } from "react-router-redux";
 import PropTypes from "prop-types";
 
 import users from "../../utilities/api-clients/user";
@@ -10,14 +10,34 @@ import auth from "../../utilities/auth";
 
 import { addAllUsers } from "../../config/actions";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
-import BackButton from "../../components/button/BackButton";
+import url from "../../utilities/url";
 import Input from "../../components/Input";
+import Link from "react-router/lib/Link";
 
+
+const propTypes = {
+    rootPath: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    children: PropTypes.element,
+    params: PropTypes.shape({
+        userID: PropTypes.string,
+    }).isRequired,
+    loggedInUser: PropTypes.object,
+    users: PropTypes.arrayOf(PropTypes.shape({
+        forename: PropTypes.string,
+	      lastname: PropTypes.string,
+        email: PropTypes.string,
+	      status: PropTypes.string,
+	      active: PropTypes.boolean,
+	      id: PropTypes.string,
+	      status_notes: PropTypes.string,
+    })).isRequired,
+};
 
 export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
     setIsFetchingUsers(true);
     users
-      .getAll()
+      .getAll({"active": "true"})
       .then(allUsersResponse => {
           const allUsers = allUsersResponse.users.map(user => {
               return mapUserToState(rootPath, user);
@@ -104,17 +124,6 @@ export const mapUserToState = (rootPath, user) => {
     }
 };
 
-const propTypes = {
-    rootPath: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    children: PropTypes.element,
-    params: PropTypes.shape({
-        userID: PropTypes.string,
-    }).isRequired,
-    loggedInUser: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.shape({})).isRequired,
-};
-
 export const UsersList = (props) => {
     const [isFetchingUsers, setIsFetchingUsers] = useState(false);
     const isAdmin = auth.isAdmin(props.loggedInUser);
@@ -136,30 +145,29 @@ export const UsersList = (props) => {
     };
 
     return (
-        <div>
-            <div className="grid grid--justify-space-around">
-                <div className="grid__col-9">
-                    <BackButton fill="#000000" url={`${props.rootPath}/collections`} />
-                    <div className="grid grid--align-baseline">
-                        <div className="grid__col-1">
-                            <h1>Users</h1>
-                        </div>
-                        <div className="grid__col-1">
-                            <a href="#">Create new user</a>
-                        </div>
-                    </div>
-                    <div className="grid">
-                        <div className="grid__col-4">
-                            <Input id="search-content-types" placeholder="Search user by name or email" onChange={handleSearchInput} />
-                        </div>
-                    </div>
-                    <SimpleSelectableList rows={filteredUsers ? filteredUsers : props.users} showLoadingState={isFetchingUsers} />
+        <div className="grid grid--justify-space-around">
+            <div className="grid__col-9">
+                <div className="margin-top--2">
+                    &#9664; <Link to={url.resolve("../")}>Back</Link>
                 </div>
+                <div className="grid grid--align-baseline">
+                    <div className="grid__col-1">
+                        <h1>Users</h1>
+                    </div>
+                    <div className="grid__col-1">
+                        <a href={`${props.rootPath}/users/create`}>Create new user</a>
+                    </div>
+                </div>
+                <div className="grid">
+                    <div className="grid__col-4">
+                        <Input id="search-content-types" placeholder="Search user by name or email" onChange={handleSearchInput} />
+                    </div>
+                </div>
+                <SimpleSelectableList rows={filteredUsers ? filteredUsers : props.users} showLoadingState={isFetchingUsers} />
             </div>
-            {props.children}
         </div>
     );
-}
+};
 
 UsersList.propTypes = propTypes;
 

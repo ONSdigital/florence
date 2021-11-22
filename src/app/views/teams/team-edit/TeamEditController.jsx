@@ -34,7 +34,7 @@ export class TeamEditController extends Component {
         this.setState({
             updatingAllUsers: true,
         });
-        user.getAllZebedee().then(users => {
+        user.getAll().then(users => {
             const editedUsers = users.filter(user => {
                 return this.props.members.indexOf(user.email) < 0;
             });

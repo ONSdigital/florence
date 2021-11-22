@@ -21,7 +21,7 @@ jest.mock("../../../utilities/logging/log", () => {
 });
 
 jest.mock("../../../utilities/api-clients/user.js", () => ({
-    getAllZebedee: jest.fn().mockImplementation(() => {
+    getAll: jest.fn().mockImplementation(() => {
         return Promise.resolve([
             {
                 name: "User 1",
