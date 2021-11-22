@@ -1,127 +1,120 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`UsersList matches the snapshot 1`] = `
-<div>
+<div
+  className="grid grid--justify-space-around"
+>
   <div
-    className="grid grid--justify-space-around"
+    className="grid__col-9"
   >
     <div
-      className="grid__col-9"
+      className="margin-top--2"
     >
+      ◀ 
       <a
-        className="back-button"
-        href="/florence/collections"
+        onClick={[Function]}
+        style={Object {}}
       >
-        <svg
-          className="back-button__icon "
-          viewBox="0 0 21 21"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M 0,10 20,0 20,20 Z"
-            fill="#000000"
-          />
-        </svg>
         Back
       </a>
+    </div>
+    <div
+      className="grid grid--align-baseline"
+    >
       <div
-        className="grid grid--align-baseline"
+        className="grid__col-1"
+      >
+        <h1>
+          Users
+        </h1>
+      </div>
+      <div
+        className="grid__col-1"
+      >
+        <a
+          href="/florence/users/create"
+        >
+          Create new user
+        </a>
+      </div>
+    </div>
+    <div
+      className="grid"
+    >
+      <div
+        className="grid__col-4"
       >
         <div
-          className="grid__col-1"
+          className="form__input"
         >
-          <h1>
-            Users
-          </h1>
+          <label
+            className="form__label"
+            htmlFor="search-content-types"
+          />
+          
+          <input
+            autoComplete="new-password"
+            autoFocus={false}
+            className="input"
+            disabled={false}
+            id="search-content-types"
+            name="search-content-types"
+            onChange={[Function]}
+            onFocus={[Function]}
+            placeholder="Search user by name or email"
+            type="text"
+          />
+          
         </div>
+      </div>
+    </div>
+    <ul
+      className="list list--neutral simple-select-list"
+    >
+      <li
+        className="simple-select-list__item"
+      >
         <div
-          className="grid__col-1"
+          className="simple-select-list__col simple-select-list__cols-1"
         >
           <a
-            href="#"
+            onClick={[Function]}
+            style={Object {}}
           >
-            Create new user
+            <p
+              className="simple-select-list__title"
+            >
+              Test user
+            </p>
           </a>
+          <p>
+            test@test.com
+          </p>
         </div>
-      </div>
-      <div
-        className="grid"
+      </li>
+      <li
+        className="simple-select-list__item"
       >
         <div
-          className="grid__col-4"
+          className="simple-select-list__col simple-select-list__cols-1"
         >
-          <div
-            className="form__input"
+          <a
+            onClick={[Function]}
+            style={Object {}}
           >
-            <label
-              className="form__label"
-              htmlFor="search-content-types"
-            />
-            
-            <input
-              autoComplete="new-password"
-              autoFocus={false}
-              className="input"
-              disabled={false}
-              id="search-content-types"
-              name="search-content-types"
-              onChange={[Function]}
-              onFocus={[Function]}
-              placeholder="Search user by name or email"
-              type="text"
-            />
-            
-          </div>
+            <p
+              className="simple-select-list__title"
+            >
+              Test user 2
+            </p>
+          </a>
+          <p>
+            test2@test.com
+          </p>
         </div>
-      </div>
-      <ul
-        className="list list--neutral simple-select-list"
-      >
-        <li
-          className="simple-select-list__item"
-        >
-          <div
-            className="simple-select-list__col simple-select-list__cols-1"
-          >
-            <a
-              onClick={[Function]}
-              style={Object {}}
-            >
-              <p
-                className="simple-select-list__title"
-              >
-                Test user
-              </p>
-            </a>
-            <p>
-              test@test.com
-            </p>
-          </div>
-        </li>
-        <li
-          className="simple-select-list__item"
-        >
-          <div
-            className="simple-select-list__col simple-select-list__cols-1"
-          >
-            <a
-              onClick={[Function]}
-              style={Object {}}
-            >
-              <p
-                className="simple-select-list__title"
-              >
-                Test user 2
-              </p>
-            </a>
-            <p>
-              test2@test.com
-            </p>
-          </div>
-        </li>
-        
-      </ul>
-    </div>
+      </li>
+      
+    </ul>
   </div>
 </div>
 `;
