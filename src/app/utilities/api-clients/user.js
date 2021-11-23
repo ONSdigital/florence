@@ -13,7 +13,15 @@ export default class user {
     }
 
     static getAll() {
+        const config = window.getEnv();
+        if (config.enableNewSignIn) {
+            return http.get(`/users`, true);
+        }
         return http.get(`/zebedee/users`);
+    }
+
+    static getAllActive() {
+        return http.get(`/users?active=true`, true);
     }
 
     static create(body) {

@@ -13,6 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
+import CreateTeam from "./app/views/teams/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
@@ -193,6 +194,9 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
+                    {/*TODO*/}
+                    {/*<Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeamController)) : null} />*/}
+                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? (CreateTeam) : null} />
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
