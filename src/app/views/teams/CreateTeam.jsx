@@ -3,11 +3,20 @@ import {connect} from "react-redux";
 import {push} from "react-router-redux";
 import {Link} from "react-router";
 import url from "../../utilities/url";
-import DynamicList from "../../components/dynamic-list/DynamicList";
+import UsersNotInTeam from "../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 import Input from "../../components/Input";
 import users from "../../utilities/api-clients/user";
 import Chip from "../../components/chip/Chip";
+import {addAllUsers, addAllUsersNotInTeam} from "../../config/actions";
+import PropTypes from "prop-types";
+
+const propTypes = {
+    rootPath: PropTypes.string.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    users: PropTypes.arrayOf(PropTypes.object),
+    isAuthenticated: PropTypes.bool.isRequired
+}
 
 const CreateTeam = props => {
     const [unsavedChanges, setUnsavedChanges] = useState(false);
@@ -32,28 +41,7 @@ const CreateTeam = props => {
         users
             .getAllActive()
             .then(results => {
-                if (results != null && results.users != null && results.users.length > 0) {
-                    results = results.users;
-                    let listOfAllUsers = results.map(user => {
-                        return {
-                            title: `${user.forename} ${user.surname}`,
-                            desc: user.email,
-                            icon: "Person",
-                            buttonName: "Add",
-                            buttonCallback: () => {
-                                // let newUser = viewers.find(viewer => viewer.desc === user.email);
-                                let newUser = {title: `${user.forename} ${user.surname}`, desc: user.email}
-                                // setFilteredUsersNotInTeam(filteredUsersNotInTeam.filter(filteredUser => filteredUser.desc !== newUser.email));
-                                // setUsersInTeam(usersInTeam => [...usersInTeam, newUser]);
-                                addUserToTeam(newUser);
-                            },
-                            iconColor: "standard",
-                        };
-                    });
-                    setViewers(listOfAllUsers);
-                    console.log("setFilteredUsersNotInTeam")
-                    setFilteredUsersNotInTeam(listOfAllUsers);
-                }
+                setUsers(results);
             })
             .catch(error => {
                 // TODO log properly
@@ -62,10 +50,15 @@ const CreateTeam = props => {
             });
     }
 
+    const setUsers = (results) => {
+        if (results != null && results.users != null && results.users.length > 0) {
+            results = results.users;
+            props.dispatch(addAllUsers(results));
+            props.dispatch(addAllUsersNotInTeam(results));
+        }
+    }
+
     const handleTeamNameChange = event => {
-        console.log(event);
-        console.log(event.target);
-        console.log(event.target.value); // TODO doesn't seem to work <String empty>
         if (teamNameOnLoad !== event.target.value) {
             setUnsavedChanges(true);
         }
@@ -113,7 +106,7 @@ const CreateTeam = props => {
                              removeFunc={
                                  // TODO
                                  () => {
-                             }}/>;
+                                 }}/>;
             })}
         </div>
     );
@@ -132,25 +125,19 @@ const CreateTeam = props => {
                 <span>Members</span>
                 {usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <div className="grid__col-4 margin-top--3">
-                <DynamicList
-                    title="Add member to team"
-                    headingLevel="2"
-                    listItems={filteredUsersNotInTeam}
-                    noResultsText="No viewers found"
-                    filterPlaceholder="Search viewers by name or email"
-                    handleSearchInput={handleSearch}
-                />
-            </div>
+            <UsersNotInTeam/>
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
 };
 
+CreateTeam.propTypes = propTypes;
+
 function mapStateToProps(state) {
     return {
         isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
+        users: state.state.users
     };
 }
 

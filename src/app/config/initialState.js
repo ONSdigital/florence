@@ -17,6 +17,9 @@ export const initialState = {
     users: {
         active: {},
         all: [],
+        allViewers: [],
+        inTeam: [],
+        notInTeam: []
     },
     datasets: {
         all: [],

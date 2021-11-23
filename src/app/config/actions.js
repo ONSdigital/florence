@@ -15,6 +15,8 @@ export const EMPTY_WORKING_ON = "EMPTY_WORKING_ON";
 
 export const UPDATE_ACTIVE_USER = "UPDATE_ACTIVE_USER";
 export const ADD_ALL_USERS = "ADD_ALL_USERS";
+export const ADD_ALL_USERS_NOT_IN_TEAM = "ADD_ALL_USERS_NOT_IN_TEAM";
+export const ADD_USER_TO_TEAM = "ADD_USER_TO_TEAM";
 export const REMOVE_USER_FROM_ALL_USERS = "REMOVE_USER_FROM_ALL_USERS";
 
 export const UPDATE_ALL_TEAMS = "UPDATE_ALL_TEAMS";
@@ -137,11 +139,24 @@ export function addAllUsers(users) {
         users,
     };
 }
+export function addAllUsersNotInTeam(users) {
+    return {
+        type: ADD_ALL_USERS_NOT_IN_TEAM,
+        users,
+    };
+}
 
 export function removeUserFromAllUsers(userID) {
     return {
         type: REMOVE_USER_FROM_ALL_USERS,
         userID,
+    };
+}
+
+export function addUserToTeam(user) {
+    return {
+        type: ADD_USER_TO_TEAM,
+        user,
     };
 }
 

@@ -19,6 +19,8 @@ import {
     UPDATE_ACTIVE_USER,
     REMOVE_USER_FROM_ALL_USERS,
     ADD_ALL_USERS,
+    ADD_ALL_USERS_NOT_IN_TEAM,
+    ADD_USER_TO_TEAM,
     UPDATE_ACTIVE_DATASET_REVIEW_STATE,
     UPDATE_ACTIVE_VERSION_REVIEW_STATE,
     UPDATE_ACTIVE_JOB,
@@ -183,6 +185,25 @@ export default function reducer(state = initialState, action) {
                     all: [...action.users],
                 },
             };
+        }
+        case ADD_ALL_USERS_NOT_IN_TEAM: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    notInTeam: [...action.users],
+                },
+            };
+        }
+        case ADD_USER_TO_TEAM: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    notInTeam: state.users.all.filter(filteredUser => filteredUser.email !== action.user.email),
+                    inTeam: [...state.users.all, action.user]
+                }
+            }
         }
         case REMOVE_USER_FROM_ALL_USERS: {
             return {
