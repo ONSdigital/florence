@@ -13,6 +13,7 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 import url from "../../utilities/url";
 import Input from "../../components/Input";
 import Link from "react-router/lib/Link";
+import {errCodes} from "../../utilities/errorCodes";
 
 
 const propTypes = {
@@ -52,7 +53,7 @@ export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
               case 404: {
                   const notification = {
                       type: "warning",
-                      message: `No API route available to get users.`,
+                      message: errCodes.GET_USERS_NOT_FOUND,
                       autoDismiss: 5000,
                   };
                   notifications.add(notification);
@@ -61,7 +62,7 @@ export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
               case "RESPONSE_ERR": {
                   const notification = {
                       type: "warning",
-                      message: "An error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                      message: errCodes.GET_USERS_RESPONSE_ERROR,
                       isDismissable: true,
                   };
                   notifications.add(notification);
@@ -70,8 +71,7 @@ export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
               case "UNEXPECTED_ERR": {
                   const notification = {
                       type: "warning",
-                      message:
-                        "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                      message: errCodes.GET_USERS_UNEXPECTED_ERROR,
                       isDismissable: true,
                   };
                   notifications.add(notification);
@@ -80,8 +80,7 @@ export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
               case "FETCH_ERR": {
                   const notification = {
                       type: "warning",
-                      message:
-                        "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
+                      message: errCodes.GET_USERS_NETWORK_ERROR,
                       isDismissable: true,
                   };
                   notifications.add(notification);
@@ -91,8 +90,7 @@ export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
                   log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
                   const notification = {
                       type: "warning",
-                      message:
-                        "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                      message: errCodes.GET_USERS_UNEXPECTED_ERROR,
                       isDismissable: true,
                   };
                   notifications.add(notification);
