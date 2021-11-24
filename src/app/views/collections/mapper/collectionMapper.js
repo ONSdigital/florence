@@ -66,13 +66,20 @@ export default class collectionMapper {
                     return null;
                 }
                 return pagesArray.map(page => {
-                    const lastEditedEvent = page.events && page.events.filter(e => e.type === "EDITED").pop(); //events coming sorted
+                    let lastEdited = null;
+                    if (page.events && page.events.length > 0) {
+                        lastEdited = page.events.filter(e => e.type === "EDITED").pop();
+
+                        if (!lastEdited) {
+                            lastEdited = page.events.pop();
+                        } // fallback to newest date if not edited
+                    }
                     let updatedPage = {};
                     try {
                         updatedPage = {
                             lastEdit: {
-                                email: (lastEditedEvent && lastEditedEvent.email) || "",
-                                date: (lastEditedEvent && lastEditedEvent.date) || "",
+                                email: lastEdited ? lastEdited.email : "",
+                                date: lastEdited ? lastEdited.date : "",
                             },
                             title: page.description.title,
                             edition: page.description.edition || "",
@@ -176,7 +183,6 @@ export default class collectionMapper {
         if (collection.publishDate && collection.type === "manual") {
             return true;
         }
-
         return false;
     }
 

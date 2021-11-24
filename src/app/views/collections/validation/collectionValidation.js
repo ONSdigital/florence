@@ -6,7 +6,6 @@
 
 import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 export default class collectionValidation {
-
     static name(name, collections) {
         let response = {
             isValid: true,
