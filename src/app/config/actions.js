@@ -17,6 +17,7 @@ export const UPDATE_ACTIVE_USER = "UPDATE_ACTIVE_USER";
 export const ADD_ALL_USERS = "ADD_ALL_USERS";
 export const ADD_ALL_USERS_NOT_IN_TEAM = "ADD_ALL_USERS_NOT_IN_TEAM";
 export const ADD_USER_TO_TEAM = "ADD_USER_TO_TEAM";
+export const REMOVE_USER_FROM_TEAM = "REMOVE_USER_FROM_TEAM";
 export const REMOVE_USER_FROM_ALL_USERS = "REMOVE_USER_FROM_ALL_USERS";
 
 export const UPDATE_ALL_TEAMS = "UPDATE_ALL_TEAMS";
@@ -156,6 +157,12 @@ export function removeUserFromAllUsers(userID) {
 export function addUserToTeam(user) {
     return {
         type: ADD_USER_TO_TEAM,
+        user,
+    };
+}
+export function removeUserFromTeam(user) {
+    return {
+        type: REMOVE_USER_FROM_TEAM,
         user,
     };
 }

@@ -1,34 +1,30 @@
-import React, {useEffect, useState} from "react";
-import {connect} from "react-redux";
-import {push} from "react-router-redux";
-import {Link} from "react-router";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { push } from "react-router-redux";
+import { Link } from "react-router";
 import url from "../../utilities/url";
 import UsersNotInTeam from "../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 import Input from "../../components/Input";
 import users from "../../utilities/api-clients/user";
 import Chip from "../../components/chip/Chip";
-import {addAllUsers, addAllUsersNotInTeam} from "../../config/actions";
+import { addAllUsers, addAllUsersNotInTeam, addUserToTeam, removeUserFromTeam } from "../../config/actions";
 import PropTypes from "prop-types";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
     users: PropTypes.arrayOf(PropTypes.object),
-    isAuthenticated: PropTypes.bool.isRequired
-}
+    isAuthenticated: PropTypes.bool.isRequired,
+};
 
 const CreateTeam = props => {
     const [unsavedChanges, setUnsavedChanges] = useState(false);
     const [teamName, setTeamName] = useState("");
-    const [filteredUsersNotInTeam, setFilteredUsersNotInTeam] = useState([]);
-    const [viewers, setViewers] = useState([]);
-    const [usersInTeam, setUsersInTeam] = useState([]);
     // TODO on 'edit a preview team' screen populate teamName via API call (check for URL parameter)
     let teamNameOnLoad = "";
 
     useEffect(() => {
-        console.log("useEffect called")
         // TODO add access check
         // if (!(isAdmin || isPublisher) && !props.params.userID) {
         //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
@@ -48,15 +44,15 @@ const CreateTeam = props => {
                 console.log("ERROR");
                 console.error(error);
             });
-    }
+    };
 
-    const setUsers = (results) => {
+    const setUsers = results => {
         if (results != null && results.users != null && results.users.length > 0) {
             results = results.users;
             props.dispatch(addAllUsers(results));
             props.dispatch(addAllUsersNotInTeam(results));
         }
-    }
+    };
 
     const handleTeamNameChange = event => {
         if (teamNameOnLoad !== event.target.value) {
@@ -65,20 +61,12 @@ const CreateTeam = props => {
         setTeamName(event.target.value);
     };
 
-    const requestCreateTeam = () => {
-    };
+    const requestCreateTeam = () => {};
 
-    const handleSearch = event => {
-        const searchTerm = event.target.value.toLowerCase();
-        setFilteredUsersNotInTeam(viewers.filter(viewer => viewer.title.toLowerCase().search(searchTerm) !== -1 || viewer.desc.toLowerCase().search(searchTerm) !== -1));
-    };
+    const submitTeamCreation = () => {};
 
-    const addUserToTeam = newUser => {
-        setFilteredUsersNotInTeam(filteredUsersNotInTeam.filter(filteredUser => filteredUser.desc !== newUser.email));
-        setUsersInTeam(usersInTeam => [...usersInTeam, newUser]);
-    }
-
-    const submitTeamCreation = () => {
+    const compare = (a, b) => {
+        return `${a.forename} ${a.surname}` > `${b.forename} ${b.surname}` ? 1 : `${b.forename} ${b.surname}` > `${a.forename} ${a.surname}` ? -1 : 0;
     };
 
     let nameError;
@@ -101,18 +89,29 @@ const CreateTeam = props => {
     };
     let teamsMemberChips = (
         <div>
-            {usersInTeam.map((teamMember, i) => {
-                return <Chip key={`teamMember-${i}`} icon="person" style="standard" text={teamMember.title}
-                             removeFunc={
-                                 // TODO
-                                 () => {
-                                 }}/>;
-            })}
+            {props.usersInTeam
+                .map((teamMember, i) => {
+                    return (
+                        <Chip
+                            key={`teamMember-${i}`}
+                            icon="person"
+                            style="standard"
+                            text={`${teamMember.forename} ${teamMember.surname}`}
+                            removeFunc={
+                                // TODO
+                                () => {
+                                    let userToRemove = props.users.find(viewer => viewer.email === teamMember.email);
+                                    props.dispatch(removeUserFromTeam(userToRemove));
+                                }
+                            }
+                        />
+                    );
+                })
+                .sort(compare)}
         </div>
     );
     let noTeamMembers = <p> This team has no members</p>;
-    let teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}
-                                   error={nameError}/>;
+    let teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} error={nameError} />;
 
     return (
         <div className="grid grid--justify-space-around">
@@ -123,9 +122,9 @@ const CreateTeam = props => {
                 <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>
                 {teamNameInputArea}
                 <span>Members</span>
-                {usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
+                {props.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam/>
+            <UsersNotInTeam />
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
@@ -135,9 +134,11 @@ CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
+        //TODO can I just import users
         isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        users: state.state.users
+        users: state.state.users.all,
+        usersInTeam: state.state.users.inTeam,
     };
 }
 

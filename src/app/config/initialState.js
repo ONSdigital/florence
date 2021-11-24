@@ -19,7 +19,7 @@ export const initialState = {
         all: [],
         allViewers: [],
         inTeam: [],
-        notInTeam: []
+        notInTeam: [],
     },
     datasets: {
         all: [],

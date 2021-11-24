@@ -140,3 +140,9 @@
   user-select: none;
   width: 1px;
 }
+
+.height {
+  &--80 {
+    height: 80%;
+  }
+}
