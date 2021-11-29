@@ -134,4 +134,18 @@
     &--inline-block {
         display: inline-block;
     }
+
+    &__close {
+        margin: 0 6px;
+        border-radius: 100%;
+        background-color: $scarpa-flow;
+        font-size: 1.2rem;
+        color: $white;
+        width: 24px;
+        height: 24px;
+
+        &:hover {
+            opacity: 0.7;
+        }
+    }
 }

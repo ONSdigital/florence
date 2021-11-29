@@ -1,5 +1,4 @@
 .margin {
-
   @for $i from 0 through 5 {
     $vertical-spacing: $lineheight * $i;
     $horizontal-spacing: $gutter * $i;
@@ -29,7 +28,6 @@
 }
 
 .padding {
-
   @for $i from 0 through 5 {
     $vertical-spacing: $lineheight * $i;
     $horizontal-spacing: $gutter * $i;
@@ -71,7 +69,6 @@
 }
 
 .colour {
-
   @each $colour-name, $colour-value in $colours {
 
     &--#{$colour-name},

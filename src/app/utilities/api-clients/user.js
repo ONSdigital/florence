@@ -16,7 +16,7 @@ export default class user {
         const config = window.getEnv();
         if (config.enableNewSignIn) {
             let queryString = "";
-            Object.keys(params).map((key) => {
+            Object.keys(params).map(key => {
                 queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
             });
             return http.get(`/users${queryString}`);

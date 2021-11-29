@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-
 import Input from "../../../components/Input";
 import Select from "../../../components/Select";
 import SelectedItemList from "../../../components/selected-items/SelectedItemList";
@@ -40,7 +39,6 @@ const propTypes = {
     handlePublishDateChange: PropTypes.func.isRequired,
     handleAddRelease: PropTypes.func.isRequired,
     showScheduleByRelease: PropTypes.bool.isRequired,
-    onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
 };
 
@@ -142,7 +140,6 @@ class CollectionCreate extends Component {
                         value={this.props.newCollectionDetails.name.value}
                         onChange={this.props.handleCollectionNameChange}
                     />
-
                     <Select
                         id="collection-teams"
                         label="Select a team(s) that can view this collection"
@@ -151,13 +148,11 @@ class CollectionCreate extends Component {
                         selectedOption={"default-option"}
                         onChange={this.props.handleTeamSelection}
                     />
-
                     {this.props.newCollectionDetails.teams ? (
                         <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam} />
                     ) : (
                         ""
                     )}
-
                     <RadioGroup
                         groupName="release-type"
                         radioData={releaseTypeRadioData}
@@ -166,13 +161,10 @@ class CollectionCreate extends Component {
                         legend="Publish type"
                         inline={true}
                     />
-
                     {this.props.showScheduleOptions ? this.renderScheduleOptions() : ""}
-
                     <button type="submit" className="btn btn--positive margin-top--1" disabled={this.props.isSubmitting}>
                         Create collection
                     </button>
-
                     {this.props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
                 </form>
                 {this.props.showScheduleByRelease && (

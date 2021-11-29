@@ -89,6 +89,7 @@
     "dp-table-builder-ui": "^1.1.0",
     "install": "^0.8.7",
     "is-empty-object": "^1.1.1",
+    "jest-snapshot": "^27.4.2",
     "localforage": "^1.5.0",
     "minimongo": "^6.9.0",
     "onchange": "^6.1.0",
@@ -103,6 +104,7 @@
     "redux-auth-wrapper": "^2.0.3",
     "redux-devtools-extension": "^2.13.7",
     "redux-thunk": "^2.3.0",
+    "reselect": "^4.1.4",
     "sass": "^1.34.1",
     "ssri": "^6.0.2",
     "uuid": "^3.4.0"

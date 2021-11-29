@@ -1,11 +1,12 @@
 import { connect } from "react-redux";
+import {getActive} from "../../config/selectors";
 import NavBar from "./NavBar";
 
 const mapStateToProps = state => {
     return {
         user: state.user,
         rootPath: state.state.rootPath,
-        workingOn: state.state.global ? state.state.global.workingOn : null,
+        workingOn: getActive(state.state),
         config: state.state.config,
     };
 };

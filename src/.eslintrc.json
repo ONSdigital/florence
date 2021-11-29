@@ -5,15 +5,7 @@
         "es6": true,
         "jest": true
     },
-    "parser": "babel-eslint",
-    "parserOptions": {
-        "ecmaVersion": 2017,
-        "sourceType": "module",
-        "ecmaFeatures": {
-            "jsx": true,
-            "experimentalObjectRestSpread": true
-        }
-    },
+    "parser": "@babel/eslint-parser",
     "rules" : {
         "no-unused-vars" : 1,
         "no-undef" : 2,
