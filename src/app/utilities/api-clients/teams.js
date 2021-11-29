@@ -14,7 +14,19 @@ export default class teams {
     }
 
     static add(teamName) {
-        return http.post(`/zebedee/teams/${teamName}`).then(response => {
+        return http.post(`/zebedee/teams/${teamName}`, body).then(response => {
+            return response;
+        });
+    }
+
+    static createTeam(body) {
+        return http.post(`/groups`, body).then(response => {
+            return response;
+        });
+    }
+
+    static addMemberToTeam(teamID, userID) {
+        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
             return response;
         });
     }

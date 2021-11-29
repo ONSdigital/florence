@@ -83,12 +83,20 @@ const NavBar = props => {
                                 Users and access
                             </Link>
                         </li>
-
-                        <li className="global-nav__item">
+                        {props.config.enableNewSignIn && (
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
+                                    Preview Teams
+                                </Link>
+                            </li>
+                        )}
+                        {!props.config.enableNewSignIn && (
+                            <li className="global-nav__item">
                             <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                 Teams
                             </Link>
                         </li>
+                        )}
                     </>
                 )}
                 <li className="global-nav__item">
@@ -113,6 +121,7 @@ const NavBar = props => {
 NavBar.propTypes = {
     config: PropTypes.shape({
         enableDatasetImport: PropTypes.bool,
+        enableNewSignIn: PropTypes.bool,
     }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({

@@ -11,6 +11,7 @@ const propTypes = {
     noResultsText: PropTypes.string,
     handleSearchInput: PropTypes.func,
     listItems: PropTypes.arrayOf(PropTypes.shape(DynamicListItem.propTypes)).isRequired,
+    loading: PropTypes.bool,
 };
 
 const DynamicList = props => {
@@ -25,6 +26,8 @@ const DynamicList = props => {
                 })}
             </ul>
         );
+    } else if (props.loading) {
+        list = <div className="loader loader--dark" />;
     } else {
         list = <div aria-live="assertive">{props.noResultsText}</div>;
     }

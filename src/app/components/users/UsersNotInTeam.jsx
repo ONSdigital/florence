@@ -17,7 +17,7 @@ const UsersNotInTeam = props => {
     };
 
     const compare = (a, b) => {
-        return `${a.forename} ${a.surname}` > `${b.forename} ${b.surname}` ? 1 : `${b.forename} ${b.surname}` > `${a.forename} ${a.surname}` ? -1 : 0;
+        return a.title.localeCompare(b.title);
     };
 
     let usersNotInTeamList = [];
@@ -25,7 +25,7 @@ const UsersNotInTeam = props => {
         usersNotInTeamList = props.usersNotInTeam
             .map(user => {
                 return {
-                    title: `${user.forename} ${user.surname}`,
+                    title: `${user.forename} ${user.lastname}`,
                     desc: user.email,
                     icon: "Person",
                     buttonName: "Add",
@@ -48,7 +48,8 @@ const UsersNotInTeam = props => {
                 noResultsText="No viewers found"
                 filterPlaceholder="Search viewers by name or email"
                 handleSearchInput={handleSearch}
-                listHeightClass="height--80"
+                listHeightClass="height--60"
+                loading={props.loading}
             />
         </div>
     );
