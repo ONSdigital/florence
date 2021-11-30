@@ -44,7 +44,6 @@ const DatasetUploadController = props => {
             }
             setActiveDataset({ activeDatasetAPIResponse });
 
-            // Line 48-60 may be candidate for it's own useEffect based around activeDataset
             if (activeDataset.status === "completed" && !activeDataset.dimensions) {
                 datasetImport.getDimensions(activeDataset.instanceID).then(response => {
                     const activeDatasetWithDimensions = {
@@ -61,20 +60,20 @@ const DatasetUploadController = props => {
         }
     }, []);
 
-    repeatUploadStatusCheck = () => {
-        setIsFetchingDataset(true)
-        setLoadingPageForFirstTime(true)
+    const repeatUploadStatusCheck = () => {
+        setIsFetchingDataset(true);
+        setLoadingPageForFirstTime(true);
         getUploadStatus();
 
         intervalID = setInterval(async () => {
             if (!isFetchingDataset) {
-                setIsFetchingDataset(true)
-                getUploadStatus()
+                setIsFetchingDataset(true);
+                getUploadStatus();
             }
         }, 5000);
     };
 
-    getUploadStatus = () => {
+    const getUploadStatus = () => {
         const APIResponses = {};
         datasetImport
             .get(props.params.jobID)
@@ -88,13 +87,13 @@ const DatasetUploadController = props => {
                     recipe: APIResponses.recipe,
                     job: APIResponses.job,
                 });
-                setActiveDataset(activeDatasetAPIResponse)
-                setIsFetchingDataset(false)
-                setLoadingPageForFirstTime(false)
+                setActiveDataset(activeDatasetAPIResponse);
+                setIsFetchingDataset(false);
+                setLoadingPageForFirstTime(false);
             })
             .catch(error => {
-                setIsFetchingDataset(false)
-                setLoadingPageForFirstTime(false)
+                setIsFetchingDataset(false);
+                setLoadingPageForFirstTime(false);
                 clearInterval(intervalID);
                 switch (error.status) {
                     case 404: {
@@ -150,7 +149,7 @@ const DatasetUploadController = props => {
         return APIResponses;
     };
 
-    bindInputs = () => {
+    const bindInputs = () => {
         document.querySelectorAll('input[type="file"]').forEach(input => {
             const r = new Resumable({
                 target: "/upload",
@@ -242,9 +241,9 @@ const DatasetUploadController = props => {
                     });
             });
         });
-    }
+    };
 
-    mapAPIResponsesToState = (APIResponse) => {
+    const mapAPIResponsesToState = APIResponse => {
         const recipeAPIResponse = APIResponse.recipe;
         const jobAPIResponse = APIResponse.job;
         const fileURLs = new Map();
@@ -278,7 +277,7 @@ const DatasetUploadController = props => {
         }
 
         if (recipeAPIResponse.format === "cantabular_table" || recipeAPIResponse.format === "cantabular_blob") {
-            setIsCantabular(true)
+            setIsCantabular(true);
         }
 
         return {
@@ -292,9 +291,9 @@ const DatasetUploadController = props => {
             editionsList,
             editionOverride,
         };
-    }
+    };
 
-    addUploadedFileToJob = (fileAlias, fileURL) => {
+    const addUploadedFileToJob = (fileAlias, fileURL) => {
         datasetImport
             .addFile(activeDataset.jobID, fileAlias, fileURL)
             .then()
@@ -377,9 +376,9 @@ const DatasetUploadController = props => {
                 }
                 console.error(`Error adding file to job "${activeDataset.jobID}": `, error);
             });
-    }
+    };
 
-    handleFormSubmit = event => {
+    const handleFormSubmit = event => {
         event.preventDefault();
         if (isCantabular) {
             props.dispatch(push(`${location.pathname}`));
@@ -412,7 +411,7 @@ const DatasetUploadController = props => {
         props.dispatch(push(`${location.pathname}/metadata`));
     };
 
-    handleRetryClick = aliasName => {
+    const handleRetryClick = aliasName => {
         const files = activeDataset.files.map(currentFile => {
             if (currentFile.alias_name === aliasName) {
                 currentFile.progress = null;
@@ -427,7 +426,7 @@ const DatasetUploadController = props => {
         setActiveDataset(activeDatasetFiles);
     };
 
-    renderFileInputs = () => {
+    const renderFileInputs = () => {
         if (activeDataset) {
             return;
         }
@@ -448,9 +447,9 @@ const DatasetUploadController = props => {
                 />
             );
         });
-    }
+    };
 
-    renderSubmittedScreen = () => {
+    const renderSubmittedScreen = () => {
         return (
             <div>
                 <p className="margin-bottom--2">Your files are being processed.</p>
@@ -467,9 +466,9 @@ const DatasetUploadController = props => {
                 </ul>
             </div>
         );
-    }
+    };
 
-    renderCompletedScreen = () => {
+    const renderCompletedScreen = () => {
         return (
             <div>
                 <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
@@ -485,9 +484,7 @@ const DatasetUploadController = props => {
                 </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions
-                    {activeDataset.dimensions && activeDataset.dimensions.length > 0 && (
-                        <span> ({activeDataset.dimensions.length})</span>
-                    )}
+                    {activeDataset.dimensions && activeDataset.dimensions.length > 0 && <span> ({activeDataset.dimensions.length})</span>}
                 </h2>
                 <div className="margin-bottom--2">
                     {activeDataset.dimensions ? (
@@ -506,9 +503,9 @@ const DatasetUploadController = props => {
                 </div>
             </div>
         );
-    }
+    };
 
-    renderDatasetState = () => {
+    const renderDatasetState = () => {
         switch (activeDataset.status) {
             case "created": {
                 return (
@@ -519,8 +516,7 @@ const DatasetUploadController = props => {
                         <div className="simple-select-list__item">
                             <h1 className="margin-top--1 margin-bottom--1">Uploads</h1>
                             <p className="font-size--18">
-                                <span className="font-weight--600">Dataset</span>:{" "}
-                                {activeDataset.alias ? activeDataset.alias : "loading..."}
+                                <span className="font-weight--600">Dataset</span>: {activeDataset.alias ? activeDataset.alias : "loading..."}
                             </p>
                         </div>
                         <form className="simple-select-list__item" onSubmit={handleFormSubmit}>
@@ -584,9 +580,9 @@ const DatasetUploadController = props => {
                 );
             }
         }
-    }
+    };
 
-    render = () => {
+    const render = () => {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
@@ -599,8 +595,8 @@ const DatasetUploadController = props => {
                 </div>
             </div>
         );
-    }
-}
+    };
+};
 
 DatasetUploadController.propTypes = {
     dispatch: PropTypes.func.isRequired,
