@@ -143,7 +143,7 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
-                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(!config.enableNewSignIn ? UsersList : UsersController))}>
+                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
                                 path="change-password"
