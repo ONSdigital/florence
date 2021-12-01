@@ -140,7 +140,6 @@ class CollectionCreate extends Component {
                         type="text"
                         error={this.props.newCollectionDetails.name.errorMsg}
                         value={this.props.newCollectionDetails.name.value}
-                        onBlur={this.props.handleCollectionNameValidation}
                         onChange={this.props.handleCollectionNameChange}
                     />
 

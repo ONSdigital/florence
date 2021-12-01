@@ -8,6 +8,7 @@ import log from "../../../utilities/logging/log";
 import CollectionCreate from "./CollectionCreate";
 import { updateAllTeamIDsAndNames, updateAllTeams } from "../../../config/actions";
 import collectionValidation from "../validation/collectionValidation";
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 
 const propTypes = {
     user: PropTypes.shape({
@@ -21,6 +22,7 @@ const propTypes = {
         })
     ),
     dispatch: PropTypes.func.isRequired,
+    collections: PropTypes.array,
 };
 
 export class CollectionCreateController extends Component {
@@ -130,23 +132,6 @@ export class CollectionCreateController extends Component {
                 console.error("Error fetching all teams:\n", error);
             });
     }
-
-    handleCollectionNameValidation = event => {
-        const name = event.target.value.trim();
-        const nameTaken = this.props.collections.some(c => c.name === name);
-
-        if (nameTaken) {
-            const collectionName = {
-                value: name,
-                errorMsg: "A collection with this name already exists",
-            };
-            const newCollectionDetails = {
-                ...this.state.newCollectionDetails,
-                name: collectionName,
-            };
-            this.setState({ newCollectionDetails });
-        }
-    };
 
     handleCollectionNameChange = event => {
         const collectionName = {
@@ -338,7 +323,7 @@ export class CollectionCreateController extends Component {
 
         let hasError = false;
         let newCollectionDetails = this.state.newCollectionDetails;
-        const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value);
+        const validatedName = collectionValidation.name(this.state.newCollectionDetails.name.value, this.props.collections);
 
         if (!validatedName.isValid) {
             const collectionName = {
@@ -463,7 +448,7 @@ export class CollectionCreateController extends Component {
     };
 
     handle409SubmitStatus(error) {
-        if (error.body.message.includes("A collection with this name already exists")) {
+        if (error.body.message.includes(UNIQ_NAME_ERROR)) {
             log.event(
                 `error creating collection: collection name already exists`,
                 log.error(error),
@@ -473,7 +458,7 @@ export class CollectionCreateController extends Component {
             );
             const collectionName = {
                 value: this.state.newCollectionDetails.name.value,
-                errorMsg: "A collection with this name already exists",
+                errorMsg: UNIQ_NAME_ERROR,
             };
             const newCollectionDetails = {
                 ...this.state.newCollectionDetails,
@@ -518,7 +503,6 @@ export class CollectionCreateController extends Component {
                 <CollectionCreate
                     newCollectionDetails={this.state.newCollectionDetails}
                     handleCollectionNameChange={this.handleCollectionNameChange}
-                    handleCollectionNameValidation={this.handleCollectionNameValidation}
                     handleTeamSelection={this.handleTeamSelection}
                     handleRemoveTeam={this.handleRemoveTeam}
                     handleCollectionTypeChange={this.handleCollectionTypeChange}

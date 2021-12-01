@@ -3,7 +3,6 @@ import { push } from "react-router-redux";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import dateFormat from "dateformat";
-
 import CollectionEdit from "./CollectionEdit";
 import url from "../../../utilities/url";
 import teams from "../../../utilities/api-clients/teams";
@@ -20,6 +19,7 @@ import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -119,7 +119,7 @@ export class CollectionEditController extends Component {
 
                 const notification = {
                     type: "warning",
-                    message: "An unexpected error occured getting the list all teams, if you need to  edit the teams please try refreshing Florence",
+                    message: "An unexpected error occurred getting the list all teams, if you need to  edit the teams please try refreshing Florence",
                     autoDismiss: 5000,
                     isDismissable: true,
                 };
@@ -128,12 +128,13 @@ export class CollectionEditController extends Component {
     }
 
     handleNameChange = name => {
-        this.setState({
+        this.setState(prevState => ({
+            ...prevState.name,
             name: {
                 value: name,
                 errorMsg: "",
             },
-        });
+        }));
     };
 
     handleAddTeam = teamID => {
@@ -251,12 +252,17 @@ export class CollectionEditController extends Component {
 
     handleSave = () => {
         let hasError = false;
+        let validatedName = null;
+        const collectionName = this.state.name.value.trim();
 
-        const validatedName = collectionValidation.name(this.state.name.value);
-        if (!validatedName.isValid) {
-            this.setState(state => ({
+        if (collectionName !== this.props.name) {
+            validatedName = collectionValidation.name(collectionName, this.props.collections);
+        };
+
+        if (validatedName &&!validatedName.isValid) {
+            this.setState(prevState => ({
                 name: {
-                    ...state.name,
+                    ...prevState.name,
                     errorMsg: validatedName.errorMsg,
                 },
             }));
@@ -372,7 +378,7 @@ export class CollectionEditController extends Component {
                         this.setState(state => ({
                             name: {
                                 value: state.name.value,
-                                errorMsg: "A collection with this name already exists",
+                                errorMsg: UNIQ_NAME_ERROR,
                             },
                         }));
                         break;
@@ -380,7 +386,7 @@ export class CollectionEditController extends Component {
                     default: {
                         const notification = {
                             type: "warning",
-                            message: `An unexpected error occured whilst saving the edits to collection '${this.props.name}'`,
+                            message: `An unexpected error occurred whilst saving the edits to collection '${this.props.name}'`,
                             isDismissable: true,
                             autoDismiss: 4000,
                         };
@@ -424,7 +430,7 @@ export class CollectionEditController extends Component {
         let body = {};
 
         if (state.name.value !== this.props.name) {
-            body.name = state.name.value;
+            body.name = state.name.value.trim();
         }
 
         if (this.teamsHaveChanged(state)) {

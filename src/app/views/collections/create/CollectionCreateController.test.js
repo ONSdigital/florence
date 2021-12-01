@@ -3,6 +3,7 @@ import { CollectionCreateController } from "./CollectionCreateController";
 import { mount, shallow } from "enzyme";
 import renderer from "react-test-renderer";
 import websocket from "../../../utilities/websocket";
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 
 jest.mock("../../../utilities/notifications", () => {
     return {
@@ -186,7 +187,27 @@ test("Handle publish time change updates state correctly", () => {
 test("Handle submit validates that a collection has a name", () => {
     const component = shallow(<CollectionCreateController {...defaultProps} />);
     component.instance().handleSubmit({ preventDefault: () => {} });
-    expect(component.update().state().newCollectionDetails.name.errorMsg).toBe("Collections must be given a name");
+    expect(component.update().state().newCollectionDetails.name.errorMsg).toBe("Collections must be given a name.");
+});
+
+test("Handle submit validates that a collection has a uniq name", () => {
+    const props = {
+        ...defaultProps,
+        collections: [{ ...newCollectionDetails, name: "Foo" }],
+    };
+    const component = shallow(<CollectionCreateController {...props} />);
+    component.setState({
+        newCollectionDetails: {
+            name: {
+                value: "Foo",
+                errorMsg: "Bar",
+            },
+            type: "Boo",
+        },
+    });
+    component.instance().handleSubmit({ preventDefault: () => {} });
+    expect(component.update().state().newCollectionDetails.name.errorMsg).not.toBe("Bar");
+    expect(component.update().state().newCollectionDetails.name.errorMsg).toBe(UNIQ_NAME_ERROR);
 });
 
 test("Handle submit validates that a scheduled collection has a date", () => {
@@ -195,7 +216,7 @@ test("Handle submit validates that a scheduled collection has a date", () => {
     const newCollection = { ...newCollectionDetails, name: name };
     component.setState({ newCollectionDetails: newCollection });
     component.instance().handleSubmit({ preventDefault: () => {} });
-    expect(component.update().state().newCollectionDetails.publishDate.errorMsg).toBe("Scheduled collections must be given a publish date");
+    expect(component.update().state().newCollectionDetails.publishDate.errorMsg).toBe("Scheduled collections must be given a publish date.");
 });
 
 test("Handle submit validates that a scheduled collection has a time", () => {
@@ -206,7 +227,7 @@ test("Handle submit validates that a scheduled collection has a time", () => {
     const newCollection = { ...newCollectionDetails, name: name, publishDate: date, publishTime: time };
     component.setState({ newCollectionDetails: newCollection });
     component.instance().handleSubmit({ preventDefault: () => {} });
-    expect(component.update().state().newCollectionDetails.publishTime.errorMsg).toBe("Scheduled collections must be given a publish time");
+    expect(component.update().state().newCollectionDetails.publishTime.errorMsg).toBe("Scheduled collections must be given a publish time.");
 });
 
 test("Make publish date returns correct date value", () => {

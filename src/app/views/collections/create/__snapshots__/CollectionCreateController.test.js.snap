@@ -22,7 +22,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
         disabled={false}
         id="collection-name"
         name="collection-name"
-        onBlur={[Function]}
         onChange={[Function]}
         onFocus={[Function]}
         type="text"
