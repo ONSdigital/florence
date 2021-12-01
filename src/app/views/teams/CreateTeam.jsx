@@ -10,11 +10,12 @@ import Input from "../../components/Input";
 import Chip from "../../components/chip/Chip";
 import {
     addPopout,
-    newTeamUnsavedChanges,
     removePopouts,
-    removeUserFromNewTeam,
-    removeUserFromTeam, resetNewTeam
 } from "../../config/actions";
+import {
+    newTeamUnsavedChanges,
+    removeUserFromNewTeam, resetNewTeam
+} from "../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
 import {store} from "../../config/store";
 import notifications from "../../utilities/notifications";
@@ -22,11 +23,12 @@ import notifications from "../../utilities/notifications";
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    newTeam:  PropTypes.shape({
+    newTeam: PropTypes.shape({
         usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
-        unsavedChanges: PropTypes.bool}),
+        unsavedChanges: PropTypes.bool
+    }),
     isAuthenticated: PropTypes.bool.isRequired
 };
 
@@ -101,9 +103,6 @@ const CreateTeam = props => {
     };
 
     const requestCreateTeam = () => {
-        // TODO change to action
-        // TODO allow user to create a team without members in it
-
         if (props.newTeam.unsavedChanges && teamName !== "") {
             // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
             const body = {
@@ -156,18 +155,18 @@ const CreateTeam = props => {
             })}
         </div>
     );
-    const noTeamMembers = <p> This team has no members</p>;
+    const noTeamMembers = <p>This team has no members</p>;
     const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}/>;
 
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-4 margin-top--1 margin-bottom--1">
-                <div>
+                <span>
                     &#9664; <Link to={url.resolve("../")}>Back</Link>
-                </div>
+                </span>
                 <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>
                 {teamNameInputArea}
-                <span>Members</span>
+                <span><strong>Members</strong></span>
                 {props.newTeam.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
             <UsersNotInTeam loading={true}/>
@@ -182,7 +181,7 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        newTeam: state.state.newTeam,
+        newTeam: state.newTeam,
     };
 }
 

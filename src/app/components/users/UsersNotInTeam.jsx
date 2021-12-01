@@ -1,13 +1,17 @@
-import React, { useState } from "react";
-import { connect } from "react-redux";
+import React, {useState} from "react";
+import {connect} from "react-redux";
 import DynamicList from "../../components/dynamic-list/DynamicList";
-import {addUserToNewTeam} from "../../config/actions";
+import {addUserToNewTeam} from "../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
-    users: PropTypes.arrayOf(PropTypes.object),
-    newTeam: PropTypes.object,
+    newTeam: PropTypes.shape({
+        usersInTeam: PropTypes.arrayOf(PropTypes.object),
+        usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
+        allUsers: PropTypes.arrayOf(PropTypes.object),
+        unsavedChanges: PropTypes.bool
+    }),
 };
 const UsersNotInTeam = props => {
     const [filterTerm, setFilterTerm] = useState("");
@@ -15,13 +19,12 @@ const UsersNotInTeam = props => {
         const searchTerm = event.target.value.toLowerCase();
         setFilterTerm(searchTerm);
     };
-
     const compare = (a, b) => {
         return a.title.localeCompare(b.title);
     };
 
     let usersNotInTeamList = [];
-    if (props != null && props.newTeam.usersNotInTeam != null) {
+    if (props.newTeam.usersNotInTeam != null) {
         usersNotInTeamList = props.newTeam.usersNotInTeam
             .map(user => {
                 return {
@@ -58,10 +61,8 @@ const UsersNotInTeam = props => {
 UsersNotInTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
-    // TODO can I just return users
     return {
-        users: state.state.users.all,
-        newTeam: state.state.newTeam,
+        newTeam: state.newTeam,
     };
 }
 

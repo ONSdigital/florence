@@ -1,5 +1,5 @@
 import {push} from "react-router-redux";
-import {getUsersRequestSuccess, newTeamUnsavedChanges} from "./actions";
+import {getUsersRequestSuccess, newTeamUnsavedChanges} from "./newTeam/newTeamActions";
 import notifications from "../utilities/notifications";
 import users from "../utilities/api-clients/user";
 import teams from "../utilities/api-clients/teams";

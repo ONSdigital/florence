@@ -14,13 +14,6 @@ export const initialState = {
         allIDsAndNames: [],
         users: [],
     },
-    newTeam: {
-        usersInTeam: [],
-        usersNotInTeam: [],
-        allUsers: [],
-        unsavedChanges: false
-
-    },
     users: {
         active: {},
         all: [],
