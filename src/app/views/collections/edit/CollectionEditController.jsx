@@ -252,11 +252,14 @@ export class CollectionEditController extends Component {
 
     handleSave = () => {
         let hasError = false;
-        if (this.state.name.value === this.props.name) return;
+        let validatedName = null;
+        const collectionName = this.state.name.value.trim();
 
-        const validatedName = collectionValidation.name(this.state.name.value, this.props.collections);
+        if (collectionName !== this.props.name) {
+            validatedName = collectionValidation.name(collectionName, this.props.collections);
+        };
 
-        if (!validatedName.isValid) {
+        if (validatedName &&!validatedName.isValid) {
             this.setState(prevState => ({
                 name: {
                     ...prevState.name,
@@ -427,7 +430,7 @@ export class CollectionEditController extends Component {
         let body = {};
 
         if (state.name.value !== this.props.name) {
-            body.name = state.name.value;
+            body.name = state.name.value.trim();
         }
 
         if (this.teamsHaveChanged(state)) {
