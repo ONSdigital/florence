@@ -2,74 +2,127 @@
 
 exports[`Create collection form matches stored snapshot 1`] = `
 <div>
-  <div>
-    <form
-      onSubmit={[Function]}
+  <form
+    onSubmit={[Function]}
+  >
+    <div
+      className="form__input"
     >
-      <div
-        className="form__input"
+      <label
+        className="form__label"
+        htmlFor="collection-name"
       >
-        <label
-          className="form__label"
-          htmlFor="collection-name"
-        >
-          Collection name
-        </label>
-        
-        <input
-          autoComplete="new-password"
-          autoFocus={false}
-          className="input"
+        Collection name
+      </label>
+      
+      <input
+        autoComplete="new-password"
+        autoFocus={false}
+        className="input"
+        disabled={false}
+        id="collection-name"
+        name="collection-name"
+        onChange={[Function]}
+        onFocus={[Function]}
+        type="text"
+        value=""
+      />
+      
+    </div>
+    <div
+      className="form__input"
+    >
+      <label
+        className="form__label"
+        htmlFor="collection-teams"
+      >
+        Select a team(s) that can view this collection
+      </label>
+      <div
+        className="select-wrap "
+      >
+        <select
+          className="select"
           disabled={false}
-          id="collection-name"
-          name="collection-name"
+          id="collection-teams"
+          name="collection-teams"
+          onBlur={[Function]}
           onChange={[Function]}
           onFocus={[Function]}
-          type="text"
-          value=""
-        />
-        
-      </div>
-      <div
-        className="form__input"
-      >
-        <label
-          className="form__label"
-          htmlFor="collection-teams"
+          value="default-option"
         >
-          Select a team(s) that can view this collection
-        </label>
-        <div
-          className="select-wrap "
-        >
-          <select
-            className="select"
-            disabled={false}
-            id="collection-teams"
-            name="collection-teams"
-            onBlur={[Function]}
-            onChange={[Function]}
-            onFocus={[Function]}
-            value="default-option"
+          <option
+            value="Loading teams..."
           >
-            <option
-              value="Loading teams..."
-            >
-              Loading teams...
-            </option>
-          </select>
-        </div>
+            Loading teams...
+          </option>
+        </select>
+      </div>
+    </div>
+    <div
+      className="selected-item-list"
+    />
+    <fieldset
+      className="fieldset"
+    >
+      <legend
+        className="fieldset__legend"
+      >
+        Publish type
+      </legend>
+      <div
+        className="radio radio--inline"
+      >
+        <input
+          checked={true}
+          className="radio__input selected"
+          id="scheduled-radio"
+          name="release-type"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          type="radio"
+          value="scheduled"
+        />
+        <label
+          className="radio__label radio__label--selected"
+          htmlFor="scheduled-radio"
+        >
+          Scheduled publish
+           
+        </label>
       </div>
       <div
-        className="selected-item-list"
-      />
+        className="radio radio--inline"
+      >
+        <input
+          checked={false}
+          className="radio__input"
+          id="manual-radio"
+          name="release-type"
+          onBlur={[Function]}
+          onChange={[Function]}
+          onFocus={[Function]}
+          type="radio"
+          value="manual"
+        />
+        <label
+          className="radio__label"
+          htmlFor="manual-radio"
+        >
+          Manual publish
+           
+        </label>
+      </div>
+    </fieldset>
+    <div>
       <fieldset
         className="fieldset"
       >
         <legend
           className="fieldset__legend"
         >
-          Publish type
+          Schedule type
         </legend>
         <div
           className="radio radio--inline"
@@ -77,19 +130,19 @@ exports[`Create collection form matches stored snapshot 1`] = `
           <input
             checked={true}
             className="radio__input selected"
-            id="scheduled-radio"
-            name="release-type"
+            id="custom-radio"
+            name="schedule-type"
             onBlur={[Function]}
             onChange={[Function]}
             onFocus={[Function]}
             type="radio"
-            value="scheduled"
+            value="custom-schedule"
           />
           <label
             className="radio__label radio__label--selected"
-            htmlFor="scheduled-radio"
+            htmlFor="custom-radio"
           >
-            Scheduled publish
+            Custom schedule
              
           </label>
         </div>
@@ -99,139 +152,84 @@ exports[`Create collection form matches stored snapshot 1`] = `
           <input
             checked={false}
             className="radio__input"
-            id="manual-radio"
-            name="release-type"
+            id="calendar-radio"
+            name="schedule-type"
             onBlur={[Function]}
             onChange={[Function]}
             onFocus={[Function]}
             type="radio"
-            value="manual"
+            value="calender-entry-schedule"
           />
           <label
             className="radio__label"
-            htmlFor="manual-radio"
+            htmlFor="calendar-radio"
           >
-            Manual publish
+            Calendar entry schedule
              
           </label>
         </div>
       </fieldset>
       <div>
-        <fieldset
-          className="fieldset"
+        <div
+          className="form__input"
         >
-          <legend
-            className="fieldset__legend"
+          <label
+            className="form__label"
+            htmlFor="publish-date"
           >
-            Schedule type
-          </legend>
-          <div
-            className="radio radio--inline"
+            Publish date
+          </label>
+          
+          <input
+            autoComplete="new-password"
+            autoFocus={false}
+            className="input"
+            disabled={false}
+            id="publish-date"
+            max="2017-10-12"
+            min="2017-10-12"
+            name="publish-date"
+            onChange={[Function]}
+            onFocus={[Function]}
+            type="date"
+            value=""
+          />
+          
+        </div>
+        <div
+          className="form__input"
+        >
+          <label
+            className="form__label"
+            htmlFor="publish-time"
           >
-            <input
-              checked={true}
-              className="radio__input selected"
-              id="custom-radio"
-              name="schedule-type"
-              onBlur={[Function]}
-              onChange={[Function]}
-              onFocus={[Function]}
-              type="radio"
-              value="custom-schedule"
-            />
-            <label
-              className="radio__label radio__label--selected"
-              htmlFor="custom-radio"
-            >
-              Custom schedule
-               
-            </label>
-          </div>
-          <div
-            className="radio radio--inline"
-          >
-            <input
-              checked={false}
-              className="radio__input"
-              id="calendar-radio"
-              name="schedule-type"
-              onBlur={[Function]}
-              onChange={[Function]}
-              onFocus={[Function]}
-              type="radio"
-              value="calender-entry-schedule"
-            />
-            <label
-              className="radio__label"
-              htmlFor="calendar-radio"
-            >
-              Calendar entry schedule
-               
-            </label>
-          </div>
-        </fieldset>
-        <div>
-          <div
-            className="form__input"
-          >
-            <label
-              className="form__label"
-              htmlFor="publish-date"
-            >
-              Publish date
-            </label>
-            
-            <input
-              autoComplete="new-password"
-              autoFocus={false}
-              className="input"
-              disabled={false}
-              id="publish-date"
-              max="2017-10-12"
-              min="2017-10-12"
-              name="publish-date"
-              onChange={[Function]}
-              onFocus={[Function]}
-              type="date"
-              value=""
-            />
-            
-          </div>
-          <div
-            className="form__input"
-          >
-            <label
-              className="form__label"
-              htmlFor="publish-time"
-            >
-              Publish time
-            </label>
-            
-            <input
-              autoComplete="new-password"
-              autoFocus={false}
-              className="input"
-              disabled={false}
-              id="publish-time"
-              name="publish-time"
-              onChange={[Function]}
-              onFocus={[Function]}
-              type="time"
-              value="09:30"
-            />
-            
-          </div>
+            Publish time
+          </label>
+          
+          <input
+            autoComplete="new-password"
+            autoFocus={false}
+            className="input"
+            disabled={false}
+            id="publish-time"
+            name="publish-time"
+            onChange={[Function]}
+            onFocus={[Function]}
+            type="time"
+            value="09:30"
+          />
+          
         </div>
       </div>
-      <button
-        className="btn btn--positive margin-top--1"
-        disabled={false}
-        type="submit"
-      >
-        Create collection
-      </button>
-      
-    </form>
-  </div>
+    </div>
+    <button
+      className="btn btn--positive margin-top--1"
+      disabled={false}
+      type="submit"
+    >
+      Create collection
+    </button>
+    
+  </form>
 </div>
 `;

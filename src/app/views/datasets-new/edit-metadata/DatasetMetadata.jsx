@@ -219,28 +219,15 @@ const DatasetMetadata = ({
                 legend={"National Statistic"}
                 disabled={disableForm}
             />
-
-            <RadioGroup
-                groupName="national-statistic"
-                radioData={[
-                    {
-                        id: "national-statistic-yes",
-                        value: "true",
-                        label: "Yes",
-                    },
-                    {
-                        id: "national-statistic-no",
-                        value: "false",
-                        label: "No",
-                    },
-                ]}
-                selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
-                onChange={handleNationalStatisticChange}
-                inline={true}
-                legend={"National Statistic"}
+            <h2>Contact details</h2>
+            <Input
+                id="contact-name"
+                name="contactName"
+                label="Contact name"
+                onChange={handleStringInputChange}
+                value={metadata.contactName}
                 disabled={disableForm}
             />
-
             <Input
                 id="contact-email"
                 name="contactEmail"
@@ -281,10 +268,8 @@ const DatasetMetadata = ({
                 handleDeleteClick={handleSimpleEditableListDelete}
                 disableActions={disableForm}
             />
-
             <h3 className="margin-top--1">Quality and methodology information</h3>
             <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm} />
-
             <h3>Methodologies</h3>
             <SimpleEditableList
                 addText={"Add a methodology"}

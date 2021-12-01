@@ -132,7 +132,7 @@ class CollectionCreate extends Component {
         ];
 
         return (
-            <div>
+            <>
                 <form onSubmit={this.props.onSubmit}>
                     <Input
                         id="collection-name"
@@ -180,7 +180,7 @@ class CollectionCreate extends Component {
                         <ScheduleByRelease onClose={this.props.handleCloseRelease} onSubmit={this.props.handleSelectRelease} />
                     </Modal>
                 )}
-            </div>
+            </>
         );
     }
 }

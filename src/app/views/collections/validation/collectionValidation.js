@@ -4,8 +4,9 @@
  * @returns {object{isValid: boolean, errorMsg: string}} - Returns object with isValid boolean and an optional error message of why it's not valid
  */
 
+import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
 export default class collectionValidation {
-    static name(name) {
+    static name(name, collections) {
         let response = {
             isValid: true,
             errorMsg: "",
@@ -21,7 +22,14 @@ export default class collectionValidation {
         if (!name || name.match(/^\s*$/)) {
             response = {
                 isValid: false,
-                errorMsg: "Collections must be given a name",
+                errorMsg: "Collections must be given a name.",
+            };
+        }
+
+        if (collections && collections.some(c => c.name === name.trim())) {
+            response = {
+                isValid: false,
+                errorMsg: UNIQ_NAME_ERROR,
             };
         }
 
@@ -32,7 +40,7 @@ export default class collectionValidation {
         if (!date) {
             return {
                 isValid: false,
-                errorMsg: "Scheduled collections must be given a publish date",
+                errorMsg: "Scheduled collections must be given a publish date.",
             };
         }
 
@@ -46,7 +54,7 @@ export default class collectionValidation {
         if (!time) {
             return {
                 isValid: false,
-                errorMsg: "Scheduled collections must be given a publish time",
+                errorMsg: "Scheduled collections must be given a publish time.",
             };
         }
 
@@ -60,7 +68,7 @@ export default class collectionValidation {
         if (!release.uri) {
             return {
                 isValid: false,
-                errorMsg: "Must select a release",
+                errorMsg: "Must select a release.",
             };
         }
 
@@ -74,14 +82,14 @@ export default class collectionValidation {
         if (!publishType) {
             return {
                 isValid: false,
-                errorMsg: "Collections must have a publish type",
+                errorMsg: "Collections must have a publish type.",
             };
         }
 
         if (publishType !== "manual" && publishType !== "scheduled") {
             return {
                 isValid: false,
-                errorMsg: "Collections must have a publish type",
+                errorMsg: "Collections must have a publish type.",
             };
         }
 
