@@ -196,7 +196,9 @@ const Index = () => {
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
                     {/*TODO*/}
                     {/*<Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeamController)) : null} />*/}
-                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? (CreateTeam) : null} />
+                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? (CreateTeam) : null}
+                           // onLeave={ showConfirm }
+                    />
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>

@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import DynamicList from "../../components/dynamic-list/DynamicList";
-import { addUserToTeam } from "../../config/actions";
+import {addUserToNewTeam} from "../../config/actions";
 import PropTypes from "prop-types";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     users: PropTypes.arrayOf(PropTypes.object),
-    usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
+    newTeam: PropTypes.object,
 };
 const UsersNotInTeam = props => {
     const [filterTerm, setFilterTerm] = useState("");
@@ -21,8 +21,8 @@ const UsersNotInTeam = props => {
     };
 
     let usersNotInTeamList = [];
-    if (props != null && props.usersNotInTeam != null) {
-        usersNotInTeamList = props.usersNotInTeam
+    if (props != null && props.newTeam.usersNotInTeam != null) {
+        usersNotInTeamList = props.newTeam.usersNotInTeam
             .map(user => {
                 return {
                     title: `${user.forename} ${user.lastname}`,
@@ -30,8 +30,8 @@ const UsersNotInTeam = props => {
                     icon: "Person",
                     buttonName: "Add",
                     buttonCallback: () => {
-                        let newUser = props.users.find(viewer => viewer.email === user.email);
-                        props.dispatch(addUserToTeam(newUser));
+                        let newUser = props.newTeam.allUsers.find(viewer => viewer.email === user.email);
+                        props.dispatch(addUserToNewTeam(newUser));
                     },
                     iconColor: "standard",
                 };
@@ -61,7 +61,7 @@ function mapStateToProps(state) {
     // TODO can I just return users
     return {
         users: state.state.users.all,
-        usersNotInTeam: state.state.users.notInTeam,
+        newTeam: state.state.newTeam,
     };
 }
 

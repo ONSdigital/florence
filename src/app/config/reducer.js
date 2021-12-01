@@ -33,6 +33,11 @@ import {
     EMPTY_ACTIVE_INSTANCE,
     UPDATE_ACTIVE_DATASET_COLLECTION_ID,
     RESET,
+    GET_USERS_REQUEST_SUCCESS,
+    NEW_TEAM_UNSAVED_CHANGES,
+    NEW_TEAM_REMOVE_USER_FROM,
+    NEW_TEAM_ADD_USER,
+    NEW_TEAM_RESET,
 } from "./actions";
 
 export default function reducer(state = initialState, action) {
@@ -450,6 +455,53 @@ export default function reducer(state = initialState, action) {
                 preview: {
                     ...state.preview,
                     selectedPage: null,
+                },
+            };
+        }
+        case GET_USERS_REQUEST_SUCCESS: {
+            return {
+                ...state,
+                newTeam: {
+                    ...state.newTeam,
+                    allUsers: [...action.users],
+                    usersNotInTeam: [...action.users],
+                },
+            };
+        }
+        case NEW_TEAM_UNSAVED_CHANGES: {
+            return {
+                ...state,
+                newTeam: {
+                    ...state.newTeam,
+                    unsavedChanges: action.unsavedChanges
+                },
+            };
+        }
+        case NEW_TEAM_REMOVE_USER_FROM: {
+            return {
+                ...state,
+                newTeam: {
+                    ...state.newTeam,
+                    usersInTeam: state.newTeam.usersInTeam.filter(filteredUser => filteredUser.email !== action.user.email),
+                    usersNotInTeam: [...state.newTeam.usersNotInTeam, action.user],
+                },
+            };
+        }
+        case NEW_TEAM_ADD_USER: {
+            return {
+                ...state,
+                newTeam: {
+                    ...state.newTeam,
+                    usersNotInTeam: state.newTeam.usersNotInTeam.filter(filteredUser => filteredUser.email !== action.user.email),
+                    usersInTeam: [...state.newTeam.usersInTeam, action.user],
+                },
+            };
+        }
+        case NEW_TEAM_RESET: {
+            return {
+                ...state,
+                newTeam: {
+                    ...initialState.newTeam,
                 },
             };
         }

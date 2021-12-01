@@ -14,7 +14,6 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -170,7 +169,7 @@ export class LoginController extends Component {
                 });
                 log.event("Error getting a user's permissions on login", log.error(error));
                 console.error("Error getting a user's permissions on login", error);
-                user.logOut();
+                // user.logOut();
                 if (!this.state.firstTimeSignIn) {
                     this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
                 }

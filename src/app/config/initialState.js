@@ -14,6 +14,13 @@ export const initialState = {
         allIDsAndNames: [],
         users: [],
     },
+    newTeam: {
+        usersInTeam: [],
+        usersNotInTeam: [],
+        allUsers: [],
+        unsavedChanges: false
+
+    },
     users: {
         active: {},
         all: [],
@@ -33,6 +40,7 @@ export const initialState = {
         active: null,
         toDelete: {},
     },
+    unsavedChanges: false,
     notifications: [],
     popouts: [],
     preview: {

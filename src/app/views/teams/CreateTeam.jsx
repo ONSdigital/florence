@@ -3,128 +3,124 @@ import {connect} from "react-redux";
 import {push} from "react-router-redux";
 import {Link} from "react-router";
 import url from "../../utilities/url";
+import {getUsersRequest, createTeam} from "../../config/thunk";
 import UsersNotInTeam from "../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 import Input from "../../components/Input";
-import users from "../../utilities/api-clients/user";
-import teams from "../../utilities/api-clients/teams";
 import Chip from "../../components/chip/Chip";
-import {addAllUsers, addAllUsersNotInTeam, addPopout, addUserToTeam, removeUserFromTeam} from "../../config/actions";
+import {
+    addPopout,
+    newTeamUnsavedChanges,
+    removePopouts,
+    removeUserFromNewTeam,
+    removeUserFromTeam, resetNewTeam
+} from "../../config/actions";
 import PropTypes from "prop-types";
 import {store} from "../../config/store";
-import {errCodes} from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
     dispatch: PropTypes.func.isRequired,
-    users: PropTypes.arrayOf(PropTypes.object),
-    isAuthenticated: PropTypes.bool.isRequired,
+    newTeam:  PropTypes.shape({
+        usersInTeam: PropTypes.arrayOf(PropTypes.object),
+        usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
+        allUsers: PropTypes.arrayOf(PropTypes.object),
+        unsavedChanges: PropTypes.bool}),
+    isAuthenticated: PropTypes.bool.isRequired
 };
 
 const CreateTeam = props => {
-    const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
-    const [isFetching, setIsFetching] = useState(false);
-    // TODO on 'edit a preview team' screen populate teamName via API call (check for URL parameter)
-    let teamNameOnLoad = "";
-
     useEffect(() => {
         // TODO add access check
         // if (!(isAdmin || isPublisher) && !props.params.userID) {
         //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
         // }
-        // TODO add loading spinner on list until populated
-        setIsFetching(true);
-        getAllUsers();
+        props.dispatch(resetNewTeam())
+        props.dispatch(getUsersRequest());
     }, []);
 
+    // As we are on an old version of react-router, will have to use setRouteLeaveHook instead of 'Prompt'
     useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, handleLeavingPage)
-    })
+        props.router.setRouteLeaveHook(props.route, handleRequestToLeavePage);
+    });
 
-    const handleLeavingPage = (nextLocation) => {
-        console.log("next locations")
-        console.log(nextLocation)
-        const popoutOptions = {
-            id: "session-expire-soon",
-            title: "Your session will end in 1 minute",
-            body: "This is because you have been inactive. If you want to continue using Florence you must stay signed in. If not, you will be signed out and will need to sign in again.",
-            buttons: [
-                {
-                    onClick: () => {
-                        return true
+    useEffect(() => {
+        if (userConfirmedToLeave) {
+            const previousUrl = url.resolve("../", true);
+            props.dispatch(push(previousUrl));
+        }
+    }, [userConfirmedToLeave]);
+
+    useEffect(() => {
+        if (teamName !== "" || props.newTeam.usersInTeam.length > 0) {
+            props.dispatch(newTeamUnsavedChanges(true))
+        } else {
+            props.dispatch(newTeamUnsavedChanges(false))
+        }
+    }, [teamName, props.newTeam.usersInTeam]);
+
+    const handleRequestToLeavePage = () => {
+        if (!userConfirmedToLeave && props.newTeam.unsavedChanges) {
+            const popoutOptions = {
+                id: "unsaved-changes",
+                title: "You have unsaved changes",
+                body: "If you leave these changes will be discarded.",
+                buttons: [
+                    {
+                        onClick: () => {
+                            store.dispatch(removePopouts(["unsaved-changes"]));
+                            setUserConfirmedToLeave(true);
+                        },
+                        text: "Discard changes",
+                        style: "warning",
                     },
-                    text: "You have unsaved changes, if you leave these changes will be discarded",
-                    style: "primary",
-                },
-            ],
-        };
-        store.dispatch(addPopout(popoutOptions));
-        // return"You have unsaved changes, if you leave these changes will be discarded"
-    }
-
-    const getAllUsers = () => {
-        users
-            .getAllActive()
-            .then(results => {
-                setUsers(results);
-            })
-            .catch(error => {
-                // TODO log properly
-                console.log("ERROR");
-                console.error(error);
-            })
-            .finally(() => {
-                setIsFetching(false);
-            });
-    };
-
-    const setUsers = results => {
-        if (results != null && results.users != null && results.users.length > 0) {
-            results = results.users;
-            props.dispatch(addAllUsers(results));
-            props.dispatch(addAllUsersNotInTeam(results));
+                    {
+                        onClick: () => {
+                            store.dispatch(removePopouts(["unsaved-changes"]));
+                            return false;
+                        },
+                        text: "Continue editing team",
+                        style: "invert-primary",
+                    },
+                ],
+            };
+            store.dispatch(addPopout(popoutOptions));
+            // Do not leave
+            return false;
+        } else {
+            // Can leave
+            return true;
         }
     };
 
     const handleTeamNameChange = event => {
-        if (teamNameOnLoad !== event.target.value) {
-            setUnsavedChanges(true);
-        }
         setTeamName(event.target.value);
     };
 
     const requestCreateTeam = () => {
         // TODO change to action
-        const body = {
-            name: teamName,
-            precedence: 10,
-        };
-        teams
-            .createTeam(body)
-            .then(response => {
-                let promises = [];
-                props.usersInTeam.forEach(user => {
-                    promises.push(teams.addMemberToTeam(response.groupname, user.id));
-                });
-                Promise.all(promises).then(results => {
-                    console.log(results)
-                    // TODO redirect and create toast
-                    const notification = {
-                        type: "positive",
-                        isDismissable: true,
-                        autoDismiss: 15000,
-                        message: `The preview team ${response[0].description} has been created successfully`
-                    };
-                    notifications.add(notification);
-                })
-                    .catch(() => {
-                    });
-            });
-    }
+        // TODO allow user to create a team without members in it
 
-    let nameError;
+        if (props.newTeam.unsavedChanges && teamName !== "") {
+            // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
+            const body = {
+                name: teamName,
+                precedence: 10,
+            };
+            props.dispatch(createTeam(body));
+        } else {
+            const notification = {
+                type: "warning",
+                message:
+                    "Unable to save team, you need to at least give the team a name",
+                isDismissable: true,
+            };
+            notifications.add(notification);
+        }
+    };
     let contentActionBarProps = {
         buttons: [
             {
@@ -140,32 +136,28 @@ const CreateTeam = props => {
             props.dispatch(push(previousUrl));
         },
         stickToBottom: true,
-        unsavedChanges: unsavedChanges,
+        unsavedChanges: props.newTeam.unsavedChanges,
     };
     let teamsMemberChips = (
         <div className="chip__container chip__container--gap-10">
-            {props.usersInTeam.map((teamMember, i) => {
+            {props.newTeam.usersInTeam.map((teamMember, i) => {
                 return (
                     <Chip
                         key={`teamMember-${i}`}
                         icon="person"
                         style="standard"
                         text={`${teamMember.forename} ${teamMember.lastname}`}
-                        removeFunc={
-                            // TODO
-                            () => {
-                                let userToRemove = props.users.find(viewer => viewer.email === teamMember.email);
-                                props.dispatch(removeUserFromTeam(userToRemove));
-                            }
-                        }
+                        removeFunc={() => {
+                            let userToRemove = props.newTeam.allUsers.find(viewer => viewer.email === teamMember.email);
+                            props.dispatch(removeUserFromNewTeam(userToRemove));
+                        }}
                     />
                 );
             })}
         </div>
     );
-    let noTeamMembers = <p> This team has no members</p>;
-    let teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}
-                                   error={nameError}/>;
+    const noTeamMembers = <p> This team has no members</p>;
+    const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}/>;
 
     return (
         <div className="grid grid--justify-space-around">
@@ -176,9 +168,9 @@ const CreateTeam = props => {
                 <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>
                 {teamNameInputArea}
                 <span>Members</span>
-                {props.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
+                {props.newTeam.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam loading={isFetching}/>
+            <UsersNotInTeam loading={true}/>
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
@@ -188,11 +180,9 @@ CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        //TODO can I just import users
         isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        users: state.state.users.all,
-        usersInTeam: state.state.users.inTeam,
+        newTeam: state.state.newTeam,
     };
 }
 
