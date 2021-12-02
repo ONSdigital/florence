@@ -1,6 +1,6 @@
 import { GET_USERS_REQUEST_SUCCESS, NEW_TEAM_ADD_USER, NEW_TEAM_REMOVE_USER_FROM, NEW_TEAM_RESET, NEW_TEAM_UNSAVED_CHANGES } from "./newTeamActions";
 
-const initialState = {
+export const initialState = {
     usersInTeam: [],
     usersNotInTeam: [],
     allUsers: [],

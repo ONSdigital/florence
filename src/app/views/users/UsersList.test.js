@@ -120,7 +120,7 @@ describe("Mapping users to state", () => {
             title: `${mockedAllUsers.users[0].forename} ${mockedAllUsers.users[0].lastname}`,
             url: `/florence/users/${mockedAllUsers.users[0].email}`,
         };
-        const returnValue = mapUserToState("/florence", mockedAllUsers.users[0]);
+        const returnValue = ("/florence", mockedAllUsers.users[0]);
         expect(returnValue).toMatchObject(expectedValue);
     });
 });

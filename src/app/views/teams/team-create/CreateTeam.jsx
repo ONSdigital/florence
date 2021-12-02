@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push, replace } from "react-router-redux";
 import { Link } from "react-router";
-import url from "../../utilities/url";
-import { getUsersRequest, createTeam } from "../../config/thunk";
-import UsersNotInTeam from "../../components/users/UsersNotInTeam";
-import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
-import Input from "../../components/Input";
-import Chip from "../../components/chip/Chip";
-import { addPopout, removePopouts } from "../../config/actions";
-import { newTeamUnsavedChanges, removeUserFromNewTeam, resetNewTeam } from "../../config/newTeam/newTeamActions";
+import url from "../../../utilities/url";
+import { getUsersRequest, createTeam } from "../../../config/thunk";
+import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
+import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
+import Input from "../../../components/Input";
+import Chip from "../../../components/chip/Chip";
+import { addPopout, removePopouts } from "../../../config/actions";
+import { newTeamUnsavedChanges, removeUserFromNewTeam, resetNewTeam } from "../../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
-import { store } from "../../config/store";
-import notifications from "../../utilities/notifications";
+import notifications from "../../../utilities/notifications";
+import auth from "../../../utilities/auth";
+import { getAllUsers } from "../../users/UsersList";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -30,10 +31,6 @@ const CreateTeam = props => {
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     useEffect(() => {
-        // TODO add access check
-        // if (!(isAdmin || isPublisher) && !props.params.userID) {
-        //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
-        // }
         props.dispatch(resetNewTeam());
         props.dispatch(getUsersRequest());
     }, []);
@@ -67,7 +64,7 @@ const CreateTeam = props => {
                 buttons: [
                     {
                         onClick: () => {
-                            store.dispatch(removePopouts(["unsaved-changes"]));
+                            props.dispatch(removePopouts(["unsaved-changes"]));
                             setUserConfirmedToLeave(true);
                         },
                         text: "Discard changes",
@@ -75,7 +72,7 @@ const CreateTeam = props => {
                     },
                     {
                         onClick: () => {
-                            store.dispatch(removePopouts(["unsaved-changes"]));
+                            props.dispatch(removePopouts(["unsaved-changes"]));
                             return false;
                         },
                         text: "Continue editing team",
@@ -83,7 +80,7 @@ const CreateTeam = props => {
                     },
                 ],
             };
-            store.dispatch(addPopout(popoutOptions));
+            props.dispatch(addPopout(popoutOptions));
             // Do not leave
             return false;
         } else {

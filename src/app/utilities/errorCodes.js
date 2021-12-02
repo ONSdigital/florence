@@ -18,5 +18,6 @@ export const errCodes = {
     GET_USERS_UNEXPECTED_FILTER_ERROR: "An error's occurred whilst trying to get users. Please contact an administrator",
     CREATE_GROUP_UNEXPECTED_ERROR: "An error's occurred whilst creating the new team. Please contact an administrator",
     INVALID_NEW_TEAM_NAME: "An invalid team name was provided, please change the name",
-    INVALID_USER_BEING_ADDED_TO_TEAM: "Unable to add an invalid user account to the team, please navigate to the 'Preview teams' screen and then edit the team to add or remove users",
+    INVALID_USER_BEING_ADDED_TO_TEAM:
+        "Unable to add an invalid user account to the team, please navigate to the 'Preview teams' screen and then edit the team to add or remove users",
 };

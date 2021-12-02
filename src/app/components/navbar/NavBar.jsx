@@ -38,15 +38,15 @@ const NavBar = props => {
     };
 
     const renderNavItems = () => {
-        // if (!auth.isAuthenticated(props.user)) {
-        //     return (
-        //         <li className="global-nav__item">
-        //             <Link to={`${props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
-        //                 Sign in
-        //             </Link>
-        //         </li>
-        //     );
-        // }
+        if (!auth.isAuthenticated(props.user)) {
+            return (
+                <li className="global-nav__item">
+                    <Link to={`${props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
+                        Sign in
+                    </Link>
+                </li>
+            );
+        }
 
         const rootPath = props.rootPath;
         return (
@@ -86,7 +86,7 @@ const NavBar = props => {
                         {props.config.enableNewSignIn && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
-                                    Preview Teams
+                                    Preview teams
                                 </Link>
                             </li>
                         )}

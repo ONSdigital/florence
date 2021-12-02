@@ -13,7 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import CollectionsController from "./app/views/collections/CollectionsController";
 import TeamsController from "./app/views/teams/TeamsController";
-import CreateTeam from "./app/views/teams/CreateTeam"
+import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
@@ -69,6 +69,16 @@ const userIsAdminOrEditor = connectedReduxRedirect({
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
+    redirectPath: `${rootPath}/collections`,
+    allowRedirectBack: false
+});
+
+const userIsAdmin = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return auth.isAdmin(state.user);
+    },
+    redirectAction: routerActions.replace,
+    wrapperDisplayName: "userIsAdmin",
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
 });
@@ -196,7 +206,7 @@ const Index = () => {
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
                     {/*TODO*/}
-                    {/*<Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeamController)) : null} />*/}
+                    {/*<Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />*/}
                     <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? (CreateTeam) : null}
                            // onLeave={ showConfirm }
                     />

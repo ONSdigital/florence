@@ -1,15 +1,14 @@
-import {push} from "react-router-redux";
-import {getUsersRequestSuccess, newTeamUnsavedChanges} from "./newTeam/newTeamActions";
+import { push } from "react-router-redux";
+import { getUsersRequestSuccess, newTeamUnsavedChanges } from "./newTeam/newTeamActions";
 import notifications from "../utilities/notifications";
 import users from "../utilities/api-clients/user";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
-import {errCodes} from "../utilities/errorCodes";
-
+import { errCodes } from "../utilities/errorCodes";
 
 export const getUsersRequest = () => dispatch => {
     users
-        .getAll({active: true})
+        .getAll({ active: true })
         .then(response => {
             dispatch(getUsersRequestSuccess(response));
         })
@@ -86,7 +85,7 @@ export const createTeam = body => (dispatch, getState) => {
                 dispatch(push(previousUrl));
             }
         })
-        .catch((error) => {
+        .catch(error => {
             dispatch(newTeamUnsavedChanges(true));
             if (error.status != null && error.status === 400) {
                 const notification = {
@@ -129,7 +128,7 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
             const previousUrl = url.resolve("../", true);
             dispatch(push(previousUrl));
         })
-        .catch((error) => {
+        .catch(error => {
             if (error.status != null && error.status === 400) {
                 const notification = {
                     type: "warning",
