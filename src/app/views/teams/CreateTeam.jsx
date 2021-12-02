@@ -1,23 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {connect} from "react-redux";
-import {push} from "react-router-redux";
-import {Link} from "react-router";
+import React, { useEffect, useState } from "react";
+import { connect } from "react-redux";
+import { push } from "react-router-redux";
+import { Link } from "react-router";
 import url from "../../utilities/url";
-import {getUsersRequest, createTeam} from "../../config/thunk";
+import { getUsersRequest, createTeam } from "../../config/thunk";
 import UsersNotInTeam from "../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 import Input from "../../components/Input";
 import Chip from "../../components/chip/Chip";
-import {
-    addPopout,
-    removePopouts,
-} from "../../config/actions";
-import {
-    newTeamUnsavedChanges,
-    removeUserFromNewTeam, resetNewTeam
-} from "../../config/newTeam/newTeamActions";
+import { addPopout, removePopouts } from "../../config/actions";
+import { newTeamUnsavedChanges, removeUserFromNewTeam, resetNewTeam } from "../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
-import {store} from "../../config/store";
+import { store } from "../../config/store";
 import notifications from "../../utilities/notifications";
 
 const propTypes = {
@@ -27,9 +21,9 @@ const propTypes = {
         usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
-        unsavedChanges: PropTypes.bool
+        unsavedChanges: PropTypes.bool,
     }),
-    isAuthenticated: PropTypes.bool.isRequired
+    isAuthenticated: PropTypes.bool.isRequired,
 };
 
 const CreateTeam = props => {
@@ -40,7 +34,7 @@ const CreateTeam = props => {
         // if (!(isAdmin || isPublisher) && !props.params.userID) {
         //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
         // }
-        props.dispatch(resetNewTeam())
+        props.dispatch(resetNewTeam());
         props.dispatch(getUsersRequest());
     }, []);
 
@@ -58,9 +52,9 @@ const CreateTeam = props => {
 
     useEffect(() => {
         if (teamName !== "" || props.newTeam.usersInTeam.length > 0) {
-            props.dispatch(newTeamUnsavedChanges(true))
+            props.dispatch(newTeamUnsavedChanges(true));
         } else {
-            props.dispatch(newTeamUnsavedChanges(false))
+            props.dispatch(newTeamUnsavedChanges(false));
         }
     }, [teamName, props.newTeam.usersInTeam]);
 
@@ -113,8 +107,7 @@ const CreateTeam = props => {
         } else {
             const notification = {
                 type: "warning",
-                message:
-                    "Unable to save team, you need to at least give the team a name",
+                message: "Unable to save team, you need to at least give the team a name",
                 isDismissable: true,
             };
             notifications.add(notification);
@@ -156,7 +149,7 @@ const CreateTeam = props => {
         </div>
     );
     const noTeamMembers = <p>This team has no members</p>;
-    const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}/>;
+    const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} />;
 
     return (
         <div className="grid grid--justify-space-around">
@@ -166,10 +159,12 @@ const CreateTeam = props => {
                 </span>
                 <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>
                 {teamNameInputArea}
-                <span><strong>Members</strong></span>
+                <span>
+                    <strong>Members</strong>
+                </span>
                 {props.newTeam.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam loading={true}/>
+            <UsersNotInTeam loading={true} />
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );

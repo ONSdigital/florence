@@ -1,7 +1,7 @@
-import React, {useState} from "react";
-import {connect} from "react-redux";
+import React, { useState } from "react";
+import { connect } from "react-redux";
 import DynamicList from "../../components/dynamic-list/DynamicList";
-import {addUserToNewTeam} from "../../config/newTeam/newTeamActions";
+import { addUserToNewTeam } from "../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
 
 const propTypes = {
@@ -10,7 +10,7 @@ const propTypes = {
         usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
-        unsavedChanges: PropTypes.bool
+        unsavedChanges: PropTypes.bool,
     }),
 };
 const UsersNotInTeam = props => {

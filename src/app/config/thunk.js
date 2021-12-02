@@ -1,5 +1,5 @@
-import {push} from "react-router-redux";
-import {getUsersRequestSuccess, newTeamUnsavedChanges} from "./newTeam/newTeamActions";
+import { push } from "react-router-redux";
+import { getUsersRequestSuccess, newTeamUnsavedChanges } from "./newTeam/newTeamActions";
 import notifications from "../utilities/notifications";
 import users from "../utilities/api-clients/user";
 import teams from "../utilities/api-clients/teams";
@@ -56,7 +56,7 @@ export const getUsersRequest = () => dispatch => {
                             break;
                         }
                         default: {
-                            log.event("Unhandled error fetching users", log.data({status_code: error.status}), log.error(error));
+                            log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
                             const notification = {
                                 type: "warning",
                                 message:
@@ -88,7 +88,7 @@ export const getUsersRequest = () => dispatch => {
 };
 
 export const createTeam = body => (dispatch, getState) => {
-    dispatch(newTeamUnsavedChanges(false))
+    dispatch(newTeamUnsavedChanges(false));
     teams
         .createTeam(body)
         .then(response => {
@@ -109,7 +109,7 @@ export const createTeam = body => (dispatch, getState) => {
             }
         })
         .catch(() => {
-            dispatch(newTeamUnsavedChanges(true))
+            dispatch(newTeamUnsavedChanges(true));
             // TODO
         });
 };
@@ -136,7 +136,7 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
         })
         .catch(() => {
             // TODO
-            dispatch(newTeamUnsavedChanges(true))
+            dispatch(newTeamUnsavedChanges(true));
             console.log("something went wrong");
         });
 };
