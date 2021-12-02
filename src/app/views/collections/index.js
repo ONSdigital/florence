@@ -7,7 +7,6 @@ import Collections from "./Collections";
 export const mapStateToProps = state => {
     return {
         collections: getFilteredCollections(state.state),
-        collectionsToDelete: state.state.collections.toDelete,
         isLoading: getCollectionsLoading(state.state),
         rootPath: state.state.rootPath,
         search: getSearch(state.state),
@@ -18,7 +17,6 @@ export const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createCollection: collection => dispatch(createCollectionRequest(collection)),
         loadCollections: () => dispatch(loadCollectionsRequest()),
         updateWorkingOn: (id, name) => dispatch(updateWorkingOn(id, name)),
     };

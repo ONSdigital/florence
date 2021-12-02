@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import { push } from "react-router-redux";
 import cookies from "../../utilities/cookies";
 import CollectionCreateController from "./create/CollectionCreateController";
@@ -56,6 +57,21 @@ const Collections = props => {
             {props.params.collectionID && <CollectionDetailsController collectionID={props.params.collectionID} routes={props.routes} />}
         </>
     );
+};
+
+Collections.PropTypes = {
+    activeCollection: PropTypes.object,
+    collections: PropTypes.array.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    loadCollections: PropTypes.func.isRequired,
+    params: PropTypes.shape({ collectionID: PropTypes.string }).isRequired,
+    rootPath: PropTypes.string.isRequired,
+    rootPath: PropTypes.string.isRequired,
+    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    search: PropTypes.string,
+    updateWorkingOn: PropTypes.func.isRequired,
+    user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 
 export default Collections;
