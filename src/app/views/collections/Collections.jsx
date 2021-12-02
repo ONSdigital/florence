@@ -7,7 +7,7 @@ import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
 
 const Collections = props => {
-    const { user, collections, isLoading, workingOn, updateWorkingOn, search, activeCollection } = props;
+    const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
     const isViewer = user && user.userType === "VIEWER";
 
     useEffect(() => {
