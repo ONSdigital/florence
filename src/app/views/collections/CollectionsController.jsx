@@ -72,14 +72,11 @@ export class CollectionsController extends Component {
         return collections
             .getAll()
             .then(collections => {
-                const allCollectionsVisible = this.isViewer
-                    ? collections
-                    : collections.filter(collection => {
-                          return collection.approvalStatus !== "COMPLETE";
-                      });
-                const allCollections = allCollectionsVisible.map(collection => {
-                    return collectionMapper.collectionResponseToState(collection);
-                });
+                let allCollectionsVisible = [];
+                if (collections) {
+                    allCollectionsVisible = this.isViewer ? collections : collections.filter(collection => collection.approvalStatus !== "COMPLETE");
+                }
+                const allCollections = allCollectionsVisible.map(collection => collectionMapper.collectionResponseToState(collection));
                 this.props.dispatch(addAllCollections(allCollections));
                 this.setState({ isFetchingCollections: false });
             })

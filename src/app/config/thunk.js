@@ -7,7 +7,7 @@ import url from "../utilities/url";
 
 export const getUsersRequest = () => dispatch => {
     users
-        .getAllActive()
+        .getAll({ active: true })
         .then(response => {
             dispatch(getUsersRequestSuccess(response));
         })

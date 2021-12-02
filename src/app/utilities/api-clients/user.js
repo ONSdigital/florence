@@ -12,16 +12,16 @@ export default class user {
         return http.get(`/zebedee/users?email=${email}`);
     }
 
-    static getAll() {
+    static getAll(params) {
         const config = window.getEnv();
         if (config.enableNewSignIn) {
-            return http.get(`/users`, true);
+            let queryString = "";
+            Object.keys(params).map(key => {
+                queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
+            });
+            return http.get(`/users${queryString}`);
         }
         return http.get(`/zebedee/users`);
-    }
-
-    static getAllActive() {
-        return http.get(`/users?active=true`, true);
     }
 
     static create(body) {
