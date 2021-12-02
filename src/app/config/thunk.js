@@ -1,66 +1,45 @@
-import { push } from "react-router-redux";
-import { getUsersRequestSuccess, newTeamUnsavedChanges } from "./newTeam/newTeamActions";
+import {push} from "react-router-redux";
+import {getUsersRequestSuccess, newTeamUnsavedChanges} from "./newTeam/newTeamActions";
 import notifications from "../utilities/notifications";
 import users from "../utilities/api-clients/user";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
+import {errCodes} from "../utilities/errorCodes";
+
 
 export const getUsersRequest = () => dispatch => {
     users
-        .getAll({ active: true })
+        .getAll({active: true})
         .then(response => {
             dispatch(getUsersRequestSuccess(response));
         })
         .catch(error => {
-            // TODO GO THROUGH ERROR MESSAGES AND ALSO MOVE THEM
+            // TODO move, handling errors should be done elsewhere
             if (error.status != null) {
                 if (error.status >= 400 && error.status < 500) {
                     switch (error.status) {
-                        case 404: {
+                        case 400: {
                             const notification = {
                                 type: "warning",
-                                message: `No API route available to get users.`,
+                                message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
                                 autoDismiss: 5000,
                             };
                             notifications.add(notification);
                             break;
                         }
-                        case "RESPONSE_ERR": {
+                        case 404: {
                             const notification = {
                                 type: "warning",
-                                message:
-                                    "An error's occurred whilst trying to get users. Please refresh the page, if this continues please contact an administrator",
-                                isDismissable: true,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "UNEXPECTED_ERR": {
-                            const notification = {
-                                type: "warning",
-                                message:
-                                    "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
-                                isDismissable: true,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case "FETCH_ERR": {
-                            const notification = {
-                                type: "warning",
-                                message:
-                                    "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
-                                isDismissable: true,
+                                message: errCodes.GET_USERS_NOT_FOUND,
+                                autoDismiss: 5000,
                             };
                             notifications.add(notification);
                             break;
                         }
                         default: {
-                            log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
                             const notification = {
                                 type: "warning",
-                                message:
-                                    "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
+                                message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
                                 isDismissable: true,
                             };
                             notifications.add(notification);
@@ -70,20 +49,20 @@ export const getUsersRequest = () => dispatch => {
                 } else {
                     const notification = {
                         type: "warning",
-                        message: `An unexpected error has occurred whilst creating collection`,
+                        message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
                         isDismissable: true,
                     };
                     notifications.add(notification);
                 }
-                console.error(error);
             } else {
                 const notification = {
                     type: "warning",
-                    message: `An unexpected error has occurred whilst creating collection`,
+                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
                     isDismissable: true,
                 };
                 notifications.add(notification);
             }
+            console.error(error);
         });
 };
 
@@ -92,7 +71,6 @@ export const createTeam = body => (dispatch, getState) => {
     teams
         .createTeam(body)
         .then(response => {
-            //TODO may need to store state then reach into users.usersInTeam
             const state = getState().state;
             if (state.newTeam.usersInTeam.length > 0) {
                 dispatch(addMembersToTeam(response.groupname));
@@ -108,9 +86,26 @@ export const createTeam = body => (dispatch, getState) => {
                 dispatch(push(previousUrl));
             }
         })
-        .catch(() => {
+        .catch((error) => {
             dispatch(newTeamUnsavedChanges(true));
-            // TODO
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_NEW_TEAM_NAME,
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR,
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
         });
 };
 
@@ -134,9 +129,24 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
             const previousUrl = url.resolve("../", true);
             dispatch(push(previousUrl));
         })
-        .catch(() => {
-            // TODO
-            dispatch(newTeamUnsavedChanges(true));
-            console.log("something went wrong");
+        .catch((error) => {
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_USER_BEING_ADDED_TO_TEAM,
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR,
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
         });
 };
