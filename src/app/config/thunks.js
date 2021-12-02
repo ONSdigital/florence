@@ -1,5 +1,12 @@
 import { push } from "react-router-redux";
-import { loadCollectionsProgress, loadCollectionsSuccess, addNotification, createCollection, createCollectionSuccess, loadCollectionsFailure } from "./actions";
+import {
+    loadCollectionsProgress,
+    loadCollectionsSuccess,
+    addNotification,
+    createCollection,
+    createCollectionSuccess,
+    loadCollectionsFailure,
+} from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
@@ -9,7 +16,7 @@ export const loadCollectionsRequest = () => (dispatch, getState) => {
     collections
         .getAll()
         .then(response => {
-            if(!response) return dispatch(loadCollectionsFailure());
+            if (!response) return dispatch(loadCollectionsFailure());
             return dispatch(loadCollectionsSuccess(response));
         })
         .catch(error => {

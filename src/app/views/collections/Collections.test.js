@@ -111,7 +111,7 @@ describe("Collections", () => {
                 expect(wrapper.find("DoubleSelectableBoxController")).toHaveLength(1);
                 expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(collections.length - 1);
             });
-        })
+        });
 
         describe("when viewer", () => {
             const viewerProps = {
@@ -124,6 +124,6 @@ describe("Collections", () => {
                 expect(wrapper.find("DoubleSelectableBoxController")).toHaveLength(1);
                 expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(collections.length);
             });
-        })
+        });
     });
 });

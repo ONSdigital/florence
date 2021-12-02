@@ -41,20 +41,24 @@ const DoubleSelectableBoxController = props => {
         if (props.search) {
             return (
                 <div className="selectable-box__message">
-                    <p><strong>Cannot find collection</strong></p>
+                    <p>
+                        <strong>Cannot find collection</strong>
+                    </p>
                     <p>Improve your results by:</p>
-                    <ul><li>double-checking your spelling</li>
-                    <li>searching for something less specific</li></ul>
+                    <ul>
+                        <li>double-checking your spelling</li>
+                        <li>searching for something less specific</li>
+                    </ul>
                 </div>
-            )
+            );
         } else {
             return (
                 <div className="selectable-box__message">
                     <p>You do not have any collections yet.</p>
                 </div>
-            )
+            );
         }
-    }
+    };
     return (
         <div className="selectable-box">
             <div className="grid">

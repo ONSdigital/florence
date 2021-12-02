@@ -10,7 +10,7 @@ export default function reducer(state = initialState, action) {
                     ...state.collections,
                     isCreating: false,
                     active: action.collection,
-                    all: [...state.collections.all, action.collection]
+                    all: [...state.collections.all, action.collection],
                 },
             };
         }
@@ -20,7 +20,7 @@ export default function reducer(state = initialState, action) {
                 collections: {
                     ...state.collections,
                     isLoading: false,
-                    all: action.collections
+                    all: action.collections,
                 },
             };
         }
@@ -105,7 +105,7 @@ export default function reducer(state = initialState, action) {
                 collections: {
                     ...state.collections,
                     all: state.collections.all.filter(collection => collection.id !== action.collectionID),
-                    active: null
+                    active: null,
                 },
             };
         }

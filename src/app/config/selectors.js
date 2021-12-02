@@ -6,9 +6,7 @@ export const getSearch = state => state.search;
 
 export const getMappedCollections = createSelector(getCollections, collections => {
     if (!collections) return [];
-    return collections
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map(collection => collectionMapper.collectionResponseToState(collection));
+    return collections.sort((a, b) => a.name.localeCompare(b.name)).map(collection => collectionMapper.collectionResponseToState(collection));
 });
 
 export const getFilteredCollections = createSelector(getMappedCollections, getSearch, (collections, search) => {

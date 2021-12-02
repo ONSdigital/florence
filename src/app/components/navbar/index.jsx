@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import {getActive} from "../../config/selectors";
+import { getActive } from "../../config/selectors";
 import NavBar from "./NavBar";
 
 const mapStateToProps = state => {
