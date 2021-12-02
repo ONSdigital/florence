@@ -93,10 +93,6 @@ describe("Collections", () => {
             expect(wrapper.text().includes("Select a collection")).toBe(true);
             expect(wrapper.text().includes("Create a collection")).toBe(true);
         });
-
-        it("does not render <Loader /> component", () => {
-            expect(wrapper.find("Loader")).toHaveLength(0);
-        });
     });
 
     describe("when there are collections", () => {
@@ -129,16 +125,5 @@ describe("Collections", () => {
                 expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(collections.length);
             });
         })
-    });
-
-    describe("when loading collections", () => {
-        const newProps = {
-            ...props,
-            isLoading: true,
-        };
-        const wrapper = shallow(<Collections {...newProps} />);
-        it("renders loader", () => {
-            expect(wrapper.find("Loader")).toHaveLength(1);
-        });
     });
 });

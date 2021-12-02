@@ -1,13 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { push } from "react-router-redux";
+import cookies from "../../utilities/cookies";
 import CollectionCreateController from "./create/CollectionCreateController";
 import DoubleSelectableBoxController from "../../components/selectable-box/double-column/DoubleSelectableBoxController";
-import notifications from "../../utilities/notifications";
 import CollectionDetailsController from "./details/CollectionDetailsController";
-import cookies from "../../utilities/cookies";
-import Loader from "../../components/loader";
 import Search from "../../components/search";
-import collectionMapper from "./mapper/collectionMapper";
 
 const Collections = props => {
     const { user, collections, isLoading, workingOn, updateWorkingOn, search, activeCollection } = props;
@@ -40,7 +37,6 @@ const Collections = props => {
                 <div className={isViewer ? "grid__col-8" : "grid__col-4"}>
                     <h1 className="text-center">Select a collection</h1>
                     <Search />
-                    {isLoading && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
                     <DoubleSelectableBoxController
                         items={getNotCompletedCollections()}
                         activeItemID={props.params.collectionID}
