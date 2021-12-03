@@ -18,7 +18,7 @@ const DatasetUploadController = props => {
     const [activeDataset, setActiveDataset] = useState(null);
     const [isCantabular, setIsCantabular] = useState(false);
 
-    const intervalID = 0;
+    let intervalID = 0;
 
     useEffect(() => {
         if (!props.recipes || props.recipes.length === 0) {
@@ -426,11 +426,11 @@ const DatasetUploadController = props => {
         setActiveDataset(activeDatasetFiles);
     };
 
-    const renderFileInputs = () => {
+    const renderFileInputs = () => {      
         if (activeDataset) {
             return;
         }
-
+          
         return activeDataset.files.map((file, index) => {
             return (
                 <FileUpload
@@ -582,7 +582,6 @@ const DatasetUploadController = props => {
         }
     };
 
-    const render = () => {
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-9">
@@ -595,7 +594,6 @@ const DatasetUploadController = props => {
                 </div>
             </div>
         );
-    };
 };
 
 DatasetUploadController.propTypes = {
