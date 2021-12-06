@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { replace } from "react-router-redux";
 import PropTypes from "prop-types";
@@ -13,8 +13,7 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 import url from "../../utilities/url";
 import Input from "../../components/Input";
 import Link from "react-router/lib/Link";
-import {errCodes} from "../../utilities/errorCodes";
-
+import { errCodes } from "../../utilities/errorCodes";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -24,81 +23,83 @@ const propTypes = {
         userID: PropTypes.string,
     }).isRequired,
     loggedInUser: PropTypes.object,
-    users: PropTypes.arrayOf(PropTypes.shape({
-        forename: PropTypes.string,
-	      lastname: PropTypes.string,
-        email: PropTypes.string,
-	      status: PropTypes.string,
-	      active: PropTypes.boolean,
-	      id: PropTypes.string,
-	      status_notes: PropTypes.string,
-    })).isRequired,
+    users: PropTypes.arrayOf(
+        PropTypes.shape({
+            forename: PropTypes.string,
+            lastname: PropTypes.string,
+            email: PropTypes.string,
+            status: PropTypes.string,
+            active: PropTypes.boolean,
+            id: PropTypes.string,
+            status_notes: PropTypes.string,
+        })
+    ).isRequired,
 };
 
 export const getAllUsers = (dispatch, rootPath, setIsFetchingUsers) => {
     setIsFetchingUsers(true);
     users
-      .getAll({"active": "true"})
-      .then(allUsersResponse => {
-          const allUsers = allUsersResponse.users.map(user => {
-              return mapUserToState(rootPath, user);
-          });
-          dispatch(addAllUsers(allUsers));
-          setIsFetchingUsers(false);
-      })
-      .catch(error => {
-          setIsFetchingUsers(false);
-          log.event("Error fetching users", log.data({ status_code: error.status }), log.error(error));
-          switch (error) {
-              case 404: {
-                  const notification = {
-                      type: "warning",
-                      message: errCodes.GET_USERS_NOT_FOUND,
-                      autoDismiss: 5000,
-                  };
-                  notifications.add(notification);
-                  break;
-              }
-              case "RESPONSE_ERR": {
-                  const notification = {
-                      type: "warning",
-                      message: errCodes.GET_USERS_RESPONSE_ERROR,
-                      isDismissable: true,
-                  };
-                  notifications.add(notification);
-                  break;
-              }
-              case "UNEXPECTED_ERR": {
-                  const notification = {
-                      type: "warning",
-                      message: errCodes.GET_USERS_UNEXPECTED_ERROR,
-                      isDismissable: true,
-                  };
-                  notifications.add(notification);
-                  break;
-              }
-              case "FETCH_ERR": {
-                  const notification = {
-                      type: "warning",
-                      message: errCodes.GET_USERS_NETWORK_ERROR,
-                      isDismissable: true,
-                  };
-                  notifications.add(notification);
-                  break;
-              }
-              default: {
-                  log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
-                  const notification = {
-                      type: "warning",
-                      message: errCodes.GET_USERS_UNEXPECTED_ERROR,
-                      isDismissable: true,
-                  };
-                  notifications.add(notification);
-                  break;
-              }
-          }
-          console.error("Error getting all users:\n", error);
-      });
+        .getAll({ active: "true" })
+        .then(allUsersResponse => {
+            const allUsers = allUsersResponse.users.map(user => {
+                return mapUserToState(rootPath, user);
+            });
+            dispatch(addAllUsers(allUsers));
+            setIsFetchingUsers(false);
+        })
+        .catch(error => {
+            setIsFetchingUsers(false);
+            log.event("Error fetching users", log.data({ status_code: error.status }), log.error(error));
+            switch (error) {
+                case 404: {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_NOT_FOUND,
+                        autoDismiss: 5000,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case "RESPONSE_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_RESPONSE_ERROR,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case "UNEXPECTED_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_UNEXPECTED_ERROR,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case "FETCH_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_NETWORK_ERROR,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                default: {
+                    log.event("Unhandled error fetching users", log.data({ status_code: error.status }), log.error(error));
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_UNEXPECTED_ERROR,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error getting all users:\n", error);
+        });
 };
 
 export const mapUserToState = (rootPath, user) => {
@@ -122,7 +123,7 @@ export const mapUserToState = (rootPath, user) => {
     }
 };
 
-export const UsersList = (props) => {
+export const UsersList = props => {
     const [isFetchingUsers, setIsFetchingUsers] = useState(false);
     const isAdmin = auth.isAdmin(props.loggedInUser);
     const [filteredUsers, setFilteredUsers] = useState(null);

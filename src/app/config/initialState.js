@@ -1,4 +1,10 @@
 export const initialState = {
+    collections: {
+        all: [],
+        active: null,
+        toDelete: {},
+        isLoading: false,
+    },
     config: {
         enableDatasetImport: false,
         enableHomepagePublishing: false,
@@ -25,11 +31,7 @@ export const initialState = {
         recipes: [],
         activeJob: {},
     },
-    collections: {
-        all: [],
-        active: null,
-        toDelete: {},
-    },
+    search: "",
     notifications: [],
     popouts: [],
     preview: {

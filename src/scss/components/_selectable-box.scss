@@ -1,6 +1,7 @@
 .selectable-box {
     border: 3px solid $pickled-bluewood;
     border-radius: 4px;
+    height: 100%;
 
     &__heading {
         font-size: ($magicnumber1 * 2) + $magicnumber2;
@@ -36,7 +37,7 @@
         &:nth-child(even) {
             background-color: $iron;
         }
-        
+
         &:nth-child(odd) {
             background-color: $white;
         }
@@ -81,6 +82,16 @@
                 width: 7px;
                 background-color: $nevada;
             }
+        }
+    }
+    &__message {
+        padding: $lineheight $gutter;
+        > * {
+            line-height: 150%;
+            padding: $lineheight 0 0 $gutter ;
+        }
+        ul {
+            margin-left: $gutter;
         }
     }
 }

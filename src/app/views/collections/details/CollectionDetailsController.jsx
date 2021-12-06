@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-
+import { getCollections } from "../../../config/selectors";
 import Drawer from "../../../components/drawer/Drawer";
 import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
 import CollectionEditController from "../edit/CollectionEditController";
@@ -11,16 +11,16 @@ import collections from "../../../utilities/api-clients/collections";
 import datasets from "../../../utilities/api-clients/datasets";
 import notifications from "../../../utilities/notifications";
 import {
-    updateActiveCollection,
-    emptyActiveCollection,
     addAllCollections,
-    markCollectionForDeleteFromAllCollections,
+    deleteCollectionFromAllCollections,
+    emptyActiveCollection,
+    emptyWorkingOn,
+    updateActiveCollection,
+    updateActiveDatasetReviewState,
+    updateActiveVersionReviewState,
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
     updateWorkingOn,
-    emptyWorkingOn,
-    updateActiveDatasetReviewState,
-    updateActiveVersionReviewState,
 } from "../../../config/actions";
 import cookies from "../../../utilities/cookies";
 import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
@@ -208,15 +208,11 @@ export class CollectionDetailsController extends Component {
     }
 
     handleCollectionDeleteClick = collectionID => {
-        this.props.dispatch(push(`${this.props.rootPath}/collections`));
         collections
             .delete(collectionID)
             .then(async () => {
-                // We mark the collection as ready to be removed from all collections. This means that
-                // the collectionsController, which owns the allCollections state can react to this state event
-                // however it needs to (rather than the collectionDetails having to understand what to do)
-                this.props.dispatch(markCollectionForDeleteFromAllCollections(collectionID));
-
+                this.props.dispatch(deleteCollectionFromAllCollections(collectionID));
+                this.props.dispatch(push(`${this.props.rootPath}/collections`));
                 const notification = {
                     type: "positive",
                     message: `Collection deleted`,
@@ -699,7 +695,7 @@ CollectionDetailsController.propTypes = propTypes;
 export function mapStateToProps(state) {
     return {
         user: state.user,
-        collections: state.state.collections.all,
+        collections: getCollections(state.state),
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),

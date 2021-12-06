@@ -257,9 +257,9 @@ export class CollectionEditController extends Component {
 
         if (collectionName !== this.props.name) {
             validatedName = collectionValidation.name(collectionName, this.props.collections);
-        };
+        }
 
-        if (validatedName &&!validatedName.isValid) {
+        if (validatedName && !validatedName.isValid) {
             this.setState(prevState => ({
                 name: {
                     ...prevState.name,

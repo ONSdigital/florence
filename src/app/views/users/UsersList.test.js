@@ -1,8 +1,8 @@
 import React from "react";
-import {UsersList, getAllUsers, mapUserToState} from "./UsersList";
+import { UsersList, getAllUsers, mapUserToState } from "./UsersList";
 import user from "../../utilities/api-clients/user";
 import renderer from "react-test-renderer";
-import {mount} from "enzyme";
+import { mount } from "enzyme";
 
 console.error = () => {};
 
@@ -97,11 +97,12 @@ const defaultProps = {
 };
 
 describe("Calling getAllUsers function", () => {
-    it("fetches data for all users", (done) => withTimeout(done, () => {
-        const getUserCalls = user.getAll.mock.calls.length;
-        getAllUsers(mockDispatch, rootPath, () => {});
-        expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
-    }));
+    it("fetches data for all users", done =>
+        withTimeout(done, () => {
+            const getUserCalls = user.getAll.mock.calls.length;
+            getAllUsers(mockDispatch, rootPath, () => {});
+            expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
+        }));
 
     it("adds all users to state", () => {
         getAllUsers(mockDispatch, rootPath, () => {});
@@ -133,7 +134,7 @@ describe("UsersList", () => {
         params: {
             userID: "",
         },
-        users: [mappedUser1, mappedUser2]
+        users: [mappedUser1, mappedUser2],
     };
 
     const component = mount(<UsersList {...defaultProps} />);

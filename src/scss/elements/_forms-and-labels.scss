@@ -1,7 +1,6 @@
 @use "sass:math";
 
 .form {
-
     &__label {
         display: block;
         margin-bottom: math.div($lineheight, 3);
@@ -32,6 +31,12 @@
     &__loader {
         top: 6px;
         left: 16px;
+    }
+
+    &--inline {
+        display: flex;
+        height: $lineheight * 2;
+        flex-wrap: nowrap;
     }
 
 }
