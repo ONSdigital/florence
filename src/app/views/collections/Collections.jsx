@@ -20,8 +20,8 @@ const Collections = props => {
     }, [workingOn]);
 
     const handleCollectionClick = id => {
+        cookies.add("collection", id, null);
         if (isViewer) {
-            cookies.add("collection", id, null);
             updateWorkingOn(id);
             props.dispatch(push(`${props.rootPath}/collections/${id}/preview`));
             return;
