@@ -26,6 +26,7 @@ const Collections = props => {
             props.dispatch(push(`${props.rootPath}/collections/${id}/preview`));
             return;
         }
+        cookies.add("collection", id, null);
         props.dispatch(push(`${props.rootPath}/collections/${id}`));
     };
 
