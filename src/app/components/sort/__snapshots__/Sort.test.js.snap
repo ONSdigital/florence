@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Sort renders correctly with active class 1`] = `
+<span
+  className="sort"
+>
+  <span
+    className="sort__icon-up active"
+    data-testid="ASC"
+  />
+  <span
+    className="sort__icon-down"
+    data-testid="DESC"
+  />
+</span>
+`;
+
+exports[`Sort renders correctly without active class 1`] = `
+<span
+  className="sort"
+>
+  <span
+    className="sort__icon-up"
+    data-testid="ASC"
+  />
+  <span
+    className="sort__icon-down"
+    data-testid="DESC"
+  />
+</span>
+`;

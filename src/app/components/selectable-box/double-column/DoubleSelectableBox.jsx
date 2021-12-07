@@ -1,6 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
+import { useSort } from "../../../hooks/useSort";
 import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
+import Sort from "../../sort";
 
 const propTypes = {
     headings: PropTypes.array.isRequired,
@@ -19,17 +22,25 @@ const propTypes = {
     isUpdating: PropTypes.bool,
 };
 
-const DoubleSelectableBoxController = props => {
+const DoubleSelectableBox = props => {
+    const [activeSort, setActiveSort] = useState({ key: "name", direction: "ASC" });
+    const { sortedItems, requestSort, sortConfig } = useSort(props.items, activeSort);
+
+    const handleSortClick = (key, direction) => {
+        setActiveSort({key, direction});
+        requestSort({key, direction});
+    };
+
     const renderList = () => {
         return (
             <ul id="selectable-box" className="selectable-box__list">
-                {props.items.map((item, index) => {
+                {sortedItems.map(item => {
                     return (
                         <DoubleSelectableBoxItem
-                            key={index}
+                            key={item.id}
                             {...item}
                             isSelected={props.activeItemID && item.id === props.activeItemID}
-                            handleClick={() => props.handleItemClick(item.id)}
+                            handleClick={props.handleItemClick}
                         />
                     );
                 })}
@@ -62,17 +73,29 @@ const DoubleSelectableBoxController = props => {
     return (
         <div className="selectable-box">
             <div className="grid">
-                <h2 className="selectable-box__heading grid__col-6">{props.headings[0]}</h2>
-                <h2 className="selectable-box__heading grid__col-6 grid__cell">
+                <button
+                    aria-label="Sort by name"
+                    className="selectable-box__heading with-sort grid__col-6 padding-right--0 grid__cell"
+                    onClick={() => handleSortClick("name", 'DESC')}
+                >
+                    {props.headings[0]}
+                    <Sort active={sortConfig} name="name" />
+                </button>
+                <button
+                    aria-label="Sort by publishDate"
+                    className="selectable-box__heading with-sort grid__col-6 grid__cell"
+                    onClick={() => handleSortClick("publishDate", 'ASC')}
+                >
                     {props.headings[1]}
+                    <Sort active={sortConfig} name="publishDate" />
                     {props.isUpdating && <span className="selectable-box__status pull-right loader" />}
-                </h2>
+                </button>
             </div>
             {props.items.length > 0 ? renderList() : renderMessage()}
         </div>
     );
 };
 
-DoubleSelectableBoxController.propTypes = propTypes;
+DoubleSelectableBox.propTypes = propTypes;
 
-export default DoubleSelectableBoxController;
+export default DoubleSelectableBox;
