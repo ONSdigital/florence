@@ -1,0 +1,46 @@
+.search {
+  &__form {
+    &--inline {
+      display: flex;
+      flex-wrap: nowrap;
+      width: 100%;
+      margin-bottom: $lineheight;
+    }
+  }
+
+  &__icon-magnifier {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 4px;
+  }
+
+  &__input-group {
+    align-items: center;
+    background-color: $white;
+    border-radius: 4px;
+    border: 3px solid $scarpa-flow;
+    display: flex;
+    height: $lineheight * 2;
+    padding: 0;
+    margin-right: 6px;
+    width: 100%;
+
+    > input {
+      flex-grow: 1;
+      height: 100%;
+      border: none;
+    }
+  }
+
+  &__title {
+      font-weight: 600;
+  }
+
+  &__actions {
+      align-self: center;
+      margin-left: auto;
+  }
+}

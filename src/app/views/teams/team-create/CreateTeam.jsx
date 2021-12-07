@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push, replace } from "react-router-redux";
 import { Link } from "react-router";
 import url from "../../../utilities/url";
-import { getUsersRequest, createTeam } from "../../../config/thunk";
+import { getUsersRequest, createTeam } from "../../../config/thunks";
 import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
 import Input from "../../../components/Input";

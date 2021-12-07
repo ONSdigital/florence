@@ -8,7 +8,7 @@ import {
     MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
     UPDATE_PAGES_IN_ACTIVE_COLLECTION,
     UPDATE_ACTIVE_COLLECTION,
-} from "../../../config/actions";
+} from "../../../config/constants";
 
 console.error = () => {};
 
@@ -276,12 +276,6 @@ describe("Deleting a collection", () => {
         await component.update();
 
         expect(notifications.add.mock.calls.length).toEqual(1);
-    });
-
-    it("marks a collection in state as ready to delete from all collections", async () => {
-        await componentWithProps.instance().handleCollectionDeleteClick("test-collection-12345");
-        expect(dispatchedActions[1].type).toBe(MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS);
-        expect(dispatchedActions[1].collectionID).toBe("test-collection-12345");
     });
 });
 

@@ -1,43 +1,66 @@
 import { initialState } from "./initialState";
-
-import {
-    SET_CONFIG,
-    UPDATE_ACTIVE_COLLECTION,
-    EMPTY_ACTIVE_COLLECTION,
-    UPDATE_ALL_TEAM_IDS_AND_NAMES,
-    ADD_ALL_COLLECTIONS,
-    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-    DELETE_COLLECTION_FROM_ALL_COLLECTIONS,
-    UPDATE_PAGES_IN_ACTIVE_COLLECTION,
-    ADD_PREVIEW_COLLECTION,
-    REMOVE_PREVIEW_COLLECTION,
-    UPDATE_PREVIEW_SELECTED_PAGE,
-    REMOVE_PREVIEW_SELECTED_PAGE,
-    UPDATE_WORKING_ON,
-    EMPTY_WORKING_ON,
-    UPDATE_TEAMS_IN_ACTIVE_COLLECTION,
-    UPDATE_ACTIVE_USER,
-    REMOVE_USER_FROM_ALL_USERS,
-    ADD_ALL_USERS,
-    ADD_ALL_USERS_NOT_IN_TEAM,
-    ADD_USER_TO_TEAM,
-    REMOVE_USER_FROM_TEAM,
-    UPDATE_ACTIVE_DATASET_REVIEW_STATE,
-    UPDATE_ACTIVE_VERSION_REVIEW_STATE,
-    UPDATE_ACTIVE_JOB,
-    UPDATE_ACTIVE_DATASET,
-    UPDATE_ACTIVE_INSTANCE,
-    UPDATE_ACTIVE_VERSION,
-    EMPTY_ACTIVE_DATASET,
-    EMPTY_ACTIVE_VERSION,
-    EMPTY_ACTIVE_INSTANCE,
-    UPDATE_ACTIVE_DATASET_COLLECTION_ID,
-    RESET,
-} from "./actions";
+import * as types from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
-        case RESET: {
+        case types.CREATE_COLLECTION_SUCCESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isCreating: false,
+                    active: action.collection,
+                    all: [...state.collections.all, action.collection],
+                },
+            };
+        }
+        case types.LOAD_COLLECTIONS_SUCCESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isLoading: false,
+                    all: action.collections,
+                },
+            };
+        }
+        case types.LOAD_COLLECTIONS_PROGRESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_COLLECTIONS_FAILURE: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.CREATE_COLLECTION_PROGRESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isCreating: true,
+                },
+            };
+        }
+        case types.CREATE_COLLECTION_FAILURE: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isCreating: false,
+                },
+            };
+        }
+        case types.RESET: {
             return {
                 ...initialState,
                 notifications: state.notifications,
@@ -45,7 +68,7 @@ export default function reducer(state = initialState, action) {
                 config: state.config,
             };
         }
-        case SET_CONFIG: {
+        case types.SET_CONFIG: {
             return {
                 ...state,
                 config: {
@@ -55,7 +78,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case ADD_ALL_COLLECTIONS: {
+        case types.ADD_ALL_COLLECTIONS: {
             return {
                 ...state,
                 collections: {
@@ -64,7 +87,8 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
+
+        case types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
             let toDelete = { ...state.collections.toDelete };
             toDelete[action.collectionID] = null;
             return {
@@ -75,22 +99,17 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
-            const toDelete = { ...state.collections.toDelete };
-            delete toDelete[action.collectionID];
-
-            const all = state.collections.all.filter(collection => collection.id !== action.collectionID);
-
+        case types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
             return {
                 ...state,
                 collections: {
                     ...state.collections,
-                    all,
-                    toDelete,
+                    all: state.collections.all.filter(collection => collection.id !== action.collectionID),
+                    active: null,
                 },
             };
         }
-        case UPDATE_ACTIVE_COLLECTION: {
+        case types.UPDATE_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -108,7 +127,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case UPDATE_PAGES_IN_ACTIVE_COLLECTION: {
+        case types.UPDATE_PAGES_IN_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -125,7 +144,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case UPDATE_TEAMS_IN_ACTIVE_COLLECTION: {
+        case types.UPDATE_TEAMS_IN_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -137,7 +156,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case EMPTY_ACTIVE_COLLECTION: {
+        case types.EMPTY_ACTIVE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -146,7 +165,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case UPDATE_WORKING_ON: {
+        case types.UPDATE_WORKING_ON: {
             return {
                 ...state,
                 global: {
@@ -155,7 +174,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case EMPTY_WORKING_ON: {
+        case types.EMPTY_WORKING_ON: {
             return {
                 ...state,
                 global: {
@@ -164,7 +183,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case UPDATE_ACTIVE_USER: {
+        case types.UPDATE_ACTIVE_USER: {
             return {
                 ...state,
                 users: {
@@ -178,7 +197,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case ADD_ALL_USERS: {
+        case types.ADD_ALL_USERS: {
             return {
                 ...state,
                 users: {
@@ -187,7 +206,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case ADD_ALL_USERS_NOT_IN_TEAM: {
+        case types.ADD_ALL_USERS_NOT_IN_TEAM: {
             return {
                 ...state,
                 users: {
@@ -196,7 +215,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case ADD_USER_TO_TEAM: {
+        case types.ADD_USER_TO_TEAM: {
             return {
                 ...state,
                 users: {
@@ -206,7 +225,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case REMOVE_USER_FROM_TEAM: {
+        case types.REMOVE_USER_FROM_TEAM: {
             return {
                 ...state,
                 users: {
@@ -216,7 +235,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case REMOVE_USER_FROM_ALL_USERS: {
+        case types.REMOVE_USER_FROM_ALL_USERS: {
             return {
                 ...state,
                 users: {
@@ -225,14 +244,14 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case "UPDATE_ALL_TEAMS": {
+        case types.UPDATE_ALL_TEAMS: {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     all: action.allTeams,
                 }),
             });
         }
-        case UPDATE_ALL_TEAM_IDS_AND_NAMES: {
+        case types.UPDATE_ALL_TEAM_IDS_AND_NAMES: {
             return {
                 ...state,
                 teams: {
@@ -241,14 +260,14 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case "UPDATE_ACTIVE_TEAM": {
+        case types.UPDATE_ACTIVE_TEAM: {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     active: action.activeTeam,
                 }),
             });
         }
-        case "UPDATE_ACTIVE_TEAM_MEMBERS": {
+        case types.UPDATE_ACTIVE_TEAM_MEMBERS: {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {
                     active: Object.assign({}, state.teams.active, {
@@ -257,7 +276,7 @@ export default function reducer(state = initialState, action) {
                 }),
             });
         }
-        case UPDATE_ACTIVE_INSTANCE: {
+        case types.UPDATE_ACTIVE_INSTANCE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -265,7 +284,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case EMPTY_ACTIVE_INSTANCE: {
+        case types.EMPTY_ACTIVE_INSTANCE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -273,7 +292,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_VERSION: {
+        case types.UPDATE_ACTIVE_VERSION: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -284,7 +303,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_VERSION_REVIEW_STATE: {
+        case types.UPDATE_ACTIVE_VERSION_REVIEW_STATE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -296,7 +315,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case EMPTY_ACTIVE_VERSION: {
+        case types.EMPTY_ACTIVE_VERSION: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -304,7 +323,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_JOB: {
+        case types.UPDATE_ACTIVE_JOB: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -312,7 +331,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case EMPTY_ACTIVE_DATASET: {
+        case types.EMPTY_ACTIVE_DATASET: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -320,7 +339,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_DATASET: {
+        case types.UPDATE_ACTIVE_DATASET: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -331,7 +350,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_DATASET_REVIEW_STATE: {
+        case types.UPDATE_ACTIVE_DATASET_REVIEW_STATE: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -343,7 +362,7 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case UPDATE_ACTIVE_DATASET_COLLECTION_ID: {
+        case types.UPDATE_ACTIVE_DATASET_COLLECTION_ID: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -354,14 +373,14 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case "UPDATE_ALL_DATASETS": {
+        case types.UPDATE_ALL_DATASETS: {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     all: action.allDatasets,
                 }),
             });
         }
-        case "UPDATE_ALL_RECIPES": {
+        case types.UPDATE_ALL_RECIPES: {
             return Object.assign({}, state, {
                 datasets: {
                     ...state.datasets,
@@ -369,33 +388,33 @@ export default function reducer(state = initialState, action) {
                 },
             });
         }
-        case "UPDATE_ALL_JOBS": {
+        case types.UPDATE_ALL_JOBS: {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     jobs: action.allJobs,
                 }),
             });
         }
-        case "ADD_NEW_JOB": {
+        case types.ADD_NEW_JOB: {
             return Object.assign({}, state, {
                 datasets: Object.assign({}, state.datasets, {
                     jobs: [...state.datasets.jobs, action.job],
                 }),
             });
         }
-        case "ADD_NOTIFICATION": {
+        case types.ADD_NOTIFICATION: {
             return Object.assign({}, state, {
                 notifications: [...state.notifications, action.notification],
             });
         }
-        case "REMOVE_NOTIFICATION": {
+        case types.REMOVE_NOTIFICATION: {
             return Object.assign({}, state, {
                 notifications: state.notifications.filter(notification => {
                     return notification.id !== action.notificationID;
                 }),
             });
         }
-        case "TOGGLE_NOTIFICATION_VISIBILITY": {
+        case types.TOGGLE_NOTIFICATION_VISIBILITY: {
             return Object.assign({}, state, {
                 notifications: state.notifications.map(notification => {
                     if (notification.id !== action.notificationID) {
@@ -406,19 +425,19 @@ export default function reducer(state = initialState, action) {
                 }),
             });
         }
-        case "ADD_POPOUT": {
+        case types.ADD_POPOUT: {
             return Object.assign({}, state, {
                 popouts: [...state.popouts, action.popout],
             });
         }
-        case "REMOVE_POPOUTS": {
+        case types.REMOVE_POPOUTS: {
             return Object.assign({}, state, {
                 popouts: state.popouts.filter(popout => {
                     return !new Set(action.popoutIDs).has(popout.id);
                 }),
             });
         }
-        case ADD_PREVIEW_COLLECTION: {
+        case types.ADD_PREVIEW_COLLECTION: {
             return {
                 ...state,
                 preview: {
@@ -427,7 +446,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case REMOVE_PREVIEW_COLLECTION: {
+        case types.REMOVE_PREVIEW_COLLECTION: {
             return {
                 ...state,
                 preview: {
@@ -435,7 +454,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case UPDATE_PREVIEW_SELECTED_PAGE: {
+        case types.UPDATE_PREVIEW_SELECTED_PAGE: {
             return {
                 ...state,
                 preview: {
@@ -444,7 +463,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case REMOVE_PREVIEW_SELECTED_PAGE: {
+        case types.REMOVE_PREVIEW_SELECTED_PAGE: {
             return {
                 ...state,
                 preview: {
@@ -453,9 +472,11 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.SEARCH: {
+            return { ...state, search: action.value.toLowerCase() };
+        }
         default: {
-            break;
+            return state;
         }
     }
-    return state;
 }

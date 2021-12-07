@@ -11,7 +11,6 @@ import Popouts from "../popouts/Popouts";
 
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
-
     useMemo(() => {
         setIsCheckingAuthentication(true);
         hasValidAuthToken().then(isValid => {

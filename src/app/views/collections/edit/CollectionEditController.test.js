@@ -3,7 +3,7 @@ import { CollectionEditController, mapStateToProps } from "./CollectionEditContr
 import CollectionEdit from "./CollectionEdit";
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
-import { UPDATE_ALL_TEAMS } from "../../../config/actions";
+import { UPDATE_ALL_TEAMS } from "../../../config/constants";
 
 console.error = () => {};
 console.warn = () => {};
