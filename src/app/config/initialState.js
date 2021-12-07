@@ -1,3 +1,5 @@
+import {initialState as newTeamReducerInitialState} from "./newTeam/newTeamReducer";
+
 export const initialState = {
     collections: {
         all: [],
@@ -40,4 +42,5 @@ export const initialState = {
     preview: {
         selectedPage: null,
     },
+    newTeam: newTeamReducerInitialState
 };

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
-import { push, replace } from "react-router-redux";
+import { push } from "react-router-redux";
 import { Link } from "react-router";
 import url from "../../../utilities/url";
 import { getUsersRequest, createTeam } from "../../../config/thunks";
@@ -12,25 +12,25 @@ import { addPopout, removePopouts } from "../../../config/actions";
 import { newTeamUnsavedChanges, removeUserFromNewTeam, resetNewTeam } from "../../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
-import auth from "../../../utilities/auth";
-import { getAllUsers } from "../../users/UsersList";
 
 const propTypes = {
-    rootPath: PropTypes.string.isRequired,
-    dispatch: PropTypes.func.isRequired,
+    dispatch: PropTypes.func,
     newTeam: PropTypes.shape({
         usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
         unsavedChanges: PropTypes.bool,
     }),
-    isAuthenticated: PropTypes.bool.isRequired,
 };
 
 const CreateTeam = props => {
+    console.log("PROPS ARE")
+    console.log(props)
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     useEffect(() => {
+        console.log("props.dispatch is")
+        console.log(props.dispatch)
         props.dispatch(resetNewTeam());
         props.dispatch(getUsersRequest());
     }, []);
@@ -170,9 +170,9 @@ const CreateTeam = props => {
 CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
+    console.log("mapStateToProps state is:")
+    console.log(state)
     return {
-        isAuthenticated: state.user.isAuthenticated,
-        rootPath: state.state.rootPath,
         newTeam: state.newTeam,
     };
 }
