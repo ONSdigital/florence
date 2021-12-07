@@ -59,14 +59,13 @@ const Collections = props => {
     );
 };
 
-Collections.PropTypes = {
+Collections.propTypes = {
     activeCollection: PropTypes.object,
     collections: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     loadCollections: PropTypes.func.isRequired,
     params: PropTypes.shape({ collectionID: PropTypes.string }).isRequired,
-    rootPath: PropTypes.string.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     search: PropTypes.string,

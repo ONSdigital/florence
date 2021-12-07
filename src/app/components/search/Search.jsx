@@ -22,7 +22,7 @@ const Search = () => {
         <form className="search__form--inline padding--bottom--1" onSubmit={handleSubmit}>
             <div className="search__input-group">
                 <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
-                <input placeholder="Search for a collection name" {...search} />
+                <input id="search_input" placeholder="Search for a collection name" {...search} />
                 {search.value && (
                     <button type="reset" onClick={handleRest} className="btn__close">
                         &times;
