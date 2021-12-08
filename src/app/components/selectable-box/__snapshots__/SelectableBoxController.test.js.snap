@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Selectable box with active item renders correctly 1`] = `
+exports[`SelectableBoxController when active item is passed  matches snapshot 1`] = `
 <div
   className="selectable-box"
 >
@@ -37,7 +37,7 @@ exports[`Selectable box with active item renders correctly 1`] = `
 </div>
 `;
 
-exports[`Selectable box with items renders component with all items 1`] = `
+exports[`SelectableBoxController when items are passed  matches snapshot 1`] = `
 <div
   className="selectable-box"
 >

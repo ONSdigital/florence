@@ -1,10 +1,10 @@
 import React from "react";
 import PropTypes from "prop-types";
-
 import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 
 const propTypes = {
     headings: PropTypes.array.isRequired,
+    search: PropTypes.string,
     items: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -20,7 +20,6 @@ const propTypes = {
 };
 
 const DoubleSelectableBoxController = props => {
-    const id = props;
     const renderList = () => {
         return (
             <ul id="selectable-box" className="selectable-box__list">
@@ -54,11 +53,12 @@ const DoubleSelectableBoxController = props => {
         } else {
             return (
                 <div className="selectable-box__message">
-                    <p>You do not have any collections yet.</p>
+                    <p>No items to display</p>
                 </div>
             );
         }
     };
+
     return (
         <div className="selectable-box">
             <div className="grid">
