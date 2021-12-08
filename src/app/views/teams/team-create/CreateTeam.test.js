@@ -1,6 +1,6 @@
 import React from "react";
 import { mount } from "enzyme";
-import CreateTeam from "./createTeam";
+import CreateTeam from "./CreateTeam";
 import { WrapperComponent } from "../../../../tests/test-utils";
 import renderer from "react-test-renderer";
 
