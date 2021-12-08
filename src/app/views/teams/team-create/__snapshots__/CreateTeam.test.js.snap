@@ -1,0 +1,120 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-4 margin-top--1 margin-bottom--1"
+  >
+    <span>
+      ◀ 
+      <a
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Back
+      </a>
+    </span>
+    <h1
+      className="margin-top--1 margin-bottom--1"
+    >
+      Create a preview team
+    </h1>
+    <div
+      className="form__input"
+    >
+      <label
+        className="form__label"
+        htmlFor="team-name-id"
+      >
+        Name
+      </label>
+      
+      <input
+        autoComplete="new-password"
+        autoFocus={false}
+        className="input"
+        disabled={false}
+        id="team-name-id"
+        name="team-name-id"
+        onChange={[Function]}
+        onFocus={[Function]}
+        type="text"
+      />
+      
+    </div>
+    <span>
+      <strong>
+        Members
+      </strong>
+    </span>
+    <p>
+      This team has no members
+    </p>
+  </div>
+  <div
+    className="grid__col-4 margin-top--3"
+  >
+    <div>
+      <h2
+        className="dynamic-list__title"
+      >
+        Add member to team
+      </h2>
+      <label
+        className="visually-hidden"
+        htmlFor="add-member-to-team-search-content-types"
+      >
+        Search viewers by name or email
+      </label>
+      <div
+        className="form__input"
+      >
+        <label
+          className="form__label"
+          htmlFor="add-member-to-team-search-content-types"
+        />
+        
+        <input
+          autoComplete="new-password"
+          autoFocus={false}
+          className="input"
+          disabled={false}
+          id="add-member-to-team-search-content-types"
+          name="add-member-to-team-search-content-types"
+          onChange={[Function]}
+          onFocus={[Function]}
+          placeholder="Search viewers by name or email"
+          type="text"
+        />
+        
+      </div>
+      <div
+        className="loader loader--dark"
+      />
+    </div>
+  </div>
+  <div
+    className="content-action-bar content-action-bar--bottom-fixed"
+  >
+    <button
+      className="btn btn--margin-right btn--positive"
+      disabled={false}
+      id="create-team-btn"
+      onClick={[Function]}
+      type="button"
+    >
+      Create Team
+    </button>
+    <button
+      className="btn btn--invert-primary"
+      id="btn-cancel"
+      onClick={[Function]}
+      type="button"
+    >
+      Cancel
+    </button>
+  </div>
+</div>
+`;

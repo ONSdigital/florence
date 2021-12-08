@@ -191,7 +191,7 @@ export const createTeam = body => (dispatch, getState) => {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: `The preview team '${response.name}' has been created successfully with ${state.newTeam.usersInTeam.length} members`,
+                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, state.newTeam.usersInTeam.length),
                 };
                 notifications.add(notification);
                 const previousUrl = url.resolve("../", true);
@@ -229,13 +229,11 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
     });
     Promise.all(promises)
         .then(results => {
-            //TODO may need to store state then reach into users.usersInTeam
-            // TODO dispatch
             const notification = {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: `The preview team '${results[0].description}' has been created successfully with ${state.newTeam.usersInTeam.length} members`,
+                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, state.newTeam.usersInTeam.length),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);

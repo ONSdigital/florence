@@ -206,35 +206,6 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.ADD_ALL_USERS_NOT_IN_TEAM: {
-            return {
-                ...state,
-                users: {
-                    ...state.users,
-                    notInTeam: [...action.users],
-                },
-            };
-        }
-        case types.ADD_USER_TO_TEAM: {
-            return {
-                ...state,
-                users: {
-                    ...state.users,
-                    notInTeam: state.users.notInTeam.filter(filteredUser => filteredUser.email !== action.user.email),
-                    inTeam: [...state.users.inTeam, action.user],
-                },
-            };
-        }
-        case types.REMOVE_USER_FROM_TEAM: {
-            return {
-                ...state,
-                users: {
-                    ...state.users,
-                    inTeam: state.users.inTeam.filter(filteredUser => filteredUser.email !== action.user.email),
-                    notInTeam: [...state.users.notInTeam, action.user],
-                },
-            };
-        }
         case types.REMOVE_USER_FROM_ALL_USERS: {
             return {
                 ...state,

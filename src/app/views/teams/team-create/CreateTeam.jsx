@@ -24,13 +24,9 @@ const propTypes = {
 };
 
 const CreateTeam = props => {
-    console.log("PROPS ARE")
-    console.log(props)
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     useEffect(() => {
-        console.log("props.dispatch is")
-        console.log(props.dispatch)
         props.dispatch(resetNewTeam());
         props.dispatch(getUsersRequest());
     }, []);
@@ -170,8 +166,6 @@ const CreateTeam = props => {
 CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
-    console.log("mapStateToProps state is:")
-    console.log(state)
     return {
         newTeam: state.newTeam,
     };

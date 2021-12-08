@@ -1,8 +1,9 @@
 import React from "react";
-import {shallow, mount} from "enzyme";
+import { shallow, mount } from "enzyme";
 import CreateTeam from "./createTeam";
-import {WrapperComponent} from "../../../../tests/test-utils";
+import { WrapperComponent } from "../../../../tests/test-utils";
 import renderer from "react-test-renderer";
+import DynamicList from "../../../components/dynamic-list/DynamicList";
 
 const rootPath = "/florence";
 let dispatchedActions = [];
@@ -54,35 +55,33 @@ jest.mock("../../../utilities/api-clients/user", () => {
     };
 });
 describe("CreateTeam", () => {
-    describe("Given valid props and a list of users in the store", () => {
-        const CreateTeamProps = {
-            dispatch: mockDispatch,
-            router: {
-                listenBefore: () => {},
-                setRouteLeaveHook:()=>{}
-            },
-            // params: {
-            //     userID: "",
-            // },
-            // state: {newTeam: x},
-            // // newTeam: {...initialState, usersNotInTeam: mockedAllUsers.users, newTeam:[]},
-            // newTeam: x,
-        };
-
-        // const component = mount(<CreateTeam {...CreateTeamProps} /></Provider>);
-        console.log("CreateTeamProps")
-        console.log(CreateTeamProps)
-        const component = mount(<WrapperComponent><CreateTeam {...CreateTeamProps} /></WrapperComponent>
+    const defaultBaseProps = {
+        dispatch: mockDispatch,
+        router: {
+            listenBefore: () => {},
+            setRouteLeaveHook: () => {},
+        },
+    };
+    describe("Given valid props on initial load", () => {
+        const component = mount(
+            <WrapperComponent>
+                <CreateTeam {...defaultBaseProps} />
+            </WrapperComponent>
         );
-        console.log("DEBUGGING")
-        console.log("Wrapper")
-        console.log(component.debug({verbose: true}))
         it("renders the relevant components to screen", () => {
             expect(component.find("Connect(CreateTeam)")).toHaveLength(1);
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
             expect(component.find("h2.dynamic-list__title").length).toBe(1);
             expect(component.find("content-action-bar__warn__text").length).toBe(0);
+        });
+        it("matches snapshot", () => {
+            const componentForSnapshot = renderer.create(
+                <WrapperComponent>
+                    <CreateTeam {...defaultBaseProps} />
+                </WrapperComponent>
+            );
+            expect(componentForSnapshot.toJSON()).toMatchSnapshot();
         });
     });
 });

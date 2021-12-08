@@ -102,30 +102,11 @@ export function addAllUsers(users) {
         users,
     };
 }
-export function addAllUsersNotInTeam(users) {
-    return {
-        type: types.ADD_ALL_USERS_NOT_IN_TEAM,
-        users,
-    };
-}
 
 export function removeUserFromAllUsers(userID) {
     return {
         type: types.REMOVE_USER_FROM_ALL_USERS,
         userID,
-    };
-}
-
-export function addUserToTeam(user) {
-    return {
-        type: types.ADD_USER_TO_TEAM,
-        user,
-    };
-}
-export function removeUserFromTeam(user) {
-    return {
-        type: types.REMOVE_USER_FROM_TEAM,
-        user,
     };
 }
 

@@ -1,4 +1,4 @@
-import {initialState as newTeamReducerInitialState} from "./newTeam/newTeamReducer";
+import { initialState as newTeamReducerInitialState } from "./newTeam/newTeamReducer";
 
 export const initialState = {
     collections: {
@@ -25,9 +25,6 @@ export const initialState = {
     users: {
         active: {},
         all: [],
-        allViewers: [],
-        inTeam: [],
-        notInTeam: [],
     },
     datasets: {
         all: [],
@@ -42,5 +39,5 @@ export const initialState = {
     preview: {
         selectedPage: null,
     },
-    newTeam: newTeamReducerInitialState
+    newTeam: newTeamReducerInitialState,
 };

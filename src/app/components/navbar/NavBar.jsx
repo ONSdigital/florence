@@ -57,7 +57,7 @@ const NavBar = props => {
                         Collections
                     </Link>
                 </li>
-                {
+                {auth.isAdminOrEditor(props.user) && (
                     <>
                         {props.config.enableDatasetImport && (
                             <li className="global-nav__item">
@@ -98,7 +98,7 @@ const NavBar = props => {
                             </li>
                         )}
                     </>
-                }
+                )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
                         Sign out
