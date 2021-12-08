@@ -1,11 +1,9 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import CreateTeam from "./createTeam";
 import { WrapperComponent } from "../../../../tests/test-utils";
 import renderer from "react-test-renderer";
-import DynamicList from "../../../components/dynamic-list/DynamicList";
 
-const rootPath = "/florence";
 let dispatchedActions = [];
 const mockDispatch = event => {
     dispatchedActions.push(event);
