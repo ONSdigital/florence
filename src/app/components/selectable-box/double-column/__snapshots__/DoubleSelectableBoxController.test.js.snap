@@ -1,0 +1,90 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DoubleSelectableBoxController matches the snapshot 1`] = `
+<div
+  className="selectable-box"
+>
+  <div
+    className="grid"
+  >
+    <h2
+      className="selectable-box__heading grid__col-6"
+    >
+      Foo
+    </h2>
+    <h2
+      className="selectable-box__heading grid__col-6 grid__cell"
+    >
+      Bar
+    </h2>
+  </div>
+  <ul
+    className="selectable-box__list"
+    id="selectable-box"
+  >
+    <li
+      className="selectable-box__item   "
+      id="1"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Collection 1
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          [test]
+        </div>
+      </div>
+    </li>
+    <li
+      className="selectable-box__item  selected  "
+      id="2"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Collection 2
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          Friday
+        </div>
+      </div>
+    </li>
+    <li
+      className="selectable-box__item   "
+      id="3"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Collection 3
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          [manual collection]
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+`;
