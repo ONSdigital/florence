@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
-import cookies from "../../utilities/cookies";
 import auth from "../../utilities/auth";
 import user from "../../utilities/api-clients/user";
 import PreviewNav from "../preview-nav";
@@ -83,14 +82,14 @@ const NavBar = props => {
                                 Users and access
                             </Link>
                         </li>
-                        {props.config.enableNewSignIn && (
+                        {props.config?.enableNewSignIn && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                     Preview teams
                                 </Link>
                             </li>
                         )}
-                        {!props.config.enableNewSignIn && (
+                        {!props.config?.enableNewSignIn && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams

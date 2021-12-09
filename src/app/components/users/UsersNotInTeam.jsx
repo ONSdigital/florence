@@ -14,18 +14,19 @@ const propTypes = {
     }),
 };
 const UsersNotInTeam = props => {
+    const { newTeam, dispatch } = props;
     const [filterTerm, setFilterTerm] = useState("");
     const handleSearch = event => {
-        const searchTerm = event.target.value.toLowerCase();
+        const searchTerm = event.target?.value?.toLowerCase();
         setFilterTerm(searchTerm);
     };
     const compare = (a, b) => {
-        return a.title.localeCompare(b.title);
+        return a.title?.localeCompare(b.title);
     };
 
     let usersNotInTeamList = [];
-    if (props.newTeam.usersNotInTeam != null) {
-        usersNotInTeamList = props.newTeam.usersNotInTeam
+    if (newTeam?.usersNotInTeam != null) {
+        usersNotInTeamList = newTeam.usersNotInTeam
             .map(user => {
                 return {
                     title: `${user.forename} ${user.lastname}`,
@@ -33,13 +34,13 @@ const UsersNotInTeam = props => {
                     icon: "Person",
                     buttonName: "Add",
                     buttonCallback: () => {
-                        let newUser = props.newTeam.allUsers.find(viewer => viewer.email === user.email);
-                        props.dispatch(addUserToNewTeam(newUser));
+                        let newUser = newTeam.allUsers?.find(viewer => viewer.email === user.email);
+                        dispatch(addUserToNewTeam(newUser));
                     },
                     iconColor: "standard",
                 };
             })
-            .filter(viewer => viewer.title.toLowerCase().search(filterTerm) !== -1 || viewer.desc.toLowerCase().search(filterTerm) !== -1)
+            .filter(viewer => viewer.title?.toLowerCase().search(filterTerm) !== -1 || viewer.desc?.toLowerCase().search(filterTerm) !== -1)
             .sort(compare);
     }
     return (

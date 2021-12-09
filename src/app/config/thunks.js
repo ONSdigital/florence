@@ -126,7 +126,7 @@ export const getUsersRequest = () => dispatch => {
             dispatch(getUsersRequestSuccess(response));
         })
         .catch(error => {
-            // TODO move, handling errors should be done elsewhere
+            // TODO move, handling errors should be done elsewhere see note in createCollectionRequest func above
             if (error.status != null) {
                 if (error.status >= 400 && error.status < 500) {
                     switch (error.status) {
@@ -183,15 +183,15 @@ export const createTeam = body => (dispatch, getState) => {
     teams
         .createTeam(body)
         .then(response => {
-            const state = getState().state;
-            if (state.newTeam.usersInTeam.length > 0) {
+            const { newTeam } = getState().state?.newTeam ?? {};
+            if (newTeam.usersInTeam?.length > 0) {
                 dispatch(addMembersToTeam(response.groupname));
             } else {
                 const notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, state.newTeam.usersInTeam.length),
+                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, newTeam.usersInTeam?.length || 0),
                 };
                 notifications.add(notification);
                 const previousUrl = url.resolve("../", true);
@@ -223,8 +223,8 @@ export const createTeam = body => (dispatch, getState) => {
 
 export const addMembersToTeam = groupName => (dispatch, getState) => {
     let promises = [];
-    const state = getState().state;
-    state.newTeam.usersInTeam.forEach(user => {
+    const { newTeam } = getState().state?.newTeam ?? {};
+    newTeam.usersInTeam.forEach(user => {
         promises.push(teams.addMemberToTeam(groupName, user.id));
     });
     Promise.all(promises)
@@ -233,7 +233,7 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, state.newTeam.usersInTeam.length),
+                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, newTeam.usersInTeam?.length || ""),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);

@@ -20,39 +20,40 @@ const propTypes = {
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
         unsavedChanges: PropTypes.bool,
-    }),
+    }).isRequired,
 };
 
 const CreateTeam = props => {
+    const { dispatch, router, route, newTeam } = props;
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     useEffect(() => {
-        props.dispatch(resetNewTeam());
-        props.dispatch(getUsersRequest());
+        dispatch(resetNewTeam());
+        dispatch(getUsersRequest());
     }, []);
 
-    // As we are on an old version of react-router, will have to use setRouteLeaveHook instead of 'Prompt'
+    // As we are on an old version of react-router, will have to use setRouteLeaveHook instead of 'Prompt' for now
     useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, handleRequestToLeavePage);
+        router.setRouteLeaveHook(route, handleRequestToLeavePage);
     });
 
     useEffect(() => {
         if (userConfirmedToLeave) {
             const previousUrl = url.resolve("../", true);
-            props.dispatch(push(previousUrl));
+            dispatch(push(previousUrl));
         }
     }, [userConfirmedToLeave]);
 
     useEffect(() => {
-        if (teamName !== "" || props.newTeam.usersInTeam.length > 0) {
-            props.dispatch(newTeamUnsavedChanges(true));
+        if (teamName !== "" || newTeam.usersInTeam?.length > 0) {
+            dispatch(newTeamUnsavedChanges(true));
         } else {
-            props.dispatch(newTeamUnsavedChanges(false));
+            dispatch(newTeamUnsavedChanges(false));
         }
-    }, [teamName, props.newTeam.usersInTeam]);
+    }, [teamName, newTeam.usersInTeam]);
 
     const handleRequestToLeavePage = () => {
-        if (!userConfirmedToLeave && props.newTeam.unsavedChanges) {
+        if (!userConfirmedToLeave && newTeam.unsavedChanges) {
             const popoutOptions = {
                 id: "unsaved-changes",
                 title: "You have unsaved changes",
@@ -60,7 +61,7 @@ const CreateTeam = props => {
                 buttons: [
                     {
                         onClick: () => {
-                            props.dispatch(removePopouts(["unsaved-changes"]));
+                            dispatch(removePopouts(["unsaved-changes"]));
                             setUserConfirmedToLeave(true);
                         },
                         text: "Discard changes",
@@ -68,7 +69,7 @@ const CreateTeam = props => {
                     },
                     {
                         onClick: () => {
-                            props.dispatch(removePopouts(["unsaved-changes"]));
+                            dispatch(removePopouts(["unsaved-changes"]));
                             return false;
                         },
                         text: "Continue editing team",
@@ -76,7 +77,7 @@ const CreateTeam = props => {
                     },
                 ],
             };
-            props.dispatch(addPopout(popoutOptions));
+            dispatch(addPopout(popoutOptions));
             // Do not leave
             return false;
         } else {
@@ -90,13 +91,13 @@ const CreateTeam = props => {
     };
 
     const requestCreateTeam = () => {
-        if (props.newTeam.unsavedChanges && teamName !== "") {
+        if (newTeam.unsavedChanges && teamName !== "") {
             // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
             const body = {
                 name: teamName,
                 precedence: 10,
             };
-            props.dispatch(createTeam(body));
+            dispatch(createTeam(body));
         } else {
             const notification = {
                 type: "warning",
@@ -118,14 +119,14 @@ const CreateTeam = props => {
         ],
         cancelCallback: () => {
             const previousUrl = url.resolve("../", true);
-            props.dispatch(push(previousUrl));
+            dispatch(push(previousUrl));
         },
         stickToBottom: true,
-        unsavedChanges: props.newTeam.unsavedChanges,
+        unsavedChanges: newTeam.unsavedChanges,
     };
     let teamsMemberChips = (
         <div className="chip__container chip__container--gap-10">
-            {props.newTeam.usersInTeam.map((teamMember, i) => {
+            {newTeam.usersInTeam?.map((teamMember, i) => {
                 return (
                     <Chip
                         key={`teamMember-${i}`}
@@ -133,8 +134,8 @@ const CreateTeam = props => {
                         style="standard"
                         text={`${teamMember.forename} ${teamMember.lastname}`}
                         removeFunc={() => {
-                            let userToRemove = props.newTeam.allUsers.find(viewer => viewer.email === teamMember.email);
-                            props.dispatch(removeUserFromNewTeam(userToRemove));
+                            let userToRemove = newTeam.allUsers?.find(viewer => viewer.email === teamMember.email);
+                            dispatch(removeUserFromNewTeam(userToRemove));
                         }}
                     />
                 );
@@ -155,7 +156,7 @@ const CreateTeam = props => {
                 <span>
                     <strong>Members</strong>
                 </span>
-                {props.newTeam.usersInTeam.length > 0 ? teamsMemberChips : noTeamMembers}
+                {newTeam.usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
             <UsersNotInTeam loading={true} />
             <ContentActionBar {...contentActionBarProps} />
