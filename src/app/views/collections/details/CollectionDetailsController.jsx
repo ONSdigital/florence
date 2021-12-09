@@ -3,13 +3,8 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-import { getCollections } from "../../../config/selectors";
-import Drawer from "../../../components/drawer/Drawer";
-import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
-import CollectionEditController from "../edit/CollectionEditController";
-import collections from "../../../utilities/api-clients/collections";
-import datasets from "../../../utilities/api-clients/datasets";
-import notifications from "../../../utilities/notifications";
+import { getCollections, getIsUpdatingCollection } from "../../../config/selectors";
+import { approveCollectionRequest } from "../../../config/thunks";
 import {
     addAllCollections,
     deleteCollectionFromAllCollections,
@@ -22,6 +17,10 @@ import {
     updateTeamsInActiveCollection,
     updateWorkingOn,
 } from "../../../config/actions";
+import Drawer from "../../../components/drawer/Drawer";
+import collections from "../../../utilities/api-clients/collections";
+import datasets from "../../../utilities/api-clients/datasets";
+import notifications from "../../../utilities/notifications";
 import cookies from "../../../utilities/cookies";
 import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
 import collectionMapper from "../mapper/collectionMapper";
@@ -30,6 +29,8 @@ import RestoreContent from "../restore-content/RestoreContent";
 import url from "../../../utilities/url";
 import auth from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
+import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
+import CollectionEditController from "../edit/CollectionEditController";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -71,7 +72,6 @@ export class CollectionDetailsController extends Component {
             isFetchingCollectionDetails: false,
             isEditingCollection: false,
             isRestoringContent: false,
-            isApprovingCollection: false,
             isCancellingDelete: {
                 value: false,
                 uri: "",
@@ -227,46 +227,8 @@ export class CollectionDetailsController extends Component {
             });
     };
 
-    handleCollectionApproveClick = () => {
-        const activeCollection = this.props.activeCollection;
-        const collectionID = this.props.collectionID;
-        if (!collectionMapper.collectionCanBeApproved(activeCollection)) {
-            const notification = {
-                type: "neutral",
-                message: `Unable to approve collection '${activeCollection.name}', please check that there are no pages in progress or awaiting review`,
-                isDismissable: true,
-                autoDismiss: 4000,
-            };
-            notifications.add(notification);
-            return false;
-        }
-
-        const allCollections = this.props.collections.map(collection => {
-            if (collection.id !== collectionID) {
-                return collection;
-            }
-            return {
-                ...collection,
-                status: {
-                    ...collection.status,
-                    neutral: true,
-                },
-            };
-        });
-        this.props.dispatch(addAllCollections(allCollections));
-
-        this.setState({ isApprovingCollection: true });
-        collections
-            .approve(collectionID)
-            .then(() => {
-                this.setState({ isApprovingCollection: false });
-                this.props.dispatch(push(`${this.props.rootPath}/collections`));
-            })
-            .catch(error => {
-                this.setState({ isApprovingCollection: false });
-                console.error("Error approving collection", error);
-                collectionDetailsErrorNotifications.approveCollection(error);
-            });
+    handleCollectionApproveClick = e => {
+        this.props.dispatch(approveCollectionRequest(this.props.collectionID, `${this.props.rootPath}/collections`));
     };
 
     handleCancelPageDeleteClick = uri => {
@@ -654,7 +616,7 @@ export class CollectionDetailsController extends Component {
                 isLoadingNameAndDate={false}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
-                isApprovingCollection={this.state.isApprovingCollection}
+                isApprovingCollection={this.props.isUpdating}
             />
         );
     }
@@ -701,6 +663,7 @@ export function mapStateToProps(state) {
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,
         enableHomepagePublishing: state.state.config.enableHomepagePublishing,
+        isUpdating: getIsUpdatingCollection(state.state),
     };
 }
 

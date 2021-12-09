@@ -319,3 +319,16 @@ export const loadCollectionsFailure = () => ({
 export const loadCollectionsProgress = () => ({
     type: types.LOAD_COLLECTIONS_PROGRESS,
 });
+
+export const updateCollectionFailure = () => ({
+    type: types.UPDATE_COLLECTION_FAILURE,
+});
+
+export const updateCollectionProgress = () => ({
+    type: types.UPDATE_COLLECTION_PROGRESS,
+});
+
+export const updateCollectionSuccess = collection => ({
+    type: types.UPDATE_COLLECTION_SUCCESS,
+    collection,
+});

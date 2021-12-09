@@ -14,7 +14,8 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_COLLECTIONS_SUCCESS: {
+        // TODO: managing the old and new way for time being
+        case types.LOAD_COLLECTIONS_SUCCESS || type.ADD_ALL_COLLECTIONS: {
             return {
                 ...state,
                 collections: {
@@ -75,15 +76,6 @@ export default function reducer(state = initialState, action) {
                     enableDatasetImport: action.config.enableDatasetImport,
                     enableHomepagePublishing: action.config.enableHomepagePublishing,
                     enableNewSignIn: action.config.enableNewSignIn,
-                },
-            };
-        }
-        case types.ADD_ALL_COLLECTIONS: {
-            return {
-                ...state,
-                collections: {
-                    ...state.collections,
-                    all: action.collections,
                 },
             };
         }
@@ -445,6 +437,35 @@ export default function reducer(state = initialState, action) {
         }
         case types.SEARCH: {
             return { ...state, search: action.value.toLowerCase() };
+        }
+        case types.UPDATE_COLLECTION_PROGRESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isUpdating: true,
+                },
+            };
+        }
+        case types.UPDATE_COLLECTION_FAILURE: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isUpdating: false,
+                },
+            };
+        }
+        case types.UPDATE_COLLECTION_SUCCESS: {
+            const updatedCollections = state.collections.all.map(col => (col.id === action.collection.id ? action.collection : col));
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    all: updatedCollections,
+                    isUpdating: false,
+                },
+            };
         }
         default: {
             return state;

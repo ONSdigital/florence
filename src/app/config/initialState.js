@@ -4,6 +4,7 @@ export const initialState = {
         active: null,
         toDelete: {},
         isLoading: false,
+        isUpdating: false,
     },
     config: {
         enableDatasetImport: false,
