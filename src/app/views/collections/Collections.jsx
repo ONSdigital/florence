@@ -12,11 +12,11 @@ const Collections = props => {
     const isViewer = user && user.userType === "VIEWER";
 
     useEffect(() => {
-        props.loadCollections();
+        props.loadCollections(`${props.rootPath}/collections`);
     }, []);
 
     useEffect(() => {
-        if (workingOn && workingOn.id) document.getElementById(workingOn.id).scrollIntoView();
+        if (workingOn && workingOn.id && !isViewer) document.getElementById(workingOn.id).scrollIntoView();
     }, [workingOn]);
 
     const handleCollectionClick = id => {
@@ -29,8 +29,14 @@ const Collections = props => {
         props.dispatch(push(`${props.rootPath}/collections/${id}`));
     };
 
-    const getNotCompletedCollections = () =>
-        isViewer && collections ? collections : collections.filter(collection => collection.approvalStatus !== "COMPLETE");
+    const getNotCompletedCollections = () => {
+        if (!isViewer) {
+            return collections.filter(collection => {
+                return collection.approvalStatus !== "COMPLETE";
+            });
+        }
+        return collections;
+    };
 
     return (
         <>
@@ -59,14 +65,13 @@ const Collections = props => {
     );
 };
 
-Collections.PropTypes = {
+Collections.propTypes = {
     activeCollection: PropTypes.object,
     collections: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     loadCollections: PropTypes.func.isRequired,
     params: PropTypes.shape({ collectionID: PropTypes.string }).isRequired,
-    rootPath: PropTypes.string.isRequired,
     rootPath: PropTypes.string.isRequired,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     search: PropTypes.string,

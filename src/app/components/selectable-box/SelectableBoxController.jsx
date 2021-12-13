@@ -10,7 +10,6 @@ const propTypes = {
     handleItemClick: PropTypes.func.isRequired,
     isUpdating: PropTypes.bool,
 };
-
 export default class SelectableBoxController extends Component {
     bindItemClick = itemProps => {
         this.props.handleItemClick(itemProps);

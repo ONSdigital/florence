@@ -6,12 +6,16 @@ import {
     createCollection,
     createCollectionSuccess,
     loadCollectionsFailure,
+    updateCollectionFailure,
+    updateCollectionSuccess,
+    updateCollectionProgress,
 } from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
+import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 
-export const loadCollectionsRequest = () => (dispatch, getState) => {
+export const loadCollectionsRequest = redirect => dispatch => {
     dispatch(loadCollectionsProgress());
     collections
         .getAll()
@@ -29,7 +33,7 @@ export const loadCollectionsRequest = () => (dispatch, getState) => {
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
-                    dispatch(push(`/collections`));
+                    dispatch(push(redirect));
                     break;
                 }
                 case 403: {
@@ -39,7 +43,7 @@ export const loadCollectionsRequest = () => (dispatch, getState) => {
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
-                    dispatch(push(`/collections`));
+                    dispatch(push(redirect));
                     break;
                 }
                 case "RESPONSE_ERR":
@@ -118,5 +122,26 @@ export const createCollectionRequest = collection => (dispatch, getState) => {
                 }
             }
             console.error(error);
+        });
+};
+
+export const approveCollectionRequest = (id, redirect) => dispatch => {
+    dispatch(updateCollectionProgress());
+    collections
+        .approve(id)
+        .then(response => {
+            if (response) {
+                // TODO: correct API - the response is only 'true' so I need to fetch this collection separately
+                collections.get(id).then(response => {
+                    dispatch(updateCollectionSuccess(response));
+                    dispatch(push(redirect));
+                });
+            }
+        })
+        .catch(error => {
+            // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
+            console.error("Error approving collection", error);
+            dispatch(updateCollectionFailure());
+            collectionDetailsErrorNotifications.updateCollection(error);
         });
 };

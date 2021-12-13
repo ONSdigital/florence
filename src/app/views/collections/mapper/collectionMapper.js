@@ -14,6 +14,7 @@ export default class collectionMapper {
                 id: collection.id,
                 name: collection.name,
                 publishDate: collection.publishDate,
+                approvalStatus: collection.approvalStatus,
                 status: {
                     neutral: publishStates.inProgress,
                     warning: publishStates.thrownError,
