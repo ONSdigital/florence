@@ -5,31 +5,8 @@ import { useSort } from "../../../hooks/useSort";
 import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 import Sort from "../../sort";
 
-const propTypes = {
-    headings: PropTypes.array.isRequired,
-    search: PropTypes.string,
-    items: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            selectableBox: PropTypes.shape({
-                firstColumn: PropTypes.string.isRequired,
-                secondColumn: PropTypes.string.isRequired,
-            }),
-        })
-    ).isRequired,
-    activeItemID: PropTypes.string,
-    handleItemClick: PropTypes.func.isRequired,
-    isUpdating: PropTypes.bool,
-};
-
 const DoubleSelectableBox = props => {
-    const [activeSort, setActiveSort] = useState({ key: "name", direction: "ASC" });
-    const { sortedItems, requestSort, sortConfig } = useSort(props.items, activeSort);
-
-    const handleSortClick = (key, direction) => {
-        setActiveSort({key, direction});
-        requestSort({key, direction});
-    };
+    const { sortedItems, requestSort, sortConfig } = useSort(props.items, { key: "name", direction: "ASC" });
 
     const renderList = () => {
         return (
@@ -76,7 +53,7 @@ const DoubleSelectableBox = props => {
                 <button
                     aria-label="Sort by name"
                     className="selectable-box__heading with-sort grid__col-6 padding-right--0 grid__cell"
-                    onClick={() => handleSortClick("name", 'DESC')}
+                    onClick={() => requestSort("name")}
                 >
                     {props.headings[0]}
                     <Sort active={sortConfig} name="name" />
@@ -84,7 +61,7 @@ const DoubleSelectableBox = props => {
                 <button
                     aria-label="Sort by publishDate"
                     className="selectable-box__heading with-sort grid__col-6 grid__cell"
-                    onClick={() => handleSortClick("publishDate", 'ASC')}
+                    onClick={() => requestSort("publishDate")}
                 >
                     {props.headings[1]}
                     <Sort active={sortConfig} name="publishDate" />
@@ -96,6 +73,21 @@ const DoubleSelectableBox = props => {
     );
 };
 
-DoubleSelectableBox.propTypes = propTypes;
+DoubleSelectableBox.propTypes = {
+    headings: PropTypes.array.isRequired,
+    search: PropTypes.string,
+    items: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            selectableBox: PropTypes.shape({
+                firstColumn: PropTypes.string.isRequired,
+                secondColumn: PropTypes.string.isRequired,
+            }),
+        })
+    ).isRequired,
+    activeItemID: PropTypes.string,
+    handleItemClick: PropTypes.func.isRequired,
+    isUpdating: PropTypes.bool,
+};
 
 export default DoubleSelectableBox;

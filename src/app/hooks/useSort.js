@@ -32,13 +32,11 @@ export const useSort = (items, config = null) => {
         return sortableItems;
     }, [items, sortConfig]);
 
-    const requestSort = (activeSort = null) => {
-        let {key, direction} = activeSort
-        if (sortConfig && sortConfig.key === key && sortConfig.direction === "ASC") {
-            direction = "DESC";
-        }
-
-        setSortConfig({ key, direction });
+    const requestSort = key => {
+        setSortConfig(prevState => {
+            if (prevState.direction === "ASC") return { key, direction: "DESC" };
+            return { key, direction: "ASC" };
+        });
     };
 
     return { sortedItems, requestSort, sortConfig };

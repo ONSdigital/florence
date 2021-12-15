@@ -72,24 +72,51 @@ describe("DoubleSelectableBox", () => {
         });
     });
 
-    describe("when sort button is clicked", () => {
-        test("fires an event to update active sort to DESC", () => {
-            const handleSortClick = jest.fn();
-            render(<DoubleSelectableBox onClick={handleSortClick} {...props} />);
-            const button = screen.getByRole("button", { name: /sort by name/i });
+    describe("when Name header is clicked", () => {
+        test("updates active sort to DESC and back to ASC", () => {
+            render(<DoubleSelectableBox {...props} />);
 
-            within(button).getByTestId("ASC").toBeInTheDocument;
-            let defaultSort = within(button).getByTestId("ASC");
-            expect(defaultSort).toHaveClass("active");
+            const sortByNameBtn = screen.getByRole("button", { name: /sort by name/i });
+            const ascending = within(sortByNameBtn).getByTestId("ASC");
+            const descending = within(sortByNameBtn).getByTestId("DESC");
 
-            fireEvent.click(button);
+            // sort by name is active by default
+            expect(ascending).toHaveClass("active");
+            expect(descending).not.toHaveClass("active");
 
-            within(button).getByTestId("ASC").toBeInTheDocument;
-            defaultSort = within(button).getByTestId("ASC");
-            expect(defaultSort).not.toHaveClass("active");
+            fireEvent.click(sortByNameBtn);
 
-            const activeSort = within(button).getByTestId("DESC");
-            expect(activeSort).toHaveClass("active");
+            expect(ascending).not.toHaveClass("active");
+            expect(descending).toHaveClass("active");
+
+            fireEvent.click(sortByNameBtn);
+
+            expect(ascending).toHaveClass("active");
+            expect(descending).not.toHaveClass("active");
+        });
+    });
+
+    describe("when Publish Date header is clicked", () => {
+        test("updates active sort to ASC and back to DESC by publish date column", () => {
+            render(<DoubleSelectableBox {...props} />);
+
+            const sortByPublishNameBtn = screen.getByRole("button", { name: /sort by publishdate/i });
+            const ascending = within(sortByPublishNameBtn).getByTestId("ASC");
+            const descending = within(sortByPublishNameBtn).getByTestId("DESC");
+
+            // sort by publish date is not active by default
+            expect(ascending).not.toHaveClass("active");
+            expect(descending).not.toHaveClass("active");
+
+            fireEvent.click(sortByPublishNameBtn);
+
+            expect(ascending).not.toHaveClass("active");
+            expect(descending).toHaveClass("active");
+
+            fireEvent.click(sortByPublishNameBtn);
+
+            expect(descending).not.toHaveClass("active");
+            expect(ascending).toHaveClass("active");
         });
     });
 });
