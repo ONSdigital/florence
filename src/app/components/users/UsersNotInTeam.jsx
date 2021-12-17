@@ -6,8 +6,8 @@ import PropTypes from "prop-types";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
+    loading: PropTypes.bool,
     newTeam: PropTypes.shape({
-        usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
         unsavedChanges: PropTypes.bool,
@@ -25,7 +25,7 @@ const UsersNotInTeam = props => {
     };
 
     let usersNotInTeamList = [];
-    if (newTeam?.usersNotInTeam != null) {
+    if (newTeam.usersNotInTeam) {
         usersNotInTeamList = newTeam.usersNotInTeam
             .map(user => {
                 return {

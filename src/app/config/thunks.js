@@ -183,6 +183,8 @@ export const createTeam = body => (dispatch, getState) => {
     teams
         .createTeam(body)
         .then(response => {
+            // TODO need to remove uses of getState
+            dispatch(emptyTeamCreatedSuccess());
             const { newTeam } = getState().state?.newTeam ?? {};
             if (newTeam.usersInTeam?.length > 0) {
                 dispatch(addMembersToTeam(response.groupname));
@@ -221,10 +223,9 @@ export const createTeam = body => (dispatch, getState) => {
         });
 };
 
-export const addMembersToTeam = groupName => (dispatch, getState) => {
+export const addMembersToTeam = (groupName, members) => (dispatch, getState) => {
     let promises = [];
-    const { newTeam } = getState().state?.newTeam ?? {};
-    newTeam.usersInTeam.forEach(user => {
+    members.forEach(user => {
         promises.push(teams.addMemberToTeam(groupName, user.id));
     });
     Promise.all(promises)
@@ -233,7 +234,7 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, newTeam.usersInTeam?.length || ""),
+                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, members.length || ""),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);

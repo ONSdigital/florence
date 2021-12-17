@@ -21,7 +21,7 @@ describe("UsersNotInTeam", () => {
             </WrapperComponent>
         );
         it("renders the relevant components to screen", () => {
-            expect(component.find("h2.dynamic-list__title")).toHaveLength(1);
+            expect(component.find('[data-testid="dynamic-list-title"]').length).toBe(1);
             expect(component.find("input#add-member-to-team-search-content-types")).toHaveLength(1);
         });
         it("matches snapshot", () => {

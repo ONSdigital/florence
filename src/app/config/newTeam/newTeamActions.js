@@ -41,3 +41,10 @@ export function resetNewTeam(user) {
         user,
     };
 }
+
+export function emptyTeamCreatedSuccess() {
+    return {
+        type: types.NEW_TEAM_EMPTY_TEAM_CREATED_SUCCESS,
+    };
+}
+

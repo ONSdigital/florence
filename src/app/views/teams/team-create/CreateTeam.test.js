@@ -70,7 +70,7 @@ describe("CreateTeam", () => {
             expect(component.find("Connect(CreateTeam)")).toHaveLength(1);
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
-            expect(component.find("h2.dynamic-list__title").length).toBe(1);
+            expect(component.find('[data-testid="dynamic-list-title"]').length).toBe(1);
             expect(component.find("content-action-bar__warn__text").length).toBe(0);
         });
         it("matches snapshot", () => {

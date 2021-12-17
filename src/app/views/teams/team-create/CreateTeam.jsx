@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useMemo, useState} from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import { Link } from "react-router";
@@ -16,7 +16,6 @@ import notifications from "../../../utilities/notifications";
 const propTypes = {
     dispatch: PropTypes.func,
     newTeam: PropTypes.shape({
-        usersInTeam: PropTypes.arrayOf(PropTypes.object),
         usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
         allUsers: PropTypes.arrayOf(PropTypes.object),
         unsavedChanges: PropTypes.bool,
@@ -27,6 +26,10 @@ const CreateTeam = props => {
     const { dispatch, router, route, newTeam } = props;
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
+    const [isLoading, setLoading] = useState(true);
+    const usersInTeam = useMemo(() => {
+        return newTeam.allUsers.filter(userToCheck => !newTeam.usersNotInTeam.some(userEntryComparedAgainst => userToCheck.id === userEntryComparedAgainst.id))
+    },[newTeam.usersNotInTeam, newTeam.allUsers])
     useEffect(() => {
         dispatch(resetNewTeam());
         dispatch(getUsersRequest());
@@ -45,15 +48,23 @@ const CreateTeam = props => {
     }, [userConfirmedToLeave]);
 
     useEffect(() => {
-        if (teamName !== "" || newTeam.usersInTeam?.length > 0) {
+        if (newTeam.allUsers.length) {
+            setLoading(false)
+        }
+    }, [newTeam.allUsers]);
+
+    useEffect(() => {
+        if (teamName !== "" || usersInTeam?.length > 0) {
             dispatch(newTeamUnsavedChanges(true));
         } else {
             dispatch(newTeamUnsavedChanges(false));
         }
-    }, [teamName, newTeam.usersInTeam]);
+    }, [teamName, usersInTeam]);
 
     const handleRequestToLeavePage = () => {
+        let canLeave = true;
         if (!userConfirmedToLeave && newTeam.unsavedChanges) {
+            canLeave = false;
             const popoutOptions = {
                 id: "unsaved-changes",
                 title: "You have unsaved changes",
@@ -78,12 +89,8 @@ const CreateTeam = props => {
                 ],
             };
             dispatch(addPopout(popoutOptions));
-            // Do not leave
-            return false;
-        } else {
-            // Can leave
-            return true;
         }
+        return canLeave;
     };
 
     const handleTeamNameChange = event => {
@@ -126,7 +133,7 @@ const CreateTeam = props => {
     };
     let teamsMemberChips = (
         <div className="chip__container chip__container--gap-10">
-            {newTeam.usersInTeam?.map((teamMember, i) => {
+            {usersInTeam?.map((teamMember, i) => {
                 return (
                     <Chip
                         key={`teamMember-${i}`}
@@ -156,9 +163,9 @@ const CreateTeam = props => {
                 <span>
                     <strong>Members</strong>
                 </span>
-                {newTeam.usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
+                {usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam loading={true} />
+            <UsersNotInTeam loading={isLoading} />
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
