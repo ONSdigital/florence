@@ -17,7 +17,6 @@ export function createMockUser(
   };
 }
 
-
 export const WrapperComponent = ({children}) => {
   const store = createStore(reducer);
 
@@ -26,4 +25,9 @@ export const WrapperComponent = ({children}) => {
       {children}
     </Provider>
   )
+}
+
+export function HookWrapper(props) {
+  const hook = props.hook ? props.hook() : undefined;
+  return <div hook={hook} />;
 }

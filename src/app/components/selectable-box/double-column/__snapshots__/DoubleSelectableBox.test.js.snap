@@ -1,0 +1,118 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`DoubleSelectableBox matches the snapshot 1`] = `
+<div
+  className="selectable-box"
+>
+  <div
+    className="grid"
+  >
+    <button
+      aria-label="Sort by name"
+      className="selectable-box__heading with-sort grid__col-6 padding-right--0 grid__cell"
+      onClick={[Function]}
+    >
+      Header1
+      <span
+        className="sort"
+      >
+        <span
+          className="sort__icon-up active"
+          data-testid="ASC"
+        />
+        <span
+          className="sort__icon-down"
+          data-testid="DESC"
+        />
+      </span>
+    </button>
+    <button
+      aria-label="Sort by publishDate"
+      className="selectable-box__heading with-sort grid__col-6 grid__cell"
+      onClick={[Function]}
+    >
+      Header2
+      <span
+        className="sort"
+      >
+        <span
+          className="sort__icon-up"
+          data-testid="ASC"
+        />
+        <span
+          className="sort__icon-down"
+          data-testid="DESC"
+        />
+      </span>
+    </button>
+  </div>
+  <ul
+    className="selectable-box__list"
+    id="selectable-box"
+  >
+    <li
+      className="selectable-box__item selected neutral"
+      id="2"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Bar
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          Friday
+        </div>
+      </div>
+    </li>
+    <li
+      className="selectable-box__item neutral"
+      id="3"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Baz
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          [manual collection]
+        </div>
+      </div>
+    </li>
+    <li
+      className="selectable-box__item neutral"
+      id="1"
+      onClick={[Function]}
+    >
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-6"
+        >
+          Foo
+          
+        </div>
+        <div
+          className="grid__col-6"
+        >
+          2021-12-17T09:30:00.000Z
+        </div>
+      </div>
+    </li>
+  </ul>
+</div>
+`;

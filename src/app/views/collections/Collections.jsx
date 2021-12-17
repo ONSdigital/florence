@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { push } from "react-router-redux";
 import cookies from "../../utilities/cookies";
 import CollectionCreateController from "./create/CollectionCreateController";
-import DoubleSelectableBoxController from "../../components/selectable-box/double-column/DoubleSelectableBoxController";
+import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
 
@@ -44,7 +44,7 @@ const Collections = props => {
                 <div className={isViewer ? "grid__col-8" : "grid__col-4"}>
                     <h1 className="text-center">Select a collection</h1>
                     <Search />
-                    <DoubleSelectableBoxController
+                    <DoubleSelectableBox
                         items={getNotCompletedCollections()}
                         activeItemID={props.params.collectionID}
                         isUpdating={isLoading}
