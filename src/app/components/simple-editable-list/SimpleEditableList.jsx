@@ -54,7 +54,7 @@ export default class SimpleEditableList extends Component {
                     <ul className="list list--neutral simple-select-list">
                         {this.props.fields.map((field, index) => {
                             return (
-                                <pSimpleEditableListItem
+                                <SimpleEditableListItem
                                     key={`${this.editingStateFieldName}-${index}`}
                                     field={field}
                                     handleEditClick={this.handleEditClick}
