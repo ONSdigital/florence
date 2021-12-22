@@ -1,3 +1,4 @@
+'use strict';
 import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
@@ -36,6 +37,7 @@ export class EditHomepageController extends Component {
                 featuredContent: [],
                 aroundONS: [],
                 serviceMessage: "",
+                emergencyBanner: null,
             },
             collectionState: "",
             lastEditedBy: "",
@@ -122,7 +124,12 @@ export class EditHomepageController extends Component {
                 this.setState({
                     initialHomepageData: homepageData,
                     homepageFetched: true,
-                    homepageData: { featuredContent: mappedFeaturedContent, aroundONS: mappedAroundONS, serviceMessage: homepageData.serviceMessage },
+                    homepageData: {
+                        featuredContent: mappedFeaturedContent,
+                        aroundONS: mappedAroundONS,
+                        serviceMessage: homepageData.serviceMessage,
+                        emergencyBanner: homepageData.emergencyBanner,
+                    },
                 });
                 return;
             })
@@ -294,6 +301,7 @@ export class EditHomepageController extends Component {
         let featuredContent = [];
         let aroundONS = [];
         let serviceMessage = "";
+        let emergencyBanner = {};
         let initialHomepageData = this.state.initialHomepageData;
         let formattedHomepageData = {};
 
@@ -302,9 +310,10 @@ export class EditHomepageController extends Component {
         if (this.state.hasChangesMade) {
             featuredContent = this.mapStateToHighlightedContent(this.state.homepageData.featuredContent);
             aroundONS = this.mapStateToHighlightedContent(this.state.homepageData.aroundONS);
+            emergencyBanner = this.state.homepageData.emergencyBanner || {};
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
-            formattedHomepageData = { ...initialHomepageData, featuredContent, aroundONS, serviceMessage };
+            formattedHomepageData = {...initialHomepageData, featuredContent, aroundONS, serviceMessage, emergencyBanner};
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
 
@@ -392,6 +401,17 @@ export class EditHomepageController extends Component {
         });
     };
 
+    handleBannerSave = data => {
+        this.setState(prevState => ({
+            homepageData: {
+                ...prevState.homepageData,
+                emergencyBanner: data
+            },
+            hasChangesMade: true
+        }))
+        this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage`)
+    }
+
     redirectTo = route => {
         this.props.dispatch(push(route));
     };
@@ -414,6 +434,7 @@ export class EditHomepageController extends Component {
                     handleBackButton={this.handleBackButton}
                     disableForm={this.state.formIsDisabled}
                     isSaving={this.state.isSaving}
+                    handleBannerSave={this.handleBannerSave}
                     maximumNumberOfEntries={this.state.maximumNumberOfEntries}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}

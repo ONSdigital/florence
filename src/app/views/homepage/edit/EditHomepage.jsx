@@ -1,10 +1,11 @@
+'use strict';
 import React from "react";
 import PropTypes from "prop-types";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 import Input from "../../../components/Input";
-
 import { connect } from "react-redux";
+import Banner from "../../../components/banner";
 
 const EditHomepage = ({
     handleBackButton,
@@ -13,6 +14,7 @@ const EditHomepage = ({
     handleSimpleEditableListEdit,
     handleSimpleEditableListDelete,
     maximumNumberOfEntries,
+    handleBannerSave,
     disableForm,
     handleStringInputChange,
     handleSaveAndPreview,
@@ -32,7 +34,7 @@ const EditHomepage = ({
                 </button>
             </div>
             <h1 className="margin-top--1 margin-bottom--1">Edit Homepage</h1>
-            <h2 className="margin-top--0">Headlines</h2>
+            <h2 className="margin-top--1">Headlines</h2>
             <SimpleEditableList
                 addText={"Add headline"}
                 fields={homepageData.featuredContent}
@@ -54,15 +56,27 @@ const EditHomepage = ({
                 maximumNumberOfEntries={maximumNumberOfEntries}
                 disableActions={disableForm}
             />
-            <h2 className="margin-top--1">Service Message</h2>
-            <Input
-                id="serviceMessage"
-                label=""
-                type="textarea"
-                value={homepageData.serviceMessage}
-                onChange={handleStringInputChange}
-                disabled={disableForm}
-            />
+            <h2 className="margin-top--1">Banners</h2>
+            <div className="margin-right--1 margin-left--1">
+                <h3 className="margin-top--1">Emergency Banner</h3>
+                <p>
+                    The Emergency Banner is used to display an official Government wide message on <strong>all</strong> website pages.
+                </p>
+                <Banner data={homepageData.emergencyBanner} handleBannerSave={handleBannerSave} />
+                <h3 className="margin-top--1">Service Message Banner</h3>
+                <p>
+                    The Service Message is used to display ONS service related information on <strong>all</strong> website pages.
+                </p>
+                <Input
+                    id="serviceMessage"
+                    label=""
+                    type="textarea"
+                    value={homepageData.serviceMessage}
+                    onChange={handleStringInputChange}
+                    disabled={disableForm}
+                />
+            </div>
+
             <div className="margin-top--2">
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSaveAndPreview} disabled={disableForm}>
                     Save and preview
@@ -84,6 +98,13 @@ const EditHomepage = ({
 
 const propTypes = {
     homepageData: PropTypes.shape({
+        emergencyBanner: PropTypes.shape({
+            type: PropTypes.oneOf(["notable_death", "national_emergency", "local_emergency"]),
+            title: PropTypes.string,
+            description: PropTypes.string,
+            linkText: PropTypes.string,
+            uri: PropTypes.string,
+        }),
         featuredContent: PropTypes.array,
         aroundONS: PropTypes.arrayOf(
             PropTypes.shape({
@@ -98,6 +119,7 @@ const propTypes = {
         ),
         serviceMessage: PropTypes.string,
     }),
+    handleBannerSave: PropTypes.func.isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleSimpleEditableListAdd: PropTypes.func.isRequired,
     handleSimpleEditableListDelete: PropTypes.func.isRequired,
