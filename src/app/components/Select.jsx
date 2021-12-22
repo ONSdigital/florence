@@ -29,7 +29,7 @@ const propTypes = {
 
 const defaultProps = {
     disabled: false,
-    showDefaultOption: true
+    showDefaultOption: true,
 };
 
 class Select extends Component {
@@ -93,7 +93,9 @@ class Select extends Component {
                         onBlur={this.handleFocus}
                         value={this.props.selectedOption}
                     >
-                        {this.props.showDefaultOption && <option value={this.props.defaultOption}>{this.props.defaultOption || "Select an option"}</option>}
+                        {this.props.showDefaultOption && (
+                            <option value={this.props.defaultOption}>{this.props.defaultOption || "Select an option"}</option>
+                        )}
                         {this.renderOptions(this.props.contents)}
                     </select>
                 </div>

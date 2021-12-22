@@ -5,18 +5,17 @@ import Input from "../Input";
 import Select from "../Select";
 
 const Form = ({ data, handleFormSave, handleCancel }) => {
-    const [type, setType] = useState(data.type || "");
-
-    const [title, setTitle] = useInput(data.title || "");
-    const [description, setDescription] = useInput(data.description || "");
-    const [uri, setUri] = useInput(data.uri || "");
-    const [linkText, setLinkText] = useInput(data.linkText || "");
+    const [type, setType] = useState(data ? data.type : "");
+    const [title, setTitle] = useInput(data ? data.title : "");
+    const [description, setDescription] = useInput(data ? description : "");
+    const [uri, setUri] = useInput(data ? data.uri : "");
+    const [linkText, setLinkText] = useInput(data ? data.linkText : "");
 
     const options = [
         { id: "national_emergency", name: "National emergency" },
         { id: "local_emergency", name: "Local emergency" },
         { id: "notable_death", name: "Notable death" },
-    ]
+    ];
 
     const handleSave = () => {
         handleFormSave({ title: title.value, type, description: description.value, uri: uri.value, linkText: linkText.value });

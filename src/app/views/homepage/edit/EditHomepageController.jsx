@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";
@@ -313,7 +313,7 @@ export class EditHomepageController extends Component {
             emergencyBanner = this.state.homepageData.emergencyBanner || {};
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
-            formattedHomepageData = {...initialHomepageData, featuredContent, aroundONS, serviceMessage, emergencyBanner};
+            formattedHomepageData = { ...initialHomepageData, featuredContent, aroundONS, serviceMessage, emergencyBanner };
             saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
         }
 
@@ -405,12 +405,12 @@ export class EditHomepageController extends Component {
         this.setState(prevState => ({
             homepageData: {
                 ...prevState.homepageData,
-                emergencyBanner: data
+                emergencyBanner: data,
             },
-            hasChangesMade: true
-        }))
-        this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage`)
-    }
+            hasChangesMade: true,
+        }));
+        this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage`);
+    };
 
     redirectTo = route => {
         this.props.dispatch(push(route));
