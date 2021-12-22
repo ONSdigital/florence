@@ -1,6 +1,10 @@
 .banner {
   padding: 1rem;
   color: white;
+  > a, a:link, a:hover, a:visited {
+    color: white;
+  }
+
   &-link{
     padding-top: 0.5rem;
     text-decoration: underline;
