@@ -24,7 +24,11 @@ const Banner = ({ data, handleBannerSave }) => {
                 <div className={clsx("banner", "margin-top--1", data.type)}>
                     <h3 className="banner-title">{data.title}</h3>
                     <p className="banner-description">{data.description}</p>
-                    <p className="banner-link">{`[${data.uri}] ${data.linkText}`}</p>
+                    <p className="banner-link">
+                        <a href={data.uri} title={data.uri} target="_blank">
+                            {data.linkText}
+                        </a>
+                    </p>
                 </div>
                 <div className="text-right">
                     <button type="button" className="btn btn--link" onClick={toggleForm}>

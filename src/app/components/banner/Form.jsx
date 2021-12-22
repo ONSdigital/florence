@@ -7,7 +7,7 @@ import Select from "../Select";
 const Form = ({ data, handleFormSave, handleCancel }) => {
     const [type, setType] = useState(data ? data.type : "");
     const [title, setTitle] = useInput(data ? data.title : "");
-    const [description, setDescription] = useInput(data ? description : "");
+    const [description, setDescription] = useInput(data ? data.description : "");
     const [uri, setUri] = useInput(data ? data.uri : "");
     const [linkText, setLinkText] = useInput(data ? data.linkText : "");
 
@@ -24,14 +24,7 @@ const Form = ({ data, handleFormSave, handleCancel }) => {
     return (
         <div className="margin-top--1">
             <Input id="title" label="Title" type="text" {...title} />
-            <Select
-                id="type"
-                label="Type"
-                contents={options}
-                selectedOption={type}
-                showDefaultOption={false}
-                onChange={e => setType(e.target.value)}
-            />
+            <Select id="type" label="Type" contents={options} selectedOption={type} onChange={e => setType(e.target.value)} />
             <Input id="description" label="Description" type="textarea" {...description} />
             <div className="grid">
                 <div className="margin-right--2">
