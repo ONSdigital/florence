@@ -1,0 +1,21 @@
+.banner {
+  padding: 1rem;
+  color: white;
+  > a, a:link, a:hover, a:visited {
+    color: white;
+  }
+
+  &-link{
+    padding-top: 0.5rem;
+    text-decoration: underline;
+  }
+  &.national_emergency {
+    background-color: #B10E1E;
+  }
+  &.local_emergency {
+    background-color: #28a197;
+  }
+  &.notable_death {
+    background-color: #0B0C0C;
+  }
+}

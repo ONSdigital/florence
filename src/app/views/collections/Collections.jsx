@@ -15,10 +15,6 @@ const Collections = props => {
         props.loadCollections(`${props.rootPath}/collections`);
     }, []);
 
-    useEffect(() => {
-        if (workingOn && workingOn.id && !isViewer) document.getElementById(workingOn.id).scrollIntoView();
-    }, [workingOn]);
-
     const handleCollectionClick = id => {
         cookies.add("collection", id, null);
         if (isViewer) {

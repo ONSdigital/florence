@@ -152,6 +152,10 @@ export class CollectionDetailsController extends Component {
         return true;
     }
 
+    componentDidMount() {
+        cookies.add("collection", this.props.activeCollection?.id || this.props.collectionID, null);
+    }
+
     componentWillUnmount = () => {
         this.props.dispatch(emptyActiveCollection());
     };
