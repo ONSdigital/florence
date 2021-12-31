@@ -401,15 +401,20 @@ export class EditHomepageController extends Component {
         });
     };
 
-    handleBannerSave = data => {
+    handleBannerSave = (values, hasErrors) => {
+        if (hasErrors) {
+            this.setState({ formIsDisabled: true });
+            return;
+        }
+
         this.setState(prevState => ({
             homepageData: {
                 ...prevState.homepageData,
-                emergencyBanner: data,
+                emergencyBanner: values,
             },
             hasChangesMade: true,
         }));
-        this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage`);
+        this.redirectTo(`florence/collections/${this.props.params.collectionID}/homepage`);
     };
 
     redirectTo = route => {
