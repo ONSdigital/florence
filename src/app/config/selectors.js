@@ -22,3 +22,4 @@ export const getWorkingOn = state => state.global.workingOn;
 export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
+export const getIsUpdatingCollection = state => state.collections.isUpdating;

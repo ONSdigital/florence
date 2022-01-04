@@ -28,9 +28,9 @@ describe("Collections", () => {
             expect(wrapper.find("Connect(CollectionCreateController)")).toHaveLength(1);
         });
 
-        it("renders <DoubleSelectableBoxController /> component with empty props", () => {
-            expect(wrapper.find("DoubleSelectableBoxController")).toHaveLength(1);
-            expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(0);
+        it("renders <DoubleSelectableBox /> component with empty props", () => {
+            expect(wrapper.find("DoubleSelectableBox")).toHaveLength(1);
+            expect(wrapper.find("DoubleSelectableBox").props().items).toHaveLength(0);
         });
 
         it("renders <Search /> component", () => {
@@ -52,22 +52,22 @@ describe("Collections", () => {
         const wrapper = shallow(<Collections {...collectionsProps} />);
 
         describe("when admin user", () => {
-            it("renders <DoubleSelectableBoxController /> component with not completed collections", () => {
-                expect(wrapper.find("DoubleSelectableBoxController")).toHaveLength(1);
-                expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(collections.length - 1);
+            it("renders <DoubleSelectableBox /> component with not completed collections", () => {
+                expect(wrapper.find("DoubleSelectableBox")).toHaveLength(1);
+                expect(wrapper.find("DoubleSelectableBox").props().items).toHaveLength(collections.length - 1);
             });
         });
 
         describe("when viewer user", () => {
-            it("renders <DoubleSelectableBoxController /> component with all collections", () => {
+            it("renders <DoubleSelectableBox /> component with all collections", () => {
                 const viewerProps = {
                     ...props,
                     user: viewer,
                     collections,
                 };
                 const wrapper = shallow(<Collections {...viewerProps} />);
-                expect(wrapper.find("DoubleSelectableBoxController")).toHaveLength(1);
-                expect(wrapper.find("DoubleSelectableBoxController").props().items).toHaveLength(collections.length);
+                expect(wrapper.find("DoubleSelectableBox")).toHaveLength(1);
+                expect(wrapper.find("DoubleSelectableBox").props().items).toHaveLength(collections.length);
             });
         });
     });

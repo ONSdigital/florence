@@ -1,7 +1,24 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 
-const propTypes = {
+const DoubleSelectableBoxItem = ({ id, isSelected, status, selectableBox, handleClick }) => (
+    <li
+        id={id}
+        className={clsx("selectable-box__item", { selected: isSelected }, { neutral: status.neutral }, { warning: status.warning })}
+        onClick={() => handleClick(id)}
+    >
+        <div className="grid">
+            <div className="grid__col-6">
+                {selectableBox.firstColumn}
+                {status.message && `[${status.message}]`}
+            </div>
+            <div className="grid__col-6">{selectableBox.secondColumn}</div>
+        </div>
+    </li>
+);
+
+DoubleSelectableBoxItem.propTypes = {
     id: PropTypes.any.isRequired,
     selectableBox: PropTypes.shape({
         firstColumn: PropTypes.string.isRequired,
@@ -16,30 +33,4 @@ const propTypes = {
     isSelected: PropTypes.bool,
 };
 
-export default class DoubleSelectableBoxItem extends Component {
-    bindClick = () => {
-        this.props.handleClick(this.props);
-    };
-
-    render() {
-        return (
-            <li
-                id={this.props.id}
-                className={`selectable-box__item ${this.props.isSelected ? " selected" : ""} ${this.props.status.neutral ? " neutral" : ""} ${
-                    this.props.status.warning ? " warning" : ""
-                }`}
-                onClick={this.bindClick}
-            >
-                <div className="grid">
-                    <div className="grid__col-6">
-                        {this.props.selectableBox.firstColumn}
-                        {this.props.status.message ? ` [${this.props.status.message}]` : ""}
-                    </div>
-                    <div className="grid__col-6">{this.props.selectableBox.secondColumn}</div>
-                </div>
-            </li>
-        );
-    }
-}
-
-DoubleSelectableBoxItem.propTypes = propTypes;
+export default DoubleSelectableBoxItem;

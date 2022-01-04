@@ -373,7 +373,6 @@ export default class EditHomepageItem extends Component {
     };
 
     render() {
-        console.log(this.state.imageData.url);
         const isDisabled = this.state.isCreatingImageRecord || this.state.isGettingImage || this.state.isUploadingImage;
         return (
             <Modal>

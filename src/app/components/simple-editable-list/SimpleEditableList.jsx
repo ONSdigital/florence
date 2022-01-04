@@ -6,11 +6,11 @@ import SimpleEditableListItem from "./SimpleEditableListItem";
 const propTypes = {
     fields: PropTypes.arrayOf(
         PropTypes.shape({
-            simpleListHeading: PropTypes.string.isRequired,
+            simpleListHeading: PropTypes.string,
             simpleListDescription: PropTypes.string,
         })
-    ).isRequired,
-    editingStateFieldName: PropTypes.string.isRequired,
+    ),
+    editingStateFieldName: PropTypes.string,
     addText: PropTypes.string,
     showLoadingState: PropTypes.bool,
     handleAddClick: PropTypes.func.isRequired,
@@ -50,7 +50,7 @@ export default class SimpleEditableList extends Component {
     render() {
         return (
             <div>
-                {this.props.fields.length ? (
+                {this.props.fields?.length ? (
                     <ul className="list list--neutral simple-select-list">
                         {this.props.fields.map((field, index) => {
                             return (
@@ -67,7 +67,7 @@ export default class SimpleEditableList extends Component {
                 ) : null}
                 <button
                     type="button"
-                    className={"btn btn--link " + (this.props.fields.length ? "margin-top--1" : "")}
+                    className={"btn btn--link " + (this.props.fields?.length ? "margin-top--1" : "")}
                     onClick={this.handleAddClick}
                     disabled={this.props.disableActions || this.hasReachedMaximumNumberOfEntries()}
                 >
