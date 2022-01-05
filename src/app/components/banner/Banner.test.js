@@ -24,7 +24,7 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Description")).toBeInTheDocument();
             expect(screen.getByLabelText("Link text")).toBeInTheDocument();
             expect(screen.getByLabelText("Link url")).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Save" })).toBeInTheDocument();
+            expect(screen.getByRole("button", { name: "Save emergency banner" })).toBeInTheDocument();
             expect(screen.queryByRole("button", { name: "Cancel" })).toBeInTheDocument();
         });
 
@@ -39,7 +39,7 @@ describe("Banner", () => {
             userEvent.click(screen.getByRole("button", { name: "Cancel" }));
 
             expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
-            expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Save emergency banner" })).not.toBeInTheDocument();
             expect(screen.getByRole("button", { name: "Add an Emergency Banner" })).toBeInTheDocument();
         });
 
@@ -50,10 +50,10 @@ describe("Banner", () => {
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
 
-            userEvent.click(screen.getByRole("button", { name: "Save" }));
+            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Save" })).toBeDisabled();
+            expect(screen.getByRole("button", { name: "Save emergency banner" })).toBeDisabled();
             expect(screen.getByText("Type is required")).toBeVisible();
             expect(screen.getByText("Description is required")).toBeVisible();
             expect(screen.getByText("Title is required")).toBeVisible();
@@ -170,7 +170,7 @@ describe("Banner", () => {
             expect(screen.queryByLabelText("Description")).toHaveValue("");
             expect(screen.queryByLabelText("Type")).toHaveValue("");
 
-            userEvent.click(screen.getByText("Save"));
+            userEvent.click(screen.getByText("Save emergency banner"));
 
             expect(screen.getByText("Title is required")).toBeInTheDocument();
             expect(screen.getByText("Description is required")).toBeInTheDocument();
@@ -192,7 +192,7 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Link text")).toHaveValue("");
             expect(screen.getByLabelText("Link url")).toHaveValue("");
 
-            userEvent.click(screen.getByRole("button", { name: "Save" }));
+            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 national_emergency");
             expect(screen.getByTestId("description")).toHaveTextContent("My description");
@@ -200,7 +200,7 @@ describe("Banner", () => {
             expect(screen.queryByText("Link url is required")).not.toBeInTheDocument();
             expect(screen.getByText("Edit")).toBeInTheDocument();
             expect(screen.getByText("Delete")).toBeInTheDocument();
-            expect(screen.queryByRole("button", { name: "Save" })).not.toBeInTheDocument();
+            expect(screen.queryByRole("button", { name: "Save emergency banner" })).not.toBeInTheDocument();
         });
 
         test("requires link text to be valid if link url is filled in", () => {
@@ -217,7 +217,7 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Link text")).toHaveValue("My link text");
             expect(screen.getByLabelText("Link url")).toHaveValue("");
 
-            userEvent.click(screen.getByRole("button", { name: "Save" }));
+            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.queryByText("Link url is required")).toBeInTheDocument();
         });
@@ -237,7 +237,7 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Link text")).toHaveValue("");
             expect(screen.getByLabelText("Link url")).toHaveValue("http://www.boo.net");
 
-            userEvent.click(screen.getByRole("button", { name: "Save" }));
+            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.queryByText("Link text is required")).toBeInTheDocument();
         });

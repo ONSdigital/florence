@@ -61,7 +61,7 @@ const Form = ({ data, handleFormSave, handleCancel }) => {
                 onChange={handleChange}
             />
             <button type="submit" className="btn btn--primary btn--margin-right" onClick={handleSubmit} disabled={hasErrors}>
-                Save
+                Save emergency banner
             </button>
             <button type="reset" className="btn" onClick={handleCancel}>
                 Cancel
