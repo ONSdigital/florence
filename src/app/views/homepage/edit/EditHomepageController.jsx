@@ -401,12 +401,7 @@ export class EditHomepageController extends Component {
         });
     };
 
-    handleBannerSave = (values, hasErrors) => {
-        if (hasErrors) {
-            this.setState({ formIsDisabled: true });
-            return;
-        }
-
+    handleBannerSave = values => {
         this.setState(prevState => ({
             homepageData: {
                 ...prevState.homepageData,
