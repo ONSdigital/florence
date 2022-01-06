@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { push } from "react-router-redux";
 import cookies from "../../utilities/cookies";
 import CollectionCreateController from "./create/CollectionCreateController";
-import DoubleSelectableBoxController from "../../components/selectable-box/double-column/DoubleSelectableBoxController";
+import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
 
@@ -12,12 +12,8 @@ const Collections = props => {
     const isViewer = user && user.userType === "VIEWER";
 
     useEffect(() => {
-        props.loadCollections();
+        props.loadCollections(`${props.rootPath}/collections`);
     }, []);
-
-    useEffect(() => {
-        if (workingOn && workingOn.id) document.getElementById(workingOn.id).scrollIntoView();
-    }, [workingOn]);
 
     const handleCollectionClick = id => {
         cookies.add("collection", id, null);
@@ -29,8 +25,14 @@ const Collections = props => {
         props.dispatch(push(`${props.rootPath}/collections/${id}`));
     };
 
-    const getNotCompletedCollections = () =>
-        isViewer && collections ? collections : collections.filter(collection => collection.approvalStatus !== "COMPLETE");
+    const getNotCompletedCollections = () => {
+        if (!isViewer) {
+            return collections.filter(collection => {
+                return collection.approvalStatus !== "COMPLETE";
+            });
+        }
+        return collections;
+    };
 
     return (
         <>
@@ -38,7 +40,7 @@ const Collections = props => {
                 <div className={isViewer ? "grid__col-8" : "grid__col-4"}>
                     <h1 className="text-center">Select a collection</h1>
                     <Search />
-                    <DoubleSelectableBoxController
+                    <DoubleSelectableBox
                         items={getNotCompletedCollections()}
                         activeItemID={props.params.collectionID}
                         isUpdating={isLoading}

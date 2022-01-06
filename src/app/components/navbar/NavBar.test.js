@@ -51,6 +51,12 @@ describe("NavBar", () => {
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
+
+            describe("and enableNewSignIn feature flag is enabled", () => {
+                it("third item should be named 'Preview teams'", () => {
+                    expect(nav[2].getElement().props.children).toBe("Preview teams");
+                });
+            });
         });
 
         it("should not render Sign in link", () => {

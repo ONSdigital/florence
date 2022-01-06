@@ -44,14 +44,14 @@ const mockedAllUsers = {
         },
     ],
 };
-
-jest.mock("../../../utilities/api-clients/user", () => {
-    return {
-        getAll: jest.fn(() => {
-            return Promise.resolve(mockedAllUsers);
-        }),
-    };
-});
+// TODO can I delete this
+// jest.mock("../../../utilities/api-clients/user", () => {
+//     return {
+//         getAll: jest.fn(() => {
+//             return Promise.resolve(mockedAllUsers);
+//         }),
+//     };
+// });
 describe("CreateTeam", () => {
     const defaultBaseProps = {
         dispatch: mockDispatch,
@@ -70,7 +70,7 @@ describe("CreateTeam", () => {
             expect(component.find("Connect(CreateTeam)")).toHaveLength(1);
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
-            expect(component.find("h2.dynamic-list__title").length).toBe(1);
+            expect(component.find('[data-testid="dynamic-list-title"]').length).toBe(1);
             expect(component.find("content-action-bar__warn__text").length).toBe(0);
         });
         it("matches snapshot", () => {

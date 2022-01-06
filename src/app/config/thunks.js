@@ -1,15 +1,24 @@
 import { push } from "react-router-redux";
-import { loadCollectionsProgress, loadCollectionsSuccess, createCollectionSuccess, loadCollectionsFailure } from "./actions";
+import {
+    loadCollectionsProgress,
+    loadCollectionsSuccess,
+    createCollectionSuccess,
+    loadCollectionsFailure,
+    updateCollectionFailure,
+    updateCollectionSuccess,
+    updateCollectionProgress,
+} from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
+import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 import users from "../utilities/api-clients/user";
 import { getUsersRequestSuccess, newTeamUnsavedChanges } from "./newTeam/newTeamActions";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
 
-export const loadCollectionsRequest = () => (dispatch, getState) => {
+export const loadCollectionsRequest = redirect => dispatch => {
     dispatch(loadCollectionsProgress());
     collections
         .getAll()
@@ -27,7 +36,7 @@ export const loadCollectionsRequest = () => (dispatch, getState) => {
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
-                    dispatch(push(`/collections`));
+                    dispatch(push(redirect));
                     break;
                 }
                 case 403: {
@@ -37,7 +46,7 @@ export const loadCollectionsRequest = () => (dispatch, getState) => {
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
-                    dispatch(push(`/collections`));
+                    dispatch(push(redirect));
                     break;
                 }
                 case "RESPONSE_ERR":
@@ -119,6 +128,27 @@ export const createCollectionRequest = collection => (dispatch, getState) => {
         });
 };
 
+export const approveCollectionRequest = (id, redirect) => dispatch => {
+    dispatch(updateCollectionProgress());
+    collections
+        .approve(id)
+        .then(response => {
+            if (response) {
+                // TODO: correct API - the response is only 'true' so I need to fetch this collection separately
+                collections.get(id).then(response => {
+                    dispatch(updateCollectionSuccess(response));
+                    dispatch(push(redirect));
+                });
+            }
+        })
+        .catch(error => {
+            // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
+            console.error("Error approving collection", error);
+            dispatch(updateCollectionFailure());
+            collectionDetailsErrorNotifications.updateCollection(error);
+        });
+};
+
 export const getUsersRequest = () => dispatch => {
     users
         .getAll({ active: true })
@@ -126,72 +156,23 @@ export const getUsersRequest = () => dispatch => {
             dispatch(getUsersRequestSuccess(response));
         })
         .catch(error => {
-            // TODO move, handling errors should be done elsewhere see note in createCollectionRequest func above
-            if (error.status != null) {
-                if (error.status >= 400 && error.status < 500) {
-                    switch (error.status) {
-                        case 400: {
-                            const notification = {
-                                type: "warning",
-                                message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
-                                autoDismiss: 5000,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case 404: {
-                            const notification = {
-                                type: "warning",
-                                message: errCodes.GET_USERS_NOT_FOUND,
-                                autoDismiss: 5000,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        default: {
-                            const notification = {
-                                type: "warning",
-                                message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                                isDismissable: true,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                    }
-                } else {
-                    const notification = {
-                        type: "warning",
-                        message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                }
-            } else {
-                const notification = {
-                    type: "warning",
-                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                    isDismissable: true,
-                };
-                notifications.add(notification);
-            }
             console.error(error);
         });
 };
 
-export const createTeam = body => (dispatch, getState) => {
+export const createTeam = (body, usersInTeam) => (dispatch) => {
     dispatch(newTeamUnsavedChanges(false));
     teams
         .createTeam(body)
         .then(response => {
-            const { newTeam } = getState().state?.newTeam ?? {};
-            if (newTeam.usersInTeam?.length > 0) {
-                dispatch(addMembersToTeam(response.groupname));
+            if (usersInTeam.length > 0) {
+                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, newTeam.usersInTeam?.length || 0),
+                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, usersInTeam.length || 0),
                 };
                 notifications.add(notification);
                 const previousUrl = url.resolve("../", true);
@@ -221,10 +202,9 @@ export const createTeam = body => (dispatch, getState) => {
         });
 };
 
-export const addMembersToTeam = groupName => (dispatch, getState) => {
+const addMembersToNewTeam = (groupName, members) => dispatch => {
     let promises = [];
-    const { newTeam } = getState().state?.newTeam ?? {};
-    newTeam.usersInTeam.forEach(user => {
+    members.forEach(user => {
         promises.push(teams.addMemberToTeam(groupName, user.id));
     });
     Promise.all(promises)
@@ -233,14 +213,14 @@ export const addMembersToTeam = groupName => (dispatch, getState) => {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, newTeam.usersInTeam?.length || ""),
+                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, members.length || ""),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);
             dispatch(push(previousUrl));
         })
         .catch(error => {
-            if (error.status != null && error.status === 400) {
+            if (error.status && error.status === 400) {
                 const notification = {
                     type: "warning",
                     isDismissable: true,
