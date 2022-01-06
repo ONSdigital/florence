@@ -1,6 +1,6 @@
 import React from "react";
 import { WrapperComponent } from "../../../tests/test-utils";
-import Search from "./Search.jsx";
+import Search from "./Search";
 import { mount, shallow } from "enzyme";
 import renderer from "react-test-renderer";
 

@@ -1,0 +1,63 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Banner when it has values filled in matches the snapshot 1`] = `
+Array [
+  <div
+    className="banner margin-top--1 local_emergency"
+    data-testid="banner"
+  >
+    <h3
+      className="banner-title"
+    >
+      Test Title
+    </h3>
+    <p
+      className="banner-description"
+      data-testid="description"
+    >
+      My emergency description
+    </p>
+    <p
+      className="banner-link"
+      data-testid="link"
+    >
+      <a
+        href="https://www.test.com/"
+        target="_blank"
+        title="https://www.test.com/"
+      >
+        Read more
+      </a>
+    </p>
+  </div>,
+  <div
+    className="text-right"
+  >
+    <button
+      className="btn btn--link"
+      onClick={[Function]}
+      type="button"
+    >
+      Edit
+    </button>
+    |
+    <button
+      className="btn btn--link"
+      onClick={[Function]}
+      type="button"
+    >
+      Delete
+    </button>
+  </div>,
+]
+`;
+
+exports[`Banner when no props are passed matches the snapshot 1`] = `
+<button
+  className="btn btn--link margin-top--1 margin-right--auto"
+  onClick={[Function]}
+  type="button"
+>
+  Add an Emergency Banner
+</button>
+`;

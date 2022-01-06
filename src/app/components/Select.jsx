@@ -74,7 +74,11 @@ class Select extends Component {
                 <label className="form__label" htmlFor={this.props.id}>
                     {this.props.label}
                 </label>
-                {this.props.error && <div className="error-msg">{this.props.error}</div>}
+                {this.props.error && (
+                    <div className="error-msg" role="alert">
+                        {this.props.error}
+                    </div>
+                )}
                 <div
                     className={
                         "select-wrap " +

@@ -1,43 +1,72 @@
-import React, { useState } from "react";
-import clsx from "clsx";
-import { useInput } from "../../hooks/useInput";
+import React from "react";
+import validate from "./ValidationRules";
+import useForm from "../../hooks/useForm";
 import Input from "../Input";
 import Select from "../Select";
 
+const OPTIONS = [
+    { id: "national_emergency", name: "National emergency" },
+    { id: "local_emergency", name: "Local emergency" },
+    { id: "notable_death", name: "Notable death" },
+];
+
 const Form = ({ data, handleFormSave, handleCancel }) => {
-    const [type, setType] = useState(data ? data.type : "");
-    const [title, setTitle] = useInput(data ? data.title : "");
-    const [description, setDescription] = useInput(data ? data.description : "");
-    const [uri, setUri] = useInput(data ? data.uri : "");
-    const [linkText, setLinkText] = useInput(data ? data.linkText : "");
+    const { values, errors, handleChange, handleSubmit } = useForm(handleSave, validate, data);
+    const hasErrors = Object.keys(errors).length > 0;
 
-    const options = [
-        { id: "national_emergency", name: "National emergency" },
-        { id: "local_emergency", name: "Local emergency" },
-        { id: "notable_death", name: "Notable death" },
-    ];
-
-    const handleSave = () => {
-        handleFormSave({ title: title.value, type, description: description.value, uri: uri.value, linkText: linkText.value });
-    };
+    function handleSave() {
+        handleFormSave(values);
+    }
 
     return (
         <div className="margin-top--1">
-            <Input id="title" label="Title" type="text" {...title} />
-            <Select id="type" label="Type" contents={options} selectedOption={type} onChange={e => setType(e.target.value)} />
-            <Input id="description" label="Description" type="textarea" {...description} />
-            <div className="grid">
-                <div className="margin-right--2">
-                    <Input id="uri" className="margin-right" label="Link url" type="text" {...uri} />
-                </div>
-                <Input id="linkText" label="Link text" type="text" {...linkText} />
-            </div>
-            <button type="submit" className="btn btn--primary btn--margin-right" onClick={handleSave}>
-                Save
+            <Input id="title" name="title" label="Title" type="text" error={errors?.title} onChange={handleChange} value={values.title || ""} />
+            <Select
+                contents={OPTIONS}
+                error={errors?.type}
+                id="type"
+                label="Type"
+                name="type"
+                selectedOption={values.type || ""}
+                defaultOption=""
+                value={values.type || ""}
+                onChange={handleChange}
+            />
+            <Input
+                error={errors?.description}
+                id="description"
+                label="Description"
+                name="description"
+                type="textarea"
+                value={values.description || ""}
+                onChange={handleChange}
+            />
+            <Input
+                className="margin-right"
+                error={errors?.uri}
+                id="uri"
+                label="Link url"
+                name="uri"
+                type="text"
+                value={values.uri || ""}
+                onChange={handleChange}
+            />
+            <Input
+                error={errors?.linkText}
+                id="linkText"
+                label="Link text"
+                name="linkText"
+                type="text"
+                value={values.linkText || ""}
+                onChange={handleChange}
+            />
+            <button type="submit" className="btn btn--primary btn--margin-right" onClick={handleSubmit} disabled={hasErrors}>
+                Save emergency banner
             </button>
             <button type="reset" className="btn" onClick={handleCancel}>
                 Cancel
             </button>
+            <hr className="margin-top--1" />
         </div>
     );
 };
