@@ -44,14 +44,14 @@ const mockedAllUsers = {
         },
     ],
 };
-
-jest.mock("../../../utilities/api-clients/user", () => {
-    return {
-        getAll: jest.fn(() => {
-            return Promise.resolve(mockedAllUsers);
-        }),
-    };
-});
+// TODO can I delete this
+// jest.mock("../../../utilities/api-clients/user", () => {
+//     return {
+//         getAll: jest.fn(() => {
+//             return Promise.resolve(mockedAllUsers);
+//         }),
+//     };
+// });
 describe("CreateTeam", () => {
     const defaultBaseProps = {
         dispatch: mockDispatch,

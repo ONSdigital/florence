@@ -33,7 +33,9 @@ const DynamicList = props => {
     }
     return (
         <div>
-            <HeadingLevel className="dynamic-list__title" data-testid="dynamic-list-title">{props.title}</HeadingLevel>
+            <HeadingLevel className="dynamic-list__title" data-testid="dynamic-list-title">
+                {props.title}
+            </HeadingLevel>
             {props.handleSearchInput && (
                 <>
                     <label htmlFor={searchID} className="visually-hidden">

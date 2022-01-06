@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import { Link } from "react-router";
@@ -9,29 +9,29 @@ import ContentActionBar from "../../../components/content-action-bar/ContentActi
 import Input from "../../../components/Input";
 import Chip from "../../../components/chip/Chip";
 import { addPopout, removePopouts } from "../../../config/actions";
-import { newTeamUnsavedChanges, removeUserFromNewTeam, resetNewTeam } from "../../../config/newTeam/newTeamActions";
+import { newTeamUnsavedChanges } from "../../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
+import { selectNewTeamAllPreviewUsers, selectNewTeamUnsavedChanges } from "../../../config/selectors";
 
 const propTypes = {
     dispatch: PropTypes.func,
-    newTeam: PropTypes.shape({
-        usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
-        allUsers: PropTypes.arrayOf(PropTypes.object),
-        unsavedChanges: PropTypes.bool,
-    }).isRequired,
+    allPreviewUsers: PropTypes.arrayOf(PropTypes.object),
+    unsavedChanges: PropTypes.bool,
 };
 
 const CreateTeam = props => {
-    const { dispatch, router, route, newTeam } = props;
+    const { dispatch, router, route, unsavedChanges, allPreviewUsers } = props;
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     const [isLoading, setLoading] = useState(true);
+    const [usersNotInTeam, setUsersNotInTeam] = useState([]);
     const usersInTeam = useMemo(() => {
-        return newTeam.allUsers.filter(userToCheck => !newTeam.usersNotInTeam.some(userEntryComparedAgainst => userToCheck.id === userEntryComparedAgainst.id))
-    },[newTeam.usersNotInTeam, newTeam.allUsers])
+        return allPreviewUsers.filter(
+            userToCheck => !usersNotInTeam.some(userEntryComparedAgainst => userToCheck.id === userEntryComparedAgainst.id)
+        );
+    }, [usersNotInTeam, allPreviewUsers]);
     useEffect(() => {
-        dispatch(resetNewTeam());
         dispatch(getUsersRequest());
     }, []);
 
@@ -48,10 +48,11 @@ const CreateTeam = props => {
     }, [userConfirmedToLeave]);
 
     useEffect(() => {
-        if (newTeam.allUsers.length) {
-            setLoading(false)
+        if (allPreviewUsers.length) {
+            setLoading(false);
+            setUsersNotInTeam(allPreviewUsers);
         }
-    }, [newTeam.allUsers]);
+    }, [allPreviewUsers]);
 
     useEffect(() => {
         if (teamName !== "" || usersInTeam?.length > 0) {
@@ -61,9 +62,14 @@ const CreateTeam = props => {
         }
     }, [teamName, usersInTeam]);
 
+    const addUserToTeam = user => {
+        const newListOfUsersNotInTeam = usersNotInTeam.filter(filteredUser => filteredUser.email !== user.email);
+        setUsersNotInTeam(newListOfUsersNotInTeam);
+    };
+
     const handleRequestToLeavePage = () => {
         let canLeave = true;
-        if (!userConfirmedToLeave && newTeam.unsavedChanges) {
+        if (!userConfirmedToLeave && unsavedChanges) {
             canLeave = false;
             const popoutOptions = {
                 id: "unsaved-changes",
@@ -98,13 +104,13 @@ const CreateTeam = props => {
     };
 
     const requestCreateTeam = () => {
-        if (newTeam.unsavedChanges && teamName !== "") {
+        if (unsavedChanges && teamName !== "") {
             // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
             const body = {
                 name: teamName,
                 precedence: 10,
             };
-            dispatch(createTeam(body));
+            dispatch(createTeam(body, usersInTeam));
         } else {
             const notification = {
                 type: "warning",
@@ -129,7 +135,7 @@ const CreateTeam = props => {
             dispatch(push(previousUrl));
         },
         stickToBottom: true,
-        unsavedChanges: newTeam.unsavedChanges,
+        unsavedChanges: unsavedChanges,
     };
     let teamsMemberChips = (
         <div className="chip__container chip__container--gap-10">
@@ -141,8 +147,8 @@ const CreateTeam = props => {
                         style="standard"
                         text={`${teamMember.forename} ${teamMember.lastname}`}
                         removeFunc={() => {
-                            let userToRemove = newTeam.allUsers?.find(viewer => viewer.email === teamMember.email);
-                            dispatch(removeUserFromNewTeam(userToRemove));
+                            const userToRemove = allPreviewUsers.find(viewer => viewer.email === teamMember.email);
+                            setUsersNotInTeam([...usersNotInTeam, userToRemove]);
                         }}
                     />
                 );
@@ -165,7 +171,7 @@ const CreateTeam = props => {
                 </span>
                 {usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam loading={isLoading} />
+            <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam} />
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
@@ -175,7 +181,8 @@ CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        newTeam: state.newTeam,
+        allPreviewUsers: selectNewTeamAllPreviewUsers(state),
+        unsavedChanges: selectNewTeamUnsavedChanges(state),
     };
 }
 

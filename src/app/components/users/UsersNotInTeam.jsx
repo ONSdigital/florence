@@ -1,20 +1,17 @@
 import React, { useState } from "react";
 import { connect } from "react-redux";
 import DynamicList from "../../components/dynamic-list/DynamicList";
-import { addUserToNewTeam } from "../../config/newTeam/newTeamActions";
 import PropTypes from "prop-types";
+import { selectNewTeamAllPreviewUsers } from "../../config/selectors";
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
     loading: PropTypes.bool,
-    newTeam: PropTypes.shape({
-        usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
-        allUsers: PropTypes.arrayOf(PropTypes.object),
-        unsavedChanges: PropTypes.bool,
-    }),
+    addUserToTeam: PropTypes.func,
+    usersNotInTeam: PropTypes.arrayOf(PropTypes.object),
+    allPreviewUsers: PropTypes.arrayOf(PropTypes.object),
 };
 const UsersNotInTeam = props => {
-    const { newTeam, dispatch } = props;
+    const { allPreviewUsers, usersNotInTeam, addUserToTeam } = props;
     const [filterTerm, setFilterTerm] = useState("");
     const handleSearch = event => {
         const searchTerm = event.target?.value?.toLowerCase();
@@ -25,8 +22,8 @@ const UsersNotInTeam = props => {
     };
 
     let usersNotInTeamList = [];
-    if (newTeam.usersNotInTeam) {
-        usersNotInTeamList = newTeam.usersNotInTeam
+    if (usersNotInTeam) {
+        usersNotInTeamList = usersNotInTeam
             .map(user => {
                 return {
                     title: `${user.forename} ${user.lastname}`,
@@ -34,8 +31,8 @@ const UsersNotInTeam = props => {
                     icon: "Person",
                     buttonName: "Add",
                     buttonCallback: () => {
-                        let newUser = newTeam.allUsers?.find(viewer => viewer.email === user.email);
-                        dispatch(addUserToNewTeam(newUser));
+                        const newUser = allPreviewUsers.find(viewer => viewer.email === user.email);
+                        addUserToTeam(newUser);
                     },
                     iconColor: "standard",
                 };
@@ -63,7 +60,7 @@ UsersNotInTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        newTeam: state.newTeam,
+        allPreviewUsers: selectNewTeamAllPreviewUsers(state),
     };
 }
 

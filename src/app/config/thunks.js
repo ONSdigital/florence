@@ -2,8 +2,6 @@ import { push } from "react-router-redux";
 import {
     loadCollectionsProgress,
     loadCollectionsSuccess,
-    addNotification,
-    createCollection,
     createCollectionSuccess,
     loadCollectionsFailure,
     updateCollectionFailure,
@@ -158,74 +156,23 @@ export const getUsersRequest = () => dispatch => {
             dispatch(getUsersRequestSuccess(response));
         })
         .catch(error => {
-            // TODO move, handling errors should be done elsewhere see note in createCollectionRequest func above
-            if (error.status != null) {
-                if (error.status >= 400 && error.status < 500) {
-                    switch (error.status) {
-                        case 400: {
-                            const notification = {
-                                type: "warning",
-                                message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
-                                autoDismiss: 5000,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        case 404: {
-                            const notification = {
-                                type: "warning",
-                                message: errCodes.GET_USERS_NOT_FOUND,
-                                autoDismiss: 5000,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                        default: {
-                            const notification = {
-                                type: "warning",
-                                message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                                isDismissable: true,
-                            };
-                            notifications.add(notification);
-                            break;
-                        }
-                    }
-                } else {
-                    const notification = {
-                        type: "warning",
-                        message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                }
-            } else {
-                const notification = {
-                    type: "warning",
-                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                    isDismissable: true,
-                };
-                notifications.add(notification);
-            }
             console.error(error);
         });
 };
 
-export const createTeam = body => (dispatch, getState) => {
+export const createTeam = (body, usersInTeam) => (dispatch) => {
     dispatch(newTeamUnsavedChanges(false));
     teams
         .createTeam(body)
         .then(response => {
-            // TODO need to remove uses of getState
-            dispatch(emptyTeamCreatedSuccess());
-            const { newTeam } = getState().state?.newTeam ?? {};
-            if (newTeam.usersInTeam?.length > 0) {
-                dispatch(addMembersToTeam(response.groupname));
+            if (usersInTeam.length > 0) {
+                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, newTeam.usersInTeam?.length || 0),
+                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, usersInTeam.length || 0),
                 };
                 notifications.add(notification);
                 const previousUrl = url.resolve("../", true);
@@ -255,7 +202,7 @@ export const createTeam = body => (dispatch, getState) => {
         });
 };
 
-export const addMembersToTeam = (groupName, members) => (dispatch, getState) => {
+const addMembersToNewTeam = (groupName, members) => dispatch => {
     let promises = [];
     members.forEach(user => {
         promises.push(teams.addMemberToTeam(groupName, user.id));
@@ -273,7 +220,7 @@ export const addMembersToTeam = (groupName, members) => (dispatch, getState) => 
             dispatch(push(previousUrl));
         })
         .catch(error => {
-            if (error.status != null && error.status === 400) {
+            if (error.status && error.status === 400) {
                 const notification = {
                     type: "warning",
                     isDismissable: true,
