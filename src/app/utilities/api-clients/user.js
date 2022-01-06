@@ -1,12 +1,12 @@
 import http from "../http";
-import {store} from "../../config/store";
-import {reset} from "../../config/actions";
-import {userLoggedIn, userLoggedOut} from "../../config/user/userActions";
+import { store } from "../../config/store";
+import { reset } from "../../config/actions";
+import { userLoggedIn, userLoggedOut } from "../../config/user/userActions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
-import {errCodes as errorCodes, errCodes} from "../errorCodes";
+import { errCodes as errorCodes, errCodes } from "../errorCodes";
 
 export default class user {
     static get(email) {
@@ -14,7 +14,7 @@ export default class user {
     }
 
     static getAll = async params => {
-        let config = {}
+        let config = {};
         if (window.getEnv != null) {
             config = window.getEnv();
         }

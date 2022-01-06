@@ -160,7 +160,7 @@ export const getUsersRequest = () => dispatch => {
         });
 };
 
-export const createTeam = (body, usersInTeam) => (dispatch) => {
+export const createTeam = (body, usersInTeam) => dispatch => {
     dispatch(newTeamUnsavedChanges(false));
     teams
         .createTeam(body)
