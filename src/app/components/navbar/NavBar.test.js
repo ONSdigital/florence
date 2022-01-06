@@ -31,6 +31,7 @@ const withPreviewNavProps = {
 };
 
 const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
+const NavbarItemsWithCognitoAuth = ["Collections", "Users and access", "Preview teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -51,12 +52,6 @@ describe("NavBar", () => {
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
-
-            describe("and enableNewSignIn feature flag is enabled", () => {
-                it("third item should be named 'Preview teams'", () => {
-                    expect(nav[2].getElement().props.children).toBe("Preview teams");
-                });
-            });
         });
 
         it("should not render Sign in link", () => {
@@ -67,6 +62,23 @@ describe("NavBar", () => {
         it("should not display Datasets", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
             expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
+        });
+
+        describe("when enableNewSignIn feature flag is enabled", () => {
+            const props = {
+                ...defaultProps,
+                config: {
+                    ...defaultProps.config,
+                    enableNewSignIn: true,
+                },
+            };
+            const component = shallow(<NavBar {...props} user={authenticatedUser} />);
+            const nav = component.find(Link);
+            it("third item should be named 'Preview teams'", () => {
+                expect(component.hasClass("global-nav__list")).toBe(true);
+                expect(component.find(Link)).toHaveLength(NavbarItems.length);
+                nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItemsWithCognitoAuth[i]));
+            });
         });
 
         describe("when enabled dataset import", () => {
