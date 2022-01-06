@@ -108,7 +108,7 @@ const propTypes = {
         featuredContent: PropTypes.array,
         aroundONS: PropTypes.arrayOf(
             PropTypes.shape({
-                id: PropTypes.string,
+                id: PropTypes.number,
                 description: PropTypes.string,
                 uri: PropTypes.string,
                 image: PropTypes.string,
