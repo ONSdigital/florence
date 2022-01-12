@@ -90,7 +90,7 @@ const defaultProps = {
     },
     onSuccess: function () {},
     dispatch: () => {},
-    allTeams: [],
+    teams: [],
 };
 
 test("Create collection form matches stored snapshot", () => {
@@ -107,7 +107,7 @@ test("Handle collection name change updates state correctly", () => {
 
 test("Handle team selection change updates state correctly", () => {
     const component = shallow(<CollectionCreateController {...defaultProps} />);
-    component.setProps({ allTeams: mockedTeams });
+    component.setProps({ teams: mockedTeams });
     expect(component.update().state().newCollectionDetails.teams).toHaveLength(0);
     component.instance().handleTeamSelection({ target: { value: "1" } });
     expect(component.update().state().newCollectionDetails.teams).toContainEqual({ id: "1", name: "Team 1" });
@@ -118,7 +118,7 @@ describe("Selecting/removing a team", () => {
 
     beforeEach(() => {
         component = mount(<CollectionCreateController {...defaultProps} />);
-        component.setProps({ allTeams: mockedTeams });
+        component.setProps({ teams: mockedTeams });
     });
 
     it("disables a team on selection", () => {
@@ -126,7 +126,7 @@ describe("Selecting/removing a team", () => {
         const getDisabledTeams = () => component.state("updatedAllTeams").filter(team => team.disabled);
 
         // Check that the component has the state and props we'd expect at this point
-        expect(component.prop("allTeams").length).toBe(2);
+        expect(component.prop("teams").length).toBe(2);
         expect(component.state("updatedAllTeams")).toBe(null);
 
         component.instance().handleTeamSelection({ preventDefault: () => {}, target: { value: selectedTeamID } });
@@ -154,7 +154,7 @@ describe("Selecting/removing a team", () => {
 
 test("Handle team selection doesn't add a team that is already in the collection", () => {
     const component = shallow(<CollectionCreateController {...defaultProps} />);
-    component.setProps({ allTeams: mockedTeams });
+    component.setProps({ teams: mockedTeams });
     const teams = [{ id: "1", name: "Team 1" }];
     const newCollection = { ...newCollectionDetails, teams: teams };
     component.setState({ newCollectionDetails: newCollection });

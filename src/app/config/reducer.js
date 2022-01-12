@@ -208,11 +208,13 @@ export default function reducer(state = initialState, action) {
             };
         }
         case types.UPDATE_ALL_TEAMS: {
-            return Object.assign({}, state, {
-                teams: Object.assign({}, state.teams, {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
                     all: action.allTeams,
-                }),
-            });
+                },
+            };
         }
         case types.UPDATE_ALL_TEAM_IDS_AND_NAMES: {
             return {

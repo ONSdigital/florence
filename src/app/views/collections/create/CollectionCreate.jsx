@@ -42,12 +42,17 @@ const propTypes = {
     isSubmitting: PropTypes.bool.isRequired,
 };
 
-class CollectionCreate extends Component {
-    constructor(props) {
-        super(props);
-    }
+const CollectionCreate = props => {
+    const releaseTypeRadioData = [
+        {
+            id: "scheduled-radio",
+            value: "scheduled",
+            label: "Scheduled publish",
+        },
+        { id: "manual-radio", value: "manual", label: "Manual publish" },
+    ];
 
-    renderScheduleOptions() {
+    const renderScheduleOptions = () => {
         const scheduleOptionsRadioData = [
             {
                 id: "custom-radio",
@@ -66,21 +71,21 @@ class CollectionCreate extends Component {
                 <RadioGroup
                     groupName="schedule-type"
                     radioData={scheduleOptionsRadioData}
-                    selectedValue={this.props.newCollectionDetails.scheduleType}
-                    onChange={this.props.handleScheduleTypeChange}
+                    selectedValue={props.newCollectionDetails.scheduleType}
+                    onChange={props.handleScheduleTypeChange}
                     legend="Schedule type"
-                    inline={true}
+                    inline
                 />
 
-                {this.props.showCustomScheduleOptions ? (
+                {props.showCustomScheduleOptions ? (
                     <div>
                         <Input
                             id="publish-date"
                             label="Publish date"
                             type="date"
-                            onChange={this.props.handlePublishDateChange}
-                            error={this.props.newCollectionDetails.publishDate.errorMsg}
-                            value={this.props.newCollectionDetails.publishDate.value}
+                            onChange={props.handlePublishDateChange}
+                            error={props.newCollectionDetails.publishDate.errorMsg}
+                            value={props.newCollectionDetails.publishDate.value}
                             min={date.format(date.getNow(), "yyyy-mm-dd")}
                             max={date.format(date.addYear(10), "yyyy-mm-dd")}
                         />
@@ -89,93 +94,82 @@ class CollectionCreate extends Component {
                             id="publish-time"
                             label="Publish time"
                             type="time"
-                            value={this.props.newCollectionDetails.publishTime.value}
-                            onChange={this.props.handlePublishTimeChange}
-                            error={this.props.newCollectionDetails.publishTime.errorMsg}
+                            value={props.newCollectionDetails.publishTime.value}
+                            onChange={props.handlePublishTimeChange}
+                            error={props.newCollectionDetails.publishTime.errorMsg}
                         />
                     </div>
                 ) : (
                     <div>
                         <div className="margin-bottom--1">
-                            {this.props.newCollectionDetails.release ? (
+                            {props.newCollectionDetails.release ? (
                                 <div>
                                     <p>Selected release: </p>
-                                    <p className="font-weight--600 colour--night-shadz">{this.props.newCollectionDetails.release.errorMsg}</p>
+                                    <p className="font-weight--600 colour--night-shadz">{props.newCollectionDetails.release.errorMsg}</p>
                                     <p className="font-weight--600">
-                                        {this.props.newCollectionDetails.release.isProvisional && "[Not finalised] "}
-                                        {this.props.newCollectionDetails.release.title}
+                                        {props.newCollectionDetails.release.isProvisional && "[Not finalised] "}
+                                        {props.newCollectionDetails.release.title}
                                     </p>
                                 </div>
                             ) : (
                                 <p>No release selected</p>
                             )}
                         </div>
-                        <button type="button" onClick={this.props.handleAddRelease} className="btn btn--primary margin-bottom--2 ">
-                            Select {this.props.newCollectionDetails.release.uri && "different "}a calendar entry
+                        <button type="button" onClick={props.handleAddRelease} className="btn btn--primary margin-bottom--2 ">
+                            Select {props.newCollectionDetails.release.uri && "different "}a calendar entry
                         </button>
                     </div>
                 )}
             </div>
         );
-    }
+    };
 
-    render() {
-        const releaseTypeRadioData = [
-            {
-                id: "scheduled-radio",
-                value: "scheduled",
-                label: "Scheduled publish",
-            },
-            { id: "manual-radio", value: "manual", label: "Manual publish" },
-        ];
-
-        return (
-            <>
-                <form onSubmit={this.props.onSubmit}>
-                    <Input
-                        id="collection-name"
-                        label="Collection name"
-                        type="text"
-                        error={this.props.newCollectionDetails.name.errorMsg}
-                        value={this.props.newCollectionDetails.name.value}
-                        onChange={this.props.handleCollectionNameChange}
-                    />
-                    <Select
-                        id="collection-teams"
-                        label="Select a team(s) that can view this collection"
-                        contents={this.props.hasTeams ? this.props.allTeams : []}
-                        defaultOption={this.props.hasTeams ? "Select an option" : "Loading teams..."}
-                        selectedOption={"default-option"}
-                        onChange={this.props.handleTeamSelection}
-                    />
-                    {this.props.newCollectionDetails.teams ? (
-                        <SelectedItemList items={this.props.newCollectionDetails.teams} onRemoveItem={this.props.handleRemoveTeam} />
-                    ) : (
-                        ""
-                    )}
-                    <RadioGroup
-                        groupName="release-type"
-                        radioData={releaseTypeRadioData}
-                        selectedValue={this.props.newCollectionDetails.type}
-                        onChange={this.props.handleCollectionTypeChange}
-                        legend="Publish type"
-                        inline={true}
-                    />
-                    {this.props.showScheduleOptions ? this.renderScheduleOptions() : ""}
-                    <button type="submit" className="btn btn--positive margin-top--1" disabled={this.props.isSubmitting}>
-                        Create collection
-                    </button>
-                    {this.props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
-                </form>
-                {this.props.showScheduleByRelease && (
-                    <Modal sizeClass="grid__col-8">
-                        <ScheduleByRelease onClose={this.props.handleCloseRelease} onSubmit={this.props.handleSelectRelease} />
-                    </Modal>
+    return (
+        <>
+            <form onSubmit={props.onSubmit}>
+                <Input
+                    id="collection-name"
+                    label="Collection name"
+                    type="text"
+                    error={props.newCollectionDetails.name.errorMsg}
+                    value={props.newCollectionDetails.name.value}
+                    onChange={props.handleCollectionNameChange}
+                />
+                <Select
+                    id="collection-teams"
+                    label="Select a team(s) that can view this collection"
+                    contents={props.hasTeams ? props.allTeams : []}
+                    defaultOption={props.hasTeams ? "Select an option" : "Loading teams..."}
+                    selectedOption={"default-option"}
+                    onChange={props.handleTeamSelection}
+                />
+                {props.newCollectionDetails.teams ? (
+                    <SelectedItemList items={props.newCollectionDetails.teams} onRemoveItem={props.handleRemoveTeam} />
+                ) : (
+                    ""
                 )}
-            </>
-        );
-    }
-}
+                <RadioGroup
+                    groupName="release-type"
+                    radioData={releaseTypeRadioData}
+                    selectedValue={props.newCollectionDetails.type}
+                    onChange={props.handleCollectionTypeChange}
+                    legend="Publish type"
+                    inline
+                />
+                {props.showScheduleOptions ? renderScheduleOptions() : ""}
+                <button type="submit" className="btn btn--positive margin-top--1" disabled={props.isSubmitting}>
+                    Create collection
+                </button>
+                {props.isSubmitting ? <div className="form__loader loader loader--dark margin-left--1"></div> : ""}
+            </form>
+            {props.showScheduleByRelease && (
+                <Modal sizeClass="grid__col-8">
+                    <ScheduleByRelease onClose={props.handleCloseRelease} onSubmit={props.handleSelectRelease} />
+                </Modal>
+            )}
+        </>
+    );
+};
 
 CollectionCreate.propTypes = propTypes;
 

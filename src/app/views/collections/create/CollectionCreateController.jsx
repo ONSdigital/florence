@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-import collections from "../../../utilities/api-clients/collections";
 import teams from "../../../utilities/api-clients/teams";
 import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
@@ -10,15 +9,15 @@ import { createCollectionRequest } from "../../../config/thunks";
 import { updateAllTeamIDsAndNames, updateAllTeams } from "../../../config/actions";
 import collectionValidation from "../validation/collectionValidation";
 import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
-import { getActive, getCollectionCreating } from "../../../config/selectors";
+import { getActive, getMappedTeams } from "../../../config/selectors";
 
 const propTypes = {
     user: PropTypes.shape({
         userType: PropTypes.string.isRequired,
     }).isRequired,
-    allTeams: PropTypes.arrayOf(
+    teams: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.string.isRequired,
+            id: PropTypes.number.isRequired,
             name: PropTypes.string.isRequired,
         })
     ),
@@ -56,6 +55,7 @@ export class CollectionCreateController extends Component {
                 },
                 scheduleType: "custom-schedule",
             },
+            teams: [],
             isGettingTeams: true,
             isSubmitting: false,
             showScheduleByRelease: false,
@@ -65,7 +65,7 @@ export class CollectionCreateController extends Component {
         this.blankNewCollectionDetails = this.state.newCollectionDetails;
     }
 
-    UNSAFE_componentWillMount() {
+    componentDidMount() {
         this.getAllTeams();
     }
 
@@ -77,15 +77,9 @@ export class CollectionCreateController extends Component {
                     this.setState({ isGettingTeams: false });
                     return;
                 }
-                const allTeams = teams.map(team => {
-                    return { id: team.id.toString(), name: team.name };
-                });
                 this.setState({
                     isGettingTeams: false,
                 });
-                this.props.dispatch(updateAllTeamIDsAndNames(allTeams));
-
-                // Not needed for this screen but keeps teams array up-to-date for the teams screen
                 this.props.dispatch(updateAllTeams(teams));
             })
             .catch(error => {
@@ -156,10 +150,10 @@ export class CollectionCreateController extends Component {
         }
 
         // get info for selected team from teams list in state
-        const selectedTeam = this.props.allTeams.find(team => {
+        const selectedTeam = this.props.teams.find(team => {
             return team.id === teamID;
         });
-        const allTeams = this.state.updatedAllTeams || this.props.allTeams || [];
+        const allTeams = this.state.updatedAllTeams || this.props.teams || [];
         const updatedAllTeams = allTeams.map(team => {
             if (team.id == teamID) {
                 return {
@@ -418,7 +412,7 @@ export class CollectionCreateController extends Component {
                     handleSelectRelease={this.handleSelectRelease}
                     handleCloseRelease={this.handleCloseRelease}
                     hasTeams={!this.state.isGettingTeams}
-                    allTeams={this.state.updatedAllTeams || this.props.allTeams || []}
+                    allTeams={this.props.teams || []}
                     handleScheduleTypeChange={this.handleScheduleTypeChange}
                     handlePublishTimeChange={this.handlePublishTimeChange}
                     handlePublishDateChange={this.handlePublishDateChange}
@@ -436,7 +430,7 @@ CollectionCreateController.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        allTeams: state.state.teams.allIDsAndNames,
+        teams: getMappedTeams(state.state),
         newCollection: getActive(state.state),
     };
 }
