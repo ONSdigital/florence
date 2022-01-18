@@ -201,4 +201,4 @@ const Index = () => {
     );
 };
 
-ReactDOM.render(<Index />, document.getElementById("app"));
+ReactDOM.render(<React.StrictMode><Index /></React.StrictMode>, document.getElementById("app"));

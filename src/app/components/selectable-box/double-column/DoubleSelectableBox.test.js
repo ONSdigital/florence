@@ -3,7 +3,7 @@ import { render, fireEvent, screen, getByText } from "@testing-library/react";
 import { within } from "@testing-library/dom";
 import "@testing-library/jest-dom/extend-expect";
 import renderer from "react-test-renderer";
-import { items } from "../../../../tests/mockData";
+import { items } from "../../../utilities/tests/mockData";
 import DoubleSelectableBox from "./DoubleSelectableBox";
 
 const props = {

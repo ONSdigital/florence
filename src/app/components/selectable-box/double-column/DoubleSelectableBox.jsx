@@ -1,29 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { useSort } from "../../../hooks/useSort";
-import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 import Sort from "../../sort";
+import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 
 const DoubleSelectableBox = props => {
     const { sortedItems, requestSort, sortConfig } = useSort(props.items, { key: "name", direction: "ASC" });
-
-    const renderList = () => {
-        return (
-            <ul id="selectable-box" className="selectable-box__list">
-                {sortedItems.map(item => {
-                    return (
-                        <DoubleSelectableBoxItem
-                            key={item.id}
-                            {...item}
-                            isSelected={props.activeItemID && item.id === props.activeItemID}
-                            handleClick={props.handleItemClick}
-                        />
-                    );
-                })}
-            </ul>
-        );
-    };
+    const renderList = () => (
+        <ul id="selectable-box" className="selectable-box__list" data-testid="selectable-box">
+            {sortedItems.map(item => {
+                return (
+                    <DoubleSelectableBoxItem
+                        key={item.id}
+                        {...item}
+                        isSelected={props.activeItemID && item.id === props.activeItemID}
+                        handleClick={props.handleItemClick}
+                    />
+                );
+            })}
+        </ul>
+    );
     const renderMessage = () => {
         if (props.search) {
             return (

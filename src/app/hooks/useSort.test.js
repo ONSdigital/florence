@@ -1,7 +1,7 @@
 import React from "react";
-import { HookWrapper } from "../../tests/test-utils";
+import { HookWrapper } from "../utilities/tests/test-utils";
 import { shallow } from "enzyme";
-import { collections } from "../../tests/mockData";
+import { collections } from "../utilities/tests/mockData";
 import { useSort } from "./useSort";
 
 describe("useSort", () => {

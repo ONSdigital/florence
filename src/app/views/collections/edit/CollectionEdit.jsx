@@ -64,8 +64,8 @@ class CollectionEdit extends Component {
         this.props.onTeamSelect(event.target.value);
     };
 
-    handleTeamRemove = team => {
-        this.props.onRemoveTeam(team.id);
+    handleTeamRemove = id => {
+        this.props.onRemoveTeam(id);
     };
 
     handleNameChange = event => {

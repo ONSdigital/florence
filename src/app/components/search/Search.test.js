@@ -1,28 +1,35 @@
 import React from "react";
-import { WrapperComponent } from "../../../tests/test-utils";
-import Search from "./Search";
-import { mount, shallow } from "enzyme";
+import { WrapperComponent } from "../../utilities/tests/test-utils";
+import { render, screen, getByRole, queryByRole, queryByText } from "@testing-library/react";
+import "@testing-library/jest-dom/extend-expect";
+import userEvent from "@testing-library/user-event";
 import renderer from "react-test-renderer";
+import Search from "./Search";
+
+const defaultProps = { saveSearch: jest.fn() };
 
 describe("Search", () => {
     it("matches the snapshot", () => {
-        const wrapper = renderer.create(
+        const tree = renderer.create(
             <WrapperComponent>
-                <Search />
+                <Search {...defaultProps} />
             </WrapperComponent>
         );
-        expect(wrapper.toJSON()).toMatchSnapshot();
+        expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("updates value on change", () => {
-        const wrapper = mount(
+        render(
             <WrapperComponent>
-                <Search />
+                <Search {...defaultProps} />
             </WrapperComponent>
         );
-        const event = { target: { value: "test" } };
-        const onChange = jest.fn();
-        wrapper.find("input#search_input").simulate("change", event);
-        expect(wrapper.find("input#search_input").getElement().props.value).toBe("test");
+        const searchInput = screen.getByPlaceholderText("Search for a collection name");
+
+        userEvent.paste(searchInput, "Boo");
+        expect(searchInput).toHaveValue("Boo");
+
+        userEvent.click(screen.getByRole("button", { name: "Search" }));
+        expect(defaultProps.saveSearch).toHaveBeenCalledWith("Boo");
     });
 });

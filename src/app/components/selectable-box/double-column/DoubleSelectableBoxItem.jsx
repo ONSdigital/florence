@@ -5,7 +5,8 @@ import clsx from "clsx";
 const DoubleSelectableBoxItem = ({ id, isSelected, status, selectableBox, handleClick }) => (
     <li
         id={id}
-        className={clsx("selectable-box__item", { selected: isSelected }, { neutral: status.neutral }, { warning: status.warning })}
+        data-testid={id}
+        className={clsx("selectable-box__item", { selected: isSelected }, { neutral: status?.neutral }, { warning: status?.warning })}
         onClick={() => handleClick(id)}
     >
         <div className="grid">

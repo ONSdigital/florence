@@ -9,9 +9,13 @@ import {
     updateCollectionFailure,
     updateCollectionSuccess,
     updateCollectionProgress,
+    updateAllTeamsProgress,
+    updateAllTeams,
+    updateAllTeamsFailure,
 } from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
+import teams from "../utilities/api-clients/teams";
 import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 
@@ -24,6 +28,7 @@ export const loadCollectionsRequest = redirect => dispatch => {
             return dispatch(loadCollectionsSuccess(response));
         })
         .catch(error => {
+            dispatch(loadCollectionsFailure());
             // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
             switch (error.status) {
                 case 404: {
@@ -78,7 +83,7 @@ export const loadCollectionsRequest = redirect => dispatch => {
         });
 };
 
-export const createCollectionRequest = collection => (dispatch, getState) => {
+export const createCollectionRequest = collection => dispatch => {
     collections
         .create(collection)
         .then(response => {
@@ -87,7 +92,6 @@ export const createCollectionRequest = collection => (dispatch, getState) => {
         })
         .catch(error => {
             // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
-
             switch (error.status) {
                 case 401: {
                     break;
@@ -143,5 +147,52 @@ export const approveCollectionRequest = (id, redirect) => dispatch => {
             console.error("Error approving collection", error);
             dispatch(updateCollectionFailure());
             collectionDetailsErrorNotifications.updateCollection(error);
+        });
+};
+
+export const loadTeamsRequest = () => dispatch => {
+    dispatch(updateAllTeamsProgress());
+    teams
+        .getAll()
+        .then(response => {
+            if (!response) return dispatch(updateAllTeamsFailure());
+            return dispatch(updateAllTeams(response));
+        })
+        .catch(error => {
+            dispatch(updateAllTeamsFailure());
+            switch (error.status) {
+                case 401: {
+                    // This is handled by the request function, so do nothing here
+                    break;
+                }
+                case "RESPONSE_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: FETCH_ERR("teams"),
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case "UNEXPECTED_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: UNEXPECTED_ERR("teams"),
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+                case "FETCH_ERR": {
+                    const notification = {
+                        type: "warning",
+                        message: NETWORK_ERR("teams"),
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                    break;
+                }
+            }
+            console.error("Error fetching all teams:\n", error);
         });
 };

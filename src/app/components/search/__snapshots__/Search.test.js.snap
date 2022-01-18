@@ -4,6 +4,7 @@ exports[`Search matches the snapshot 1`] = `
 <form
   className="search__form--inline padding--bottom--1"
   onSubmit={[Function]}
+  role="search"
 >
   <div
     className="search__input-group"
@@ -19,8 +20,15 @@ exports[`Search matches the snapshot 1`] = `
         fill="#808080"
       />
     </svg>
+    <label
+      className="visually-hidden"
+      htmlFor="search_input"
+    >
+      Search collections
+    </label>
     <input
       id="search_input"
+      name="search"
       onChange={[Function]}
       placeholder="Search for a collection name"
       value=""

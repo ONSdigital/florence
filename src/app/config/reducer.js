@@ -207,21 +207,31 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.UPDATE_ALL_TEAMS_PROGRESS: {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.UPDATE_ALL_TEAMS_FAILURE: {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    isLoading: false,
+                },
+            };
+        }
         case types.UPDATE_ALL_TEAMS: {
             return {
                 ...state,
                 teams: {
                     ...state.teams,
                     all: action.allTeams,
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAM_IDS_AND_NAMES: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    allIDsAndNames: action.allTeamIDsAndNames,
+                    isLoading: false,
                 },
             };
         }

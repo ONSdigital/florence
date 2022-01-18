@@ -51,7 +51,6 @@ exports[`UsersList matches the snapshot 1`] = `
             className="form__label"
             htmlFor="search-content-types"
           />
-          
           <input
             autoComplete="new-password"
             autoFocus={false}
@@ -64,7 +63,6 @@ exports[`UsersList matches the snapshot 1`] = `
             placeholder="Search user by name or email"
             type="text"
           />
-          
         </div>
       </div>
     </div>

@@ -14,3 +14,7 @@ export const NOT_FOUND_ERR = key => {
 export const PERMISSIONS_ERR = key => {
     `You don't have permissions to view ${key}`;
 };
+
+export const NETWORK_ERR = key => {
+    `There's been a network error whilst trying to get ${key}. Try refresh the page.`;
+};

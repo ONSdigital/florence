@@ -48,10 +48,12 @@ exports[`DoubleSelectableBox matches the snapshot 1`] = `
   </div>
   <ul
     className="selectable-box__list"
+    data-testid="selectable-box"
     id="selectable-box"
   >
     <li
       className="selectable-box__item selected neutral"
+      data-testid="2"
       id="2"
       onClick={[Function]}
     >
@@ -73,6 +75,7 @@ exports[`DoubleSelectableBox matches the snapshot 1`] = `
     </li>
     <li
       className="selectable-box__item neutral"
+      data-testid="3"
       id="3"
       onClick={[Function]}
     >
@@ -94,6 +97,7 @@ exports[`DoubleSelectableBox matches the snapshot 1`] = `
     </li>
     <li
       className="selectable-box__item neutral"
+      data-testid="1"
       id="1"
       onClick={[Function]}
     >

@@ -1,7 +1,7 @@
 import React from "react";
 import { shallow, mount } from "enzyme";
 import { Link } from "react-router";
-import { createMockUser } from "../../../tests/test-utils";
+import { createMockUser } from "../../utilities/tests/test-utils";
 import NavBar from "./NavBar";
 import PreviewNav from "../preview-nav/PreviewNav";
 

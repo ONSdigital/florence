@@ -26,7 +26,8 @@ export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
 
 export const getTeams = state => state.teams.all;
+export const getTeamsLoading = state => state.teams.isLoading;
 export const getMappedTeams = createSelector(getTeams, teams => {
     if (!teams) return [];
     return teams.map(team => ({ id: team.id.toString(), name: team.name }));
-})
+});

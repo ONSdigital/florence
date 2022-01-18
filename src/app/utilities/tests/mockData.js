@@ -62,30 +62,30 @@ const collections = [
 const items = [
     {
         id: "1",
-        name:"Foo",
+        name: "Foo",
         selectableBox: {
             firstColumn: "Foo",
             secondColumn: "2021-12-17T09:30:00.000Z",
         },
-        status: {neutral: true, warning: false, message:''},
+        status: { neutral: true, warning: false, message: "" },
     },
     {
         id: "2",
-        name: 'Bar',
+        name: "Bar",
         selectableBox: {
             firstColumn: "Bar",
             secondColumn: "Friday",
         },
-        status: {neutral: true, warning: false, message:''},
+        status: { neutral: true, warning: false, message: "" },
     },
     {
         id: "3",
-        name:'Baz',
+        name: "Baz",
         selectableBox: {
             firstColumn: "Baz",
             secondColumn: "[manual collection]",
         },
-        status: {neutral: true, warning: false, message:''},
+        status: { neutral: true, warning: false, message: "" },
     },
 ];
 
@@ -97,5 +97,5 @@ module.exports = {
     newCollection,
     collections,
     emptyCollection,
-    items
+    items,
 };

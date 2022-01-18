@@ -214,10 +214,15 @@ export function updateAllTeams(allTeams) {
     };
 }
 
-export function updateAllTeamIDsAndNames(allTeamIDsAndNames) {
+export function updateAllTeamsProgress() {
     return {
-        type: types.UPDATE_ALL_TEAM_IDS_AND_NAMES,
-        allTeamIDsAndNames,
+        type: types.UPDATE_ALL_TEAMS_PROGRESS,
+    };
+}
+
+export function updateAllTeamsFailure() {
+    return {
+        type: types.UPDATE_ALL_TEAMS_FAILURE,
     };
 }
 
