@@ -124,8 +124,11 @@ describe("Banner", () => {
             expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
         });
 
-        test("allows edit existing banner values when Edit button is clicked", async () => {
-            render(<Banner {...props} />);
+        test("allows edit existing banner values", async () => {
+            const handleBannerSave = jest.fn(() => {
+                /*do nothing*/
+            });
+            render(<Banner {...props} handleBannerSave={handleBannerSave} />);
 
             expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
@@ -145,6 +148,32 @@ describe("Banner", () => {
             await expect(screen.queryByLabelText("Title")).toHaveValue("Test TitleBoo");
             await expect(screen.queryByLabelText("Type")).toHaveValue("national_emergency");
             await expect(screen.queryByLabelText("Description")).toHaveValue("My emergency descriptionFoo");
+
+            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+
+            expect(handleBannerSave).toBeCalledWith({
+                description: "My emergency descriptionFoo",
+                linkText: "Read more",
+                title: "Test TitleBoo",
+                type: "national_emergency",
+                uri: "https://www.test.com/",
+            });
+        });
+
+        test("allows delete banner", async () => {
+            const handleBannerSave = jest.fn(() => {
+                /*do nothing*/
+            });
+            render(<Banner {...props} handleBannerSave={handleBannerSave} />);
+
+            expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
+            expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
+            expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
+            expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
+
+            userEvent.click(screen.getByText("Delete"));
+
+            expect(handleBannerSave).toBeCalledWith({});
         });
 
         test("validates values filled in the Banner Form", () => {
