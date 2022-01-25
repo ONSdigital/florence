@@ -20,7 +20,6 @@ export const errCodes = {
     INVALID_NEW_TEAM_NAME: "An invalid team name was provided, please change the name",
     INVALID_USER_BEING_ADDED_TO_TEAM:
         "Unable to add an invalid user account to the team, please navigate to the 'Preview teams' screen and then edit the team to add or remove users",
-    CREATE_TEAM_SUCCESS: (name, numberOfMembers) => {
-        `The preview team '${name}' has been created successfully with ${numberOfMembers} members`;
+    CREATE_TEAM_SUCCESS: (name, numberOfMembers) => { return `The preview team '${name}' has been created successfully with ${numberOfMembers} member(s)`;
     },
 };
