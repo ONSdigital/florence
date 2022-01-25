@@ -49,7 +49,9 @@ exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
         Members
       </strong>
     </span>
-    <p>
+    <p
+      data-testid="no-team-members"
+    >
       This team has no members
     </p>
   </div>

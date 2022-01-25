@@ -31,7 +31,6 @@ const withPreviewNavProps = {
 };
 
 const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
-const NavbarItemsWithCognitoAuth = ["Collections", "Users and access", "Preview teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -73,11 +72,10 @@ describe("NavBar", () => {
                 },
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
-            const nav = component.find(Link);
-            it("third item should be named 'Preview teams'", () => {
+            it("'Preview teams' option should be present", () => {
                 expect(component.hasClass("global-nav__list")).toBe(true);
                 expect(component.find(Link)).toHaveLength(NavbarItems.length);
-                nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItemsWithCognitoAuth[i]));
+                expect(component.find('[data-testid="preview-teams"]').getElement().props.children[0].includes("Preview teams"));
             });
         });
 

@@ -24,6 +24,5 @@ export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
-export const selectNewTeamUsersNotInTeam = state => state.newTeam.usersNotInTeam;
-export const selectNewTeamAllPreviewUsers = state => state.newTeam.allPreviewUsers;
-export const selectNewTeamUnsavedChanges = state => state.newTeam.unsavedChanges;
+export const selectPreviewUsersNotInCurrentTeam = state => state.teams.allPreviewUsers;
+export const selectUnsavedChangesOnTeamCreation = state => state.teams.unsavedChanges;

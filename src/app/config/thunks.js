@@ -13,7 +13,7 @@ import notifications from "../utilities/notifications";
 import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 import users from "../utilities/api-clients/user";
-import { getUsersRequestSuccess, newTeamUnsavedChanges } from "./newTeam/newTeamActions";
+import { getUsersRequestSuccess, teamsUnsavedChanges } from "./teams/teamsActions";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
@@ -161,7 +161,7 @@ export const getUsersRequest = () => dispatch => {
 };
 
 export const createTeam = (body, usersInTeam) => dispatch => {
-    dispatch(newTeamUnsavedChanges(false));
+    dispatch(teamsUnsavedChanges(false));
     teams
         .createTeam(body)
         .then(response => {
@@ -180,7 +180,7 @@ export const createTeam = (body, usersInTeam) => dispatch => {
             }
         })
         .catch(error => {
-            dispatch(newTeamUnsavedChanges(true));
+            dispatch(teamsUnsavedChanges(true));
             if (error.status != null && error.status === 400) {
                 const notification = {
                     type: "warning",

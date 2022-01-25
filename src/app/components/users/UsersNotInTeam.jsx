@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { connect } from "react-redux";
 import DynamicList from "../../components/dynamic-list/DynamicList";
 import PropTypes from "prop-types";
-import { selectNewTeamAllPreviewUsers } from "../../config/selectors";
+import { selectPreviewUsersNotInCurrentTeam } from "../../config/selectors";
 
 const propTypes = {
     loading: PropTypes.bool,
@@ -60,7 +60,7 @@ UsersNotInTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        allPreviewUsers: selectNewTeamAllPreviewUsers(state),
+        allPreviewUsers: selectPreviewUsersNotInCurrentTeam(state),
     };
 }
 

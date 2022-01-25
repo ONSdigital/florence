@@ -5,7 +5,7 @@ export const initialState = {
     unsavedChanges: false,
 };
 
-const newTeamReducer = (state = initialState, action) => {
+const teamsReducer = (state = initialState, action) => {
     switch (action.type) {
         case GET_USERS_REQUEST_SUCCESS: {
             return {
@@ -26,4 +26,4 @@ const newTeamReducer = (state = initialState, action) => {
     return state;
 };
 
-export default newTeamReducer;
+export default teamsReducer;

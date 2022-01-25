@@ -4,17 +4,26 @@ import CreateTeam from "./CreateTeam";
 import { WrapperComponent } from "../../../../tests/test-utils";
 import renderer from "react-test-renderer";
 
-let dispatchedActions = [];
+let dispatchedActions,
+    mockedNotifications = [];
 const mockDispatch = event => {
     dispatchedActions.push(event);
 };
+
+jest.mock("../../../utilities/notifications", () => {
+    return {
+        add: jest.fn(event => {
+            mockedNotifications.push(event);
+        }),
+    };
+});
 
 const mockedAllUsers = {
     count: 45,
     users: [
         {
             forename: "Test",
-            lastname: "user",
+            lastname: "this",
             email: "test@test.com",
             groups: [],
             status: "CONFIRMED",
@@ -46,17 +55,21 @@ const mockedAllUsers = {
 };
 
 describe("CreateTeam", () => {
-    const defaultBaseProps = {
+    beforeEach(() => {
+        dispatchedActions = [];
+    });
+    const props = {
         dispatch: mockDispatch,
         router: {
             listenBefore: () => {},
             setRouteLeaveHook: () => {},
         },
+        allPreviewUsers: mockedAllUsers,
     };
     describe("Given valid props on initial load", () => {
         const component = mount(
             <WrapperComponent>
-                <CreateTeam {...defaultBaseProps} />
+                <CreateTeam {...props} />
             </WrapperComponent>
         );
         it("renders the relevant components to screen", () => {
@@ -64,12 +77,20 @@ describe("CreateTeam", () => {
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
             expect(component.find('[data-testid="dynamic-list-title"]').length).toBe(1);
+            expect(component.find('[data-testid="no-team-members"]').length).toBe(1);
             expect(component.find("content-action-bar__warn__text").length).toBe(0);
         });
+        describe("Given user attempts to create team with no users or name", () => {
+            component.find("button#create-team-btn").simulate("click");
+            it("notifies the user this is an unacceptable action", () => {
+                expect(mockedNotifications.length).toBe(1);
+            });
+        });
+
         it("matches snapshot", () => {
             const componentForSnapshot = renderer.create(
                 <WrapperComponent>
-                    <CreateTeam {...defaultBaseProps} />
+                    <CreateTeam {...props} />
                 </WrapperComponent>
             );
             expect(componentForSnapshot.toJSON()).toMatchSnapshot();

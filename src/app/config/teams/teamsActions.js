@@ -7,7 +7,7 @@ export function getUsersRequestSuccess(results) {
     };
 }
 
-export function newTeamUnsavedChanges(unsavedChanges) {
+export function teamsUnsavedChanges(unsavedChanges) {
     return {
         type: types.NEW_TEAM_UNSAVED_CHANGES,
         unsavedChanges,

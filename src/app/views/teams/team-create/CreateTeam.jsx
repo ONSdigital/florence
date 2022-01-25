@@ -9,10 +9,10 @@ import ContentActionBar from "../../../components/content-action-bar/ContentActi
 import Input from "../../../components/Input";
 import Chip from "../../../components/chip/Chip";
 import { addPopout, removePopouts } from "../../../config/actions";
-import { newTeamUnsavedChanges } from "../../../config/newTeam/newTeamActions";
+import { teamsUnsavedChanges } from "../../../config/teams/teamsActions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
-import { selectNewTeamAllPreviewUsers, selectNewTeamUnsavedChanges } from "../../../config/selectors";
+import { selectPreviewUsersNotInCurrentTeam, selectUnsavedChangesOnTeamCreation } from "../../../config/selectors";
 
 const propTypes = {
     dispatch: PropTypes.func,
@@ -56,9 +56,9 @@ const CreateTeam = props => {
 
     useEffect(() => {
         if (teamName !== "" || usersInTeam?.length > 0) {
-            dispatch(newTeamUnsavedChanges(true));
+            dispatch(teamsUnsavedChanges(true));
         } else {
-            dispatch(newTeamUnsavedChanges(false));
+            dispatch(teamsUnsavedChanges(false));
         }
     }, [teamName, usersInTeam]);
 
@@ -155,7 +155,7 @@ const CreateTeam = props => {
             })}
         </div>
     );
-    const noTeamMembers = <p>This team has no members</p>;
+    const noTeamMembers = <p data-testid="no-team-members">This team has no members</p>;
     const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} />;
 
     return (
@@ -181,8 +181,8 @@ CreateTeam.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
-        allPreviewUsers: selectNewTeamAllPreviewUsers(state),
-        unsavedChanges: selectNewTeamUnsavedChanges(state),
+        allPreviewUsers: selectPreviewUsersNotInCurrentTeam(state),
+        unsavedChanges: selectUnsavedChangesOnTeamCreation(state),
     };
 }
 

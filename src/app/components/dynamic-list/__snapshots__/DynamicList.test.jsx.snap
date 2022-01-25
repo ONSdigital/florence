@@ -38,6 +38,7 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
   </div>
   <ul
     className="dynamic-list__container fifthHeight"
+    data-testid="dynamic-list-container"
   >
     <li
       className="dynamic-list-item"

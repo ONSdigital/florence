@@ -84,7 +84,7 @@ const NavBar = props => {
                         </li>
                         {props.config?.enableNewSignIn && (
                             <li className="global-nav__item">
-                                <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
+                                <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link" data-testid="preview-teams">
                                     Preview teams
                                 </Link>
                             </li>
