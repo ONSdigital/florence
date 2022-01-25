@@ -18,41 +18,38 @@ jest.mock("../../../utilities/notifications", () => {
     };
 });
 
-const mockedAllUsers = {
-    count: 45,
-    users: [
-        {
-            forename: "Test",
-            lastname: "this",
-            email: "test@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "aaa-bbb-ccc",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 2",
-            email: "test2@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ddd-eee-fff",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 3",
-            email: "test3@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ggg-hhh-iii",
-            status_notes: "",
-        },
-    ],
-};
+const allPreviewUsers = [
+    {
+        forename: "Test",
+        lastname: "this",
+        email: "test@test.com",
+        groups: [],
+        status: "CONFIRMED",
+        active: true,
+        id: "aaa-bbb-ccc",
+        status_notes: "",
+    },
+    {
+        forename: "Test",
+        lastname: "user 2",
+        email: "test2@test.com",
+        groups: [],
+        status: "CONFIRMED",
+        active: true,
+        id: "ddd-eee-fff",
+        status_notes: "",
+    },
+    {
+        forename: "Test",
+        lastname: "user 3",
+        email: "test3@test.com",
+        groups: [],
+        status: "CONFIRMED",
+        active: true,
+        id: "ggg-hhh-iii",
+        status_notes: "",
+    },
+];
 
 describe("CreateTeam", () => {
     beforeEach(() => {
@@ -64,7 +61,7 @@ describe("CreateTeam", () => {
             listenBefore: () => {},
             setRouteLeaveHook: () => {},
         },
-        allPreviewUsers: mockedAllUsers,
+        allPreviewUsers,
     };
     describe("Given valid props on initial load", () => {
         const component = mount(

@@ -27,6 +27,9 @@ const CreateTeam = props => {
     const [isLoading, setLoading] = useState(true);
     const [usersNotInTeam, setUsersNotInTeam] = useState([]);
     const usersInTeam = useMemo(() => {
+        if (allPreviewUsers == null) {
+            return [];
+        }
         return allPreviewUsers.filter(
             userToCheck => !usersNotInTeam.some(userEntryComparedAgainst => userToCheck.id === userEntryComparedAgainst.id)
         );
@@ -48,7 +51,7 @@ const CreateTeam = props => {
     }, [userConfirmedToLeave]);
 
     useEffect(() => {
-        if (allPreviewUsers.length) {
+        if (allPreviewUsers != null && allPreviewUsers.length) {
             setLoading(false);
             setUsersNotInTeam(allPreviewUsers);
         }
