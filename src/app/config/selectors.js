@@ -31,3 +31,5 @@ export const getMappedTeams = createSelector(getTeams, teams => {
     if (!teams) return [];
     return teams.map(team => ({ id: team.id.toString(), name: team.name }));
 });
+
+export const getNotifications = state => state.notifications;

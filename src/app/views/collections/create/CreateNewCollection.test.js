@@ -3,7 +3,7 @@ import { render, screen, getByRole, queryByRole, queryByText } from "@testing-li
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-import Create from "./Create";
+import CreateNewCollection from "./CreateNewCollection";
 
 const defaultProps = {
     collections: [],
@@ -16,15 +16,15 @@ const defaultProps = {
     },
 };
 
-describe("Create", () => {
+describe("CreateNewCollection", () => {
     describe("when no teams are available", () => {
         it("matches the snapshot", () => {
-            const tree = renderer.create(<Create {...defaultProps} />);
+            const tree = renderer.create(<CreateNewCollection {...defaultProps} />);
             expect(tree.toJSON()).toMatchSnapshot();
         });
 
         it("shows the form with default values", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
             expect(screen.getByLabelText("Select a team(s) that can view this collection")).toHaveValue("Select an option");
 
@@ -42,7 +42,7 @@ describe("Create", () => {
         });
 
         it("allows adding collection name", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
 
@@ -52,7 +52,7 @@ describe("Create", () => {
         });
 
         it("validates collection name if not empty", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
             expect(screen.queryByText("Collections must be given a name.")).not.toBeInTheDocument();
@@ -63,7 +63,7 @@ describe("Create", () => {
         });
 
         it("validates collection name for special characters", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
             expect(screen.queryByText("Collection names can only contain letters and numbers. (!) are not allowed")).not.toBeInTheDocument();
@@ -80,7 +80,7 @@ describe("Create", () => {
                 ...defaultProps,
                 collections: [{ name: "My Test" }, { name: "My Test - 1" }],
             };
-            render(<Create {...props} />);
+            render(<CreateNewCollection {...props} />);
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
 
             userEvent.paste(screen.getByLabelText("Collection name"), "My test");
@@ -91,7 +91,7 @@ describe("Create", () => {
         });
 
         it("allows changing collection Publish type", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Scheduled publish")).toBeChecked();
             expect(screen.getByLabelText("Manual publish")).not.toBeChecked();
@@ -108,7 +108,7 @@ describe("Create", () => {
         });
 
         it("allows changing collection Schedule type", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Custom schedule")).toBeChecked();
             expect(screen.getByLabelText("Calendar entry schedule")).not.toBeChecked();
@@ -125,7 +125,7 @@ describe("Create", () => {
         });
 
         it("allows adding Publish date", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Publish date")).toHaveValue("");
 
@@ -134,7 +134,7 @@ describe("Create", () => {
         });
 
         it("validates date", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.queryByText("Scheduled collections must be given a publish date.")).not.toBeInTheDocument();
             expect(screen.getByLabelText("Scheduled publish")).toBeChecked();
@@ -145,7 +145,7 @@ describe("Create", () => {
         });
 
         it("allows adding Publish time", () => {
-            render(<Create {...defaultProps} />);
+            render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Publish time")).toHaveValue("09:30");
 
@@ -164,7 +164,7 @@ describe("Create", () => {
                     { id: "2", name: "Team2" },
                 ],
             };
-            render(<Create {...props} />, { initialState });
+            render(<CreateNewCollection {...props} />, { initialState });
 
             expect(screen.getByLabelText("Select a team(s) that can view this collection")).toHaveValue("Select an option");
             expect(screen.getByRole("option", { name: "Team1" })).toBeInTheDocument();

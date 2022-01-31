@@ -14,8 +14,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        // TODO: managing the old and new way for time being
-        case types.LOAD_COLLECTIONS_SUCCESS || type.ADD_ALL_COLLECTIONS: {
+        case types.LOAD_COLLECTIONS_SUCCESS: {
             return {
                 ...state,
                 collections: {
@@ -61,37 +60,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.RESET: {
-            return {
-                ...initialState,
-                notifications: state.notifications,
-                popouts: state.popouts,
-                config: state.config,
-            };
-        }
-        case types.SET_CONFIG: {
-            return {
-                ...state,
-                config: {
-                    enableDatasetImport: action.config.enableDatasetImport,
-                    enableHomepagePublishing: action.config.enableHomepagePublishing,
-                    enableNewSignIn: action.config.enableNewSignIn,
-                },
-            };
-        }
-
-        case types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
-            let toDelete = { ...state.collections.toDelete };
-            toDelete[action.collectionID] = null;
-            return {
-                ...state,
-                collections: {
-                    ...state.collections,
-                    toDelete,
-                },
-            };
-        }
-        case types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
+        case types.DELETE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -186,6 +155,24 @@ export default function reducer(state = initialState, action) {
                         name: action.user.name,
                         role: action.user.role,
                     },
+                },
+            };
+        }
+        case types.RESET: {
+            return {
+                ...initialState,
+                notifications: state.notifications,
+                popouts: state.popouts,
+                config: state.config,
+            };
+        }
+        case types.SET_CONFIG: {
+            return {
+                ...state,
+                config: {
+                    enableDatasetImport: action.config.enableDatasetImport,
+                    enableHomepagePublishing: action.config.enableHomepagePublishing,
+                    enableNewSignIn: action.config.enableNewSignIn,
                 },
             };
         }

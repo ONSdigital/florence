@@ -4,11 +4,7 @@ import { CollectionDetailsController, mapStateToProps } from "./CollectionDetail
 import CollectionDetails from "./CollectionDetails";
 import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
-import {
-    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-    UPDATE_PAGES_IN_ACTIVE_COLLECTION,
-    UPDATE_ACTIVE_COLLECTION,
-} from "../../../config/constants";
+import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
 
 console.error = () => {};
 

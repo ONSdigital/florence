@@ -2,12 +2,12 @@ import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 
-const NotificationItem = ({ isVisible = false, type, message, buttons = [] }) => (
-    <li className={clsx("notifications__item", { visible: isVisible }, `notifications__item--${type}`)}>
-        {message}
-        {buttons.map((button, i) => {
+const NotificationItem = props => (
+    <li key={props.id + props.type} className={clsx("notifications__item", { visible: props.isVisible }, `notifications__item--${props.type}`)}>
+        {props.message}
+        {props.buttons.map((button, i) => {
             return (
-                <button key={`button${i}`} className="notifications__button" onClick={button.onClick}>
+                <button key={`button-${i}`} className="notifications__button" onClick={button.onClick}>
                     {button.text}
                     {button.icon}
                 </button>

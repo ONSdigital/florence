@@ -5,11 +5,6 @@ import { collections } from "../utilities/tests/mockData";
 import { useSort } from "./useSort";
 
 describe("useSort", () => {
-    it("should render", () => {
-        let wrapper = shallow(<HookWrapper />);
-        expect(wrapper.exists()).toBeTruthy();
-    });
-
     it("should return empty array", () => {
         let wrapper = shallow(<HookWrapper hook={() => useSort([], {})} />);
 

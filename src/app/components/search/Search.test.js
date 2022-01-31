@@ -30,6 +30,7 @@ describe("Search", () => {
         expect(searchInput).toHaveValue("Boo");
 
         userEvent.click(screen.getByRole("button", { name: "Search" }));
+
         expect(defaultProps.saveSearch).toHaveBeenCalledWith("Boo");
     });
 });
