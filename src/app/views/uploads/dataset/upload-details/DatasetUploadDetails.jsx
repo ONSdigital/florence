@@ -323,7 +323,7 @@ class DatasetUploadController extends Component {
             clearInterval(this.intervalID);
         }
 
-        if (recipeAPIResponse.format === "cantabular_table" || recipeAPIResponse.format === "cantabular_blob") {
+        if (recipeAPIResponse.format.includes("cantabular")) {
             this.setState({ isCantabular: true });
         }
 
