@@ -42,7 +42,7 @@
     "enzyme-to-json": "^3.6.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react": "^7.28.0",
     "eslint-webpack-plugin": "^3.0.1",
     "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
@@ -80,14 +80,14 @@
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "npm run prettier-cli; node ./node_modules/webpack/bin/webpack.js --mode=production",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "test": "export NODE_ENV=testing TZ='Europe/London' && jest --coverage",
+    "test": "export NODE_ENV=testing TZ='Europe/London' && jest",
     "test-watch": "export NODE_ENV=testing  TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "preinstall": "npx npm-force-resolutions && mkdir -p ../dist && cp -R img/ ../dist/img/",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
-    "prettier-test": "prettier --config prettierrc.json --check app/**/*.{js,jsx}",
+    "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint '**/*.js' --ignore-pattern node_modules/"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
   },
   "dependencies": {
     "acorn": "^8.4.1",

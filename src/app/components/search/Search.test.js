@@ -1,6 +1,6 @@
 import React from "react";
 import { WrapperComponent } from "../../utilities/tests/test-utils";
-import { render, screen, getByRole, queryByRole, queryByText } from "@testing-library/react";
+import { render, screen, getByRole } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
 import renderer from "react-test-renderer";
