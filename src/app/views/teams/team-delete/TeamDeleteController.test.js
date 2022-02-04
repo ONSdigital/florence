@@ -1,6 +1,6 @@
 import React from "react";
 import { TeamDeleteController } from "./TeamDeleteController";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 
 jest.mock("../../../utilities/notifications.js", () => {
     return {

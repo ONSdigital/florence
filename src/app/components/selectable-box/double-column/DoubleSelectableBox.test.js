@@ -1,5 +1,5 @@
 import React from "react";
-import { render, fireEvent, screen, getByText, queryByText, getByTestId, within } from "@testing-library/react";
+import { render, fireEvent, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import renderer from "react-test-renderer";
 import DoubleSelectableBox from "./DoubleSelectableBox";
@@ -87,8 +87,6 @@ describe("DoubleSelectableBox", () => {
 
         it("redirects to the collection details page", () => {
             render(<DoubleSelectableBox {...props} />);
-            screen.debug();
-
             const box = screen.getByTestId("selectable-box");
 
             userEvent.click(within(box).getByTestId("2"));

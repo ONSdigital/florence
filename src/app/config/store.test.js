@@ -1,10 +1,8 @@
 import { createStore, combineReducers } from "redux";
 import reducer from "./reducer";
-import userReducer from "./user/userReducer";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
 import { collections, users, notifications, teams, popouts } from "../utilities/tests/mockData";
-import { initialState } from "./initialState";
 
 describe("Store", () => {
     describe("state collections", () => {

@@ -88,14 +88,6 @@ const mockDispatch = event => {
 };
 const rootPath = "/florence";
 
-const defaultProps = {
-    dispatch: mockDispatch,
-    rootPath: rootPath,
-    params: {
-        userID: "",
-    },
-};
-
 describe("Calling getAllUsers function", () => {
     it("fetches data for all users", done =>
         withTimeout(done, () => {

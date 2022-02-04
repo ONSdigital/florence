@@ -1,6 +1,6 @@
 import React from "react";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import { syncHistoryWithStore, routerReducer, routerMiddleware } from "react-router-redux";
+import { routerReducer } from "react-router-redux";
 import { Provider } from "react-redux";
 import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
@@ -37,7 +37,6 @@ export function HookWrapper(props) {
 function render(
     ui,
     {
-        preloadedState,
         store = createStore(
             combineReducers({
                 state: reducer,

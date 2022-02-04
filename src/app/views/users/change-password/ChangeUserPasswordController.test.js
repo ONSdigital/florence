@@ -1,5 +1,4 @@
 import React from "react";
-import renderer from "react-test-renderer";
 import { shallow } from "enzyme";
 import user from "../../../utilities/api-clients/user";
 import log from "../../../utilities/logging/log";
