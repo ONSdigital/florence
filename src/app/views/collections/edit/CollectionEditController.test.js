@@ -6,7 +6,7 @@ import { UPDATE_ALL_TEAMS } from "../../../config/constants";
 
 console.error = () => {};
 console.warn = () => {};
-const fail = jest.fn()
+const fail = jest.fn();
 jest.mock("../../../utilities/websocket", () => {
     return {
         send: jest.fn(() => {}),

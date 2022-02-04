@@ -62,7 +62,7 @@ describe("useSort", () => {
         expect(collections[4].publishDate).toEqual("2021-12-17T09:30:00.000Z");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems} = hook;
+        let { sortedItems } = hook;
 
         expect(sortedItems[0].publishDate).toEqual("2021-11-17T09:30:00.000Z");
         expect(sortedItems[1].publishDate).toEqual("2021-12-17T09:30:00.000Z");
@@ -81,7 +81,7 @@ describe("useSort", () => {
         expect(collections[4].publishDate).toEqual("2021-12-17T09:30:00.000Z");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems} = hook;
+        let { sortedItems } = hook;
         expect(sortedItems[0].publishDate).toEqual("2022-01-01T00:30:00.000Z");
         expect(sortedItems[1].publishDate).toEqual("2021-12-17T09:30:00.000Z");
         expect(sortedItems[2].publishDate).toEqual("2021-11-17T09:30:00.000Z");
