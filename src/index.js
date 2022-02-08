@@ -48,6 +48,7 @@ import "./scss/main.scss";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
+
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -201,4 +202,4 @@ const Index = () => {
     );
 };
 
-ReactDOM.render(<React.StrictMode><Index /></React.StrictMode>, document.getElementById("app"));
+ReactDOM.render(<Index />, document.getElementById("app"));

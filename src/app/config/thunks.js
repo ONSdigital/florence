@@ -2,8 +2,6 @@ import { push } from "react-router-redux";
 import {
     loadCollectionsProgress,
     loadCollectionsSuccess,
-    addNotification,
-    createCollection,
     createCollectionSuccess,
     loadCollectionsFailure,
     updateCollectionFailure,
@@ -16,12 +14,11 @@ import {
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import teams from "../utilities/api-clients/teams";
-import { UNEXPECTED_ERR, FETCH_ERR, NOT_FOUND_ERR, PERMISSIONS_ERR } from "../constants/Errors";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 
-export const loadCollectionsRequest = redirect => dispatch => {
+export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(loadCollectionsProgress());
-    collections
+    await collections
         .getAll()
         .then(response => {
             if (!response) return dispatch(loadCollectionsFailure());
@@ -34,7 +31,7 @@ export const loadCollectionsRequest = redirect => dispatch => {
                 case 404: {
                     const notification = {
                         type: "warning",
-                        message: NOT_FOUND_ERR("collections"),
+                        message: "No API route available to get collections",
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
@@ -44,7 +41,7 @@ export const loadCollectionsRequest = redirect => dispatch => {
                 case 403: {
                     const notification = {
                         type: "warning",
-                        message: PERMISSIONS_ERR("collections"),
+                        message: "You don't have permissions to view collections",
                         autoDismiss: 5000,
                     };
                     notifications.add(notification);
@@ -55,7 +52,8 @@ export const loadCollectionsRequest = redirect => dispatch => {
                 case "UNEXPECTED_ERR": {
                     notifications.add({
                         type: "warning",
-                        message: UNEXPECTED_ERR("collections"),
+                        message:
+                            "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members.",
                         isDismissable: true,
                     });
                     break;
@@ -63,7 +61,8 @@ export const loadCollectionsRequest = redirect => dispatch => {
                 case "FETCH_ERR": {
                     const notification = {
                         type: "warning",
-                        message: FETCH_ERR("collections"),
+                        message:
+                            "There's been a network error whilst trying to get collections. You may only be able to see previously loaded information and not be able to edit any team members.",
                         isDismissable: true,
                     };
                     notifications.add(notification);
@@ -72,7 +71,8 @@ export const loadCollectionsRequest = redirect => dispatch => {
                 default: {
                     const notification = {
                         type: "warning",
-                        message: UNEXPECTED_ERR("collections"),
+                        message:
+                            "An unexpected error's occurred whilst trying to get collections. You may only be able to see previously loaded information and won't be able to edit any team members.",
                         isDismissable: true,
                     };
                     notifications.add(notification);
@@ -168,7 +168,8 @@ export const loadTeamsRequest = () => dispatch => {
                 case "RESPONSE_ERR": {
                     const notification = {
                         type: "warning",
-                        message: FETCH_ERR("teams"),
+                        message:
+                            "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
                         isDismissable: true,
                     };
                     notifications.add(notification);
@@ -177,7 +178,8 @@ export const loadTeamsRequest = () => dispatch => {
                 case "UNEXPECTED_ERR": {
                     const notification = {
                         type: "warning",
-                        message: UNEXPECTED_ERR("teams"),
+                        message:
+                            "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
                         isDismissable: true,
                     };
                     notifications.add(notification);
@@ -186,7 +188,7 @@ export const loadTeamsRequest = () => dispatch => {
                 case "FETCH_ERR": {
                     const notification = {
                         type: "warning",
-                        message: NETWORK_ERR("teams"),
+                        message: "There's been a network error whilst trying to get teams. Try refresh the page.",
                         isDismissable: true,
                     };
                     notifications.add(notification);

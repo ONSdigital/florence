@@ -1,9 +1,8 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import { Link } from "react-router";
 import { createMockUser } from "../../utilities/tests/test-utils";
 import NavBar from "./NavBar";
-import PreviewNav from "../preview-nav/PreviewNav";
 
 const notLoggedUser = createMockUser();
 const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");

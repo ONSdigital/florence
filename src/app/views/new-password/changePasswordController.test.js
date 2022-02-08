@@ -5,7 +5,7 @@ import { status } from "../../constants/Authentication";
 import React from "react";
 import ChangePasswordConfirmed from "./changePasswordConfirmed";
 
-let checkValidity = jest.fn((isValid, password) => ({}));
+let checkValidity = jest.fn(() => ({}));
 
 let setPermissions = jest.fn(() => ({}));
 

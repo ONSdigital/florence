@@ -35,7 +35,7 @@ export const EMPTY_COLLECTION = {
     scheduleType: "custom-schedule",
 };
 
-const Create = props => {
+const CreateNewCollection = props => {
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showScheduleByRelease, setShowScheduleByRelease] = useState(false);
@@ -340,7 +340,7 @@ const Create = props => {
     );
 };
 
-Create.propTypes = {
+CreateNewCollection.propTypes = {
     collections: PropTypes.array.isRequired,
     createCollectionRequest: PropTypes.func.isRequired,
     fetchingTeams: PropTypes.bool.isRequired,
@@ -349,4 +349,4 @@ Create.propTypes = {
     user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 
-export default Create;
+export default CreateNewCollection;

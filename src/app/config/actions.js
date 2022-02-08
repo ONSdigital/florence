@@ -13,13 +13,6 @@ export function setConfig(config) {
     };
 }
 
-export function addAllCollections(collections) {
-    return {
-        type: types.ADD_ALL_COLLECTIONS,
-        collections,
-    };
-}
-
 export function createCollectionSuccess(collection) {
     return {
         type: types.CREATE_COLLECTION_SUCCESS,
@@ -34,16 +27,9 @@ export function saveSearch(value) {
     };
 }
 
-export function markCollectionForDeleteFromAllCollections(collectionID) {
+export function deleteCollection(collectionID) {
     return {
-        type: types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-        collectionID,
-    };
-}
-
-export function deleteCollectionFromAllCollections(collectionID) {
-    return {
-        type: types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS,
+        type: types.DELETE_COLLECTION,
         collectionID,
     };
 }

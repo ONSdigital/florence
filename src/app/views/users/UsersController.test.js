@@ -1,6 +1,6 @@
 import React from "react";
 import { UsersController } from "./UsersController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import user from "../../utilities/api-clients/user";
 
 console.error = () => {};

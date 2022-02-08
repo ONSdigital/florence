@@ -1,7 +1,6 @@
 import React from "react";
 import Select from "./Select-box.jsx";
 import renderer from "react-test-renderer";
-import { shallow } from "enzyme";
 
 const contentsList = ["a", "b", "c"];
 

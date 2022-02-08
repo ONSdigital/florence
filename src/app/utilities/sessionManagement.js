@@ -32,7 +32,7 @@ export default class sessionManagement {
         sessionStorage.removeItem("refresh_expiry_time");
         this.removeInteractionMonitoring();
         this.removeWarnings();
-        for (const [key, value] of Object.entries(this.timers)) {
+        for (const [key] of Object.entries(this.timers)) {
             clearTimeout(this.timers[key]);
         }
         this.timers = {};

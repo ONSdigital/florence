@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { createCollectionRequest, loadCollectionsRequest } from "../../config/thunks";
+import { loadCollectionsRequest } from "../../config/thunks";
 import { updateWorkingOn } from "../../config/actions";
 import { getCollectionsLoading, getFilteredCollections, getSearch, getWorkingOn } from "../../config/selectors";
 import Collections from "./Collections";

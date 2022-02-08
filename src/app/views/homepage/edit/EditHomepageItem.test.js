@@ -5,8 +5,6 @@ import { shallow, mount } from "enzyme";
 import image from "../../../utilities/api-clients/images";
 import log from "../../../utilities/logging/log";
 
-import { bindFileUploadInput } from "../../../components/file-upload/bind";
-
 jest.mock("../../../utilities/api-clients/images", () => {
     return {
         create: jest.fn(() => {
@@ -72,14 +70,6 @@ const successRouteProps = {
     },
     handleSuccessClick: jest.fn(),
     handleCancelClick: jest.fn(),
-};
-
-const propsWithImage = {
-    ...successRouteProps,
-    data: {
-        ...successRouteProps.data,
-        image: "test-id",
-    },
 };
 
 const mockImage = {

@@ -1,8 +1,5 @@
-import React, { version } from "react";
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import { render, fireEvent, screen, WrapperComponent, createMockUser, within } from "../../utilities/tests/test-utils";
-import { Provider } from "react-redux";
-import renderer from "react-test-renderer";
+import React from "react";
+import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
 import Collections from "./Collections";
 import userEvent from "@testing-library/user-event";
 

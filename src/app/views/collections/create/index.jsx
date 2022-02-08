@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import Create from "./Create";
+import CreateNewCollection from "./CreateNewCollection";
 import { loadTeamsRequest, createCollectionRequest } from "../../../config/thunks";
 import { getMappedTeams, getTeamsLoading } from "../../../config/selectors";
 
@@ -13,4 +13,4 @@ const mapDispatchToProps = dispatch => ({
     createCollectionRequest: collection => dispatch(createCollectionRequest(collection)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Create);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateNewCollection);
