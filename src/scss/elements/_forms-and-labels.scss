@@ -39,6 +39,12 @@
         flex-wrap: nowrap;
     }
 
+    &__footer {
+        position: fixed;
+        background: $grey4;
+        width: 100%;
+        bottom: 0;
+    }
 }
 
 .fieldset {

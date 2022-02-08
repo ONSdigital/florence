@@ -10,10 +10,14 @@ import {
     updateAllTeamsProgress,
     updateAllTeams,
     updateAllTeamsFailure,
+    createUserSuccess,
+    createUserFailure,
+    createUserProgress,
 } from "./actions";
 import collections from "../utilities/api-clients/collections";
-import notifications from "../utilities/notifications";
 import teams from "../utilities/api-clients/teams";
+import notifications from "../utilities/notifications";
+import user from "../utilities/api-clients/user";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
@@ -196,5 +200,22 @@ export const loadTeamsRequest = () => dispatch => {
                 }
             }
             console.error("Error fetching all teams:\n", error);
+        });
+};
+export const createUserRequest = newUser => dispatch => {
+    dispatch(createUserProgress());
+    user.createNewUser(newUser)
+        .then(resp => {
+            dispatch(createUserSuccess(resp));
+            dispatch(push("/florence/users"));
+            //TODO: can not test the response object atm so will change this later
+            notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
+        })
+        .catch(e => {
+            dispatch(createUserFailure());
+            const errors = e.body.errors.map(err => `${err.code}: ${err.description}.`);
+            if (errors) {
+                notifications.add({ type: "warning", message: errors, autoDismiss: 5000 });
+            }
         });
 };
