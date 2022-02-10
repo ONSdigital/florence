@@ -166,6 +166,16 @@ function articleEditor(collectionId, data) {
 
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
+    // tags
+    if ($("#selectTopic").val() && !$("#selectSubTopic").val()) {
+      sweetAlert("Cannot save this page", "A value is required for 'Subtopic' if a 'Topic' has been selected");
+      return
+    } 
+    else {
+      data.description.primaryTopic = $("#selectTopic").val()[0]
+      data.description.secondaryTopics = $("#selectSubTopic").val()
+    }
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {

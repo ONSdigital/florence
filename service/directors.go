@@ -103,5 +103,6 @@ func tableDirector(req *http.Request) {
 }
 
 func topicsDirector(req *http.Request) {
+	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/topics")
 }

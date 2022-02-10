@@ -124,7 +124,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        tags(collectionId, pageData, templateData);
+        tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
