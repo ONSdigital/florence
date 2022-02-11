@@ -10,7 +10,7 @@ const propTypes = {
 };
 export default class SelectedItem extends Component {
     handleRemoveClick = () => {
-        this.props.onRemoveItem(this.props.item);
+        this.props.onRemoveItem(this.props.item.id);
     };
 
     render() {

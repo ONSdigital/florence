@@ -6,8 +6,8 @@ import objectIsEmpty from "is-empty-object";
 import { getCollections, getIsUpdatingCollection } from "../../../config/selectors";
 import { approveCollectionRequest } from "../../../config/thunks";
 import {
-    addAllCollections,
-    deleteCollectionFromAllCollections,
+    loadCollectionsSuccess,
+    deleteCollection,
     emptyActiveCollection,
     emptyWorkingOn,
     updateActiveCollection,
@@ -215,7 +215,7 @@ export class CollectionDetailsController extends Component {
         collections
             .delete(collectionID)
             .then(async () => {
-                this.props.dispatch(deleteCollectionFromAllCollections(collectionID));
+                this.props.dispatch(deleteCollection(collectionID));
                 this.props.dispatch(push(`${this.props.rootPath}/collections`));
                 const notification = {
                     type: "positive",

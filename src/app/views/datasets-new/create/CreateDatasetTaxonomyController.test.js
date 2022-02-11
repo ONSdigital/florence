@@ -1,6 +1,6 @@
 import React from "react";
 import { CreateDatasetTaxonomyController } from "./CreateDatasetTaxonomyController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import taxonomy from "../../../utilities/api-clients/taxonomy";
 import datasets from "../../../utilities/api-clients/datasets";
 import log from "../../../utilities/logging/log";

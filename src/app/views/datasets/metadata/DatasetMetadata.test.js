@@ -731,16 +731,6 @@ describe("Updating the review state on mount", () => {
 });
 
 describe("Renders the correct buttons", () => {
-    const completeProps = {
-        ...defaultProps,
-        dataset: {
-            ...exampleDataset.current,
-            reviewState: "complete",
-            lastEditedBy: "user-2@email.com",
-        },
-    };
-    const completeComponent = shallow(<DatasetMetadata {...completeProps} />);
-
     const inProgressProps = {
         ...defaultProps,
         dataset: {
@@ -750,16 +740,6 @@ describe("Renders the correct buttons", () => {
         },
     };
     const inProgressComponent = shallow(<DatasetMetadata {...inProgressProps} />);
-
-    const reviewedProps = {
-        ...defaultProps,
-        dataset: {
-            ...exampleDataset.current,
-            reviewState: "reviewed",
-            lastEditedBy: "user-2@email.com",
-        },
-    };
-    const reviewedComponent = shallow(<DatasetMetadata {...reviewedProps} />);
 
     it("disables the 'save' button loading data", async () => {
         expect(defaultComponent.state("isFetchingDataset")).toBeFalsy();

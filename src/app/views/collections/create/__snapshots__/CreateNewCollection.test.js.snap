@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create collection form matches stored snapshot 1`] = `
+exports[`CreateNewCollection when no teams are available matches the snapshot 1`] = `
 <form
   onSubmit={[Function]}
 >
@@ -26,7 +26,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
       type="text"
       value=""
     />
-    
   </div>
   <div
     className="form__input"
@@ -51,9 +50,9 @@ exports[`Create collection form matches stored snapshot 1`] = `
         value="default-option"
       >
         <option
-          value="Loading teams..."
+          value="Select an option"
         >
-          Loading teams...
+          Select an option
         </option>
       </select>
     </div>
@@ -185,15 +184,14 @@ exports[`Create collection form matches stored snapshot 1`] = `
           className="input"
           disabled={false}
           id="publish-date"
-          max="2017-10-12"
-          min="2017-10-12"
+          max="2027-10-06"
+          min="2017-10-06"
           name="publish-date"
           onChange={[Function]}
           onFocus={[Function]}
           type="date"
           value=""
         />
-        
       </div>
       <div
         className="form__input"
@@ -217,7 +215,6 @@ exports[`Create collection form matches stored snapshot 1`] = `
           type="time"
           value="09:30"
         />
-        
       </div>
     </div>
   </div>
@@ -228,6 +225,5 @@ exports[`Create collection form matches stored snapshot 1`] = `
   >
     Create collection
   </button>
-  
 </form>
 `;

@@ -64,12 +64,12 @@ const Layout = props => {
         );
 
     return (
-        <div>
+        <React.StrictMode>
             <NavBar location={props.location} />
             {props.children}
             {props.notifications && <Notifications notifications={props.notifications} />}
             {props.popouts && <Popouts popouts={props.popouts} />}
-        </div>
+        </React.StrictMode>
     );
 };
 

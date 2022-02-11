@@ -44,10 +44,12 @@ import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionR
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
-import "./scss/main.scss";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
+import NewUser from "./app/views/users/create/";
+import "./scss/main.scss";
+
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -143,6 +145,7 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
+                    <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdminOrEditor(NewUser))}/>
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route

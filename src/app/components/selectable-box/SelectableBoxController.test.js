@@ -1,7 +1,7 @@
 import React from "react";
 import SelectableBoxController from "./SelectableBoxController";
 import renderer from "react-test-renderer";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 
 const items = [
     {
@@ -55,7 +55,7 @@ describe("SelectableBoxController", () => {
         const props = {
             heading: "Selectable box test - handle item click",
             items,
-            handleItemClick: function (event) {
+            handleItemClick: function () {
                 itemHasBeenClicked = true;
             },
         };

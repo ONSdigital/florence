@@ -13,13 +13,6 @@ export function setConfig(config) {
     };
 }
 
-export function addAllCollections(collections) {
-    return {
-        type: types.ADD_ALL_COLLECTIONS,
-        collections,
-    };
-}
-
 export function createCollectionSuccess(collection) {
     return {
         type: types.CREATE_COLLECTION_SUCCESS,
@@ -34,16 +27,9 @@ export function saveSearch(value) {
     };
 }
 
-export function markCollectionForDeleteFromAllCollections(collectionID) {
+export function deleteCollection(collectionID) {
     return {
-        type: types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-        collectionID,
-    };
-}
-
-export function deleteCollectionFromAllCollections(collectionID) {
-    return {
-        type: types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS,
+        type: types.DELETE_COLLECTION,
         collectionID,
     };
 }
@@ -214,10 +200,15 @@ export function updateAllTeams(allTeams) {
     };
 }
 
-export function updateAllTeamIDsAndNames(allTeamIDsAndNames) {
+export function updateAllTeamsProgress() {
     return {
-        type: types.UPDATE_ALL_TEAM_IDS_AND_NAMES,
-        allTeamIDsAndNames,
+        type: types.UPDATE_ALL_TEAMS_PROGRESS,
+    };
+}
+
+export function updateAllTeamsFailure() {
+    return {
+        type: types.UPDATE_ALL_TEAMS_FAILURE,
     };
 }
 
@@ -332,3 +323,22 @@ export const updateCollectionSuccess = collection => ({
     type: types.UPDATE_COLLECTION_SUCCESS,
     collection,
 });
+
+export function createUserSuccess(user) {
+    return {
+        type: types.CREATE_USER_SUCCESS,
+        user,
+    };
+}
+
+export function createUserFailure() {
+    return {
+        type: types.CREATE_USER_FAILURE,
+    };
+}
+
+export function createUserProgress() {
+    return {
+        type: types.CREATE_USER_PROGRESS,
+    };
+}

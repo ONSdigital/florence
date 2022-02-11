@@ -18,8 +18,18 @@ export const getFilteredCollections = createSelector(getMappedCollections, getSe
         return name.includes(string);
     });
 });
+
 export const getWorkingOn = state => state.global.workingOn;
 export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
+
+export const getTeams = state => state.teams.all;
+export const getTeamsLoading = state => state.teams.isLoading;
+export const getMappedTeams = createSelector(getTeams, teams => {
+    if (!teams) return [];
+    return teams.map(team => ({ id: team.id.toString(), name: team.name }));
+});
+
+export const getNotifications = state => state.notifications;

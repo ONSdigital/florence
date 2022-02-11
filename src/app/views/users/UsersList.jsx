@@ -153,8 +153,10 @@ export const UsersList = props => {
                     <div className="grid__col-1">
                         <h1>Users</h1>
                     </div>
-                    <div className="grid__col-1">
-                        <a href={`${props.rootPath}/users/create`}>Create new user</a>
+                    <div className="grid__col-3">
+                        <Link className="margin-left--1" href="users/create">
+                            Create new user
+                        </Link>
                     </div>
                 </div>
                 <div className="grid">

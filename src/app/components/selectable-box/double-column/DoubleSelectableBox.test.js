@@ -1,10 +1,10 @@
 import React from "react";
-import { render, fireEvent, screen, getByText } from "@testing-library/react";
-import { within } from "@testing-library/dom";
+import { render, fireEvent, screen, within } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 import renderer from "react-test-renderer";
-import { items } from "../../../../tests/mockData";
 import DoubleSelectableBox from "./DoubleSelectableBox";
+import userEvent from "@testing-library/user-event";
+import { items } from "../../../utilities/tests/mockData";
 
 const props = {
     headings: ["Header1", "Header2"],
@@ -21,8 +21,21 @@ describe("DoubleSelectableBox", () => {
         expect(component.toJSON()).toMatchSnapshot();
     });
 
+    it("shows loader when isUpdating is true", () => {
+        const newProps = {
+            ...props,
+            items: [],
+            activeItemID: null,
+            isUpdating: true,
+            search: "",
+        };
+        render(<DoubleSelectableBox {...newProps} />);
+
+        expect(screen.getByTestId("loader")).toBeInTheDocument();
+    });
+
     describe("when there are no items", () => {
-        test("displays search result message not generic inside the table if search phrase was passed", () => {
+        it("displays search result message not generic inside the table if search phrase was passed", () => {
             const emptyProps = {
                 ...props,
                 items: [],
@@ -40,7 +53,7 @@ describe("DoubleSelectableBox", () => {
             screen.getByText("searching for something less specific");
         });
 
-        test("displays generic message when no search phrase was passed", () => {
+        it("displays generic message when no search phrase was passed", () => {
             const emptyProps = {
                 ...props,
                 search: "",
@@ -49,13 +62,13 @@ describe("DoubleSelectableBox", () => {
             render(<DoubleSelectableBox {...emptyProps} />);
 
             screen.getByText("No items to display");
-            expect(screen.findByText("Cannot find collection")).not.toBeInTheDocument;
-            expect(screen.findByText("Bar")).not.toBeInTheDocument;
+            expect(screen.queryByText("Cannot find collection")).not.toBeInTheDocument;
+            expect(screen.queryByText("Bar")).not.toBeInTheDocument;
         });
     });
 
     describe("when there are items passed in props", () => {
-        test("displays items in the table", () => {
+        it("displays items in the table", () => {
             const { container } = render(<DoubleSelectableBox {...props} />);
             const items = container.getElementsByClassName("selectable-box__item");
 
@@ -66,14 +79,24 @@ describe("DoubleSelectableBox", () => {
             expect(items[1]).toHaveTextContent("[manual collection]");
             expect(items[2]).toHaveTextContent("Foo");
             expect(items[2]).toHaveTextContent("2021-12-17T09:30:00.000Z");
+            expect(items[2]).toHaveTextContent("[My test message]");
 
             expect(container).not.toHaveTextContent("No items to display");
             expect(container).not.toHaveTextContent("Cannot find collection");
         });
+
+        it("redirects to the collection details page", () => {
+            render(<DoubleSelectableBox {...props} />);
+            const box = screen.getByTestId("selectable-box");
+
+            userEvent.click(within(box).getByTestId("2"));
+
+            expect(props.handleItemClick).toHaveBeenCalledWith("2");
+        });
     });
 
     describe("when Name header is clicked", () => {
-        test("updates active sort to DESC and back to ASC", () => {
+        it("updates active sort to DESC and back to ASC", () => {
             render(<DoubleSelectableBox {...props} />);
 
             const sortByNameBtn = screen.getByRole("button", { name: /sort by name/i });
@@ -97,7 +120,7 @@ describe("DoubleSelectableBox", () => {
     });
 
     describe("when Publish Date header is clicked", () => {
-        test("updates active sort to ASC and back to DESC by publish date column", () => {
+        it("updates active sort to ASC and back to DESC by publish date column", () => {
             render(<DoubleSelectableBox {...props} />);
 
             const sortByPublishNameBtn = screen.getByRole("button", { name: /sort by publishdate/i });

@@ -18,12 +18,13 @@ export const initialState = {
     teams: {
         active: {},
         all: [],
-        allIDsAndNames: [],
         users: [],
+        isLoading: false,
     },
     users: {
         active: {},
         all: [],
+        isCreating: false,
     },
     datasets: {
         all: [],

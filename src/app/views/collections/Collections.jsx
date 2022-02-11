@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { push } from "react-router-redux";
 import cookies from "../../utilities/cookies";
-import CollectionCreateController from "./create/CollectionCreateController";
+import CreateNewCollection from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
@@ -52,7 +52,7 @@ const Collections = props => {
                 {!isViewer && (
                     <div className="grid__col-4">
                         <h1 className="text-center">Create a collection</h1>
-                        <CollectionCreateController collections={collections} user={user} />
+                        <CreateNewCollection collections={collections} user={user} />
                     </div>
                 )}
             </div>

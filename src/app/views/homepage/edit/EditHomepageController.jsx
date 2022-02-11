@@ -1,4 +1,3 @@
-"use strict";
 import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
 import PropTypes from "prop-types";

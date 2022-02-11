@@ -1,6 +1,6 @@
 import React from "react";
 import { CreateCantabularDatasetController } from "./CreateCantabularDatasetController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
 
 console.error = () => {};

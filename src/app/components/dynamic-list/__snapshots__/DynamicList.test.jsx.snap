@@ -20,7 +20,6 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
       className="form__label"
       htmlFor="add-member-to-team-search-content-types"
     />
-    
     <input
       autoComplete="new-password"
       autoFocus={false}
@@ -33,7 +32,6 @@ exports[`DynamicList given props does it create a list matches the snapshot 1`] 
       placeholder="Search viewers by name or email"
       type="text"
     />
-    
   </div>
   <ul
     className="dynamic-list__container fifthHeight"
