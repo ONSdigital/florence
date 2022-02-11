@@ -7,6 +7,8 @@ import useForm from "../../../hooks/useForm";
 import Warning from "../../../icons/Warning";
 import validate from "./validate";
 import FormValidationError from "./ValidationErrors";
+import BackButton from "../../../components/back-button/BackButton";
+import FormFooter from "../../../components/form-footer";
 
 const NewUser = ({ createUser, rootPath, loading }) => {
     const { values, errors, handleChange, handleSubmit } = useForm(handleSave, validate, {});
@@ -21,9 +23,7 @@ const NewUser = ({ createUser, rootPath, loading }) => {
         <form className="form">
             <div className="grid grid--justify-space-around">
                 <div className="grid__col-9">
-                    <div className="margin-top--2">
-                        &#9664;&nbsp;<Link to={url.resolve("../")}>Back</Link>
-                    </div>
+                    <BackButton classNames={"margin-top--2"} />
                     <h2 className="margin-top--1">Create user</h2>
                     {hasErrors && <FormValidationError errors={errors} />}
                     <div className="grid">
@@ -58,24 +58,7 @@ const NewUser = ({ createUser, rootPath, loading }) => {
                         </div>
                     </div>
                 </div>
-            </div>
-            <div className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer">
-                <div className="grid__col-9">
-                    <div className="grid grid--align-baseline">
-                        <button type="submit" className="btn btn--positive btn--margin-right" onClick={handleSubmit} disabled={hasErrors}>
-                            {loading ? <div className="loader loader--dark" data-testid="loader" /> : "Save changes"}
-                        </button>
-                        <Link to={url.resolve("../")} className="btn btn--invert-primary btn--margin-right">
-                            Cancel
-                        </Link>
-                        {hasValues && (
-                            <span>
-                                <Warning classes="svg-icon--action-bar" ariaLabel="warning icon" viewBox="0 0 512 512" />
-                                &nbsp;You have unsaved changes
-                            </span>
-                        )}
-                    </div>
-                </div>
+                <FormFooter hasValues={hasValues} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </form>
     );

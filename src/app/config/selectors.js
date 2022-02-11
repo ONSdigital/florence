@@ -34,3 +34,12 @@ export const getMappedTeams = createSelector(getTeams, teams => {
 });
 
 export const getNotifications = state => state.notifications;
+
+export const getUser = state => state.users.active;
+export const getUserLoading = state => state.users.isLoadingActive;
+
+export const getGroups = state => state.groups.all;
+export const getGroupsLoading = state => state.groups.isLoading;
+
+// export const getUserGroups = state => state.userGroups.all;
+// export const getUserGroupsLoading = state => state.userGroups.isLoading;

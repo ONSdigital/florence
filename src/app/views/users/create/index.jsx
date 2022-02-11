@@ -3,7 +3,7 @@ import { createUserRequest } from "../../../config/thunks";
 import NewUser from "./NewUser";
 
 export const mapStateToProps = state => ({
-    loading: state.user.isCreating,
+    loading: state.state.users.isCreating,
     rootPath: state.state.rootPath,
 });
 

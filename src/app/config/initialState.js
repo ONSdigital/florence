@@ -26,6 +26,15 @@ export const initialState = {
         all: [],
         isCreating: false,
         previewUsers: [],
+        isLoadingActive: false,
+    },
+    userGroups: {
+        all: [],
+        isLoading: false,
+    },
+    groups: {
+        all: [],
+        isLoading: false,
     },
     datasets: {
         all: [],

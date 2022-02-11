@@ -1,20 +1,5 @@
 import { push } from "react-router-redux";
-import {
-    loadCollectionsProgress,
-    loadCollectionsSuccess,
-    createCollectionSuccess,
-    loadCollectionsFailure,
-    updateCollectionFailure,
-    updateCollectionSuccess,
-    updateCollectionProgress,
-    updateAllTeamsProgress,
-    updateAllTeams,
-    updateAllTeamsFailure,
-    createUserSuccess,
-    createUserFailure,
-    createUserProgress,
-    getUsersRequestSuccess,
-} from "./actions";
+import * as actions from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import user from "../utilities/api-clients/user";
@@ -25,15 +10,15 @@ import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
-    dispatch(loadCollectionsProgress());
+    dispatch(actions.loadCollectionsProgress());
     await collections
         .getAll()
         .then(response => {
-            if (!response) return dispatch(loadCollectionsFailure());
-            return dispatch(loadCollectionsSuccess(response));
+            if (!response) return dispatch(actions.loadCollectionsFailure());
+            return dispatch(actions.loadCollectionsSuccess(response));
         })
         .catch(error => {
-            dispatch(loadCollectionsFailure());
+            dispatch(actions.loadCollectionsFailure());
             // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
             switch (error.status) {
                 case 404: {
@@ -95,7 +80,7 @@ export const createCollectionRequest = collection => dispatch => {
     collections
         .create(collection)
         .then(response => {
-            dispatch(createCollectionSuccess(response));
+            dispatch(actions.createCollectionSuccess(response));
             dispatch(push("/florence/collections/" + response.id));
         })
         .catch(error => {
@@ -138,14 +123,14 @@ export const createCollectionRequest = collection => dispatch => {
 };
 
 export const approveCollectionRequest = (id, redirect) => dispatch => {
-    dispatch(updateCollectionProgress());
+    dispatch(actions.updateCollectionProgress());
     collections
         .approve(id)
         .then(response => {
             if (response) {
                 // TODO: correct API - the response is only 'true' so I need to fetch this collection separately
                 collections.get(id).then(response => {
-                    dispatch(updateCollectionSuccess(response));
+                    dispatch(actions.updateCollectionSuccess(response));
                     dispatch(push(redirect));
                 });
             }
@@ -153,21 +138,21 @@ export const approveCollectionRequest = (id, redirect) => dispatch => {
         .catch(error => {
             // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
             console.error("Error approving collection", error);
-            dispatch(updateCollectionFailure());
+            dispatch(actions.updateCollectionFailure());
             collectionDetailsErrorNotifications.updateCollection(error);
         });
 };
 
 export const loadTeamsRequest = () => dispatch => {
-    dispatch(updateAllTeamsProgress());
+    dispatch(actions.updateAllTeamsProgress());
     teams
         .getAll()
         .then(response => {
-            if (!response) return dispatch(updateAllTeamsFailure());
-            return dispatch(updateAllTeams(response));
+            if (!response) return dispatch(actions.updateAllTeamsFailure());
+            return dispatch(actions.updateAllTeams(response));
         })
         .catch(error => {
-            dispatch(updateAllTeamsFailure());
+            dispatch(actions.updateAllTeamsFailure());
             switch (error.status) {
                 case 401: {
                     // This is handled by the request function, so do nothing here
@@ -207,16 +192,16 @@ export const loadTeamsRequest = () => dispatch => {
         });
 };
 export const createUserRequest = newUser => dispatch => {
-    dispatch(createUserProgress());
+    dispatch(actions.createUserProgress());
     user.createNewUser(newUser)
-        .then(resp => {
-            dispatch(createUserSuccess(resp));
+        .then(response => {
+            dispatch(actions.createUserSuccess());
             dispatch(push("/florence/users"));
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
         })
         .catch(e => {
-            dispatch(createUserFailure());
+            dispatch(actions.createUserFailure());
             const errors = e.body.errors.map(err => `${err.code}: ${err.description}.`);
             if (errors) {
                 notifications.add({ type: "warning", message: errors, autoDismiss: 5000 });
@@ -228,7 +213,7 @@ export const getUsersRequest = () => dispatch => {
     users
         .getAll({ active: true })
         .then(response => {
-            dispatch(getUsersRequestSuccess(response));
+            dispatch(actions.getUsersRequestSuccess(response));
         })
         .catch(error => {
             console.error(error);
@@ -240,7 +225,7 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
+                dispatch(actions.addMembersToNewTeam(response.groupname, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
@@ -311,5 +296,53 @@ const addMembersToNewTeam = (groupName, members) => dispatch => {
                 notifications.add(notification);
             }
             console.error(error);
+
+export const fetchUserRequest = id => dispatch => {
+    dispatch(actions.loadUserProgress());
+    user.getUser(id)
+        .then(response => {
+            dispatch(actions.loadUserSuccess(response));
+        })
+        .catch(error => {
+            dispatch(actions.loadUserFailure());
+            //TODO: map responses to user friendly by content designer
+            console.log(error);
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+        });
+};
+
+export const fetchUserGroupsRequest = id => dispatch => {
+    dispatch(actions.loadUserGroupsProgress());
+    user.getUser(id)
+        .then(response => {
+            console.log("fetchUserGroupsRequest", response);
+            dispatch(actions.loadUserGroupsSuccess(response));
+        })
+        .catch(error => {
+            dispatch(actions.loadUserGroupsFailure());
+            //TODO: map responses to user friendly by content designer
+            console.log(error);
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+        });
+};
+
+export const fetchGroupsRequest = () => dispatch => {
+    dispatch(actions.loadGroupsProgress());
+    teams
+        .getGroups()
+        .then(response => {
+            dispatch(actions.loadGroupsSuccess(response.groups));
+        })
+        .catch(error => {
+            dispatch(actions.loadGroupsFailure());
+            //TODO: map responses to user friendly by content designer
+            console.log(error);
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
         });
 };

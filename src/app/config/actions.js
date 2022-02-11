@@ -342,10 +342,67 @@ export function createUserProgress() {
         type: types.CREATE_USER_PROGRESS,
     };
 }
-
+// TODO: Unify
 export function getUsersRequestSuccess(results) {
     return {
         type: types.GET_USERS_REQUEST_SUCCESS,
         users: results.users,
+    }
+}
+
+export function loadUserSuccess(user) {
+    return {
+        type: types.LOAD_USER_SUCCESS,
+        user,
+    };
+}
+
+export function loadUserFailure() {
+    return {
+        type: types.LOAD_USER_FAILURE,
+    };
+}
+
+export function loadUserProgress() {
+    return {
+        type: types.LOAD_USER_PROGRESS,
+    };
+}
+
+export function loadUserGroupsSuccess(id) {
+    return {
+        type: types.LOAD_USER_GROUPS_SUCCESS,
+        id,
+    };
+}
+
+export function loadUserGroupsFailure() {
+    return {
+        type: types.LOAD_USER_GROUPS_FAILURE,
+    };
+}
+
+export function loadUserGroupsProgress() {
+    return {
+        type: types.LOAD_USER_GROUPS_PROGRESS,
+    };
+}
+
+export function loadGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_GROUPS_SUCCESS,
+        groups,
+    };
+}
+
+export function loadGroupsFailure() {
+    return {
+        type: types.LOAD_GROUPS_FAILURE,
+    };
+}
+
+export function loadGroupsProgress() {
+    return {
+        type: types.LOAD_GROUPS_PROGRESS,
     };
 }

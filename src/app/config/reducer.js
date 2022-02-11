@@ -470,20 +470,116 @@ export default function reducer(state = initialState, action) {
         case types.CREATE_USER_PROGRESS: {
             return {
                 ...state,
-                isCreating: true,
+                users: {
+                    ...state.users,
+                    isCreating: true,
+                },
             };
         }
         case types.CREATE_USER_FAILURE: {
             return {
                 ...state,
-                isCreating: false,
+                users: {
+                    ...state.users,
+                    isCreating: false,
+                },
             };
         }
         case types.CREATE_USER_SUCCESS: {
             //TODO: can not test the response object atm so will change this later
+            const users = state.users.concat(action.user);
             return {
                 ...state,
-                isCreating: false,
+                users: {
+                    ...state.users,
+                    active: action.user,
+                    all: users,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case types.LOAD_USER_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case types.LOAD_USER_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoadingActive: false,
+                },
+            };
+        }
+        case types.LOAD_USER_SUCCESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoadingActive: false,
+                    active: action.user,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    all: action.groups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_PROGRESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_FAILURE: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    all: action.groups,
+                    isLoading: false,
+                },
             };
         }
         case GET_USERS_REQUEST_SUCCESS: {
