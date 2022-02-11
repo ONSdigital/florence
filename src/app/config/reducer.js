@@ -466,6 +466,25 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.CREATE_USER_PROGRESS: {
+            return {
+                ...state,
+                isCreating: true,
+            };
+        }
+        case types.CREATE_USER_FAILURE: {
+            return {
+                ...state,
+                isCreating: false,
+            };
+        }
+        case types.CREATE_USER_SUCCESS: {
+            //TODO: can not test the response object atm so will change this later
+            return {
+                ...state,
+                isCreating: false,
+            };
+        }
         default: {
             return state;
         }

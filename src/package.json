@@ -68,7 +68,7 @@
     "style-loader": "^3.2.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.2.0"
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",

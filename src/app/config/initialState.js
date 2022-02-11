@@ -24,6 +24,7 @@ export const initialState = {
     users: {
         active: {},
         all: [],
+        isCreating: false,
     },
     datasets: {
         all: [],

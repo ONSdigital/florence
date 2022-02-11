@@ -323,3 +323,22 @@ export const updateCollectionSuccess = collection => ({
     type: types.UPDATE_COLLECTION_SUCCESS,
     collection,
 });
+
+export function createUserSuccess(user) {
+    return {
+        type: types.CREATE_USER_SUCCESS,
+        user,
+    };
+}
+
+export function createUserFailure() {
+    return {
+        type: types.CREATE_USER_FAILURE,
+    };
+}
+
+export function createUserProgress() {
+    return {
+        type: types.CREATE_USER_PROGRESS,
+    };
+}

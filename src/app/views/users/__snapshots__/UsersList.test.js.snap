@@ -29,10 +29,13 @@ exports[`UsersList matches the snapshot 1`] = `
         </h1>
       </div>
       <div
-        className="grid__col-1"
+        className="grid__col-3"
       >
         <a
-          href="/florence/users/create"
+          className="margin-left--1"
+          href="users/create"
+          onClick={[Function]}
+          style={Object {}}
         >
           Create new user
         </a>

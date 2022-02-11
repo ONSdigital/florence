@@ -28,6 +28,11 @@ export default class user {
         return http.post(`/zebedee/users`, body);
     }
 
+    // TODO: new auth work
+    static createNewUser(body) {
+        return http.post(`/users`, body);
+    }
+
     static remove(email) {
         return http.delete(`/zebedee/users?email=" + ${email}`);
     }
