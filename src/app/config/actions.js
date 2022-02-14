@@ -369,9 +369,11 @@ export function loadUserProgress() {
     };
 }
 
-export function addGroupToUserSuccess() {
+export function addGroupToUserSuccess(userId, groups) {
     return {
         type: types.ADD_GROUPS_TO_USER_SUCCESS,
+        userId,
+        groups,
     };
 }
 
@@ -402,6 +404,6 @@ export function loadGroupsProgress() {
 export function loadGroupsSuccess(groups) {
     return {
         type: types.LOAD_GROUPS_SUCCESS,
-        groups
+        groups,
     };
 }

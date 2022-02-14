@@ -11,7 +11,7 @@ export const getMappedCollections = createSelector(getCollections, collections =
 
 export const getFilteredCollections = createSelector(getMappedCollections, getSearch, (collections, search) => {
     if (!collections) return [];
-    if (!getSearch) return collections;
+    if (!search) return collections;
     return collections.filter(collection => {
         const string = search.toLowerCase();
         const name = collection.name.toLowerCase();

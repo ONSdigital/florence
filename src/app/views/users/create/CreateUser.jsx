@@ -10,7 +10,7 @@ import FormValidationError from "./ValidationErrors";
 import BackButton from "../../../components/back-button/BackButton";
 import FormFooter from "../../../components/form-footer";
 
-const NewUser = ({ createUser, rootPath, loading }) => {
+const CreateUser = ({ createUser, rootPath, loading }) => {
     const { values, errors, handleChange, handleSubmit } = useForm(handleSave, validate, {});
     const hasErrors = Object.keys(errors).length > 0;
     const hasValues = Object.keys(values).length > 0;
@@ -64,10 +64,10 @@ const NewUser = ({ createUser, rootPath, loading }) => {
     );
 };
 
-NewUser.propTypes = {
+CreateUser.propTypes = {
     createUser: PropTypes.func.isRequired,
     loading: PropTypes.bool,
     rootPath: PropTypes.string.isRequired,
 };
 
-export default NewUser;
+export default CreateUser;

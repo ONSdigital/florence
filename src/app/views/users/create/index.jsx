@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { createUserRequest } from "../../../config/thunks";
-import NewUser from "./NewUser";
+import CreateUser from "./CreateUser";
 
 export const mapStateToProps = state => ({
     loading: state.state.users.isCreating,
@@ -11,4 +11,4 @@ const mapDispatchToProps = dispatch => ({
     createUser: user => dispatch(createUserRequest(user)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(NewUser);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateUser);

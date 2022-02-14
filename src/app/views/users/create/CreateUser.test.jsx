@@ -3,7 +3,7 @@ import { render, screen, within } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-import NewUser from "./NewUser";
+import CreateUser from "./CreateUser";
 import { debug } from "request";
 
 const props = {
@@ -13,14 +13,14 @@ const props = {
     rootPath: "test",
 };
 
-describe("NewUser", () => {
+describe("CreateUser", () => {
     it("matches the snapshot", () => {
-        const tree = renderer.create(<NewUser {...props} />);
+        const tree = renderer.create(<CreateUser {...props} />);
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("shows the form with default values", () => {
-        render(<NewUser {...props} />);
+        render(<CreateUser {...props} />);
         expect(screen.getByLabelText(/First name/i)).toHaveValue("");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("");
         expect(screen.getByLabelText(/Email address/i)).toHaveValue("");
@@ -30,7 +30,7 @@ describe("NewUser", () => {
     });
 
     it("allows adding fields ans shows unsaved changes message", () => {
-        render(<NewUser {...props} />);
+        render(<CreateUser {...props} />);
 
         userEvent.paste(screen.getByLabelText(/First name/i), "My test First name");
         expect(screen.getByLabelText(/First name/i)).toHaveValue("My test First name");
@@ -45,7 +45,7 @@ describe("NewUser", () => {
     });
 
     it("validates form and display errors in panel and within input", () => {
-        render(<NewUser {...props} />);
+        render(<CreateUser {...props} />);
 
         userEvent.click(screen.getByText(/save changes/i));
 
@@ -64,7 +64,7 @@ describe("NewUser", () => {
             ...props,
             loading: true,
         };
-        render(<NewUser {...newProps} />);
+        render(<CreateUser {...newProps} />);
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 });

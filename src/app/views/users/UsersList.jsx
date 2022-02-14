@@ -128,9 +128,9 @@ export const UsersList = props => {
     const [filteredUsers, setFilteredUsers] = useState(null);
 
     useEffect(() => {
-        // if (!isAdmin && !props.params.userID) {
-        //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
-        // }
+        if (!isAdmin && !props.params.userID) {
+            props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
+        }
         getAllUsers(props.dispatch, props.rootPath, setIsFetchingUsers);
     }, []);
 

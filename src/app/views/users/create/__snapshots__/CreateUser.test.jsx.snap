@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`NewUser matches the snapshot 1`] = `
+exports[`CreateUser matches the snapshot 1`] = `
 <form
   className="form"
 >
@@ -98,31 +98,30 @@ exports[`NewUser matches the snapshot 1`] = `
         </div>
       </div>
     </div>
-  </div>
-  <div
-    className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
-  >
     <div
-      className="grid__col-9"
+      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
     >
       <div
-        className="grid grid--align-baseline"
+        className="grid__col-9"
       >
-        <button
-          className="btn btn--positive btn--margin-right"
-          disabled={false}
-          onClick={[Function]}
-          type="submit"
+        <div
+          className="grid grid--align-baseline"
         >
-          Save changes
-        </button>
-        <a
-          className="btn btn--invert-primary btn--margin-right"
-          onClick={[Function]}
-          style={Object {}}
-        >
-          Cancel
-        </a>
+          <button
+            className="btn btn--positive btn--margin-right"
+            onClick={[Function]}
+            type="submit"
+          >
+            Save changes
+          </button>
+          <a
+            className="btn btn--invert-primary btn--margin-right"
+            onClick={[Function]}
+            style={Object {}}
+          >
+            Cancel
+          </a>
+        </div>
       </div>
     </div>
   </div>

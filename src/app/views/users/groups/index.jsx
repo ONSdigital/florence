@@ -1,9 +1,9 @@
 import { connect } from "react-redux";
 import { fetchUserRequest, fetchGroupsRequest, addGroupsToUserRequest } from "../../../config/thunks";
 import { getUser, getUserLoading, getGroupsLoading, getGroups, getUserAddingToGroups } from "../../../config/selectors";
-import UserDetails from "./UserDetails";
+import AddGroupsToUser from "./AddGroupsToUser";
 
-export const mapStateToProps = state => console.log("state=>", state) || ({
+export const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     user: getUser(state.state),
     loading: getUserLoading(state.state),
@@ -18,4 +18,4 @@ export const mapDispatchToProps = dispatch => ({
     addGroupsToUser: (id, userGroups) => dispatch(addGroupsToUserRequest(id, userGroups)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(AddGroupsToUser);

@@ -1,25 +1,16 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
-import UserDetails from "./UserDetails";
+import { render, screen, createMockUser, within } from "../../../utilities/tests/test-utils";
+import AddGroupsToUser from "./AddGroupsToUser";
 
 const defaultProps = {
-    user: {
-        active: true,
-        email: "anna.emson@ons.gov.uk",
-        forename: "Anna",
-        groups: [],
-        id: "anna.emson@ons.gov.uk",
-        lastname: "Emson",
-        status: "CONFIRMED",
-        status_notes: "",
-    },
+    groups: [],
     loading: false,
 };
 
-describe("UserShow", () => {
+describe("AddGroupsToUser", () => {
     xit("matches the snapshot", () => {
-        const wrapper = renderer.create(<UserDetails {...defaultProps} />);
+        const wrapper = renderer.create(<AddGroupsToUser {...defaultProps} />);
         expect(wrapper.toJSON()).toMatchSnapshot();
     });
     xit("shows spinner when loading user data", () => {
@@ -29,7 +20,7 @@ describe("UserShow", () => {
         };
     });
     xit("shows user details", () => {
-        render(<UserDetails {...defaultProps} />);
+        render(<AddGroupsToUser {...defaultProps} />);
         expect(screen.getByText(/Back/i)).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Anna Emson/i);
         expect(screen.getByText("anna.emson@ons.gov.uk")).toBeInTheDocument();

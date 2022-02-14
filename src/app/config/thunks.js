@@ -191,6 +191,7 @@ export const loadTeamsRequest = () => dispatch => {
             console.error("Error fetching all teams:\n", error);
         });
 };
+
 export const createUserRequest = newUser => dispatch => {
     dispatch(actions.createUserProgress());
     user.createNewUser(newUser)
@@ -200,14 +201,13 @@ export const createUserRequest = newUser => dispatch => {
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
         })
-        .catch(e => {
-            dispatch(push(`/florence/users/create/${newUser.email}/groups`));
-            // dispatch(actions.createUserFailure());
-            // dispatch(push("/florence/users/"));
-            const errors = e.body.errors.map(err => `${err.code}: ${err.description}.`);
-            if (errors) {
-                notifications.add({ type: "warning", message: errors, autoDismiss: 5000 });
+        .catch(error => {
+            dispatch(actions.createUserFailure());
+            dispatch(push("/florence/users/"));
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
+            console.error(error);
         });
 };
 
@@ -310,25 +310,24 @@ export const fetchUserRequest = id => dispatch => {
         .catch(error => {
             dispatch(actions.loadUserFailure());
             //TODO: map responses to user friendly by content designer
-            console.log(error);
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
+            console.log(error);
         });
 };
 
 export const addGroupsToUserRequest = (userId, groups) => dispatch => {
     dispatch(actions.addGroupToUserProgress());
     let promises = [];
-    groups.forEach(group => promises.push(teams.addMemberToTeam(group.name, userId)));
+    groups.forEach(group => promises.push(teams.addMemberToTeam(group, userId)));
 
     Promise.all(promises)
         .then(response => {
-            console.log("addGroupToUser", response);
-            dispatch(actions.addGroupToUserSuccess());
+            dispatch(actions.addGroupToUserSuccess(userId, response));
             dispatch(push(`/florence/users`));
             //TODO: can not test the response object atm so will change this later
-            notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
+            notifications.add({ type: "positive", message: "Teams added to user successfully", autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.addGroupToUserFailure());
@@ -350,9 +349,9 @@ export const fetchGroupsRequest = () => dispatch => {
         .catch(error => {
             dispatch(actions.loadGroupsFailure());
             //TODO: map responses to user friendly by content designer
-            console.log(error);
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
+            console.log(error);
         });
 };

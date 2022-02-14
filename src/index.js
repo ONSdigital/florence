@@ -35,21 +35,20 @@ import EditHomepageController from "./app/views/homepage/edit/EditHomepageContro
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 import Logs from "./app/views/logs/Logs";
-import SelectableTest from "./SelectableTest";
+import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import VersionPreviewController from "./app/views/datasets/preview/VersionPreviewController";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
-import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
-import NotFound from "./app/components/not-found";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
-import NewUser from "./app/views/users/create/";
-import UserDetails from "./app/views/users/show";
+import CreateUser from "./app/views/users/create/";
+import AddGroupsToUser from "./app/views/users/groups";
+import NotFound from "./app/components/not-found";
 import "./scss/main.scss";
 
 const config = window.getEnv();
@@ -59,7 +58,7 @@ const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return true || state.user.isAuthenticated;
+        return state.user.isAuthenticated;
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "UserIsAuthenticated",
@@ -68,7 +67,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return true || auth.isAdminOrEditor(state.user);
+        return auth.isAdminOrEditor(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
@@ -157,8 +156,8 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(UserDetails))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(NewUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path="edit/:userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
@@ -205,7 +204,6 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
-                    <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
