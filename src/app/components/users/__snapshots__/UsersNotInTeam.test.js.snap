@@ -7,7 +7,6 @@ exports[`UsersNotInTeam Given some preview users not in the team Given valid pro
   <div>
     <h2
       className="dynamic-list__title"
-      data-testid="dynamic-list-title"
     >
       Add member to team
     </h2>
@@ -39,7 +38,7 @@ exports[`UsersNotInTeam Given some preview users not in the team Given valid pro
     </div>
     <div
       aria-live="assertive"
-      data-testid="dynamic-list-no-results"
+      className="dynamic-list__no-results"
     >
       No viewers found
     </div>
@@ -54,7 +53,6 @@ exports[`UsersNotInTeam Given some preview users not in the team matches snapsho
   <div>
     <h2
       className="dynamic-list__title"
-      data-testid="dynamic-list-title"
     >
       Add member to team
     </h2>
@@ -86,7 +84,6 @@ exports[`UsersNotInTeam Given some preview users not in the team matches snapsho
     </div>
     <ul
       className="dynamic-list__container height--60"
-      data-testid="dynamic-list-container"
     >
       <li
         className="dynamic-list-item"

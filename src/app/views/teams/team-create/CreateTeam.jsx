@@ -167,7 +167,7 @@ const CreateTeam = props => {
         );
     }
 
-    const noTeamMembers = <p data-testid="no-team-members">This team has no members</p>;
+    const noTeamMembers = <p className="no-team-members">This team has no members</p>;
     const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} />;
 
     return (

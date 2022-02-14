@@ -73,8 +73,8 @@ describe("CreateTeam", () => {
             expect(component.find("Connect(CreateTeam)")).toHaveLength(1);
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
-            expect(component.find('[data-testid="dynamic-list-title"]').length).toBe(1);
-            expect(component.find('[data-testid="no-team-members"]').length).toBe(1);
+            expect(component.find(".dynamic-list__title").length).toBe(1);
+            expect(component.find(".no-team-members").length).toBe(1);
             expect(component.find("content-action-bar__warn__text").length).toBe(0);
         });
         describe("Given user attempts to create team with no users or name", () => {

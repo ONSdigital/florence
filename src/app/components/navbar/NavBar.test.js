@@ -74,7 +74,8 @@ describe("NavBar", () => {
             it("'Preview teams' option should be present", () => {
                 expect(component.hasClass("global-nav__list")).toBe(true);
                 expect(component.find(Link)).toHaveLength(NavbarItems.length);
-                expect(component.find('[data-testid="preview-teams"]').getElement().props.children[0].includes("Preview teams"));
+                const link = component.find("Link[to='/florence/groups']");
+                expect(link.getElement().props.children[0].includes("Preview teams"));
             });
         });
 

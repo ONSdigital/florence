@@ -80,11 +80,11 @@ describe("UsersNotInTeam", () => {
             </WrapperComponent>
         );
         it("renders the list of users in alphabetical order that are not in the basket to be added to the team yet", () => {
-            expect(component.find('[data-testid="dynamic-list-title"]').text()).toBe("Add member to team");
+            expect(component.find(".dynamic-list__title").text()).toBe("Add member to team");
             expect(component.find("input#add-member-to-team-search-content-types")).toHaveLength(1);
-            expect(component.find('[data-testid="dynamic-list-container"]').children()).toHaveLength(2);
-            expect(component.find('[data-testid="dynamic-list-no-results"]')).toHaveLength(0);
-            const firstPreviewUserInList = component.find('[data-testid="dynamic-list-container"]').children().first();
+            expect(component.find(".dynamic-list__container").children()).toHaveLength(2);
+            expect(component.find(".dynamic-list__no-results")).toHaveLength(0);
+            const firstPreviewUserInList = component.find(".dynamic-list__container").children().first();
             expect(firstPreviewUserInList.find(".dynamic-list-item__title").text()).toBe("baz qux");
         });
 
@@ -110,10 +110,10 @@ describe("UsersNotInTeam", () => {
                 </WrapperComponent>
             );
             it("renders an empty list with info that no users found", () => {
-                expect(component.find('[data-testid="dynamic-list-title"]').text()).toBe("Add member to team");
+                expect(component.find(".dynamic-list__title").text()).toBe("Add member to team");
                 expect(component.find("input#add-member-to-team-search-content-types")).toHaveLength(1);
-                expect(component.find('[data-testid="dynamic-list-container"]').children()).toHaveLength(0);
-                expect(component.find('[data-testid="dynamic-list-no-results"]')).toHaveLength(1);
+                expect(component.find(".dynamic-list__container").children()).toHaveLength(0);
+                expect(component.find(".dynamic-list__no-results")).toHaveLength(1);
             });
             it("matches snapshot", () => {
                 const componentForSnapshot = renderer.create(
@@ -135,8 +135,8 @@ describe("UsersNotInTeam", () => {
         describe("Given a filter term is provided to the search input", () => {
             component.find("input#add-member-to-team-search-content-types").simulate("change", { target: { value: "foo" } });
             it("filters the list of users not in the team hiding users that do not match the search term", () => {
-                expect(component.find('[data-testid="dynamic-list-container"]').children()).toHaveLength(1);
-                const firstPreviewUserInList = component.find('[data-testid="dynamic-list-container"]').children().first();
+                expect(component.find(".dynamic-list__container").children()).toHaveLength(1);
+                const firstPreviewUserInList = component.find(".dynamic-list__container").children().first();
                 expect(firstPreviewUserInList.find(".dynamic-list-item__title").text()).toBe("foo bar");
             });
         });
