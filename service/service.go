@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/ONSdigital/florence/service/modifiers"
 	"net/url"
+
+	"github.com/ONSdigital/florence/service/modifiers"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
@@ -104,6 +105,12 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
+	topicsURL, err := url.Parse(cfg.TopicsURL)
+	if err != nil {
+		log.Event(ctx, "error parsing topic URL", log.FATAL, log.Error(err))
+		return nil, err
+	}
+
 	routerProxy := reverseproxy.Create(routerURL, director, nil)
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
@@ -111,6 +118,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
+	topicsProxy := reverseproxy.Create(topicsURL, topicsDirector, nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
 	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
@@ -131,19 +139,20 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 	}
-    if cfg.SharedConfig.EnableNewSignIn {
-        router.Handle("/tokens", identityAPIProxy)
-        router.Handle("/tokens/{uri:.*}", identityAPIProxy)
-        router.Handle("/users", identityAPIProxy)
-        router.Handle("/users/{uri:.*}", identityAPIProxy)
-        router.Handle("/groups/{uri:.*}", identityAPIProxy)
-        router.Handle("/groups", identityAPIProxy)
-        router.Handle("/password-reset", identityAPIProxy)
-        router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
-    }
+	if cfg.SharedConfig.EnableNewSignIn {
+		router.Handle("/tokens", identityAPIProxy)
+		router.Handle("/tokens/{uri:.*}", identityAPIProxy)
+		router.Handle("/users", identityAPIProxy)
+		router.Handle("/users/{uri:.*}", identityAPIProxy)
+		router.Handle("/groups/{uri:.*}", identityAPIProxy)
+		router.Handle("/groups", identityAPIProxy)
+		router.Handle("/password-reset", identityAPIProxy)
+		router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
+	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
+	router.Handle("/topics/{uri:.*}", topicsProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)

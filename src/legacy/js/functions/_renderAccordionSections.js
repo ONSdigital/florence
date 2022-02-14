@@ -5,7 +5,7 @@
  * @param isPageComplete - if present page has been approved
  */
 
-function renderAccordionSections(collectionId, pageData, isPageComplete) {
+ function renderAccordionSections(collectionId, pageData, isPageComplete) {
 
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;
@@ -124,6 +124,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');

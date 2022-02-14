@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
-	"github.com/ONSdigital/dp-cookies/cookies"
-	"github.com/ONSdigital/log.go/log"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/ONSdigital/dp-cookies/cookies"
+	"github.com/ONSdigital/log.go/log"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	dprequest "github.com/ONSdigital/dp-net/v2/request"
@@ -99,4 +100,9 @@ func datasetControllerDirector(req *http.Request) {
 
 func tableDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
+}
+
+func topicsDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/topics")
 }
