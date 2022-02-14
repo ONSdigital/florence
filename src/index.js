@@ -49,8 +49,8 @@ import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
 import NewUser from "./app/views/users/create/";
-import "./scss/main.scss";
 import UserDetails from "./app/views/users/show";
+import "./scss/main.scss";
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -157,10 +157,10 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} component={userIsAuthenticated(userIsAdminOrEditor(UserDetails))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdminOrEditor(NewUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(UserDetails))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(NewUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
-                        <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
+                        <Route path="edit/:userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
                                 path="change-password"
                                 component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))}

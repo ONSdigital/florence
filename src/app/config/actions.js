@@ -347,7 +347,7 @@ export function getUsersRequestSuccess(results) {
     return {
         type: types.GET_USERS_REQUEST_SUCCESS,
         users: results.users,
-    }
+    };
 }
 
 export function loadUserSuccess(user) {
@@ -369,29 +369,21 @@ export function loadUserProgress() {
     };
 }
 
-export function loadUserGroupsSuccess(id) {
+export function addGroupToUserSuccess() {
     return {
-        type: types.LOAD_USER_GROUPS_SUCCESS,
-        id,
+        type: types.ADD_GROUPS_TO_USER_SUCCESS,
     };
 }
 
-export function loadUserGroupsFailure() {
+export function addGroupToUserFailure() {
     return {
-        type: types.LOAD_USER_GROUPS_FAILURE,
+        type: types.ADD_GROUPS_TO_USER_FAILURE,
     };
 }
 
-export function loadUserGroupsProgress() {
+export function addGroupToUserProgress() {
     return {
-        type: types.LOAD_USER_GROUPS_PROGRESS,
-    };
-}
-
-export function loadGroupsSuccess(groups) {
-    return {
-        type: types.LOAD_GROUPS_SUCCESS,
-        groups,
+        type: types.ADD_GROUPS_TO_USER_PROGRESS,
     };
 }
 
@@ -404,5 +396,12 @@ export function loadGroupsFailure() {
 export function loadGroupsProgress() {
     return {
         type: types.LOAD_GROUPS_PROGRESS,
+    };
+}
+
+export function loadGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_GROUPS_SUCCESS,
+        groups
     };
 }

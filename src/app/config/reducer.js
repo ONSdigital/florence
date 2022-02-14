@@ -554,32 +554,22 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_USER_GROUPS_PROGRESS: {
+        case types.ADD_GROUPS_TO_USER_PROGRESS: {
             return {
                 ...state,
-                user: {
-                    ...state.user,
-                    isLoading: true,
-                },
+                isUserAddingToGroups: true,
             };
         }
-        case types.LOAD_USER_GROUPS_FAILURE: {
+        case types.ADD_GROUPS_TO_USER_FAILURE: {
             return {
                 ...state,
-                user: {
-                    ...state.user,
-                    isLoading: false,
-                },
+                isUserAddingToGroups: false,
             };
         }
-        case types.LOAD_USER_GROUPS_SUCCESS: {
+        case types.ADD_GROUPS_TO_USER_SUCCESS: {
             return {
                 ...state,
-                groups: {
-                    ...state.groups,
-                    all: action.groups,
-                    isLoading: false,
-                },
+                isUserAddingToGroups: false,
             };
         }
         case GET_USERS_REQUEST_SUCCESS: {

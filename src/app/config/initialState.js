@@ -28,10 +28,6 @@ export const initialState = {
         previewUsers: [],
         isLoadingActive: false,
     },
-    userGroups: {
-        all: [],
-        isLoading: false,
-    },
     groups: {
         all: [],
         isLoading: false,
@@ -43,6 +39,7 @@ export const initialState = {
         recipes: [],
         activeJob: {},
     },
+    isUserAddingToGroups: false,
     search: "",
     notifications: [],
     popouts: [],

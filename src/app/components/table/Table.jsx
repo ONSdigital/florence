@@ -5,9 +5,11 @@ function Table({ items, handleClick }) {
     if (!items) return null;
     return (
         <table className="simple-table simple-table__no-padding">
-            {items.map((item, key) => (
-                <Row key={key} {...item} handleClick={handleClick} />
-            ))}
+            <tbody>
+                {items.map((item, key) => (
+                    <Row key={key} {...item} handleClick={handleClick} />
+                ))}
+            </tbody>
         </table>
     );
 }

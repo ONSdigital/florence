@@ -66,8 +66,7 @@ const NewUser = ({ createUser, rootPath, loading }) => {
 
 NewUser.propTypes = {
     createUser: PropTypes.func.isRequired,
-    pushToUsers: PropTypes.func.isRequired,
-    loading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool,
     rootPath: PropTypes.string.isRequired,
 };
 

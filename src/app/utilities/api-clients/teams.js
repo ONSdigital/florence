@@ -54,4 +54,11 @@ export default class teams {
             return response;
         });
     }
+
+    static addGroupsToUser(name, body) {
+        return http.post(`/groups/${name}`, body).then(response => {
+            console.log("addUserToGroup=>", response);
+            return response;
+        });
+    }
 }
