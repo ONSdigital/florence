@@ -34,7 +34,7 @@ describe("DynamicList", () => {
         };
         const component = mount(<DynamicList {...dynamicListProps} />);
         it("should display a dynamic list", () => {
-            expect(component.find(".dynamic-list__title").length).toBe(1);
+            expect(component.find('[data-testid="dynamic-list-title"]').exists()).toBe(true);
             expect(component.find(".dynamic-list-item").length).toBe(2);
             expect(component.find(".dynamic-list-item__btn").length).toBe(2);
         });

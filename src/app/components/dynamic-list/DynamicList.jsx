@@ -11,6 +11,7 @@ const propTypes = {
     noResultsText: PropTypes.string,
     handleSearchInput: PropTypes.func,
     listItems: PropTypes.arrayOf(PropTypes.shape(DynamicListItem.propTypes)).isRequired,
+    loading: PropTypes.bool,
 };
 
 const DynamicList = props => {
@@ -19,18 +20,26 @@ const DynamicList = props => {
     let list;
     if (props.listItems.length > 0) {
         list = (
-            <ul className={`dynamic-list__container ${props.listHeightClass}`}>
+            <ul className={`dynamic-list__container ${props.listHeightClass}`} data-testid="dynamic-list-container">
                 {props.listItems.map((row, index) => {
                     return <DynamicListItem key={`dynamic-list-row-${index}`} {...row} />;
                 })}
             </ul>
         );
+    } else if (props.loading) {
+        list = <div className="loader loader--dark" />;
     } else {
-        list = <div aria-live="assertive">{props.noResultsText}</div>;
+        list = (
+            <div aria-live="assertive" data-testid="dynamic-list-no-results">
+                {props.noResultsText}
+            </div>
+        );
     }
     return (
         <div>
-            <HeadingLevel className="dynamic-list__title">{props.title}</HeadingLevel>
+            <HeadingLevel className="dynamic-list__title" data-testid="dynamic-list-title">
+                {props.title}
+            </HeadingLevel>
             {props.handleSearchInput && (
                 <>
                     <label htmlFor={searchID} className="visually-hidden">

@@ -342,3 +342,10 @@ export function createUserProgress() {
         type: types.CREATE_USER_PROGRESS,
     };
 }
+
+export function getUsersRequestSuccess(results) {
+    return {
+        type: types.GET_USERS_REQUEST_SUCCESS,
+        users: results.users,
+    };
+}
