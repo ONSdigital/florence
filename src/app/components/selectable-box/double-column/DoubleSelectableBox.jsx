@@ -1,29 +1,26 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 import { useSort } from "../../../hooks/useSort";
-import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 import Sort from "../../sort";
+import DoubleSelectableBoxItem from "./DoubleSelectableBoxItem";
 
 const DoubleSelectableBox = props => {
     const { sortedItems, requestSort, sortConfig } = useSort(props.items, { key: "name", direction: "ASC" });
-
-    const renderList = () => {
-        return (
-            <ul id="selectable-box" className="selectable-box__list">
-                {sortedItems.map(item => {
-                    return (
-                        <DoubleSelectableBoxItem
-                            key={item.id}
-                            {...item}
-                            isSelected={props.activeItemID && item.id === props.activeItemID}
-                            handleClick={props.handleItemClick}
-                        />
-                    );
-                })}
-            </ul>
-        );
-    };
+    const renderList = () => (
+        <ul id="selectable-box" className="selectable-box__list" data-testid="selectable-box">
+            {sortedItems.map(item => {
+                return (
+                    <DoubleSelectableBoxItem
+                        key={item.id}
+                        {...item}
+                        isSelected={props.activeItemID && item.id === props.activeItemID}
+                        handleClick={props.handleItemClick}
+                    />
+                );
+            })}
+        </ul>
+    );
     const renderMessage = () => {
         if (props.search) {
             return (
@@ -65,7 +62,7 @@ const DoubleSelectableBox = props => {
                 >
                     {props.headings[1]}
                     <Sort active={sortConfig} name="publishDate" />
-                    {props.isUpdating && <span className="selectable-box__status pull-right loader" />}
+                    {props.isUpdating && <span data-testid="loader" className="selectable-box__status pull-right loader" />}
                 </button>
             </div>
             {props.items.length > 0 ? renderList() : renderMessage()}

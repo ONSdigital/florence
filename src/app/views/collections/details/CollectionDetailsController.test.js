@@ -1,14 +1,10 @@
-import React, { Component } from "react";
-import { shallow, mount } from "enzyme";
+import React from "react";
+import { shallow } from "enzyme";
 import { CollectionDetailsController, mapStateToProps } from "./CollectionDetailsController";
 import CollectionDetails from "./CollectionDetails";
 import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
-import {
-    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-    UPDATE_PAGES_IN_ACTIVE_COLLECTION,
-    UPDATE_ACTIVE_COLLECTION,
-} from "../../../config/constants";
+import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
 
 console.error = () => {};
 
@@ -127,10 +123,6 @@ const defaultProps = {
 };
 
 const component = shallow(<CollectionDetailsController {...defaultProps} />);
-
-// Create a mounted component for when we need access to data in the component's props (e.g. the `collections` array),
-// which are only available on a full mount, not a shallow render.
-const componentWithProps = mount(<CollectionDetailsController {...defaultProps} />);
 
 beforeEach(() => {
     dispatchedActions = [];

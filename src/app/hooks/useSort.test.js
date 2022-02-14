@@ -1,20 +1,15 @@
 import React from "react";
-import { HookWrapper } from "../../tests/test-utils";
+import { HookWrapper } from "../utilities/tests/test-utils";
 import { shallow } from "enzyme";
-import { collections } from "../../tests/mockData";
+import { collections } from "../utilities/tests/mockData";
 import { useSort } from "./useSort";
 
 describe("useSort", () => {
-    it("should render", () => {
-        let wrapper = shallow(<HookWrapper />);
-        expect(wrapper.exists()).toBeTruthy();
-    });
-
     it("should return empty array", () => {
         let wrapper = shallow(<HookWrapper hook={() => useSort([], {})} />);
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems, requestSort, sortConfig } = hook;
+        let { sortedItems } = hook;
 
         expect(sortedItems).toEqual([]);
     });
@@ -29,7 +24,7 @@ describe("useSort", () => {
         expect(collections[4].name).toEqual("Ala collection");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems, requestSort, sortConfig } = hook;
+        let { sortedItems } = hook;
 
         expect(sortedItems[0].name).toEqual("Ala collection");
         expect(sortedItems[1].name).toEqual("Boo");
@@ -48,7 +43,7 @@ describe("useSort", () => {
         expect(collections[4].name).toEqual("Ala collection");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems, requestSort, sortConfig } = hook;
+        let { sortedItems } = hook;
 
         expect(sortedItems[0].name).toEqual("Zebedee collection");
         expect(sortedItems[1].name).toEqual("Test collection");
@@ -67,7 +62,7 @@ describe("useSort", () => {
         expect(collections[4].publishDate).toEqual("2021-12-17T09:30:00.000Z");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems, requestSort, sortConfig } = hook;
+        let { sortedItems } = hook;
 
         expect(sortedItems[0].publishDate).toEqual("2021-11-17T09:30:00.000Z");
         expect(sortedItems[1].publishDate).toEqual("2021-12-17T09:30:00.000Z");
@@ -86,7 +81,7 @@ describe("useSort", () => {
         expect(collections[4].publishDate).toEqual("2021-12-17T09:30:00.000Z");
 
         let { hook } = wrapper.find("div").props();
-        let { sortedItems, requestSort, sortConfig } = hook;
+        let { sortedItems } = hook;
         expect(sortedItems[0].publishDate).toEqual("2022-01-01T00:30:00.000Z");
         expect(sortedItems[1].publishDate).toEqual("2021-12-17T09:30:00.000Z");
         expect(sortedItems[2].publishDate).toEqual("2021-11-17T09:30:00.000Z");

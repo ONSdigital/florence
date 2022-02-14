@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import { GET_USERS_REQUEST_SUCCESS } from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -14,8 +15,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        // TODO: managing the old and new way for time being
-        case types.LOAD_COLLECTIONS_SUCCESS || type.ADD_ALL_COLLECTIONS: {
+        case types.LOAD_COLLECTIONS_SUCCESS: {
             return {
                 ...state,
                 collections: {
@@ -61,37 +61,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.RESET: {
-            return {
-                ...initialState,
-                notifications: state.notifications,
-                popouts: state.popouts,
-                config: state.config,
-            };
-        }
-        case types.SET_CONFIG: {
-            return {
-                ...state,
-                config: {
-                    enableDatasetImport: action.config.enableDatasetImport,
-                    enableHomepagePublishing: action.config.enableHomepagePublishing,
-                    enableNewSignIn: action.config.enableNewSignIn,
-                },
-            };
-        }
-
-        case types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
-            let toDelete = { ...state.collections.toDelete };
-            toDelete[action.collectionID] = null;
-            return {
-                ...state,
-                collections: {
-                    ...state.collections,
-                    toDelete,
-                },
-            };
-        }
-        case types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
+        case types.DELETE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -189,6 +159,24 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.RESET: {
+            return {
+                ...initialState,
+                notifications: state.notifications,
+                popouts: state.popouts,
+                config: state.config,
+            };
+        }
+        case types.SET_CONFIG: {
+            return {
+                ...state,
+                config: {
+                    enableDatasetImport: action.config.enableDatasetImport,
+                    enableHomepagePublishing: action.config.enableHomepagePublishing,
+                    enableNewSignIn: action.config.enableNewSignIn,
+                },
+            };
+        }
         case types.ADD_ALL_USERS: {
             return {
                 ...state,
@@ -207,19 +195,31 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.UPDATE_ALL_TEAMS: {
-            return Object.assign({}, state, {
-                teams: Object.assign({}, state.teams, {
-                    all: action.allTeams,
-                }),
-            });
-        }
-        case types.UPDATE_ALL_TEAM_IDS_AND_NAMES: {
+        case types.UPDATE_ALL_TEAMS_PROGRESS: {
             return {
                 ...state,
                 teams: {
                     ...state.teams,
-                    allIDsAndNames: action.allTeamIDsAndNames,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.UPDATE_ALL_TEAMS_FAILURE: {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.UPDATE_ALL_TEAMS: {
+            return {
+                ...state,
+                teams: {
+                    ...state.teams,
+                    all: action.allTeams,
+                    isLoading: false,
                 },
             };
         }
@@ -464,6 +464,34 @@ export default function reducer(state = initialState, action) {
                     ...state.collections,
                     all: updatedCollections,
                     isUpdating: false,
+                },
+            };
+        }
+        case types.CREATE_USER_PROGRESS: {
+            return {
+                ...state,
+                isCreating: true,
+            };
+        }
+        case types.CREATE_USER_FAILURE: {
+            return {
+                ...state,
+                isCreating: false,
+            };
+        }
+        case types.CREATE_USER_SUCCESS: {
+            //TODO: can not test the response object atm so will change this later
+            return {
+                ...state,
+                isCreating: false,
+            };
+        }
+        case GET_USERS_REQUEST_SUCCESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    previewUsers: [...action.users],
                 },
             };
         }

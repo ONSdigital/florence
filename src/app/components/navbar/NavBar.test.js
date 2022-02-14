@@ -1,9 +1,8 @@
 import React from "react";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import { Link } from "react-router";
-import { createMockUser } from "../../../tests/test-utils";
+import { createMockUser } from "../../utilities/tests/test-utils";
 import NavBar from "./NavBar";
-import PreviewNav from "../preview-nav/PreviewNav";
 
 const notLoggedUser = createMockUser();
 const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");
@@ -61,6 +60,23 @@ describe("NavBar", () => {
         it("should not display Datasets", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
             expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
+        });
+
+        describe("when enableNewSignIn feature flag is enabled", () => {
+            const props = {
+                ...defaultProps,
+                config: {
+                    ...defaultProps.config,
+                    enableNewSignIn: true,
+                },
+            };
+            const component = shallow(<NavBar {...props} user={authenticatedUser} />);
+            it("'Preview teams' option should be present", () => {
+                expect(component.hasClass("global-nav__list")).toBe(true);
+                expect(component.find(Link)).toHaveLength(NavbarItems.length);
+                const link = component.find("Link[to='/florence/groups']");
+                expect(link.getElement().props.children[0].includes("Preview teams"));
+            });
         });
 
         describe("when enabled dataset import", () => {

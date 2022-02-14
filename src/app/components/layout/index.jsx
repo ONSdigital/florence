@@ -1,9 +1,10 @@
 import { connect } from "react-redux";
 import Layout from "./Layout";
+import { getNotifications } from "../../config/selectors";
 
 function mapStateToProps(state) {
     return {
-        notifications: state.state.notifications,
+        notifications: getNotifications(state.state),
         popouts: state.state.popouts,
     };
 }

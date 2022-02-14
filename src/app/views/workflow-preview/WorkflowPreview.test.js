@@ -1,6 +1,6 @@
 import React from "react";
 import { WorkflowPreview } from "./WorkflowPreview";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
 console.error = () => {};
 

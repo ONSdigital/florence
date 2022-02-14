@@ -1,5 +1,5 @@
 import collectionValidation from "./collectionValidation";
-import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
+import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
     const collections = [{ name: "Foo" }, { name: "Boo" }];
@@ -29,7 +29,7 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false isValid and an error message if the collection name is already taken", () => {
-        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(errCodes.UNIQ_NAME_ERROR);
         expect(collectionValidation.name("Foo", collections).isValid).toBe(false);
     });
 
@@ -39,7 +39,7 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false and error message if the collection name difference with wite space only", () => {
-        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(errCodes.UNIQ_NAME_ERROR);
         expect(collectionValidation.name("Foo ", collections).isValid).toBe(false);
     });
 });

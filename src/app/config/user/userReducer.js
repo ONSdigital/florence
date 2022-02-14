@@ -1,4 +1,4 @@
-import { USER_LOGGED_IN, USER_LOGGED_OUT } from "./userActions";
+import * as types from "./userConstants";
 
 const initialState = {
     isAuthenticated: false,
@@ -9,7 +9,7 @@ const initialState = {
 
 const userReducer = (state = initialState, action) => {
     switch (action.type) {
-        case USER_LOGGED_IN: {
+        case types.USER_LOGGED_IN: {
             return {
                 ...state,
                 isAuthenticated: true,
@@ -18,7 +18,7 @@ const userReducer = (state = initialState, action) => {
                 isAdmin: action.isAdmin,
             };
         }
-        case USER_LOGGED_OUT: {
+        case types.USER_LOGGED_OUT: {
             return {
                 ...state,
                 isAuthenticated: false,

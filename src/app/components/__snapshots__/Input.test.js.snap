@@ -10,7 +10,6 @@ exports[`Input without type renders a text input 1`] = `
   >
     Test input
   </label>
-  
   <input
     autoComplete="new-password"
     autoFocus={false}
@@ -21,7 +20,6 @@ exports[`Input without type renders a text input 1`] = `
     onFocus={[Function]}
     type="text"
   />
-  
 </div>
 `;
 
@@ -35,7 +33,6 @@ exports[`Password prop creates a password input 1`] = `
   >
     Password
   </label>
-  
   <input
     autoComplete="new-password"
     autoFocus={false}
