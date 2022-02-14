@@ -13,12 +13,16 @@ import {
     createUserSuccess,
     createUserFailure,
     createUserProgress,
+    getUsersRequestSuccess,
 } from "./actions";
 import collections from "../utilities/api-clients/collections";
-import teams from "../utilities/api-clients/teams";
 import notifications from "../utilities/notifications";
 import user from "../utilities/api-clients/user";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
+import users from "../utilities/api-clients/user";
+import { errCodes } from "../utilities/errorCodes";
+import teams from "../utilities/api-clients/teams";
+import url from "../utilities/url";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(loadCollectionsProgress());
@@ -217,5 +221,95 @@ export const createUserRequest = newUser => dispatch => {
             if (errors) {
                 notifications.add({ type: "warning", message: errors, autoDismiss: 5000 });
             }
+        });
+};
+
+export const getUsersRequest = () => dispatch => {
+    users
+        .getAll({ active: true })
+        .then(response => {
+            dispatch(getUsersRequestSuccess(response));
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
+export const createTeam = (body, usersInTeam) => dispatch => {
+    teams
+        .createTeam(body)
+        .then(response => {
+            if (usersInTeam.length > 0) {
+                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
+            } else {
+                const notification = {
+                    type: "positive",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, usersInTeam.length || 0),
+                };
+                notifications.add(notification);
+                const previousUrl = url.resolve("../", true);
+                dispatch(push(previousUrl));
+            }
+        })
+        .catch(error => {
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_NEW_TEAM_NAME,
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR,
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
+        });
+};
+
+const addMembersToNewTeam = (groupName, members) => dispatch => {
+    let promises = [];
+    members.forEach(user => {
+        promises.push(teams.addMemberToTeam(groupName, user.id));
+    });
+    Promise.all(promises)
+        .then(results => {
+            const notification = {
+                type: "positive",
+                isDismissable: true,
+                autoDismiss: 15000,
+                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, members.length || ""),
+            };
+            notifications.add(notification);
+            const previousUrl = url.resolve("../", true);
+            dispatch(push(previousUrl));
+        })
+        .catch(error => {
+            if (error.status && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_USER_BEING_ADDED_TO_TEAM,
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR,
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
         });
 };

@@ -80,4 +80,14 @@
       transform: rotate(-45deg);
     }
   }
+
+  &__container {
+    display:flex;
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+
+    &--gap-10 {
+      gap: 10px;
+    }
+  }
 }

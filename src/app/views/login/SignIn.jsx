@@ -14,7 +14,6 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,

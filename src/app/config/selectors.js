@@ -24,6 +24,7 @@ export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
+export const getPreviewUsers = state => state.users.previewUsers;
 
 export const getTeams = state => state.teams.all;
 export const getTeamsLoading = state => state.teams.isLoading;
