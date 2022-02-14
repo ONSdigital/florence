@@ -20,7 +20,7 @@ const propTypes = {
     router: PropTypes.shape({
         setRouteLeaveHook: PropTypes.func,
     }),
-    route: PropTypes.string
+    route: PropTypes.string,
 };
 
 const CreateTeam = props => {

@@ -24,7 +24,6 @@ exports[`UsersNotInTeam Given some preview users not in the team Given valid pro
         className="form__label"
         htmlFor="add-member-to-team-search-content-types"
       />
-      
       <input
         autoComplete="new-password"
         autoFocus={false}
@@ -37,7 +36,6 @@ exports[`UsersNotInTeam Given some preview users not in the team Given valid pro
         placeholder="Search viewers by name or email"
         type="text"
       />
-      
     </div>
     <div
       aria-live="assertive"
@@ -73,7 +71,6 @@ exports[`UsersNotInTeam Given some preview users not in the team matches snapsho
         className="form__label"
         htmlFor="add-member-to-team-search-content-types"
       />
-      
       <input
         autoComplete="new-password"
         autoFocus={false}
@@ -86,7 +83,6 @@ exports[`UsersNotInTeam Given some preview users not in the team matches snapsho
         placeholder="Search viewers by name or email"
         type="text"
       />
-      
     </div>
     <ul
       className="dynamic-list__container height--60"

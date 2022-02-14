@@ -1,7 +1,7 @@
 import React from "react";
 import { mount } from "enzyme";
 import CreateTeam from "./CreateTeam";
-import { WrapperComponent } from "../../../../tests/test-utils";
+import { WrapperComponent } from "../../../utilities/tests/test-utils";
 import renderer from "react-test-renderer";
 
 let dispatchedActions,

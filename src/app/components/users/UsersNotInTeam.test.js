@@ -2,7 +2,7 @@ import React from "react";
 import UsersNotInTeam from "./UsersNotInTeam";
 import { mount } from "enzyme";
 import renderer from "react-test-renderer";
-import { WrapperComponent } from "../../../tests/test-utils";
+import { WrapperComponent } from "../../utilities/tests/test-utils";
 
 let dispatchedActions = [];
 const mockDispatch = event => {

@@ -30,7 +30,6 @@ exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
       >
         Name
       </label>
-      
       <input
         autoComplete="new-password"
         autoFocus={false}
@@ -42,7 +41,6 @@ exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
         onFocus={[Function]}
         type="text"
       />
-      
     </div>
     <span>
       <strong>
@@ -78,7 +76,6 @@ exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
           className="form__label"
           htmlFor="add-member-to-team-search-content-types"
         />
-        
         <input
           autoComplete="new-password"
           autoFocus={false}
@@ -91,7 +88,6 @@ exports[`CreateTeam Given valid props on initial load matches snapshot 1`] = `
           placeholder="Search viewers by name or email"
           type="text"
         />
-        
       </div>
       <div
         className="loader loader--dark"
