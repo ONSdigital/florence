@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import { GET_USERS_REQUEST_SUCCESS } from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -483,6 +484,15 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 isCreating: false,
+            };
+        }
+        case GET_USERS_REQUEST_SUCCESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    previewUsers: [...action.users],
+                },
             };
         }
         default: {

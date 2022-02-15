@@ -6,23 +6,79 @@ import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
+import { errCodes as errorCodes, errCodes } from "../errorCodes";
 
 export default class user {
     static get(email) {
         return http.get(`/zebedee/users?email=${email}`);
     }
 
-    static getAll(params) {
-        const config = window.getEnv();
+    static getAll = async params => {
+        let config = {};
+        if (window.getEnv != null) {
+            config = window.getEnv();
+        }
         if (config.enableNewSignIn) {
             let queryString = "";
             Object.keys(params).map(key => {
                 queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
             });
-            return http.get(`/users${queryString}`);
+            try {
+                return await http.get(`/users${queryString}`);
+            } catch (error) {
+                if (error.status) {
+                    if (error.status >= 400 && error.status < 500) {
+                        switch (error.status) {
+                            case 400: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
+                                    autoDismiss: 5000,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                            case 404: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errCodes.GET_USERS_NOT_FOUND,
+                                    autoDismiss: 5000,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                            default: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                                    isDismissable: true,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                        }
+                    } else {
+                        const notification = {
+                            type: "warning",
+                            message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                            isDismissable: true,
+                        };
+                        notifications.add(notification);
+                    }
+                } else {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                }
+                return error;
+            }
+        } else {
+            return http.get(`/zebedee/users`);
         }
-        return http.get(`/zebedee/users`);
-    }
+    };
 
     static create(body) {
         return http.post(`/zebedee/users`, body);

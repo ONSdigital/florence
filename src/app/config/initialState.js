@@ -25,6 +25,7 @@ export const initialState = {
         active: {},
         all: [],
         isCreating: false,
+        previewUsers: [],
     },
     datasets: {
         all: [],
