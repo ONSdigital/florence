@@ -41,7 +41,14 @@ function AddGroupsToUser(props) {
                         <p>{user?.id}</p>
                         <h2 className="margin-top--1">Team Member</h2>
                         {userGroups.length === 0 && <p>Nothing to show.</p>}
-                        {userGroups && <SelectedItemList items={userGroups.map(gr => ({ id: gr, name: gr }))} onRemoveItem={handleRemove} />}
+                        {userGroups && (
+                            <SelectedItemList
+                                classNames="selected-item-list__item--subtle"
+                                removeClassName="selected-item-list__remove--subtle"
+                                items={userGroups.map(gr => ({ id: gr, name: gr }))}
+                                onRemoveItem={handleRemove}
+                            />
+                        )}
                     </div>
                     <div className="grid__col-6">
                         <h2 className="margin-top--1 margin-bottom--1">Add a team for the user to join</h2>

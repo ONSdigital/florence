@@ -1,17 +1,16 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SelectedItem from "./SelectedItem";
-import clsx from "clsx";
 
 const SelectedItemList = props => (
-    <div className={clsx("selected-item-list", props.classNames)}>
-        {this.props.items.map((selectedItem, key) => {
-            return <SelectedItem key={key} item={selectedItem} onRemoveItem={this.props.onRemoveItem} />;
-        })}
+    <div className="selected-item-list">
+        {props.items.map((selectedItem, index) => (
+            <SelectedItem key={index} {...selectedItem} />
+        ))}
     </div>
 );
 
-SelectedItemList.propTypes = {
+SelectedItemList.PropTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -20,6 +19,7 @@ SelectedItemList.propTypes = {
     ).isRequired,
     classNames: PropTypes.string,
     onRemoveItem: PropTypes.func.isRequired,
+    removeClassName: PropTypes.string,
 };
 
 export default SelectedItemList;

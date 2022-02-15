@@ -68,16 +68,16 @@
 
 }
 
-// .colour {
-//   @each $colour-name, $colour-value in $colours {
+.colour {
+  @each $colour-name, $colour-value in $colours {
 
-//     &--#{$colour-name},
-//     &--#{$colour-name}:visited {
-//       color: $colour-value;
-//     }
-//   }
+    &--#{$colour-name},
+    &--#{$colour-name}:visited {
+      color: $colour-value;
+    }
+  }
 
-// }
+}
 
 .font-size {
   &--16 {

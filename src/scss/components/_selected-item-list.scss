@@ -1,7 +1,6 @@
 @use "sass:math";
 
 .selected-item-list {
-
     margin-bottom: $lineheight * 0.5;
 
     &__item {
@@ -13,6 +12,13 @@
 
         &:hover {
             background-color: lighten($slate-grey, 10%);
+        }
+        &--subtle {
+            background-color: $cadet-blue;
+            color: $black;
+            &:hover {
+                background-color: darken($cadet-blue, 30%);
+            }
         }
     }
 
@@ -27,6 +33,11 @@
             color: $night-shadz;
             font-weight: 700;
         }
+        &--subtle {
+            color: $black;
+            &:hover {
+                color: lighten($black, 30%);
+            }
+        }
     }
-
 }

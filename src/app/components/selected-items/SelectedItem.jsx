@@ -1,28 +1,28 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 
-const propTypes = {
-    item: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-    }).isRequired,
-    onRemoveItem: PropTypes.func.isRequired,
-};
-export default class SelectedItem extends Component {
-    handleRemoveClick = () => {
-        this.props.onRemoveItem(this.props.item.id);
+function SelectedItem({ id, name, removeClassNames, classNames, onRemoveItem }) {
+    const handleRemoveClick = () => {
+        onRemoveItem(id);
     };
 
-    render() {
-        return (
-            <span className="selected-item-list__item">
-                {this.props.item.name}
-                <button className="selected-item-list__remove" type="button" onClick={this.handleRemoveClick}>
-                    ×
-                </button>
-            </span>
-        );
-    }
+    return (
+        <span className={clsx("selected-item-list__item", classNames)}>
+            {name}
+            <button className={clsx("selected-item-list__remove", removeClassNames)} type="button" onClick={handleRemoveClick}>
+                ×
+            </button>
+        </span>
+    );
 }
 
-SelectedItem.propTypes = propTypes;
+SelectedItem.PropTypes = {
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
+    onRemoveItem: PropTypes.func.isRequired,
+    classNames: PropTypes.string,
+    removeClassNames: PropTypes.string,
+};
+
+export default SelectedItem;
