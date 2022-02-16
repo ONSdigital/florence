@@ -120,7 +120,7 @@ class DatasetUploadMetadata extends Component {
             return recipe.id === this.props.job.recipe;
         });
         let isRecipeCantabular = false;
-        if (recipe.format === "cantabular_table" || recipe.format === "cantabular_blob") {
+        if (recipe.format.includes("cantabular")) {
             isRecipeCantabular = true;
         }
 
