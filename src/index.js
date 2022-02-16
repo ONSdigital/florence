@@ -128,7 +128,7 @@ const Index = () => {
                                 <IndexRoute component={userIsAuthenticated(SelectADataset)} />
                                 <Route path="create">
                                     <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
-                                    <Route path=":datasetID/:format" component={userIsAuthenticated(CreateCantabularDatasetController)} />
+                                    <Route path=":datasetID/:recipeID" component={userIsAuthenticated(CreateCantabularDatasetController)} />
                                     <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
                                 </Route>
                                 <Route path=":datasetID">
