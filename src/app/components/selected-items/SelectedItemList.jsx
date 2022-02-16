@@ -2,15 +2,15 @@ import React from "react";
 import PropTypes from "prop-types";
 import SelectedItem from "./SelectedItem";
 
-const SelectedItemList = props => (
+const SelectedItemList = ({ items, removeClassNames, classNames, onRemoveItem }) => (
     <div className="selected-item-list">
-        {props.items.map((selectedItem, index) => (
-            <SelectedItem key={index} {...selectedItem} />
+        {items.map((selectedItem, index) => (
+            <SelectedItem key={index} removeClassNames={removeClassNames} classNames={classNames} {...selectedItem} handleRemoveItem={onRemoveItem} />
         ))}
     </div>
 );
 
-SelectedItemList.PropTypes = {
+SelectedItemList.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
@@ -18,8 +18,8 @@ SelectedItemList.PropTypes = {
         })
     ).isRequired,
     classNames: PropTypes.string,
+    removeClassNames: PropTypes.string,
     onRemoveItem: PropTypes.func.isRequired,
-    removeClassName: PropTypes.string,
 };
 
 export default SelectedItemList;

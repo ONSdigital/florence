@@ -1,0 +1,119 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`AddGroupsToUser matches the snapshot 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-9"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <a
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Back
+      </a>
+    </div>
+    <div
+      className="grid grid--justify-space-around"
+    >
+      <div
+        className="grid__col-6"
+      >
+        <div
+          data-testid="user"
+        >
+          <h1
+            className="margin-top--1 margin-bottom--1"
+          >
+            undefined undefined
+          </h1>
+          <p />
+          <h2
+            className="margin-top--1"
+          >
+            Team Member
+          </h2>
+          <p>
+            Nothing to show.
+          </p>
+          <div
+            className="selected-item-list"
+          />
+        </div>
+      </div>
+      <div
+        className="grid__col-6"
+      >
+        <h2
+          className="margin-top--1 margin-bottom--1"
+        >
+          Add a team for the user to join
+        </h2>
+        <div
+          className="search__input-group margin-bottom--1"
+        >
+          <svg
+            className="search__icon-magnifier"
+            role="presentation"
+            viewBox="0 0 28 28"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="m20.011 16.352h-1.2647l-0.4482-0.4014c1.5689-1.6947 2.5134-3.8948 2.5134-6.2881 0-5.3368-4.6587-9.6627-10.406-9.6627-5.7472 0-10.406 4.3259-10.406 9.6627 0 5.3367 4.6587 9.6626 10.406 9.6626 2.5775 0 4.9469-0.877 6.7719-2.3339l0.4323 0.4163v1.1743l8.0045 7.418 2.3854-2.215-7.9886-7.4328zm-9.6055 0c-3.9862 0-7.2041-2.988-7.2041-6.6895s3.2178-6.6895 7.2041-6.6895c3.9863 0 7.2042 2.988 7.2042 6.6895s-3.2179 6.6895-7.2042 6.6895z"
+              fill="#808080"
+            />
+          </svg>
+          <label
+            className="visually-hidden"
+            htmlFor="search"
+          >
+            Search teams by name
+          </label>
+          <input
+            name="search"
+            onChange={[Function]}
+            placeholder="Search teams by name"
+            role="search"
+            value=""
+          />
+        </div>
+        <p>
+          Nothing to show.
+        </p>
+      </div>
+    </div>
+  </div>
+  <div
+    className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
+    data-testid="form-footer"
+  >
+    <div
+      className="grid__col-9"
+    >
+      <div
+        className="grid grid--align-baseline"
+      >
+        <button
+          className="btn btn--positive btn--margin-right"
+          onClick={[Function]}
+          type="submit"
+        >
+          Save changes
+        </button>
+        <a
+          className="btn btn--invert-primary btn--margin-right"
+          onClick={[Function]}
+          style={Object {}}
+        >
+          Cancel
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+`;

@@ -9,7 +9,7 @@ import notifications from "../../utilities/notifications";
 import Iframe from "../../components/iframe/Iframe";
 
 const propTypes = {
-    location: PropTypes.PropTypes.shape({
+    location: PropTypes.shape({
         pathname: PropTypes.string,
     }),
     params: PropTypes.shape({

@@ -13,11 +13,11 @@
         &:hover {
             background-color: lighten($slate-grey, 10%);
         }
-        &--subtle {
-            background-color: $cadet-blue;
-            color: $black;
+        &--info {
+            background-color: $porcelain;
+            color: $mine-shaft;
             &:hover {
-                background-color: darken($cadet-blue, 30%);
+                background-color: darken($porcelain, 30%);
             }
         }
     }
@@ -33,10 +33,10 @@
             color: $night-shadz;
             font-weight: 700;
         }
-        &--subtle {
-            color: $black;
+        &--info {
+            color: $mine-shaft;
             &:hover {
-                color: lighten($black, 30%);
+                color: lighten($mine-shaft, 30%);
             }
         }
     }

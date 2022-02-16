@@ -4,7 +4,6 @@ import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import CreateUser from "./CreateUser";
-import { debug } from "request";
 
 const props = {
     createUser: jest.fn(),

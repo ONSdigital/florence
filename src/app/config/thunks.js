@@ -203,7 +203,7 @@ export const createUserRequest = newUser => dispatch => {
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
-            dispatch(push("/florence/users/"));
+            dispatch(push("/florence/users"));
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }

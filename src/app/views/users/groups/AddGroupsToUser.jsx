@@ -1,17 +1,25 @@
 import React, { useState, useEffect, useCallback } from "react";
+import PropTypes from "prop-types";
+import notifications from "../../../utilities/notifications";
 import { useInput } from "../../../hooks/useInput";
 import BackButton from "../../../components/back-button/BackButton";
 import FormFooter from "../../../components/form-footer";
-import Table from "../../../components/table";
-import SelectedItemList from "../../../components/selected-items/SelectedItemList";
+import GroupsTable from "../../../components/table";
 import Loader from "../../../components/loader/Loader";
 import Magnifier from "../../../icons/Magnifier";
+import User from "./User";
+
+const notification = {
+    type: "warning",
+    message: "User is already a member of this group.",
+    autoDismiss: 5000,
+};
 
 function AddGroupsToUser(props) {
+    const id = props.params.userID;
     const { loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
-    const id = props.params.userID;
 
     useEffect(() => {
         loadUser(id);
@@ -24,10 +32,14 @@ function AddGroupsToUser(props) {
         setUserGroups(prevState => prevState.filter(group => group !== name));
     };
     const handleAdd = name => {
+        if (userGroups.includes(name)) {
+            notifications.add(notification);
+            return;
+        }
         setUserGroups(prevState => prevState.concat(name));
     };
 
-    const getFliteredUsers = useCallback(() => {
+    const getFilteredUsers = useCallback(() => {
         return groups.filter(group => group.group_name.toLowerCase().includes(search.value.toLowerCase()));
     }, [search.value]);
 
@@ -37,17 +49,10 @@ function AddGroupsToUser(props) {
                 <BackButton redirectUrl={`${rootPath}/users`} classNames={"margin-top--2"} />
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-6">
-                        <h1 className="margin-top--1 margin-bottom--1">{`${user?.forename} ${user?.lastname}`}</h1>
-                        <p>{user?.id}</p>
-                        <h2 className="margin-top--1">Team Member</h2>
-                        {userGroups.length === 0 && <p>Nothing to show.</p>}
-                        {userGroups && (
-                            <SelectedItemList
-                                classNames="selected-item-list__item--subtle"
-                                removeClassName="selected-item-list__remove--subtle"
-                                items={userGroups.map(gr => ({ id: gr, name: gr }))}
-                                onRemoveItem={handleRemove}
-                            />
+                        {loading ? (
+                            <Loader classNames="grid grid--align-center grid--align-self-center" />
+                        ) : (
+                            <User testid="user" {...user} userGroups={userGroups} handleRemove={handleRemove} />
                         )}
                     </div>
                     <div className="grid__col-6">
@@ -59,8 +64,11 @@ function AddGroupsToUser(props) {
                             </label>
                             <input role="search" name="search" placeholder="Search teams by name" {...search} />
                         </div>
-                        {loadingGroups && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
-                        {!loadingGroups && groups.length > 0 && <Table handleClick={handleAdd} items={search.value ? getFliteredUsers() : groups} />}
+                        {loadingGroups ? (
+                            <Loader classNames="grid grid--align-center grid--align-self-center" />
+                        ) : (
+                            <GroupsTable testid="groups-table" items={search.value ? getFilteredUsers() : groups} handleClick={handleAdd} />
+                        )}
                     </div>
                 </div>
             </div>
@@ -73,5 +81,16 @@ function AddGroupsToUser(props) {
         </div>
     );
 }
+
+AddGroupsToUser.propTypes = {
+    user: PropTypes.object,
+    groups: PropTypes.array,
+    isAdding: PropTypes.bool,
+    loading: PropTypes.bool,
+    params: PropTypes.object,
+    addGroupsToUser: PropTypes.func.isRequired,
+    loadGroups: PropTypes.func.isRequired,
+    loadUser: PropTypes.func.isRequired,
+};
 
 export default AddGroupsToUser;

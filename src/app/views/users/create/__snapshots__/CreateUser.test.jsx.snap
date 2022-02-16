@@ -100,6 +100,7 @@ exports[`CreateUser matches the snapshot 1`] = `
     </div>
     <div
       className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
+      data-testid="form-footer"
     >
       <div
         className="grid__col-9"

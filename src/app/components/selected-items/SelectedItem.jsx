@@ -2,22 +2,18 @@ import React from "react";
 import PropTypes from "prop-types";
 import clsx from "clsx";
 
-function SelectedItem({ id, name, removeClassNames, classNames, onRemoveItem }) {
-    const handleRemoveClick = () => {
-        onRemoveItem(id);
-    };
-
+function SelectedItem({ id, name, removeClassNames, classNames, handleRemoveItem }) {
     return (
         <span className={clsx("selected-item-list__item", classNames)}>
             {name}
-            <button className={clsx("selected-item-list__remove", removeClassNames)} type="button" onClick={handleRemoveClick}>
+            <button className={clsx("selected-item-list__remove", removeClassNames)} type="button" onClick={() => handleRemoveItem(id)}>
                 ×
             </button>
         </span>
     );
 }
 
-SelectedItem.PropTypes = {
+SelectedItem.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     onRemoveItem: PropTypes.func.isRequired,

@@ -45,11 +45,11 @@ const Layout = props => {
     }, []);
 
     useEffect(() => {
-        // log.initialise();
+        log.initialise();
 
-        // window.setInterval(() => {
-        //     ping();
-        // }, 10000);
+        window.setInterval(() => {
+            ping();
+        }, 10000);
 
         if (props.location.pathname !== "/florence/login" && props.enableNewSignIn) {
             sessionManagement.startSessionExpiryTimers();

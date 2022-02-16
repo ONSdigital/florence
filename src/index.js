@@ -35,20 +35,21 @@ import EditHomepageController from "./app/views/homepage/edit/EditHomepageContro
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 import Logs from "./app/views/logs/Logs";
-import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
+import SelectableTest from "./SelectableTest";
 import VersionPreviewController from "./app/views/datasets/preview/VersionPreviewController";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
 import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
+import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
+import NotFound from "./app/components/not-found";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
-import CreateUser from "./app/views/users/create/";
+import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
-import NotFound from "./app/components/not-found";
 import "./scss/main.scss";
 
 const config = window.getEnv();
@@ -159,7 +160,7 @@ const Index = () => {
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
-                        <Route path="edit/:userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
+                        <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
                                 path="change-password"
                                 component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))}
@@ -204,6 +205,7 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
+                    <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
