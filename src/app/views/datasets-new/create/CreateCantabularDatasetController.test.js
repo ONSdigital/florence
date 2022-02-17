@@ -91,8 +91,8 @@ test("makeCreateDatasetPostBody returns correct model", () => {
     expect(postBody).toMatchObject({
         type: mockedState.format,
         is_based_on: {
-            id: mockedState.isBasedOn,
-            type: mockedState.format,
+            "@id": mockedState.isBasedOn,
+            "@type": mockedState.format,
         },
     });
 });
