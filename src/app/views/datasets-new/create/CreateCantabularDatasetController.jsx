@@ -73,8 +73,8 @@ export class CreateCantabularDatasetController extends Component {
     makeCreateDatasetPostBody = () => {
         return {
             is_based_on: {
-                id: this.state.isBasedOn,
-                type: this.state.format,
+                "@id": this.state.isBasedOn,
+                "@type": this.state.format,
             },
             type: this.state.format,
         };
