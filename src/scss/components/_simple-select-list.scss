@@ -8,9 +8,6 @@
         display: flex;
         justify-content: space-between;
 
-        &:focus {
-            outline: 3px solid $focus;
-        }
 
         // This is a bit of a hack to show radio buttons
         // as if they are simple-select-list items
@@ -28,6 +25,9 @@
             line-height: $lineheight * 0.5;
         }
         // end of radio button hack
+        &:focus-within {
+            outline: 3px solid $focus;
+        }
     }
 
     &__col {

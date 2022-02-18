@@ -7,8 +7,8 @@ const Notifications = ({ notifications }) => {
 
     return (
         <ul className="notifications">
-            {notifications.map(notification => (
-                <NotificationItem {...notification} />
+            {notifications.map((notification, i) => (
+                <NotificationItem key={notification + i} {...notification} />
             ))}
         </ul>
     );

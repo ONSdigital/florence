@@ -1,5 +1,5 @@
-import {connect} from "react-redux";
-import {loadTeamsRequest} from "../../../config/thunks";
+import { connect } from "react-redux";
+import { loadTeamsRequest } from "../../../config/thunks";
 import TeamsList from "./TeamsList";
 
 function mapStateToProps(state) {

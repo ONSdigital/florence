@@ -88,6 +88,7 @@ const items = [
         status: { neutral: true, warning: false, message: "" },
     },
 ];
+
 const users = [
     {
         name: "Test user",
@@ -120,6 +121,17 @@ const users = [
         },
     },
 ];
+
+const user = {
+    active: true,
+    email: "bill.hicks@ons.gov.uk",
+    forename: "Bill",
+    groups: [],
+    id: "bill.hicks@ons.gov.uk",
+    lastname: "Hickes",
+    status: "CONFIRMED",
+    status_notes: "",
+};
 
 const notifications = [
     {
@@ -166,6 +178,34 @@ const teams = [
         path: "test_team_1",
     },
 ];
+
+const groups = [
+    {
+        id: 25,
+        name: "A new team",
+        members: ["test@test.com", "test2@test.com", "test3@test.com"],
+        path: "a_new_team_25",
+    },
+    {
+        id: 15,
+        name: "crispin",
+        members: ["admin@test.com", "data@vis.com"],
+        path: "crispin_15",
+    },
+    {
+        id: 23,
+        name: "crumpet",
+        members: [],
+        path: "crumpet_23",
+    },
+    {
+        id: 1,
+        name: "Test Team",
+        members: [],
+        path: "test_team_1",
+    },
+];
+
 const popouts = [
     {
         id: "foo",
@@ -201,4 +241,6 @@ module.exports = {
     notifications,
     teams,
     popouts,
+    user,
+    groups,
 };
