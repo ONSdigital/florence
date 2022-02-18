@@ -195,34 +195,6 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.UPDATE_ALL_TEAMS_PROGRESS: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    isLoading: true,
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAMS_FAILURE: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    isLoading: false,
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAMS: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    all: action.allTeams,
-                    isLoading: false,
-                },
-            };
-        }
         case types.UPDATE_ACTIVE_TEAM: {
             return Object.assign({}, state, {
                 teams: Object.assign({}, state.teams, {

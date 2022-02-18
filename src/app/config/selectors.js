@@ -26,11 +26,16 @@ export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
 export const getPreviewUsers = state => state.users.previewUsers;
 
-export const getTeams = state => state.teams.all;
-export const getTeamsLoading = state => state.teams.isLoading;
-export const getMappedTeams = createSelector(getTeams, teams => {
-    if (!teams) return [];
-    return teams.map(team => ({ id: team.id.toString(), name: team.name }));
+export const getGroups = state => state.groups.all;
+export const getGroupsLoading = state => state.groups.isLoading;
+
+export const getEnableNewSignIn = state => state.config.enableNewSignIn;
+
+export const getMappedGroups = createSelector(getGroups, getEnableNewSignIn, (groups, isNewSignIn) => {
+    if (!groups) return [];
+    return isNewSignIn
+        ? groups.map(group => ({ id: group.group_name, name: group.group_name }))
+        : groups.map(group => ({ id: group.id.toString(), name: group.name }));
 });
 
 export const getNotifications = state => state.notifications;
@@ -38,6 +43,3 @@ export const getNotifications = state => state.notifications;
 export const getUser = state => state.users.active;
 export const getUserLoading = state => state.users.isLoadingActive;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
-
-export const getGroups = state => state.groups.all;
-export const getGroupsLoading = state => state.groups.isLoading;

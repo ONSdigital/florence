@@ -42,7 +42,7 @@ const CreateNewCollection = props => {
     const [releaseDateISO, setReleaseDateISO] = useState("");
 
     useEffect(() => {
-        props.loadTeams();
+        props.loadTeams(props.isNewSignIn);
     }, []);
 
     const handleCollectionNameChange = e => {

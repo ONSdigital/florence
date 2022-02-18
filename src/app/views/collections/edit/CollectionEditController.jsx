@@ -9,7 +9,7 @@ import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 import {
-    updateAllTeams,
+    loadGroupsSuccess,
     updateActiveCollection,
     loadCollectionsSuccess,
     updatePagesInActiveCollection,
@@ -99,7 +99,7 @@ export class CollectionEditController extends Component {
                 });
 
                 // Not needed for this screen but keeps teams array up-to-date for the teams screen
-                this.props.dispatch(updateAllTeams(response));
+                this.props.dispatch(loadGroupsSuccess(response));
             })
             .catch(error => {
                 this.setState({ isFetchingAllTeams: false });

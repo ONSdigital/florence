@@ -143,53 +143,67 @@ export const approveCollectionRequest = (id, redirect) => dispatch => {
         });
 };
 
-export const loadTeamsRequest = () => dispatch => {
-    dispatch(actions.updateAllTeamsProgress());
-    teams
-        .getAll()
-        .then(response => {
-            if (!response) return dispatch(actions.updateAllTeamsFailure());
-            return dispatch(actions.updateAllTeams(response));
-        })
-        .catch(error => {
-            dispatch(actions.updateAllTeamsFailure());
-            switch (error.status) {
-                case 401: {
-                    // This is handled by the request function, so do nothing here
-                    break;
+export const fetchGroupsRequest = isNewSignIn => dispatch => {
+    dispatch(actions.loadGroupsProgress());
+    isNewSignIn
+        ? teams
+            .getGroups()
+            .then(response => {
+                dispatch(actions.loadGroupsSuccess(response.groups));
+            })
+            .catch(error => {
+                dispatch(actions.loadGroupsFailure());
+                //TODO: map responses to user friendly by content designer
+                if (error) {
+                    notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
                 }
-                case "RESPONSE_ERR": {
-                    const notification = {
-                        type: "warning",
-                        message:
-                            "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
+                console.log(error);
+            })
+        : teams
+            .getAll()
+            .then(response => {
+                if (!response) return dispatch(actions.loadGroupsFailure());
+                return dispatch(actions.loadGroupsSuccess(response));
+            })
+            .catch(error => {
+                dispatch(actions.loadGroupsFailure());
+                switch (error.status) {
+                    case 401: {
+                        // This is handled by the request function, so do nothing here
+                        break;
+                    }
+                    case "RESPONSE_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
+                            isDismissable: true,
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "UNEXPECTED_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message:
+                                "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
+                            isDismissable: true,
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
+                    case "FETCH_ERR": {
+                        const notification = {
+                            type: "warning",
+                            message: "There's been a network error whilst trying to get teams. Try refresh the page.",
+                            isDismissable: true,
+                        };
+                        notifications.add(notification);
+                        break;
+                    }
                 }
-                case "UNEXPECTED_ERR": {
-                    const notification = {
-                        type: "warning",
-                        message:
-                            "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case "FETCH_ERR": {
-                    const notification = {
-                        type: "warning",
-                        message: "There's been a network error whilst trying to get teams. Try refresh the page.",
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            console.error("Error fetching all teams:\n", error);
-        });
+                console.error("Error fetching all teams:\n", error);
+            });
 };
 
 export const createUserRequest = newUser => dispatch => {
@@ -318,40 +332,23 @@ export const fetchUserRequest = id => dispatch => {
 };
 
 export const addGroupsToUserRequest = (userId, groups) => dispatch => {
-    dispatch(actions.addGroupToUserProgress());
+    dispatch(actions.addGroupsToUserProgress());
     let promises = [];
     groups.forEach(group => promises.push(teams.addMemberToTeam(group, userId)));
 
     Promise.all(promises)
         .then(response => {
-            dispatch(actions.addGroupToUserSuccess(userId, response));
+            dispatch(actions.addGroupsToUserSuccess(userId, response));
             dispatch(push(`/florence/users`));
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "Teams added to user successfully", autoDismiss: 5000 });
         })
         .catch(error => {
-            dispatch(actions.addGroupToUserFailure());
+            dispatch(actions.addGroupsToUserFailure());
             //TODO: map responses to user friendly by content designer
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
-        });
-};
-
-export const fetchGroupsRequest = () => dispatch => {
-    dispatch(actions.loadGroupsProgress());
-    teams
-        .getGroups()
-        .then(response => {
-            dispatch(actions.loadGroupsSuccess(response.groups));
-        })
-        .catch(error => {
-            dispatch(actions.loadGroupsFailure());
-            //TODO: map responses to user friendly by content designer
-            if (error) {
-                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
-            }
-            console.log(error);
         });
 };

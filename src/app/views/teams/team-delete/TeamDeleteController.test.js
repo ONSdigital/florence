@@ -36,7 +36,7 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
 
 jest.mock("../../../config/actions.js", () => {
     return {
-        updateAllTeams: function (payload) {
+        loadGroupsSuccess: function (payload) {
             return payload;
         },
     };
