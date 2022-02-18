@@ -48,4 +48,16 @@ export default class teams {
             return response;
         });
     }
+    // TODO: new auth work
+    static getGroups() {
+        return http.get(`/groups`).then(response => {
+            return response;
+        });
+    }
+
+    static addGroupsToUser(name, body) {
+        return http.post(`/groups/${name}`, body).then(response => {
+            return response;
+        });
+    }
 }
