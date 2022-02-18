@@ -57,7 +57,6 @@ export default class teams {
 
     static addGroupsToUser(name, body) {
         return http.post(`/groups/${name}`, body).then(response => {
-            console.log("addUserToGroup=>", response);
             return response;
         });
     }
