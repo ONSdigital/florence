@@ -49,6 +49,8 @@ import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
 import NewUser from "./app/views/users/create/";
+import TeamsList from "./app/views/teams/teams-view/"
+
 import "./scss/main.scss";
 
 const config = window.getEnv();
@@ -208,7 +210,9 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
-                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />
+                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? TeamsList : null} />
+                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? CreateTeam : null} />
+                    {/*<Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />*/}
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>

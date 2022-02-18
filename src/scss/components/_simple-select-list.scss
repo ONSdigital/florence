@@ -8,6 +8,10 @@
         display: flex;
         justify-content: space-between;
 
+        &:focus {
+            outline: 3px solid $focus;
+        }
+
         // This is a bit of a hack to show radio buttons
         // as if they are simple-select-list items
         .radio {
