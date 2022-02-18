@@ -313,7 +313,7 @@ export const fetchUserRequest = id => dispatch => {
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
-            console.log(error);
+            console.error(error);
         });
 };
 

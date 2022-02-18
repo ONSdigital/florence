@@ -39,7 +39,7 @@ function AddGroupsToUser(props) {
         setUserGroups(prevState => prevState.concat(name));
     };
 
-    const getFilteredUsers = useCallback(() => {
+    const getFilteredGroups = useCallback(() => {
         return groups.filter(group => group.group_name.toLowerCase().includes(search.value.toLowerCase()));
     }, [search.value]);
 
@@ -67,7 +67,7 @@ function AddGroupsToUser(props) {
                         {loadingGroups ? (
                             <Loader classNames="grid grid--align-center grid--align-self-center" />
                         ) : (
-                            <GroupsTable testid="groups-table" items={search.value ? getFilteredUsers() : groups} handleClick={handleAdd} />
+                            <GroupsTable testid="groups-table" items={search.value ? getFilteredGroups() : groups} handleClick={handleAdd} />
                         )}
                     </div>
                 </div>
