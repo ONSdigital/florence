@@ -16,21 +16,6 @@ const Collections = props => {
         props.loadCollections(`${props.rootPath}/collections`);
     }, []);
 
-    async function getAll(){
-        console.log('then')
-        interactives.getAll().then(value => {
-            console.log('value', value)
-        })
-        console.log('promise')
-        interactives.getAll().resolve('Success').then(function(value) {
-            console.log(value); // "Success"
-        }, function(value) {
-            // not called
-        });
-    }
-
-    console.log('interactives', getAll())
-
     const handleCollectionClick = id => {
         cookies.add("collection", id, null);
         if (isViewer) {

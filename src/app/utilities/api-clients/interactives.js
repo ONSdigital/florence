@@ -2,7 +2,7 @@ import http from "../http";
 
 export default class interactives {
     static getAll() {
-        return http.get(`/zebedee/interactives`).then(response => {
+        // return http.get(`/zebedee/interactives`).then(response => {
             return [
                 {
                     "id": 1,
@@ -96,11 +96,11 @@ export default class interactives {
                     "imageUrl": "https://i.picsum.photos/id/348/600/300.jpg"
                 }
             ];
-        });
+        // });
     }
 
     static create = interactiveId => {
-        return http.post(`/zebedee/interactives/${interactiveId}`, body).then(response => {
+        // return http.post(`/zebedee/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id": 1,
                 "title": "Ante egestas ligula ultricies sed lacinia ipsum mauris tincidunt egestas.",
@@ -111,14 +111,14 @@ export default class interactives {
                 "categoryId": 4,
                 "imageUrl": "https://i.picsum.photos/id/348/600/300.jpg"
             };
-        });
+        // });
     };
 
     static remove(interactiveId) {
-        return http.delete(`/zebedee/interactives/${interactiveId}`).then(response => {
+        // return http.delete(`/zebedee/interactives/${interactiveId}`).then(response => {
             return {
                 "success": true
             };
-        });
+        // });
     }
 }
