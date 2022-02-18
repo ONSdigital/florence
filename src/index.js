@@ -48,6 +48,7 @@ import "./scss/main.scss";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
+import UploadTest from "./app/views/upload-test/UploadTest";
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -189,6 +190,7 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
+                    <Route path={`${rootPath}/upload-test`} component={userIsAuthenticated(UploadTest)} />
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />

@@ -29,6 +29,7 @@ const propTypes = {
     params: PropTypes.shape({
         jobID: PropTypes.string,
     }).isRequired,
+    newUploadEnabled: PropTypes.bool,
 };
 
 class DatasetUploadController extends Component {
