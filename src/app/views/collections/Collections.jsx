@@ -6,6 +6,7 @@ import Create from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
+import interactives from './../../utilities/api-clients/interactives'
 
 const Collections = props => {
     const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
@@ -14,6 +15,21 @@ const Collections = props => {
     useEffect(() => {
         props.loadCollections(`${props.rootPath}/collections`);
     }, []);
+
+    async function getAll(){
+        console.log('then')
+        interactives.getAll().then(value => {
+            console.log('value', value)
+        })
+        console.log('promise')
+        interactives.getAll().resolve('Success').then(function(value) {
+            console.log(value); // "Success"
+        }, function(value) {
+            // not called
+        });
+    }
+
+    console.log('interactives', getAll())
 
     const handleCollectionClick = id => {
         cookies.add("collection", id, null);
