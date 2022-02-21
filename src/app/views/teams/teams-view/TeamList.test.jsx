@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import {render, screen} from "../../../utilities/tests/test-utils";
+import { render, screen } from "../../../utilities/tests/test-utils";
 import TeamsList from "./TeamsList";
 import "@testing-library/jest-dom/extend-expect";
 
@@ -14,7 +14,7 @@ const teams = {
             last_modified_date: "2021-10-12T14:32:50.913Z",
             precedence: 19,
             role_arn: null,
-            user_pool_id: "bar"
+            user_pool_id: "bar",
         },
         {
             creation_date: "2021-09-14T12:57:50.913Z",
@@ -23,13 +23,14 @@ const teams = {
             last_modified_date: "2021-10-12T12:57:50.238Z",
             precedence: 19,
             role_arn: null,
-            user_pool_id: "bar"
-        }]
-}
+            user_pool_id: "bar",
+        },
+    ],
+};
 
 const defaultProps = {
     teams: [],
-    loadTeams: jest.fn()
+    loadTeams: jest.fn(),
 };
 
 describe("TeamsList", () => {
@@ -58,7 +59,7 @@ describe("TeamsList", () => {
         expect(screen.getByPlaceholderText("Search teams by name or ID")).toHaveValue("");
     });
     it("shows list of teams details", () => {
-        const props = {...defaultProps, teams: teams};
+        const props = { ...defaultProps, teams: teams };
         render(<TeamsList {...props} />);
 
         expect(screen.getByText(/Back/i)).toBeInTheDocument();

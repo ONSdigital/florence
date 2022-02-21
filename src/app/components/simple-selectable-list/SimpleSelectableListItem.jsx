@@ -8,7 +8,9 @@ const propTypes = {
     url: PropTypes.string.isRequired,
     externalLink: PropTypes.bool.isRequired,
     details: PropTypes.arrayOf(PropTypes.string),
-    extraDetails: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.oneOfType[PropTypes.string, PropTypes.object], classes: PropTypes.string }))),
+    extraDetails: PropTypes.arrayOf(
+        PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.oneOfType[(PropTypes.string, PropTypes.object)], classes: PropTypes.string }))
+    ),
     colCount: PropTypes.number.isRequired,
     disabled: PropTypes.bool,
 };

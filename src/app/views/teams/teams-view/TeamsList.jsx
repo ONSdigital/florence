@@ -25,9 +25,6 @@ const TeamsList = props => {
     useEffect(() => {
         const listOfPreviewTeams = [];
         teams?.groups?.forEach(team => {
-            if (team.group_name.startsWith("role-")){
-                return; // role-admin, role-publisher are not preview teams but are stored in groups
-            }
             const previewTeamData = {
                 row: {
                     title: team.description != null ? team.description : team.group_name,
@@ -81,7 +78,8 @@ const TeamsList = props => {
                     &#9664; <Link to={url.resolve("../")}>Back</Link>
                 </div>
                 <span className="margin-top--1">
-                    <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1> <Link to={url.resolve("./groups/create")}> Create a new team </Link>
+                    <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>{" "}
+                    <Link to={url.resolve("./groups/create")}> Create a new team </Link>
                 </span>
                 <div className="grid__col-6">
                     <Input
