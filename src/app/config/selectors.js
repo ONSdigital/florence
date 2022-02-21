@@ -34,7 +34,7 @@ export const getEnableNewSignIn = state => state.config.enableNewSignIn;
 export const getMappedGroups = createSelector(getGroups, getEnableNewSignIn, (groups, isNewSignIn) => {
     if (!groups) return [];
     return isNewSignIn
-        ? groups.map(group => ({ id: group.group_name, name: group.group_name }))
+        ? groups.map(group => ({ id: group.group_name, name: group.description }))
         : groups.map(group => ({ id: group.id.toString(), name: group.name }));
 });
 

@@ -187,7 +187,7 @@ const groups = [
         last_modified_date: "2021-10-12T14:32:50.913Z",
         precedence: 19,
         role_arn: null,
-        user_pool_id: "eu-west-1_Rnma9lp2q",
+        user_pool_id: "foo",
     },
     {
         creation_date: "2022-10-12T14:32:50.913Z",
@@ -196,7 +196,7 @@ const groups = [
         last_modified_date: "2022-10-13T14:32:50.913Z",
         precedence: 10,
         role_arn: null,
-        user_pool_id: "eu-west-1_Rnma9lp2q",
+        user_pool_id: "foo",
     },
     {
         creation_date: "2021-10-12T14:32:50.913Z",
@@ -205,7 +205,7 @@ const groups = [
         last_modified_date: "2021-10-12T14:32:50.913Z",
         precedence: 1,
         role_arn: null,
-        user_pool_id: "eu-west-1_Rnma9lp2q",
+        user_pool_id: "foo",
     },
 ];
 
