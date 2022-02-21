@@ -6,7 +6,6 @@ import CreateNewCollection from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
-import interactives from './../../utilities/api-clients/interactives'
 
 const Collections = props => {
     const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
