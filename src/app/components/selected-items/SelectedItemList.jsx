@@ -19,7 +19,7 @@ SelectedItemList.propTypes = {
     ).isRequired,
     classNames: PropTypes.string,
     removeClassNames: PropTypes.string,
-    onRemoveItem: PropTypes.func.isRequired,
+    onRemoveItem: PropTypes.func,
 };
 
 export default SelectedItemList;

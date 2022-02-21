@@ -82,10 +82,41 @@ export function updateActiveUser(user) {
     };
 }
 
-export function addAllUsers(users) {
+export function loadUsersSuccess(users) {
     return {
-        type: types.ADD_ALL_USERS,
+        type: types.LOAD_USERS_SUCCESS,
         users,
+    };
+}
+
+export function loadUsersFailure() {
+    return {
+        type: types.LOAD_USERS_FAILURE,
+    };
+}
+
+export function loadUsersProgress() {
+    return {
+        type: types.LOAD_USERS_PROGRESS,
+    };
+}
+
+export function loadUserGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_USER_GROUPS_SUCCESS,
+        groups,
+    };
+}
+
+export function loadUserGroupsFailure() {
+    return {
+        type: types.LOAD_USER_GROUPS_FAILURE,
+    };
+}
+
+export function loadUserGroupsProgress() {
+    return {
+        type: types.LOAD_USER_GROUPS_PROGRESS,
     };
 }
 
@@ -323,13 +354,6 @@ export function createUserProgress() {
         type: types.CREATE_USER_PROGRESS,
     };
 }
-// TODO: Unify
-export function getUsersRequestSuccess(results) {
-    return {
-        type: types.GET_USERS_REQUEST_SUCCESS,
-        users: results.users,
-    };
-}
 
 export function loadUserSuccess(user) {
     return {
@@ -388,3 +412,16 @@ export function loadGroupsSuccess(groups) {
         groups,
     };
 }
+
+export const updateUserFailure = () => ({
+    type: types.UPDATE_USER_FAILURE,
+});
+
+export const updateUserProgress = () => ({
+    type: types.UPDATE_USER_PROGRESS,
+});
+
+export const updateUserSuccess = user => ({
+    type: types.UPDATE_USER_SUCCESS,
+    user,
+});

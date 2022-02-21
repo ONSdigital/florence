@@ -93,6 +93,11 @@ export default class user {
         return http.get(`/users/${id}`);
     }
 
+    // TODO: new auth work
+    static updateUser(id, body) {
+        return http.put(`/users/${id}`, body);
+    }
+
     static getUserGroups(id) {
         return http.post(`/users/${id}/groups/`);
     }

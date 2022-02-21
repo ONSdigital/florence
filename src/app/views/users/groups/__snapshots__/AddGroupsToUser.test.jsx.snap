@@ -89,7 +89,7 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
     </div>
   </div>
   <div
-    className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
+    className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer"
     data-testid="form-footer"
   >
     <div

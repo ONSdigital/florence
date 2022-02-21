@@ -7,7 +7,7 @@ import { Link } from "react-router";
 function FormFooter({ loading, hasErrors, hasValues, handleSubmit, redirectUrl }) {
     const to = redirectUrl ? redirectUrl : url.resolve("../");
     return (
-        <div className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer" data-testid="form-footer">
+        <div className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer" data-testid="form-footer">
             <div className="grid__col-9">
                 <div className="grid grid--align-baseline">
                     <button type="submit" className="btn btn--positive btn--margin-right" onClick={handleSubmit} disabled={hasErrors}>

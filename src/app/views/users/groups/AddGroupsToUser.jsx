@@ -45,17 +45,17 @@ function AddGroupsToUser(props) {
 
     return (
         <div className="grid grid--justify-space-around">
-            <div className="grid__col-9">
+            <div className="grid__col-11 grid__col-md-9">
                 <BackButton redirectUrl={`${rootPath}/users`} classNames={"margin-top--2"} />
-                <div className="grid grid--justify-space-around">
-                    <div className="grid__col-6">
+                <div className="grid grid--justify-space-between">
+                    <div className="grid__col-md-5">
                         {loading ? (
                             <Loader classNames="grid grid--align-center grid--align-self-center" />
                         ) : (
                             <User testid="user" {...user} userGroups={userGroups} handleRemove={handleRemove} />
                         )}
                     </div>
-                    <div className="grid__col-6">
+                    <div className="grid__col-md-6">
                         <h2 className="margin-top--1 margin-bottom--1">Add a team for the user to join</h2>
                         <div className="search__input-group margin-bottom--1">
                             <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
