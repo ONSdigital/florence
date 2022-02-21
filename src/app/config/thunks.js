@@ -157,7 +157,7 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
                 if (error) {
                     notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
                 }
-                console.log(error);
+                console.error(error);
             })
         : teams
             .getAll()
