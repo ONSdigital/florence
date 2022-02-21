@@ -6,9 +6,11 @@ function SelectedItem({ id, name, removeClassNames, classNames, handleRemoveItem
     return (
         <span className={clsx("selected-item-list__item", classNames)}>
             {name}
-            <button className={clsx("selected-item-list__remove", removeClassNames)} type="button" onClick={() => handleRemoveItem(id)}>
-                ×
-            </button>
+            {!!handleRemoveItem && (
+                <button className={clsx("selected-item-list__remove", removeClassNames)} type="button" onClick={() => handleRemoveItem(id)}>
+                    &times;
+                </button>
+            )}
         </span>
     );
 }
@@ -16,7 +18,7 @@ function SelectedItem({ id, name, removeClassNames, classNames, handleRemoveItem
 SelectedItem.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    handleRemoveItem: PropTypes.func.isRequired,
+    handleRemoveItem: PropTypes.func,
     classNames: PropTypes.string,
     removeClassNames: PropTypes.string,
 };

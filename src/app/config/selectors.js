@@ -40,6 +40,25 @@ export const getMappedGroups = createSelector(getGroups, getEnableNewSignIn, (gr
 
 export const getNotifications = state => state.notifications;
 
-export const getUser = state => state.users.active;
-export const getUserLoading = state => state.users.isLoadingActive;
+export const getActiveUser = state => state.users.active; //TODO: check if this is needed
+export const getActiveUserLoading = state => state.users.isLoadingActive;
+
+export const getUser = state => state.user.data;
+export const getUserLoading = state => state.user.isLoading;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
+
+export const getUsers = state => state.users.all;
+export const getUsersLoading = state => state.users.isLoading;
+export const getRootPath = state => state.rootPath;
+
+export const getUserGroups = state => state.user.groups;
+
+export const getMappedUsers = createSelector(getUsers, getRootPath, (users, rootPath) => {
+    if (!users) return [];
+    return users.map(user => ({
+        ...user,
+        title: `${user.forename} ${user.lastname}`,
+        details: [user.email],
+        url: `${rootPath}/users/${user.id}`,
+    }));
+});

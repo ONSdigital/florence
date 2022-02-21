@@ -47,10 +47,11 @@ import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
-import UsersList from "./app/views/users/UsersList";
+import UsersList from "./app/views/users";
 import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
 import TeamsList from "./app/views/teams/teams-view/"
+import EditUser from "./app/views/users/edit";
 import "./scss/main.scss";
 
 const config = window.getEnv();
@@ -69,7 +70,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdminOrEditor(state.user);
+        return  auth.isAdminOrEditor(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
@@ -158,8 +159,9 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route

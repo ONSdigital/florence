@@ -1,6 +1,5 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
-import { GET_USERS_REQUEST_SUCCESS } from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -176,12 +175,32 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.ADD_ALL_USERS: {
+        case types.LOAD_USERS_SUCCESS: {
             return {
                 ...state,
                 users: {
                     ...state.users,
-                    all: [...action.users],
+                    all: action.users,
+                    isLoading: false,
+                    previewUsers: action.users,
+                },
+            };
+        }
+        case types.LOAD_USERS_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USERS_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoading: false,
                 },
             };
         }
@@ -472,28 +491,28 @@ export default function reducer(state = initialState, action) {
         case types.LOAD_USER_PROGRESS: {
             return {
                 ...state,
-                users: {
-                    ...state.users,
-                    isLoadingActive: true,
+                user: {
+                    ...state.user,
+                    isLoading: true,
                 },
             };
         }
         case types.LOAD_USER_FAILURE: {
             return {
                 ...state,
-                users: {
-                    ...state.users,
-                    isLoadingActive: false,
+                user: {
+                    ...state.user,
+                    isLoading: false,
                 },
             };
         }
         case types.LOAD_USER_SUCCESS: {
             return {
                 ...state,
-                users: {
-                    ...state.users,
-                    isLoadingActive: false,
-                    active: action.user,
+                user: {
+                    ...state.user,
+                    isLoading: false,
+                    data: action.user,
                 },
             };
         }
@@ -543,12 +562,59 @@ export default function reducer(state = initialState, action) {
                 isUserAddingToGroups: false,
             };
         }
-        case GET_USERS_REQUEST_SUCCESS: {
+        case types.UPDATE_USER_PROGRESS: {
             return {
                 ...state,
                 users: {
                     ...state.users,
-                    previewUsers: [...action.users],
+                    isUpdating: true,
+                },
+            };
+        }
+        case types.UPDATE_USER_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isUpdating: false,
+                },
+            };
+        }
+        case types.UPDATE_USER_SUCCESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    data: null,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_SUCCESS: {
+            const userGroups = action.groups || [];
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    groups: userGroups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_PROGRESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_FAILURE: {
+            return {
+                ...state,
+                user: {
+                    ...state.use,
+                    isLoading: false,
                 },
             };
         }

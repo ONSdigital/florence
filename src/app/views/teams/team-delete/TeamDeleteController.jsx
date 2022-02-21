@@ -172,7 +172,7 @@ TeamDeleteController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         name: state.state.teams.active.name,
-        teams: state.state.teams.all,
+        teams: state.state.groups.all,
         pathname: state.routing.locationBeforeTransitions.pathname,
     };
 }

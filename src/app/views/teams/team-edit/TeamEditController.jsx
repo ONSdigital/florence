@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-import { updateActiveTeamMembers, addAllUsers } from "../../../config/actions";
+import { updateActiveTeamMembers, loadUsersSuccess } from "../../../config/actions";
 import user from "../../../utilities/api-clients/user";
 import teams from "../../../utilities/api-clients/teams";
 import notifications from "../../../utilities/notifications";
@@ -39,7 +39,7 @@ export class TeamEditController extends Component {
                 return this.props.members.indexOf(user.email) < 0;
             });
 
-            this.props.dispatch(addAllUsers(users));
+            this.props.dispatch(loadUsersSuccess(users));
             this.setState({
                 editedUsers,
                 updatingAllUsers: false,
