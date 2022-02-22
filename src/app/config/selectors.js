@@ -11,7 +11,7 @@ export const getMappedCollections = createSelector(getCollections, collections =
 
 export const getFilteredCollections = createSelector(getMappedCollections, getSearch, (collections, search) => {
     if (!collections) return [];
-    if (!getSearch) return collections;
+    if (!search) return collections;
     return collections.filter(collection => {
         const string = search.toLowerCase();
         const name = collection.name.toLowerCase();
@@ -34,3 +34,10 @@ export const getMappedTeams = createSelector(getTeams, teams => {
 });
 
 export const getNotifications = state => state.notifications;
+
+export const getUser = state => state.users.active;
+export const getUserLoading = state => state.users.isLoadingActive;
+export const getUserAddingToGroups = state => state.isUserAddingToGroups;
+
+export const getGroups = state => state.groups.all;
+export const getGroupsLoading = state => state.groups.isLoading;

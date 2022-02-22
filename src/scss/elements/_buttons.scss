@@ -83,6 +83,14 @@
         }
     }
 
+    &--info {
+        color: $mine-shaft;
+        background-color: $porcelain;
+        &:hover {
+            background-color: darken($porcelain, 30%);
+        }
+    }
+
     &--disabled,
     &:disabled {
         opacity: 0.65;

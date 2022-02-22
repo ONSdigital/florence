@@ -88,6 +88,14 @@ export default class user {
     static createNewUser(body) {
         return http.post(`/users`, body);
     }
+    // TODO: new auth work
+    static getUser(id) {
+        return http.get(`/users/${id}`);
+    }
+
+    static getUserGroups(id) {
+        return http.post(`/users/${id}/groups/`);
+    }
 
     static remove(email) {
         return http.delete(`/zebedee/users?email=" + ${email}`);

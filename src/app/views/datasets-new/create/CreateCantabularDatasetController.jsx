@@ -3,6 +3,7 @@ import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
+import recipes from "../../../utilities/api-clients/recipes";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
@@ -11,7 +12,7 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     params: PropTypes.shape({
         datasetID: PropTypes.string.isRequired,
-        format: PropTypes.string.isRequired,
+        recipeID: PropTypes.string.isRequired,
     }),
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
@@ -24,24 +25,57 @@ export class CreateCantabularDatasetController extends Component {
 
         this.state = {
             isPosting: false,
+            isGettingRecipe: false,
             datasetID: "",
             format: "",
+            isBasedOn: "",
         };
     }
 
     UNSAFE_componentWillMount = () => {
         this.setStateFromParameters();
+        this.getRecipe();
     };
 
     setStateFromParameters = () => {
         this.setState({
             datasetID: this.props.params.datasetID,
-            format: this.props.params.format,
         });
+    };
+
+    handleGETSuccess = recipe => {
+        this.setState({
+            format: recipe.format,
+            isBasedOn: recipe.cantabular_blob,
+        });
+    };
+
+    getRecipe = () => {
+        const recipeId = this.props.params.recipeID;
+        this.setState({ isGettingRecipe: true });
+        return recipes
+            .get(recipeId)
+            .then(recipe => {
+                this.setState({ isGettingRecipe: false });
+                this.handleGETSuccess(recipe);
+            })
+            .catch(error => {
+                log.event("get recipe: error GETting recipe", log.data({ recipeId }), log.error());
+                notifications.add({
+                    type: "warning",
+                    message: "An error occurred when getting recipe information. Please try again",
+                    isDismissable: true,
+                });
+                console.error("get metadata: error GETting metadata from controller", error);
+            });
     };
 
     makeCreateDatasetPostBody = () => {
         return {
+            is_based_on: {
+                "@id": this.state.isBasedOn,
+                "@type": this.state.format,
+            },
             type: this.state.format,
         };
     };
@@ -114,11 +148,22 @@ export class CreateCantabularDatasetController extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Create dataset</h1>
                     <p className="font-size--18  margin-bottom--1">
-                        <span className="font-weight--600">for&nbsp;</span>
-                        {this.state.datasetID}
+                        {this.state.isGettingRecipe ? (
+                            <div className="loader loader--dark"></div>
+                        ) : (
+                            <div>
+                                <span className="font-weight--600">for&nbsp;</span>
+                                {this.state.datasetID}
+                            </div>
+                        )}
                     </p>
                     <div className="grid__col-2">
-                        <button type="button" className="btn btn--positive" disabled={this.state.isPosting} onClick={this.handleCreateClick}>
+                        <button
+                            type="button"
+                            className="btn btn--positive"
+                            disabled={this.state.isPosting || this.state.isGettingRecipe}
+                            onClick={this.handleCreateClick}
+                        >
                             {this.state.isPosting ? <div className="form__loader loader loader--dark margin-left--1"></div> : "Create"}
                         </button>
                     </div>
