@@ -16,7 +16,7 @@ function SelectedItem({ id, name, removeClassNames, classNames, handleRemoveItem
 SelectedItem.propTypes = {
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
-    onRemoveItem: PropTypes.func.isRequired,
+    handleRemoveItem: PropTypes.func.isRequired,
     classNames: PropTypes.string,
     removeClassNames: PropTypes.string,
 };

@@ -193,25 +193,6 @@ export function emptyActiveVersion() {
     };
 }
 
-export function updateAllTeams(allTeams) {
-    return {
-        type: types.UPDATE_ALL_TEAMS,
-        allTeams: allTeams,
-    };
-}
-
-export function updateAllTeamsProgress() {
-    return {
-        type: types.UPDATE_ALL_TEAMS_PROGRESS,
-    };
-}
-
-export function updateAllTeamsFailure() {
-    return {
-        type: types.UPDATE_ALL_TEAMS_FAILURE,
-    };
-}
-
 export function updateActiveTeam(activeTeam) {
     return {
         type: types.UPDATE_ACTIVE_TEAM,
@@ -369,7 +350,7 @@ export function loadUserProgress() {
     };
 }
 
-export function addGroupToUserSuccess(userId, groups) {
+export function addGroupsToUserSuccess(userId, groups) {
     return {
         type: types.ADD_GROUPS_TO_USER_SUCCESS,
         userId,
@@ -377,13 +358,13 @@ export function addGroupToUserSuccess(userId, groups) {
     };
 }
 
-export function addGroupToUserFailure() {
+export function addGroupsToUserFailure() {
     return {
         type: types.ADD_GROUPS_TO_USER_FAILURE,
     };
 }
 
-export function addGroupToUserProgress() {
+export function addGroupsToUserProgress() {
     return {
         type: types.ADD_GROUPS_TO_USER_PROGRESS,
     };

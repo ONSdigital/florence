@@ -13,7 +13,7 @@ function User({ id, forename, lastname, testid, userGroups, handleRemove }) {
                     classNames="selected-item-list__item--info"
                     removeClassNames="selected-item-list__remove--info"
                     items={userGroups.map(gr => ({ id: gr, name: gr }))}
-                    onRemoveItem={handleRemove}
+                    handleRemoveItem={handleRemove}
                 />
             )}
         </div>

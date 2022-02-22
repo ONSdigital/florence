@@ -4,7 +4,7 @@ import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
 import teams from "../../../utilities/api-clients/teams";
-import { updateAllTeams } from "../../../config/actions";
+import { loadGroupsSuccess } from "../../../config/actions";
 import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
 
@@ -77,7 +77,7 @@ export class TeamDeleteController extends Component {
                 const newTeams = this.props.teams.filter(team => {
                     return team.name !== this.props.name;
                 });
-                this.props.dispatch(updateAllTeams(newTeams));
+                this.props.dispatch(loadGroupsSuccess(newTeams));
                 this.props.onDeleteSuccess();
                 log.event(`successfully deleted team`, log.data({ team: this.props.name }));
             })
