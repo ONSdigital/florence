@@ -2,19 +2,9 @@ import http from "../http";
 
 export default class teams {
     static getAll() {
-        let config = {};
-        if (window.getEnv != null) {
-            config = window.getEnv();
-        }
-        if (config.enableNewSignIn) {
-            return http.get(`/groups`).then(response => {
-                return response;
-            });
-        } else {
-            return http.get(`/zebedee/teams`).then(response => {
-                return response.teams;
-            });
-        }
+        return http.get(`/zebedee/teams`).then(response => {
+            return response.teams;
+        });
     }
 
     static get(teamName) {
@@ -24,7 +14,7 @@ export default class teams {
     }
 
     static add(teamName) {
-        return http.post(`/zebedee/teams/${teamName}`, body).then(response => {
+        return http.post(`/zebedee/teams/${teamName}`).then(response => {
             return response;
         });
     }

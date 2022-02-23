@@ -4,32 +4,28 @@ import { render, screen } from "../../../utilities/tests/test-utils";
 import TeamsList from "./TeamsList";
 import "@testing-library/jest-dom/extend-expect";
 
-const teams = {
-    count: 2,
-    groups: [
-        {
-            creation_date: "2021-10-12T14:32:50.913Z",
-            description: "foo",
-            group_name: "104ea95f-dcf2-4e36-81cc-bbf840b6ee10",
-            last_modified_date: "2021-10-12T14:32:50.913Z",
-            precedence: 19,
-            role_arn: null,
-            user_pool_id: "bar",
-        },
-        {
-            creation_date: "2021-09-14T12:57:50.913Z",
-            description: "baz",
-            group_name: "45a6c8ed-2494-4e68-89ce-0ca504dc020a",
-            last_modified_date: "2021-10-12T12:57:50.238Z",
-            precedence: 19,
-            role_arn: null,
-            user_pool_id: "bar",
-        },
-    ],
-};
-
+const groups = [
+    {
+        creation_date: "2021-10-12T14:32:50.913Z",
+        description: "foo",
+        group_name: "104ea95f-dcf2-4e36-81cc-bbf840b6ee10",
+        last_modified_date: "2021-10-12T14:32:50.913Z",
+        precedence: 19,
+        role_arn: null,
+        user_pool_id: "bar",
+    },
+    {
+        creation_date: "2021-09-14T12:57:50.913Z",
+        description: "baz",
+        group_name: "45a6c8ed-2494-4e68-89ce-0ca504dc020a",
+        last_modified_date: "2021-10-12T12:57:50.238Z",
+        precedence: 19,
+        role_arn: null,
+        user_pool_id: "bar",
+    },
+];
 const defaultProps = {
-    teams: [],
+    groups: [],
     loadTeams: jest.fn(),
 };
 
@@ -59,7 +55,7 @@ describe("TeamsList", () => {
         expect(screen.getByPlaceholderText("Search teams by name or ID")).toHaveValue("");
     });
     it("shows list of teams details", () => {
-        const props = { ...defaultProps, teams: teams };
+        const props = { ...defaultProps, groups: groups };
         render(<TeamsList {...props} />);
 
         expect(screen.getByText(/Back/i)).toBeInTheDocument();

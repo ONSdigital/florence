@@ -1,15 +1,17 @@
 import { connect } from "react-redux";
-import { loadTeamsRequest } from "../../../config/thunks";
+import { fetchGroupsRequest } from "../../../config/thunks";
 import TeamsList from "./TeamsList";
+import { getEnableNewSignIn, getGroups } from "../../../config/selectors";
 
 function mapStateToProps(state) {
     return {
-        teams: state.state.teams.all,
+        groups: getGroups(state.state),
+        isNewSignIn: getEnableNewSignIn(state.state),
     };
 }
 
 const mapDispatchToProps = dispatch => ({
-    loadTeams: () => dispatch(loadTeamsRequest()),
+    loadTeams: isNewSignIn => dispatch(fetchGroupsRequest(isNewSignIn)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(TeamsList);

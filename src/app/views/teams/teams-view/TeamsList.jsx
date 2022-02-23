@@ -7,24 +7,25 @@ import SimpleSelectableList from "../../../components/simple-selectable-list/Sim
 
 const propTypes = {
     dispatch: PropTypes.func,
-    teams: PropTypes.object.isRequired,
+    groups: PropTypes.array.isRequired,
     loadTeams: PropTypes.func.isRequired,
+    isNewSignIn: PropTypes.bool.isRequired,
 };
 
 const TeamsList = props => {
-    const { teams, loadTeams } = props;
+    const { groups, loadTeams, isNewSignIn } = props;
 
     const [isFetchingTeams, setIsFetchingTeams] = useState(true);
     const [filterTerm, setFilterTerm] = useState("");
     const [previewTeams, setPreviewTeams] = useState([]);
 
     useEffect(() => {
-        loadTeams();
+        loadTeams(isNewSignIn);
     }, []);
 
     useEffect(() => {
         const listOfPreviewTeams = [];
-        teams?.groups?.forEach(team => {
+        groups.forEach(team => {
             const previewTeamData = {
                 row: {
                     title: team.description != null ? team.description : team.group_name,
@@ -41,7 +42,7 @@ const TeamsList = props => {
         });
         setPreviewTeams(listOfPreviewTeams);
         setIsFetchingTeams(false);
-    }, [teams]);
+    }, [groups]);
 
     const formatDateString = date => {
         const utcDate = new Date(date);
