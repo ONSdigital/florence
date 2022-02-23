@@ -17,13 +17,13 @@ const notification = {
 
 function AddGroupsToUser(props) {
     const id = props.params.userID;
-    const { loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
+    const { isNewSignIn, loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
 
     useEffect(() => {
         loadUser(id);
-        loadGroups();
+        loadGroups(isNewSignIn);
     }, []);
 
     const hasValues = userGroups.length > 0;
