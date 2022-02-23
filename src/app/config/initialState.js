@@ -25,6 +25,12 @@ export const initialState = {
         active: {},
         all: [],
         isCreating: false,
+        previewUsers: [],
+        isLoadingActive: false,
+    },
+    groups: {
+        all: [],
+        isLoading: false,
     },
     datasets: {
         all: [],
@@ -33,6 +39,7 @@ export const initialState = {
         recipes: [],
         activeJob: {},
     },
+    isUserAddingToGroups: false,
     search: "",
     notifications: [],
     popouts: [],

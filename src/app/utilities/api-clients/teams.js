@@ -14,7 +14,19 @@ export default class teams {
     }
 
     static add(teamName) {
-        return http.post(`/zebedee/teams/${teamName}`).then(response => {
+        return http.post(`/zebedee/teams/${teamName}`, body).then(response => {
+            return response;
+        });
+    }
+
+    static createTeam(body) {
+        return http.post(`/groups`, body).then(response => {
+            return response;
+        });
+    }
+
+    static addMemberToTeam(teamID, userID) {
+        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
             return response;
         });
     }
@@ -33,6 +45,18 @@ export default class teams {
 
     static removeMember(teamName, email) {
         return http.delete(`/zebedee/teams/${teamName}?email=${email}`).then(response => {
+            return response;
+        });
+    }
+    // TODO: new auth work
+    static getGroups() {
+        return http.get(`/groups`).then(response => {
+            return response;
+        });
+    }
+
+    static addGroupsToUser(name, body) {
+        return http.post(`/groups/${name}`, body).then(response => {
             return response;
         });
     }

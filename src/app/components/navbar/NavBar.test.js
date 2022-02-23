@@ -62,6 +62,23 @@ describe("NavBar", () => {
             expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
         });
 
+        describe("when enableNewSignIn feature flag is enabled", () => {
+            const props = {
+                ...defaultProps,
+                config: {
+                    ...defaultProps.config,
+                    enableNewSignIn: true,
+                },
+            };
+            const component = shallow(<NavBar {...props} user={authenticatedUser} />);
+            it("'Preview teams' option should be present", () => {
+                expect(component.hasClass("global-nav__list")).toBe(true);
+                expect(component.find(Link)).toHaveLength(NavbarItems.length);
+                const link = component.find("Link[to='/florence/groups']");
+                expect(link.getElement().props.children[0].includes("Preview teams"));
+            });
+        });
+
         describe("when enabled dataset import", () => {
             it("should display Datasets", () => {
                 const props = {

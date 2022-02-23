@@ -291,7 +291,7 @@ describe("Calling getAllUncreatedDatasetFromRecipeOutputs", () => {
             expect(component.state("outputs")[2]).toMatchObject({
                 title: "Test dataset 5",
                 id: "test-dataset-5",
-                url: "florence/collections/12345/datasets/create/test-dataset-5/cantabular_table",
+                url: "florence/collections/12345/datasets/create/test-dataset-5/2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
             });
         });
         it("updates isFetchingRecipesAndDatasets state to show it has created dataset", async () => {

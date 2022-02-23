@@ -10,7 +10,7 @@ exports[`UsersList matches the snapshot 1`] = `
     <div
       className="margin-top--2"
     >
-      ◀ 
+      ◀ 
       <a
         onClick={[Function]}
         style={Object {}}
@@ -33,7 +33,7 @@ exports[`UsersList matches the snapshot 1`] = `
       >
         <a
           className="margin-left--1"
-          href="users/create"
+          href="/florence/users/create"
           onClick={[Function]}
           style={Object {}}
         >

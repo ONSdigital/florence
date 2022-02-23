@@ -193,25 +193,6 @@ export function emptyActiveVersion() {
     };
 }
 
-export function updateAllTeams(allTeams) {
-    return {
-        type: types.UPDATE_ALL_TEAMS,
-        allTeams: allTeams,
-    };
-}
-
-export function updateAllTeamsProgress() {
-    return {
-        type: types.UPDATE_ALL_TEAMS_PROGRESS,
-    };
-}
-
-export function updateAllTeamsFailure() {
-    return {
-        type: types.UPDATE_ALL_TEAMS_FAILURE,
-    };
-}
-
 export function updateActiveTeam(activeTeam) {
     return {
         type: types.UPDATE_ACTIVE_TEAM,
@@ -340,5 +321,70 @@ export function createUserFailure() {
 export function createUserProgress() {
     return {
         type: types.CREATE_USER_PROGRESS,
+    };
+}
+// TODO: Unify
+export function getUsersRequestSuccess(results) {
+    return {
+        type: types.GET_USERS_REQUEST_SUCCESS,
+        users: results.users,
+    };
+}
+
+export function loadUserSuccess(user) {
+    return {
+        type: types.LOAD_USER_SUCCESS,
+        user,
+    };
+}
+
+export function loadUserFailure() {
+    return {
+        type: types.LOAD_USER_FAILURE,
+    };
+}
+
+export function loadUserProgress() {
+    return {
+        type: types.LOAD_USER_PROGRESS,
+    };
+}
+
+export function addGroupsToUserSuccess(userId, groups) {
+    return {
+        type: types.ADD_GROUPS_TO_USER_SUCCESS,
+        userId,
+        groups,
+    };
+}
+
+export function addGroupsToUserFailure() {
+    return {
+        type: types.ADD_GROUPS_TO_USER_FAILURE,
+    };
+}
+
+export function addGroupsToUserProgress() {
+    return {
+        type: types.ADD_GROUPS_TO_USER_PROGRESS,
+    };
+}
+
+export function loadGroupsFailure() {
+    return {
+        type: types.LOAD_GROUPS_FAILURE,
+    };
+}
+
+export function loadGroupsProgress() {
+    return {
+        type: types.LOAD_GROUPS_PROGRESS,
+    };
+}
+
+export function loadGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_GROUPS_SUCCESS,
+        groups,
     };
 }

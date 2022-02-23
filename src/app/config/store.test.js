@@ -2,7 +2,7 @@ import { createStore, combineReducers } from "redux";
 import reducer from "./reducer";
 import * as actions from "./actions";
 import * as selectors from "./selectors";
-import { collections, users, notifications, teams, popouts } from "../utilities/tests/mockData";
+import { collections, users, notifications, teams as groups, popouts } from "../utilities/tests/mockData";
 
 describe("Store", () => {
     describe("state collections", () => {
@@ -294,9 +294,9 @@ describe("Store", () => {
                         enableHomepagePublishing: true,
                         enableNewSignIn: true,
                     },
-                    teams: {
+                    groups: {
                         active: {},
-                        all: teams,
+                        all: groups,
                         users: [],
                         isLoading: false,
                     },
@@ -311,7 +311,7 @@ describe("Store", () => {
         expect(store.getState().state.users.all).toEqual(users);
         expect(store.getState().state.users.all.length).toEqual(users.length);
         expect(store.getState().state.users.active).toEqual(users[0]);
-        expect(selectors.getTeams(store.getState().state).length).toEqual(teams.length);
+        expect(selectors.getGroups(store.getState().state).length).toEqual(groups.length);
         expect(selectors.getNotifications(store.getState().state).length).toEqual(notifications.length);
         expect(store.getState().state.popouts.length).toEqual(popouts.length);
         expect(store.getState().state.config.enableDatasetImport).toEqual(true);

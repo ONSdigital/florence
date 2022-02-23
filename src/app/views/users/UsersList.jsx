@@ -2,18 +2,17 @@ import React, { useEffect, useState } from "react";
 import { connect } from "react-redux";
 import { replace } from "react-router-redux";
 import PropTypes from "prop-types";
-
 import users from "../../utilities/api-clients/user";
 import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
 import auth from "../../utilities/auth";
-
+import url from "../../utilities/url";
+import { errCodes } from "../../utilities/errorCodes";
 import { addAllUsers } from "../../config/actions";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
-import url from "../../utilities/url";
 import Input from "../../components/Input";
-import Link from "react-router/lib/Link";
-import { errCodes } from "../../utilities/errorCodes";
+import { Link } from "react-router";
+import BackButton from "../../components/back-button/BackButton";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -146,15 +145,13 @@ export const UsersList = props => {
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-9">
-                <div className="margin-top--2">
-                    &#9664; <Link to={url.resolve("../")}>Back</Link>
-                </div>
+                <BackButton classNames={"margin-top--2"} />
                 <div className="grid grid--align-baseline">
                     <div className="grid__col-1">
                         <h1>Users</h1>
                     </div>
                     <div className="grid__col-3">
-                        <Link className="margin-left--1" href="users/create">
+                        <Link className="margin-left--1" href={`${props.rootPath}/users/create`}>
                             Create new user
                         </Link>
                     </div>

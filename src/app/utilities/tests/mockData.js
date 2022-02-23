@@ -88,6 +88,7 @@ const items = [
         status: { neutral: true, warning: false, message: "" },
     },
 ];
+
 const users = [
     {
         name: "Test user",
@@ -120,6 +121,17 @@ const users = [
         },
     },
 ];
+
+const user = {
+    active: true,
+    email: "bill.hicks@ons.gov.uk",
+    forename: "Bill",
+    groups: [],
+    id: "bill.hicks@ons.gov.uk",
+    lastname: "Hickes",
+    status: "CONFIRMED",
+    status_notes: "",
+};
 
 const notifications = [
     {
@@ -166,6 +178,37 @@ const teams = [
         path: "test_team_1",
     },
 ];
+
+const groups = [
+    {
+        creation_date: "2021-10-12T14:32:50.913Z",
+        description: "my test group description",
+        group_name: "my test group",
+        last_modified_date: "2021-10-12T14:32:50.913Z",
+        precedence: 19,
+        role_arn: null,
+        user_pool_id: "foo",
+    },
+    {
+        creation_date: "2022-10-12T14:32:50.913Z",
+        description: "my first test group description",
+        group_name: "my first group",
+        last_modified_date: "2022-10-13T14:32:50.913Z",
+        precedence: 10,
+        role_arn: null,
+        user_pool_id: "foo",
+    },
+    {
+        creation_date: "2021-10-12T14:32:50.913Z",
+        description: "admins group description",
+        group_name: "admins",
+        last_modified_date: "2021-10-12T14:32:50.913Z",
+        precedence: 1,
+        role_arn: null,
+        user_pool_id: "foo",
+    },
+];
+
 const popouts = [
     {
         id: "foo",
@@ -201,4 +244,6 @@ module.exports = {
     notifications,
     teams,
     popouts,
+    user,
+    groups,
 };

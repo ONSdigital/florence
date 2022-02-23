@@ -42,7 +42,7 @@ const CreateNewCollection = props => {
     const [releaseDateISO, setReleaseDateISO] = useState("");
 
     useEffect(() => {
-        props.loadTeams();
+        props.loadTeams(props.isNewSignIn);
     }, []);
 
     const handleCollectionNameChange = e => {
@@ -317,7 +317,7 @@ const CreateNewCollection = props => {
                 selectedOption={"default-option"}
                 onChange={handleTeamSelect}
             />
-            {newCollection.teams && <SelectedItemList items={newCollection.teams} onRemoveItem={handleTeamRemove} />}
+            {newCollection.teams && <SelectedItemList items={newCollection.teams} handleRemoveItem={handleTeamRemove} />}
             <RadioGroup
                 groupName="release-type"
                 radioData={releaseTypeRadioData}
