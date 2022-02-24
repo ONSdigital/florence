@@ -5,7 +5,7 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
   className="grid grid--justify-space-around"
 >
   <div
-    className="grid__col-9"
+    className="grid__col-11 grid__col-md-9"
   >
     <div
       className="margin-top--2"
@@ -19,10 +19,10 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
       </a>
     </div>
     <div
-      className="grid grid--justify-space-around"
+      className="grid grid--justify-space-between"
     >
       <div
-        className="grid__col-6"
+        className="grid__col-md-5"
       >
         <div
           data-testid="user"
@@ -47,7 +47,7 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
         </div>
       </div>
       <div
-        className="grid__col-6"
+        className="grid__col-md-6"
       >
         <h2
           className="margin-top--1 margin-bottom--1"

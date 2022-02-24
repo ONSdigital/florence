@@ -8,7 +8,7 @@ exports[`CreateUser matches the snapshot 1`] = `
     className="grid grid--justify-space-around"
   >
     <div
-      className="grid__col-9"
+      className="grid__col-11 grid__col-md-9"
     >
       <div
         className="margin-top--2"

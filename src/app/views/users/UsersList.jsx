@@ -15,9 +15,9 @@ const UsersList = props => {
     const [search, setSearch] = useInput("");
     useEffect(() => {
         // TODO: remove this ?
-        // if (!isAdmin && !props.params.userID) {
-        //     props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
-        // }
+        if (!isAdmin && !props.params.userID) {
+            props.dispatch(replace(`${props.rootPath}/users/${props.loggedInUser.email}`));
+        }
         loadUsers();
     }, []);
 
