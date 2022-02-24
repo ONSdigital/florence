@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useState } from "react";
 import isEqual from "lodash/isEqual";
+import isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
 import url from "../../../utilities/url";
@@ -33,6 +34,7 @@ const EditUser = props => {
     useEffect(() => {
         if (id) {
             props.loadUser(id);
+            props.loadUserGroups(id);
         }
     }, [id]);
 
@@ -40,7 +42,7 @@ const EditUser = props => {
     const [values, setValues] = useState(null);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const hasErrors = errors && Object.keys(errors).length > 0;
+    const hasErrors = !isEmpty(errors);
     const hasValues = !isEqual(values, user);
 
     useEffect(() => {
@@ -85,7 +87,7 @@ const EditUser = props => {
                     <div className="grid grid--justify-space-between">
                         <div className="grid__col-md-6">
                             <h1 className="margin-top--1 margin-bottom--1">{`${user.forename} ${user.lastname}`}</h1>
-                            <p>{user.id}</p>
+                            <p>{user.email}</p>
                             {hasErrors && <FormValidationError errors={errors} />}
                             <div className="grid">
                                 <div className="grid__col-lg-6 margin-top--1">
@@ -144,7 +146,7 @@ const EditUser = props => {
                         </div>
                     </div>
                 </div>
-                <FormFooter hasValues={hasValues} loading={loading} handleSubmit={handleSubmit} />
+                <FormFooter hasValues={hasValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </form>
     );

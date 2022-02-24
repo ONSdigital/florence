@@ -40,7 +40,7 @@ export const getMappedGroups = createSelector(getGroups, getEnableNewSignIn, (gr
 
 export const getNotifications = state => state.notifications;
 
-export const getActiveUser = state => state.users.active;
+export const getActiveUser = state => state.users.active; //TODO: check if this is needed
 export const getActiveUserLoading = state => state.users.isLoadingActive;
 
 export const getUser = state => state.user.data;
@@ -57,9 +57,8 @@ export const getMappedUsers = createSelector(getUsers, getRootPath, (users, root
     if (!users) return [];
     return users.map(user => ({
         ...user,
-        id: user.email,
         title: `${user.forename} ${user.lastname}`,
         details: [user.email],
-        url: `${rootPath}/users/${user.email}`,
+        url: `${rootPath}/users/${user.id}`,
     }));
 });

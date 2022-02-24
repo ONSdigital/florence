@@ -16,6 +16,7 @@ exports[`CreateUser matches the snapshot 1`] = `
         ◀ 
         <a
           onClick={[Function]}
+          role="link"
           style={Object {}}
         >
           Back
@@ -118,6 +119,7 @@ exports[`CreateUser matches the snapshot 1`] = `
           <a
             className="btn btn--invert-primary btn--margin-right"
             onClick={[Function]}
+            role="button"
             style={Object {}}
           >
             Cancel

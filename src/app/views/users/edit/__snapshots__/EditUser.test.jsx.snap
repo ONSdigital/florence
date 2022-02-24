@@ -1,0 +1,230 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditUser matches the snapshot 1`] = `
+<form
+  className="form"
+>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-11 grid__col-md-9"
+    >
+      <div
+        className="margin-top--2"
+      >
+        ◀ 
+        <a
+          onClick={[Function]}
+          role="link"
+          style={Object {}}
+        >
+          Back
+        </a>
+      </div>
+      <div
+        className="grid grid--justify-space-between"
+      >
+        <div
+          className="grid__col-md-6"
+        >
+          <h1
+            className="margin-top--1 margin-bottom--1"
+          >
+            test user-1498
+          </h1>
+          <p>
+            test.user-1498@ons.gov.uk
+          </p>
+          <div
+            className="grid"
+          >
+            <div
+              className="grid__col-lg-6 margin-top--1"
+            >
+              <div
+                className="form__input"
+              >
+                <label
+                  className="form__label"
+                  htmlFor="forename"
+                >
+                  First name
+                </label>
+                <input
+                  autoComplete="new-password"
+                  autoFocus={false}
+                  className="input"
+                  disabled={false}
+                  id="forename"
+                  name="forename"
+                  onChange={[Function]}
+                  onFocus={[Function]}
+                  type="text"
+                  value=""
+                />
+              </div>
+              <div
+                className="form__input"
+              >
+                <label
+                  className="form__label"
+                  htmlFor="lastname"
+                >
+                  Last name
+                </label>
+                <input
+                  autoComplete="new-password"
+                  autoFocus={false}
+                  className="input"
+                  disabled={false}
+                  id="lastname"
+                  name="lastname"
+                  onChange={[Function]}
+                  onFocus={[Function]}
+                  type="text"
+                  value=""
+                />
+              </div>
+              <h2
+                className="margin-top--1"
+              >
+                Team Member
+              </h2>
+              <div
+                className="selected-item-list"
+              />
+            </div>
+          </div>
+        </div>
+        <div
+          className="grid__col-md-5"
+        >
+          <div
+            className="form-group margin-top--1 margin-bottom--1"
+          >
+            <fieldset
+              className="fieldset"
+            >
+              <legend
+                className="fieldset__legend"
+              >
+                User Access
+              </legend>
+              <div
+                className="radio radio--inline"
+              >
+                <input
+                  checked={false}
+                  className="radio__input"
+                  id="active"
+                  name="active"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  onFocus={[Function]}
+                  type="radio"
+                  value="active"
+                />
+                <label
+                  className="radio__label"
+                  htmlFor="active"
+                >
+                  Active
+                   
+                </label>
+              </div>
+              <div
+                className="radio radio--inline"
+              >
+                <input
+                  checked={true}
+                  className="radio__input selected"
+                  id="suspended"
+                  name="active"
+                  onBlur={[Function]}
+                  onChange={[Function]}
+                  onFocus={[Function]}
+                  type="radio"
+                  value="suspended"
+                />
+                <label
+                  className="radio__label radio__label--selected"
+                  htmlFor="suspended"
+                >
+                  Suspended
+                   
+                </label>
+              </div>
+            </fieldset>
+            <div
+              className="form__input"
+            >
+              <label
+                className="form__label"
+                htmlFor="status_notes"
+              >
+                Notes
+              </label>
+              <textarea
+                autoFocus={false}
+                className="input input__textarea"
+                disabled={false}
+                id="status_notes"
+                name="status_notes"
+                onChange={[Function]}
+              />
+            </div>
+            <p>
+              Add the reason for changing the users' access. For example, they have left or no longer need access to Florence. Do not include any personal information.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer"
+      data-testid="form-footer"
+    >
+      <div
+        className="grid__col-9"
+      >
+        <div
+          className="grid grid--align-baseline"
+        >
+          <button
+            className="btn btn--positive btn--margin-right"
+            disabled={false}
+            onClick={[Function]}
+            type="submit"
+          >
+            Save changes
+          </button>
+          <a
+            className="btn btn--invert-primary btn--margin-right"
+            onClick={[Function]}
+            role="button"
+            style={Object {}}
+          >
+            Cancel
+          </a>
+          <span>
+            <svg
+              aria-label="warning icon"
+              className="svg-icon--action-bar"
+              focusable="false"
+              role="img"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256,34.297L0,477.703h512L256,34.297z M256,422.05c-9.22,0-16.696-7.475-16.696-16.696s7.475-16.696,16.696-16.696 c9.22,0,16.696,7.475,16.696,16.696S265.22,422.05,256,422.05z M239.304,344.137V177.181h33.391v166.956H239.304z"
+              />
+            </svg>
+             You have unsaved changes
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+`;

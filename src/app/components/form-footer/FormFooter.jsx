@@ -10,10 +10,16 @@ function FormFooter({ loading, hasErrors, hasValues, handleSubmit, redirectUrl }
         <div className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer" data-testid="form-footer">
             <div className="grid__col-9">
                 <div className="grid grid--align-baseline">
-                    <button type="submit" className="btn btn--positive btn--margin-right" onClick={handleSubmit} disabled={hasErrors}>
+                    <button
+                        disabled={hasErrors}
+                        type="submit"
+                        className="btn btn--positive btn--margin-right"
+                        onClick={handleSubmit}
+                        disabled={hasErrors}
+                    >
                         {loading ? <div className="loader loader--dark" data-testid="loader" /> : "Save changes"}
                     </button>
-                    <Link to={to} className="btn btn--invert-primary btn--margin-right">
+                    <Link role="button" to={to} className="btn btn--invert-primary btn--margin-right">
                         Cancel
                     </Link>
                     {hasValues && (

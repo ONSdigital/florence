@@ -4,90 +4,83 @@ import renderer from "react-test-renderer";
 import { mount } from "enzyme";
 import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
 import UsersList from "./UsersList";
+import userEvent from "@testing-library/user-event";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
-const mockedAllUsers = {
-    count: 45,
-    users: [
-        {
-            forename: "Test",
-            lastname: "user",
-            email: "test@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "aaa-bbb-ccc",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 2",
-            email: "test2@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ddd-eee-fff",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 3",
-            email: "test3@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ggg-hhh-iii",
-            status_notes: "",
-        },
-    ],
-};
-
-let dispatchedActions = [];
+const mockedAllUsers = [
+    {
+        active: true,
+        details: ["test.user-1498@ons.gov.uk"],
+        email: "test.user-1498@ons.gov.uk",
+        forename: "Test1",
+        groups: [],
+        id: "test.user-1498@ons.gov.uk",
+        lastname: "Surname 1498",
+        status: "CONFIRMED",
+        status_notes: "This user was nice ",
+        title: "Test1 Surname 1498",
+        url: "/florence/users/test.user-1498@ons.gov.uk",
+    },
+    {
+        active: true,
+        details: ["test.user-642@ons.gov.uk"],
+        email: "test.user-642@ons.gov.uk",
+        forename: "Test2",
+        groups: [],
+        id: "test.user-642@ons.gov.uk",
+        lastname: "Surname 642",
+        status: "CONFIRMED",
+        status_notes: "this user was ok ",
+        title: "Test2 Surname 642",
+        url: "/florence/users/test.user-642@ons.gov.uk",
+    },
+];
 
 const props = {
     users: [],
-    isLoading: false,
+    loading: false,
     params: {},
     rootPath: "test",
     routes: [],
     loggedInUser: admin,
-    dispatch: jest.fn(),
     loadUsers: jest.fn(),
 };
+
 describe("UserList", () => {
-    it("renders empty list with message if no users ", () => {
+    it("renders empty list with message if no users found", () => {
         render(<UsersList {...props} />);
-        expect(screen.getByText(/Users/i)).toBeInTheDocument();
+        expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Users/i);
+        expect(screen.getByRole("link", { name: "Create new user" })).toBeInTheDocument();
         expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();
-        expect(screen.getByText(/Create new user/i)).toBeInTheDocument();
     });
-    it.only("renders list of users", () => {
+
+    it("fetches users on load", async () => {
+        render(<UsersList {...props} />);
+        expect(props.loadUsers).toBeCalled();
+    });
+
+    it("renders loader when fetching users", () => {
         const newProps = {
             ...props,
-            users: [
-                {
-                    forename: "Test",
-                    lastname: "user",
-                    email: "test@test.com",
-                    groups: [],
-                    status: "CONFIRMED",
-                    active: true,
-                    id: "aaa-bbb-ccc",
-                    status_notes: "",
-                },
-                {
-                    forename: "Test",
-                    lastname: "user 3",
-                    email: "test3@test.com",
-                    groups: [],
-                    status: "CONFIRMED",
-                    active: true,
-                    id: "ggg-hhh-iii",
-                    status_notes: "",
-                },
-            ],
+            loading: true,
         };
         render(<UsersList {...newProps} />);
-        expect(screen.getByPlaceholderText(/Search user by name or email/i)).toBeInTheDocument();
+        expect(screen.getByTestId("loader")).toBeInTheDocument();
+    });
+
+    it("renders list of users", () => {
+        const newProps = {
+            ...props,
+            users: mockedAllUsers,
+        };
+        render(<UsersList {...newProps} />);
+
+        const items = screen.getAllByRole("listitem");
+
+        expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
+        expect(items).toHaveLength(2);
+        expect(items[0]).toHaveTextContent("Test1 Surname 1498test.user-1498@ons.gov.uk");
+        expect(items[1]).toHaveTextContent("Test2 Surname 642test.user-642@ons.gov.uk");
     });
 });

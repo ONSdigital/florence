@@ -10,8 +10,8 @@ import BackButton from "../../components/back-button/BackButton";
 import Magnifier from "../../icons/Magnifier";
 
 const UsersList = props => {
-    const { users, isLoading, rootPath, loadUsers } = props;
-    const isAdmin = auth.isAdmin(props.loggedInUser);
+    const { users, loading, rootPath, loadUsers, loggedInUser } = props;
+    const isAdmin = auth.isAdmin(loggedInUser);
     const [search, setSearch] = useInput("");
     useEffect(() => {
         // TODO: remove this ?
@@ -37,7 +37,7 @@ const UsersList = props => {
                         <h1>Users</h1>
                     </div>
                     <div className="grid__col">
-                        <Link className="margin-left--1" href={`${rootPath}/users/create`}>
+                        <Link role="link" className="margin-left--1" href={`${rootPath}/users/create`}>
                             Create new user
                         </Link>
                     </div>
@@ -48,10 +48,10 @@ const UsersList = props => {
                         <label htmlFor="search" className="visually-hidden">
                             Search users by name
                         </label>
-                        <input role="search" name="search" placeholder="Search teams by name" {...search} />
+                        <input role="search" name="search" placeholder="Search users by name" {...search} />
                     </div>
                 </div>
-                <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} showLoadingState={isLoading} />
+                <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} showLoadingState={loading} />
             </div>
         </div>
     );
@@ -72,10 +72,13 @@ UsersList.propTypes = {
             active: PropTypes.boolean,
             id: PropTypes.string,
             status_notes: PropTypes.string,
+            url: PropTypes.string,
+            title: PropTypes.string,
+            details: PropTypes.array,
         })
-    ).isRequired,
+    ),
     loadUsers: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool,
+    loading: PropTypes.bool,
 };
 
 export default UsersList;

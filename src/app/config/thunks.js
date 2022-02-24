@@ -226,16 +226,13 @@ export const createUserRequest = user => dispatch => {
 };
 
 export const fetchUserGroupsRequest = id => dispatch => {
-    dispatch(actions.createUserProgress());
+    dispatch(actions.loadUserGroupsProgress());
     user.getUserGroups(id)
         .then(response => {
-            dispatch(actions.loadUserGroupsSuccess());
-            dispatch(push(`/florence/users/create/${user.email}/groups`));
-            //TODO: can not test the response object atm so will change this later
-            notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
+            dispatch(actions.loadUserGroupsSuccess(response.groups));
         })
         .catch(error => {
-            dispatch(actions.createUserFailure());
+            dispatch(actions.loadUserGroupsFailure());
             dispatch(push("/florence/users"));
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
