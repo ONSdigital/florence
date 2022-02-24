@@ -2,7 +2,7 @@ import http from "../http";
 
 export default class interactives {
     static getAll() {
-        // return http.get(`/zebedee/interactives`).then(response => {
+        // return http.get(`/interactives`).then(response => {
             return [
                 {
                     "id": 1,
@@ -70,7 +70,7 @@ export default class interactives {
     }
 
     static store(body) {
-        // return http.post(`/zebedee/interactives`, body).then(response => {
+        // return http.post(`/interactives`, body).then(response => {
             return {
                 "id": 11,
                 "file": '/docs/file1.pdf',
@@ -82,7 +82,7 @@ export default class interactives {
     };
 
     static show = interactiveId => {
-        // return http.post(`/zebedee/interactives/${interactiveId}`, body).then(response => {
+        // return http.post(`/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id": 1,
                 "file": '/docs/file1.pdf',
@@ -94,7 +94,7 @@ export default class interactives {
     };
 
     static update = (interactiveId, body) => {
-        // return http.put(`/zebedee/interactives/${interactiveId}`, body).then(response => {
+        // return http.put(`/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id" : 1,
                 "file": '/docs/file1.pdf',
