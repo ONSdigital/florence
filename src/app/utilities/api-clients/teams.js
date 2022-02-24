@@ -14,7 +14,7 @@ export default class teams {
     }
 
     static add(teamName) {
-        return http.post(`/zebedee/teams/${teamName}`, body).then(response => {
+        return http.post(`/zebedee/teams/${teamName}`).then(response => {
             return response;
         });
     }
