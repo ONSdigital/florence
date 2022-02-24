@@ -30,7 +30,7 @@ const TeamsList = props => {
                 row: {
                     title: team.description != null ? team.description : team.group_name,
                     id: team.group_name,
-                    url: `./groups/${team.group_name}`,
+                    url: `/florence/groups/edit/${team.group_name}`,
                     extraDetails: [[{ content: formatDateString(team.creation_date) }]],
                 },
                 date: team.creation_date, //used for sorting

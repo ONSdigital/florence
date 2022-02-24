@@ -36,6 +36,7 @@ export const initialState = {
         isLoading: false,
     },
     groups: {
+        active: {},
         all: [],
         isLoading: false,
     },

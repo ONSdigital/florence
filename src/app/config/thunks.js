@@ -265,6 +265,33 @@ export const updateUserRequest = (id, body) => dispatch => {
             console.error(error);
         });
 };
+export const getGroupRequest = id => dispatch => {
+    teams
+        .getGroup(id)
+        .then(response => {
+            dispatch(actions.getGroupSuccess(response));
+        })
+        .catch(error => {
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_NEW_TEAM_NAME, // TODO
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR, // TODO
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
+        });
+};
 
 export const getUsersRequest =
     (params = { active: true }) =>

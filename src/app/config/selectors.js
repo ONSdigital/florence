@@ -27,6 +27,7 @@ export const getIsUpdatingCollection = state => state.collections.isUpdating;
 export const getPreviewUsers = state => state.users.previewUsers;
 
 export const getGroups = state => state.groups.all;
+export const getActiveGroup = state => state.groups.active;
 export const getGroupsLoading = state => state.groups.isLoading;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;

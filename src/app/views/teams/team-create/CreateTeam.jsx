@@ -1,17 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
-import { Link } from "react-router";
+import React, {useEffect, useMemo, useState} from "react";
+import {connect} from "react-redux";
+import {push} from "react-router-redux";
+import {Link} from "react-router";
 import url from "../../../utilities/url";
-import { getUsersRequest, createTeam } from "../../../config/thunks";
+import {getUsersRequest, getGroupRequest, createTeam} from "../../../config/thunks";
 import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
 import Input from "../../../components/Input";
 import Chip from "../../../components/chip/Chip";
-import { addPopout, removePopouts } from "../../../config/actions";
+import {addPopout, removePopouts} from "../../../config/actions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
-import { getPreviewUsers } from "../../../config/selectors";
+import {getActiveGroup, getPreviewUsers} from "../../../config/selectors";
 
 const propTypes = {
     dispatch: PropTypes.func,
@@ -20,11 +20,18 @@ const propTypes = {
     router: PropTypes.shape({
         setRouteLeaveHook: PropTypes.func,
     }),
+    params: PropTypes.shape({
+        groupID: PropTypes.string,
+    }),
     route: PropTypes.string,
+    group: PropTypes.shape({
+        groupID: PropTypes.string,
+        description: PropTypes.string,
+    }),
 };
-
+// TODO rename ManageTeam
 const CreateTeam = props => {
-    const { dispatch, router, route, allPreviewUsers } = props;
+    const {dispatch, router, route, allPreviewUsers, params, group} = props;
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
     const [isLoading, setLoading] = useState(true);
@@ -40,12 +47,15 @@ const CreateTeam = props => {
     }, [usersNotInTeam, allPreviewUsers]);
     useEffect(() => {
         dispatch(getUsersRequest());
+        if (params.groupID != null) {
+            dispatch(getGroupRequest(params.groupID));
+        }
     }, []);
 
     // As we are on an old version of react-router, will have to use setRouteLeaveHook instead of 'Prompt' for now
     useEffect(() => {
         router.setRouteLeaveHook(route, handleRequestToLeavePage);
-    });
+    }, []);
 
     useEffect(() => {
         if (userConfirmedToLeave) {
@@ -68,6 +78,18 @@ const CreateTeam = props => {
             setUnsavedChanges(false);
         }
     }, [teamName, usersInTeam]);
+
+    useEffect(() => {
+        let newListOfUsersNotInTeam = usersNotInTeam
+        if(group.members.length != null){
+             newListOfUsersNotInTeam = usersNotInTeam.filter(function(user) {
+                return !group.members.find(function(member) {
+                    return user.email === member.id
+                })
+            })
+        }
+        setUsersNotInTeam(newListOfUsersNotInTeam);
+    }, [group]);
 
     const addUserToTeam = user => {
         const newListOfUsersNotInTeam = usersNotInTeam.filter(filteredUser => filteredUser.email !== user.email);
@@ -128,23 +150,37 @@ const CreateTeam = props => {
             notifications.add(notification);
         }
     };
+
+    const saveChanges = () => {
+    }; // TODO
+    let createTeamButton = {
+        id: "create-team-btn",
+        text: "Create Team",
+        interactionCallback: requestCreateTeam,
+        style: "positive",
+        disabled: false,
+    };
+    let saveChangesButton = {
+        id: "save-team-btn",
+        text: "Save Changes",
+        interactionCallback: saveChanges,
+        style: "positive",
+        disabled: false,
+    };
     let contentActionBarProps = {
-        buttons: [
-            {
-                id: "create-team-btn",
-                text: "Create Team",
-                interactionCallback: requestCreateTeam,
-                style: "positive",
-                disabled: false,
-            },
-        ],
+        buttons: [],
         cancelCallback: () => {
-            const previousUrl = url.resolve("../", true);
+            const previousUrl = url.resolve("/groups", true);
             dispatch(push(previousUrl));
         },
         stickToBottom: true,
         unsavedChanges: unsavedChanges,
     };
+    if (params?.groupID != null) {
+        contentActionBarProps.buttons.push(saveChangesButton);
+    } else {
+        contentActionBarProps.buttons.push(createTeamButton);
+    }
     let teamsMemberChips = <></>;
     if (!isLoading) {
         teamsMemberChips = (
@@ -168,22 +204,31 @@ const CreateTeam = props => {
     }
 
     const noTeamMembers = <p className="no-team-members">This team has no members</p>;
-    const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} />;
-
+    const teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}
+                                     disabled={params?.groupID?.startsWith("role-")}/>;
+    let pageTitle = <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>;
+    if (params.groupID != null) {
+        if (group.description) {
+            pageTitle = <h1 className="margin-top--1 margin-bottom--1">{group.description}</h1>;
+        } else {
+            // If group has no user-friendly name display ID instead. On page load we already know the groupID
+            pageTitle = <h1 className="margin-top--1 margin-bottom--1">{group.groupID}</h1>;
+        }
+    }
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-4 margin-top--1 margin-bottom--1">
                 <span>
-                    &#9664; <Link to={url.resolve("../")}>Back</Link>
+                    &#9664; <Link to={url.resolve("/groups")}>Back</Link>
                 </span>
-                <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>
+                {pageTitle}
                 {teamNameInputArea}
                 <span>
                     <strong>Members</strong>
                 </span>
                 {usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
             </div>
-            <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam} />
+            <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam}/>
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );
@@ -194,6 +239,7 @@ CreateTeam.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         allPreviewUsers: getPreviewUsers(state.state),
+        group: getActiveGroup(state.state),
     };
 }
 

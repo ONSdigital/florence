@@ -425,3 +425,10 @@ export const updateUserSuccess = user => ({
     type: types.UPDATE_USER_SUCCESS,
     user,
 });
+
+export function getGroupSuccess(group) {
+    return {
+        type: types.LOAD_GROUP_SUCCESS,
+        group,
+    };
+}

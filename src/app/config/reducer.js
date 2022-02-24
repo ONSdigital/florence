@@ -545,6 +545,15 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.LOAD_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    active: action.group,
+                },
+            };
+        }
         case types.ADD_GROUPS_TO_USER_PROGRESS: {
             return {
                 ...state,
