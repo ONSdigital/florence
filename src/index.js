@@ -50,6 +50,7 @@ import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users/UsersList";
 import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
+import TeamsList from "./app/views/teams/teams-view/"
 import "./scss/main.scss";
 
 const config = window.getEnv();
@@ -210,6 +211,7 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
+                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(TeamsList)) : null} />
                     <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />
                     <Route path="*" component={NotFound} />
                 </Route>

@@ -11,7 +11,9 @@ const propTypes = {
             url: PropTypes.string.isRequired,
             externalLink: PropTypes.bool,
             details: PropTypes.arrayOf(PropTypes.string),
-            extraDetails: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.string, classes: PropTypes.string }))),
+            extraDetails: PropTypes.arrayOf(
+                PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.oneOfType[(PropTypes.string, PropTypes.object)], classes: PropTypes.string }))
+            ),
         })
     ).isRequired,
     showLoadingState: PropTypes.bool,
