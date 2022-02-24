@@ -206,18 +206,24 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
               });
 };
 
-export const createUserRequest = user => dispatch => {
+export const createUserRequest = body => async dispatch => {
     dispatch(actions.createUserProgress());
-    user.createNewUser(user)
+    await user
+        .createNewUser(body)
         .then(response => {
+            console.log("response", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.createUserSuccess());
-            dispatch(push(`/florence/users/create/${user.email}/groups`));
-            //TODO: can not test the response object atm so will change this later
+            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
+            dispatch(push(`/florence/users/create/${body.email}/groups`));
+
             notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
-            dispatch(push("/florence/users"));
+            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
+            dispatch(push(`/florence/users/create/${body.email}/groups`));
+
+            // dispatch(push("/florence/users")); TODO: uncomment later when api works
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
@@ -225,9 +231,11 @@ export const createUserRequest = user => dispatch => {
         });
 };
 
-export const fetchUserGroupsRequest = id => dispatch => {
+export const fetchUserGroupsRequest = id => async dispatch => {
+    console.log("fetchUserGroupsRequest", id);
     dispatch(actions.loadUserGroupsProgress());
-    user.getUserGroups(id)
+    await user
+        .getUserGroups(id)
         .then(response => {
             dispatch(actions.loadUserGroupsSuccess(response.groups));
         })

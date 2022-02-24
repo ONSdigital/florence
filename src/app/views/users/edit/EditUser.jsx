@@ -110,11 +110,11 @@ const EditUser = props => {
                                         value={values?.lastname ? values.lastname : ""}
                                     />
                                     <h2 className="margin-top--1">Team Member</h2>
-                                    {!userGroups.length == 0 && <p>User is not a member of a team. Please add them to a team.</p>}
+                                    {userGroups?.length == 0 && <p>User is not a member of a team. Please add them to a team.</p>}
                                     {userGroups && (
                                         <SelectedItemList
                                             classNames="selected-item-list__item--info"
-                                            items={userGroups.map(gr => ({ id: gr, name: gr }))}
+                                            items={userGroups.map(group => ({ id: group.group_name, name: group.description }))}
                                         />
                                     )}
                                 </div>

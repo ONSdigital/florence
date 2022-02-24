@@ -591,11 +591,12 @@ export default function reducer(state = initialState, action) {
             };
         }
         case types.LOAD_USER_GROUPS_SUCCESS: {
+            const userGroups  = action.groups || [];
             return {
                 ...state,
                 user: {
                     ...state.user,
-                    groups: action.groups,
+                    groups: userGroups,
                     isLoading: false,
                 },
             };

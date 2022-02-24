@@ -99,7 +99,7 @@ export default class user {
     }
 
     static getUserGroups(id) {
-        return http.post(`/users/${id}/groups/`);
+        return http.get(`/users/${id}/groups`);
     }
 
     static remove(email) {
