@@ -432,3 +432,12 @@ export function getGroupSuccess(group) {
         group,
     };
 }
+
+export function getGroupMembersSuccess(group) {
+    console.log("getGroupMembersSuccess group came back as:");
+    console.log(group);
+    return {
+        type: types.LOAD_GROUP_MEMBERS_SUCCESS,
+        group,
+    };
+}

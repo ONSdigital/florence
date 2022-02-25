@@ -61,6 +61,12 @@ export default class teams {
         });
     }
 
+    static getGroupMembers(id) {
+        return http.get(`/groups/${id}/members`).then(response => {
+            return response;
+        });
+    }
+
     static addGroupsToUser(name, body) {
         return http.post(`/groups/${name}`, body).then(response => {
             return response;

@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import { GET_USERS_REQUEST_SUCCESS } from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -546,12 +547,24 @@ export default function reducer(state = initialState, action) {
             };
         }
         case types.LOAD_GROUP_SUCCESS: {
+            // TODO delete testing functionality:
+            action.group.members = [{ forename: "Anna", surname: "Emson", id: "test", email: "g@g.com" }];
             return {
                 ...state,
                 groups: {
                     ...state.groups,
                     active: action.group,
                 },
+            };
+        }
+        case types.LOAD_GROUP_MEMBERS_SUCCESS: {
+            // action.group.members = [{forename: "Anna", surname: "Emson", id: "test", email: "g@g.com"}]
+            return {
+                ...state,
+                // groups: {
+                //     ...state.groups,
+                //     active: action.group,
+                // },
             };
         }
         case types.ADD_GROUPS_TO_USER_PROGRESS: {
@@ -600,7 +613,7 @@ export default function reducer(state = initialState, action) {
             };
         }
         case types.LOAD_USER_GROUPS_SUCCESS: {
-            const userGroups  = action.groups || [];
+            const userGroups = action.groups || [];
             return {
                 ...state,
                 user: {
