@@ -44,7 +44,7 @@ func Get() (*Config, error) {
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
 		TopicsURL:                  "http://localhost:25300",
-		SharedConfig:               SharedConfig{EnableDatasetImport: false, EnableHomepagePublishing: false, EnableNewSignIn: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableHomepagePublishing: false, EnableNewSignIn: false},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
