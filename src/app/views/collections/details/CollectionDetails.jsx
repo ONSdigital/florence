@@ -39,7 +39,6 @@ const propTypes = {
     activePageURI: PropTypes.string,
     name: PropTypes.string,
     enableDatasetImport: PropTypes.bool,
-    enableHomepagePublishing: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,

@@ -52,7 +52,6 @@ const defaultProps = {
     },
     rootPath: "/florence",
     enableDatasetImport: false,
-    enableHomepagePublishing: false,
     routes: [{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -363,7 +362,6 @@ describe("Map state to props function", () => {
             rootPath: "/florence",
             config: {
                 enableDatasetImport: false,
-                enableHomepagePublishing: false,
             },
         },
         routing: {
@@ -465,10 +463,8 @@ describe("Edit Homepage functionality", () => {
             activeCollection: {
                 id: "test-collection-12345",
             },
-            enableHomepagePublishing: false,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
-        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(false);
     });
     it("is enabled in collection details when enabled in global config", () => {
         const props = {
@@ -477,10 +473,8 @@ describe("Edit Homepage functionality", () => {
             activeCollection: {
                 id: "test-collection-12345",
             },
-            enableHomepagePublishing: true,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
-        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(true);
     });
 });
 

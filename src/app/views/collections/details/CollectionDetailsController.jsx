@@ -36,7 +36,6 @@ const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
     enableDatasetImport: PropTypes.bool,
-    enableHomepagePublishing: PropTypes.bool,
     user: PropTypes.object.isRequired,
     collectionID: PropTypes.string,
     collections: PropTypes.array,
@@ -602,7 +601,6 @@ export class CollectionDetailsController extends Component {
             <CollectionDetails
                 {...this.props.activeCollection}
                 enableDatasetImport={this.props.enableDatasetImport}
-                enableHomepagePublishing={this.props.enableHomepagePublishing}
                 activePageURI={this.props.activePageURI}
                 inProgress={collectionMapper.pagesExcludingPendingDeletedPages(
                     this.props.activeCollection["inProgress"],
@@ -666,7 +664,6 @@ export function mapStateToProps(state) {
         rootPath: state.state.rootPath,
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,
-        enableHomepagePublishing: state.state.config.enableHomepagePublishing,
         isUpdating: getIsUpdatingCollection(state.state),
     };
 }

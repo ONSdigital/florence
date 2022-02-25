@@ -127,10 +127,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
-	if cfg.SharedConfig.EnableDatasetImport || cfg.SharedConfig.EnableHomepagePublishing {
-		router.Handle("/upload", uploadServiceAPIProxy)
-		router.Handle("/upload/{id}", uploadServiceAPIProxy)
-	}
+	router.Handle("/upload", uploadServiceAPIProxy)
+	router.Handle("/upload/{id}", uploadServiceAPIProxy)
 
 	if cfg.SharedConfig.EnableDatasetImport {
 		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
