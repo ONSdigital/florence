@@ -22,7 +22,7 @@ const Layout = props => {
                     console.warn(`Unable to find item 'loggedInAs' from local storage`);
                     return;
                 }
-                user.getPermissions(email)
+                user.getPermissions()
                     .then(userType => {
                         user.setUserState(userType);
                         setIsCheckingAuthentication(false);
