@@ -421,3 +421,31 @@ export const addGroupsToUserRequest = (userId, groups) => dispatch => {
             console.error(error);
         });
 };
+
+export const getGroupMembers = id => dispatch => {
+    teams
+        .getGroupMembers(id)
+        .then(response => {
+            dispatch(actions.getGroupMembersSuccess(response));
+        })
+        .catch(error => {
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.INVALID_NEW_TEAM_NAME, // TODO
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR, // TODO
+                };
+                notifications.add(notification);
+            }
+            console.error(error);
+        });
+};

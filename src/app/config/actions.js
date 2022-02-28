@@ -433,11 +433,11 @@ export function getGroupSuccess(group) {
     };
 }
 
-export function getGroupMembersSuccess(group) {
+export function getGroupMembersSuccess(members) {
     console.log("getGroupMembersSuccess group came back as:");
-    console.log(group);
+    console.log(members);
     return {
         type: types.LOAD_GROUP_MEMBERS_SUCCESS,
-        group,
+        members,
     };
 }

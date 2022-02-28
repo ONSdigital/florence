@@ -545,24 +545,27 @@ export default function reducer(state = initialState, action) {
             };
         }
         case types.LOAD_GROUP_SUCCESS: {
-            // TODO delete testing functionality:
-            action.group.members = [{ forename: "Anna", surname: "Emson", id: "test", email: "g@g.com" }];
             return {
                 ...state,
                 groups: {
                     ...state.groups,
-                    active: action.group,
+                    active: {
+                        ...state.groups.active,
+                        details: action.group,
+                    },
                 },
             };
         }
         case types.LOAD_GROUP_MEMBERS_SUCCESS: {
-            // action.group.members = [{forename: "Anna", surname: "Emson", id: "test", email: "g@g.com"}]
             return {
                 ...state,
-                // groups: {
-                //     ...state.groups,
-                //     active: action.group,
-                // },
+                groups: {
+                    ...state.groups,
+                    active: {
+                        ...state.groups.active,
+                        members: action.members.users,
+                    },
+                },
             };
         }
         case types.ADD_GROUPS_TO_USER_PROGRESS: {
