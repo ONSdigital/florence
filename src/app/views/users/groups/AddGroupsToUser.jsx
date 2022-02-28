@@ -17,12 +17,6 @@ const notification = {
     autoDismiss: 5000,
 };
 
-const leaveNotification = {
-    type: "neutral",
-    message: "dddddd.",
-    autoDismiss: 5000,
-};
-
 function AddGroupsToUser(props) {
     const id = props.params.userID;
 
