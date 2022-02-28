@@ -256,7 +256,7 @@ describe("Store", () => {
     });
 
     describe("state users", () => {
-        it("should handle loading addAllUsers", () => {
+        it("should handle loading loadUsersSuccess", () => {
             const store = createStore(
                 combineReducers({
                     state: reducer,
@@ -264,7 +264,7 @@ describe("Store", () => {
             );
             expect(store.getState().state.users.all).toEqual([]);
 
-            store.dispatch(actions.addAllUsers(users));
+            store.dispatch(actions.loadUsersSuccess(users));
 
             expect(store.getState().state.users.all).toEqual(users);
             expect(store.getState().state.users.all.length).toEqual(users.length);

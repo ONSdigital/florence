@@ -1,6 +1,6 @@
 import React from "react";
 
-const FormValidationError = ({ errors }) => {
+const FormValidationErrors = ({ errors }) => {
     if (Object.keys(errors).length === 0) return null;
     return (
         <div role="alert" className="panel panel--error panel--no-title margin-top--1 margin-bottom--1">
@@ -20,4 +20,4 @@ const FormValidationError = ({ errors }) => {
     );
 };
 
-export default FormValidationError;
+export default FormValidationErrors;

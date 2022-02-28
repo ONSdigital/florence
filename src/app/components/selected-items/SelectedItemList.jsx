@@ -2,10 +2,10 @@ import React from "react";
 import PropTypes from "prop-types";
 import SelectedItem from "./SelectedItem";
 
-const SelectedItemList = ({ items, removeClassNames, classNames, onRemoveItem }) => (
+const SelectedItemList = ({ items, removeClassNames, classNames, handleRemoveItem }) => (
     <div className="selected-item-list">
         {items.map((selectedItem, index) => (
-            <SelectedItem key={index} removeClassNames={removeClassNames} classNames={classNames} {...selectedItem} handleRemoveItem={onRemoveItem} />
+            <SelectedItem key={index} removeClassNames={removeClassNames} classNames={classNames} {...selectedItem} handleRemoveItem={handleRemoveItem} />
         ))}
     </div>
 );
@@ -19,7 +19,7 @@ SelectedItemList.propTypes = {
     ).isRequired,
     classNames: PropTypes.string,
     removeClassNames: PropTypes.string,
-    onRemoveItem: PropTypes.func.isRequired,
+    handleRemoveItem: PropTypes.func,
 };
 
 export default SelectedItemList;
