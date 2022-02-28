@@ -4,17 +4,7 @@ import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import EditUser from "./EditUser";
-
-const user = {
-    active: true,
-    email: "test.user-1498@ons.gov.uk",
-    forename: "test",
-    groups: [],
-    id: "test.user-1498@ons.gov.uk",
-    lastname: "user-1498",
-    status: "CONFIRMED",
-    status_notes: "This user is active",
-};
+import { groups, user } from "../../../utilities/tests/mockData";
 
 const props = {
     loading: false,
@@ -25,22 +15,26 @@ const props = {
     updateUser: jest.fn(),
     loadUser: jest.fn(),
     loadUserGroups: jest.fn(),
+    router: { setRouteLeaveHook: jest.fn() },
 };
+const setRouteLeaveHook = jest.fn();
 
 describe("EditUser", () => {
     it("matches the snapshot", () => {
-        const tree = renderer.create(<EditUser {...props} />);
+        const tree = renderer.create(
+            <EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+        );
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("fetches user details on load", () => {
-        render(<EditUser {...props} />);
+        render(<EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(props.loadUser).toBeCalledWith("test.user-1498@ons.gov.uk");
         expect(props.loadUserGroups).toBeCalled();
     });
 
     it("shows the form with user data", () => {
-        render(<EditUser {...props} />);
+        render(<EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
         expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("test user-1498");
@@ -60,7 +54,7 @@ describe("EditUser", () => {
     });
 
     it("allows editing and shows unsaved changes message", () => {
-        render(<EditUser {...props} />);
+        render(<EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
         userEvent.clear(screen.getByLabelText(/First name/i));
         userEvent.paste(screen.getByLabelText(/First name/i), "My test First name");
@@ -70,7 +64,7 @@ describe("EditUser", () => {
     });
 
     it("validates form and display errors in panel and within input and disables the submit button", () => {
-        render(<EditUser {...props} />);
+        render(<EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("test");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("user-1498");
@@ -98,12 +92,12 @@ describe("EditUser", () => {
             ...props,
             loading: true,
         };
-        render(<EditUser {...newProps} />);
+        render(<EditUser.WrappedComponent {...newProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
     it("updates user data", async () => {
-        render(<EditUser {...props} />);
+        render(<EditUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
         userEvent.paste(screen.getByLabelText(/First name/i), "boo");
 
@@ -122,5 +116,17 @@ describe("EditUser", () => {
             status: "CONFIRMED",
             status_notes: "This user is active",
         });
+    });
+    it("shows groups user belongs to", () => {
+        const newProps = {
+            ...props,
+            userGroups: groups,
+        };
+
+        render(<EditUser.WrappedComponent {...newProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+
+        expect(screen.getByText(/my test group description/i)).toBeInTheDocument();
+        expect(screen.getByText(/my first test group description/i)).toBeInTheDocument();
+        expect(screen.getByText(/admins group description/i)).toBeInTheDocument();
     });
 });

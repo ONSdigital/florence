@@ -8,7 +8,6 @@ export const initialState = {
     },
     config: {
         enableDatasetImport: false,
-        enableHomepagePublishing: false,
         enableNewSignIn: false,
     },
     global: {

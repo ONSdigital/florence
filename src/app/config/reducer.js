@@ -1,6 +1,5 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
-import { GET_USERS_REQUEST_SUCCESS } from "./constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -172,7 +171,6 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 config: {
                     enableDatasetImport: action.config.enableDatasetImport,
-                    enableHomepagePublishing: action.config.enableHomepagePublishing,
                     enableNewSignIn: action.config.enableNewSignIn,
                 },
             };

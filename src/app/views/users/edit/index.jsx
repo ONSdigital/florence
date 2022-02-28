@@ -3,7 +3,7 @@ import { getUser, getUserLoading, getGroupsLoading, getUserGroups } from "../../
 import { updateUserRequest, fetchUserRequest, fetchUserGroupsRequest } from "../../../config/thunks";
 import EditUser from "./EditUser";
 
-export const mapStateToProps = state => ({
+const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     user: getUser(state.state),
     loading: getUserLoading(state.state),

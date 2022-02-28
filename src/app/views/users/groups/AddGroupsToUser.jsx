@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
 import { useInput } from "../../../hooks/useInput";
-import BackButton from "../../../components/back-button/BackButton";
+import BackButton from "../../../components/back-button";
 import FormFooter from "../../../components/form-footer";
 import GroupsTable from "../../../components/table";
 import Loader from "../../../components/loader/Loader";
 import Magnifier from "../../../icons/Magnifier";
+import { addPopout, removePopouts } from "../../../config/actions";
 import User from "./User";
 
 const notification = {
@@ -17,16 +19,26 @@ const notification = {
 
 function AddGroupsToUser(props) {
     const id = props.params.userID;
+
+    useEffect(() => {
+        if (id) {
+            loadUser(id);
+            loadGroups(isNewSignIn);
+        }
+    }, [id]);
+
     const { isNewSignIn, loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
 
-    useEffect(() => {
-        loadUser(id);
-        loadGroups(isNewSignIn);
-    }, []);
+    const hasNewValues = userGroups.length > 0;
+    const routerWillLeave = nextLocation => {
+        if (hasNewValues) return "Your work is not saved! Are you sure you want to leave?";
+    };
 
-    const hasValues = userGroups.length > 0;
+    useEffect(() => {
+        props.router.setRouteLeaveHook(props.route, routerWillLeave);
+    });
 
     const handleRemove = name => {
         setUserGroups(prevState => prevState.filter(group => group !== name));
@@ -46,7 +58,7 @@ function AddGroupsToUser(props) {
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-11 grid__col-md-9">
-                <BackButton redirectUrl={`${rootPath}/users`} classNames={"margin-top--2"} />
+                <BackButton redirectUrl={`${rootPath}/users`} classNames="margin-top--2" />
                 <div className="grid grid--justify-space-between">
                     <div className="grid__col-md-5">
                         {loading ? (
@@ -73,7 +85,7 @@ function AddGroupsToUser(props) {
                 </div>
             </div>
             <FormFooter
-                hasValues={hasValues}
+                hasNewValues={hasNewValues}
                 loading={isAdding}
                 redirectUrl={`${rootPath}/users`}
                 handleSubmit={() => addGroupsToUser(id, userGroups)}
@@ -93,4 +105,4 @@ AddGroupsToUser.propTypes = {
     loadUser: PropTypes.func.isRequired,
 };
 
-export default AddGroupsToUser;
+export default withRouter(AddGroupsToUser);

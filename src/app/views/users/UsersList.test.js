@@ -1,10 +1,6 @@
 import React from "react";
-import user from "../../utilities/api-clients/user";
-import renderer from "react-test-renderer";
-import { mount } from "enzyme";
-import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
+import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
 import UsersList from "./UsersList";
-import userEvent from "@testing-library/user-event";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const mockedAllUsers = [

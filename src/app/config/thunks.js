@@ -206,10 +206,9 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
               });
 };
 
-export const createUserRequest = body => async dispatch => {
+export const createUserRequest = body => dispatch => {
     dispatch(actions.createUserProgress());
-    await user
-        .createNewUser(body)
+    user.createNewUser(body)
         .then(response => {
             console.log("response", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.createUserSuccess());
@@ -231,11 +230,9 @@ export const createUserRequest = body => async dispatch => {
         });
 };
 
-export const fetchUserGroupsRequest = id => async dispatch => {
-    console.log("fetchUserGroupsRequest", id);
+export const fetchUserGroupsRequest = id => dispatch => {
     dispatch(actions.loadUserGroupsProgress());
-    await user
-        .getUserGroups(id)
+    user.getUserGroups(id)
         .then(response => {
             dispatch(actions.loadUserGroupsSuccess(response.groups));
         })
@@ -307,34 +304,6 @@ export const getUsersRequest =
                 console.error(error);
             });
     };
-
-export const getGroupMembers = id => dispatch => {
-    teams
-        .getGroupMembers(id)
-        .then(response => {
-            dispatch(actions.getGroupMembersSuccess(response));
-        })
-        .catch(error => {
-            if (error.status != null && error.status === 400) {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000,
-                    message: errCodes.INVALID_NEW_TEAM_NAME, // TODO
-                };
-                notifications.add(notification);
-            } else {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000,
-                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR, // TODO
-                };
-                notifications.add(notification);
-            }
-            console.error(error);
-        });
-};
 
 export const createTeam = (body, usersInTeam) => dispatch => {
     teams

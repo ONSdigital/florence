@@ -160,8 +160,8 @@ const Index = () => {
                         </Route>
                     </Route>
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))}/>}                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route

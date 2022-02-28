@@ -52,6 +52,7 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="text"
+              value=""
             />
           </div>
           <div
@@ -73,6 +74,7 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="text"
+              value=""
             />
           </div>
           <div
@@ -94,6 +96,7 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="email"
+              value=""
             />
           </div>
         </div>

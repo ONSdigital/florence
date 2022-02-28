@@ -1,4 +1,5 @@
 import React, { useEffect, useCallback, useState } from "react";
+import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
@@ -7,15 +8,15 @@ import url from "../../../utilities/url";
 import Input from "../../../components/Input";
 import Warning from "../../../icons/Warning";
 import validate from "./validate";
-import FormValidationError from "./ValidationErrors";
-import BackButton from "../../../components/back-button/BackButton";
+import FormValidationErrors from "../../../components/form-validation-errors";
+import BackButton from "../../../components/back-button";
 import FormFooter from "../../../components/form-footer";
 import SelectedItemList from "../../../components/selected-items/SelectedItemList";
 import Loader from "../../../components/loader/index";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import TextArea from "../../../components/text-area/TextArea";
 
-const options = [
+const USER_ACCESS_OPTIONS = [
     {
         id: "active",
         value: "active",
@@ -28,7 +29,7 @@ const options = [
     },
 ];
 
-const EditUser = props => {
+export const EditUser = props => {
     const id = props.params.userID;
 
     useEffect(() => {
@@ -43,7 +44,15 @@ const EditUser = props => {
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const hasErrors = !isEmpty(errors);
-    const hasValues = !isEqual(values, user);
+    const hasNewValues = !isEqual(values, user);
+
+    const routerWillLeave = nextLocation => {
+        if (hasNewValues) return "Your work is not saved! Are you sure you want to leave?";
+    };
+
+    useEffect(() => {
+        props.router.setRouteLeaveHook(props.route, routerWillLeave);
+    });
 
     useEffect(() => {
         if (user) {
@@ -83,38 +92,38 @@ const EditUser = props => {
         <form className="form">
             <div className="grid grid--justify-space-around">
                 <div className="grid__col-11 grid__col-md-9">
-                    <BackButton classNames={"margin-top--2"} />
+                    <BackButton classNames="margin-top--2" />
                     <div className="grid grid--justify-space-between">
                         <div className="grid__col-md-6">
                             <h1 className="margin-top--1 margin-bottom--1">{`${user.forename} ${user.lastname}`}</h1>
                             <p>{user.email}</p>
-                            {hasErrors && <FormValidationError errors={errors} />}
+                            {hasErrors && <FormValidationErrors errors={errors} />}
                             <div className="grid">
                                 <div className="grid__col-lg-6 margin-top--1">
                                     <Input
-                                        id="forename"
-                                        name="forename"
-                                        label="First name"
-                                        type="text"
                                         error={errors?.forename}
+                                        id="forename"
+                                        label="First name"
+                                        name="forename"
+                                        type="text"
                                         value={values?.forename ? values.forename : ""}
                                         onChange={handleChange}
                                     />
                                     <Input
-                                        id="lastname"
-                                        name="lastname"
-                                        label="Last name"
-                                        type="text"
                                         error={errors?.lastname}
-                                        onChange={handleChange}
+                                        id="lastname"
+                                        label="Last name"
+                                        name="lastname"
+                                        type="text"
                                         value={values?.lastname ? values.lastname : ""}
+                                        onChange={handleChange}
                                     />
                                     <h2 className="margin-top--1">Team Member</h2>
                                     {userGroups?.length == 0 && <p>User is not a member of a team. Please add them to a team.</p>}
                                     {userGroups && (
                                         <SelectedItemList
                                             classNames="selected-item-list__item--info"
-                                            items={userGroups.map(group => ({ id: group.group_name, name: group.description }))}
+                                            items={userGroups.map(group => ({ id: group.id || group.group_name, name: group.description }))}
                                         />
                                     )}
                                 </div>
@@ -124,11 +133,11 @@ const EditUser = props => {
                             <div className="form-group margin-top--1 margin-bottom--1">
                                 <RadioGroup
                                     groupName="active"
-                                    radioData={options}
+                                    inline
+                                    legend="User Access"
+                                    radioData={USER_ACCESS_OPTIONS}
                                     selectedValue={values?.active ? "active" : "suspended"}
                                     onChange={handleAccessChange}
-                                    legend="User Access"
-                                    inline
                                 />
                                 <Input
                                     id="status_notes"
@@ -146,10 +155,10 @@ const EditUser = props => {
                         </div>
                     </div>
                 </div>
-                <FormFooter hasValues={hasValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </form>
     );
 };
 
-export default EditUser;
+export default withRouter(EditUser);

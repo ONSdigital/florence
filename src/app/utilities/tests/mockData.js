@@ -124,13 +124,13 @@ const users = [
 
 const user = {
     active: true,
-    email: "bill.hicks@ons.gov.uk",
-    forename: "Bill",
+    email: "test.user-1498@ons.gov.uk",
+    forename: "test",
     groups: [],
-    id: "bill.hicks@ons.gov.uk",
-    lastname: "Hickes",
+    id: "test.user-1498@ons.gov.uk",
+    lastname: "user-1498",
     status: "CONFIRMED",
-    status_notes: "",
+    status_notes: "This user is active",
 };
 
 const notifications = [

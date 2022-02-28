@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
+import filter from "lodash/filter";
 import PropTypes from "prop-types";
 import log from "../../utilities/logging/log";
 import auth from "../../utilities/auth";
@@ -6,7 +7,7 @@ import url from "../../utilities/url";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import { useInput } from "../../hooks/useInput";
 import { Link } from "react-router";
-import BackButton from "../../components/back-button/BackButton";
+import BackButton from "../../components/back-button";
 import Magnifier from "../../icons/Magnifier";
 
 const UsersList = props => {
@@ -20,15 +21,13 @@ const UsersList = props => {
 
     const getFilteredUsers = useCallback(() => {
         const str = search.value.toLowerCase();
-        return users.filter(
-            user => user.forename.toLowerCase().includes(str) || user.lastname.toLowerCase().includes(str) || user.email.toLowerCase().includes(str)
-        );
+        return filter(users, user => (user.forename + " " + user.lastname).toLowerCase().includes(str) || user.email.toLowerCase().includes(str));
     }, [search.value]);
 
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-9">
-                <BackButton classNames={"margin-top--2"} />
+                <BackButton classNames="margin-top--2" />
                 <div className="grid grid--align-baseline">
                     <div className="grid__col">
                         <h1>Users</h1>
