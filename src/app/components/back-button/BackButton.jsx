@@ -8,7 +8,10 @@ function BackButton({ text = "Back", redirectUrl, classNames }) {
     const to = redirectUrl ? redirectUrl : url.resolve("../");
     return (
         <div className={clsx(classNames)}>
-            &#9664;&nbsp;<Link role="link" to={to}>{text}</Link>
+            &#9664;&nbsp;
+            <Link role="link" to={to}>
+                {text}
+            </Link>
         </div>
     );
 }

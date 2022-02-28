@@ -85,6 +85,11 @@ export default class user {
     }
 
     // TODO: new auth work
+    static getUsers() {
+        return http.get(`/users`);
+    }
+
+    // TODO: new auth work
     static createNewUser(body) {
         return http.post(`/users`, body);
     }

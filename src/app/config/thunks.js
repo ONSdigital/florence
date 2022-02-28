@@ -208,8 +208,7 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
 
 export const createUserRequest = body => dispatch => {
     dispatch(actions.createUserProgress());
-    user
-        .createNewUser(body)
+    user.createNewUser(body)
         .then(response => {
             console.log("response", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.createUserSuccess());
@@ -233,8 +232,7 @@ export const createUserRequest = body => dispatch => {
 
 export const fetchUserGroupsRequest = id => dispatch => {
     dispatch(actions.loadUserGroupsProgress());
-    user
-        .getUserGroups(id)
+    user.getUserGroups(id)
         .then(response => {
             dispatch(actions.loadUserGroupsSuccess(response.groups));
         })
@@ -265,20 +263,18 @@ export const updateUserRequest = (id, body) => dispatch => {
         });
 };
 
-export const getUsersRequest =
-    (params = { active: true }) =>
-    dispatch => {
-        dispatch(actions.loadUsersProgress());
-        users
-            .getAll(params)
-            .then(response => {
-                dispatch(actions.loadUsersSuccess(response.users));
-            })
-            .catch(error => {
-                dispatch(actions.loadUsersFailure());
-                console.error(error);
-            });
-    };
+export const getUsersRequest = () => dispatch => {
+    dispatch(actions.loadUsersProgress());
+    users
+        .getUsers()
+        .then(response => {
+            dispatch(actions.loadUsersSuccess(response.users));
+        })
+        .catch(error => {
+            dispatch(actions.loadUsersFailure());
+            console.error(error);
+        });
+};
 
 export const createTeam = (body, usersInTeam) => dispatch => {
     teams

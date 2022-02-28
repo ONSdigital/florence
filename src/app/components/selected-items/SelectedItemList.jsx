@@ -5,7 +5,13 @@ import SelectedItem from "./SelectedItem";
 const SelectedItemList = ({ items, removeClassNames, classNames, handleRemoveItem }) => (
     <div className="selected-item-list">
         {items.map((selectedItem, index) => (
-            <SelectedItem key={index} removeClassNames={removeClassNames} classNames={classNames} {...selectedItem} handleRemoveItem={handleRemoveItem} />
+            <SelectedItem
+                key={index}
+                removeClassNames={removeClassNames}
+                classNames={classNames}
+                {...selectedItem}
+                handleRemoveItem={handleRemoveItem}
+            />
         ))}
     </div>
 );

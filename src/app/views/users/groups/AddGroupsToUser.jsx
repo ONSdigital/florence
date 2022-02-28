@@ -32,13 +32,13 @@ function AddGroupsToUser(props) {
     const [userGroups, setUserGroups] = useState([]);
 
     const hasNewValues = userGroups.length > 0;
-    const routerWillLeave = (nextLocation) => {
-        if (hasNewValues) return 'Your work is not saved! Are you sure you want to leave?'
-    }
+    const routerWillLeave = nextLocation => {
+        if (hasNewValues) return "Your work is not saved! Are you sure you want to leave?";
+    };
 
     useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, routerWillLeave)
-    })
+        props.router.setRouteLeaveHook(props.route, routerWillLeave);
+    });
 
     const handleRemove = name => {
         setUserGroups(prevState => prevState.filter(group => group !== name));
