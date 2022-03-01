@@ -21,7 +21,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			RouterURL:                  "http://localhost:20000",
 			DatasetControllerURL:       "http://localhost:24000",
 			TableRendererURL:           "http://localhost:23300",
-			TopicsURL:                  "http://localhost:25300",
 			SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
