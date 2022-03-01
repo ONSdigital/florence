@@ -144,6 +144,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
+	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)

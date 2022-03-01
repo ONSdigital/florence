@@ -96,7 +96,7 @@ func imageAPIDirector(apiRouterVersion string) func(req *http.Request) {
 func topicAPIDirector(apiRouterVersion string) func(req *http.Request) {
 	return func(req *http.Request) {
 		director(req)
-		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, strings.TrimPrefix(req.URL.Path, "/topics"))
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
 	}
 }
 

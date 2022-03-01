@@ -36,7 +36,7 @@
 
 function getTopics(primaryTopic){
     $.ajax({
-        url: "/topics/topics",
+        url: "/topics",
         dataType: 'json',
         crossDomain: true,
         success: function (result) {
@@ -65,7 +65,7 @@ function getSubTopics(primaryTopic = null, secondaryTopics = null){
     }
 
     $.ajax({
-        url: "/topics/topics/" + id + "/subtopics",
+        url: "/topics/" + id + "/subtopics",
         dataType: 'json',
         crossDomain: true,
         success: function (result) {
