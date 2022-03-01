@@ -46,7 +46,7 @@ const CreateNewCollection = props => {
     }, []);
 
     const handleCollectionNameChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             name: { ...prevState.name, value: e.target.value },
@@ -54,7 +54,7 @@ const CreateNewCollection = props => {
     };
 
     const handleTeamSelect = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             teams: prevState.teams.concat(props.teams.find(team => team.id === e.target.value)),
@@ -70,7 +70,7 @@ const CreateNewCollection = props => {
     };
 
     const handleCollectionTypeChange = e => {
-        if (!e.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             type: e.value,
@@ -84,7 +84,7 @@ const CreateNewCollection = props => {
     };
 
     const handleScheduleTypeChange = e => {
-        if (!e.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             scheduleType: e.value,
@@ -92,7 +92,7 @@ const CreateNewCollection = props => {
     };
 
     const handlePublishDateChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             publishDate: { errorMsg: "", value: e.target.value },
@@ -100,7 +100,7 @@ const CreateNewCollection = props => {
     };
 
     const handlePublishTimeChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             publishTime: { errorMsg: "", value: e.target.value },
@@ -198,7 +198,6 @@ const CreateNewCollection = props => {
 
         if (newCollection.type === "scheduled" && newCollection.scheduleType === "calender-entry-schedule") {
             const validatedRelease = collectionValidation.release(newCollection.release);
-
             if (!validatedRelease.isValid) {
                 setNewCollection(prevState => ({
                     ...prevState,
