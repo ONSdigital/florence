@@ -83,6 +83,6 @@ describe("UserList", () => {
 
         expect(screen.getByLabelText("Show active users", { pressed: false })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: true })).toBeInTheDocument();
-        expect(screen.getByText(/nothing to show/)).toBeInTheDocument();
+        expect(screen.getByText(/nothing to show/i)).toBeInTheDocument();
     });
 });
