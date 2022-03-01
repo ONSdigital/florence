@@ -1,11 +1,12 @@
 import { connect } from "react-redux";
 import { getUsersRequest } from "../../config/thunks";
-import { getMappedUsers, getUsersLoading } from "../../config/selectors";
+import { getSuspendedUsers, getActiveUsers, getUsersLoading } from "../../config/selectors";
 import UsersList from "./UsersList";
 
 export const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
-    users: getMappedUsers(state.state),
+    active: getActiveUsers(state.state),
+    suspended: getSuspendedUsers(state.state),
     loggedInUser: state.user,
     loading: getUsersLoading(state.state),
 });

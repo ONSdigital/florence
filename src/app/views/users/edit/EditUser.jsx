@@ -46,13 +46,13 @@ export const EditUser = props => {
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, user);
 
-    const routerWillLeave = (nextLocation) => {
-        if (hasNewValues) return 'Your work is not saved! Are you sure you want to leave?'
-    }
+    const routerWillLeave = nextLocation => {
+        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
+    };
 
     useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, routerWillLeave)
-    })
+        props.router.setRouteLeaveHook(props.route, routerWillLeave);
+    });
 
     useEffect(() => {
         if (user) {
