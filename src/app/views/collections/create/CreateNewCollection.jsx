@@ -197,12 +197,22 @@ const CreateNewCollection = props => {
         }
 
         if (newCollection.type === "scheduled" && newCollection.scheduleType === "calender-entry-schedule") {
-            const validatedRelease = collectionValidation.release(newCollection.release);
+            const release = newCollection.release;
+            const validatedRelease = collectionValidation.release(release);
             if (!validatedRelease.isValid) {
-                setNewCollection(prevState => ({
-                    ...prevState,
-                    collectionRelease: { ...prevState.collectionRelease, errorMsg: validatedRelease.errorMsg },
-                }));
+                const collectionRelease = {
+                    ...release,
+                    errorMsg: validatedRelease.errorMsg,
+                };
+
+                newCollection = {
+                    ...newCollection,
+                    release: collectionRelease,
+                };
+                this.setState({
+                    newCollection,
+                    isSubmitting: false,
+                });
                 hasError = true;
             }
         }
