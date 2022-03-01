@@ -1,39 +1,13 @@
 import React from "react";
 import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
+import userEvent from "@testing-library/user-event";
 import UsersList from "./UsersList";
+import { user } from "../../utilities/tests/mockData";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
-const mockedAllUsers = [
-    {
-        active: true,
-        details: ["test.user-1498@ons.gov.uk"],
-        email: "test.user-1498@ons.gov.uk",
-        forename: "Test1",
-        groups: [],
-        id: "test.user-1498@ons.gov.uk",
-        lastname: "Surname 1498",
-        status: "CONFIRMED",
-        status_notes: "This user was nice ",
-        title: "Test1 Surname 1498",
-        url: "/florence/users/test.user-1498@ons.gov.uk",
-    },
-    {
-        active: true,
-        details: ["test.user-642@ons.gov.uk"],
-        email: "test.user-642@ons.gov.uk",
-        forename: "Test2",
-        groups: [],
-        id: "test.user-642@ons.gov.uk",
-        lastname: "Surname 642",
-        status: "CONFIRMED",
-        status_notes: "this user was ok ",
-        title: "Test2 Surname 642",
-        url: "/florence/users/test.user-642@ons.gov.uk",
-    },
-];
-
 const props = {
-    users: [],
+    active: [],
+    suspended: [],
     loading: false,
     params: {},
     rootPath: "test",
@@ -56,7 +30,7 @@ describe("UserList", () => {
         expect(props.loadUsers).toBeCalled();
     });
 
-    it("renders loader when fetching users", () => {
+    it("shows loader when fetching users", () => {
         const newProps = {
             ...props,
             loading: true,
@@ -65,18 +39,50 @@ describe("UserList", () => {
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
-    it("renders list of users", () => {
+    it("lists active users by default", () => {
         const newProps = {
             ...props,
-            users: mockedAllUsers,
+            active: [user],
         };
         render(<UsersList {...newProps} />);
 
         const items = screen.getAllByRole("listitem");
 
         expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
-        expect(items).toHaveLength(2);
-        expect(items[0]).toHaveTextContent("Test1 Surname 1498test.user-1498@ons.gov.uk");
-        expect(items[1]).toHaveTextContent("Test2 Surname 642test.user-642@ons.gov.uk");
+        expect(items).toHaveLength(1);
+        expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+    });
+
+    it("renders list of active users by default", () => {
+        const newProps = {
+            ...props,
+            active: [user],
+        };
+        render(<UsersList {...newProps} />);
+
+        const items = screen.getAllByRole("listitem");
+
+        expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
+        expect(items).toHaveLength(1);
+        expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+
+        screen.getByLabelText("Show active users", { pressed: true });
+    });
+
+    it("renders list of inactive users when show suspended is active", () => {
+        const newProps = {
+            ...props,
+            active: [user],
+        };
+        render(<UsersList {...newProps} />);
+
+        expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
+        expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
+
+        userEvent.click(screen.getByRole("button", { name: /suspended/i }));
+
+        expect(screen.getByLabelText("Show active users", { pressed: false })).toBeInTheDocument();
+        expect(screen.getByLabelText("Show suspended users", { pressed: true })).toBeInTheDocument();
+        expect(screen.getByText(/nothing to show/i)).toBeInTheDocument();
     });
 });
