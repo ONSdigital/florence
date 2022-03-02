@@ -1,14 +1,15 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { push } from "react-router-redux";
-import { Link } from "react-router";
+import React, {useEffect, useMemo, useState} from "react";
+import {push} from "react-router-redux";
+import {Link} from "react-router";
 import url from "../../../utilities/url";
 import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
 import Input from "../../../components/Input";
 import Chip from "../../../components/chip/Chip";
-import { addPopout, removePopouts } from "../../../config/actions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
+import _ from "lodash";
+import Panel from "../../../components/panel/Panel";
 
 const propTypes = {
     dispatch: PropTypes.func,
@@ -30,25 +31,37 @@ const propTypes = {
     }),
     loadUsers: PropTypes.func,
     loadGroupMembers: PropTypes.func,
-    createTeam: PropTypes.func,
+    createTeam: PropTypes.func, // TODO change to grouds
+    updateTeam: PropTypes.func,
     loadGroup: PropTypes.func,
+    deleteGroup : PropTypes.func
 };
 
 const ComposeTeam = props => {
-    const { dispatch, router, route, allPreviewUsers, params, group, loadUsers, loadGroupMembers, createTeam, loadGroup } = props;
-    const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
+    const {dispatch, router, route, allPreviewUsers, params, group, loadUsers, loadGroupMembers, createTeam, updateTeam, loadGroup, deleteGroup} = props;
+    // TODO use group.active.isLoading in a useEffect to set initial values for group members and team name instead
     const [teamName, setTeamName] = useState("");
     const [isLoading, setLoading] = useState(true);
     const [usersNotInTeam, setUsersNotInTeam] = useState([]);
     const [unsavedChanges, setUnsavedChanges] = useState(false);
+    const [originalListOfUsersInTeam, setOriginalListOFUsersInTeam] = useState([]);
+    const [originalTeamName, setOriginalTeamName] = useState("");
     const isEditMode = params.groupID != null;
+    const handleRequestToLeavePage = () => {
+        if (unsavedChanges) return "Your work is not saved! Are you sure you want to leave?";
+    };
     const usersInTeam = useMemo(() => {
         if (allPreviewUsers == null) {
             return [];
         }
-        return allPreviewUsers.filter(
+        const listOfUsersInTeam = allPreviewUsers.filter(
             userToCheck => !usersNotInTeam.some(userEntryComparedAgainst => userToCheck.id === userEntryComparedAgainst.id)
         );
+        if (isLoading) {
+            setOriginalListOFUsersInTeam(listOfUsersInTeam)
+            setLoading(false);
+        }
+        return listOfUsersInTeam;
     }, [usersNotInTeam, allPreviewUsers]);
 
     useEffect(() => {
@@ -63,23 +76,24 @@ const ComposeTeam = props => {
     }, []);
 
     useEffect(() => {
-        if (userConfirmedToLeave) {
-            const previousUrl = url.resolve("../", true);
-            dispatch(push(previousUrl));
+        if (group.details.name != null || group.details.id != null) {
+            setTeamName(group.details.name || group.details.id)
         }
-    }, [userConfirmedToLeave]);
+    }, [group.details.name]);
 
     useEffect(() => {
         if (allPreviewUsers != null && allPreviewUsers.length) {
             setUsersNotInTeam(allPreviewUsers);
-            setLoading(false);
         }
     }, [allPreviewUsers]);
 
     useEffect(() => {
         let hasChanges = false;
+        // TODO could compress this logic by just setting 'original' vars then don't care about which mode
         if (isEditMode) {
-            // if()
+            if (!_.isEqual(originalListOfUsersInTeam, usersInTeam) || teamName !== originalTeamName) {
+                hasChanges = true;
+            }
         } else {
             hasChanges = teamName !== "" || usersInTeam?.length > 0;
         }
@@ -87,15 +101,24 @@ const ComposeTeam = props => {
     }, [teamName, usersInTeam]);
 
     useEffect(() => {
+        // TODO make sure only called once (maybe simplify)
         if (group.details == null || allPreviewUsers == null) {
             return;
         }
-        setTeamName(group.details.name || group.details.id); // TODO set team name initial value
+        const displayName = group.details.name || group.details.id;
+        setTeamName(displayName); // TODO set team name initial value
+        setOriginalTeamName(displayName);
         let newListOfUsersNotInTeam = allPreviewUsers.filter(previewUser => {
             return !group.members.find(userInTeam => {
                 return userInTeam.id === previewUser.id;
             });
         });
+        let listOfUsersInTeam = allPreviewUsers.filter(previewUser => {
+            return group.members.find(userInTeam => {
+                return userInTeam.id === previewUser.id;
+            });
+        });
+        setOriginalListOFUsersInTeam(listOfUsersInTeam);
         setUsersNotInTeam(newListOfUsersNotInTeam);
     }, [group, allPreviewUsers]);
 
@@ -104,79 +127,54 @@ const ComposeTeam = props => {
         setUsersNotInTeam(newListOfUsersNotInTeam);
     };
 
-    const handleRequestToLeavePage = () => {
-        let canLeave = true;
-        if (!userConfirmedToLeave && unsavedChanges) {
-            canLeave = false;
-            const popoutOptions = {
-                id: "unsaved-changes",
-                title: "You have unsaved changes",
-                body: "If you leave these changes will be discarded.",
-                buttons: [
-                    {
-                        onClick: () => {
-                            dispatch(removePopouts(["unsaved-changes"]));
-                            setUserConfirmedToLeave(true);
-                        },
-                        text: "Discard changes",
-                        style: "warning",
-                    },
-                    {
-                        onClick: () => {
-                            dispatch(removePopouts(["unsaved-changes"]));
-                            return false;
-                        },
-                        text: "Continue editing team",
-                        style: "invert-primary",
-                    },
-                ],
-            };
-            dispatch(addPopout(popoutOptions));
-        }
-        return canLeave;
-    };
-
     const handleTeamNameChange = event => {
         setTeamName(event.target.value);
     };
 
-    const requestCreateTeam = () => {
-        if (unsavedChanges && teamName !== "") {
-            // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
-            const body = {
-                name: teamName,
-                precedence: 10,
-            };
-            setUnsavedChanges(false);
-            dispatch(createTeam(body, usersInTeam));
-        } else {
+    const saveChanges = (createNewTeam = false) => {
+        // TODO
+        if (unsavedChanges && teamName === "") {
             const notification = {
                 type: "warning",
                 message: "Unable to save team, you need to at least give the team a name",
                 isDismissable: true,
             };
             notifications.add(notification);
+            return;
+        }
+        // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
+        setUnsavedChanges(false);
+        if (createNewTeam) {
+            const body = {
+                name: teamName,
+                precedence: 10,
+            };
+            createTeam(body, usersInTeam);
+        } else {
+            let usersToAdd = usersInTeam.filter(user => !originalListOfUsersInTeam.some(originalUser => user.id === originalUser.id));
+            let usersToDelete = originalListOfUsersInTeam.filter(originalUser => !usersInTeam.some(user => originalUser.id === user.id));
+            updateTeam(params?.groupID, teamName !== originalTeamName ? teamName : null, usersToAdd, usersToDelete)
         }
     };
-
-    const saveChanges = () => {
-        // TODO
-    };
-    let createTeamButton = {
+    const createTeamButton = {
         id: "create-team-btn",
         text: "Create Team",
-        interactionCallback: requestCreateTeam,
+        interactionCallback: () => {
+            saveChanges(true)
+        },
         style: "positive",
         disabled: false,
     };
-    let saveChangesButton = {
+    const saveChangesButton = {
         id: "save-team-btn",
         text: "Save Changes",
-        interactionCallback: saveChanges,
+        interactionCallback: () => {
+            saveChanges(false)
+        },
         style: "positive",
         disabled: false,
     };
-    let contentActionBarProps = {
+    const contentActionBarProps = {
         buttons: [],
         cancelCallback: () => {
             const previousUrl = url.resolve("/groups", true);
@@ -185,6 +183,7 @@ const ComposeTeam = props => {
         stickToBottom: true,
         unsavedChanges: unsavedChanges,
     };
+
     if (params?.groupID != null) {
         contentActionBarProps.buttons.push(saveChangesButton);
     } else {
@@ -213,9 +212,15 @@ const ComposeTeam = props => {
     }
 
     const noTeamMembers = <p className="no-team-members">This team has no members</p>;
-    const teamNameInputArea = (
-        <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange} disabled={params?.groupID?.startsWith("role-")} />
+    let teamNameInputArea = (
+        <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}
+               disabled={params?.groupID?.startsWith("role-")}/>
     );
+    if (isEditMode) {
+        let inputAreaDisabled = params?.groupID?.startsWith("role-") || (group?.details?.name == null)
+        teamNameInputArea = <Input id="team-name-id" label="Name" type="text" onChange={handleTeamNameChange}
+                                   disabled={inputAreaDisabled} value={teamName}/>
+    }
     let pageTitle = <h1 className="margin-top--1 margin-bottom--1">Create a preview team</h1>;
     if (isEditMode) {
         if (group?.details?.name != null) {
@@ -225,11 +230,22 @@ const ComposeTeam = props => {
             pageTitle = <h1 className="margin-top--1 margin-bottom--1">{params.groupID}</h1>;
         }
     }
+    let deleteTeamPanelProps = {
+        type: "error",
+        heading: "Delete preview team",
+        body: <><p>Team members cannot view content linked to this preview team after it
+            has been deleted.</p>
+            <button id="delete-team" type="button" key="delete-team" onClick={()=>{deleteGroup(params.groupID)}}
+                    className={"btn btn--warning margin-top--1"} disabled={isLoading}>
+                Delete Team
+            </button>
+        </>
+    }
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-4 margin-top--1 margin-bottom--1">
                 <span>
-                    &#9664; <Link to={url.resolve("/groups")}>Back</Link>
+                    &#9664; <Link to={url.resolve("/groups")} role="link">Back</Link>
                 </span>
                 {pageTitle}
                 {teamNameInputArea}
@@ -237,8 +253,10 @@ const ComposeTeam = props => {
                     <strong>Members</strong>
                 </span>
                 {usersInTeam?.length > 0 ? teamsMemberChips : noTeamMembers}
+                {isEditMode && !params?.groupID?.startsWith("role-") &&
+                    <div className="margin-top--1"><Panel {...deleteTeamPanelProps}/></div>}
             </div>
-            <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam} />
+            <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam}/>
             <ContentActionBar {...contentActionBarProps} />
         </div>
     );

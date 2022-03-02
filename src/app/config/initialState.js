@@ -35,7 +35,10 @@ export const initialState = {
         isLoading: false,
     },
     groups: {
-        active: {},
+        active: {
+            details:{},
+            members:[]
+        },
         all: [],
         isLoading: false,
     },

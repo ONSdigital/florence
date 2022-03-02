@@ -26,9 +26,25 @@ export default class teams {
     }
 
     static addMemberToTeam(teamID, userID) {
-        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
+        return http.post(`/groups/${teamID}/members`, {user_id: userID}).then(response => {
             return response;
         });
+    }
+    static removeMemberToTeam(teamID, userID) {
+        return http.delete(`/groups/${teamID}/members/${userID}`).then(response => {
+            return response;
+        });
+    }
+
+    static updateGroup(teamID, name) {
+        return http.put(`/groups/${teamID}`, {id: teamID, name: name, precedence: "10"}).then(response => {
+            return response
+        })
+    }
+    static deleteGroup(groupID) {
+        return http.delete(`/groups/${groupID}`).then(response => {
+            return response
+        })
     }
 
     static remove(teamName) {
@@ -48,6 +64,7 @@ export default class teams {
             return response;
         });
     }
+
     // TODO: new auth work
     static getGroups() {
         return http.get(`/groups`).then(response => {
