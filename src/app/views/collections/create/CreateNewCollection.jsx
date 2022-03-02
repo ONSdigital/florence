@@ -39,7 +39,6 @@ const CreateNewCollection = props => {
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showScheduleByRelease, setShowScheduleByRelease] = useState(false);
-    const [releaseDateISO, setReleaseDateISO] = useState("");
 
     useEffect(() => {
         props.loadTeams(props.isNewSignIn);
@@ -135,7 +134,7 @@ const CreateNewCollection = props => {
             return;
         }
         if (newCollection.scheduleType === "calender-entry-schedule") {
-            return releaseDateISO;
+            return null;
         }
         return new Date(`${newCollection.publishDate.value} ${newCollection.publishTime.value}`).toISOString();
     };
@@ -197,22 +196,12 @@ const CreateNewCollection = props => {
         }
 
         if (newCollection.type === "scheduled" && newCollection.scheduleType === "calender-entry-schedule") {
-            const release = newCollection.release;
-            const validatedRelease = collectionValidation.release(release);
+            const validatedRelease = collectionValidation.release(newCollection.release);
             if (!validatedRelease.isValid) {
-                const collectionRelease = {
-                    ...release,
-                    errorMsg: validatedRelease.errorMsg,
-                };
-
-                newCollection = {
-                    ...newCollection,
-                    release: collectionRelease,
-                };
-                this.setState({
-                    newCollection,
-                    isSubmitting: false,
-                });
+                setNewCollection(prevState => ({
+                    ...prevState,
+                    collectionRelease: { ...prevState.collectionRelease, errorMsg: validatedRelease.errorMsg },
+                }));
                 hasError = true;
             }
         }
