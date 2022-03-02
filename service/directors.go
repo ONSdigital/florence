@@ -93,6 +93,13 @@ func imageAPIDirector(apiRouterVersion string) func(req *http.Request) {
 	}
 }
 
+func topicAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
+	}
+}
+
 func datasetControllerDirector(req *http.Request) {
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
@@ -100,9 +107,4 @@ func datasetControllerDirector(req *http.Request) {
 
 func tableDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
-}
-
-func topicsDirector(req *http.Request) {
-	director(req)
-	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/topics")
 }

@@ -294,20 +294,18 @@ export const getGroupRequest = id => dispatch => {
         });
 };
 
-export const getUsersRequest =
-    (params = {active: true}) =>
-        dispatch => {
-            dispatch(actions.loadUsersProgress());
-            users
-                .getAll(params)
-                .then(response => {
-                    dispatch(actions.loadUsersSuccess(response.users));
-                })
-                .catch(error => {
-                    dispatch(actions.loadUsersFailure());
-                    console.error(error);
-                });
-        };
+export const getUsersRequest = () => dispatch => {
+    dispatch(actions.loadUsersProgress());
+    users
+        .getUsers()
+        .then(response => {
+            dispatch(actions.loadUsersSuccess(response.users));
+        })
+        .catch(error => {
+            dispatch(actions.loadUsersFailure());
+            console.error(error);
+        });
+};
 
 export const createTeam = (body, usersInTeam) => dispatch => {
     teams

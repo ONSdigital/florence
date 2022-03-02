@@ -105,12 +105,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	topicsURL, err := url.Parse(cfg.TopicsURL)
-	if err != nil {
-		log.Event(ctx, "error parsing topic URL", log.FATAL, log.Error(err))
-		return nil, err
-	}
-
 	routerProxy := reverseproxy.Create(routerURL, director, nil)
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
@@ -118,7 +112,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
-	topicsProxy := reverseproxy.Create(topicsURL, topicsDirector, nil)
+	topicsProxy := reverseproxy.Create(apiRouterURL, topicAPIDirector(cfg.APIRouterVersion), nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
 	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
@@ -150,6 +144,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
+	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)

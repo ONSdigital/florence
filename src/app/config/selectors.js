@@ -49,17 +49,18 @@ export const getUserLoading = state => state.user.isLoading;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
 
 export const getUsers = state => state.users.all;
+
+export const getActiveUsers = createSelector(getUsers, users => {
+    if (!users) return [];
+    return users.filter(user => user.active === true);
+});
+
+export const getSuspendedUsers = createSelector(getUsers, users => {
+    if (!users) return [];
+    return users.filter(user => user.active === false);
+});
+
 export const getUsersLoading = state => state.users.isLoading;
 export const getRootPath = state => state.rootPath;
 
 export const getUserGroups = state => state.user.groups;
-
-export const getMappedUsers = createSelector(getUsers, getRootPath, (users, rootPath) => {
-    if (!users) return [];
-    return users.map(user => ({
-        ...user,
-        title: `${user.forename} ${user.lastname}`,
-        details: [user.email],
-        url: `${rootPath}/users/${user.id}`,
-    }));
-});

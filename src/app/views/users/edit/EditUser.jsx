@@ -47,7 +47,7 @@ export const EditUser = props => {
     const hasNewValues = !isEqual(values, user);
 
     const routerWillLeave = nextLocation => {
-        if (hasNewValues) return "Your work is not saved! Are you sure you want to leave?";
+        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
 
     useEffect(() => {
