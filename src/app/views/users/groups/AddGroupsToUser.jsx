@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import filter from "lodash/filter";
 import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
@@ -28,31 +29,36 @@ function AddGroupsToUser(props) {
     }, [id]);
 
     const { isNewSignIn, loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
+    const [isSubmitting, setIsSubmitting] = useState(isAdding);
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
 
     const hasNewValues = userGroups.length > 0;
     const routerWillLeave = nextLocation => {
-        if (hasNewValues) return "Your work is not saved! Are you sure you want to leave?";
+        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
 
     useEffect(() => {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
     });
 
-    const handleRemove = name => {
-        setUserGroups(prevState => prevState.filter(group => group !== name));
+    const handleRemove = id => {
+        setUserGroups(prevState => prevState.filter(group => group.group_name !== id));
     };
-    const handleAdd = name => {
-        if (userGroups.includes(name)) {
+
+    const handleAdd = group => {
+        if (userGroups.includes(group)) {
             notifications.add(notification);
             return;
         }
-        setUserGroups(prevState => prevState.concat(name));
+        setIsSubmitting(true);
+        setUserGroups(prevState => prevState.concat(group));
     };
 
     const getFilteredGroups = useCallback(() => {
-        return groups.filter(group => group.group_name.toLowerCase().includes(search.value.toLowerCase()));
+        const str = search.value.toLowerCase();
+        // TODO: backend returns invalid object structure, needs updating the group_name into name
+        return filter(groups, group => group.description?.toLowerCase().includes(str) || group.group_name?.toLowerCase().includes(str));
     }, [search.value]);
 
     return (
@@ -64,7 +70,7 @@ function AddGroupsToUser(props) {
                         {loading ? (
                             <Loader classNames="grid grid--align-center grid--align-self-center" />
                         ) : (
-                            <User testid="user" {...user} userGroups={userGroups} handleRemove={handleRemove} />
+                            <User {...user} userGroups={userGroups} handleRemove={handleRemove} />
                         )}
                     </div>
                     <div className="grid__col-md-6">
@@ -88,7 +94,12 @@ function AddGroupsToUser(props) {
                 hasNewValues={hasNewValues}
                 loading={isAdding}
                 redirectUrl={`${rootPath}/users`}
-                handleSubmit={() => addGroupsToUser(id, userGroups)}
+                handleSubmit={() =>
+                    addGroupsToUser(
+                        id,
+                        userGroups.map(group => group.group_name) // TODO: backend returns invalid object structure, needs updating to send id only
+                    )
+                }
             />
         </div>
     );
