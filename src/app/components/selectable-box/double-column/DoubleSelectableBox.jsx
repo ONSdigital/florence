@@ -62,7 +62,7 @@ const DoubleSelectableBox = props => {
                 >
                     {props.headings[1]}
                     <Sort active={sortConfig} name="publishDate" />
-                    {props.isUpdating && <span className="selectable-box__status pull-right loader" />}
+                    {props.isUpdating && <span data-testid="loader" className="selectable-box__status pull-right loader" />}
                 </button>
             </div>
             {props.items.length > 0 ? renderList() : renderMessage()}

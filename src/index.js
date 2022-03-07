@@ -13,6 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
+import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
@@ -44,11 +45,17 @@ import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionR
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
-import "./scss/main.scss";
 import { errCodes } from "./app/utilities/errorCodes";
 import notifications from "./app/utilities/notifications";
-import UsersList from "./app/views/users/UsersList";
+import UsersList from "./app/views/users";
+import CreateUser from "./app/views/users/create";
+import AddGroupsToUser from "./app/views/users/groups";
+import TeamsList from "./app/views/teams/teams-view/"
+import EditUser from "./app/views/users/edit";
 import UploadTest from "./app/views/upload-test/UploadTest";
+
+import "./scss/main.scss";
+
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -65,10 +72,20 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdminOrEditor(state.user);
+        return  auth.isAdminOrEditor(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
+    redirectPath: `${rootPath}/collections`,
+    allowRedirectBack: false
+});
+
+const userIsAdmin = connectedReduxRedirect({
+    authenticatedSelector: state => {
+        return auth.isAdmin(state.user);
+    },
+    redirectAction: routerActions.replace,
+    wrapperDisplayName: "userIsAdmin",
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
 });
@@ -116,7 +133,7 @@ const Index = () => {
                                 <IndexRoute component={userIsAuthenticated(SelectADataset)} />
                                 <Route path="create">
                                     <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
-                                    <Route path=":datasetID/:format" component={userIsAuthenticated(CreateCantabularDatasetController)} />
+                                    <Route path=":datasetID/:recipeID" component={userIsAuthenticated(CreateCantabularDatasetController)} />
                                     <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
                                 </Route>
                                 <Route path=":datasetID">
@@ -144,6 +161,9 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdminOrEditor(CreateUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdminOrEditor(AddGroupsToUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
@@ -196,6 +216,8 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
+                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(TeamsList)) : null} />
+                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
@@ -203,4 +225,4 @@ const Index = () => {
     );
 };
 
-ReactDOM.render(<React.StrictMode><Index /></React.StrictMode>, document.getElementById("app"));
+ReactDOM.render(<Index />, document.getElementById("app"));

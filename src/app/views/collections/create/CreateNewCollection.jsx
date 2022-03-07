@@ -35,18 +35,17 @@ export const EMPTY_COLLECTION = {
     scheduleType: "custom-schedule",
 };
 
-const Create = props => {
+const CreateNewCollection = props => {
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showScheduleByRelease, setShowScheduleByRelease] = useState(false);
-    const [releaseDateISO, setReleaseDateISO] = useState("");
 
     useEffect(() => {
-        props.loadTeams();
+        props.loadTeams(props.isNewSignIn);
     }, []);
 
     const handleCollectionNameChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             name: { ...prevState.name, value: e.target.value },
@@ -54,7 +53,7 @@ const Create = props => {
     };
 
     const handleTeamSelect = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             teams: prevState.teams.concat(props.teams.find(team => team.id === e.target.value)),
@@ -70,7 +69,7 @@ const Create = props => {
     };
 
     const handleCollectionTypeChange = e => {
-        if (!e.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             type: e.value,
@@ -84,7 +83,7 @@ const Create = props => {
     };
 
     const handleScheduleTypeChange = e => {
-        if (!e.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             scheduleType: e.value,
@@ -92,7 +91,7 @@ const Create = props => {
     };
 
     const handlePublishDateChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             publishDate: { errorMsg: "", value: e.target.value },
@@ -100,7 +99,7 @@ const Create = props => {
     };
 
     const handlePublishTimeChange = e => {
-        if (!e.target.value) return;
+        if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
             publishTime: { errorMsg: "", value: e.target.value },
@@ -135,7 +134,7 @@ const Create = props => {
             return;
         }
         if (newCollection.scheduleType === "calender-entry-schedule") {
-            return releaseDateISO;
+            return null;
         }
         return new Date(`${newCollection.publishDate.value} ${newCollection.publishTime.value}`).toISOString();
     };
@@ -198,7 +197,6 @@ const Create = props => {
 
         if (newCollection.type === "scheduled" && newCollection.scheduleType === "calender-entry-schedule") {
             const validatedRelease = collectionValidation.release(newCollection.release);
-
             if (!validatedRelease.isValid) {
                 setNewCollection(prevState => ({
                     ...prevState,
@@ -317,7 +315,7 @@ const Create = props => {
                 selectedOption={"default-option"}
                 onChange={handleTeamSelect}
             />
-            {newCollection.teams && <SelectedItemList items={newCollection.teams} onRemoveItem={handleTeamRemove} />}
+            {newCollection.teams && <SelectedItemList items={newCollection.teams} handleRemoveItem={handleTeamRemove} />}
             <RadioGroup
                 groupName="release-type"
                 radioData={releaseTypeRadioData}
@@ -340,7 +338,7 @@ const Create = props => {
     );
 };
 
-Create.propTypes = {
+CreateNewCollection.propTypes = {
     collections: PropTypes.array.isRequired,
     createCollectionRequest: PropTypes.func.isRequired,
     fetchingTeams: PropTypes.bool.isRequired,
@@ -349,4 +347,4 @@ Create.propTypes = {
     user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 
-export default Create;
+export default CreateNewCollection;

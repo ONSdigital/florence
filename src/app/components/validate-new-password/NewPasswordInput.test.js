@@ -3,7 +3,7 @@ import { mount } from "enzyme";
 import renderer from "react-test-renderer";
 import NewPasswordInput from "./NewPasswordInput";
 
-let updateValidity = jest.fn((isValid, password) => {
+let updateValidity = jest.fn(() => {
     // do nothing
 });
 

@@ -3,7 +3,6 @@ import Popouts from "./Popouts";
 import PopoutItem from "./PopoutItem.jsx";
 import { mount } from "enzyme";
 import renderer from "react-test-renderer";
-import Chip from "../chip/Chip";
 
 describe("Popouts", () => {
     describe("when empty popouts array given as prop", () => {

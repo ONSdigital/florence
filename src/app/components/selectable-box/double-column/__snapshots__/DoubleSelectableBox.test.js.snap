@@ -108,7 +108,7 @@ exports[`DoubleSelectableBox matches the snapshot 1`] = `
           className="grid__col-6"
         >
           Foo
-          
+          [My test message]
         </div>
         <div
           className="grid__col-6"

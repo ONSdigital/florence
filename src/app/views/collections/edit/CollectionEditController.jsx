@@ -9,9 +9,9 @@ import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 import {
-    updateAllTeams,
+    loadGroupsSuccess,
     updateActiveCollection,
-    addAllCollections,
+    loadCollectionsSuccess,
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
 } from "../../../config/actions";
@@ -19,7 +19,7 @@ import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
-import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
+import { errCodes } from "../../../utilities/errorCodes";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -99,7 +99,7 @@ export class CollectionEditController extends Component {
                 });
 
                 // Not needed for this screen but keeps teams array up-to-date for the teams screen
-                this.props.dispatch(updateAllTeams(response));
+                this.props.dispatch(loadGroupsSuccess(response));
             })
             .catch(error => {
                 this.setState({ isFetchingAllTeams: false });
@@ -322,7 +322,7 @@ export class CollectionEditController extends Component {
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));
                 this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
-                this.props.dispatch(addAllCollections(allCollections));
+                this.props.dispatch(loadCollectionsSuccess(allCollections));
                 this.props.dispatch(push(url.resolve("../")));
             })
             .catch(error => {
@@ -378,7 +378,7 @@ export class CollectionEditController extends Component {
                         this.setState(state => ({
                             name: {
                                 value: state.name.value,
-                                errorMsg: UNIQ_NAME_ERROR,
+                                errorMsg: errCodes.UNIQ_NAME_ERROR,
                             },
                         }));
                         break;

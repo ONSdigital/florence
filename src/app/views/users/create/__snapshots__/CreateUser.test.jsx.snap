@@ -1,0 +1,135 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CreateUser matches the snapshot 1`] = `
+<form
+  className="form"
+>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-11 grid__col-md-9"
+    >
+      <div
+        className="margin-top--2"
+      >
+        ◀ 
+        <a
+          onClick={[Function]}
+          role="link"
+          style={Object {}}
+        >
+          Back
+        </a>
+      </div>
+      <h2
+        className="margin-top--1"
+      >
+        Create user
+      </h2>
+      <div
+        className="grid"
+      >
+        <div
+          className="grid__col-lg-6"
+        >
+          <div
+            className="form__input"
+          >
+            <label
+              className="form__label"
+              htmlFor="forename"
+            >
+              First name
+            </label>
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="forename"
+              name="forename"
+              onChange={[Function]}
+              onFocus={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            className="form__input"
+          >
+            <label
+              className="form__label"
+              htmlFor="lastname"
+            >
+              Last name
+            </label>
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="lastname"
+              name="lastname"
+              onChange={[Function]}
+              onFocus={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            className="form__input"
+          >
+            <label
+              className="form__label"
+              htmlFor="email"
+            >
+              Email address
+            </label>
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="email"
+              name="email"
+              onChange={[Function]}
+              onFocus={[Function]}
+              type="email"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer"
+      data-testid="form-footer"
+    >
+      <div
+        className="grid__col-9"
+      >
+        <div
+          className="grid grid--align-baseline"
+        >
+          <button
+            className="btn btn--positive btn--margin-right"
+            onClick={[Function]}
+            type="submit"
+          >
+            Save changes
+          </button>
+          <a
+            className="btn btn--invert-primary btn--margin-right"
+            onClick={[Function]}
+            role="button"
+            style={Object {}}
+          >
+            Cancel
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+`;

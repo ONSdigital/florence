@@ -12,14 +12,14 @@ describe("useInput", () => {
     it("should not have initial value", () => {
         let wrapper = shallow(<HookWrapper hook={() => useInput("")} />);
         let { hook } = wrapper.find("div").props();
-        const [initialValue, setValue] = hook;
+        const [initialValue] = hook;
         expect(initialValue.value).toEqual("");
     });
 
     it("should set init value", () => {
         let wrapper = shallow(<HookWrapper hook={() => useInput("test")} />);
         let { hook } = wrapper.find("div").props();
-        const [initialValue, setValue] = hook;
+        const [initialValue] = hook;
         expect(initialValue.value).toEqual("test");
     });
 

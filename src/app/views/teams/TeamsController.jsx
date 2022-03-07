@@ -2,13 +2,11 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-
-import { updateAllTeams, updateActiveTeam, emptyActiveTeam, updateActiveTeamMembers } from "../../config/actions";
+import { loadGroupsSuccess, updateActiveTeam, emptyActiveTeam, updateActiveTeamMembers } from "../../config/actions";
 import teams from "../../utilities/api-clients/teams";
 import url from "../../utilities/url";
 import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
-
 import SelectableBoxController from "../../components/selectable-box/SelectableBoxController";
 import Drawer from "../../components/drawer/Drawer";
 import TeamCreate from "./team-create/TeamCreate";
@@ -165,7 +163,7 @@ export class TeamsController extends Component {
 
                 // Update all teams
                 const teamParameter = this.props.params.team;
-                this.props.dispatch(updateAllTeams(allTeamsWithProps));
+                this.props.dispatch(loadGroupsSuccess(allTeamsWithProps));
                 this.setState({ isUpdatingAllTeams: false });
 
                 // Update active team
@@ -395,7 +393,7 @@ TeamsController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
-        allTeams: state.state.teams.all,
+        allTeams: state.state.groups.all,
         userIsAdmin: state.user.isAdmin,
         rootPath: state.state.rootPath,
     };

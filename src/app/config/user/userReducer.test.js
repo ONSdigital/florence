@@ -1,15 +1,5 @@
 import { userLoggedIn, userLoggedOut } from "./userActions";
-
 import reducer from "./userReducer";
-
-jest.mock("../../utilities/log", () => {
-    return {
-        add: function () {
-            // do nothing
-        },
-        eventTypes: {},
-    };
-});
 
 describe("userReducer", () => {
     it("should return the initial state", () => {

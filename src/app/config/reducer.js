@@ -14,8 +14,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        // TODO: managing the old and new way for time being
-        case types.LOAD_COLLECTIONS_SUCCESS || type.ADD_ALL_COLLECTIONS: {
+        case types.LOAD_COLLECTIONS_SUCCESS: {
             return {
                 ...state,
                 collections: {
@@ -61,38 +60,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.RESET: {
-            return {
-                ...initialState,
-                notifications: state.notifications,
-                popouts: state.popouts,
-                config: state.config,
-            };
-        }
-        case types.SET_CONFIG: {
-            return {
-                ...state,
-                config: {
-                    enableDatasetImport: action.config.enableDatasetImport,
-                    enableHomepagePublishing: action.config.enableHomepagePublishing,
-                    enableNewSignIn: action.config.enableNewSignIn,
-                    enableNewUpload: action.config.enableNewUpload,
-                },
-            };
-        }
-
-        case types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS: {
-            let toDelete = { ...state.collections.toDelete };
-            toDelete[action.collectionID] = null;
-            return {
-                ...state,
-                collections: {
-                    ...state.collections,
-                    toDelete,
-                },
-            };
-        }
-        case types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS: {
+        case types.DELETE_COLLECTION: {
             return {
                 ...state,
                 collections: {
@@ -190,12 +158,50 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.ADD_ALL_USERS: {
+        case types.RESET: {
+            return {
+                ...initialState,
+                notifications: state.notifications,
+                popouts: state.popouts,
+                config: state.config,
+            };
+        }
+        case types.SET_CONFIG: {
+            return {
+                ...state,
+                config: {
+                    enableDatasetImport: action.config.enableDatasetImport,
+                    enableNewSignIn: action.config.enableNewSignIn,
+                    enableNewUpload: action.config.enableNewUpload,
+                },
+            };
+        }
+        case types.LOAD_USERS_SUCCESS: {
             return {
                 ...state,
                 users: {
                     ...state.users,
-                    all: [...action.users],
+                    all: action.users,
+                    isLoading: false,
+                    previewUsers: action.users,
+                },
+            };
+        }
+        case types.LOAD_USERS_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USERS_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isLoading: false,
                 },
             };
         }
@@ -205,34 +211,6 @@ export default function reducer(state = initialState, action) {
                 users: {
                     ...state.users,
                     all: state.users.all.filter(user => user.email !== action.userID),
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAMS_PROGRESS: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    isLoading: true,
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAMS_FAILURE: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    isLoading: false,
-                },
-            };
-        }
-        case types.UPDATE_ALL_TEAMS: {
-            return {
-                ...state,
-                teams: {
-                    ...state.teams,
-                    all: action.allTeams,
-                    isLoading: false,
                 },
             };
         }
@@ -477,6 +455,167 @@ export default function reducer(state = initialState, action) {
                     ...state.collections,
                     all: updatedCollections,
                     isUpdating: false,
+                },
+            };
+        }
+        case types.CREATE_USER_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isCreating: true,
+                },
+            };
+        }
+        case types.CREATE_USER_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isCreating: false,
+                },
+            };
+        }
+        case types.CREATE_USER_SUCCESS: {
+            //TODO: can not test the response object atm so will change this later
+            const users = state.users.concat(action.user);
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    active: action.user,
+                    all: users,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case types.LOAD_USER_PROGRESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USER_FAILURE: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_USER_SUCCESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: false,
+                    data: action.user,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_GROUPS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    all: action.groups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.ADD_GROUPS_TO_USER_PROGRESS: {
+            return {
+                ...state,
+                isUserAddingToGroups: true,
+            };
+        }
+        case types.ADD_GROUPS_TO_USER_FAILURE: {
+            return {
+                ...state,
+                isUserAddingToGroups: false,
+            };
+        }
+        case types.ADD_GROUPS_TO_USER_SUCCESS: {
+            return {
+                ...state,
+                isUserAddingToGroups: false,
+            };
+        }
+        case types.UPDATE_USER_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isUpdating: true,
+                },
+            };
+        }
+        case types.UPDATE_USER_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isUpdating: false,
+                },
+            };
+        }
+        case types.UPDATE_USER_SUCCESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    data: null,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_SUCCESS: {
+            const userGroups = action.groups || [];
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    groups: userGroups,
+                    isLoading: false,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_PROGRESS: {
+            return {
+                ...state,
+                user: {
+                    ...state.user,
+                    isLoading: true,
+                },
+            };
+        }
+        case types.LOAD_USER_GROUPS_FAILURE: {
+            return {
+                ...state,
+                user: {
+                    ...state.use,
+                    isLoading: false,
                 },
             };
         }

@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Create when no teams are available matches the snapshot 1`] = `
+exports[`CreateNewCollection when no teams are available matches the snapshot 1`] = `
 <form
   onSubmit={[Function]}
 >

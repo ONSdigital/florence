@@ -8,7 +8,6 @@ export const initialState = {
     },
     config: {
         enableDatasetImport: false,
-        enableHomepagePublishing: false,
         enableNewSignIn: false,
         enableNewUpload: false,
     },
@@ -25,6 +24,20 @@ export const initialState = {
     users: {
         active: {},
         all: [],
+        isAdding: false,
+        isLoading: false,
+        isUpdating: false,
+        previewUsers: [],
+        isLoadingActive: false,
+    },
+    user: {
+        data: null,
+        groups: [],
+        isLoading: false,
+    },
+    groups: {
+        all: [],
+        isLoading: false,
     },
     datasets: {
         all: [],
@@ -33,6 +46,7 @@ export const initialState = {
         recipes: [],
         activeJob: {},
     },
+    isUserAddingToGroups: false,
     search: "",
     notifications: [],
     popouts: [],

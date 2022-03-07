@@ -1,6 +1,6 @@
 import React from "react";
 import { CreateEditionController } from "./CreateEditionController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
 import recipes from "../../../utilities/api-clients/recipes";
 

@@ -10,7 +10,7 @@ import auth from "../../utilities/auth";
 
 import SelectableBox from "../../components/selectable-box-new/SelectableBox";
 import UsersCreateController from "./create/UsersCreateController";
-import { addAllUsers } from "../../config/actions";
+import { loadUsersSuccess } from "../../config/actions";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,
@@ -49,7 +49,7 @@ export class UsersController extends Component {
                 const allUsers = allUsersResponse.map(user => {
                     return this.mapUserToState(user);
                 });
-                this.props.dispatch(addAllUsers(allUsers));
+                this.props.dispatch(loadUsersSuccess(allUsers));
                 this.setState({ isFetchingUsers: false });
             })
             .catch(error => {

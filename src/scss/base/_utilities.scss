@@ -123,6 +123,14 @@
   }
 }
 
+.height {
+  @for $i from 0 through 100 {
+    &--#{$i} {
+      height: #{$i}vh;
+    }
+  }
+}
+
 .visually-hidden {
   border: 0;
   clip: rect(0 0 0 0);
