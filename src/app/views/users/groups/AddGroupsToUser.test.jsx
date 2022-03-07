@@ -87,24 +87,35 @@ describe("AddGroupsToUser", () => {
             expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(3);
         });
 
-        it("adds user to groups", () => {
+        it("adds user to groups and removes", () => {
+            const userGroups = groups[2];
             render(<AddGroupsToUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-            const GroupsSection = screen.getByTestId("groups-table");
 
             expect(screen.getByRole("heading", { level: 2, name: "Add a team for the user to join" })).toBeInTheDocument();
-            expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
+            expect(screen.getByPlaceholderText(/search teams by name/i)).toHaveValue("");
             expect(screen.getByText(/admins/i)).toBeInTheDocument();
-            expect(screen.getByText(/my first group/i)).toBeInTheDocument();
-            const add_buttons = screen.getAllByRole("button", { name: "Add" });
+            expect(screen.getByText(/user is not a member of a team. Please add them to a team/i)).toBeInTheDocument();
 
-            userEvent.click(add_buttons[0]);
+            const addButtons = screen.getAllByRole("button", { name: "Add" });
+            expect(addButtons).toHaveLength(3);
 
-            expect(screen.getByTestId("form-footer")).toBeInTheDocument();
-            expect(within(screen.getByTestId("user")).getByText("my test group")).toBeInTheDocument();
-            expect(within(screen.getByTestId("form-footer")).getByText("You have unsaved changes")).toBeInTheDocument();
+            userEvent.click(addButtons[1]);
 
-            userEvent.click(screen.getByText(/save changes/i));
-            expect(props.addGroupsToUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk", ["my test group"]);
+            const userGroupsList = screen.getByTestId("UserGroupsList");
+
+            expect(within(userGroupsList).getByLabelText(/person icon/i)).toBeInTheDocument();
+            expect(within(userGroupsList).getByText(/my first test group description/i)).toBeInTheDocument();
+            expect(screen.queryByText(/user is not a member of a team. Please add them to a team/i)).not.toBeInTheDocument();
+
+            userEvent.click(addButtons[2]);
+
+            expect(within(userGroupsList).getByLabelText(/tick inside shield icon/i)).toBeInTheDocument();
+            expect(within(userGroupsList).getByText(/admins group description/i)).toBeInTheDocument();
+            expect(within(screen.getByTestId("form-footer")).getByText(/you have unsaved changes/i)).toBeInTheDocument();
+
+            userEvent.click(within(userGroupsList).getAllByLabelText("remove")[0]);
+
+            expect(within(userGroupsList).queryByText(/my first test group description/i)).not.toBeInTheDocument();
         });
     });
 });

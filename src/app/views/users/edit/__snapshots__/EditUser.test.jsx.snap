@@ -94,9 +94,6 @@ exports[`EditUser matches the snapshot 1`] = `
               <p>
                 User is not a member of a team. Please add them to a team.
               </p>
-              <div
-                className="selected-item-list"
-              />
             </div>
           </div>
         </div>

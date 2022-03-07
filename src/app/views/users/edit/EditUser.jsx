@@ -15,6 +15,7 @@ import SelectedItemList from "../../../components/selected-items/SelectedItemLis
 import Loader from "../../../components/loader/index";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import TextArea from "../../../components/text-area/TextArea";
+import UserGroupsList from "../groups/UserGroupsList";
 
 const USER_ACCESS_OPTIONS = [
     {
@@ -119,12 +120,10 @@ export const EditUser = props => {
                                         onChange={handleChange}
                                     />
                                     <h2 className="margin-top--1">Team Member</h2>
-                                    {userGroups?.length == 0 && <p>User is not a member of a team. Please add them to a team.</p>}
-                                    {userGroups && (
-                                        <SelectedItemList
-                                            classNames="selected-item-list__item--info"
-                                            items={userGroups.map(group => ({ id: group.id || group.group_name, name: group.description }))}
-                                        />
+                                    {userGroups && userGroups.length > 0 ? (
+                                        <UserGroupsList groups={userGroups} />
+                                    ) : (
+                                        <p>User is not a member of a team. Please add them to a team.</p>
                                     )}
                                 </div>
                             </div>
