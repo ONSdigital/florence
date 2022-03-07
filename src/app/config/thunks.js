@@ -392,3 +392,22 @@ export const addGroupsToUserRequest = (userId, groups) => dispatch => {
             console.error(error);
         });
 };
+
+export const deleteTokensRequest = () => dispatch => {
+    dispatch(actions.singOutAllUsersProgress());
+    user.deleteTokens()
+        .then(response => {
+            console.log("deleteTokensRequest", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
+            dispatch(actions.singOutAllUsersSuccess());
+            //TODO: can not test the response object atm so will change this later
+            notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });
+        })
+        .catch(error => {
+            dispatch(actions.singOutAllUsersFailure());
+            //TODO: map responses to user friendly by content designer
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};

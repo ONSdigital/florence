@@ -613,8 +613,35 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 user: {
-                    ...state.use,
+                    ...state.user,
                     isLoading: false,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_SUCCESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: false,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: true,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: false,
                 },
             };
         }

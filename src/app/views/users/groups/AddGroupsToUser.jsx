@@ -9,7 +9,6 @@ import FormFooter from "../../../components/form-footer";
 import GroupsTable from "../../../components/table";
 import Loader from "../../../components/loader/Loader";
 import Magnifier from "../../../icons/Magnifier";
-import { addPopout, removePopouts } from "../../../config/actions";
 import User from "./User";
 
 const notification = {

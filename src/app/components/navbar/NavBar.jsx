@@ -98,6 +98,13 @@ const NavBar = props => {
                         )}
                     </>
                 )}
+                {auth.isAdmin(props.user) && (
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
+                            Security
+                        </Link>
+                    </li>
+                )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
                         Sign out

@@ -63,3 +63,5 @@ export const getUsersLoading = state => state.users.isLoading;
 export const getRootPath = state => state.rootPath;
 
 export const getUserGroups = state => state.user.groups;
+
+export const getIsRemovingAllTokens = state => state.users.isRemovingAllTokens;
