@@ -1,13 +1,15 @@
-import {push} from "react-router-redux";
+import { push } from "react-router-redux";
 import * as actions from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import user from "../utilities/api-clients/user";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
 import users from "../utilities/api-clients/user";
-import {errCodes} from "../utilities/errorCodes";
+import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
+import { notificationMessages } from "../utilities/notificationMessages";
+import { loadGroupProgress } from "./actions";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(actions.loadCollectionsProgress());
@@ -147,63 +149,63 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
     dispatch(actions.loadGroupsProgress());
     isNewSignIn
         ? teams
-            .getGroups()
-            .then(response => {
-                dispatch(actions.loadGroupsSuccess(response.groups));
-            })
-            .catch(error => {
-                dispatch(actions.loadGroupsFailure());
-                //TODO: map responses to user friendly by content designer
-                if (error) {
-                    notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
-                }
-                console.log(error);
-            })
+              .getGroups()
+              .then(response => {
+                  dispatch(actions.loadGroupsSuccess(response.groups));
+              })
+              .catch(error => {
+                  dispatch(actions.loadGroupsFailure());
+                  //TODO: map responses to user friendly by content designer
+                  if (error) {
+                      notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+                  }
+                  console.error(error);
+              })
         : teams
-            .getAll()
-            .then(response => {
-                if (!response) return dispatch(actions.loadGroupsFailure());
-                return dispatch(actions.loadGroupsSuccess(response));
-            })
-            .catch(error => {
-                dispatch(actions.loadGroupsFailure());
-                switch (error.status) {
-                    case 401: {
-                        // This is handled by the request function, so do nothing here
-                        break;
-                    }
-                    case "RESPONSE_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message:
-                                "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
-                            isDismissable: true,
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    case "UNEXPECTED_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message:
-                                "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
-                            isDismissable: true,
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                    case "FETCH_ERR": {
-                        const notification = {
-                            type: "warning",
-                            message: "There's been a network error whilst trying to get teams. Try refresh the page.",
-                            isDismissable: true,
-                        };
-                        notifications.add(notification);
-                        break;
-                    }
-                }
-                console.error("Error fetching all teams:\n", error);
-            });
+              .getAll()
+              .then(response => {
+                  if (!response) return dispatch(actions.loadGroupsFailure());
+                  return dispatch(actions.loadGroupsSuccess(response));
+              })
+              .catch(error => {
+                  dispatch(actions.loadGroupsFailure());
+                  switch (error.status) {
+                      case 401: {
+                          // This is handled by the request function, so do nothing here
+                          break;
+                      }
+                      case "RESPONSE_ERR": {
+                          const notification = {
+                              type: "warning",
+                              message:
+                                  "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
+                              isDismissable: true,
+                          };
+                          notifications.add(notification);
+                          break;
+                      }
+                      case "UNEXPECTED_ERR": {
+                          const notification = {
+                              type: "warning",
+                              message:
+                                  "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
+                              isDismissable: true,
+                          };
+                          notifications.add(notification);
+                          break;
+                      }
+                      case "FETCH_ERR": {
+                          const notification = {
+                              type: "warning",
+                              message: "There's been a network error whilst trying to get teams. Try refresh the page.",
+                              isDismissable: true,
+                          };
+                          notifications.add(notification);
+                          break;
+                      }
+                  }
+                  console.error("Error fetching all teams:\n", error);
+              });
 };
 
 export const createUserRequest = body => dispatch => {
@@ -215,7 +217,7 @@ export const createUserRequest = body => dispatch => {
             //TODO: this is not working at the moment so I am faking. I will expect user ID not email
             dispatch(push(`/florence/users/create/${body.email}/groups`));
 
-            notifications.add({type: "positive", message: "User created successfully", autoDismiss: 5000});
+            notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
@@ -224,7 +226,7 @@ export const createUserRequest = body => dispatch => {
 
             // dispatch(push("/florence/users")); TODO: uncomment later when api works
             if (error) {
-                notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
@@ -240,7 +242,7 @@ export const fetchUserGroupsRequest = id => dispatch => {
             dispatch(actions.loadUserGroupsFailure());
             dispatch(push("/florence/users"));
             if (error) {
-                notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
@@ -255,18 +257,19 @@ export const updateUserRequest = (id, body) => dispatch => {
             notifications.add({
                 type: "positive",
                 message: `User ${response.email} updated successfully`,
-                autoDismiss: 5000
+                autoDismiss: 5000,
             });
         })
         .catch(error => {
             dispatch(actions.updateUserFailure());
             if (error) {
-                notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
 };
 export const getGroupRequest = id => dispatch => {
+    dispatch(actions.loadGroupProgress());
     teams
         .getGroup(id)
         .then(response => {
@@ -312,13 +315,13 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
+                dispatch(addMembersToNewTeam(response.groupname, usersInTeam, true));
             } else {
                 const notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: errCodes.CREATE_TEAM_SUCCESS(response.name, usersInTeam.length || 0),
+                    message: notificationMessages.CREATE_TEAM_SUCCESS(response.name, usersInTeam.length || 0),
                 };
                 notifications.add(notification);
                 const previousUrl = url.resolve("../", true);
@@ -347,22 +350,24 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         });
 };
 
-const addMembersToNewTeam = (groupName, members) => dispatch => {
+const addMembersToNewTeam = (groupName, members, notifyOnSuccess) => dispatch => {
     let promises = [];
     members.forEach(user => {
         promises.push(teams.addMemberToTeam(groupName, user.id));
     });
     Promise.all(promises)
-        .then(results => { // TODO like edit
-            // const notification = {
-            //     type: "positive",
-            //     isDismissable: true,
-            //     autoDismiss: 15000,
-            //     message: errCodes.GROUP_UPDATED_SUCCESS(results[0].description, members.length || ""),
-            // };
-            // notifications.add(notification);
-            // const previousUrl = url.resolve("../", true);
-            // dispatch(push(previousUrl));
+        .then(results => {
+            if (notifyOnSuccess) {
+                const notification = {
+                    type: "positive",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: notificationMessages.GROUP_UPDATED_SUCCESS(results[0].description, members.length || ""),
+                };
+                notifications.add(notification);
+                const previousUrl = url.resolve("../", true);
+                dispatch(push(previousUrl));
+            }
         })
         .catch(error => {
             if (error.status && error.status === 400) {
@@ -391,16 +396,14 @@ export const removeMembersToNewTeam = (groupID, members) => dispatch => {
     members.forEach(user => {
         promises.push(teams.removeMemberToTeam(groupID, user.id));
     });
-    Promise.all(promises)
-        .then(() => {
-        }).catch(error => { // TODO check errors
+    Promise.all(promises).catch(error => {
         //TODO: map responses to user friendly by content designer
         if (error) {
-            notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+            notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
         }
         console.error(error);
     });
-}
+};
 
 export const fetchUserRequest = id => dispatch => {
     dispatch(actions.loadUserProgress());
@@ -412,7 +415,7 @@ export const fetchUserRequest = id => dispatch => {
             dispatch(actions.loadUserFailure());
             //TODO: map responses to user friendly by content designer
             if (error) {
-                notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
@@ -428,51 +431,37 @@ export const addGroupsToUserRequest = (userId, groups) => dispatch => {
             dispatch(actions.addGroupsToUserSuccess(userId, response));
             dispatch(push(`/florence/users`));
             //TODO: can not test the response object atm so will change this later
-            notifications.add({type: "positive", message: "Teams added to user successfully", autoDismiss: 5000});
+            notifications.add({ type: "positive", message: "Teams added to user successfully", autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.addGroupsToUserFailure());
             //TODO: map responses to user friendly by content designer
             if (error) {
-                notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
 };
 
 export const getGroupMembers = id => dispatch => {
+    dispatch(actions.loadGroupProgress());
     teams
         .getGroupMembers(id)
         .then(response => {
             dispatch(actions.getGroupMembersSuccess(response));
         })
         .catch(error => {
-            if (error.status != null && error.status === 400) {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000,
-                    message: errCodes.INVALID_NEW_TEAM_NAME, // TODO
-                };
-                notifications.add(notification);
-            } else {
-                const notification = {
-                    type: "warning",
-                    isDismissable: true,
-                    autoDismiss: 15000,
-                    message: errCodes.CREATE_GROUP_UNEXPECTED_ERROR, // TODO
-                };
-                notifications.add(notification);
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
 };
 
-export const updateTeam = (groupID, teamName, usersToAdd, usersToRemove) => async dispatch => {
-    console.log("groupID: " + groupID);
-    let callsToMake = []
+export const updateTeam = (groupID, teamName, usersToAdd, usersToRemove) => dispatch => {
+    let callsToMake = [];
     if (teamName != null) {
-        callsToMake.push(teams.updateGroup(groupID, teamName))
+        callsToMake.push(teams.updateGroup(groupID, teamName));
     }
     if (usersToAdd.length > 0) {
         callsToMake.push(dispatch(addMembersToNewTeam(groupID, usersToAdd)));
@@ -481,40 +470,52 @@ export const updateTeam = (groupID, teamName, usersToAdd, usersToRemove) => asyn
         callsToMake.push(dispatch(removeMembersToNewTeam(groupID, usersToRemove)));
     }
 
-    let response = await Promise.all(callsToMake)
-    console.log("response")
-    console.log(response)
-    const notification = {
-        type: "positive",
-        isDismissable: true,
-        autoDismiss: 15000,
-        message: errCodes.CREATE_TEAM_SUCCESS,
-    };
-    notifications.add(notification);
-    const previousUrl = url.resolve("/groups", true);
-    dispatch(push(previousUrl));
+    Promise.all(callsToMake)
+        .catch(error => {
+            const notification = {
+                type: "negative",
+                isDismissable: true,
+                autoDismiss: 15000,
+                message: errCodes.UPDATE_TEAM_ERROR,
+            };
+            notifications.add(notification);
+            console.error(error);
+        })
+        .then(() => {
+            const notification = {
+                type: "positive",
+                isDismissable: true,
+                autoDismiss: 15000,
+                message: notificationMessages.GROUP_UPDATED_SUCCESS,
+            };
+            notifications.add(notification);
+        })
+        .finally(() => {
+            const previousUrl = url.resolve("/groups", true);
+            dispatch(push(previousUrl));
+        });
 };
 
 export const deleteGroup = groupID => dispatch => {
-    teams.deleteGroup(groupID).then(() => {
-        const notification = {
-            type: "positive",
-            isDismissable: true,
-            autoDismiss: 15000,
-            message: errCodes.DELETE_TEAM_SUCCESS, // TODO move sucess messages
-        };
-        notifications.add(notification);
-        const previousUrl = url.resolve("/groups", true);
-        dispatch(push(previousUrl));
-    }).catch(error => {
-        dispatch(actions.loadUserFailure());
-        //TODO: map responses to user friendly by content designer
-        if (error) {
-            notifications.add({type: "warning", message: error?.message || error.status, autoDismiss: 5000});
-        }
-        console.error(error);
-    });
+    teams
+        .deleteGroup(groupID)
+        .then(() => {
+            const notification = {
+                type: "positive",
+                isDismissable: true,
+                autoDismiss: 15000,
+                message: notificationMessages.DELETE_TEAM_SUCCESS, // TODO move sucess messages
+            };
+            notifications.add(notification);
+            const previousUrl = url.resolve("/groups", true);
+            dispatch(push(previousUrl));
+        })
+        .catch(error => {
+            dispatch(actions.loadUserFailure());
+            //TODO: map responses to user friendly by content designer
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
 };
-
-
-

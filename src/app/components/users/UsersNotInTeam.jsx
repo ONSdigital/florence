@@ -25,13 +25,14 @@ const UsersNotInTeam = props => {
     if (usersNotInTeam) {
         usersNotInTeamList = usersNotInTeam
             .map(user => {
+                let displayText = user.forename !== "" || user.lastname !== "" ? `${user.forename} ${user.lastname}` : user.id;
                 return {
-                    title: `${user.forename} ${user.lastname}`,
+                    title: displayText,
                     desc: user.email,
                     icon: "Person",
                     buttonName: "Add",
                     buttonCallback: () => {
-                        const newUser = allPreviewUsers.find(viewer => viewer.email === user.email);
+                        const newUser = allPreviewUsers.find(viewer => viewer.id === user.id);
                         addUserToTeam(newUser);
                     },
                     iconColor: "standard",

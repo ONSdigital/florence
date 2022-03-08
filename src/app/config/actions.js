@@ -433,9 +433,13 @@ export function getGroupSuccess(group) {
     };
 }
 
+export function loadGroupProgress() {
+    return {
+        type: types.LOAD_GROUP_PROGRESS,
+    };
+}
+
 export function getGroupMembersSuccess(members) {
-    console.log("getGroupMembersSuccess group came back as:");
-    console.log(members);
     return {
         type: types.LOAD_GROUP_MEMBERS_SUCCESS,
         members,

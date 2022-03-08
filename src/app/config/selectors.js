@@ -64,3 +64,5 @@ export const getUsersLoading = state => state.users.isLoading;
 export const getRootPath = state => state.rootPath;
 
 export const getUserGroups = state => state.user.groups;
+
+export const getActiveGroupLoading = state => state.groups.active.isLoading;

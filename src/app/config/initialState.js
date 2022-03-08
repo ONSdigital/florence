@@ -36,8 +36,9 @@ export const initialState = {
     },
     groups: {
         active: {
-            details:{},
-            members:[]
+            details: {},
+            members: [],
+            isLoading: false,
         },
         all: [],
         isLoading: false,

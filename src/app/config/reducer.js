@@ -544,6 +544,18 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.LOAD_GROUP_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    active: {
+                        ...state.groups.active,
+                        isLoading: true,
+                    },
+                },
+            };
+        }
         case types.LOAD_GROUP_SUCCESS: {
             return {
                 ...state,
@@ -552,6 +564,7 @@ export default function reducer(state = initialState, action) {
                     active: {
                         ...state.groups.active,
                         details: action.group,
+                        isLoading: false,
                     },
                 },
             };
@@ -564,6 +577,7 @@ export default function reducer(state = initialState, action) {
                     active: {
                         ...state.groups.active,
                         members: action.members.users,
+                        isLoading: false,
                     },
                 },
             };
