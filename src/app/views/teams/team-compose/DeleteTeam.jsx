@@ -38,7 +38,6 @@ export const DeleteTeam = props => {
 
 const mapDispatchToProps = dispatch => ({
     deleteGroup: groupID => {
-        console.log("should be dispatching now for delete");
         dispatch(deleteGroup(groupID));
     },
 });

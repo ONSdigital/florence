@@ -315,7 +315,7 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.groupname, usersInTeam, true));
+                dispatch(addMembersToNewTeam(response.id, usersInTeam, true));
             } else {
                 const notification = {
                     type: "positive",
@@ -473,7 +473,7 @@ export const updateTeam = (groupID, teamName, usersToAdd, usersToRemove) => disp
     Promise.all(callsToMake)
         .catch(error => {
             const notification = {
-                type: "negative",
+                type: "warning",
                 isDismissable: true,
                 autoDismiss: 15000,
                 message: errCodes.UPDATE_TEAM_ERROR,
