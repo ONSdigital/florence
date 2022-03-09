@@ -7,11 +7,13 @@ import GenericFileUploader from "./GenericFileUploader";
 const FIVE_MEGABYTES = 5 * 1024 * 1024;
 
 const GenericFileUploadContainer = ({
-    filePathPrefix = "/",
+    filePathPrefix = "",
     initialiseCustomResumableConfiguration = null,
     customRetryClick = null,
     canSetPublishableStatus = false,
     url = "",
+    onSuccess = () => {},
+    onError = () => {},
 }) => {
     const [progress, setProgress] = useState(null);
     const [isUploading, setIsUploading] = useState(false);
@@ -61,7 +63,7 @@ const GenericFileUploadContainer = ({
                 }
             });
             r.on("fileSuccess", file => {
-                console.log("uploaded file", file);
+                onSuccess();
                 setIsUploading(false);
                 http.get(`/upload/${file.uniqueIdentifier}`)
                     .then(() => {
@@ -75,7 +77,6 @@ const GenericFileUploadContainer = ({
     };
 
     const customInitialiserFound = () => {
-        console.log(typeof initialiseCustomResumableConfiguration === "function");
         return typeof initialiseCustomResumableConfiguration === "function";
     };
 

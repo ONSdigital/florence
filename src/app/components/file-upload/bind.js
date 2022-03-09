@@ -2,11 +2,13 @@ import http from "../../utilities/http";
 
 import Resumable from "resumeablejs";
 
+const FIVE_MEGABYTES = 5 * 1024 * 1024
+
 export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
         target: "/upload",
-        chunkSize: 5 * 1024 * 1024,
+        chunkSize: FIVE_MEGABYTES,
         query: {
             aliasName: "",
         },
@@ -26,6 +28,44 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     });
     r.on("fileSuccess", file => {
         handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updateState, onSuccess);
+    });
+}
+
+export function bindGenericFileUploadInput(inputID, resumableOptions, updateState, onSuccess, onError) {
+    const input = document.getElementById(inputID);
+    const r = new Resumable({
+        target: "/upload-new",
+        chunkSize: FIVE_MEGABYTES,
+        query: {
+            aliasName: "",
+        },
+        forceChunkSize: true,
+        simultaneousUploads: 1,
+    });
+    r.assignBrowse(input);
+    r.assignDrop(input);
+    r.on("fileAdded", file => {
+        r.opts.query = resumableOptions
+        const aliasName = file.container.name;
+        r.opts.query.aliasName = aliasName;
+        
+        const fileUpload = {
+            aliasName: aliasName,
+            progress: 0,
+            error: null,
+            filename: file.fileName,
+        };
+        r.upload();
+        updateState(fileUpload)
+    });
+    r.on("fileProgress", file => {
+        updateComponentState(file, updateState);
+    });
+    r.on("fileError", file => {
+        handleErrorAndUpdateComponentState(file, updateState, onError);
+    });
+    r.on("fileSuccess", file => {
+        onSuccess(`${r.opts.query.path}/${file.relativePath}`);
     });
 }
 

@@ -65,7 +65,7 @@ const GenericFileUploader = ({
     return (
         <div className="grid">
             {url && !error ? renderLink() : ""}
-            {!url && <div className="grid__col-12 margin-bottom--0">{renderInput()}</div>}
+            {!url && <div className="grid__col-10 margin-bottom--0">{renderInput()}</div>}
         </div>
     );
 };

@@ -73,7 +73,7 @@ class DatasetUploadController extends Component {
 
             this.setState({
                 activeDataset: activeDataset,
-                uploadFilePathPrefix: `/datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
+                uploadFilePathPrefix: `datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
             });
         }
     }
@@ -103,7 +103,7 @@ class DatasetUploadController extends Component {
                 console.log("here");
                 this.setState({
                     activeDataset: activeDataset,
-                    uploadFilePathPrefix: `/datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
+                    uploadFilePathPrefix: `datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
                 });
             });
         }
@@ -257,12 +257,10 @@ class DatasetUploadController extends Component {
                 };
                 this.setState({ activeDataset });
             });
-            r.on("fileError", file => {
+            r.on("fileError", (file, error) => {
                 this.setState({ isUploading: false });
                 const files = this.state.activeDataset.files.map(currentFile => {
-                    if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file.";
-                    }
+                    currentFile.error = "An error occurred whilst uploading this file.";
                     return currentFile;
                 });
                 const activeDataset = {
@@ -280,7 +278,6 @@ class DatasetUploadController extends Component {
                 if (this.props.enableNewUpload) {
                     http.get(`/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`)
                         .then(response => {
-                            console.log("file response", response);
                             const files = this.state.activeDataset.files.map(currentFile => {
                                 if (currentFile.alias_name === aliasName) {
                                     currentFile.progress = null;
@@ -293,7 +290,7 @@ class DatasetUploadController extends Component {
                                 files,
                             };
                             this.setState({ activeDataset });
-                            this.addUploadedFileToJob(aliasName, response.url);
+                            this.addUploadedFileToJob(aliasName, response.path);
                         })
                         .catch(error => {
                             const files = this.state.activeDataset.files.map(currentFile => {
