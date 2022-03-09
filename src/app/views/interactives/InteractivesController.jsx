@@ -16,6 +16,7 @@ import url from "../../utilities/url";
 import DoubleSelectableBoxItem from "../../components/selectable-box/double-column/DoubleSelectableBoxItem";
 import clsx from "clsx";
 import Sort from "../../components/sort";
+import {ReactTable} from "./components/ReactTable";
 
 export class InteractivesController extends Component {
     constructor(props) {
@@ -89,7 +90,7 @@ export class InteractivesController extends Component {
                         </button>
                     </div>
                     <div>
-                        
+                        <ReactTable/>
                     </div>
                 </div>
             </div>
