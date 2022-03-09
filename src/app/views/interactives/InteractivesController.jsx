@@ -1,19 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import PropTypes from "prop-types";
 
 import {Link} from "react-router";
 import {NavbarComponent} from "./components/NavbarComponent";
 import interactives from './../../utilities/api-clients/interactives'
-
-const propTypes = {
-//     dispatch: PropTypes.func.isRequired,
-//     allInteractives: PropTypes.arrayOf(PropTypes.object).isRequired,
-//     activeInteractive: PropTypes.object,
-//     rootPath: PropTypes.string.isRequired,
-//     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-//     userIsAdmin: PropTypes.bool.isRequired,
-//     params: PropTypes.object.isRequired,
-};
+import Search from "../../components/search";
+import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
+import Create from "../collections/create";
+import cookies from "../../utilities/cookies";
+import {push} from "react-router-redux";
+import {getTaxonomies} from "../../actions/taxonomies";
+import {createInteractive} from "../../actions/interactives";
+import url from "../../utilities/url";
+import DoubleSelectableBoxItem from "../../components/selectable-box/double-column/DoubleSelectableBoxItem";
+import clsx from "clsx";
+import Sort from "../../components/sort";
 
 export class InteractivesController extends Component {
     constructor(props) {
@@ -29,46 +31,65 @@ export class InteractivesController extends Component {
         };
     }
 
+    static propTypes = {
+        getTaxonomies: PropTypes.func.isRequired,
+        createInteractive: PropTypes.func.isRequired,
+        rootPath: PropTypes.string.isRequired,
+        interactive: PropTypes.object,
+        taxonomies: PropTypes.array.isRequired
+    };
+
+    componentDidMount() {
+        this.props.getTaxonomies()
+    }
+
+    mapTaxonomiesToSelectOptions(taxonomies) {
+        return taxonomies.map(taxonomy => {
+            return { id: url.slug(taxonomy.uri), name: taxonomy.description.title };
+        });
+    }
+
     render() {
-        const { rootPath } = this.props;
+        const { rootPath, taxonomies } = this.props;
 
         return (
             <div>
                 <NavbarComponent>My visualizations</NavbarComponent>
-                <div>
-                    <div className="grid grid--justify-space-around">
-                        <div className="grid__col-4">
-                            <h1>Filters</h1>
-                            <div className="selectable-box">
-                                <div className="grid"><h2
-                                    className="selectable-box__heading grid__col-6 grid__cell">User</h2><h2
-                                    className="selectable-box__heading grid__col-6 grid__cell">Email</h2></div>
-                                <ul className="selectable-box__list">
-                                    <li id="mryan321@gmail.com" className="selectable-box__item   ">
-                                        <div className="grid">
-                                            <div className="grid__col-6">mryan321</div>
-                                            <div className="grid__col-6">mryan321@gmail.com</div>
-                                        </div>
-                                    </li>
-                                    <li id="florence@magicroundabout.ons.gov.uk" className="selectable-box__item   ">
-                                        <div className="grid">
-                                            <div className="grid__col-6">Florence</div>
-                                            <div className="grid__col-6">florence@magicroundabout.ons.gov.uk</div>
-                                        </div>
-                                    </li>
-                                </ul>
-                            </div>
+                <div className="grid grid--justify-space-around">
+                    <div className={"grid__col-4"}>
+                        <h1 className="text-center">Filters</h1>
+                        <Search />
+                        <label htmlFor="">Primary topic</label>
+                        <div className="scrollable-box">
+                            <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
+                                {
+                                    taxonomies.map(taxonomy => {
+                                        return (
+                                            <li>
+                                                <div className="grid">
+                                                    <input type="checkbox" value={url.slug(taxonomy.uri)}/>
+                                                    <div>{taxonomy.description.title}</div>
+                                                </div>
+                                            </li>
+                                        )
+                                    })
+                                }
+                            </ul>
                         </div>
-                        <div className="grid__col-6">
-                            <div className="grid grid--justify-space-around">
-                                <div className="grid__col-4">
-                                    {/*<button className="btn btn--secondary" type="submit">Upload interactive</button>*/}
-                                    <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
-                                        Upload interactive
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                        <button
+                            type="submit"
+                            className="btn btn--success"
+                            disabled={this.state.isAwaitingResponse}
+                            onClick={this.onSubmit}
+                        >
+                            Apply
+                        </button>
+                        <button className="btn btn--secondary" disabled={this.state.isAwaitingResponse}>
+                            Cancel
+                        </button>
+                    </div>
+                    <div>
+                        
                     </div>
                 </div>
             </div>
@@ -76,15 +97,22 @@ export class InteractivesController extends Component {
     }
 }
 
-InteractivesController.propTypes = propTypes;
+const mapStateToProps = state => ({
+    rootPath: state.state.rootPath,
+    errors: state.interactives.errors,
+    interactive: state.interactives.interactive,
+    taxonomies: state.taxonomies.taxonomies,
+});
 
-function mapStateToProps(state) {
+const mapDispatchToProps = (dispatch) => {
     return {
-        // activeInteractive: state.state.interactives.active,
-        // allInteractives: state.state.interactives.all,
-        // userIsAdmin: state.user.isAdmin,
-        rootPath: state.state.rootPath,
-    };
+        getTaxonomies: () => {
+            dispatch(getTaxonomies())
+        },
+        createInteractive: (interactive) => {
+            dispatch(createInteractive(interactive))
+        }
+    }
 }
 
-export default connect(mapStateToProps)(InteractivesController);
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController);
