@@ -1,359 +1,46 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import { push } from "react-router-redux";
-import PropTypes from "prop-types";
-
-import { updateAllInteractives, updateActiveInteractive, emptyActiveInteractive, updateActiveInteractiveMembers } from "../../config/actions";
-import interactives from "../../utilities/api-clients/interactives";
-import url from "../../utilities/url";
-import notifications from "../../utilities/notifications";
-import log from "../../utilities/logging/log";
 import logo from "./../../../img/logo.svg"
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import SelectableBoxController from "../../components/selectable-box/SelectableBoxController";
-import Drawer from "../../components/drawer/Drawer";
-import InteractiveCreate from "./interactive-create/InteractiveCreate";
-import InteractiveDetails from "./interactive-details/InteractiveDetails";
-import InteractiveEditController from "./interactive-edit/InteractiveEditController";
-import InteractiveDeleteController from "./interactive-delete/InteractiveDeleteController";
-import Modal from "../../components/Modal";
-import {Link} from "react-router";
 import Select from "../../components/Select";
 import FileUpload from "../../components/file-upload/FileUpload";
 
-const propTypes = {
-//     dispatch: PropTypes.func.isRequired,
-//     allInteractives: PropTypes.arrayOf(PropTypes.object).isRequired,
-//     activeInteractive: PropTypes.object,
-//     rootPath: PropTypes.string.isRequired,
-//     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
-//     userIsAdmin: PropTypes.bool.isRequired,
-//     params: PropTypes.object.isRequired,
-};
+import {createInteractive} from "../../actions/interactives";
 
 export class InteractivesController extends Component {
+
+    static propTypes = {
+        createInteractive: PropTypes.func.isRequired,
+        rootPath: PropTypes.string.isRequired,
+        interactive: PropTypes.object
+    };
+
+    static contextTypes = {
+        router: PropTypes.object
+    }
+
     constructor(props) {
         super(props);
 
         this.state = {
             title: '',
-            interactiveFile: {},
-            primaryTopic: '',
+            file: {},
+            // interactiveFile: {},
+            primary: '',
             surveys: '',
             topics: '',
             url: '',
         };
+
+        this.onSubmit = this.onSubmit.bind(this);
     }
 
-    // UNSAFE_componentWillMount() {
-    //     this.fetchInteractives();
-    // }
-    //
-    // UNSAFE_componentWillReceiveProps(nextProps) {
-    //     // Update with new active interactive
-    //     const activeInteractive = nextProps.allInteractives.find(interactive => {
-    //         return interactive.path === nextProps.params.interactive;
-    //     });
-    //     if (activeInteractive && nextProps.activeInteractive.id !== activeInteractive.id) {
-    //         this.fetchMembers(activeInteractive.name);
-    //
-    //         if (!this.props.params.interactive) {
-    //             this.setState({ drawerIsAnimatable: true });
-    //         }
-    //
-    //         this.props.dispatch(updateActiveInteractive(activeInteractive));
-    //         return;
-    //     }
-    //
-    //     // No active interactive in parameter anymore
-    //     if (!nextProps.params.interactive && nextProps.activeInteractive && nextProps.activeInteractive.id) {
-    //         this.setState({
-    //             drawerIsAnimatable: true,
-    //             clearActiveInteractive: true,
-    //         });
-    //     }
-    //
-    //     // Open edit interactive modal
-    //     if (nextProps.routes[nextProps.routes.length - 1].path === "edit") {
-    //         this.setState({ isEditingInteractive: true });
-    //     }
-    //
-    //     // Open delete interactive modal
-    //     if (nextProps.routes[nextProps.routes.length - 1].path === "delete") {
-    //         this.setState({ isDeletingInteractive: true });
-    //     }
-    // }
-    //
-    // shouldComponentUpdate(nextProps, nextState) {
-    //     // Allow render because drawer animtation flag has changed
-    //     if (this.state.drawerIsAnimatable !== nextState.drawerIsAnimatable) {
-    //         return true;
-    //     }
-    //
-    //     // Allow render because the interactive editing modal is being displayed
-    //     if (nextProps.routes[nextProps.routes.length - 1].path === "edit" && nextState.isEditingInteractive) {
-    //         return true;
-    //     }
-    //
-    //     // Allow render because the interactive editing modal is being displayed
-    //     if (nextProps.routes[nextProps.routes.length - 1].path === "delete" && nextState.isDeletingInteractive) {
-    //         return true;
-    //     }
-    //
-    //     // Don't update component if all interactives haven't been fetched yet
-    //     if (!nextProps.allInteractives) {
-    //         return false;
-    //     }
-    //
-    //     // Component is still fetching interactives and we don't have interactives in Redux yet - don't render any changes
-    //     if (nextState.isUpdatingAllInteractives && nextProps.allInteractives.length === 0) {
-    //         return false;
-    //     }
-    //
-    //     return true;
-    // }
-    //
-    // componentWillUnmount() {
-    //     this.props.dispatch(emptyActiveInteractive());
-    // }
-    //
-    // handleDrawerTransitionEnd = () => {
-    //     this.setState({ drawerIsAnimatable: false });
-    //
-    //     if (this.state.clearActiveInteractive) {
-    //         this.setState({ clearActiveInteractive: false });
-    //         this.props.dispatch(emptyActiveInteractive());
-    //     }
-    // };
-    //
-    // handleMembersEditClick = () => {
-    //     this.props.dispatch(push(`${location.pathname}/edit`));
-    // };
-    //
-    // handleDrawerCancelClick = () => {
-    //     this.props.dispatch(push(url.resolve("../")));
-    // };
-    //
-    // handleInteractiveDeleteClick = () => {
-    //     this.props.dispatch(push(`${location.pathname}/delete`));
-    // };
-    //
-    // handleInteractiveDeleteSuccess = () => {
-    //     this.props.dispatch(push(url.resolve("../../")));
-    //     const notification = {
-    //         type: "positive",
-    //         message: `Interactive '${this.props.activeInteractive.name}' successfully deleted`,
-    //         isDismissable: true,
-    //         autoDismiss: 15000,
-    //     };
-    //     notifications.add(notification);
-    //     this.fetchInteractives();
-    // };
-    //
-    // handleInteractiveCreateSuccess = () => {
-    //     this.fetchInteractives();
-    // };
-    //
-    // fetchInteractives() {
-    //     this.setState({ isUpdatingAllInteractives: true });
-    //     interactives
-    //         .getAll()
-    //         .then(allInteractives => {
-    //             // Add any props (such as 'path') to response from API
-    //             const allInteractivesWithProps = allInteractives.map(interactive => {
-    //                 const path = url.sanitise(interactive.name + "_" + interactive.id);
-    //                 return Object.assign({}, interactive, {
-    //                     path: path,
-    //                 });
-    //             });
-    //
-    //             // Update all interactives
-    //             const interactiveParameter = this.props.params.interactive;
-    //             this.props.dispatch(updateAllInteractives(allInteractivesWithProps));
-    //             this.setState({ isUpdatingAllInteractives: false });
-    //
-    //             // Update active interactive
-    //             if (interactiveParameter) {
-    //                 const activeInteractive = allInteractivesWithProps.find(interactive => {
-    //                     return interactive.path === interactiveParameter;
-    //                 });
-    //                 // Only update Redux if new active interactive is different from the current one
-    //                 if (activeInteractive && activeInteractive !== this.props.activeInteractive) {
-    //                     this.props.dispatch(updateActiveInteractive(activeInteractive));
-    //                     return;
-    //                 }
-    //                 // Give error because the interactive in the URL can't be found in the data
-    //                 if (!activeInteractive) {
-    //                     const notification = {
-    //                         message: `Interactive '${interactiveParameter}' is not recognised so you've been redirected to the interactives screen`,
-    //                         type: "neutral",
-    //                         autoDismiss: 15000,
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     this.props.dispatch(push(url.resolve("../")));
-    //                 }
-    //             }
-    //         })
-    //         .catch(error => {
-    //             log.event(`Error fetching interactives`, log.data({ status_code: error.status }), log.error(error));
-    //             switch (error.status) {
-    //                 case 401: {
-    //                     // This is handled by the request function, so do nothing here
-    //                     break;
-    //                 }
-    //                 case "RESPONSE_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message:
-    //                             "An error's occurred whilst trying to get interactives. You may only be able to see previously loaded information but won't be able to edit any interactive members",
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 case "UNEXPECTED_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message:
-    //                             "An unexpected error's occurred whilst trying to get interactives. You may only be able to see previously loaded information but won't be able to edit any interactive members",
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 case "FETCH_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message:
-    //                             "There's been a network error whilst trying to get interactives. You may only be able to see previously loaded information and not be able to edit any interactive members",
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 default: {
-    //                     log.event(`Unhandled error fetching interactives`, log.data({ status_code: error.status }), log.error(error));
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: "There's been an error fetching the interactives. You may only be able to see previously loaded information.",
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //             }
-    //
-    //             console.error("Error fetching all interactives:\n", error);
-    //         });
-    // }
-    //
-    // fetchMembers(interactiveName) {
-    //     this.setState({ isUpdatingInteractiveMembers: true });
-    //     interactives
-    //         .get(interactiveName)
-    //         .then(interactive => {
-    //             // A new interactive is now active, don't do anything with the fetched data
-    //             if (interactiveName !== this.props.activeInteractive.name) {
-    //                 return;
-    //             }
-    //
-    //             this.props.dispatch(updateActiveInteractiveMembers(interactive.members));
-    //             this.setState({ isUpdatingInteractiveMembers: false });
-    //         })
-    //         .catch(error => {
-    //             log.event(`Error fetching members of interactive`, log.data({ status_code: error.status, interactive: interactiveName }), log.error(error));
-    //             switch (error.status) {
-    //                 case 404: {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: `Couldn't find members for the interactive: '${interactiveName}'. This interactive may have been deleted.`,
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 case "RESPONSE_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: `An error's occurred whilst trying to get the members for the interactive '${interactiveName}'`,
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 case "UNEXPECTED_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: `An unexpected error's occurred whilst trying to get the members for the interactive '${interactiveName}'`,
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 case "FETCH_ERR": {
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: `There's been a network error whilst trying to get the members for the interactive '${interactiveName}'`,
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //                 default: {
-    //                     log.event(
-    //                         `Unhandled error fetching interactive`,
-    //                         log.data({
-    //                             status_code: error.status,
-    //                             interactive: interactiveName,
-    //                         }),
-    //                         log.error(error)
-    //                     );
-    //                     const notification = {
-    //                         type: "warning",
-    //                         message: "There's been an error fetching the members of interactive '${interactiveName}'",
-    //                         isDismissable: true,
-    //                     };
-    //                     notifications.add(notification);
-    //                     break;
-    //                 }
-    //             }
-    //             console.error(`Error fetching interactive '${interactiveName}':\n`, error);
-    //         });
-    // }
-    //
-    // handleInteractiveClick = clickedInteractive => {
-    //     // Make no change if clicked interactive is already the selected interactive
-    //     if (clickedInteractive.isSelected) {
-    //         return;
-    //     }
-    //     const path = url.sanitise(clickedInteractive.name + "_" + clickedInteractive.id);
-    //     this.props.dispatch(push(`${this.props.rootPath}/interactives/${path}`));
-    // };
-    //
-    // renderDrawer() {
-    //     return (
-    //         <Drawer
-    //             isVisible={this.props.activeInteractive && this.props.activeInteractive.id && !this.state.clearActiveInteractive ? true : false}
-    //             isAnimatable={this.state.drawerIsAnimatable}
-    //             handleTransitionEnd={this.handleDrawerTransitionEnd}
-    //         >
-    //             {this.props.activeInteractive && this.props.activeInteractive.id ? (
-    //                 <InteractiveDetails
-    //                     {...this.props.activeInteractive}
-    //                     userIsAdmin={this.props.userIsAdmin}
-    //                     onCancel={this.handleDrawerCancelClick}
-    //                     onDelete={this.handleInteractiveDeleteClick}
-    //                     onEditMembers={this.handleMembersEditClick}
-    //                     isShowingLoader={this.state.isUpdatingInteractiveMembers}
-    //                     isReadOnly={this.state.isUpdatingAllInteractives}
-    //                 />
-    //             ) : (
-    //                 ""
-    //             )}
-    //         </Drawer>
-    //     );
-    // }
+    onSubmit(e)
+    {
+        console.log('this.state', this.state)
+        this.props.createInteractive(this.state)
+    }
 
     handleSubmit = event => {
         event.preventDefault();
@@ -361,16 +48,21 @@ export class InteractivesController extends Component {
 
     mapValuesToSelectOptions(values) {
         return values.map(value => {
-            return { id: value, name: value };
+            return { id: value.id, name: value.name };
         });
     }
 
     render() {
         const logoStyles = {float: "left", position: "absolute", top: "50%", transform: "translateY(-50%)", left: "42px"}
         const wellStyles = {float: "left", color: "#FFFFFF", fontSize : "30px", fontFamily: "Open Sans", fontWeight: '700'}
-        const primaryOptions = ['Business, industry & trade', 'Economy', 'Employment and labour market', 'People, population & community']
+        const primaryTopics = [
+            {id: 1, name: 'Business, industry & trade'},
+            {id: 2, name: 'Economy'},
+            {id: 3, name: 'Employment and labour market'},
+            {id: 4, name: 'People, population & community'}
+        ]
 
-        const { rootPath } = this.props;
+        const { errors } = this.props;
 
         return (
             <div>
@@ -385,27 +77,29 @@ export class InteractivesController extends Component {
                     </li>
                 </ul>
                 <div>
-                    <div className="grid grid--justify-space-around">
-                        <div className="grid__col-6">
+                    <div className="grid font-size--18 padding-top--4">
+                        <div className="grid__col-1"/>
+                        <div className="grid__col-7">
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-12">
-                                    <form className="form " onSubmit={this.handleSubmit}>
-                                        <div className="form__input">
+                                    <form className="form" onSubmit={this.handleSubmit}>
+                                        <div className={`form__input form__input__panel ${errors.title ? "form__input--error__panel": ""}`}>
+                                            {errors.title && <span>Enter a correct title</span>}
                                             <label className="form__label" htmlFor="team-name">
                                                 Title
                                             </label>
-                                            {/*{this.state.input.error && <div className="error-msg">{this.state.input.error}</div>}*/}
                                             <input
                                                 type="text"
-                                                id="team-name"
+                                                id="title"
                                                 className="input"
-                                                // disabled={this.state.isAwaitingResponse}
-                                                // value={this.state.input.value}
-                                                // onChange={this.handleFormInput}
-                                                // onBlur={this.handleFormBlur}
+                                                name="title"
+                                                disabled={this.state.isAwaitingResponse}
+                                                // value={errors.value}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
-                                        <div className="form__input">
+                                        <div className={`form__input form__input__panel ${errors.file ? "form__input--error__panel": ""}`}>
+                                            {errors.file && <span>Enter a correct title</span>}
                                             <label className="form__label" htmlFor="team-name">
                                                 Interactive file
                                             </label>
@@ -413,67 +107,77 @@ export class InteractivesController extends Component {
                                             <FileUpload
                                                 label="File upload"
                                                 type="file"
-                                                id="{FILE_UPLOAD_ID}"
-                                                accept=".png"
+                                                id="file"
+                                                accept=".zip"
+                                                name="file"
                                                 // url={upload.url || null}
                                                 // extension={upload.extension || null}
                                                 // error={upload.error || null}
                                                 // progress={upload.progress >= 0 ? upload.progress : null}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 onRetry={this.handleRetryClick}
                                             />
                                         </div>
-                                        <div className="form__input">
-                                            {/*{this.state.input.error && <div className="error-msg">{this.state.input.error}</div>}*/}
+                                        <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel": ""}`}>
+                                            {errors.primary && <span>Enter a correct title</span>}
                                             <Select
-                                                id="edition"
+                                                id="primary"
+                                                name="primary"
                                                 label="Primary topic"
-                                                contents={this.mapValuesToSelectOptions([1,2,3,4,5])}
-                                                onChange={this.handleSelectChange}
+                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={this.state.edition}
+                                                selectedOption={this.state.primary}
                                                 disabled={this.state.isReadOnly || this.state.isSavingData}
                                             />
                                         </div>
-                                        <div className="form__input">
-                                            {/*{this.state.input.error && <div className="error-msg">{this.state.input.error}</div>}*/}
+                                        <div className={`form__input form__input__panel ${errors.surveys ? "form__input--error__panel": ""}`}>
+                                            {errors.surveys && <span>Enter a correct title</span>}
                                             <Select
-                                                id="edition"
+                                                id="surveys"
+                                                name="surveys"
                                                 label="Surveys"
-                                                contents={this.mapValuesToSelectOptions([1,2,3,4,5])}
-                                                onChange={this.handleSelectChange}
-                                                error={this.state.editionError}
-                                                selectedOption={this.state.edition}
-                                                disabled={this.state.isReadOnly || this.state.isSavingData}
+                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                                                // error={this.state.editionError}
+                                                selectedOption={this.state.surveys}
+                                                disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
-                                        <div className="form__input">
-                                            {/*{this.state.input.error && <div className="error-msg">{this.state.input.error}</div>}*/}
+                                        <div className={`form__input form__input__panel ${errors.topics ? "form__input--error__panel": ""}`}>
+                                            {errors.topics && <span>Enter a correct title</span>}
                                             <Select
-                                                id="edition"
+                                                id="topics"
+                                                name="topics"
                                                 label="Topics"
-                                                contents={this.mapValuesToSelectOptions([1,2,3,4,5])}
-                                                onChange={this.handleSelectChange}
-                                                error={this.state.editionError}
-                                                selectedOption={this.state.edition}
-                                                disabled={this.state.isReadOnly || this.state.isSavingData}
+                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                                                // error={this.state.editionError}
+                                                selectedOption={this.state.topics}
+                                                disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
-                                        <div className="form__input">
+                                        <div className={`form__input form__input__panel ${errors.url ? "form__input--error__panel": ""}`}>
                                             <label className="form__label" htmlFor="team-name">
                                                 URL
                                             </label>
-                                            {/*{this.state.input.error && <div className="error-msg">{this.state.input.error}</div>}*/}
+                                            {errors.url && <span>Enter a correct title</span>}
                                             <input
                                                 type="text"
-                                                id="team-name"
+                                                id="url"
                                                 className="input"
-                                                // disabled={this.state.isAwaitingResponse}
-                                                // value={this.state.input.value}
-                                                // onChange={this.handleFormInput}
-                                                // onBlur={this.handleFormBlur}
+                                                name="url"
+                                                disabled={this.state.isAwaitingResponse}
+                                                // value={errors.value}
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
-                                        <button className="btn btn--success" disabled={this.state.isAwaitingResponse}>
+                                        <button
+                                            type="submit"
+                                            className="btn btn--success"
+                                            disabled={this.state.isAwaitingResponse}
+                                            onClick={this.onSubmit}
+                                        >
                                             Create
                                         </button>
                                         <button className="btn btn--secondary padding-left--1" disabled={this.state.isAwaitingResponse}>
@@ -490,15 +194,18 @@ export class InteractivesController extends Component {
     }
 }
 
-InteractivesController.propTypes = propTypes;
+const mapStateToProps = state => ({
+    rootPath: state.state.rootPath,
+    errors: state.interactives.errors,
+    interactive: state.interactives.interactive
+});
 
-function mapStateToProps(state) {
+const mapDispatchToProps = (dispatch) => {
     return {
-        // activeInteractive: state.state.interactives.active,
-        // allInteractives: state.state.interactives.all,
-        // userIsAdmin: state.user.isAdmin,
-        rootPath: state.state.rootPath,
-    };
+        createInteractive: (interactive) => {
+            dispatch(createInteractive(interactive))
+        }
+    }
 }
 
-export default connect(mapStateToProps)(InteractivesController);
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController);

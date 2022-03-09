@@ -78,6 +78,7 @@ export function getInteractive(interactiveId)
 // create interactive
 export function createInteractive(data)
 {
+    console.log('data', data)
     return dispatch => {
         interactives.store({
             file: data.file,
