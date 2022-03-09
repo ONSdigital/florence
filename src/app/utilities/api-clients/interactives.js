@@ -2,7 +2,7 @@ import http from "../http";
 
 export default class interactives {
     static getAll() {
-        // return http.get(`/interactives`).then(response => {
+        return http.get(`/zebedee/v1/interactives`).then(response => {
             return [
                 {
                     "id": 1,
@@ -66,11 +66,11 @@ export default class interactives {
                     "metadata3": "metadata3 id 10",
                 }
             ];
-        // });
+        });
     }
 
     static store(body) {
-        // return http.post(`/interactives`, body).then(response => {
+        return http.post(`/zebedee/v1/interactives`, body).then(response => {
             return {
                 "id": 11,
                 "file": '/docs/file1.pdf',
@@ -78,11 +78,11 @@ export default class interactives {
                 "metadata2": "metadata2 id 11",
                 "metadata3": "metadata3 id 11",
             };
-        // });
+        });
     };
 
     static show (interactiveId) {
-        // return http.post(`/interactives/${interactiveId}`, body).then(response => {
+        return http.post(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id": 1,
                 "file": '/docs/file1.pdf',
@@ -90,11 +90,11 @@ export default class interactives {
                 "metadata2": "metadata2 id 11",
                 "metadata3": "metadata3 id 11",
             };
-        // });
+        });
     };
 
     static update = (interactiveId, body) => {
-        // return http.put(`/interactives/${interactiveId}`, body).then(response => {
+        return http.put(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id" : 1,
                 "file": '/docs/file1.pdf',
@@ -102,6 +102,6 @@ export default class interactives {
                 "metadata2": "metadata2 id 11",
                 "metadata3": "metadata3 id 11",
             };
-        // });
+        });
     }
 }
