@@ -6,6 +6,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import previousLocationMiddleware from "./previous-route-middleware";
 import reducer from "./reducer";
 import userReducer from "./user/userReducer";
+import interactives from "./../reducers/interactives"
 
 export const baseHistory = browserHistory;
 const routingMiddleware = routerMiddleware(baseHistory);
@@ -16,6 +17,7 @@ export const store = createStore(
     combineReducers({
         state: reducer,
         user: userReducer,
+        interactives,
         routing: routerReducer,
     }),
     enhancer

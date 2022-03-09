@@ -13,6 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
+import {InteractivesController, InteractivesCreateController} from "./app/views/interactives";
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
@@ -142,6 +143,15 @@ const Index = () => {
                             <Route path="edit" component={userIsAuthenticated(TeamsController)} />
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
+                    </Route>
+                    {/*<Route path={`${rootPath}/interactives`} component={userIsAuthenticated(userIsAdminOrEditor(InteractivesController))}>*/}
+                    <Route path={`${rootPath}/interactives`}>
+                        {/*<Route path=":interactives">*/}
+                            <Route path="index" component={userIsAuthenticated(InteractivesController)} />
+                            <Route path="create" component={userIsAuthenticated(InteractivesCreateController)} />
+                        {/*    /!*<Route path="edit" component={userIsAuthenticated(InteractivesController)} />*!/*/}
+                        {/*    /!*<Route path="delete" component={userIsAuthenticated(InteractivesController)} />*!/*/}
+                        {/*</Route>*/}
                     </Route>
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>

@@ -89,6 +89,11 @@ const NavBar = props => {
                                 Teams
                             </Link>
                         </li>
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
+                                Interactives
+                            </Link>
+                        </li>
                     </>
                 )}
                 <li className="global-nav__item">

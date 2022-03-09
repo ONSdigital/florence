@@ -38,4 +38,7 @@ export const initialState = {
     preview: {
         selectedPage: null,
     },
+    interactives: {
+        all: [],
+    }
 };

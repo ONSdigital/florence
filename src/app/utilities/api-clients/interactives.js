@@ -81,7 +81,7 @@ export default class interactives {
         // });
     };
 
-    static show = interactiveId => {
+    static show (interactiveId) {
         // return http.post(`/interactives/${interactiveId}`, body).then(response => {
             return {
                 "id": 1,
