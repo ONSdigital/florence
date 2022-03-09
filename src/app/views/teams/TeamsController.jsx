@@ -7,7 +7,6 @@ import teams from "../../utilities/api-clients/teams";
 import url from "../../utilities/url";
 import notifications from "../../utilities/notifications";
 import log from "../../utilities/logging/log";
-
 import SelectableBoxController from "../../components/selectable-box/SelectableBoxController";
 import Drawer from "../../components/drawer/Drawer";
 import TeamCreate from "./team-create/TeamCreate";
@@ -394,7 +393,7 @@ TeamsController.propTypes = propTypes;
 function mapStateToProps(state) {
     return {
         activeTeam: state.state.teams.active,
-        allTeams: state.state.teams.all,
+        allTeams: state.state.groups.all,
         userIsAdmin: state.user.isAdmin,
         rootPath: state.state.rootPath,
     };

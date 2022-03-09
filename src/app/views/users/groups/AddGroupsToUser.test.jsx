@@ -4,128 +4,118 @@ import { render, screen, within, getByTestId } from "../../../utilities/tests/te
 import AddGroupsToUser from "./AddGroupsToUser";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
-
-const user = {
-    active: true,
-    email: "bill.hicks@ons.gov.uk",
-    forename: "Bill",
-    id: "bill.hicks@ons.gov.uk",
-    lastname: "Hicks",
-    groups: [],
-};
+import { groups, user } from "../../../utilities/tests/mockData";
 
 const defaultProps = {
     user: null,
     groups: [],
     isAdding: false,
     loading: false,
-    params: { userID: "bill.hicks@ons.gov.uk" },
     addGroupsToUser: jest.fn(),
     loadUser: jest.fn(),
     loadGroups: jest.fn(),
+    router: { setRouteLeaveHook: jest.fn() },
 };
+const props = {
+    ...defaultProps,
+    user: user,
+    groups: groups,
+};
+const setRouteLeaveHook = jest.fn();
 
 describe("AddGroupsToUser", () => {
     it("matches the snapshot", () => {
-        const wrapper = renderer.create(<AddGroupsToUser {...defaultProps} />);
+        const wrapper = renderer.create(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ router: setRouteLeaveHook }} />);
         expect(wrapper.toJSON()).toMatchSnapshot();
     });
 
     it("requests user data on component load", () => {
-        render(<AddGroupsToUser {...defaultProps} />);
-        expect(defaultProps.loadUser).toHaveBeenCalledWith("bill.hicks@ons.gov.uk");
+        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        expect(defaultProps.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
     });
 
     it("requests groups on component load", () => {
-        render(<AddGroupsToUser {...defaultProps} />);
+        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(defaultProps.loadGroups).toHaveBeenCalled();
     });
 
-    it("shows spinner when loading user data", () => {
-        const props = { ...defaultProps, loading: true };
-        render(<AddGroupsToUser {...props} />);
-
-        expect(screen.getByText(/Back/i)).toBeInTheDocument();
-        expect(screen.getByTestId("loader")).toBeInTheDocument();
-    });
-
     it("shows Back Button", () => {
-        render(<AddGroupsToUser {...defaultProps} />);
+        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(screen.getByText(/Back/i)).toBeInTheDocument();
     });
 
     it("shows Groups heard, search and message if no groups", () => {
-        render(<AddGroupsToUser {...defaultProps} />);
-
+        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
     });
 
     it("shows Footer Section with Buttons", () => {
-        render(<AddGroupsToUser {...defaultProps} />);
-
+        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(screen.getByTestId("form-footer")).toBeInTheDocument();
         expect(screen.getByText(/Save changes/i)).toBeInTheDocument();
         expect(screen.getByText(/Cancel/i)).toBeInTheDocument();
     });
 
-    it("shows user details", () => {
-        const props = { ...defaultProps, user: user };
-        render(<AddGroupsToUser {...props} />);
+    describe("when loading data", () => {
+        it("shows spinner", () => {
+            const props = { ...defaultProps, loading: true };
+            render(<AddGroupsToUser.WrappedComponent {...props} params={{ userID: "", router: setRouteLeaveHook }} />);
 
-        expect(screen.getByText(/Back/i)).toBeInTheDocument();
-        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Bill Hicks/i);
-        expect(screen.getByText("bill.hicks@ons.gov.uk")).toBeInTheDocument();
-        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/bill hicks/i);
-        expect(within(screen.getByTestId("user")).getByRole("heading", { level: 2 })).toHaveTextContent(/Team Member/i);
+            expect(screen.getByTestId("loader")).toBeInTheDocument();
+        });
     });
 
-    it("shows groups", () => {
-        const props = { ...defaultProps, user: user, groups: [{ group_name: "boo" }, { group_name: "test name" }] };
-        render(<AddGroupsToUser {...props} />);
+    describe("where user and groups fetched", () => {
+        it("shows user details", () => {
+            render(<AddGroupsToUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+            expect(screen.getByText(/Back/i)).toBeInTheDocument();
+            expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/test user-1498/i);
+            expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
+            expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/test user-1498/i);
+            expect(within(screen.getByTestId("user")).getByRole("heading", { level: 2 })).toHaveTextContent(/Team Member/i);
+        });
 
-        const GroupsSection = screen.getByTestId("groups-table");
+        it("shows groups", () => {
+            render(<AddGroupsToUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+            const GroupsSection = screen.getByTestId("groups-table");
 
-        expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
-        expect(screen.getByText(/boo/i)).toBeInTheDocument();
-        expect(screen.getByText(/test name/i)).toBeInTheDocument();
-        expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(2);
-    });
+            expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
+            expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
+            expect(screen.getByText(/my test group/i)).toBeInTheDocument();
+            expect(screen.getByText(/my test group/i)).toBeInTheDocument();
+            expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(3);
+        });
 
-    it("adds user to groups", () => {
-        const props = { ...defaultProps, user: user, groups: [{ group_name: "boo" }, { group_name: "test name" }] };
-        render(<AddGroupsToUser {...props} />);
+        it("adds user to groups and removes", () => {
+            const userGroups = groups[2];
+            render(<AddGroupsToUser.WrappedComponent {...props} params={{ userID: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
-        const GroupsSection = screen.getByTestId("groups-table");
+            expect(screen.getByRole("heading", { level: 2, name: "Add a team for the user to join" })).toBeInTheDocument();
+            expect(screen.getByPlaceholderText(/search teams by name/i)).toHaveValue("");
+            expect(screen.getByText(/admins/i)).toBeInTheDocument();
+            expect(screen.getByText(/user is not a member of a team. Please add them to a team/i)).toBeInTheDocument();
 
-        expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
-        expect(screen.getByText(/boo/i)).toBeInTheDocument();
-        expect(screen.getByText(/test name/i)).toBeInTheDocument();
-        const add_buttons = screen.getAllByRole("button", { name: "Add" });
+            const addButtons = screen.getAllByRole("button", { name: "Add" });
+            expect(addButtons).toHaveLength(3);
 
-        userEvent.click(add_buttons[0]);
+            userEvent.click(addButtons[1]);
 
-        expect(screen.getByTestId("form-footer")).toBeInTheDocument();
-        expect(within(screen.getByTestId("user")).getByText("boo")).toBeInTheDocument();
-        expect(within(screen.getByTestId("form-footer")).getByText("You have unsaved changes")).toBeInTheDocument();
+            const userGroupsList = screen.getByTestId("UserGroupsList");
 
-        userEvent.click(screen.getByText(/save changes/i));
-        expect(props.addGroupsToUser).toHaveBeenCalledWith("bill.hicks@ons.gov.uk", ["boo"]);
-    });
+            expect(within(userGroupsList).getByLabelText(/person icon/i)).toBeInTheDocument();
+            expect(within(userGroupsList).getByText(/my first test group description/i)).toBeInTheDocument();
+            expect(screen.queryByText(/user is not a member of a team. Please add them to a team/i)).not.toBeInTheDocument();
 
-    it("shows filtered groups", () => {
-        const props = { ...defaultProps, user: user, groups: [{ group_name: "boo" }, { group_name: "test name" }] };
-        render(<AddGroupsToUser {...props} />);
+            userEvent.click(addButtons[2]);
 
-        expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
+            expect(within(userGroupsList).getByLabelText(/tick inside shield icon/i)).toBeInTheDocument();
+            expect(within(userGroupsList).getByText(/admins group description/i)).toBeInTheDocument();
+            expect(within(screen.getByTestId("form-footer")).getByText(/you have unsaved changes/i)).toBeInTheDocument();
 
-        userEvent.paste(screen.getByPlaceholderText("Search teams by name"), "test");
+            userEvent.click(within(userGroupsList).getAllByLabelText("remove")[0]);
 
-        expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("test");
-        expect(screen.queryByText(/boo/i)).not.toBeInTheDocument();
-        expect(screen.getByText(/test name/i)).toBeInTheDocument();
+            expect(within(userGroupsList).queryByText(/my first test group description/i)).not.toBeInTheDocument();
+        });
     });
 });

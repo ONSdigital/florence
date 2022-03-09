@@ -85,6 +85,11 @@ export default class user {
     }
 
     // TODO: new auth work
+    static getUsers() {
+        return http.get(`/users`);
+    }
+
+    // TODO: new auth work
     static createNewUser(body) {
         return http.post(`/users`, body);
     }
@@ -93,8 +98,13 @@ export default class user {
         return http.get(`/users/${id}`);
     }
 
+    // TODO: new auth work
+    static updateUser(id, body) {
+        return http.put(`/users/${id}`, body);
+    }
+
     static getUserGroups(id) {
-        return http.post(`/users/${id}/groups/`);
+        return http.get(`/users/${id}/groups`);
     }
 
     static remove(email) {

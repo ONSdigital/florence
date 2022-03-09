@@ -206,17 +206,38 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
               });
 };
 
-export const createUserRequest = newUser => dispatch => {
+export const createUserRequest = body => dispatch => {
     dispatch(actions.createUserProgress());
-    user.createNewUser(newUser)
+    user.createNewUser(body)
         .then(response => {
+            console.log("response", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.createUserSuccess());
-            dispatch(push(`/florence/users/create/${newUser.email}/groups`));
-            //TODO: can not test the response object atm so will change this later
+            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
+            dispatch(push(`/florence/users/create/${body.email}/groups`));
+
             notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
+            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
+            dispatch(push(`/florence/users/create/${body.email}/groups`));
+
+            // dispatch(push("/florence/users")); TODO: uncomment later when api works
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};
+
+export const fetchUserGroupsRequest = id => dispatch => {
+    dispatch(actions.loadUserGroupsProgress());
+    user.getUserGroups(id)
+        .then(response => {
+            dispatch(actions.loadUserGroupsSuccess(response.groups));
+        })
+        .catch(error => {
+            dispatch(actions.loadUserGroupsFailure());
             dispatch(push("/florence/users"));
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
@@ -225,13 +246,32 @@ export const createUserRequest = newUser => dispatch => {
         });
 };
 
-export const getUsersRequest = () => dispatch => {
-    users
-        .getAll({ active: true })
+export const updateUserRequest = (id, body) => dispatch => {
+    dispatch(actions.updateUserProgress());
+    user.updateUser(id, body)
         .then(response => {
-            dispatch(actions.getUsersRequestSuccess(response));
+            dispatch(actions.updateUserSuccess());
+            dispatch(push(url.resolve("../", true)));
+            notifications.add({ type: "positive", message: `User ${response.email} updated successfully`, autoDismiss: 5000 });
         })
         .catch(error => {
+            dispatch(actions.updateUserFailure());
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};
+
+export const getUsersRequest = () => dispatch => {
+    dispatch(actions.loadUsersProgress());
+    users
+        .getUsers()
+        .then(response => {
+            dispatch(actions.loadUsersSuccess(response.users));
+        })
+        .catch(error => {
+            dispatch(actions.loadUsersFailure());
             console.error(error);
         });
 };

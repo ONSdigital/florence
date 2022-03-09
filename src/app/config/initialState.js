@@ -8,7 +8,6 @@ export const initialState = {
     },
     config: {
         enableDatasetImport: false,
-        enableHomepagePublishing: false,
         enableNewSignIn: false,
     },
     global: {
@@ -24,9 +23,16 @@ export const initialState = {
     users: {
         active: {},
         all: [],
-        isCreating: false,
+        isAdding: false,
+        isLoading: false,
+        isUpdating: false,
         previewUsers: [],
         isLoadingActive: false,
+    },
+    user: {
+        data: null,
+        groups: [],
+        isLoading: false,
     },
     groups: {
         all: [],

@@ -1,12 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
+import filter from "lodash/filter";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
 import { useInput } from "../../../hooks/useInput";
-import BackButton from "../../../components/back-button/BackButton";
+import BackButton from "../../../components/back-button";
 import FormFooter from "../../../components/form-footer";
 import GroupsTable from "../../../components/table";
 import Loader from "../../../components/loader/Loader";
 import Magnifier from "../../../icons/Magnifier";
+import { addPopout, removePopouts } from "../../../config/actions";
 import User from "./User";
 
 const notification = {
@@ -17,45 +20,58 @@ const notification = {
 
 function AddGroupsToUser(props) {
     const id = props.params.userID;
+
+    useEffect(() => {
+        if (id) {
+            loadUser(id);
+            loadGroups(isNewSignIn);
+        }
+    }, [id]);
+
     const { isNewSignIn, loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
+    const [isSubmitting, setIsSubmitting] = useState(isAdding);
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
 
-    useEffect(() => {
-        loadUser(id);
-        loadGroups(isNewSignIn);
-    }, []);
-
-    const hasValues = userGroups.length > 0;
-
-    const handleRemove = name => {
-        setUserGroups(prevState => prevState.filter(group => group !== name));
+    const hasNewValues = userGroups.length > 0;
+    const routerWillLeave = nextLocation => {
+        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
-    const handleAdd = name => {
-        if (userGroups.includes(name)) {
+
+    useEffect(() => {
+        props.router.setRouteLeaveHook(props.route, routerWillLeave);
+    });
+
+    const handleRemove = id => setUserGroups(prevState => prevState.filter(group => group.group_name !== id));
+
+    const handleAdd = group => {
+        if (userGroups.includes(group)) {
             notifications.add(notification);
             return;
         }
-        setUserGroups(prevState => prevState.concat(name));
+        setIsSubmitting(true);
+        setUserGroups(prevState => prevState.concat(group));
     };
 
     const getFilteredGroups = useCallback(() => {
-        return groups.filter(group => group.group_name.toLowerCase().includes(search.value.toLowerCase()));
+        const str = search.value.toLowerCase();
+        // TODO: backend returns invalid object structure, needs updating the group_name into name
+        return filter(groups, group => group.description?.toLowerCase().includes(str) || group.group_name?.toLowerCase().includes(str));
     }, [search.value]);
 
     return (
         <div className="grid grid--justify-space-around">
-            <div className="grid__col-9">
-                <BackButton redirectUrl={`${rootPath}/users`} classNames={"margin-top--2"} />
-                <div className="grid grid--justify-space-around">
-                    <div className="grid__col-6">
+            <div className="grid__col-11 grid__col-md-9">
+                <BackButton redirectUrl={`${rootPath}/users`} classNames="margin-top--2" />
+                <div className="grid grid--justify-space-between">
+                    <div className="grid__col-md-5">
                         {loading ? (
                             <Loader classNames="grid grid--align-center grid--align-self-center" />
                         ) : (
-                            <User testid="user" {...user} userGroups={userGroups} handleRemove={handleRemove} />
+                            <User {...user} userGroups={userGroups} handleRemove={handleRemove} />
                         )}
                     </div>
-                    <div className="grid__col-6">
+                    <div className="grid__col-md-6">
                         <h2 className="margin-top--1 margin-bottom--1">Add a team for the user to join</h2>
                         <div className="search__input-group margin-bottom--1">
                             <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
@@ -73,10 +89,15 @@ function AddGroupsToUser(props) {
                 </div>
             </div>
             <FormFooter
-                hasValues={hasValues}
+                hasNewValues={hasNewValues}
                 loading={isAdding}
                 redirectUrl={`${rootPath}/users`}
-                handleSubmit={() => addGroupsToUser(id, userGroups)}
+                handleSubmit={() =>
+                    addGroupsToUser(
+                        id,
+                        userGroups.map(group => group.group_name) // TODO: backend returns invalid object structure, needs updating to send id only
+                    )
+                }
             />
         </div>
     );
@@ -93,4 +114,4 @@ AddGroupsToUser.propTypes = {
     loadUser: PropTypes.func.isRequired,
 };
 
-export default AddGroupsToUser;
+export default withRouter(AddGroupsToUser);

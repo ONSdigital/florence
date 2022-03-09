@@ -198,7 +198,7 @@
     }
 
     &__scroll {
-        overflow-y: scroll;
+        overflow-y: auto;
         display: block;
         max-height: calc(100vh - 380px); // the remaining space do not change
     }

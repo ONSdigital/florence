@@ -40,6 +40,26 @@ export const getMappedGroups = createSelector(getGroups, getEnableNewSignIn, (gr
 
 export const getNotifications = state => state.notifications;
 
-export const getUser = state => state.users.active;
-export const getUserLoading = state => state.users.isLoadingActive;
+export const getActiveUser = state => state.users.active; //TODO: check if this is needed
+export const getActiveUserLoading = state => state.users.isLoadingActive;
+
+export const getUser = state => state.user.data;
+export const getUserLoading = state => state.user.isLoading;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
+
+export const getUsers = state => state.users.all;
+
+export const getActiveUsers = createSelector(getUsers, users => {
+    if (!users) return [];
+    return users.filter(user => user.active === true);
+});
+
+export const getSuspendedUsers = createSelector(getUsers, users => {
+    if (!users) return [];
+    return users.filter(user => user.active === false);
+});
+
+export const getUsersLoading = state => state.users.isLoading;
+export const getRootPath = state => state.rootPath;
+
+export const getUserGroups = state => state.user.groups;

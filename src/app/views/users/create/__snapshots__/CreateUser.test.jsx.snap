@@ -8,7 +8,7 @@ exports[`CreateUser matches the snapshot 1`] = `
     className="grid grid--justify-space-around"
   >
     <div
-      className="grid__col-9"
+      className="grid__col-11 grid__col-md-9"
     >
       <div
         className="margin-top--2"
@@ -16,6 +16,7 @@ exports[`CreateUser matches the snapshot 1`] = `
         ◀ 
         <a
           onClick={[Function]}
+          role="link"
           style={Object {}}
         >
           Back
@@ -51,6 +52,7 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="text"
+              value=""
             />
           </div>
           <div
@@ -72,6 +74,7 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="text"
+              value=""
             />
           </div>
           <div
@@ -93,13 +96,14 @@ exports[`CreateUser matches the snapshot 1`] = `
               onChange={[Function]}
               onFocus={[Function]}
               type="email"
+              value=""
             />
           </div>
         </div>
       </div>
     </div>
     <div
-      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form__footer"
+      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer"
       data-testid="form-footer"
     >
       <div
@@ -118,6 +122,7 @@ exports[`CreateUser matches the snapshot 1`] = `
           <a
             className="btn btn--invert-primary btn--margin-right"
             onClick={[Function]}
+            role="button"
             style={Object {}}
           >
             Cancel

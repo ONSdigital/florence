@@ -246,19 +246,17 @@ describe("Store", () => {
             );
 
             expect(store.getState().state.config.enableDatasetImport).toEqual(false);
-            expect(store.getState().state.config.enableHomepagePublishing).toEqual(false);
             expect(store.getState().state.config.enableNewSignIn).toEqual(false);
 
-            store.dispatch(actions.setConfig({ enableDatasetImport: true, enableHomepagePublishing: true, enableNewSignIn: true }));
+            store.dispatch(actions.setConfig({ enableDatasetImport: true, enableNewSignIn: true }));
 
             expect(store.getState().state.config.enableDatasetImport).toEqual(true);
-            expect(store.getState().state.config.enableHomepagePublishing).toEqual(true);
             expect(store.getState().state.config.enableNewSignIn).toEqual(true);
         });
     });
 
     describe("state users", () => {
-        it("should handle loading addAllUsers", () => {
+        it("should handle loading loadUsersSuccess", () => {
             const store = createStore(
                 combineReducers({
                     state: reducer,
@@ -266,7 +264,7 @@ describe("Store", () => {
             );
             expect(store.getState().state.users.all).toEqual([]);
 
-            store.dispatch(actions.addAllUsers(users));
+            store.dispatch(actions.loadUsersSuccess(users));
 
             expect(store.getState().state.users.all).toEqual(users);
             expect(store.getState().state.users.all.length).toEqual(users.length);
@@ -291,7 +289,6 @@ describe("Store", () => {
                     },
                     config: {
                         enableDatasetImport: true,
-                        enableHomepagePublishing: true,
                         enableNewSignIn: true,
                     },
                     groups: {
@@ -315,7 +312,6 @@ describe("Store", () => {
         expect(selectors.getNotifications(store.getState().state).length).toEqual(notifications.length);
         expect(store.getState().state.popouts.length).toEqual(popouts.length);
         expect(store.getState().state.config.enableDatasetImport).toEqual(true);
-        expect(store.getState().state.config.enableHomepagePublishing).toEqual(true);
         expect(store.getState().state.config.enableNewSignIn).toEqual(true);
 
         store.dispatch(actions.reset());
@@ -330,7 +326,6 @@ describe("Store", () => {
         expect(selectors.getNotifications(store.getState().state).length).toEqual(notifications.length);
         expect(store.getState().state.popouts.length).toEqual(2);
         expect(store.getState().state.config.enableDatasetImport).toEqual(true);
-        expect(store.getState().state.config.enableHomepagePublishing).toEqual(true);
         expect(store.getState().state.config.enableNewSignIn).toEqual(true);
     });
 });
