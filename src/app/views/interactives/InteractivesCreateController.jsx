@@ -2,18 +2,23 @@ import logo from "./../../../img/logo.svg"
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
+import url from './../../utilities/url'
 
 import Select from "../../components/Select";
 import FileUpload from "../../components/file-upload/FileUpload";
 
-import {createInteractive} from "../../actions/interactives";
+import { createInteractive } from "../../actions/interactives";
+import { getTaxonomies } from "../../actions/taxonomies";
+import { NavbarComponent } from "./components/NavbarComponent";
 
-export class InteractivesController extends Component {
+export class InteractivesCreateController extends Component {
 
     static propTypes = {
+        getTaxonomies: PropTypes.func.isRequired,
         createInteractive: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
-        interactive: PropTypes.object
+        interactive: PropTypes.object,
+        taxonomies: PropTypes.array.isRequired
     };
 
     static contextTypes = {
@@ -25,7 +30,7 @@ export class InteractivesController extends Component {
 
         this.state = {
             title: '',
-            file: {},
+            // file: {},
             // interactiveFile: {},
             primary: '',
             surveys: '',
@@ -38,12 +43,21 @@ export class InteractivesController extends Component {
 
     onSubmit(e)
     {
-        console.log('this.state', this.state)
         this.props.createInteractive(this.state)
+    }
+
+    componentDidMount() {
+        this.props.getTaxonomies()
     }
 
     handleSubmit = event => {
         event.preventDefault();
+    }
+
+    mapTaxonomiesToSelectOptions(taxonomies) {
+        return taxonomies.map(taxonomy => {
+            return { id: url.slug(taxonomy.uri), name: taxonomy.description.title };
+        });
     }
 
     mapValuesToSelectOptions(values) {
@@ -53,29 +67,18 @@ export class InteractivesController extends Component {
     }
 
     render() {
-        const logoStyles = {float: "left", position: "absolute", top: "50%", transform: "translateY(-50%)", left: "42px"}
-        const wellStyles = {float: "left", color: "#FFFFFF", fontSize : "30px", fontFamily: "Open Sans", fontWeight: '700'}
-        const primaryTopics = [
-            {id: 1, name: 'Business, industry & trade'},
-            {id: 2, name: 'Economy'},
-            {id: 3, name: 'Employment and labour market'},
-            {id: 4, name: 'People, population & community'}
+        const surveys = [
+            {id: 1, name: 'Survey 1'},
+            {id: 2, name: 'Survey 2'},
+            {id: 3, name: 'Survey 3'},
+            {id: 4, name: 'Survey 4'}
         ]
 
-        const { errors } = this.props;
+        const { errors, interactive, taxonomies } = this.props;
 
         return (
             <div>
-                <ul className="global-nav__list" style={{backgroundColor: "#033E58"}}>
-                    <li className="global-nav__item" style={logoStyles}>
-                        <img src={logo} alt="ONS"/>
-                    </li>
-                </ul>
-                <ul className="global-nav__list" style={{backgroundColor: "#3B7A9E"}}>
-                    <li className="global-nav__item" style={wellStyles}>
-                        <a className="global-nav__link" href="/florence/collections">Upload Interactive</a>
-                    </li>
-                </ul>
+                <NavbarComponent>Upload interactive</NavbarComponent>
                 <div>
                     <div className="grid font-size--18 padding-top--4">
                         <div className="grid__col-1"/>
@@ -110,10 +113,10 @@ export class InteractivesController extends Component {
                                                 id="file"
                                                 accept=".zip"
                                                 name="file"
-                                                // url={upload.url || null}
-                                                // extension={upload.extension || null}
-                                                // error={upload.error || null}
-                                                // progress={upload.progress >= 0 ? upload.progress : null}
+                                                url={interactive.url || null}
+                                                extension={interactive.extension || null}
+                                                error={interactive.error || null}
+                                                progress={interactive.progress >= 0 ? interactive.progress : null}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 onRetry={this.handleRetryClick}
                                             />
@@ -124,7 +127,7 @@ export class InteractivesController extends Component {
                                                 id="primary"
                                                 name="primary"
                                                 label="Primary topic"
-                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
                                                 selectedOption={this.state.primary}
@@ -137,7 +140,7 @@ export class InteractivesController extends Component {
                                                 id="surveys"
                                                 name="surveys"
                                                 label="Surveys"
-                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                contents={this.mapValuesToSelectOptions(surveys)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 // error={this.state.editionError}
                                                 selectedOption={this.state.surveys}
@@ -150,7 +153,7 @@ export class InteractivesController extends Component {
                                                 id="topics"
                                                 name="topics"
                                                 label="Topics"
-                                                contents={this.mapValuesToSelectOptions(primaryTopics)}
+                                                contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 // error={this.state.editionError}
                                                 selectedOption={this.state.topics}
@@ -197,15 +200,19 @@ export class InteractivesController extends Component {
 const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     errors: state.interactives.errors,
-    interactive: state.interactives.interactive
+    interactive: state.interactives.interactive,
+    taxonomies: state.taxonomies.taxonomies,
 });
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        getTaxonomies: () => {
+            dispatch(getTaxonomies())
+        },
         createInteractive: (interactive) => {
             dispatch(createInteractive(interactive))
         }
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController);
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesCreateController);

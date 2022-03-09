@@ -7,6 +7,7 @@ import previousLocationMiddleware from "./previous-route-middleware";
 import reducer from "./reducer";
 import userReducer from "./user/userReducer";
 import interactives from "./../reducers/interactives"
+import taxonomies from "./../reducers/taxonomies"
 
 export const baseHistory = browserHistory;
 const routingMiddleware = routerMiddleware(baseHistory);
@@ -18,6 +19,7 @@ export const store = createStore(
         state: reducer,
         user: userReducer,
         interactives,
+        taxonomies,
         routing: routerReducer,
     }),
     enhancer
