@@ -43,15 +43,12 @@ export class InteractivesCreateController extends Component {
 
     onSubmit(e)
     {
+        e.preventDefault();
         this.props.createInteractive(this.state)
     }
 
     componentDidMount() {
         this.props.getTaxonomies()
-    }
-
-    handleSubmit = event => {
-        event.preventDefault();
     }
 
     mapTaxonomiesToSelectOptions(taxonomies) {
@@ -65,6 +62,11 @@ export class InteractivesCreateController extends Component {
             return { id: value.id, name: value.name };
         });
     }
+
+    // handleFile(e){
+    //     let file = e.target.files[0]
+    //     this.setState({file: file})
+    // }
 
     render() {
         const surveys = [
@@ -107,18 +109,12 @@ export class InteractivesCreateController extends Component {
                                                 Interactive file
                                             </label>
                                             <span>File needs to be in .zip format</span>
-                                            <FileUpload
-                                                label="File upload"
+                                            <input
                                                 type="file"
                                                 id="file"
-                                                accept=".zip"
                                                 name="file"
-                                                url={interactive.url || null}
-                                                extension={interactive.extension || null}
-                                                error={interactive.error || null}
-                                                progress={interactive.progress >= 0 ? interactive.progress : null}
-                                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
-                                                onRetry={this.handleRetryClick}
+                                                className="input"
+                                                onChange={(e) => this.setState({[e.target.name]: e.target.files[0]})}
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel": ""}`}>

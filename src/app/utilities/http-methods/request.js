@@ -14,12 +14,11 @@ import { errCodes } from "../errorCodes";
  * @param {function} onRetry - Runs whenever the request is going to be retried. Added for use in unit tests, so that we can run our mocked timeOuts (or else the async test breaks)
  * @param {boolean} callerHandles401 - Flag to decide whether caller or global handler is to handle 401 responses
  * @param {boolean} returnResponseHeaders - Flag to decide whether to return headers along with usual response
- * @param {boolean} multipartFormData - Flag to set Content type as multipart form data
  *
  * @returns {Promise} which returns the response body in JSON format
  */
 
-export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401, returnResponseHeaders, multipartFormData = false) {
+export default function request(method, URI, willRetry = true, onRetry = () => {}, body, callerHandles401, returnResponseHeaders) {
     const baseInterval = 50;
     let interval = baseInterval;
     const maxRetries = 5;
@@ -43,8 +42,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             },
         };
 
-        if(multipartFormData) fetchConfig.headers["Content-Type"] = "multipart/form-data"
-        console.log('fetchConfig', fetchConfig.headers["Content-Type"])
         if (method === "POST" || method === "PUT") {
             fetchConfig.body = JSON.stringify(body || {});
         }
