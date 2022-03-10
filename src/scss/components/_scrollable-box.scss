@@ -2,6 +2,7 @@
     border: 3px solid $pickled-bluewood;
     border-radius: 4px;
     height: 100%;
+    max-height: $lineheight * 14;
 
     ul {
         padding: 15px !important;
@@ -23,7 +24,7 @@
 
     &__list {
         list-style: none;
-        max-height: $lineheight * 10;
+        max-height: $lineheight * 14;
         overflow-y: scroll;
     }
 

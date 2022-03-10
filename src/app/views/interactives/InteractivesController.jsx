@@ -2,20 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
-import {Link} from "react-router";
 import {NavbarComponent} from "./components/NavbarComponent";
-import interactives from './../../utilities/api-clients/interactives'
 import Search from "../../components/search";
-import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
-import Create from "../collections/create";
-import cookies from "../../utilities/cookies";
-import {push} from "react-router-redux";
 import {getTaxonomies} from "../../actions/taxonomies";
 import {createInteractive} from "../../actions/interactives";
 import url from "../../utilities/url";
-import DoubleSelectableBoxItem from "../../components/selectable-box/double-column/DoubleSelectableBoxItem";
-import clsx from "clsx";
-import Sort from "../../components/sort";
+import {toggleInArray} from "./../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
 
 export class InteractivesController extends Component {
@@ -23,18 +15,14 @@ export class InteractivesController extends Component {
         super(props);
 
         this.state = {
-            isUpdatingAllInteractives: false,
-            isUpdatingInteractiveMembers: false,
-            drawerIsAnimatable: false,
-            clearActiveInteractive: false,
-            isEditingInteractive: false,
-            isDeletingInteractive: false,
+            topics: [],
         };
+
+        this.handleFilter = this.handleFilter.bind(this);
+        this.handleTopics = this.handleTopics.bind(this);
     }
 
     static propTypes = {
-        getTaxonomies: PropTypes.func.isRequired,
-        createInteractive: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
         interactive: PropTypes.object,
         taxonomies: PropTypes.array.isRequired
@@ -52,12 +40,16 @@ export class InteractivesController extends Component {
 
     mapInteractivesToTableData(interactives)
     {
-        const newInteractives = interactives.map(interactive => {
+        return interactives.map(interactive => {
             return {
                 data: [interactive.id, interactive.file, interactive.metadata1],
             }
         })
-        return newInteractives
+    }
+
+    handleFilter()
+    {
+        console.log('state', this.state)
     }
 
     render() {
@@ -314,7 +306,7 @@ export class InteractivesController extends Component {
             <div>
                 <NavbarComponent>My visualizations</NavbarComponent>
                 <div className="grid grid--justify-space-around">
-                    <div className={"grid__col-4"}>
+                    <div className={"grid__col-3"}>
                         <h1 className="text-center">Filters</h1>
                         <Search />
                         <label htmlFor="">Primary topic</label>
@@ -325,7 +317,13 @@ export class InteractivesController extends Component {
                                         return (
                                             <li>
                                                 <div className="grid">
-                                                    <input type="checkbox" value={url.slug(taxonomy.uri)}/>
+                                                    <input
+                                                        type="checkbox"
+                                                        value={url.slug(taxonomy.uri)}
+                                                        name="topics"
+                                                        onClick={(e) => this.handleTopics}
+                                                        onChange={(e) => this.setState({[e.target.name]: toggleInArray(this.state.topics, e.target.value)})}
+                                                    />
                                                     <div>{taxonomy.description.title}</div>
                                                 </div>
                                             </li>
@@ -338,7 +336,7 @@ export class InteractivesController extends Component {
                             type="submit"
                             className="btn btn--success"
                             disabled={this.state.isAwaitingResponse}
-                            onClick={this.onSubmit}
+                            onClick={this.handleFilter}
                         >
                             Apply
                         </button>
@@ -346,8 +344,10 @@ export class InteractivesController extends Component {
                             Cancel
                         </button>
                     </div>
-                    <div className={"grid__col-4"}>
-                        <ReactTable data={this.mapInteractivesToTableData(interactives)}/>
+                    <div className={"grid__col-5"}>
+                        <div className="filterable-table-box padding-top--5">
+                            <ReactTable data={this.mapInteractivesToTableData(interactives)}/>
+                        </div>
                     </div>
                 </div>
             </div>

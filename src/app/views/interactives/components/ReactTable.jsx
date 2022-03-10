@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect} from 'react'
 import { useTable, usePagination } from 'react-table'
 
 import {Link} from "react-router";
@@ -32,6 +32,10 @@ function Table({ columns, data }) {
         usePagination
     )
 
+    useEffect(() => {
+        setPageSize(5)
+    }, []);
+
     // Render the UI for your table
     return (
         <>
@@ -63,7 +67,7 @@ function Table({ columns, data }) {
                                             {cell.value[1]}
                                         </Link>
                                     </div>
-                                    <div>
+                                    <div className={"metas"}>
                                         <span>
                                             {cell.value[0]}
                                         </span>
@@ -82,7 +86,7 @@ function Table({ columns, data }) {
                 Pagination can be built however you'd like.
                 This is just a very basic UI implementation:
               */}
-            <span>
+            <span className={"pageCounter"}>
                 Page{' '}
                 <strong>
                     {pageIndex + 1} of {pageOptions.length}
