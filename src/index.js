@@ -149,7 +149,7 @@ const Index = () => {
                         {/*<Route path=":interactives">*/}
                             <Route path="index" component={userIsAuthenticated(InteractivesController)} />
                             <Route path="create" component={userIsAuthenticated(InteractivesCreateController)} />
-                        {/*    /!*<Route path="edit" component={userIsAuthenticated(InteractivesController)} />*!/*/}
+                            <Route path="edit/:interactiveId" component={userIsAuthenticated(InteractivesCreateController)} />
                         {/*    /!*<Route path="delete" component={userIsAuthenticated(InteractivesController)} />*!/*/}
                         {/*</Route>*/}
                     </Route>

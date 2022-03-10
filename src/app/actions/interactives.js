@@ -97,8 +97,19 @@ export function setInteractives(interactive)
     }
 }
 
-export function setInteractive(interactive)
+// export function setInteractive(interactive)
+export function setInteractive(interactives)
 {
+    const interactive = {
+        "id": 3,
+        "file": '/docs/file3.pdf',
+        "metadata1": "metadata1 id 3",
+        "metadata2": "metadata2 id 3",
+        "metadata3": "metadata3 id 3",
+        "title": "title 3",
+        "primary_topic": "businessindustryandtrade-changestobusiness-bankruptcyinsolvency",
+        "url": "https://www.figma.com",
+    }
     return {
         type: types.GET_INTERACTIVE,
         interactive
@@ -163,10 +174,8 @@ export function getInteractive(interactiveId)
                 dispatch(setInteractive(data))
             })
             .catch((error) => {
-                dispatch(setInteractiveError({
-                    id: '',
-                    errors: error.response.data.error
-                }))
+                console.log('error trying to get interactive', error)
+                dispatch(setInteractiveError(error))
             })
     }
 }
@@ -226,5 +235,19 @@ export function editInteractive(interactiveId, data)
                 }))
             })
         })
+    }
+}
+
+// delete interactive
+export function deleteInteractive(interactiveId)
+{
+    return dispatch => {
+        interactives.destroy(interactiveId)
+            .then((res) => {
+                dispatch(updateInteractive(res))
+                    .catch((error) => {
+                        dispatch(setInteractiveError(error))
+                    })
+            })
     }
 }

@@ -8,38 +8,26 @@ export default class interactives {
     }
 
     static store(body) {
-        // return http.post(`/zebedee/v1/interactives`, body).then(response => {
-            return {
-                "id": 11,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 11",
-                "metadata2": "metadata2 id 11",
-                "metadata3": "metadata3 id 11",
-            };
-        // });
+        return http.post(`/zebedee/v1/interactives`, body).then(response => {
+            return response;
+        });
     };
 
     static show (interactiveId) {
-        // return http.post(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
-            return {
-                "id": 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 11",
-                "metadata2": "metadata2 id 11",
-                "metadata3": "metadata3 id 11",
-            };
-        // });
+        return http.get(`/zebedee/v1/interactives/${interactiveId}`).then(response => {
+            return response;
+        });
     };
 
     static update = (interactiveId, body) => {
-        // return http.put(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
-            return {
-                "id" : 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 11",
-                "metadata2": "metadata2 id 11",
-                "metadata3": "metadata3 id 11",
-            };
-        // });
+        return http.put(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
+            return response;
+        });
+    }
+
+    static destroy = (interactiveId) => {
+        return http.delete(`/zebedee/v1/interactives/${interactiveId}`).then(response => {
+            return response;
+        });
     }
 }

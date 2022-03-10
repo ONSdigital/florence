@@ -3,7 +3,6 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import {NavbarComponent} from "./components/NavbarComponent";
-import Search from "../../components/search";
 import {getTaxonomies} from "../../actions/taxonomies";
 import {
     createInteractive,
@@ -14,6 +13,7 @@ import url from "../../utilities/url";
 import {toggleInArray} from "./../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
 import Magnifier from "../../icons/Magnifier";
+import {Link} from "react-router";
 
 export class InteractivesController extends Component {
     constructor(props) {
@@ -67,7 +67,7 @@ export class InteractivesController extends Component {
     }
 
     render() {
-        const { taxonomies, filteredInteractives } = this.props;
+        const { rootPath, taxonomies, filteredInteractives } = this.props;
 
         return (
             <div>
@@ -121,6 +121,9 @@ export class InteractivesController extends Component {
                     </div>
                     <div className={"grid__col-5"}>
                         <div className="filterable-table-box padding-top--5">
+                            <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
+                                Upload interactive
+                            </Link>
                             <ReactTable data={this.mapInteractivesToTableData(filteredInteractives)}/>
                         </div>
                     </div>

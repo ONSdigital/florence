@@ -7,7 +7,12 @@ import url from './../../utilities/url'
 import Select from "../../components/Select";
 import FileUpload from "../../components/file-upload/FileUpload";
 
-import { createInteractive } from "../../actions/interactives";
+import {
+    createInteractive,
+    getInteractive,
+    editInteractive,
+    deleteInteractive
+} from "../../actions/interactives";
 import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
 
@@ -16,6 +21,9 @@ export class InteractivesCreateController extends Component {
     static propTypes = {
         getTaxonomies: PropTypes.func.isRequired,
         createInteractive: PropTypes.func.isRequired,
+        editInteractive: PropTypes.func.isRequired,
+        deleteInteractive: PropTypes.func.isRequired,
+        getInteractive: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
         interactive: PropTypes.object,
         taxonomies: PropTypes.array.isRequired
@@ -36,18 +44,27 @@ export class InteractivesCreateController extends Component {
             surveys: '',
             topics: '',
             url: '',
+            interactiveId: null,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
     }
 
     onSubmit(e)
     {
         e.preventDefault();
-        this.props.createInteractive(this.state)
+        this.state.interactiveId ?
+            this.props.editInteractive(this.state.interactiveId, this.state) :
+            this.props.createInteractive(this.state)
     }
 
     componentDidMount() {
+        const { interactiveId } = this.props.params;
+        if(interactiveId){
+            this.setState({interactiveId: interactiveId})
+            this.props.getInteractive(interactiveId)
+        }
         this.props.getTaxonomies()
     }
 
@@ -61,6 +78,12 @@ export class InteractivesCreateController extends Component {
         return values.map(value => {
             return { id: value.id, name: value.name };
         });
+    }
+
+    handleDelete(e)
+    {
+        e.preventDefault();
+        this.props.deleteInteractive(this.state.interactiveId)
     }
 
     // handleFile(e){
@@ -80,7 +103,12 @@ export class InteractivesCreateController extends Component {
 
         return (
             <div>
-                <NavbarComponent>Upload interactive</NavbarComponent>
+                {
+                    !this.state.interactiveId ?
+                        <NavbarComponent>Upload interactive</NavbarComponent>
+                        :
+                        <NavbarComponent>Edit interactive</NavbarComponent>
+                }
                 <div>
                     <div className="grid font-size--18 padding-top--4">
                         <div className="grid__col-1"/>
@@ -99,7 +127,7 @@ export class InteractivesCreateController extends Component {
                                                 className="input"
                                                 name="title"
                                                 disabled={this.state.isAwaitingResponse}
-                                                // value={errors.value}
+                                                value={interactive.title}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
@@ -126,7 +154,7 @@ export class InteractivesCreateController extends Component {
                                                 contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={this.state.primary}
+                                                selectedOption={interactive.primary_topic}
                                                 disabled={this.state.isReadOnly || this.state.isSavingData}
                                             />
                                         </div>
@@ -138,8 +166,8 @@ export class InteractivesCreateController extends Component {
                                                 label="Surveys"
                                                 contents={this.mapValuesToSelectOptions(surveys)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
-                                                // error={this.state.editionError}
-                                                selectedOption={this.state.surveys}
+                                                error={this.state.editionError}
+                                                selectedOption={interactive.surveys}
                                                 disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
@@ -151,8 +179,8 @@ export class InteractivesCreateController extends Component {
                                                 label="Topics"
                                                 contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
-                                                // error={this.state.editionError}
-                                                selectedOption={this.state.topics}
+                                                error={this.state.editionError}
+                                                selectedOption={interactive.topics}
                                                 disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
@@ -167,21 +195,44 @@ export class InteractivesCreateController extends Component {
                                                 className="input"
                                                 name="url"
                                                 disabled={this.state.isAwaitingResponse}
-                                                // value={errors.value}
+                                                value={interactive.url}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
-                                        <button
-                                            type="submit"
-                                            className="btn btn--success"
-                                            disabled={this.state.isAwaitingResponse}
-                                            onClick={this.onSubmit}
-                                        >
-                                            Create
-                                        </button>
-                                        <button className="btn btn--secondary padding-left--1" disabled={this.state.isAwaitingResponse}>
-                                            Cancel
-                                        </button>
+                                        {
+                                            !this.state.interactiveId ?
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn--success"
+                                                    disabled={this.state.isAwaitingResponse}
+                                                    onClick={this.onSubmit}
+                                                >
+                                                    Create
+                                                </button>
+                                                :
+                                                <button
+                                                    type="submit"
+                                                    className="btn btn--success"
+                                                    disabled={this.state.isAwaitingResponse}
+                                                    onClick={this.onSubmit}
+                                                >
+                                                    Save and preview
+                                                </button>
+                                        }
+                                        {
+                                            !this.state.interactiveId ?
+                                                <button className="btn btn--secondary padding-left--1" disabled={this.state.isAwaitingResponse}>
+                                                    Cancel
+                                                </button>
+                                                :
+                                                <button
+                                                    className="btn btn--secondary padding-left--1"
+                                                    disabled={this.state.isAwaitingResponse}
+                                                    onClick={this.handleDelete}
+                                                >
+                                                    Delete interactive
+                                                </button>
+                                        }
                                     </form>
                                 </div>
                             </div>
@@ -207,6 +258,15 @@ const mapDispatchToProps = (dispatch) => {
         },
         createInteractive: (interactive) => {
             dispatch(createInteractive(interactive))
+        },
+        getInteractive: (interactiveId) => {
+            dispatch(getInteractive(interactiveId))
+        },
+        editInteractive: (interactiveId, interactive) => {
+            dispatch(editInteractive(interactiveId, interactive))
+        },
+        deleteInteractive: (interactiveId) => {
+            dispatch(deleteInteractive(interactiveId))
         }
     }
 }

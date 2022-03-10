@@ -1,7 +1,10 @@
 import React, {useEffect} from 'react'
 import { useTable, usePagination } from 'react-table'
+import { store } from "../../../config/store";
 
 import {Link} from "react-router";
+
+const rootPath = store.getState().state.rootPath;
 
 function Table({ columns, data }) {
     // Use the state and functions returned from useTable to build your UI
@@ -63,7 +66,7 @@ function Table({ columns, data }) {
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps()}>
                                     <div>
-                                        <Link to="#" className={'table-link'}>
+                                        <Link to={`${rootPath}/interactives/edit/${cell.value[0]}`} className={'table-link'}>
                                             {cell.value[1]}
                                         </Link>
                                     </div>

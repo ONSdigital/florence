@@ -5,7 +5,7 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: ''
+    errors: {}
 }
 
 export default function reducer(state = initialState, action = {})
@@ -15,9 +15,15 @@ export default function reducer(state = initialState, action = {})
         case types.FETCH_INTERACTIVES:
             return {
                 interactives: action.interactives,
-                filteredInteractives: action.interactives
+                filteredInteractives: action.interactives,
+                errors: {}
             };
         case types.GET_INTERACTIVE:
+            console.log('interactive', action.interactive)
+            return {
+                interactive: action.interactive,
+                errors: {}
+            }
         case types.STORE_INTERACTIVE:
         case types.UPDATE_INTERACTIVE:
             return action.interactive;
