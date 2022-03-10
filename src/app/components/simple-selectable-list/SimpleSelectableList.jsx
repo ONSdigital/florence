@@ -11,7 +11,9 @@ const propTypes = {
             url: PropTypes.string.isRequired,
             externalLink: PropTypes.bool,
             details: PropTypes.arrayOf(PropTypes.string),
-            extraDetails: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.string, classes: PropTypes.string }))),
+            extraDetails: PropTypes.arrayOf(
+                PropTypes.arrayOf(PropTypes.shape({ content: PropTypes.oneOfType[(PropTypes.string, PropTypes.object)], classes: PropTypes.string }))
+            ),
         })
     ).isRequired,
     showLoadingState: PropTypes.bool,
@@ -26,6 +28,7 @@ export default class SimpleSelectableList extends Component {
         const showLoadingState = this.props.showLoadingState;
         const hasRows = this.props.rows.length;
         const colCount = hasRows && this.props.rows[0].extraDetails ? this.props.rows[0].extraDetails.length + 1 : 1;
+
         return (
             <ul className="list list--neutral simple-select-list">
                 {hasRows
@@ -33,7 +36,7 @@ export default class SimpleSelectableList extends Component {
                           return <SimpleSelectableListItem key={row.id} colCount={colCount} {...row} />;
                       })
                     : null}
-                {showLoadingState && <span className="margin-top--1 loader loader--dark" />}
+                {showLoadingState && <span data-testid="loader" className="margin-top--1 loader loader--dark" />}
                 {!hasRows && !showLoadingState ? <p>Nothing to show</p> : ""}
             </ul>
         );

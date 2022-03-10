@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import clsx from "clsx";
 
 const propTypes = {
     id: PropTypes.string.isRequired,
@@ -91,7 +92,7 @@ export default class Input extends Component {
                         onChange={this.props.onChange}
                         onBlur={this.props.onBlur}
                         autoFocus={this.props.isFocused}
-                        placeholder={this.props.inline ? this.props.label : ""}
+                        placeholder={this.props.inline && this.props.label}
                         value={this.props.value}
                     />
                 );
@@ -125,7 +126,7 @@ export default class Input extends Component {
 
     renderLabel() {
         return (
-            <label className={"form__label" + (this.props.type === "checkbox" ? " checkbox__label font-weight--300" : "")} htmlFor={this.props.id}>
+            <label className={clsx("form__label", { "checkbox__label font-weight--300": this.props.type === "checkbox" })} htmlFor={this.props.id}>
                 {this.props.label}
             </label>
         );
@@ -136,20 +137,16 @@ export default class Input extends Component {
         return (
             <div className={formClasses}>
                 {!this.props.inline && !this.props.reverseLabelOrder && this.renderLabel()}
-                {this.props.error ? (
-                    <div id={`input-error-${this.props.id}`} className="error-msg" role="alert">
+                {this.props.error && (
+                    <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
                         {this.props.error}
                     </div>
-                ) : (
-                    ""
                 )}
                 {this.renderInput()}
-                {this.state.displayShowHide ? (
+                {this.state.displayShowHide && (
                     <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">
                         {this.state.type === "text" ? "Hide" : "Show"}
                     </span>
-                ) : (
-                    ""
                 )}
                 {this.props.inline && this.props.reverseLabelOrder && this.renderLabel()}
             </div>

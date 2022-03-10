@@ -1,14 +1,10 @@
-import React, { Component } from "react";
-import { shallow, mount } from "enzyme";
+import React from "react";
+import { shallow } from "enzyme";
 import { CollectionDetailsController, mapStateToProps } from "./CollectionDetailsController";
 import CollectionDetails from "./CollectionDetails";
 import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
-import {
-    MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-    UPDATE_PAGES_IN_ACTIVE_COLLECTION,
-    UPDATE_ACTIVE_COLLECTION,
-} from "../../../config/constants";
+import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
 
 console.error = () => {};
 
@@ -56,7 +52,6 @@ const defaultProps = {
     },
     rootPath: "/florence",
     enableDatasetImport: false,
-    enableHomepagePublishing: false,
     routes: [{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -127,10 +122,6 @@ const defaultProps = {
 };
 
 const component = shallow(<CollectionDetailsController {...defaultProps} />);
-
-// Create a mounted component for when we need access to data in the component's props (e.g. the `collections` array),
-// which are only available on a full mount, not a shallow render.
-const componentWithProps = mount(<CollectionDetailsController {...defaultProps} />);
 
 beforeEach(() => {
     dispatchedActions = [];
@@ -371,7 +362,6 @@ describe("Map state to props function", () => {
             rootPath: "/florence",
             config: {
                 enableDatasetImport: false,
-                enableHomepagePublishing: false,
             },
         },
         routing: {
@@ -473,10 +463,8 @@ describe("Edit Homepage functionality", () => {
             activeCollection: {
                 id: "test-collection-12345",
             },
-            enableHomepagePublishing: false,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
-        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(false);
     });
     it("is enabled in collection details when enabled in global config", () => {
         const props = {
@@ -485,10 +473,8 @@ describe("Edit Homepage functionality", () => {
             activeCollection: {
                 id: "test-collection-12345",
             },
-            enableHomepagePublishing: true,
         };
         const component = shallow(<CollectionDetailsController {...props} />);
-        expect(component.find(CollectionDetails).props().enableHomepagePublishing).toBe(true);
     });
 });
 

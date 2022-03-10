@@ -1,10 +1,8 @@
 import React from "react";
 import { VersionMetadata } from "./VersionMetadata.jsx";
-import notifications from "../../../utilities/notifications";
 import datasets from "../../../utilities/api-clients/datasets";
-import uuid from "uuid/v4";
 import renderer from "react-test-renderer";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 
 console.error = jest.fn();
 console.warn = jest.fn();
@@ -76,10 +74,6 @@ jest.mock("../../../utilities/api-clients/datasets", () => ({
         return Promise.resolve({});
     }),
 }));
-
-const mockEvent = {
-    preventDefault: function () {},
-};
 
 const exampleDataset = {
     current: {
@@ -233,7 +227,7 @@ test("Latest changes are set in state correctly on mount", async () => {
     await component.instance().UNSAFE_componentWillMount();
     await component.update();
     expect(component.state("changes").length).toEqual(1);
-    component.state("changes").forEach((change, index) => {
+    component.state("changes").forEach(change => {
         expect(change).toMatchObject({
             key: "12345",
             name: exampleInstance.latest_changes[0].name,
@@ -327,7 +321,7 @@ test("Handler to edit an alert updates the state with new values", async () => {
     await component.update();
 
     expect(component.state("alerts").length).toBe(1);
-    const initialAlerts = component.state("alerts");
+
     component.setState({ titleInput: "Some new words" });
     component.instance().editRelatedLink("alerts", "12345");
     expect(component.state("alerts").length).toBe(1);
@@ -364,7 +358,7 @@ test("Dimensions map correctly to input elements", async () => {
     await component.instance().UNSAFE_componentWillMount();
     const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
     let dimensionNames = [];
-    dimensions.forEach((dimension, index) => {
+    dimensions.forEach(dimension => {
         dimensionNames.push({ id: dimension.key });
     });
 
@@ -385,7 +379,6 @@ test("Changing the dimension title value updates the dimension label in state", 
             id: "time",
         },
     };
-    const dimensions = component.instance().mapDimensionsToInputs(component.state("dimensions"));
     expect(component.state("dimensions")[0].label).toBe("");
     component.instance().handleInputChange(mockLabelEvent);
     expect(component.state("dimensions")[0].label).toBe(mockLabelEvent.target.value);

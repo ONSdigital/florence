@@ -4,7 +4,7 @@
  * @returns {object{isValid: boolean, errorMsg: string}} - Returns object with isValid boolean and an optional error message of why it's not valid
  */
 
-import { UNIQ_NAME_ERROR } from "../../../constants/Errors";
+import { errCodes } from "../../../utilities/errorCodes";
 export default class collectionValidation {
     static name(name, collections) {
         let response = {
@@ -29,7 +29,7 @@ export default class collectionValidation {
         if (collections && collections.some(c => c.name === name.trim())) {
             response = {
                 isValid: false,
-                errorMsg: UNIQ_NAME_ERROR,
+                errorMsg: errCodes.UNIQ_NAME_ERROR,
             };
         }
 

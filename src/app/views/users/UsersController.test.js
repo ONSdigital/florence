@@ -1,6 +1,6 @@
 import React from "react";
 import { UsersController } from "./UsersController";
-import { shallow, mount } from "enzyme";
+import { shallow } from "enzyme";
 import user from "../../utilities/api-clients/user";
 
 console.error = () => {};
@@ -88,12 +88,6 @@ describe("On mount of the users screen", () => {
         const getUserCalls = user.getAll.mock.calls.length;
         component.instance().UNSAFE_componentWillMount();
         expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
-    });
-
-    it("adds all users to state", () => {
-        component.instance().UNSAFE_componentWillMount();
-        expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
-        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.length);
     });
 
     it("updates isFetchingUsers state to show it's fetching data for all users", () => {

@@ -1,28 +1,30 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
-import { filterCollections, saveSearch } from "../../config/actions";
+import React from "react";
+import PropTypes from "prop-types";
 import { useInput } from "../../hooks/useInput";
 import Magnifier from "../../icons/Magnifier";
 
-const Search = () => {
+const Search = ({ saveSearch }) => {
     const [search, setSearch] = useInput("");
-    const dispatch = useDispatch();
 
     const handleSubmit = e => {
         e.preventDefault();
-        dispatch(saveSearch(search.value));
+        saveSearch(search.value);
     };
 
     const handleRest = () => {
         setSearch("");
-        dispatch(saveSearch(""));
+        saveSearch("");
     };
 
     return (
-        <form className="search__form--inline padding--bottom--1" onSubmit={handleSubmit}>
+        <form className="search__form--inline padding--bottom--1" onSubmit={handleSubmit} role="search">
             <div className="search__input-group">
                 <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
-                <input id="search_input" placeholder="Search for a collection name" {...search} />
+                <label htmlFor="search_input" className="visually-hidden">
+                    Search collections
+                </label>
+                <input id="search_input" name="search" placeholder="Search for a collection name" {...search} />
+
                 {search.value && (
                     <button type="reset" onClick={handleRest} className="btn__close">
                         &times;
@@ -34,6 +36,10 @@ const Search = () => {
             </button>
         </form>
     );
+};
+
+Search.propTypes = {
+    saveSearch: PropTypes.func.isRequired,
 };
 
 export default Search;

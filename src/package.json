@@ -42,8 +42,9 @@
     "enzyme-to-json": "^3.6.2",
     "eslint": "^7.32.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-react": "^7.25.1",
+    "eslint-plugin-react": "^7.28.0",
     "eslint-webpack-plugin": "^3.0.1",
+    "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
     "handsontable": "^9.0.2",
     "isomorphic-fetch": "^2.2.1",
@@ -54,11 +55,13 @@
     "jest-fetch-mock": "^3.0.3",
     "jest-mock-now": "^1.3.0",
     "js-yaml": "^4.1.0",
+    "lodash": "^4.17.21",
     "mini-css-extract-plugin": "^2.4.1",
     "npm-force-resolutions": "0.0.10",
     "prettier": "^2.4.1",
     "prop-types": "^15.5.8",
     "react-test-renderer": "^17.0.2",
+    "redux-mock-store": "^1.5.4",
     "regenerator-runtime": "^0.10.5",
     "replace-in-file": "^3.4.4",
     "request": "^2.88.2",
@@ -66,7 +69,7 @@
     "style-loader": "^3.2.1",
     "url-loader": "^4.1.1",
     "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0",
+    "webpack-cli": "^4.9.2",
     "webpack-dev-server": "^4.2.0"
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
@@ -78,14 +81,14 @@
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "npm run prettier-cli; node ./node_modules/webpack/bin/webpack.js --mode=production",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
-    "test": "export NODE_ENV=testing TZ='Europe/London' && ./node_modules/jest/bin/jest.js --no-cache",
+    "test": "export NODE_ENV=testing TZ='Europe/London' && jest",
     "test-watch": "export NODE_ENV=testing  TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
     "preinstall": "npx npm-force-resolutions && mkdir -p ../dist && cp -R img/ ../dist/img/",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint -c ./.eslintrc.json --print-config ./app | eslint-config-prettier-check"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
   },
   "dependencies": {
     "acorn": "^8.4.1",
@@ -98,6 +101,7 @@
     "localforage": "^1.5.0",
     "minimongo": "^6.9.0",
     "moment": "^2.29.1",
+    "node-fetch": "^3.2.0",
     "onchange": "^6.1.0",
     "path": "^0.12.7",
     "react": "^17.0.2",
@@ -120,7 +124,6 @@
     "lodash-es": "^4.17.21",
     "js-yaml": "^3.13.1",
     "ini": "^1.3.8",
-    "moment": "^2.29.1",
-    "node-fetch": "^2.6.1"
+    "moment": "^2.29.1"
   }
 }

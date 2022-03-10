@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`TeamsList matches the snapshot 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-9"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <a
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Back
+      </a>
+    </div>
+    <span
+      className="margin-top--1"
+    >
+      <h1
+        className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
+      >
+        Preview teams
+      </h1>
+       
+      <a
+        onClick={[Function]}
+        style={Object {}}
+      >
+         Create a new team 
+      </a>
+    </span>
+    <div
+      className="grid__col-6"
+    >
+      <div
+        className="form__input"
+      >
+        <label
+          className="form__label"
+          htmlFor="search-content-types"
+        />
+        <input
+          autoComplete="new-password"
+          autoFocus={false}
+          className="input"
+          disabled={false}
+          id="search-content-types"
+          name="search-content-types"
+          onChange={[Function]}
+          onFocus={[Function]}
+          placeholder="Search teams by name or ID"
+          type="text"
+        />
+      </div>
+    </div>
+    <ul
+      className="list list--neutral simple-select-list"
+    >
+      <span
+        className="margin-top--1 loader loader--dark"
+        data-testid="loader"
+      />
+      
+    </ul>
+  </div>
+</div>
+`;

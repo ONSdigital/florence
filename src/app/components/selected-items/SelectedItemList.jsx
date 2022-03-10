@@ -1,31 +1,31 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import SelectedItem from "./SelectedItem";
 
-const propTypes = {
+const SelectedItemList = ({ items, removeClassNames, classNames, handleRemoveItem }) => (
+    <div className="selected-item-list">
+        {items.map((selectedItem, index) => (
+            <SelectedItem
+                key={index}
+                removeClassNames={removeClassNames}
+                classNames={classNames}
+                {...selectedItem}
+                handleRemoveItem={handleRemoveItem}
+            />
+        ))}
+    </div>
+);
+
+SelectedItemList.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
             name: PropTypes.string.isRequired,
         })
     ).isRequired,
-    onRemoveItem: PropTypes.func.isRequired,
+    classNames: PropTypes.string,
+    removeClassNames: PropTypes.string,
+    handleRemoveItem: PropTypes.func,
 };
 
-export default class SelectedItemList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        return (
-            <div className="selected-item-list">
-                {this.props.items.map((selectedItem, key) => {
-                    return <SelectedItem key={key} item={selectedItem} onRemoveItem={this.props.onRemoveItem} />;
-                })}
-            </div>
-        );
-    }
-}
-
-SelectedItemList.propTypes = propTypes;
+export default SelectedItemList;

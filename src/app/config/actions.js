@@ -13,13 +13,6 @@ export function setConfig(config) {
     };
 }
 
-export function addAllCollections(collections) {
-    return {
-        type: types.ADD_ALL_COLLECTIONS,
-        collections,
-    };
-}
-
 export function createCollectionSuccess(collection) {
     return {
         type: types.CREATE_COLLECTION_SUCCESS,
@@ -34,16 +27,9 @@ export function saveSearch(value) {
     };
 }
 
-export function markCollectionForDeleteFromAllCollections(collectionID) {
+export function deleteCollection(collectionID) {
     return {
-        type: types.MARK_COLLECTION_FOR_DELETE_FROM_ALL_COLLECTIONS,
-        collectionID,
-    };
-}
-
-export function deleteCollectionFromAllCollections(collectionID) {
-    return {
-        type: types.DELETE_COLLECTION_FROM_ALL_COLLECTIONS,
+        type: types.DELETE_COLLECTION,
         collectionID,
     };
 }
@@ -96,10 +82,41 @@ export function updateActiveUser(user) {
     };
 }
 
-export function addAllUsers(users) {
+export function loadUsersSuccess(users) {
     return {
-        type: types.ADD_ALL_USERS,
+        type: types.LOAD_USERS_SUCCESS,
         users,
+    };
+}
+
+export function loadUsersFailure() {
+    return {
+        type: types.LOAD_USERS_FAILURE,
+    };
+}
+
+export function loadUsersProgress() {
+    return {
+        type: types.LOAD_USERS_PROGRESS,
+    };
+}
+
+export function loadUserGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_USER_GROUPS_SUCCESS,
+        groups,
+    };
+}
+
+export function loadUserGroupsFailure() {
+    return {
+        type: types.LOAD_USER_GROUPS_FAILURE,
+    };
+}
+
+export function loadUserGroupsProgress() {
+    return {
+        type: types.LOAD_USER_GROUPS_PROGRESS,
     };
 }
 
@@ -204,20 +221,6 @@ export function updateActiveVersionReviewState(lastEditedBy, reviewState) {
 export function emptyActiveVersion() {
     return {
         type: types.EMPTY_ACTIVE_VERSION,
-    };
-}
-
-export function updateAllTeams(allTeams) {
-    return {
-        type: types.UPDATE_ALL_TEAMS,
-        allTeams: allTeams,
-    };
-}
-
-export function updateAllTeamIDsAndNames(allTeamIDsAndNames) {
-    return {
-        type: types.UPDATE_ALL_TEAM_IDS_AND_NAMES,
-        allTeamIDsAndNames,
     };
 }
 
@@ -331,4 +334,107 @@ export const updateCollectionProgress = () => ({
 export const updateCollectionSuccess = collection => ({
     type: types.UPDATE_COLLECTION_SUCCESS,
     collection,
+});
+
+export function createUserSuccess(user) {
+    return {
+        type: types.CREATE_USER_SUCCESS,
+        user,
+    };
+}
+
+export function createUserFailure() {
+    return {
+        type: types.CREATE_USER_FAILURE,
+    };
+}
+
+export function createUserProgress() {
+    return {
+        type: types.CREATE_USER_PROGRESS,
+    };
+}
+
+export function loadUserSuccess(user) {
+    return {
+        type: types.LOAD_USER_SUCCESS,
+        user,
+    };
+}
+
+export function loadUserFailure() {
+    return {
+        type: types.LOAD_USER_FAILURE,
+    };
+}
+
+export function loadUserProgress() {
+    return {
+        type: types.LOAD_USER_PROGRESS,
+    };
+}
+
+export function addGroupsToUserSuccess(userId, groups) {
+    return {
+        type: types.ADD_GROUPS_TO_USER_SUCCESS,
+        userId,
+        groups,
+    };
+}
+
+export function addGroupsToUserFailure() {
+    return {
+        type: types.ADD_GROUPS_TO_USER_FAILURE,
+    };
+}
+
+export function addGroupsToUserProgress() {
+    return {
+        type: types.ADD_GROUPS_TO_USER_PROGRESS,
+    };
+}
+
+export function loadGroupsFailure() {
+    return {
+        type: types.LOAD_GROUPS_FAILURE,
+    };
+}
+
+export function loadGroupsProgress() {
+    return {
+        type: types.LOAD_GROUPS_PROGRESS,
+    };
+}
+
+export function loadGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_GROUPS_SUCCESS,
+        groups,
+    };
+}
+
+export const updateUserFailure = () => ({
+    type: types.UPDATE_USER_FAILURE,
+});
+
+export const updateUserProgress = () => ({
+    type: types.UPDATE_USER_PROGRESS,
+});
+
+export const updateUserSuccess = user => ({
+    type: types.UPDATE_USER_SUCCESS,
+    user,
+});
+
+export const singOutAllUsersProgress = () => ({
+    type: types.SIGN_OUT_ALL_USERS_PROGRESS,
+});
+
+export const singOutAllUsersFailure = () => ({
+    type: types.SIGN_OUT_ALL_USERS_FAILURE,
+});
+
+export const singOutAllUsersSuccess = user => ({
+    type: types.SIGN_OUT_ALL_USERS_SUCCESS,
+    user,
 });

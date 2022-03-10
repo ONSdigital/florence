@@ -82,7 +82,7 @@
   }
 
   &__error {
-    color: $night-shadz;
+    color: $night-shadz!important;
   }
 
   &--warning {
@@ -209,4 +209,3 @@
 @include panel-type(information, transparentize($black, .75), transparentize($black, .95));
 @include panel-type(warning, $white, $white);
 @include panel-type(announcement, $black, $black);
-

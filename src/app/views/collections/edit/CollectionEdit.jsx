@@ -64,8 +64,8 @@ class CollectionEdit extends Component {
         this.props.onTeamSelect(event.target.value);
     };
 
-    handleTeamRemove = team => {
-        this.props.onRemoveTeam(team.id);
+    handleTeamRemove = id => {
+        this.props.onRemoveTeam(id);
     };
 
     handleNameChange = event => {
@@ -141,7 +141,7 @@ class CollectionEdit extends Component {
                                 selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
                             />
-                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} onRemoveItem={this.handleTeamRemove} />
+                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} handleRemoveItem={this.handleTeamRemove} />
                             <RadioGroup
                                 groupName="collection-edit-type"
                                 radioData={this.publishTypeRadioButtons}

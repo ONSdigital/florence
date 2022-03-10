@@ -3,24 +3,19 @@ import PropTypes from "prop-types";
 import PopoutItem from "./PopoutItem";
 import Modal from "../Modal";
 
-const propTypes = {
-    popouts: PropTypes.arrayOf(PropTypes.shape(PopoutItem.propTypes)).isRequired,
-};
-
-const Popouts = props => {
-    if (props.popouts.length === 0) {
+const Popouts = ({ popouts }) => {
+    if (popouts.length === 0) {
         return null;
     }
 
-    const modalChild = (
-        <div className="">
-            {props.popouts.map(popout => {
-                return <PopoutItem {...popout} key={popout.id} />;
-            })}
-        </div>
+    return (
+        <Modal sizeClass="grid__col-4">
+            {popouts.map(popout => (
+                <PopoutItem {...popout} key={popout.id} />
+            ))}
+        </Modal>
     );
-    return <Modal children={modalChild} sizeClass="grid__col-4" />;
 };
 
-Popouts.propTypes = propTypes;
+Popouts.propTypes = { popouts: PropTypes.array.isRequired };
 export default Popouts;

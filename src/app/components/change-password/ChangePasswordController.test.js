@@ -1,8 +1,7 @@
 import React from "react";
 import ChangePasswordController from "./ChangePasswordController";
 import user from "../../utilities/api-clients/user";
-import renderer from "react-test-renderer";
-import { mount, shallow } from "enzyme";
+import { mount } from "enzyme";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
