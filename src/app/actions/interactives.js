@@ -184,26 +184,11 @@ export function getInteractive(interactiveId)
 export function createInteractive(data)
 {
     return dispatch => {
-        interactives.store({
-            file: data.file,
-            metadata1: data.metadata1,
-            metadata2: data.metadata2,
-            metadata3: data.metadata3,
-        })
+        interactives.store(data)
             .then((res) => {
-                dispatch(storeInteractive({
-                    id: res.data.id,
-                    file: res.data.file,
-                    metadata1: res.data.metadata1,
-                    metadata2: res.data.metadata2,
-                    metadata3: res.data.metadata3,
-                    errors: ''
-                }))
+                dispatch(storeInteractive(res))
             .catch((error) => {
-                dispatch(setInteractiveError({
-                    id: '',
-                    errors: error.response.data.error
-                }))
+                dispatch(setInteractiveError(error))
             })
         })
     }

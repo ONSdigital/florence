@@ -90,7 +90,7 @@ const NavBar = props => {
                             </Link>
                         </li>
                         <li className="global-nav__item">
-                            <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
+                            <Link to={`${rootPath}/interactives/index`} activeClassName="selected" className="global-nav__link">
                                 Interactives
                             </Link>
                         </li>
