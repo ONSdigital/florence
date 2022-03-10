@@ -50,10 +50,11 @@ import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users";
 import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
-import TeamsList from "./app/views/teams/teams-view/"
+import Groups from "./app/views/groups"
 import EditUser from "./app/views/users/edit";
 import "./scss/main.scss";
 import Security from "./app/views/security";
+import EditGroup from "./app/views/groups/edit"
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -161,8 +162,8 @@ const Index = () => {
                         </Route>
                     </Route>
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:userID`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:userID/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))}/>}
                     <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
@@ -214,9 +215,10 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
-                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(TeamsList)) : null} />
-                    {config.enableNewSignIn && <Route path={`${rootPath}/security`} component={userIsAuthenticated(userIsAdmin(Security))}/>}
-                    <Route path={`${rootPath}/groups/create`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(CreateTeam)) : null} />
+                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(Groups)) : null} />
+                    {config.enableNewSignIn && <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(userIsAdmin(EditGroup))}/>}
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
