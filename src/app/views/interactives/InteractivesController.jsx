@@ -13,12 +13,14 @@ import {
 import url from "../../utilities/url";
 import {toggleInArray} from "./../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
+import Magnifier from "../../icons/Magnifier";
 
 export class InteractivesController extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            query: '',
             filters: {
                 topics: [],
                 query: ''
@@ -60,6 +62,7 @@ export class InteractivesController extends Component {
 
     handleFilter()
     {
+        this.state.filters.query = this.state.query
         this.props.filterInteractives(this.state.filters)
     }
 
@@ -72,7 +75,16 @@ export class InteractivesController extends Component {
                 <div className="grid grid--justify-space-around">
                     <div className={"grid__col-3"}>
                         <h1 className="text-center">Filters</h1>
-                        <Search />
+                            <div className="search__input-group">
+                                <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
+                                <input
+                                    type="text"
+                                    id="query"
+                                    name="query"
+                                    placeholder="Search by title"
+                                    onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                                />
+                            </div>
                         <label htmlFor="">Primary topic</label>
                         <div className="scrollable-box">
                             <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">

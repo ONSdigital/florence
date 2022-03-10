@@ -24,12 +24,13 @@ export default function reducer(state = initialState, action = {})
         case types.INTERACTIVE_ERROR:
             return action.errors;
         case types.FILTER_INTERACTIVES:
+            const { topics, query } = action.filters
             let filteredInteractives = state.interactives
-            if(action.filters.topics.length > 0){
-                filteredInteractives = state.interactives.filter(interactive => isInArray(action.filters.topics, interactive.primary_topic))
+            if(topics.length > 0){
+                filteredInteractives = state.interactives.filter(interactive => isInArray(topics, interactive.primary_topic))
             }
-            if(action.filters.query.length > 2){
-                filteredInteractives = state.interactives.filter(interactive => isInArray(action.filters.query, interactive.primary_topic))
+            if(query.length > 2){
+                filteredInteractives = state.interactives.filter(interactive => isInArray(interactive.title, query))
             }
             return {
                 interactives: state.interactives,
