@@ -7,3 +7,8 @@ export function toggleInArray(array, value){
     }
     return array
 }
+
+export function isInArray(array, value){
+    const index = array.indexOf(value)
+    return index > -1
+}

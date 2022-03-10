@@ -5,7 +5,11 @@ import PropTypes from "prop-types";
 import {NavbarComponent} from "./components/NavbarComponent";
 import Search from "../../components/search";
 import {getTaxonomies} from "../../actions/taxonomies";
-import {createInteractive} from "../../actions/interactives";
+import {
+    createInteractive,
+    filterInteractives,
+    getInteractives
+} from "../../actions/interactives";
 import url from "../../utilities/url";
 import {toggleInArray} from "./../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
@@ -15,21 +19,28 @@ export class InteractivesController extends Component {
         super(props);
 
         this.state = {
-            topics: [],
+            filters: {
+                topics: [],
+                query: ''
+            }
         };
 
         this.handleFilter = this.handleFilter.bind(this);
-        this.handleTopics = this.handleTopics.bind(this);
     }
 
     static propTypes = {
         rootPath: PropTypes.string.isRequired,
-        interactive: PropTypes.object,
-        taxonomies: PropTypes.array.isRequired
+        interactives: PropTypes.array,
+        filteredInteractives: PropTypes.array,
+        taxonomies: PropTypes.array.isRequired,
+        filterInteractives: PropTypes.func.isRequired,
+        getTaxonomies: PropTypes.func.isRequired,
+        getInteractives: PropTypes.func.isRequired,
     };
 
     componentDidMount() {
         this.props.getTaxonomies()
+        this.props.getInteractives()
     }
 
     mapTaxonomiesToSelectOptions(taxonomies) {
@@ -42,265 +53,18 @@ export class InteractivesController extends Component {
     {
         return interactives.map(interactive => {
             return {
-                data: [interactive.id, interactive.file, interactive.metadata1],
+                data: [interactive.id, interactive.title, interactive.primary_topic],
             }
         })
     }
 
     handleFilter()
     {
-        console.log('state', this.state)
+        this.props.filterInteractives(this.state.filters)
     }
 
     render() {
-        const { rootPath, taxonomies } = this.props;
-
-        const interactives = [
-            {
-                "id": 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 1",
-                "metadata2": "metadata2 id 1",
-                "metadata3": "metadata3 id 1",
-            }, {
-                "id": 2,
-                "file": '/docs/file2.pdf',
-                "metadata1": "metadata1 id 2",
-                "metadata2": "metadata2 id 2",
-                "metadata3": "metadata3 id 2",
-            }, {
-                "id": 3,
-                "file": '/docs/file3.pdf',
-                "metadata1": "metadata1 id 3",
-                "metadata2": "metadata2 id 3",
-                "metadata3": "metadata3 id 3",
-            }, {
-                "id": 4,
-                "file": '/docs/file4.pdf',
-                "metadata1": "metadata1 id 4",
-                "metadata2": "metadata2 id 4",
-                "metadata3": "metadata3 id 4",
-            }, {
-                "id": 5,
-                "file": '/docs/file5.pdf',
-                "metadata1": "metadata1 id 5",
-                "metadata2": "metadata2 id 5",
-                "metadata3": "metadata3 id 5",
-            }, {
-                "id": 6,
-                "file": '/docs/file6.pdf',
-                "metadata1": "metadata1 id 6",
-                "metadata2": "metadata2 id 6",
-                "metadata3": "metadata3 id 6",
-            }, {
-                "id": 7,
-                "file": '/docs/file7.pdf',
-                "metadata1": "metadata1 id 7",
-                "metadata2": "metadata2 id 7",
-                "metadata3": "metadata3 id 7",
-            }, {
-                "id": 8,
-                "file": '/docs/file8.pdf',
-                "metadata1": "metadata1 id 8",
-                "metadata2": "metadata2 id 8",
-                "metadata3": "metadata3 id 8",
-            }, {
-                "id": 9,
-                "file": '/docs/file9.pdf',
-                "metadata1": "metadata1 id 9",
-                "metadata2": "metadata2 id 9",
-                "metadata3": "metadata3 id 9",
-            }, {
-                "id": 10,
-                "file": '/docs/file10.pdf',
-                "metadata1": "metadata1 id 10",
-                "metadata2": "metadata2 id 10",
-                "metadata3": "metadata3 id 10",
-            },
-            {
-                "id": 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 1",
-                "metadata2": "metadata2 id 1",
-                "metadata3": "metadata3 id 1",
-            }, {
-                "id": 2,
-                "file": '/docs/file2.pdf',
-                "metadata1": "metadata1 id 2",
-                "metadata2": "metadata2 id 2",
-                "metadata3": "metadata3 id 2",
-            }, {
-                "id": 3,
-                "file": '/docs/file3.pdf',
-                "metadata1": "metadata1 id 3",
-                "metadata2": "metadata2 id 3",
-                "metadata3": "metadata3 id 3",
-            }, {
-                "id": 4,
-                "file": '/docs/file4.pdf',
-                "metadata1": "metadata1 id 4",
-                "metadata2": "metadata2 id 4",
-                "metadata3": "metadata3 id 4",
-            }, {
-                "id": 5,
-                "file": '/docs/file5.pdf',
-                "metadata1": "metadata1 id 5",
-                "metadata2": "metadata2 id 5",
-                "metadata3": "metadata3 id 5",
-            }, {
-                "id": 6,
-                "file": '/docs/file6.pdf',
-                "metadata1": "metadata1 id 6",
-                "metadata2": "metadata2 id 6",
-                "metadata3": "metadata3 id 6",
-            }, {
-                "id": 7,
-                "file": '/docs/file7.pdf',
-                "metadata1": "metadata1 id 7",
-                "metadata2": "metadata2 id 7",
-                "metadata3": "metadata3 id 7",
-            }, {
-                "id": 8,
-                "file": '/docs/file8.pdf',
-                "metadata1": "metadata1 id 8",
-                "metadata2": "metadata2 id 8",
-                "metadata3": "metadata3 id 8",
-            }, {
-                "id": 9,
-                "file": '/docs/file9.pdf',
-                "metadata1": "metadata1 id 9",
-                "metadata2": "metadata2 id 9",
-                "metadata3": "metadata3 id 9",
-            }, {
-                "id": 10,
-                "file": '/docs/file10.pdf',
-                "metadata1": "metadata1 id 10",
-                "metadata2": "metadata2 id 10",
-                "metadata3": "metadata3 id 10",
-            },
-            {
-                "id": 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 1",
-                "metadata2": "metadata2 id 1",
-                "metadata3": "metadata3 id 1",
-            }, {
-                "id": 2,
-                "file": '/docs/file2.pdf',
-                "metadata1": "metadata1 id 2",
-                "metadata2": "metadata2 id 2",
-                "metadata3": "metadata3 id 2",
-            }, {
-                "id": 3,
-                "file": '/docs/file3.pdf',
-                "metadata1": "metadata1 id 3",
-                "metadata2": "metadata2 id 3",
-                "metadata3": "metadata3 id 3",
-            }, {
-                "id": 4,
-                "file": '/docs/file4.pdf',
-                "metadata1": "metadata1 id 4",
-                "metadata2": "metadata2 id 4",
-                "metadata3": "metadata3 id 4",
-            }, {
-                "id": 5,
-                "file": '/docs/file5.pdf',
-                "metadata1": "metadata1 id 5",
-                "metadata2": "metadata2 id 5",
-                "metadata3": "metadata3 id 5",
-            }, {
-                "id": 6,
-                "file": '/docs/file6.pdf',
-                "metadata1": "metadata1 id 6",
-                "metadata2": "metadata2 id 6",
-                "metadata3": "metadata3 id 6",
-            }, {
-                "id": 7,
-                "file": '/docs/file7.pdf',
-                "metadata1": "metadata1 id 7",
-                "metadata2": "metadata2 id 7",
-                "metadata3": "metadata3 id 7",
-            }, {
-                "id": 8,
-                "file": '/docs/file8.pdf',
-                "metadata1": "metadata1 id 8",
-                "metadata2": "metadata2 id 8",
-                "metadata3": "metadata3 id 8",
-            }, {
-                "id": 9,
-                "file": '/docs/file9.pdf',
-                "metadata1": "metadata1 id 9",
-                "metadata2": "metadata2 id 9",
-                "metadata3": "metadata3 id 9",
-            }, {
-                "id": 10,
-                "file": '/docs/file10.pdf',
-                "metadata1": "metadata1 id 10",
-                "metadata2": "metadata2 id 10",
-                "metadata3": "metadata3 id 10",
-            },
-            {
-                "id": 1,
-                "file": '/docs/file1.pdf',
-                "metadata1": "metadata1 id 1",
-                "metadata2": "metadata2 id 1",
-                "metadata3": "metadata3 id 1",
-            }, {
-                "id": 2,
-                "file": '/docs/file2.pdf',
-                "metadata1": "metadata1 id 2",
-                "metadata2": "metadata2 id 2",
-                "metadata3": "metadata3 id 2",
-            }, {
-                "id": 3,
-                "file": '/docs/file3.pdf',
-                "metadata1": "metadata1 id 3",
-                "metadata2": "metadata2 id 3",
-                "metadata3": "metadata3 id 3",
-            }, {
-                "id": 4,
-                "file": '/docs/file4.pdf',
-                "metadata1": "metadata1 id 4",
-                "metadata2": "metadata2 id 4",
-                "metadata3": "metadata3 id 4",
-            }, {
-                "id": 5,
-                "file": '/docs/file5.pdf',
-                "metadata1": "metadata1 id 5",
-                "metadata2": "metadata2 id 5",
-                "metadata3": "metadata3 id 5",
-            }, {
-                "id": 6,
-                "file": '/docs/file6.pdf',
-                "metadata1": "metadata1 id 6",
-                "metadata2": "metadata2 id 6",
-                "metadata3": "metadata3 id 6",
-            }, {
-                "id": 7,
-                "file": '/docs/file7.pdf',
-                "metadata1": "metadata1 id 7",
-                "metadata2": "metadata2 id 7",
-                "metadata3": "metadata3 id 7",
-            }, {
-                "id": 8,
-                "file": '/docs/file8.pdf',
-                "metadata1": "metadata1 id 8",
-                "metadata2": "metadata2 id 8",
-                "metadata3": "metadata3 id 8",
-            }, {
-                "id": 9,
-                "file": '/docs/file9.pdf',
-                "metadata1": "metadata1 id 9",
-                "metadata2": "metadata2 id 9",
-                "metadata3": "metadata3 id 9",
-            }, {
-                "id": 100,
-                "file": '/docs/file10.pdf',
-                "metadata1": "metadata1 id 10",
-                "metadata2": "metadata2 id 10",
-                "metadata3": "metadata3 id 10",
-            }
-        ];
+        const { taxonomies, filteredInteractives } = this.props;
 
         return (
             <div>
@@ -321,8 +85,7 @@ export class InteractivesController extends Component {
                                                         type="checkbox"
                                                         value={url.slug(taxonomy.uri)}
                                                         name="topics"
-                                                        onClick={(e) => this.handleTopics}
-                                                        onChange={(e) => this.setState({[e.target.name]: toggleInArray(this.state.topics, e.target.value)})}
+                                                        onChange={(e) => this.setState({[e.target.name]: toggleInArray(this.state.filters.topics, e.target.value)})}
                                                     />
                                                     <div>{taxonomy.description.title}</div>
                                                 </div>
@@ -346,7 +109,7 @@ export class InteractivesController extends Component {
                     </div>
                     <div className={"grid__col-5"}>
                         <div className="filterable-table-box padding-top--5">
-                            <ReactTable data={this.mapInteractivesToTableData(interactives)}/>
+                            <ReactTable data={this.mapInteractivesToTableData(filteredInteractives)}/>
                         </div>
                     </div>
                 </div>
@@ -358,7 +121,8 @@ export class InteractivesController extends Component {
 const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     errors: state.interactives.errors,
-    interactive: state.interactives.interactive,
+    interactives: state.interactives.interactives,
+    filteredInteractives: state.interactives.filteredInteractives,
     taxonomies: state.taxonomies.taxonomies,
 });
 
@@ -367,8 +131,14 @@ const mapDispatchToProps = (dispatch) => {
         getTaxonomies: () => {
             dispatch(getTaxonomies())
         },
+        getInteractives: () => {
+            dispatch(getInteractives())
+        },
         createInteractive: (interactive) => {
             dispatch(createInteractive(interactive))
+        },
+        filterInteractives: (filters) => {
+            dispatch(filterInteractives(filters))
         }
     }
 }

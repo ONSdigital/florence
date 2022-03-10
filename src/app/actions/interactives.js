@@ -1,8 +1,96 @@
 import * as types from './actionTypes'
 import interactives from "../utilities/api-clients/interactives";
 
-export function setInteractives(interactives)
+export function setInteractives(interactive)
+// export function setInteractives(interactives)
 {
+    // return {
+    //     type: types.FETCH_INTERACTIVES,
+    //     interactives
+    // }
+    let interactives = [
+        {
+            "id": 1,
+            "file": '/docs/file1.pdf',
+            "metadata1": "metadata1 id 1",
+            "metadata2": "metadata2 id 1",
+            "metadata3": "metadata3 id 1",
+            "title": "title 1",
+            "primary_topic": "businessindustryandtrade-changestobusiness-bankruptcyinsolvency",
+        }, {
+            "id": 2,
+            "file": '/docs/file2.pdf',
+            "metadata1": "metadata1 id 2",
+            "metadata2": "metadata2 id 2",
+            "metadata3": "metadata3 id 2",
+            "title": "title 2",
+            "primary_topic": "businessindustryandtrade-changestobusiness-bankruptcyinsolvency",
+        }, {
+            "id": 3,
+            "file": '/docs/file3.pdf',
+            "metadata1": "metadata1 id 3",
+            "metadata2": "metadata2 id 3",
+            "metadata3": "metadata3 id 3",
+            "title": "title 3",
+            "primary_topic": "businessindustryandtrade-changestobusiness-bankruptcyinsolvency",
+        }, {
+            "id": 4,
+            "file": '/docs/file4.pdf',
+            "metadata1": "metadata1 id 4",
+            "metadata2": "metadata2 id 4",
+            "metadata3": "metadata3 id 4",
+            "title": "title 4",
+            "primary_topic": "peoplepopulationandcommunity-culturalidentity-ethnicity",
+        }, {
+            "id": 5,
+            "file": '/docs/file5.pdf',
+            "metadata1": "metadata1 id 5",
+            "metadata2": "metadata2 id 5",
+            "metadata3": "metadata3 id 5",
+            "title": "title 5",
+            "primary_topic": "peoplepopulationandcommunity-culturalidentity-ethnicity",
+        }, {
+            "id": 6,
+            "file": '/docs/file6.pdf',
+            "metadata1": "metadata1 id 6",
+            "metadata2": "metadata2 id 6",
+            "metadata3": "metadata3 id 6",
+            "title": "title 6",
+            "primary_topic": "primary_topic",
+        }, {
+            "id": 7,
+            "file": '/docs/file7.pdf',
+            "metadata1": "metadata1 id 7",
+            "metadata2": "metadata2 id 7",
+            "metadata3": "metadata3 id 7",
+            "title": "title 7",
+            "primary_topic": "economy-regionalaccounts-grossdisposablehouseholdincome",
+        }, {
+            "id": 8,
+            "file": '/docs/file8.pdf',
+            "metadata1": "metadata1 id 8",
+            "metadata2": "metadata2 id 8",
+            "metadata3": "metadata3 id 8",
+            "title": "title 8",
+            "primary_topic": "economy-regionalaccounts-grossdisposablehouseholdincome",
+        }, {
+            "id": 9,
+            "file": '/docs/file9.pdf',
+            "metadata1": "metadata1 id 9",
+            "metadata2": "metadata2 id 9",
+            "metadata3": "metadata3 id 9",
+            "title": "title 9",
+            "primary_topic": "primary_topic",
+        }, {
+            "id": 10,
+            "file": '/docs/file10.pdf',
+            "metadata1": "metadata1 id 10",
+            "metadata2": "metadata2 id 10",
+            "metadata3": "metadata3 id 10",
+            "title": "title 10",
+            "primary_topic": "primary_topic",
+        }
+    ]
     return {
         type: types.FETCH_INTERACTIVES,
         interactives
@@ -38,6 +126,14 @@ export function setInteractiveError(data)
     return {
         type: types.INTERACTIVE_ERROR,
         data
+    }
+}
+
+export function filterInteractives(filters)
+{
+    return {
+        type: types.FILTER_INTERACTIVES,
+        filters
     }
 }
 
