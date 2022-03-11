@@ -1,20 +1,19 @@
-import logo from "./../../../img/logo.svg"
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import url from './../../utilities/url'
 
-import Select from "../../components/Select";
-import FileUpload from "../../components/file-upload/FileUpload";
-
 import {
     createInteractive,
     getInteractive,
     editInteractive,
-    deleteInteractive
+    deleteInteractive,
+    resetSuccessMessage
 } from "../../actions/interactives";
+
 import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
+import Select from "../../components/Select";
 import {Link} from "react-router";
 
 export class InteractivesFormController extends Component {
@@ -25,6 +24,7 @@ export class InteractivesFormController extends Component {
         editInteractive: PropTypes.func.isRequired,
         deleteInteractive: PropTypes.func.isRequired,
         getInteractive: PropTypes.func.isRequired,
+        resetSuccessMessage: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
         interactive: PropTypes.object,
         taxonomies: PropTypes.array.isRequired
@@ -39,8 +39,7 @@ export class InteractivesFormController extends Component {
 
         this.state = {
             title: '',
-            // file: {},
-            // interactiveFile: {},
+            file: null,
             primary: '',
             surveys: '',
             topics: '',
@@ -58,8 +57,6 @@ export class InteractivesFormController extends Component {
         e.preventDefault();
         const formData = new FormData();
         formData.append("file", this.state.file);
-        // formData.append("surveys", this.state.surveys);
-        // formData.append("topics", this.state.topics);
         formData.append("update", JSON.stringify({
             interactive: {
                 id: this.state.interactiveId,
@@ -84,6 +81,24 @@ export class InteractivesFormController extends Component {
             this.props.getInteractive(interactiveId)
         }
         this.props.getTaxonomies()
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if(nextProps.successMessage.success){
+            const rootPath = this.props.rootPath
+            if(nextProps.successMessage.type === "create"){
+                this.props.resetSuccessMessage()
+                this.props.router.push(`${rootPath}/interactives/index`);
+            }
+            if(nextProps.successMessage.type === "edit"){
+                this.props.resetSuccessMessage()
+                this.props.router.push(`${rootPath}/interactives/index`);
+            }
+            if(nextProps.successMessage.type === "delete"){
+                this.props.resetSuccessMessage()
+                this.props.router.push(`${rootPath}/interactives/index`);
+            }
+        }
     }
 
     mapTaxonomiesToSelectOptions(taxonomies) {
@@ -121,23 +136,16 @@ export class InteractivesFormController extends Component {
 
         return (
             <div>
-                {
-                    !this.state.interactiveId ?
-                        <NavbarComponent>Upload interactive</NavbarComponent>
-                        :
-                        <NavbarComponent>Edit interactive</NavbarComponent>
-                }
+                <NavbarComponent>{!this.state.interactiveId ? 'Upload interactive' : 'Edit interactive'}</NavbarComponent>
                 <div>
                     <div className="grid font-size--18">
                         <div className="grid__col-1"/>
                         <div className="grid__col-1">
                         {
-                            this.state.interactiveId ?
-                                <Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
+                            this.state.interactiveId &&
+                                (<Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
                                     Back
-                                </Link>
-                                :
-                                null
+                                </Link>)
                         }
                         </div>
                     </div>
@@ -278,6 +286,7 @@ export class InteractivesFormController extends Component {
 const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     errors: state.interactives.errors,
+    successMessage: state.interactives.successMessage,
     interactive: state.interactives.interactive,
     taxonomies: state.taxonomies.taxonomies,
 });
@@ -298,6 +307,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         deleteInteractive: (interactiveId) => {
             dispatch(deleteInteractive(interactiveId))
+        },
+        resetSuccessMessage: () => {
+            dispatch(resetSuccessMessage())
         }
     }
 }

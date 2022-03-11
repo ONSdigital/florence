@@ -5,7 +5,11 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: {}
+    errors: {},
+    successMessage: {
+        type: null,
+        success: false
+    }
 }
 
 export default function reducer(state = initialState, action = {})
@@ -28,6 +32,14 @@ export default function reducer(state = initialState, action = {})
                 errors: {
                     msg: action.error.response
                 },
+            })
+        case types.INTERACTIVE_SUCCESS:
+            return Object.assign({}, state, {
+                successMessage: action.successMessage,
+            })
+        case types.INTERACTIVE_RESET_SUCCESS:
+            return Object.assign({}, state, {
+                successMessage: initialState.successMessage,
             })
         case types.FILTER_INTERACTIVES:
             const { topics, query } = action.filters;

@@ -37,6 +37,21 @@ export function updateInteractive(interactive)
     }
 }
 
+export function setSuccessMessage(successMessage)
+{
+    return {
+        type: types.INTERACTIVE_SUCCESS,
+        successMessage
+    }
+}
+
+export function resetSuccessMessage()
+{
+    return {
+        type: types.INTERACTIVE_RESET_SUCCESS,
+    }
+}
+
 export function setInteractiveError(error)
 {
     return {
@@ -92,6 +107,10 @@ export function createInteractive(data)
                 }
             })
             dispatch(storeInteractive(res.data))
+            dispatch(setSuccessMessage({
+                type: 'create',
+                success: true
+            }))
         } catch (error) {
             dispatch(setInteractiveError(error))
         }
@@ -109,6 +128,10 @@ export function editInteractive(interactiveId, data)
         })
             .then((res) => {
                 dispatch(updateInteractive(res))
+                dispatch(setSuccessMessage({
+                    type: 'update',
+                    success: true
+                }))
             .catch((error) => {
                 dispatch(setInteractiveError(error))
             })
@@ -123,6 +146,10 @@ export function deleteInteractive(interactiveId)
         instance.delete(`/interactives/${interactiveId}`)
             .then((res) => {
                 dispatch(updateInteractive(res))
+                dispatch(setSuccessMessage({
+                    type: 'delete',
+                    success: true
+                }))
             .catch((error) => {
                 dispatch(setInteractiveError(error))
             })
