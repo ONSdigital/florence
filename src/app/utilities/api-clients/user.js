@@ -145,6 +145,11 @@ export default class user {
         return http.post("/tokens", body, true, true, true);
     }
 
+    // TODO: new auth work
+    static deleteTokens() {
+        return http.delete("/tokens");
+    }
+
     static setForgottenPassword(body) {
         return http.put("/users/self/password", body, true, true);
     }

@@ -17,18 +17,17 @@
     &__inner {
         background-color: $wild-sand;
         max-height: 100vh;
-        overflow-y: scroll;
+        overflow-y: auto;
     }
 
     &__header {
         padding: $lineheight $gutter;
-        margin-bottom: $lineheight * 0.5;
     }
 
     &__title {
-        font-size: 35px;
+        font-size: 1.8rem;
         text-align: left; // override h1 styling
-        margin-top: $lineheight * 1.25;
+        margin-top: $lineheight;
         margin-bottom: 0;
     }
 

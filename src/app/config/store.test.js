@@ -269,6 +269,45 @@ describe("Store", () => {
             expect(store.getState().state.users.all).toEqual(users);
             expect(store.getState().state.users.all.length).toEqual(users.length);
         });
+
+        it("should handle loading singOutAllUsersProgress", () => {
+            const store = createStore(
+                combineReducers({
+                    state: reducer,
+                })
+            );
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
+
+            store.dispatch(actions.singOutAllUsersProgress());
+
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(true);
+        });
+
+        it("should handle loading singOutAllUsersFailure", () => {
+            const store = createStore(
+                combineReducers({
+                    state: reducer,
+                })
+            );
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
+
+            store.dispatch(actions.singOutAllUsersFailure());
+
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
+        });
+
+        it("should handle loading singOutAllUsersSuccess", () => {
+            const store = createStore(
+                combineReducers({
+                    state: reducer,
+                })
+            );
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
+
+            store.dispatch(actions.singOutAllUsersSuccess());
+
+            expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
+        });
     });
 
     it("should handle reset()", () => {
