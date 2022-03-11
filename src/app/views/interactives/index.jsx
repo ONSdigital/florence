@@ -1,4 +1,4 @@
 import InteractivesController from "./InteractivesController"
-import InteractivesCreateController from "./InteractivesCreateController"
+import InteractivesFormController from "./InteractivesFormController"
 
-export { InteractivesCreateController, InteractivesController}
+export { InteractivesFormController, InteractivesController}

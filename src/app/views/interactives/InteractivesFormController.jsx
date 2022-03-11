@@ -16,7 +16,7 @@ import {
 import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
 
-export class InteractivesCreateController extends Component {
+export class InteractivesFormController extends Component {
 
     static propTypes = {
         getTaxonomies: PropTypes.func.isRequired,
@@ -271,4 +271,4 @@ const mapDispatchToProps = (dispatch) => {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(InteractivesCreateController);
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesFormController);

@@ -1,32 +1,37 @@
-import http from "../http";
+import axios from 'axios'
+
+const instance = axios.create({
+    baseURL: '/interactives/v1/',
+    // headers: {'X-Custom-Header': 'foobar'}
+});
 
 export default class interactives {
     static getAll() {
-        return http.get(`/zebedee/v1/interactives`).then(response => {
+        return instance.get(`/interactives`).then(response => {
             return response;
         });
     }
 
     static store(body) {
-        return http.post(`/zebedee/v1/interactives`, body).then(response => {
+        return instance.post(`/interactives/`, body).then(response => {
             return response;
         });
     };
 
     static show (interactiveId) {
-        return http.get(`/zebedee/v1/interactives/${interactiveId}`).then(response => {
+        return instance.get(`/interactives/${interactiveId}`).then(response => {
             return response;
         });
     };
 
     static update = (interactiveId, body) => {
-        return http.put(`/zebedee/v1/interactives/${interactiveId}`, body).then(response => {
+        return instance.put(`/interactives/${interactiveId}`, body).then(response => {
             return response;
         });
     }
 
     static destroy = (interactiveId) => {
-        return http.delete(`/zebedee/v1/interactives/${interactiveId}`).then(response => {
+        return instance.delete(`/interactives/${interactiveId}`).then(response => {
             return response;
         });
     }
