@@ -23,6 +23,7 @@ const EditGroup = props => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
+    const specialGroup = group?.precedence === (1 || 2);
 
     const routerWillLeave = nextLocation => {
         if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
@@ -69,7 +70,7 @@ const EditGroup = props => {
                     <BackButton classNames="margin-top--2" />
                     <h1 className="margin-top--1 margin-bottom--1">{group.name}</h1>
                     <div className="grid__col-6">
-                        <Input
+                        {!specialGroup && <Input
                             error={errors?.name}
                             id="name"
                             label="Name"
@@ -77,10 +78,10 @@ const EditGroup = props => {
                             type="text"
                             value={values ? values.name : ""}
                             onChange={handleChange}
-                        />
+                        />}
                     </div>
                 </div>
-                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </form>
     );

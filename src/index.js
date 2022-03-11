@@ -72,7 +72,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return  auth.isAdminOrEditor(state.user);
+        return auth.isAdminOrEditor(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
