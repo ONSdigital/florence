@@ -7,15 +7,15 @@ const instance = axios.create({
 
 export default class interactives {
     static getAll() {
-        return instance.get(`/interactives`).then(response => {
-            return response;
-        });
+        return instance.get(`/interactives`)
     }
 
     static store(body) {
-        return instance.post(`/interactives/`, body).then(response => {
-            return response;
-        });
+        return instance.post(`/interactives`, body, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     };
 
     static show (interactiveId) {
@@ -25,14 +25,14 @@ export default class interactives {
     };
 
     static update = (interactiveId, body) => {
-        return instance.put(`/interactives/${interactiveId}`, body).then(response => {
-            return response;
-        });
+        return instance.put(`/interactives/${interactiveId}`, body, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
     }
 
     static destroy = (interactiveId) => {
-        return instance.delete(`/interactives/${interactiveId}`).then(response => {
-            return response;
-        });
+        return instance.delete(`/interactives/${interactiveId}`)
     }
 }

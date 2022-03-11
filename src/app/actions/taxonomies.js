@@ -9,26 +9,24 @@ export function setTaxonomies(taxonomies)
     }
 }
 
-export function setTaxonomyError(data)
+export function setTaxonomyError(error)
 {
     return {
         type: types.TAXONOMY_ERROR,
-        data
+        error
     }
 }
 
 export function getTaxonomies()
 {
+    console.log('getting taxonomies')
     return dispatch => {
         taxonomy.getAllProductPages()
             .then((res) => {
                 dispatch(setTaxonomies(res))
             })
             .catch((error) => {
-                dispatch(setTaxonomyError({
-                    id: '',
-                    errors: error.response.data.error
-                }))
+                dispatch(setTaxonomyError(error))
             })
     }
 }

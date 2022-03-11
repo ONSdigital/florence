@@ -15,6 +15,7 @@ import {
 } from "../../actions/interactives";
 import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
+import {Link} from "react-router";
 
 export class InteractivesFormController extends Component {
 
@@ -49,14 +50,31 @@ export class InteractivesFormController extends Component {
 
         this.onSubmit = this.onSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
+        this.handleFile = this.handleFile.bind(this);
     }
 
     onSubmit(e)
     {
         e.preventDefault();
+        const formData = new FormData();
+        formData.append("file", this.state.file);
+        // formData.append("surveys", this.state.surveys);
+        // formData.append("topics", this.state.topics);
+        formData.append("update", JSON.stringify({
+            interactive: {
+                id: this.state.interactiveId,
+                metadata: {
+                    edition: "exercitation aute consectetur irure",
+                    meta_description: "ullamco incididunt eu",
+                    title: this.state.title,
+                    uri: this.state.url,
+                    primary_topic: this.state.primary
+                }
+            }
+        }));
         this.state.interactiveId ?
-            this.props.editInteractive(this.state.interactiveId, this.state) :
-            this.props.createInteractive(this.state)
+            this.props.editInteractive(this.state.interactiveId, formData) :
+            this.props.createInteractive(formData)
     }
 
     componentDidMount() {
@@ -86,10 +104,10 @@ export class InteractivesFormController extends Component {
         this.props.deleteInteractive(this.state.interactiveId)
     }
 
-    // handleFile(e){
-    //     let file = e.target.files[0]
-    //     this.setState({file: file})
-    // }
+    handleFile(e){
+        const file = e.target.files[0]
+        this.setState({file: file})
+    }
 
     render() {
         const surveys = [
@@ -99,7 +117,7 @@ export class InteractivesFormController extends Component {
             {id: 4, name: 'Survey 4'}
         ]
 
-        const { errors, interactive, taxonomies } = this.props;
+        const { errors, interactive, taxonomies, rootPath } = this.props;
 
         return (
             <div>
@@ -110,6 +128,19 @@ export class InteractivesFormController extends Component {
                         <NavbarComponent>Edit interactive</NavbarComponent>
                 }
                 <div>
+                    <div className="grid font-size--18">
+                        <div className="grid__col-1"/>
+                        <div className="grid__col-1">
+                        {
+                            this.state.interactiveId ?
+                                <Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
+                                    Back
+                                </Link>
+                                :
+                                null
+                        }
+                        </div>
+                    </div>
                     <div className="grid font-size--18 padding-top--4">
                         <div className="grid__col-1"/>
                         <div className="grid__col-7">
@@ -127,7 +158,7 @@ export class InteractivesFormController extends Component {
                                                 className="input"
                                                 name="title"
                                                 disabled={this.state.isAwaitingResponse}
-                                                value={interactive.title}
+                                                value={interactive.metadata ? interactive.metadata.title : null}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
@@ -142,7 +173,7 @@ export class InteractivesFormController extends Component {
                                                 id="file"
                                                 name="file"
                                                 className="input"
-                                                onChange={(e) => this.setState({[e.target.name]: e.target.files[0]})}
+                                                onChange={this.handleFile}
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel": ""}`}>
@@ -154,7 +185,7 @@ export class InteractivesFormController extends Component {
                                                 contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={interactive.primary_topic}
+                                                selectedOption={interactive.metadata ? interactive.metadata.primary_topic : null}
                                                 disabled={this.state.isReadOnly || this.state.isSavingData}
                                             />
                                         </div>
@@ -195,7 +226,7 @@ export class InteractivesFormController extends Component {
                                                 className="input"
                                                 name="url"
                                                 disabled={this.state.isAwaitingResponse}
-                                                value={interactive.url}
+                                                value={interactive.metadata ? interactive.metadata.uri : null}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
@@ -221,9 +252,9 @@ export class InteractivesFormController extends Component {
                                         }
                                         {
                                             !this.state.interactiveId ?
-                                                <button className="btn btn--secondary padding-left--1" disabled={this.state.isAwaitingResponse}>
+                                                <Link to={`${rootPath}/interactives/index`} className="btn btn--secondary padding-left--1"  disabled={this.state.isAwaitingResponse}>
                                                     Cancel
-                                                </button>
+                                                </Link>
                                                 :
                                                 <button
                                                     className="btn btn--secondary padding-left--1"

@@ -66,7 +66,7 @@ function Table({ columns, data }) {
                             {row.cells.map(cell => {
                                 return <td {...cell.getCellProps()}>
                                     <div>
-                                        <Link to={`${rootPath}/interactives/edit/${cell.value[0]}`} className={'table-link'}>
+                                        <Link to={`${rootPath}/interactives/edit/${cell.value[3]}`} className={'table-link'}>
                                             {cell.value[1]}
                                         </Link>
                                     </div>

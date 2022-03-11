@@ -47,7 +47,6 @@ export class InteractivesController extends Component {
     }
 
     mapTaxonomiesToSelectOptions(taxonomies) {
-        console.log('taxonomies', taxonomies)
         return taxonomies.map(taxonomy => {
             return { id: url.slug(taxonomy.uri), name: taxonomy.description.title };
         });
@@ -55,7 +54,6 @@ export class InteractivesController extends Component {
 
     mapInteractivesToTableData(interactives)
     {
-        console.log('filteredInteractives maping')
         return interactives.map(interactive => {
             const {id, metadata} = interactive
             const releaseDate = moment(metadata.release_date).format('DD MMMM YYYY')
@@ -68,7 +66,6 @@ export class InteractivesController extends Component {
     handleFilter()
     {
         this.state.filters.query = this.state.query
-        console.log('this.state', this.state)
         this.props.filterInteractives(this.state.filters)
     }
 

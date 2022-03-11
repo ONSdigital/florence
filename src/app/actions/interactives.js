@@ -1,5 +1,9 @@
 import * as types from './actionTypes'
-import interactives from "../utilities/api-clients/interactives";
+import axios from 'axios'
+
+const instance = axios.create({
+    baseURL: '/interactives/v1/',
+});
 
 export function setInteractives(interactives)
 {
@@ -33,12 +37,11 @@ export function updateInteractive(interactive)
     }
 }
 
-export function setInteractiveError(data)
+export function setInteractiveError(error)
 {
-    console.log('error prron', data)
     return {
         type: types.INTERACTIVE_ERROR,
-        data
+        error
     }
 }
 
@@ -54,7 +57,7 @@ export function filterInteractives(filters)
 export function getInteractives()
 {
     return dispatch => {
-        interactives.getAll()
+        instance.get(`/interactives`)
             .then((res) => {
                 dispatch(setInteractives(res.data.items))
             })
@@ -68,9 +71,9 @@ export function getInteractives()
 export function getInteractive(interactiveId)
 {
     return dispatch => {
-        interactives.show(interactiveId)
+        instance.get(`/interactives/${interactiveId}`)
             .then((data) => {
-                dispatch(setInteractive(data))
+                dispatch(setInteractive(data.data))
             })
             .catch((error) => {
                 dispatch(setInteractiveError(error))
@@ -81,14 +84,17 @@ export function getInteractive(interactiveId)
 // create interactive
 export function createInteractive(data)
 {
-    return dispatch => {
-        interactives.store(data)
-            .then((res) => {
-                dispatch(storeInteractive(res))
-            .catch((error) => {
-                dispatch(setInteractiveError(error))
+    return async dispatch => {
+        try {
+            const res = await instance.post(`/interactives`, data, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
             })
-        })
+            dispatch(storeInteractive(res.data))
+        } catch (error) {
+            dispatch(setInteractiveError(error))
+        }
     }
 }
 
@@ -96,7 +102,11 @@ export function createInteractive(data)
 export function editInteractive(interactiveId, data)
 {
     return dispatch => {
-        interactives.update(interactiveId, data)
+        instance.put(`/interactives/${interactiveId}`, data, {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+        })
             .then((res) => {
                 dispatch(updateInteractive(res))
             .catch((error) => {
@@ -110,7 +120,7 @@ export function editInteractive(interactiveId, data)
 export function deleteInteractive(interactiveId)
 {
     return dispatch => {
-        interactives.destroy(interactiveId)
+        instance.delete(`/interactives/${interactiveId}`)
             .then((res) => {
                 dispatch(updateInteractive(res))
             .catch((error) => {
