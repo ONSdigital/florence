@@ -40,6 +40,13 @@ func TestDirectors(t *testing.T) {
 		So(request.Header.Get("X-Florence-Token"), ShouldBeBlank)
 	})
 
+	Convey("Dataset Controller proxy director function trims 'interactives' from the request URL", t, func() {
+		request, err := http.NewRequest("GET", "/interactives/bar", nil)
+		So(err, ShouldBeNil)
+		interactivesDirector(request)
+		So(request.URL.String(), ShouldEqual, "/v1/interactives")
+	})
+
 	Convey("Dataset Controller proxy director function trims 'dataset-controller' from the request URL", t, func() {
 		request, err := http.NewRequest("GET", "/dataset-controller/bar", nil)
 		So(err, ShouldBeNil)

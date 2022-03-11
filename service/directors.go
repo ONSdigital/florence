@@ -2,11 +2,12 @@ package service
 
 import (
 	"fmt"
-	"github.com/ONSdigital/dp-cookies/cookies"
-	"github.com/ONSdigital/log.go/log"
 	"net/http"
 	"regexp"
 	"strings"
+
+	"github.com/ONSdigital/dp-cookies/cookies"
+	"github.com/ONSdigital/log.go/log"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
 	dprequest "github.com/ONSdigital/dp-net/v2/request"
@@ -95,6 +96,11 @@ func imageAPIDirector(apiRouterVersion string) func(req *http.Request) {
 func datasetControllerDirector(req *http.Request) {
 	director(req)
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
+}
+
+func interactivesDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/interactives")
 }
 
 func tableDirector(req *http.Request) {

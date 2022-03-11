@@ -2,8 +2,9 @@ package service
 
 import (
 	"context"
-	"github.com/ONSdigital/florence/service/modifiers"
 	"net/url"
+
+	"github.com/ONSdigital/florence/service/modifiers"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
@@ -106,6 +107,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	routerProxy := reverseproxy.Create(routerURL, director, nil)
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
+	interactivesProxy := reverseproxy.Create(apiRouterURL, interactivesDirector, nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
 	tableProxy := reverseproxy.Create(tableURL, tableDirector, nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
@@ -131,18 +133,19 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 	}
-    if cfg.SharedConfig.EnableNewSignIn {
-        router.Handle("/tokens", identityAPIProxy)
-        router.Handle("/tokens/{uri:.*}", identityAPIProxy)
-        router.Handle("/users", identityAPIProxy)
-        router.Handle("/users/{uri:.*}", identityAPIProxy)
-        router.Handle("/groups/{uri:.*}", identityAPIProxy)
-        router.Handle("/groups", identityAPIProxy)
-        router.Handle("/password-reset", identityAPIProxy)
-        router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
-    }
+	if cfg.SharedConfig.EnableNewSignIn {
+		router.Handle("/tokens", identityAPIProxy)
+		router.Handle("/tokens/{uri:.*}", identityAPIProxy)
+		router.Handle("/users", identityAPIProxy)
+		router.Handle("/users/{uri:.*}", identityAPIProxy)
+		router.Handle("/groups/{uri:.*}", identityAPIProxy)
+		router.Handle("/groups", identityAPIProxy)
+		router.Handle("/password-reset", identityAPIProxy)
+		router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
+	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
+	router.Handle("/interactives{uri:/.*}", interactivesProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
