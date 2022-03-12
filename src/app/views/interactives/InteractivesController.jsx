@@ -15,6 +15,7 @@ import {toggleInArray} from "./../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
 import Magnifier from "../../icons/Magnifier";
 import {Link} from "react-router";
+import Select from "../../components/Select";
 
 export class InteractivesController extends Component {
     constructor(props) {
@@ -24,11 +25,13 @@ export class InteractivesController extends Component {
             query: '',
             filters: {
                 topics: [],
-                query: ''
+                query: '',
+                sortBy: 'desc'
             }
         };
 
         this.handleFilter = this.handleFilter.bind(this);
+        this.handleInteractivesOrder = this.handleInteractivesOrder.bind(this);
     }
 
     static propTypes = {
@@ -66,6 +69,12 @@ export class InteractivesController extends Component {
     handleFilter()
     {
         this.state.filters.query = this.state.query
+        this.props.filterInteractives(this.state.filters)
+    }
+
+    handleInteractivesOrder(e)
+    {
+        this.state.filters.sortBy = e.target.value
         this.props.filterInteractives(this.state.filters)
     }
 
@@ -124,6 +133,13 @@ export class InteractivesController extends Component {
                     </div>
                     <div className={"grid__col-5"}>
                         <div className="filterable-table-box padding-top--5">
+                            <div>
+                                <label htmlFor="">Sort by</label>
+                                 <select name="sort" id="sort" onChange={this.handleInteractivesOrder}>
+                                     <option value="desc">Latest</option>
+                                     <option value="asc">Oldest</option>
+                                 </select>
+                            </div>
                             <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
                                 Upload interactive
                             </Link>

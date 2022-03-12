@@ -2,7 +2,7 @@ import * as types from './../actions/actionTypes'
 
 const initialState = {
     taxonomies: [],
-    errors: ''
+    errors: {}
 }
 
 export default function reducer(state = initialState, action = {})

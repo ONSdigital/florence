@@ -19,7 +19,6 @@ export function setTaxonomyError(error)
 
 export function getTaxonomies()
 {
-    console.log('getting taxonomies')
     return dispatch => {
         taxonomy.getAllProductPages()
             .then((res) => {

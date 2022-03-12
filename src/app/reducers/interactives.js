@@ -1,5 +1,6 @@
 import * as types from './../actions/actionTypes'
 import {isInArray} from "../utilities/utils";
+import moment from "moment";
 
 const initialState = {
     interactives: [],
@@ -42,13 +43,18 @@ export default function reducer(state = initialState, action = {})
                 successMessage: initialState.successMessage,
             })
         case types.FILTER_INTERACTIVES:
-            const { topics, query } = action.filters;
+            const { topics, query, sortBy } = action.filters;
             let filteredInteractives = state.interactives;
             if(topics.length > 0){
                 filteredInteractives = state.interactives.filter(interactive => isInArray(topics, interactive.metadata.primary_topic))
             }
-            if(query.length > 2){
-                filteredInteractives = state.interactives.filter(interactive => isInArray(interactive.title, query))
+            if(query.length > 1){
+                filteredInteractives = state.interactives.filter(interactive => isInArray(interactive.metadata.title, query))
+            }
+            if(sortBy === 'desc'){
+                filteredInteractives = state.interactives.sort((a, b) => new Date(a.metadata.release_at) - new Date(b.metadata.release_at));
+            } else {
+                filteredInteractives = state.interactives.sort((a, b) => new Date(b.metadata.release_at) - new Date(a.metadata.release_at));
             }
             return Object.assign({}, state, {
                 filteredInteractives,
