@@ -44,7 +44,7 @@ function Table({ columns, data }) {
 
     for (let  i = 1; i <= pageCount;  i++) {
         paginationButtons.push(
-            <button onClick={() => gotoPage(i)} disabled={!canNextPage}>
+            <button onClick={() => gotoPage(i)} disabled={!canNextPage} className={i === (pageIndex + 1) ? 'active': null}>
                 {i}
             </button>
         );
@@ -83,9 +83,9 @@ function Table({ columns, data }) {
 
             <span className={"pageCounter"}>
                 Page{' '}
-                <strong>
+                <span>
                     {pageIndex + 1} of {pageOptions.length}
-                </strong>{' '}
+                </span>{' '}
             </span>
             <div className="pagination">
                 {/*<button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>*/}
@@ -93,11 +93,11 @@ function Table({ columns, data }) {
                 {/*</button>{' '}*/}
                 <a href="javascript:void(0)" onClick={() => previousPage()} disabled={!canPreviousPage}>
                     {'Previous'}
-                </a>{' '}
+                </a>
                 {paginationButtons}
                 <a href="javascript:void(0)" onClick={() => nextPage()} disabled={!canNextPage}>
                     {'Next'}
-                </a>{' '}
+                </a>
                 {/*<button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>*/}
                 {/*    {'>>'}*/}
                 {/*</button>{' '}*/}

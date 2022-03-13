@@ -79,6 +79,14 @@ export class InteractivesController extends Component {
         this.props.filterInteractives(this.state.filters)
     }
 
+    clearCheckboxes()
+    {
+        const checkboxes = document.querySelectorAll('input[type=checkbox]');
+        checkboxes.forEach(function (checkbox){
+            checkbox.checked = false
+        })
+    }
+
     render() {
         const { rootPath, taxonomies, filteredInteractives } = this.props;
 
@@ -93,6 +101,7 @@ export class InteractivesController extends Component {
                             <input
                                 type="text"
                                 id="query"
+                                placeholder="Search by title"
                                 name="query"
                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                             />
@@ -128,7 +137,7 @@ export class InteractivesController extends Component {
                             >
                                 Apply
                             </button>
-                            <button className="btn btn--secondary" disabled={this.state.isAwaitingResponse}>
+                            <button className="btn btn--secondary" onClick={this.clearCheckboxes}>
                                 Cancel
                             </button>
                         </div>
