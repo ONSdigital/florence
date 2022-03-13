@@ -1,3 +1,4 @@
+import './interactives.scss'
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
@@ -15,6 +16,7 @@ import {toggleInArray} from "../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
 import Magnifier from "../../icons/Magnifier";
 import {Link} from "react-router";
+import {FooterComponent} from "./components/FooterComponent";
 
 export class InteractivesController extends Component {
     constructor(props) {
@@ -81,21 +83,20 @@ export class InteractivesController extends Component {
         const { rootPath, taxonomies, filteredInteractives } = this.props;
 
         return (
-            <div>
+            <div id="interactives-visualization">
                 <NavbarComponent>My visualizations</NavbarComponent>
-                <div className="grid grid--justify-space-around">
-                    <div className={"grid__col-3"}>
-                        <h1 className="text-center">Filters</h1>
-                            <div className="search__input-group">
-                                <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
-                                <input
-                                    type="text"
-                                    id="query"
-                                    name="query"
-                                    placeholder="Search by title"
-                                    onChange={(e) => this.setState({[e.target.name]: e.target.value})}
-                                />
-                            </div>
+                <div className="grid grid--justify-space-around padding-top--4 padding-bottom--4">
+                    <div id="filters" className={"grid__col-3"}>
+                        <h2 className="text-left">Filters</h2>
+                        <label htmlFor="query">Title</label>
+                        <div className="search__input-group">
+                            <input
+                                type="text"
+                                id="query"
+                                name="query"
+                                onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                            />
+                        </div>
                         <label htmlFor="">Primary topic</label>
                         <div className="scrollable-box">
                             <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
@@ -118,17 +119,19 @@ export class InteractivesController extends Component {
                                 }
                             </ul>
                         </div>
-                        <button
-                            type="submit"
-                            className="btn btn--success"
-                            disabled={this.state.isAwaitingResponse}
-                            onClick={this.handleFilter}
-                        >
-                            Apply
-                        </button>
-                        <button className="btn btn--secondary" disabled={this.state.isAwaitingResponse}>
-                            Cancel
-                        </button>
+                        <div className={'grid grid--justify-space-between filter-buttons padding-top--1'}>
+                            <button
+                                type="submit"
+                                className="btn btn--success"
+                                disabled={this.state.isAwaitingResponse}
+                                onClick={this.handleFilter}
+                            >
+                                Apply
+                            </button>
+                            <button className="btn btn--secondary" disabled={this.state.isAwaitingResponse}>
+                                Cancel
+                            </button>
+                        </div>
                     </div>
                     <div className={"grid__col-5"}>
                         <div className="filterable-table-box padding-top--5">
@@ -146,6 +149,7 @@ export class InteractivesController extends Component {
                         </div>
                     </div>
                 </div>
+                <FooterComponent/>
             </div>
         );
     }

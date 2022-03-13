@@ -1,11 +1,11 @@
 .scrollable-box {
-    border: 3px solid $pickled-bluewood;
+    border: 1px solid #222222;
     border-radius: 4px;
     height: 100%;
     max-height: $lineheight * 14;
 
     ul {
-        padding: 15px !important;
+        margin: 19px 19px 19px 19px !important;
     }
 
     .with-sort {
@@ -24,7 +24,7 @@
 
     &__list {
         list-style: none;
-        max-height: $lineheight * 14;
+        max-height: $lineheight * 9;
         overflow-y: scroll;
     }
 
