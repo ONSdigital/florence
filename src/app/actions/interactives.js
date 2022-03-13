@@ -1,9 +1,5 @@
 import * as types from './actionTypes'
-import axios from 'axios'
-
-const instance = axios.create({
-    baseURL: '/interactives/v1/',
-});
+import Interactives from "../utilities/api-clients/interactives";
 
 export function setInteractives(interactives)
 {
@@ -71,28 +67,26 @@ export function filterInteractives(filters)
 // get interactives
 export function getInteractives()
 {
-    return dispatch => {
-        instance.get(`/interactives`)
-            .then((res) => {
-                dispatch(setInteractives(res.data.items))
-            })
-            .catch((error) => {
-                dispatch(setInteractiveError(error))
-            })
+    return async dispatch => {
+        try {
+            const res = await Interactives.getAll()
+            dispatch(setInteractives(res.data.items))
+        } catch (error) {
+            dispatch(setInteractiveError(error))
+        }
     }
 }
 
 // get interactive
 export function getInteractive(interactiveId)
 {
-    return dispatch => {
-        instance.get(`/interactives/${interactiveId}`)
-            .then((data) => {
-                dispatch(setInteractive(data.data))
-            })
-            .catch((error) => {
-                dispatch(setInteractiveError(error))
-            })
+    return async dispatch => {
+        try {
+            const res = await Interactives.show(interactiveId)
+            dispatch(setInteractive(res.data))
+        } catch (error) {
+            dispatch(setInteractiveError(error))
+        }
     }
 }
 
@@ -101,11 +95,7 @@ export function createInteractive(data)
 {
     return async dispatch => {
         try {
-            const res = await instance.post(`/interactives`, data, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            })
+            const res = await Interactives.store(data)
             dispatch(storeInteractive(res.data))
             dispatch(setSuccessMessage({
                 type: 'create',
@@ -120,39 +110,31 @@ export function createInteractive(data)
 // edit interactive
 export function editInteractive(interactiveId, data)
 {
-    return dispatch => {
-        instance.put(`/interactives/${interactiveId}`, data, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            }
-        })
-            .then((res) => {
-                dispatch(updateInteractive(res))
-                dispatch(setSuccessMessage({
-                    type: 'update',
-                    success: true
-                }))
-            .catch((error) => {
-                dispatch(setInteractiveError(error))
-            })
-        })
+    return async dispatch => {
+        try {
+            const res = await Interactives.update(interactiveId, data)
+            dispatch(setSuccessMessage({
+                type: 'update',
+                success: true
+            }))
+        } catch (error) {
+            dispatch(setInteractiveError(error))
+        }
     }
 }
 
 // delete interactive
 export function deleteInteractive(interactiveId)
 {
-    return dispatch => {
-        instance.delete(`/interactives/${interactiveId}`)
-            .then((res) => {
-                dispatch(updateInteractive(res))
-                dispatch(setSuccessMessage({
-                    type: 'delete',
-                    success: true
-                }))
-            .catch((error) => {
-                dispatch(setInteractiveError(error))
-            })
-        })
+    return async dispatch => {
+        try {
+            const res = await Interactives.destroy(interactiveId)
+            dispatch(setSuccessMessage({
+                type: 'delete',
+                success: true
+            }))
+        } catch (error) {
+            dispatch(setInteractiveError(error))
+        }
     }
 }

@@ -1,11 +1,10 @@
 import axios from 'axios'
 
 const instance = axios.create({
-    baseURL: '/interactives/v1/',
-    // headers: {'X-Custom-Header': 'foobar'}
+    baseURL: 'http://localhost:8081/interactives/v1',
 });
 
-export default class interactives {
+export default class Interactives {
     static getAll() {
         return instance.get(`/interactives`)
     }
@@ -19,9 +18,7 @@ export default class interactives {
     };
 
     static show (interactiveId) {
-        return instance.get(`/interactives/${interactiveId}`).then(response => {
-            return response;
-        });
+        return instance.get(`/interactives/${interactiveId}`)
     };
 
     static update = (interactiveId, body) => {

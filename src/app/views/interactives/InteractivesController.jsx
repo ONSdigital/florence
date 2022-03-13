@@ -14,7 +14,6 @@ import moment from "moment";
 import url from "../../utilities/url";
 import {toggleInArray} from "../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
-import Magnifier from "../../icons/Magnifier";
 import {Link} from "react-router";
 import {FooterComponent} from "./components/FooterComponent";
 
@@ -61,8 +60,10 @@ export class InteractivesController extends Component {
         return interactives.map(interactive => {
             const {id, metadata} = interactive
             const releaseDate = moment(metadata.release_date).format('DD MMMM YYYY')
+            const taxonomy = this.props.taxonomies.find(taxonomy => taxonomy.uri === '/'+metadata.primary_topic.replace(/-/g, "/"))
+            const taxonomyTitle = taxonomy ? taxonomy.description.title : ''
             return {
-                data: [releaseDate, metadata.title, metadata.primary_topic, id],
+                data: [releaseDate, metadata.title, taxonomyTitle, id],
             }
         })
     }

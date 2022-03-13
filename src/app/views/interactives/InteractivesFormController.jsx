@@ -93,7 +93,7 @@ export class InteractivesFormController extends Component {
                 this.props.resetSuccessMessage()
                 this.props.router.push(`${rootPath}/interactives/index`);
             }
-            if(nextProps.successMessage.type === "edit"){
+            if(nextProps.successMessage.type === "update"){
                 this.props.resetSuccessMessage()
                 this.props.router.push(`${rootPath}/interactives/index`);
             }
