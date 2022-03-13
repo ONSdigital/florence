@@ -102,6 +102,14 @@ export class InteractivesFormController extends Component {
                 this.props.router.push(`${rootPath}/interactives/index`);
             }
         }
+        if(this.props.interactive.metadata){
+            const { metadata } = this.props.interactive
+            this.state.title = metadata.title
+            this.state.primary = metadata.primary_topic
+            this.state.surveys = metadata.surveys
+            this.state.topics = metadata.topics
+            this.state.url = metadata.uri
+        }
     }
 
     mapTaxonomiesToSelectOptions(taxonomies) {
@@ -169,7 +177,7 @@ export class InteractivesFormController extends Component {
                                                 className="input"
                                                 name="title"
                                                 disabled={this.state.isAwaitingResponse}
-                                                value={interactive.metadata ? interactive.metadata.title : null}
+                                                value={this.state.title}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
@@ -201,7 +209,7 @@ export class InteractivesFormController extends Component {
                                                 contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={interactive.metadata ? interactive.metadata.primary_topic : null}
+                                                selectedOption={this.state.primary}
                                                 disabled={this.state.isReadOnly || this.state.isSavingData}
                                             />
                                         </div>
@@ -214,7 +222,7 @@ export class InteractivesFormController extends Component {
                                                 contents={this.mapValuesToSelectOptions(surveys)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={interactive.surveys}
+                                                selectedOption={this.state.surveys}
                                                 disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
@@ -227,7 +235,7 @@ export class InteractivesFormController extends Component {
                                                 contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                                 error={this.state.editionError}
-                                                selectedOption={interactive.topics}
+                                                selectedOption={this.state.topics}
                                                 disabled={this.state.isAwaitingResponse}
                                             />
                                         </div>
@@ -242,7 +250,7 @@ export class InteractivesFormController extends Component {
                                                 className="input"
                                                 name="url"
                                                 disabled={this.state.isAwaitingResponse}
-                                                value={interactive.metadata ? interactive.metadata.uri : null}
+                                                value={this.state.url}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
