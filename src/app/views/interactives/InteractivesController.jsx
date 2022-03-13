@@ -11,11 +11,10 @@ import {
 } from "../../actions/interactives";
 import moment from "moment";
 import url from "../../utilities/url";
-import {toggleInArray} from "./../../utilities/utils"
+import {toggleInArray} from "../../utilities/utils"
 import {ReactTable} from "./components/ReactTable";
 import Magnifier from "../../icons/Magnifier";
 import {Link} from "react-router";
-import Select from "../../components/Select";
 
 export class InteractivesController extends Component {
     constructor(props) {

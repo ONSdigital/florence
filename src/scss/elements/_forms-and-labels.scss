@@ -59,6 +59,39 @@
         flex-wrap: nowrap;
     }
 
+    &__button{
+        &__panel{
+            padding: 0 81px 0px 26px;
+
+            button, a {
+                font-family: "Open Sans";
+                font-size: 18px;
+                border-bottom: 3px solid rgba(0, 0, 0, .6);
+            }
+
+            button:nth-child(1) {
+                font-weight: 700;
+            }
+
+            a{
+                color: $black;
+                font-weight: 400;
+            }
+        }
+    }
+
+    &__back__button {
+        padding: 0 81px 0px 26px;
+        a {
+            color: $black;
+            display: flex;
+
+            img {
+                padding-right: 10px;
+            }
+        }
+    }
+
 }
 
 .fieldset {

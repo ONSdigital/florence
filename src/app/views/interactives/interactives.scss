@@ -1,0 +1,101 @@
+#logo {
+  background-color: #033E58;
+  li {
+    float: left;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 221px;
+  }
+}
+
+#nav {
+  background-color: #3B7A9E;
+  height: 92px;
+  li {
+    float: left;
+    color: #FFFFFF;
+    font-size : 30px;
+    font-family: "Open Sans", serif;
+    font-weight: 700;
+
+    a {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #fff;
+      left: 221px;
+      padding: 0
+    }
+  }
+}
+
+#footer {
+  background-color: #F0F0F0;
+  height: 128px;
+  li {
+    float: left;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 221px;
+  }
+}
+
+#interactives-form {
+  input, .select-wrap {
+    border: 1px solid #222222;
+    font-size: 18px;
+  }
+  select {
+    font-size: 18px;
+  }
+
+  input[type="file"] {
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 0;
+    font-size: 17px;
+    color: #b8b8b8;
+  }
+  .button-wrap {
+    position: relative;
+  }
+  .file-description{
+    font-size: 14px;
+    margin-bottom: 10px;
+  }
+  .button {
+    display: inline-block;
+    padding: 10px 12px;
+    cursor: pointer;
+    border-radius: 5px 0 0 5px;
+    background-color: #D8D8D8;
+    font-size: 18px;
+    font-weight: 400;
+    color: #000000;
+    border: 1px solid;
+    width: 129px;
+  }
+  .select-wrap{
+    &:before{
+      background: transparent;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 50px;
+      height: 100%;
+      line-height: 38px;
+      content: '\2228';
+      text-align: center;
+      font-size: 24px;
+      color: #222222;
+    }
+  }
+  .select-wrap--focus{
+    &:before {
+      border: none;
+    }
+  }
+}

@@ -1,7 +1,9 @@
+import './interactives.scss'
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import url from './../../utilities/url'
+import arrowLeft from "../../../img/arrow-left.svg";
 
 import {
     createInteractive,
@@ -15,6 +17,7 @@ import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
 import Select from "../../components/Select";
 import {Link} from "react-router";
+import {FooterComponent} from "./components/FooterComponent";
 
 export class InteractivesFormController extends Component {
 
@@ -140,21 +143,21 @@ export class InteractivesFormController extends Component {
                 <div>
                     <div className="grid font-size--18">
                         <div className="grid__col-1"/>
-                        <div className="grid__col-1">
+                        <div className="grid__col-1 padding-top--2 form__back__button">
                         {
                             this.state.interactiveId &&
                                 (<Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
-                                    Back
+                                    <img src={arrowLeft} alt=""/>Back
                                 </Link>)
                         }
                         </div>
                     </div>
-                    <div className="grid font-size--18 padding-top--4">
+                    <div className={`grid font-size--18 padding-bottom--4 ${this.state.interactiveId ? 'padding-top--2' : 'padding-top--4'}`}>
                         <div className="grid__col-1"/>
                         <div className="grid__col-7">
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-12">
-                                    <form className="form" onSubmit={this.handleSubmit}>
+                                    <form id="interactives-form" className="form" onSubmit={this.handleSubmit}>
                                         <div className={`form__input form__input__panel ${errors.title ? "form__input--error__panel": ""}`}>
                                             {errors.title && <span>Enter a correct title</span>}
                                             <label className="form__label" htmlFor="team-name">
@@ -172,17 +175,22 @@ export class InteractivesFormController extends Component {
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.file ? "form__input--error__panel": ""}`}>
                                             {errors.file && <span>Enter a correct title</span>}
-                                            <label className="form__label" htmlFor="team-name">
+                                            <label className="form__label" htmlFor="file">
                                                 Interactive file
                                             </label>
-                                            <span>File needs to be in .zip format</span>
-                                            <input
-                                                type="file"
-                                                id="file"
-                                                name="file"
-                                                className="input"
-                                                onChange={this.handleFile}
-                                            />
+                                            <span className={'file-description'}>File needs to be in .zip format</span>
+                                            <div className="button-wrap">
+                                                <label className="button" htmlFor="file">
+                                                    Choose file
+                                                </label>
+                                                <input
+                                                    type="file"
+                                                    id="file"
+                                                    name="file"
+                                                    className="input"
+                                                    onChange={this.handleFile}
+                                                />
+                                            </div>
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel": ""}`}>
                                             {errors.primary && <span>Enter a correct title</span>}
@@ -238,46 +246,49 @@ export class InteractivesFormController extends Component {
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                                             />
                                         </div>
-                                        {
-                                            !this.state.interactiveId ?
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn--success"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.onSubmit}
-                                                >
-                                                    Create
-                                                </button>
-                                                :
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn--success"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.onSubmit}
-                                                >
-                                                    Save and preview
-                                                </button>
-                                        }
-                                        {
-                                            !this.state.interactiveId ?
-                                                <Link to={`${rootPath}/interactives/index`} className="btn btn--secondary padding-left--1"  disabled={this.state.isAwaitingResponse}>
-                                                    Cancel
-                                                </Link>
-                                                :
-                                                <button
-                                                    className="btn btn--secondary padding-left--1"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.handleDelete}
-                                                >
-                                                    Delete interactive
-                                                </button>
-                                        }
+                                        <div className={"form__button__panel padding-top--1"}>
+                                            {
+                                                !this.state.interactiveId ?
+                                                    <button
+                                                        type="submit"
+                                                        className="btn btn--success"
+                                                        disabled={this.state.isAwaitingResponse}
+                                                        onClick={this.onSubmit}
+                                                    >
+                                                        Create
+                                                    </button>
+                                                    :
+                                                    <button
+                                                        type="submit"
+                                                        className="btn btn--success"
+                                                        disabled={this.state.isAwaitingResponse}
+                                                        onClick={this.onSubmit}
+                                                    >
+                                                        Save and preview
+                                                    </button>
+                                            }
+                                            {
+                                                !this.state.interactiveId ?
+                                                    <Link to={`${rootPath}/interactives/index`} className="btn btn--secondary padding-left--1"  disabled={this.state.isAwaitingResponse}>
+                                                        Cancel
+                                                    </Link>
+                                                    :
+                                                    <button
+                                                        className="btn btn--secondary padding-left--1"
+                                                        disabled={this.state.isAwaitingResponse}
+                                                        onClick={this.handleDelete}
+                                                    >
+                                                        Delete interactive
+                                                    </button>
+                                            }
+                                        </div>
                                     </form>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <FooterComponent/>
             </div>
         );
     }
