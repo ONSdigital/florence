@@ -1,6 +1,7 @@
 import React, {useEffect} from 'react'
 import { useTable, usePagination } from 'react-table'
 import { store } from "../../../config/store";
+// from https://react-table.tanstack.com/docs/overview
 
 import {Link} from "react-router";
 
@@ -39,24 +40,18 @@ function Table({ columns, data }) {
         setPageSize(5)
     }, []);
 
-    // Render the UI for your table
+    const paginationButtons = [];
+
+    for (let  i = 1; i <= pageCount;  i++) {
+        paginationButtons.push(
+            <button onClick={() => gotoPage(i)} disabled={!canNextPage}>
+                {i}
+            </button>
+        );
+    }
+
     return (
         <>
-      {/*<pre>*/}
-      {/*  <code>*/}
-      {/*    {JSON.stringify(*/}
-      {/*        {*/}
-      {/*            pageIndex,*/}
-      {/*            pageSize,*/}
-      {/*            pageCount,*/}
-      {/*            canNextPage,*/}
-      {/*            canPreviousPage,*/}
-      {/*        },*/}
-      {/*        null,*/}
-      {/*        2*/}
-      {/*    )}*/}
-      {/*  </code>*/}
-      {/*</pre>*/}
             <table {...getTableProps()}>
                 <tbody {...getTableBodyProps()}>
                 {page.map((row, i) => {
@@ -85,10 +80,7 @@ function Table({ columns, data }) {
                 })}
                 </tbody>
             </table>
-            {/*
-                Pagination can be built however you'd like.
-                This is just a very basic UI implementation:
-              */}
+
             <span className={"pageCounter"}>
                 Page{' '}
                 <strong>
@@ -102,6 +94,7 @@ function Table({ columns, data }) {
                 <button onClick={() => previousPage()} disabled={!canPreviousPage}>
                     {'Previous'}
                 </button>{' '}
+                {paginationButtons}
                 <button onClick={() => nextPage()} disabled={!canNextPage}>
                     {'Next'}
                 </button>{' '}
