@@ -69,7 +69,7 @@ function Table({ columns, data }) {
                                         <span>
                                             {cell.value[0]}
                                         </span>
-                                        <Link>
+                                        <Link  to={`${rootPath}/interactives/create`}>
                                             {cell.value[2]}
                                         </Link>
                                     </div>
@@ -91,13 +91,13 @@ function Table({ columns, data }) {
                 {/*<button onClick={() => gotoPage(0)} disabled={!canPreviousPage}>*/}
                 {/*    {'<<'}*/}
                 {/*</button>{' '}*/}
-                <button onClick={() => previousPage()} disabled={!canPreviousPage}>
+                <a href="javascript:void(0)" onClick={() => previousPage()} disabled={!canPreviousPage}>
                     {'Previous'}
-                </button>{' '}
+                </a>{' '}
                 {paginationButtons}
-                <button onClick={() => nextPage()} disabled={!canNextPage}>
+                <a href="javascript:void(0)" onClick={() => nextPage()} disabled={!canNextPage}>
                     {'Next'}
-                </button>{' '}
+                </a>{' '}
                 {/*<button onClick={() => gotoPage(pageCount - 1)} disabled={!canNextPage}>*/}
                 {/*    {'>>'}*/}
                 {/*</button>{' '}*/}

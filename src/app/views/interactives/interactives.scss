@@ -165,4 +165,58 @@
       }
     }
   }
+
+  #interactives-table{
+    .filterable-buttons{
+      display: flex;
+      padding-bottom: 19px;
+      a {
+        font-family: "Open Sans", serif;
+        color: #000;
+        font-weight: 400;
+        border-bottom: 3px solid rgba(0, 0, 0, .6);
+      }
+      .sort-filter {
+        font-family: "Open Sans", serif;
+        color: #000;
+        font-weight: 400;
+        label {
+          padding-right: 13px;
+        }
+        select {
+          background: #fff;
+          border: 1px solid #000;
+          padding: 6px 9px;
+          border-radius: 3px;
+        }
+      }
+    }
+    table {
+      padding-bottom: 39px;
+      .metas {
+        a {
+          text-decoration: underline;
+        }
+      }
+    }
+    .pagination {
+      font-size: 18px;
+      a {
+        &:nth-child(1){
+          padding-right: 9px;
+        }
+      }
+      button {
+        background-color: transparent;
+        width: 45px;
+        height: 45px;
+        border-radius: 3px;
+        margin-right: 9px;
+      }
+      button.active {
+        background-color: #033E58;
+        color: #fff;
+      }
+    }
+  }
 }

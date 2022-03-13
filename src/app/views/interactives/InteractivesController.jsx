@@ -133,18 +133,20 @@ export class InteractivesController extends Component {
                             </button>
                         </div>
                     </div>
-                    <div className={"grid__col-5"}>
-                        <div className="filterable-table-box padding-top--5">
-                            <div>
-                                <label htmlFor="">Sort by</label>
-                                 <select name="sort" id="sort" onChange={this.handleInteractivesOrder}>
-                                     <option value="desc">Latest</option>
-                                     <option value="asc">Oldest</option>
-                                 </select>
+                    <div id="interactives-table" className={"grid__col-5"}>
+                        <div className="filterable-table-box">
+                            <div className={"grid grid--justify-space-between filterable-buttons"}>
+                                <div className={"sort-filter"}>
+                                    <label htmlFor="">Sort by</label>
+                                     <select name="sort" id="sort" onChange={this.handleInteractivesOrder}>
+                                         <option value="desc">Latest</option>
+                                         <option value="asc">Oldest</option>
+                                     </select>
+                                </div>
+                                <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
+                                    Upload interactive
+                                </Link>
                             </div>
-                            <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
-                                Upload interactive
-                            </Link>
                             <ReactTable data={this.mapInteractivesToTableData(filteredInteractives)}/>
                         </div>
                     </div>
