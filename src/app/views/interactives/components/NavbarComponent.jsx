@@ -1,4 +1,3 @@
-import './../interactives.scss'
 import React, { Component } from "react";
 import logo from "../../../../img/logo.svg";
 

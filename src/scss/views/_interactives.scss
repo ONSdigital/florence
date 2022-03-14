@@ -1,0 +1,232 @@
+#logo {
+    background-color: #033E58;
+    li {
+      float: left;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 221px;
+    }
+  }
+  
+  #nav {
+    background-color: #3B7A9E;
+    height: 92px;
+    li {
+      float: left;
+      color: #FFFFFF;
+      font-size : 30px;
+      font-family: "Open Sans", serif;
+      font-weight: 700;
+  
+      a {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #fff;
+        left: 221px;
+        padding: 0
+      }
+    }
+  }
+  
+  #footer {
+    background-color: #F0F0F0;
+    height: 128px;
+    li {
+      float: left;
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      left: 221px;
+    }
+  }
+  
+  #interactives-form {
+    input, .select-wrap {
+      border: 1px solid #222222;
+      font-size: 18px;
+    }
+    select {
+      font-size: 18px;
+      padding: 9px 50px 9px 10px;
+    }
+    input[type="file"] {
+      position: absolute;
+      z-index: -1;
+      top: 0;
+      left: 0;
+      font-size: 17px;
+      color: #b8b8b8;
+    }
+    .button-wrap {
+      position: relative;
+    }
+    .file-description{
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+    .button {
+      display: inline-block;
+      padding: 10px 12px;
+      cursor: pointer;
+      border-radius: 5px 0 0 5px;
+      background-color: #D8D8D8;
+      font-size: 18px;
+      font-weight: 400;
+      color: #000000;
+      border: 1px solid;
+      width: 129px;
+    }
+    .select-wrap{
+      &:before{
+        background: transparent;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 50px;
+        height: 100%;
+        line-height: 38px;
+        content: '\2228';
+        text-align: center;
+        font-size: 24px;
+        color: #222222;
+      }
+    }
+    .select-wrap--focus{
+      &:before {
+        border: none;
+      }
+    }
+  }
+  
+  #interactives-visualization {
+    font-family: 'Open Sans', serif !important;
+    color: #222222;
+    #filters{
+      h2 {
+        text-align: left;
+        font-size: 30px;
+        font-weight: 700;
+        font-family: 'Open Sans', serif !important;
+      }
+      label {
+        padding: 30px 0 11px 0;
+        font-size: 18px;
+        font-weight: 700;
+      }
+      .search__input-group {
+        border: none;
+        input {
+          border: 1px solid #222222;
+          height: 40px;
+          border-radius: 4px;
+          padding: 9px;
+          color: #000000;
+          font-family: 'Open Sans', serif;
+          font-style: normal;
+          font-weight: 400;
+          font-size: 18px;
+          line-height: 28px;
+        }
+        input::placeholder{
+          color: #000000;
+          font-style: normal;
+        }
+      }
+      .scrollable-box{
+        .grid {
+          display: flex;
+          input[type=checkbox] {
+            margin-right: 15px;
+            width: 18px;
+            height: 18px;
+          }
+          div{
+            font-family: 'Open Sans', serif;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 18px;
+            line-height: 28px;
+          }
+        }
+      }
+      .filter-buttons {
+        button {
+          width: 140px;
+          font-family: "Open Sans", serif;
+          font-size: 18px;
+          border-bottom: 3px solid rgba(0, 0, 0, .6);
+        }
+  
+        button:nth-child(1) {
+          font-weight: 700;
+        }
+  
+        button:nth-child(2){
+          color: #000;
+          font-weight: 400;
+        }
+      }
+    }
+  
+    #interactives-table{
+      .filterable-buttons{
+        display: flex;
+        padding-bottom: 19px;
+        a {
+          font-family: "Open Sans", serif;
+          color: #000;
+          font-weight: 400;
+          border-bottom: 3px solid rgba(0, 0, 0, .6);
+        }
+        .sort-filter {
+          font-family: "Open Sans", serif;
+          color: #000;
+          font-weight: 400;
+          label {
+            padding-right: 13px;
+          }
+          select {
+            background: #fff;
+            border: 1px solid #000;
+            padding: 6px 9px;
+            border-radius: 3px;
+            font-weight: 400;
+          }
+        }
+      }
+      table {
+        padding-bottom: 39px;
+        .metas {
+          a {
+            text-decoration: underline;
+          }
+        }
+      }
+      .pageCounter{
+        font-size: 18px;
+        color: #000;
+        font-weight: 400;
+      }
+      .pagination {
+        font-size: 18px;
+        a {
+          &:nth-child(1){
+            margin-right: 9px;
+          }
+        }
+        button {
+          background-color: transparent;
+          width: 45px;
+          height: 45px;
+          border-radius: 3px;
+          margin-right: 9px;
+        }
+        button.active {
+          background-color: #033E58;
+          color: #fff;
+        }
+      }
+    }
+  }
