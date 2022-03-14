@@ -106,7 +106,7 @@ export class InteractivesController extends Component {
                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
                             />
                         </div>
-                        <label htmlFor="">Primary topic</label>
+                        <label htmlFor="selectable-box">Primary topic</label>
                         <div className="scrollable-box">
                             <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
                                 {
@@ -146,7 +146,7 @@ export class InteractivesController extends Component {
                         <div className="filterable-table-box">
                             <div className={"grid grid--justify-space-between filterable-buttons"}>
                                 <div className={"sort-filter"}>
-                                    <label htmlFor="">Sort by</label>
+                                    <label htmlFor="sort">Sort by</label>
                                      <select name="sort" id="sort" onChange={this.handleInteractivesOrder}>
                                          <option value="desc">Latest</option>
                                          <option value="asc">Oldest</option>
