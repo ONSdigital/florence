@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { withRouter } from "react-router";
 import PropTypes from "prop-types";
 import BackButton from "../../../components/back-button";
 import Loader from "../../../components/loader";
@@ -45,7 +46,7 @@ const EditGroup = props => {
         setIsSubmitting(true);
 
         if (hasErrors || values.name === "") return;
-        updateGroup(id, values);
+        updateGroup(id, { name: values.name, precedence: 10 });
     };
 
     const handleChange = e => {
@@ -60,8 +61,8 @@ const EditGroup = props => {
         setValues(values => ({ ...values, [key]: val }));
     };
 
-    if (!group) return <h1>No group found.</h1>;
     if (loading) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
+    if (!group) return <h1>No group found.</h1>;
 
     return (
         <form className="form">
@@ -70,15 +71,17 @@ const EditGroup = props => {
                     <BackButton classNames="margin-top--2" />
                     <h1 className="margin-top--1 margin-bottom--1">{group.name}</h1>
                     <div className="grid__col-6">
-                        {!specialGroup && <Input
-                            error={errors?.name}
-                            id="name"
-                            label="Name"
-                            name="name"
-                            type="text"
-                            value={values ? values.name : ""}
-                            onChange={handleChange}
-                        />}
+                        {!specialGroup && (
+                            <Input
+                                error={errors?.name}
+                                id="name"
+                                label="Name"
+                                name="name"
+                                type="text"
+                                value={values ? values.name : ""}
+                                onChange={handleChange}
+                            />
+                        )}
                     </div>
                 </div>
                 <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
@@ -88,7 +91,7 @@ const EditGroup = props => {
 };
 
 EditGroup.prototype = {
-    params: PropTypes.objectOf({id: PropTypes.string.isRequired} ),
+    params: PropTypes.objectOf({ id: PropTypes.string.isRequired }),
     group: PropTypes.exact({
         created: PropTypes.string,
         id: PropTypes.string,
@@ -101,4 +104,4 @@ EditGroup.prototype = {
     loading: PropTypes.bool.isRequired,
 };
 
-export default EditGroup;
+export default withRouter(EditGroup);

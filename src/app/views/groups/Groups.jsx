@@ -39,7 +39,11 @@ const Groups = props => {
         const utcDate = new Date(date);
         const datePart = utcDate.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
         const timePart = utcDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-        return (<span>Created <strong>{`${datePart} at ${timePart}`}</strong></span>);
+        return (
+            <span>
+                Created <strong>{`${datePart} at ${timePart}`}</strong>
+            </span>
+        );
     };
 
     let allRowData = [];
@@ -51,10 +55,11 @@ const Groups = props => {
         rowsToDisplay =
             filterTerm === ""
                 ? allRowData
-                : allRowData.filter(team =>
-                    team.id.toLowerCase().search(filterTerm.toLowerCase()) !== -1 ||
-                    team.title.toLowerCase().search(filterTerm.toLowerCase()) !== -1
-                );
+                : allRowData.filter(
+                      team =>
+                          team.id.toLowerCase().search(filterTerm.toLowerCase()) !== -1 ||
+                          team.title.toLowerCase().search(filterTerm.toLowerCase()) !== -1
+                  );
     }
 
     return (
@@ -63,14 +68,12 @@ const Groups = props => {
                 <BackButton classNames="margin-top--2" />
                 <span className="margin-top--1">
                     <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
-                    <Link className="margin-left--1" to={url.resolve("./groups/create")}>Create a new team</Link>
+                    <Link className="margin-left--1" to={url.resolve("./groups/create")}>
+                        Create a new team
+                    </Link>
                 </span>
                 <div className="grid__col-6">
-                    <Input
-                        id="search-content-types"
-                        placeholder="Search teams by name or ID"
-                        onChange={e => setFilterTerm(e.target.value)}
-                    />
+                    <Input id="search-content-types" placeholder="Search teams by name or ID" onChange={e => setFilterTerm(e.target.value)} />
                 </div>
                 <SimpleSelectableList rows={rowsToDisplay} showLoadingState={isLoading} />
             </div>
@@ -83,6 +86,6 @@ Groups.propTypes = {
     loadTeams: PropTypes.func.isRequired,
     isNewSignIn: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired
+    rootPath: PropTypes.string.isRequired,
 };
 export default Groups;

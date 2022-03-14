@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`EditGroup matches the snapshot 1`] = `
+<form
+  className="form"
+>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-9"
+    >
+      <div
+        className="margin-top--2"
+      >
+        ◀ 
+        <a
+          onClick={[Function]}
+          role="link"
+          style={Object {}}
+        >
+          Back
+        </a>
+      </div>
+      <h1
+        className="margin-top--1 margin-bottom--1"
+      >
+        Boo is fine
+      </h1>
+      <div
+        className="grid__col-6"
+      >
+        <div
+          className="form__input"
+        >
+          <label
+            className="form__label"
+            htmlFor="name"
+          >
+            Name
+          </label>
+          <input
+            autoComplete="new-password"
+            autoFocus={false}
+            className="input"
+            disabled={false}
+            id="name"
+            name="name"
+            onChange={[Function]}
+            onFocus={[Function]}
+            type="text"
+            value=""
+          />
+        </div>
+      </div>
+    </div>
+    <div
+      className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer"
+      data-testid="form-footer"
+    >
+      <div
+        className="grid__col-9"
+      >
+        <div
+          className="grid grid--align-baseline"
+        >
+          <button
+            className="btn btn--positive btn--margin-right"
+            disabled={false}
+            onClick={[Function]}
+            type="submit"
+          >
+            Save changes
+          </button>
+          <a
+            className="btn btn--invert-primary btn--margin-right"
+            onClick={[Function]}
+            role="button"
+            style={Object {}}
+          >
+            Cancel
+          </a>
+          <span>
+            <svg
+              aria-label="warning icon"
+              className="svg-icon--action-bar"
+              focusable="false"
+              role="img"
+              viewBox="0 0 512 512"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M256,34.297L0,477.703h512L256,34.297z M256,422.05c-9.22,0-16.696-7.475-16.696-16.696s7.475-16.696,16.696-16.696 c9.22,0,16.696,7.475,16.696,16.696S265.22,422.05,256,422.05z M239.304,344.137V177.181h33.391v166.956H239.304z"
+              />
+            </svg>
+             You have unsaved changes
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+`;
