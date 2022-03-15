@@ -44,7 +44,7 @@ func TestDirectors(t *testing.T) {
 		request, err := http.NewRequest("GET", "/interactives/bar", nil)
 		So(err, ShouldBeNil)
 		interactivesDirector(request)
-		So(request.URL.String(), ShouldEqual, "/v1/interactives")
+		So(request.URL.String(), ShouldEqual, "/bar")
 	})
 
 	Convey("Dataset Controller proxy director function trims 'dataset-controller' from the request URL", t, func() {
