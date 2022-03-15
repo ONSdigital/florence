@@ -27,6 +27,17 @@
         left: 221px;
         padding: 0
       }
+
+      @media screen and (max-width: 500px) {
+        a {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          color: #fff;
+          left: 22px;
+          padding: 0
+        }
+      }
     }
   }
   

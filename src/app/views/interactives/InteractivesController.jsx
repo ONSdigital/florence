@@ -94,7 +94,7 @@ export class InteractivesController extends Component {
             <div id="interactives-visualization">
                 <NavbarComponent>My visualizations</NavbarComponent>
                 <div className="grid grid--justify-space-around padding-top--4 padding-bottom--4">
-                    <div id="filters" className={"grid__col-3"}>
+                    <div id="filters" className={"grid__col-sm-12 grid__col-md-3"}>
                         <h2 className="text-left">Filters</h2>
                         <label htmlFor="query">Title</label>
                         <div className="search__input-group">
@@ -142,7 +142,7 @@ export class InteractivesController extends Component {
                             </button>
                         </div>
                     </div>
-                    <div id="interactives-table" className={"grid__col-5"}>
+                    <div id="interactives-table" className={"grid__col-sm-12 grid__col-md-5"}>
                         <div className="filterable-table-box">
                             <div className={"grid grid--justify-space-between filterable-buttons"}>
                                 <div className={"sort-filter"}>
@@ -159,6 +159,7 @@ export class InteractivesController extends Component {
                             <ReactTable data={this.mapInteractivesToTableData(filteredInteractives)}/>
                         </div>
                     </div>
+                    <div className={"grid__col-1"}/>
                 </div>
                 <FooterComponent/>
             </div>

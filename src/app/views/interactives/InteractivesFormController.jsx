@@ -85,6 +85,16 @@ export class InteractivesFormController extends Component {
         if(interactiveId){
             this.setState({interactiveId: interactiveId})
             this.props.getInteractive(interactiveId)
+        } else {
+            this.state = {
+                title: '',
+                file: null,
+                primary: '',
+                surveys: '',
+                topics: '',
+                url: '',
+                interactiveId: null,
+            }
         }
         this.props.getTaxonomies()
     }
@@ -166,7 +176,7 @@ export class InteractivesFormController extends Component {
                     </div>
                     <div className={`grid font-size--18 padding-bottom--4 ${this.state.interactiveId ? 'padding-top--2' : 'padding-top--4'}`}>
                         <div className="grid__col-1"/>
-                        <div className="grid__col-7">
+                        <div className="grid__col-sm-12 grid__col-md-7">
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-12">
                                     <form id="interactives-form"
@@ -190,8 +200,9 @@ export class InteractivesFormController extends Component {
                                                 data-testid="title-input"
                                             />
                                         </div>
-                                        <div className={`form__input form__input__panel ${errors.file ? "form__input--error__panel": ""}`}>
-                                            {errors.file && <span>Enter a correct title</span>}
+                                        <div className={`form__input form__input__panel ${errors.file || errors.msg ? "form__input--error__panel": ""}`}>
+                                            {errors.file && <span>Upload a correct file</span>}
+                                            {errors.msg && (<span> Upload a correct file </span>)}
                                             <label className="form__label" htmlFor="file">
                                                 Interactive file
                                             </label>
@@ -211,7 +222,7 @@ export class InteractivesFormController extends Component {
                                             </div>
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel": ""}`}>
-                                            {errors.primary && <span>Enter a correct title</span>}
+                                            {errors.primary && <span>Select a primary topic</span>}
                                             <Select
                                                 id="primary"
                                                 name="primary"
@@ -225,7 +236,7 @@ export class InteractivesFormController extends Component {
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.surveys ? "form__input--error__panel": ""}`}>
-                                            {errors.surveys && <span>Enter a correct title</span>}
+                                            {errors.surveys && <span>Select surveys</span>}
                                             <Select
                                                 id="surveys"
                                                 name="surveys"
@@ -239,7 +250,7 @@ export class InteractivesFormController extends Component {
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.topics ? "form__input--error__panel": ""}`}>
-                                            {errors.topics && <span>Enter a correct title</span>}
+                                            {errors.topics && <span>Select topics</span>}
                                             <Select
                                                 id="topics"
                                                 name="topics"
@@ -256,7 +267,7 @@ export class InteractivesFormController extends Component {
                                             <label className="form__label" htmlFor="url">
                                                 URL
                                             </label>
-                                            {errors.url && <span>Enter a correct title</span>}
+                                            {errors.url && <span>Enter a correct url</span>}
                                             <input
                                                 type="text"
                                                 id="url"
