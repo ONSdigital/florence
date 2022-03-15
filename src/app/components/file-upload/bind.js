@@ -18,7 +18,8 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     r.assignBrowse(input);
     r.assignDrop(input);
     r.on("fileAdded", file => {
-        beginUploadAndUpdateComponentState(r, file, updateState);
+        const options = { aliasName: file.container.name }
+        beginUploadAndUpdateComponentState(r, options, file, updateState);
     });
     r.on("fileProgress", file => {
         updateComponentState(file, updateState);
@@ -31,6 +32,7 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     });
 }
 
+// Used for the new static files system, currently feature flagged
 export function bindGenericFileUploadInput(inputID, resumableOptions, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
@@ -45,18 +47,11 @@ export function bindGenericFileUploadInput(inputID, resumableOptions, updateStat
     r.assignBrowse(input);
     r.assignDrop(input);
     r.on("fileAdded", file => {
-        r.opts.query = resumableOptions
-        const aliasName = file.container.name;
-        r.opts.query.aliasName = aliasName;
-        
-        const fileUpload = {
-            aliasName: aliasName,
-            progress: 0,
-            error: null,
-            filename: file.fileName,
-        };
-        r.upload();
-        updateState(fileUpload)
+        const options = {
+            ...resumableOptions,
+            aliasName: file.container.name
+        }
+        beginUploadAndUpdateComponentState(r, options, file, updateState);
     });
     r.on("fileProgress", file => {
         updateComponentState(file, updateState);
@@ -69,9 +64,9 @@ export function bindGenericFileUploadInput(inputID, resumableOptions, updateStat
     });
 }
 
-function beginUploadAndUpdateComponentState(resumable, file, updateState) {
+function beginUploadAndUpdateComponentState(resumable, resumableOptions, file, updateState) {
     const aliasName = file.container.name;
-    resumable.opts.query.aliasName = aliasName;
+    resumable.opts.query = resumableOptions;
     resumable.upload();
     const fileUpload = {
         aliasName: aliasName,

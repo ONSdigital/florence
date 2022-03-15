@@ -9,8 +9,6 @@ const GenericFileUploader = ({
     label = "generic file uploader",
     id = "generic-file-uploader",
     progress = null,
-    isPublishable = true,
-    isUploading = false,
     onRetry = () => {},
 }) => {
     const renderInput = () => {
@@ -36,18 +34,7 @@ const GenericFileUploader = ({
                             </div>
                         )}
                     </div>
-                ) : (
-                    <>
-                        <Checkbox
-                            id="file-is-publishable"
-                            onChange={() => setIsPublishable(!isPublishable)}
-                            isChecked={isPublishable}
-                            disable={isUploading}
-                            label="File publishable?"
-                        />
-                        <Input id={id} name={label} type="file" accept={acceptedFileTypes} error={error} />
-                    </>
-                )}
+                ) : (<Input id={id} name={label} type="file" accept={acceptedFileTypes} error={error} />)}
             </div>
         );
     };
@@ -65,7 +52,7 @@ const GenericFileUploader = ({
     return (
         <div className="grid">
             {url && !error ? renderLink() : ""}
-            {!url && <div className="grid__col-10 margin-bottom--0">{renderInput()}</div>}
+            {!url && <div className="grid__col-12 margin-bottom--0">{renderInput()}</div>}
         </div>
     );
 };
