@@ -2,7 +2,7 @@ import http from "../../utilities/http";
 
 import Resumable from "resumeablejs";
 
-const FIVE_MEGABYTES = 5 * 1024 * 1024
+const FIVE_MEGABYTES = 5 * 1024 * 1024;
 
 export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
@@ -18,7 +18,7 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     r.assignBrowse(input);
     r.assignDrop(input);
     r.on("fileAdded", file => {
-        const options = { aliasName: file.container.name }
+        const options = { aliasName: file.container.name };
         beginUploadAndUpdateComponentState(r, options, file, updateState);
     });
     r.on("fileProgress", file => {
@@ -49,8 +49,8 @@ export function bindGenericFileUploadInput(inputID, resumableOptions, updateStat
     r.on("fileAdded", file => {
         const options = {
             ...resumableOptions,
-            aliasName: file.container.name
-        }
+            aliasName: file.container.name,
+        };
         beginUploadAndUpdateComponentState(r, options, file, updateState);
     });
     r.on("fileProgress", file => {

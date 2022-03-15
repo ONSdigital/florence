@@ -39,7 +39,7 @@ const STATUS_IMPORTING_ERROR = "Image import errored";
 const STATUS_GETTING_IMAGE = "Image is loading";
 const STATUS_IMAGE_LOADED = "Image loaded";
 
-class EditHomepageItem extends Component {
+export class EditHomepageItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -59,7 +59,7 @@ class EditHomepageItem extends Component {
             isGettingImage: false,
             isImportingImage: false,
             imageImportStatus: STATUS_IMAGE_RECORD_CREATED,
-            uploadFilePathPrefix: "homepage-images"
+            uploadFilePathPrefix: "homepage-images",
         };
     }
 
@@ -80,16 +80,16 @@ class EditHomepageItem extends Component {
                 licence: "Open Government Licence v3.0",
                 licenceUrl: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
                 collectionId: this.props.params.collectionID,
-                path: this.state.uploadFilePathPrefix
-            }
-            bindGenericFileUploadInput(FILE_UPLOAD_ID, resumableOptions, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError)
+                path: this.state.uploadFilePathPrefix,
+            };
+            bindGenericFileUploadInput(FILE_UPLOAD_ID, resumableOptions, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
         } else {
             bindFileUploadInput(FILE_UPLOAD_ID, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
         }
     };
 
     renderFileUploader = () => {
-        const upload = this.state.upload
+        const upload = this.state.upload;
         return this.props.enableNewUpload ? (
             <GenericFileUploader
                 label="Image upload"
@@ -116,8 +116,8 @@ class EditHomepageItem extends Component {
                 progress={upload.progress >= 0 ? upload.progress : null}
                 onRetry={this.handleRetryClick}
             />
-        )
-    }
+        );
+    };
 
     updateUploadState = upload => {
         const newUploadState = {
@@ -369,13 +369,7 @@ class EditHomepageItem extends Component {
 
     renderImageUpload = () => {
         const upload = this.state.upload;
-        return (
-            <div>
-                {this.state.image && this.state.imageState !== "created" ? (
-                    this.renderImagePreview()
-                ) : (this.renderFileUploader())}
-            </div>
-        );
+        return <div>{this.state.image && this.state.imageState !== "created" ? this.renderImagePreview() : this.renderFileUploader()}</div>;
     };
 
     renderModalBody = isDisabled => {
@@ -441,10 +435,10 @@ class EditHomepageItem extends Component {
 function mapStateToProps(state) {
     return {
         currentCollectionId: state.state.collections,
-        enableNewUpload: state.state.config.enableNewUpload
+        enableNewUpload: state.state.config.enableNewUpload,
     };
 }
 
-export default connect(mapStateToProps)(EditHomepageItem)
+export default connect(mapStateToProps)(EditHomepageItem);
 
 EditHomepageItem.propTypes = propTypes;

@@ -203,7 +203,7 @@ class DatasetUploadController extends Component {
 
     bindInputs() {
         document.querySelectorAll('input[type="file"]').forEach(input => {
-            const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload"
+            const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload";
             const r = new Resumable({
                 target: `${UPLOAD_ENDPOINT}`,
                 method: "POST",
@@ -273,9 +273,9 @@ class DatasetUploadController extends Component {
             r.on("fileSuccess", file => {
                 this.setState({ isUploading: false });
                 const aliasName = file.resumableObj.opts.query.aliasName;
-                const UPLOAD_FETCH_PATH_ENDPOINT = this.props.enableNewUpload ?
-                    `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}` :
-                    `/upload/${file.uniqueIdentifier}`
+                const UPLOAD_FETCH_PATH_ENDPOINT = this.props.enableNewUpload
+                    ? `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`
+                    : `/upload/${file.uniqueIdentifier}`;
 
                 http.get(UPLOAD_FETCH_PATH_ENDPOINT)
                     .then(response => {

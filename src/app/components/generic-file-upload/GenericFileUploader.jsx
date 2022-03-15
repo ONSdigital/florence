@@ -34,7 +34,9 @@ const GenericFileUploader = ({
                             </div>
                         )}
                     </div>
-                ) : (<Input id={id} name={label} type="file" accept={acceptedFileTypes} error={error} />)}
+                ) : (
+                    <Input id={id} name={label} type="file" accept={acceptedFileTypes} error={error} />
+                )}
             </div>
         );
     };

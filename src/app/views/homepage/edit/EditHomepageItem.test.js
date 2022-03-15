@@ -1,5 +1,5 @@
 import React from "react";
-import EditHomepageItem from "./EditHomepageItem";
+import { EditHomepageItem } from "./EditHomepageItem";
 import { shallow, mount } from "enzyme";
 
 import image from "../../../utilities/api-clients/images";
