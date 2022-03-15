@@ -14,7 +14,6 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import ContentActionBar from "../../components/content-action-bar/ContentActionBar";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -156,7 +155,7 @@ export class LoginController extends Component {
     };
 
     setPermissions = () => {
-        user.getPermissions(this.state.emailValue)
+        user.getPermissions()
             .then(userType => {
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);

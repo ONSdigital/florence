@@ -1,6 +1,6 @@
 import React from "react";
 import { TeamDeleteController } from "./TeamDeleteController";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 
 jest.mock("../../../utilities/notifications.js", () => {
     return {
@@ -36,7 +36,7 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
 
 jest.mock("../../../config/actions.js", () => {
     return {
-        updateAllTeams: function (payload) {
+        loadGroupsSuccess: function (payload) {
             return payload;
         },
     };

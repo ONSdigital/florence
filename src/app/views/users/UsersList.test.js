@@ -1,150 +1,88 @@
 import React from "react";
-import { UsersList, getAllUsers, mapUserToState } from "./UsersList";
-import user from "../../utilities/api-clients/user";
-import renderer from "react-test-renderer";
-import { mount } from "enzyme";
+import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
+import userEvent from "@testing-library/user-event";
+import UsersList from "./UsersList";
+import { user } from "../../utilities/tests/mockData";
 
-console.error = () => {};
+const admin = createMockUser("admin@test.com", true, true, "ADMIN");
+const props = {
+    active: [],
+    suspended: [],
+    loading: false,
+    params: {},
+    rootPath: "test",
+    routes: [],
+    loggedInUser: admin,
+    loadUsers: jest.fn(),
+};
 
-const withTimeout = (done, fn) => {
-    const timeoutId = setTimeout(() => {
-        fn();
-        clearTimeout(timeoutId);
-        done();
+describe("UserList", () => {
+    it("renders empty list with message if no users found", () => {
+        render(<UsersList {...props} />);
+        expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Users/i);
+        expect(screen.getByRole("link", { name: "Create new user" })).toBeInTheDocument();
+        expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();
     });
-};
 
-jest.mock("../../utilities/logging/log", () => {
-    return {
-        event: jest.fn(() => {}),
-        data: jest.fn(() => {}),
-        error: jest.fn(() => {}),
-    };
-});
-
-jest.mock("../../utilities/notifications", () => {
-    return {
-        add: jest.fn(() => {}),
-        remove: () => {},
-    };
-});
-
-jest.mock("../../utilities/api-clients/user", () => {
-    return {
-        getAll: jest.fn(() => {
-            return Promise.resolve(mockedAllUsers);
-        }),
-    };
-});
-
-jest.mock("../../utilities/auth", () => {
-    return {
-        isAdmin: jest.fn(() => {
-            return true;
-        }),
-    };
-});
-
-const mockedAllUsers = {
-    count: 45,
-    users: [
-        {
-            forename: "Test",
-            lastname: "user",
-            email: "test@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "aaa-bbb-ccc",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 2",
-            email: "test2@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ddd-eee-fff",
-            status_notes: "",
-        },
-        {
-            forename: "Test",
-            lastname: "user 3",
-            email: "test3@test.com",
-            groups: [],
-            status: "CONFIRMED",
-            active: true,
-            id: "ggg-hhh-iii",
-            status_notes: "",
-        },
-    ],
-};
-
-let dispatchedActions = [];
-
-const mockDispatch = event => {
-    dispatchedActions.push(event);
-};
-const rootPath = "/florence";
-
-const defaultProps = {
-    dispatch: mockDispatch,
-    rootPath: rootPath,
-    params: {
-        userID: "",
-    },
-};
-
-describe("Calling getAllUsers function", () => {
-    it("fetches data for all users", done =>
-        withTimeout(done, () => {
-            const getUserCalls = user.getAll.mock.calls.length;
-            getAllUsers(mockDispatch, rootPath, () => {});
-            expect(user.getAll.mock.calls.length).toBe(getUserCalls + 1);
-        }));
-
-    it("adds all users to state", () => {
-        getAllUsers(mockDispatch, rootPath, () => {});
-        expect(dispatchedActions[0].type).toBe("ADD_ALL_USERS");
-        expect(dispatchedActions[0].users.length).toBe(mockedAllUsers.users.length);
+    it("fetches users on load", async () => {
+        render(<UsersList {...props} />);
+        expect(props.loadUsers).toBeCalled();
     });
-});
 
-describe("Mapping users to state", () => {
-    it("maps correctly", () => {
-        const expectedValue = {
-            ...mockedAllUsers.users[0],
-            id: mockedAllUsers.users[0].email,
-            details: [mockedAllUsers.users[0].email],
-            title: `${mockedAllUsers.users[0].forename} ${mockedAllUsers.users[0].lastname}`,
-            url: `/florence/users/${mockedAllUsers.users[0].email}`,
+    it("shows loader when fetching users", () => {
+        const newProps = {
+            ...props,
+            loading: true,
         };
-        const returnValue = mapUserToState("/florence", mockedAllUsers.users[0]);
-        expect(returnValue).toMatchObject(expectedValue);
-    });
-});
-
-describe("UsersList", () => {
-    const mappedUser1 = mapUserToState("/florence", mockedAllUsers.users[0]);
-    const mappedUser2 = mapUserToState("/florence", mockedAllUsers.users[1]);
-    const defaultProps = {
-        dispatch: mockDispatch,
-        rootPath: rootPath,
-        params: {
-            userID: "",
-        },
-        users: [mappedUser1, mappedUser2],
-    };
-
-    const component = mount(<UsersList {...defaultProps} />);
-    it("should display a simple selectable list", () => {
-        expect(component.find(".simple-select-list").length).toBe(1);
-        expect(component.find(".simple-select-list__item").length).toBe(2);
+        render(<UsersList {...newProps} />);
+        expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
-    it("matches the snapshot", () => {
-        const componentForSnapshot = renderer.create(<UsersList {...defaultProps} />);
-        expect(componentForSnapshot.toJSON()).toMatchSnapshot();
+    it("lists active users by default", () => {
+        const newProps = {
+            ...props,
+            active: [user],
+        };
+        render(<UsersList {...newProps} />);
+
+        const items = screen.getAllByRole("listitem");
+
+        expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
+        expect(items).toHaveLength(1);
+        expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+    });
+
+    it("renders list of active users by default", () => {
+        const newProps = {
+            ...props,
+            active: [user],
+        };
+        render(<UsersList {...newProps} />);
+
+        const items = screen.getAllByRole("listitem");
+
+        expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
+        expect(items).toHaveLength(1);
+        expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+
+        screen.getByLabelText("Show active users", { pressed: true });
+    });
+
+    it("renders list of inactive users when show suspended is active", () => {
+        const newProps = {
+            ...props,
+            active: [user],
+        };
+        render(<UsersList {...newProps} />);
+
+        expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
+        expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
+
+        userEvent.click(screen.getByRole("button", { name: /suspended/i }));
+
+        expect(screen.getByLabelText("Show active users", { pressed: false })).toBeInTheDocument();
+        expect(screen.getByLabelText("Show suspended users", { pressed: true })).toBeInTheDocument();
+        expect(screen.getByText(/nothing to show/i)).toBeInTheDocument();
     });
 });

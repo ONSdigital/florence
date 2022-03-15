@@ -54,7 +54,7 @@ export class LoginController extends Component {
         this.postLoginCredentials(credentials)
             .then(accessToken => {
                 cookies.add("access_token", accessToken);
-                user.getPermissions(this.state.email.value)
+                user.getPermissions()
                     .then(userType => {
                         user.setUserState(userType);
                         redirectToMainScreen(this.props.location.query.redirect);

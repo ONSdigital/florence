@@ -1,14 +1,14 @@
-export function toggleInArray(array, value){
-    const index = array.indexOf(value)
-    if( index > -1){
+export function toggleInArray(array, value) {
+    const index = array.indexOf(value);
+    if (index > -1) {
         array.splice(index, 1);
     } else {
-        array.push(value)
+        array.push(value);
     }
-    return array
+    return array;
 }
 
-export function isInArray(array, value){
-    const index = array.indexOf(value)
-    return index > -1
+export function isInArray(array, value) {
+    const index = array.indexOf(value);
+    return index > -1;
 }

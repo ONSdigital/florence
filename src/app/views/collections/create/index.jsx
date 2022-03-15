@@ -1,16 +1,17 @@
 import { connect } from "react-redux";
-import Create from "./Create";
-import { loadTeamsRequest, createCollectionRequest } from "../../../config/thunks";
-import { getMappedTeams, getTeamsLoading } from "../../../config/selectors";
+import CreateNewCollection from "./CreateNewCollection";
+import { fetchGroupsRequest, createCollectionRequest } from "../../../config/thunks";
+import { getGroupsLoading, getEnableNewSignIn, getMappedGroups } from "../../../config/selectors";
 
 export const mapStateToProps = state => ({
-    teams: getMappedTeams(state.state),
-    fetchingTeams: getTeamsLoading(state.state),
+    teams: getMappedGroups(state.state),
+    fetchingTeams: getGroupsLoading(state.state),
+    isNewSignIn: getEnableNewSignIn(state.state),
 });
 
 const mapDispatchToProps = dispatch => ({
-    loadTeams: () => dispatch(loadTeamsRequest()),
+    loadTeams: isNewSignIn => dispatch(fetchGroupsRequest(isNewSignIn)),
     createCollectionRequest: collection => dispatch(createCollectionRequest(collection)),
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Create);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateNewCollection);

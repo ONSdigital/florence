@@ -3,14 +3,14 @@ import logo from "../../../../img/logo-dark.svg";
 
 export class FooterComponent extends Component {
     render() {
-        return(
+        return (
             <>
                 <ul id="footer" className="global-nav__list">
                     <li className="global-nav__item">
-                        <img src={logo} alt="ONS"/>
+                        <img src={logo} alt="ONS" />
                     </li>
                 </ul>
             </>
-        )
+        );
     }
 }

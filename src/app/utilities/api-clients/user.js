@@ -6,26 +6,105 @@ import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
+import { errCodes as errorCodes, errCodes } from "../errorCodes";
 
 export default class user {
     static get(email) {
         return http.get(`/zebedee/users?email=${email}`);
     }
 
-    static getAll(params) {
-        const config = window.getEnv();
+    static getAll = async params => {
+        let config = {};
+        if (window.getEnv != null) {
+            config = window.getEnv();
+        }
         if (config.enableNewSignIn) {
             let queryString = "";
             Object.keys(params).map(key => {
                 queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
             });
-            return http.get(`/users${queryString}`);
+            try {
+                return await http.get(`/users${queryString}`);
+            } catch (error) {
+                if (error.status) {
+                    if (error.status >= 400 && error.status < 500) {
+                        switch (error.status) {
+                            case 400: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
+                                    autoDismiss: 5000,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                            case 404: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errCodes.GET_USERS_NOT_FOUND,
+                                    autoDismiss: 5000,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                            default: {
+                                const notification = {
+                                    type: "warning",
+                                    message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                                    isDismissable: true,
+                                };
+                                notifications.add(notification);
+                                break;
+                            }
+                        }
+                    } else {
+                        const notification = {
+                            type: "warning",
+                            message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                            isDismissable: true,
+                        };
+                        notifications.add(notification);
+                    }
+                } else {
+                    const notification = {
+                        type: "warning",
+                        message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                        isDismissable: true,
+                    };
+                    notifications.add(notification);
+                }
+                return error;
+            }
+        } else {
+            return http.get(`/zebedee/users`);
         }
-        return http.get(`/zebedee/users`);
-    }
+    };
 
     static create(body) {
         return http.post(`/zebedee/users`, body);
+    }
+
+    // TODO: new auth work
+    static getUsers() {
+        return http.get(`/users`);
+    }
+
+    // TODO: new auth work
+    static createNewUser(body) {
+        return http.post(`/users`, body);
+    }
+    // TODO: new auth work
+    static getUser(id) {
+        return http.get(`/users/${id}`);
+    }
+
+    // TODO: new auth work
+    static updateUser(id, body) {
+        return http.put(`/users/${id}`, body);
+    }
+
+    static getUserGroups(id) {
+        return http.get(`/users/${id}/groups`);
     }
 
     static remove(email) {
@@ -40,12 +119,35 @@ export default class user {
         return http.post(`/zebedee/permission`, body);
     }
 
-    static getPermissions(email) {
+    /**
+     * Gets the permissions of the user specified by the email provided.
+     *
+     * @returns the user permissions response
+     * @deprecated as part of migration to JWT sessions and will be removed soon. Use getPermissions() instead.
+     */
+    static getPermissionsForUser(email) {
+        console.warn(
+            "WARNING! Deprecated function called. Function 'getPermissionsForUser(email)' is deprecated, please use the new 'getPermissions()' instead"
+        );
         return http.get(`/zebedee/permission?email=${email}`, true, true);
+    }
+
+    /**
+     * Gets the permissions of the current authenticated user (based on their access token)
+     *
+     * @returns the user permissions response
+     */
+    static getPermissions() {
+        return http.get(`/zebedee/permission`, true, true);
     }
 
     static signIn(body) {
         return http.post("/tokens", body, true, true, true);
+    }
+
+    // TODO: new auth work
+    static deleteTokens() {
+        return http.delete("/tokens");
     }
 
     static setForgottenPassword(body) {

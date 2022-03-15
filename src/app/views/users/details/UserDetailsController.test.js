@@ -15,7 +15,7 @@ jest.mock("../../../utilities/api-clients/user", () => ({
             temporaryPassword: false,
         })
     ),
-    getPermissions: jest.fn().mockImplementation(email =>
+    getPermissionsForUser: jest.fn().mockImplementation(email =>
         Promise.resolve({
             email,
             admin: false,
@@ -64,7 +64,7 @@ beforeEach(() => {
     log.event.mockClear();
     notifications.add.mockClear();
     user.get.mockClear();
-    user.getPermissions.mockClear();
+    user.getPermissionsForUser.mockClear();
 });
 
 describe("Fetching the user", () => {
@@ -94,14 +94,14 @@ describe("Error fetching the user", () => {
     });
 
     it("failure getting permissions is logged", async () => {
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().getUserPermissions();
         expect(log.event.mock.calls.length).toBe(1);
     });
 
     it("user is notified when fetching permissions fails", async () => {
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -123,13 +123,13 @@ describe("Error fetching the user", () => {
 
     it("matching error statuses when getting details and permissions is logged", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({ status: 404 }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(2);
         //Unhandled error
         user.get.mockImplementationOnce(() => Promise.reject({ status: undefined }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: undefined }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: undefined }));
         expect(log.event.mock.calls.length).toBe(2);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(5);
@@ -149,7 +149,7 @@ describe("Error fetching the user", () => {
 
     it("user is notified once when fetching details and permissions fails with the same status", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -157,7 +157,7 @@ describe("Error fetching the user", () => {
 
     it("different error statuses when getting details and permissions is logged", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({ status: 403 }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 404 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 404 }));
         expect(log.event.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(log.event.mock.calls.length).toBe(3);
@@ -165,7 +165,7 @@ describe("Error fetching the user", () => {
 
     it("user is notified once when fetching details and permissions fails with a different status", async () => {
         user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         expect(notifications.add.mock.calls.length).toBe(0);
         await component.instance().updateStateWithUser();
         expect(notifications.add.mock.calls.length).toBe(1);
@@ -188,7 +188,7 @@ describe("Updating the 'active user' in state", () => {
     it("doesn't try to update state with active user if requests fail", async () => {
         const dispatchedActionsFromMount = dispatchedActions;
         user.get.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        user.getPermissions.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        user.getPermissionsForUser.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().updateStateWithUser();
         expect(dispatchedActions.length).toBe(dispatchedActionsFromMount.length);
     });
@@ -210,26 +210,26 @@ describe("After the component updates", () => {
 
     it("fetches new user's details", () => {
         const noOfDetailsRequests = user.get.mock.calls.length;
-        const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
+        const noOfPermissionsRequests = user.getPermissionsForUser.mock.calls.length;
         mountedComponent.setProps({
             params: {
                 userID: "foo2@bar.com",
             },
         });
         expect(user.get.mock.calls.length).toBe(noOfDetailsRequests + 1);
-        expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests + 1);
+        expect(user.getPermissionsForUser.mock.calls.length).toBe(noOfPermissionsRequests + 1);
     });
 
     it("does nothing if user ID is the same", () => {
         const noOfDetailsRequests = user.get.mock.calls.length;
-        const noOfPermissionsRequests = user.getPermissions.mock.calls.length;
+        const noOfPermissionsRequests = user.getPermissionsForUser.mock.calls.length;
         mountedComponent.setProps({
             params: {
                 userID: "foo@bar.com",
             },
         });
         expect(user.get.mock.calls.length).toBe(noOfDetailsRequests);
-        expect(user.getPermissions.mock.calls.length).toBe(noOfPermissionsRequests);
+        expect(user.getPermissionsForUser.mock.calls.length).toBe(noOfPermissionsRequests);
     });
 });
 

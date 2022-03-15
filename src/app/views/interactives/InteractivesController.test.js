@@ -2,7 +2,7 @@ import React from "react";
 import { render, fireEvent, screen, createMockUser } from "../../utilities/tests/test-utils";
 import { InteractivesController } from "./InteractivesController";
 import { prettyDOM } from "@testing-library/dom";
-import {shallow} from "enzyme";
+import { shallow } from "enzyme";
 
 describe("Collections", () => {
     const defaultProps = {
@@ -11,7 +11,7 @@ describe("Collections", () => {
         getTaxonomies: jest.fn(),
         getInteractives: jest.fn(),
         filterInteractives: jest.fn(),
-        rootPath: '/florence',
+        rootPath: "/florence",
     };
 
     let wrapper;
@@ -20,9 +20,8 @@ describe("Collections", () => {
     });
 
     describe("when renders the component", () => {
-
         it("renders the initial content", () => {
-            render(<InteractivesController {...defaultProps}/>);
+            render(<InteractivesController {...defaultProps} />);
             // finder
             expect(screen.getByLabelText("Title")).toBeInTheDocument();
             expect(screen.getByPlaceholderText("Search by title")).toBeInTheDocument();
@@ -38,23 +37,23 @@ describe("Collections", () => {
         });
 
         it("should fetch data when component is mounted", () => {
-            render(<InteractivesController {...defaultProps}/>);
-            expect(defaultProps.getTaxonomies).toHaveBeenCalled()
-            expect(defaultProps.getInteractives).toHaveBeenCalled()
+            render(<InteractivesController {...defaultProps} />);
+            expect(defaultProps.getTaxonomies).toHaveBeenCalled();
+            expect(defaultProps.getInteractives).toHaveBeenCalled();
         });
 
         it("should filter results when clicks apply button", () => {
-            render(<InteractivesController {...defaultProps}/>);
-            const applyButton = screen.getAllByRole("button")[0]
-            screen.getByPlaceholderText("Search by title").value = 'Query'
-            fireEvent.click(applyButton)
-            expect(defaultProps.filterInteractives.mock.calls).toHaveLength(1)
+            render(<InteractivesController {...defaultProps} />);
+            const applyButton = screen.getAllByRole("button")[0];
+            screen.getByPlaceholderText("Search by title").value = "Query";
+            fireEvent.click(applyButton);
+            expect(defaultProps.filterInteractives.mock.calls).toHaveLength(1);
         });
 
         it("Should redirect to create an interactive page when clicks upload interactive page", async () => {
-            render(<InteractivesController {...defaultProps}/>);
-            const applyButton = screen.getAllByRole("button")[1]
-            fireEvent.click(applyButton)
-        })
+            render(<InteractivesController {...defaultProps} />);
+            const applyButton = screen.getAllByRole("button")[1];
+            fireEvent.click(applyButton);
+        });
     });
 });

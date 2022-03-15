@@ -1,8 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
 import Layout from "./Layout";
-import Notifications from "../notifications";
-import NavBar from "../../components/navbar";
 
 describe("Layout", () => {
     const props = {

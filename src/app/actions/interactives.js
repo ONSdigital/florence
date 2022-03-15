@@ -1,140 +1,133 @@
-import * as types from './actionTypes'
+import * as types from "./actionTypes";
 import Interactives from "../utilities/api-clients/interactives";
 
-export function setInteractives(interactives)
-{
+export function setInteractives(interactives) {
     return {
         type: types.FETCH_INTERACTIVES,
-        interactives
-    }
+        interactives,
+    };
 }
 
-export function setInteractive(interactive)
-{
+export function setInteractive(interactive) {
     return {
         type: types.GET_INTERACTIVE,
-        interactive
-    }
+        interactive,
+    };
 }
 
-export function storeInteractive(interactive)
-{
+export function storeInteractive(interactive) {
     return {
         type: types.STORE_INTERACTIVE,
-        interactive
-    }
+        interactive,
+    };
 }
 
-export function updateInteractive(interactive)
-{
+export function updateInteractive(interactive) {
     return {
         type: types.UPDATE_INTERACTIVE,
-        interactive
-    }
+        interactive,
+    };
 }
 
-export function setSuccessMessage(successMessage)
-{
+export function setSuccessMessage(successMessage) {
     return {
         type: types.INTERACTIVE_SUCCESS,
-        successMessage
-    }
+        successMessage,
+    };
 }
 
-export function resetSuccessMessage()
-{
+export function resetSuccessMessage() {
     return {
         type: types.INTERACTIVE_RESET_SUCCESS,
-    }
+    };
 }
 
-export function setInteractiveError(error)
-{
+export function setInteractiveError(error) {
     return {
         type: types.INTERACTIVE_ERROR,
-        error
-    }
+        error,
+    };
 }
 
-export function filterInteractives(filters)
-{
+export function filterInteractives(filters) {
     return {
         type: types.FILTER_INTERACTIVES,
-        filters
-    }
+        filters,
+    };
 }
 
 // get interactives
-export function getInteractives()
-{
+export function getInteractives() {
     return async dispatch => {
         try {
-            const res = await Interactives.getAll()
-            dispatch(setInteractives(res.data.items))
+            const res = await Interactives.getAll();
+            dispatch(setInteractives(res.data.items));
         } catch (error) {
-            dispatch(setInteractiveError(error))
+            dispatch(setInteractiveError(error));
         }
-    }
+    };
 }
 
 // get interactive
-export function getInteractive(interactiveId)
-{
+export function getInteractive(interactiveId) {
     return async dispatch => {
         try {
-            const res = await Interactives.show(interactiveId)
-            dispatch(setInteractive(res.data))
+            const res = await Interactives.show(interactiveId);
+            dispatch(setInteractive(res.data));
         } catch (error) {
-            dispatch(setInteractiveError(error))
+            dispatch(setInteractiveError(error));
         }
-    }
+    };
 }
 
 // create interactive
-export function createInteractive(data)
-{
+export function createInteractive(data) {
     return async dispatch => {
         try {
-            const res = await Interactives.store(data)
-            dispatch(storeInteractive(res.data))
-            dispatch(setSuccessMessage({
-                type: 'create',
-                success: true
-            }))
+            const res = await Interactives.store(data);
+            dispatch(storeInteractive(res.data));
+            dispatch(
+                setSuccessMessage({
+                    type: "create",
+                    success: true,
+                })
+            );
         } catch (error) {
-            dispatch(setInteractiveError(error))
+            dispatch(setInteractiveError(error));
         }
-    }
+    };
 }
 
 // edit interactive
-export function editInteractive(interactiveId, data)
-{
+export function editInteractive(interactiveId, data) {
     return async dispatch => {
         try {
-            const res = await Interactives.update(interactiveId, data)
-            dispatch(setSuccessMessage({
-                type: 'update',
-                success: true
-            }))
+            const res = await Interactives.update(interactiveId, data);
+            dispatch(
+                setSuccessMessage({
+                    type: "update",
+                    success: true,
+                })
+            );
         } catch (error) {
-            dispatch(setInteractiveError(error))
+            dispatch(setInteractiveError(error));
         }
-    }
+    };
 }
 
 // delete interactive
-export function deleteInteractive(interactiveId)
-{
+export function deleteInteractive(interactiveId) {
     return async dispatch => {
         try {
-            const res = await Interactives.destroy(interactiveId)
-            dispatch(setSuccessMessage({
-                type: 'delete',
-                success: true
-            }))
+            const res = await Interactives.destroy(interactiveId);
+            dispatch(
+                setSuccessMessage({
+                    type: "delete",
+                    success: true,
+                })
+            );
         } catch (error) {
-            dispatch(setInteractiveError(error))
+            dispatch(setInteractiveError(error));
         }
-    }
+    };
 }

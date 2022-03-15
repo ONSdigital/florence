@@ -113,6 +113,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
+	topicsProxy := reverseproxy.Create(apiRouterURL, topicAPIDirector(cfg.APIRouterVersion), nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
 	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
@@ -121,10 +122,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
-	if cfg.SharedConfig.EnableDatasetImport || cfg.SharedConfig.EnableHomepagePublishing {
-		router.Handle("/upload", uploadServiceAPIProxy)
-		router.Handle("/upload/{id}", uploadServiceAPIProxy)
-	}
+	router.Handle("/upload", uploadServiceAPIProxy)
+	router.Handle("/upload/{id}", uploadServiceAPIProxy)
 
 	if cfg.SharedConfig.EnableDatasetImport {
 		router.Handle("/recipes{uri:.*}", recipeAPIProxy)
@@ -147,6 +146,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/interactives{uri:/.*}", interactivesProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
+	router.Handle("/topics", topicsProxy)
+	router.Handle("/topics/{uri:.*}", topicsProxy)
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)

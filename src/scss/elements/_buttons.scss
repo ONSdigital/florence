@@ -36,6 +36,7 @@
     &--positive,
     &--positive:visited {
         color: $concrete;
+        border: 2px solid $como;
         background-color: $como;
     }
 
@@ -94,12 +95,20 @@
             outline: 3px solid $focus;
         }
 
-        &:hover:after, 
+        &:hover:after,
         &:focus:after {
             display: none;
         }
     }
-    
+
+    &--info {
+        color: $mine-shaft;
+        background-color: $porcelain;
+        &:hover {
+            background-color: darken($porcelain, 30%);
+        }
+    }
+
     &--disabled,
     &:disabled {
         opacity: 0.65;

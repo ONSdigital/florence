@@ -9,6 +9,7 @@ const propTypes = {
     onCreateSuccess: PropTypes.func.isRequired,
 };
 
+// TODO remove when new AUTH is turned on
 class TeamCreate extends Component {
     constructor(props) {
         super(props);

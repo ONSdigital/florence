@@ -1,13 +1,12 @@
 import React from "react";
 import { CollectionEditController, mapStateToProps } from "./CollectionEditController";
-import CollectionEdit from "./CollectionEdit";
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
-import { UPDATE_ALL_TEAMS } from "../../../config/constants";
+import { LOAD_GROUPS_SUCCESS } from "../../../config/constants";
 
 console.error = () => {};
 console.warn = () => {};
-
+const fail = jest.fn();
 jest.mock("../../../utilities/websocket", () => {
     return {
         send: jest.fn(() => {}),
@@ -132,8 +131,8 @@ describe("Editing the collection's associated teams", () => {
 
     it("on mount it updates global state with the latest list of all teams", () => {
         editingTeamsComponent.instance().UNSAFE_componentWillMount();
-        expect(dispatchedAction.type).toEqual(UPDATE_ALL_TEAMS);
-        expect(dispatchedAction.allTeams).toEqual(fetchedAllTeams);
+        expect(dispatchedAction.type).toEqual(LOAD_GROUPS_SUCCESS);
+        expect(dispatchedAction.groups).toEqual(fetchedAllTeams);
     });
 
     it("adds a team to the state", () => {

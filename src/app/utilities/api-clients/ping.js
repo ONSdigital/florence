@@ -1,9 +1,7 @@
-import uuid from "uuid/v4";
-
 export default function ping() {
-    /* 
+    /*
         We're using fetch instead of our request utility class because we want to set a specific log event
-        rather than using the default 'REQUEST_XXXX' log event types. This allows us to filter out pings 
+        rather than using the default 'REQUEST_XXXX' log event types. This allows us to filter out pings
         from logs if necessary.
     */
     const fetchConfig = {

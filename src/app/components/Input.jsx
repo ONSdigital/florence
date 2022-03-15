@@ -138,7 +138,7 @@ export default class Input extends Component {
             <div className={formClasses}>
                 {!this.props.inline && !this.props.reverseLabelOrder && this.renderLabel()}
                 {this.props.error && (
-                    <div id={`input-error-${this.props.id}`} className="error-msg" role="alert">
+                    <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
                         {this.props.error}
                     </div>
                 )}

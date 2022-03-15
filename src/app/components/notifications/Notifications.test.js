@@ -1,7 +1,7 @@
 import React from "react";
 import Notifications from "./Notifications";
 import NotificationItem from "./NotificationItem.jsx";
-import { mount, shallow } from "enzyme";
+import { shallow } from "enzyme";
 
 describe("Notifications", () => {
     describe("when no notifications props", () => {

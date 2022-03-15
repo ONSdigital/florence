@@ -76,7 +76,7 @@ The following environment variables are available when running the Go server.
 | DATASET_API_URL              | http://localhost:22000            | URL that the [dataset API](https://github.com/ONSdigital/dp-dataset-api) can be accessed on                                              |
 | TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        | |
 | DATASET_CONTROLLER_URL       | http://localhost:24000            | Dataset controller url                                                                                                                   |
-| ENABLE_DATASET_IMPORT        | false                             | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
+| ENABLE_DATASET_IMPORT        | true                              | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
 | GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds
 | HEALTHCHECK_INTERVAL         | 30s                               | The period of time between health checks                                                                                                 |
 | HEALTHCHECK_CRITICAL_TIMEOUT | 90s                               | The period of time after which failing checks will result in critical global check status                                                |

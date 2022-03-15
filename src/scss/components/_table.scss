@@ -1,50 +1,50 @@
 .table {
-    
+
         /* Stripped down, basic table */
         width: 100%;
         border-spacing: 0;
         $quill-gray: #CCCCCB;
-    
+
         th {
             padding-top: $lineheight;
             padding-bottom: $lineheight;
             font-size: 16px;
         }
-    
+
         td {
             padding-top: ($lineheight * 0.5);
             padding-bottom: ($lineheight * 0.5);
         }
-    
+
         td, th {
             text-align: left;
             word-wrap: break-word;
         }
-    
+
         /* Fully styled up table */
         &--primary {
             border: 3px solid $pickled-bluewood;
             border-radius: 4px;
             margin-top:-3px;
-    
+
             thead {
                 display: block;
             }
-    
+
             thead tr {
                 background-color: $pickled-bluewood;
                 color: $cadet-blue;
             }
-    
+
             tr {
                 display: block;
             }
-    
+
             td {
                 padding-top: $lineheight;
                 padding-bottom: $lineheight;
             }
-    
+
             td, th {
                 padding-right: $gutter;
                 padding-left: $gutter;
@@ -52,26 +52,26 @@
                 box-sizing: border-box;
                 display: inline-block;
             }
-    
+
             tbody {
                 tr {
                     cursor: pointer;
                 }
-    
+
                 tr:nth-child(odd) {
                     background-color: $white;
                     &:hover {
                         background-color: $quill-gray;
                     }
                 }
-    
+
                 tr:nth-child(even) {
                     background-color: $iron;
                     &:hover {
                         background-color: $quill-gray;
                     }
                 }
-    
+
                 tr.selected {
                     background-color: $astral;
                     cursor: default;
@@ -79,10 +79,10 @@
                         background-color: $astral;
                     }
                 }
-    
+
                 tr.error {
                     position: relative;
-    
+
                     &:before {
                         position: absolute;
                         content: '';
@@ -91,10 +91,10 @@
                         background-color: $night-shadz;
                     }
                 }
-    
+
                 tr.warning {
                     position: relative;
-    
+
                     &:before {
                         position: absolute;
                         content: '';
@@ -105,74 +105,79 @@
                 }
             }
         }
-    
+
         /* 75% and 25% width column table - used on release calendar list */
         &--75-25 {
             td, th {
                 width: 25%;
             }
-    
+
             td:first-child, th:first-child {
                 width: 74%;
             }
         }
-    
+
         /* 50%, 25% and 25% width column table - used on restore deleted page list */
         &--50-25-25 {
             td, th {
                 width: 25%;
             }
-    
+
             td:first-child, th:first-child {
                 width: 49%;
             }
         }
-    
-    
+
+
         /* Fixed height table - used in selectable tables in panels */
         &--fixed-height-27 tbody {
             max-height: ($lineheight * 27);
             overflow-y: scroll;
             display: block;
         }
-    
+
         &--fixed-height-24 tbody {
             max-height: ($lineheight * 24);
             overflow-y: scroll;
             display: block;
         }
-    
+
         &--fixed-height-17 tbody {
             max-height: ($lineheight * 17);
             overflow-y: scroll;
             display: block;
         }
-    
+
         /* Table in a slide-out section */
         &--section {
             table-layout: fixed;
             padding: 0 $gutter;
-    
+
             & td:first-child, th:first-child {
                 width: 70%;
                 text-align: left;
             }
-    
+
             th {
                 cursor: pointer;
                 position: relative;
             }
-    
+
             td, th {
                 width: 15%;
                 text-align: right;
                 vertical-align: top;
             }
         }
-    
+
     }
 
 .simple-table {
+    tbody {
+        width: 100%;
+        display: inline-block;
+        padding: 0 10px;
+    }
 
     &__heading {
         padding-top: $lineheight * 0.5;
@@ -190,5 +195,11 @@
             border:none;
             margin:0;
         }
+    }
+
+    &__scroll {
+        overflow-y: auto;
+        display: block;
+        max-height: calc(100vh - 380px); // the remaining space do not change
     }
 }

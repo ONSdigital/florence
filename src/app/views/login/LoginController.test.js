@@ -1,7 +1,6 @@
 import React from "react";
 import { LoginController } from "./LoginController";
-import renderer from "react-test-renderer";
-import { mount, shallow } from "enzyme";
+import { mount } from "enzyme";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {

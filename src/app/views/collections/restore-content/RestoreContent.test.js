@@ -1,7 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import { RestoreContent } from "./RestoreContent";
 import { shallow } from "enzyme";
-import notifications from "../../../utilities/notifications";
 
 jest.mock("../../../utilities/websocket", () => {
     return {

@@ -1,6 +1,6 @@
 import React from "react";
 import { CreateContent } from "./CreateContent";
-import { shallow, mount } from "enzyme";
+import { mount } from "enzyme";
 import url from "../../utilities/url";
 
 console.error = () => {};

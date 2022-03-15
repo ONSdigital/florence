@@ -104,4 +104,11 @@ func TestDirectors(t *testing.T) {
 		So(idHeaderValue, ShouldEqual, idTokenValue)
 		So(refreshHeaderValue, ShouldEqual, refreshTokenValue)
 	})
+
+	Convey("Topic API proxy director function appends the provided router api version to the provided path", t, func() {
+		request, err := http.NewRequest("GET", "/topics", nil)
+		So(err, ShouldBeNil)
+		topicAPIDirector("v22")(request)
+		So(request.URL.String(), ShouldEqual, "/v22/topics")
+	})
 }
