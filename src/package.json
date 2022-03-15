@@ -16,11 +16,7 @@
     "globals": {
       "window": true
     },
-    "testURL": "http://localhost",
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest",
-      "^.+\\.svg$": "jest-svg-transformer"
-    }
+    "testURL": "http://localhost"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
