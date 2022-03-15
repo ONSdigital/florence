@@ -29,7 +29,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
+const NavbarItems = ["Collections", "Users and access", "Teams", "Security", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -71,9 +71,7 @@ describe("NavBar", () => {
                 },
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
-            it("'Preview teams' option should be present", () => {
-                expect(component.hasClass("global-nav__list")).toBe(true);
-                expect(component.find(Link)).toHaveLength(NavbarItems.length);
+            it("Preview teams option should be present", () => {
                 const link = component.find("Link[to='/florence/groups']");
                 expect(link.getElement().props.children[0].includes("Preview teams"));
             });

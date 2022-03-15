@@ -29,6 +29,7 @@ export const initialState = {
         isUpdating: false,
         previewUsers: [],
         isLoadingActive: false,
+        isRemovingAllTokens: false,
     },
     user: {
         data: null,

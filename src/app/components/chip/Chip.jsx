@@ -11,15 +11,18 @@ const propTypes = {
     removeFunc: PropTypes.func,
     style: PropTypes.oneOf(["standard", "green", "blue", "red"]),
     text: PropTypes.string.isRequired,
+    testId: PropTypes.string,
 };
 
 const Chip = props => {
     let icon;
     let iconColor;
     let chipClasses = props.link ? "chip chip--clickable" : "chip";
+
     if (props.style != null && props.style !== "standard") {
         chipClasses += ` chip--${props.style}`;
     }
+
     switch (props.style) {
         case "standard":
             iconColor = "#707071"; // Grey2
@@ -34,6 +37,7 @@ const Chip = props => {
             iconColor = "#6D272B"; // tawny-port
             break;
     }
+
     switch (props.icon) {
         case "shield-person":
             icon = <PersonInShield classes="chip__icon" viewBox={"0 0 15 15"} fillColor={iconColor} ariaLabel={"Person inside shield icon"} />;
@@ -54,13 +58,22 @@ const Chip = props => {
         ) : (
             <span className="chip__text">{props.text}</span>
         );
+
+    const handleOnClick = () => {
+        if (props.id) {
+            props.removeFunc(props.id);
+        } else {
+            props.removeFunc();
+        }
+    };
+
     return (
-        <span className={chipClasses}>
+        <span data-testid={props.testId} className={chipClasses}>
             {props.icon && icon}
             {text}
             {props.removeFunc && (
                 <span className="chip__remove-container">
-                    <button aria-label="remove" className="chip__remove" onClick={props.removeFunc} />
+                    <button aria-label="remove" className="chip__remove" onClick={handleOnClick} />
                 </span>
             )}
         </span>

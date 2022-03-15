@@ -1,0 +1,103 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Security matches the snapshot 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-11 grid__col-md-9"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <a
+        onClick={[Function]}
+        role="link"
+        style={Object {}}
+      >
+        Back
+      </a>
+    </div>
+    <h2
+      className="margin-top--1"
+    >
+      Security
+    </h2>
+    <div
+      className="grid"
+    >
+      <div
+        className="grid__col-lg-6"
+      >
+        <div
+          className="panel panel--error panel--no-title margin-top--1 margin-bottom--1"
+          role="alert"
+        >
+          <p
+            className="panel__error"
+          >
+            <strong>
+              Secure Florence
+            </strong>
+          </p>
+          <p>
+            All users will be signed out straight away and will need to sign in again.
+          </p>
+          <button
+            className="btn btn--warning margin-top--1 margin-bottom--1"
+            onClick={[Function]}
+            type="submit"
+          >
+            Sign out all users
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Security when loading matches the snapshot 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-11 grid__col-md-9"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <a
+        onClick={[Function]}
+        role="link"
+        style={Object {}}
+      >
+        Back
+      </a>
+    </div>
+    <h2
+      className="margin-top--1"
+    >
+      Security
+    </h2>
+    <div
+      className="grid"
+    >
+      <div
+        className="grid__col-lg-6"
+      >
+        <div
+          className=""
+          data-testid="loader"
+        >
+          <div
+            className="loader loader--large loader--dark"
+          />
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

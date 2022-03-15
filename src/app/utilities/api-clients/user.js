@@ -119,12 +119,35 @@ export default class user {
         return http.post(`/zebedee/permission`, body);
     }
 
-    static getPermissions(email) {
+    /**
+     * Gets the permissions of the user specified by the email provided.
+     *
+     * @returns the user permissions response
+     * @deprecated as part of migration to JWT sessions and will be removed soon. Use getPermissions() instead.
+     */
+    static getPermissionsForUser(email) {
+        console.warn(
+            "WARNING! Deprecated function called. Function 'getPermissionsForUser(email)' is deprecated, please use the new 'getPermissions()' instead"
+        );
         return http.get(`/zebedee/permission?email=${email}`, true, true);
+    }
+
+    /**
+     * Gets the permissions of the current authenticated user (based on their access token)
+     *
+     * @returns the user permissions response
+     */
+    static getPermissions() {
+        return http.get(`/zebedee/permission`, true, true);
     }
 
     static signIn(body) {
         return http.post("/tokens", body, true, true, true);
+    }
+
+    // TODO: new auth work
+    static deleteTokens() {
+        return http.delete("/tokens");
     }
 
     static setForgottenPassword(body) {

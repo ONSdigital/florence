@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import * as groupsTypes from "./groups/constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -545,6 +546,34 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case groupsTypes.LOAD_GROUP_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    active: action.group,
+                    isLoadingActive: false,
+                },
+            };
+        }
         case types.ADD_GROUPS_TO_USER_PROGRESS: {
             return {
                 ...state,
@@ -614,8 +643,35 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 user: {
-                    ...state.use,
+                    ...state.user,
                     isLoading: false,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_SUCCESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: false,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_PROGRESS: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: true,
+                },
+            };
+        }
+        case types.SIGN_OUT_ALL_USERS_FAILURE: {
+            return {
+                ...state,
+                users: {
+                    ...state.users,
+                    isRemovingAllTokens: false,
                 },
             };
         }
