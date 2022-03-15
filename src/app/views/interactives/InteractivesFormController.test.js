@@ -57,7 +57,6 @@ describe("Collections", () => {
             defaultProps.params.interactiveId = null
             render(<InteractivesFormController {...defaultProps}/>);
             const createButton = screen.getAllByRole("button")[0]
-            console.log('createButton', prettyDOM(createButton))
             fireEvent.click(createButton)
             expect(defaultProps.createInteractive).toHaveBeenCalled()
         });

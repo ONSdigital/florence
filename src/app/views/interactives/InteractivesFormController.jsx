@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import url from './../../utilities/url'
-// import arrowLeft from "../../../img/arrow-left.svg";
+import arrowLeft from "../../../img/arrow-left.svg";
 
 import {
     createInteractive,
@@ -168,8 +168,7 @@ export class InteractivesFormController extends Component {
                         {
                             this.state.interactiveId &&
                                 (<Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
-                                    <img src="/arrow-left" alt=""/>Back
-                                    {/*<img src={arrowLeft} alt=""/>Back*/}
+                                    <img src={arrowLeft} alt=""/>Back
                                 </Link>)
                         }
                         </div>
