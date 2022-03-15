@@ -1,16 +1,14 @@
 import axios from 'axios'
 
-const instance = axios.create({
-    baseURL: 'http://localhost:8081/interactives/v1',
-});
+const baseURL = 'http://localhost:8081/interactives/v1';
 
 export default class Interactives {
     static getAll() {
-        return instance.get(`/interactives`)
+        return axios.get(`${baseURL}/interactives`)
     }
 
     static store(body) {
-        return instance.post(`/interactives`, body, {
+        return axios.post(`${baseURL}/interactives`, body, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -18,11 +16,11 @@ export default class Interactives {
     };
 
     static show (interactiveId) {
-        return instance.get(`/interactives/${interactiveId}`)
+        return axios.get(`${baseURL}/interactives/${interactiveId}`)
     };
 
     static update = (interactiveId, body) => {
-        return instance.put(`/interactives/${interactiveId}`, body, {
+        return axios.put(`${baseURL}/interactives/${interactiveId}`, body, {
             headers: {
                 'Content-Type': 'multipart/form-data'
             }
@@ -30,6 +28,6 @@ export default class Interactives {
     }
 
     static destroy = (interactiveId) => {
-        return instance.delete(`/interactives/${interactiveId}`)
+        return axios.delete(`${baseURL}/interactives/${interactiveId}`)
     }
 }
