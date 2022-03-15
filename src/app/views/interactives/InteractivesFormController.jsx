@@ -21,6 +21,9 @@ import {FooterComponent} from "./components/FooterComponent";
 export class InteractivesFormController extends Component {
 
     static propTypes = {
+        params: PropTypes.shape({
+            interactiveId: PropTypes.string,
+        }),
         getTaxonomies: PropTypes.func.isRequired,
         createInteractive: PropTypes.func.isRequired,
         editInteractive: PropTypes.func.isRequired,
@@ -29,6 +32,7 @@ export class InteractivesFormController extends Component {
         resetSuccessMessage: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
         interactive: PropTypes.object,
+        errors: PropTypes.object,
         taxonomies: PropTypes.array.isRequired
     };
 
@@ -142,7 +146,7 @@ export class InteractivesFormController extends Component {
             {id: 4, name: 'Survey 4'}
         ]
 
-        const { errors, interactive, taxonomies, rootPath } = this.props;
+        const { errors, taxonomies, rootPath } = this.props;
 
         return (
             <div>
@@ -165,10 +169,14 @@ export class InteractivesFormController extends Component {
                         <div className="grid__col-7">
                             <div className="grid grid--justify-space-around">
                                 <div className="grid__col-12">
-                                    <form id="interactives-form" className="form" onSubmit={this.handleSubmit}>
+                                    <form id="interactives-form"
+                                          className="form"
+                                          onSubmit={this.handleSubmit}
+                                          data-testid="interactive-form"
+                                    >
                                         <div className={`form__input form__input__panel ${errors.title ? "form__input--error__panel": ""}`}>
                                             {errors.title && <span>Enter a correct title</span>}
-                                            <label className="form__label" htmlFor="team-name">
+                                            <label className="form__label" htmlFor="title">
                                                 Title
                                             </label>
                                             <input
@@ -179,6 +187,7 @@ export class InteractivesFormController extends Component {
                                                 disabled={this.state.isAwaitingResponse}
                                                 value={this.state.title}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                                                data-testid="title-input"
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.file ? "form__input--error__panel": ""}`}>
@@ -197,6 +206,7 @@ export class InteractivesFormController extends Component {
                                                     name="file"
                                                     className="input"
                                                     onChange={this.handleFile}
+                                                    data-testid="file-input"
                                                 />
                                             </div>
                                         </div>
@@ -211,6 +221,7 @@ export class InteractivesFormController extends Component {
                                                 error={this.state.editionError}
                                                 selectedOption={this.state.primary}
                                                 disabled={this.state.isReadOnly || this.state.isSavingData}
+                                                data-testid="primary-input"
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.surveys ? "form__input--error__panel": ""}`}>
@@ -224,6 +235,7 @@ export class InteractivesFormController extends Component {
                                                 error={this.state.editionError}
                                                 selectedOption={this.state.surveys}
                                                 disabled={this.state.isAwaitingResponse}
+                                                data-testid="surveys-input"
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.topics ? "form__input--error__panel": ""}`}>
@@ -237,10 +249,11 @@ export class InteractivesFormController extends Component {
                                                 error={this.state.editionError}
                                                 selectedOption={this.state.topics}
                                                 disabled={this.state.isAwaitingResponse}
+                                                data-testid="topics-input"
                                             />
                                         </div>
                                         <div className={`form__input form__input__panel ${errors.url ? "form__input--error__panel": ""}`}>
-                                            <label className="form__label" htmlFor="team-name">
+                                            <label className="form__label" htmlFor="url">
                                                 URL
                                             </label>
                                             {errors.url && <span>Enter a correct title</span>}
@@ -252,6 +265,7 @@ export class InteractivesFormController extends Component {
                                                 disabled={this.state.isAwaitingResponse}
                                                 value={this.state.url}
                                                 onChange={(e) => this.setState({[e.target.name]: e.target.value})}
+                                                data-testid="url-input"
                                             />
                                         </div>
                                         <div className={"form__button__panel padding-top--1"}>
@@ -277,7 +291,11 @@ export class InteractivesFormController extends Component {
                                             }
                                             {
                                                 !this.state.interactiveId ?
-                                                    <Link to={`${rootPath}/interactives/index`} className="btn btn--secondary padding-left--1"  disabled={this.state.isAwaitingResponse}>
+                                                    <Link to={`${rootPath}/interactives/index`}
+                                                          className="btn btn--secondary padding-left--1"
+                                                          disabled={this.state.isAwaitingResponse}
+                                                          data-testid="cancel-button"
+                                                    >
                                                         Cancel
                                                     </Link>
                                                     :
