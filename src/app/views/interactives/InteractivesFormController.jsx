@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import url from "./../../utilities/url";
-import arrowLeft from "../../../img/arrow-left.svg";
 
 import { createInteractive, getInteractive, editInteractive, deleteInteractive, resetSuccessMessage } from "../../actions/interactives";
 
@@ -159,7 +158,9 @@ export class InteractivesFormController extends Component {
                         <div className="grid__col-1 padding-top--2 form__back__button">
                             {this.state.interactiveId && (
                                 <Link to={`${rootPath}/interactives/index`} disabled={this.state.isAwaitingResponse}>
-                                    <img src={arrowLeft} alt="" />
+                                    <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                        <path d="M6.78296 12.6879L7.35296 12.1279C7.44761 12.034 7.50085 11.9062 7.50085 11.7729C7.50085 11.6396 7.44761 11.5118 7.35296 11.4179L2.35296 6.4179L7.35296 1.4179C7.44761 1.32402 7.50085 1.19622 7.50085 1.0629C7.50085 0.92958 7.44761 0.801782 7.35296 0.707899L6.78296 0.147899C6.68907 0.0532428 6.56127 0 6.42796 0C6.29464 0 6.16684 0.0532428 6.07296 0.147899L0.142955 6.0779C-0.047616 6.27232 -0.047616 6.58348 0.142955 6.7779L6.07296 12.6879C6.16684 12.7826 6.29464 12.8358 6.42796 12.8358C6.56127 12.8358 6.68907 12.7826 6.78296 12.6879Z" fill="#222222"/>
+                                    </svg>
                                     Back
                                 </Link>
                             )}
