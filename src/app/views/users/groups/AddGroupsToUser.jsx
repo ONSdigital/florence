@@ -18,7 +18,7 @@ const notification = {
 };
 
 function AddGroupsToUser(props) {
-    const id = props.params.userID;
+    const id = props.params.id;
 
     useEffect(() => {
         if (id) {

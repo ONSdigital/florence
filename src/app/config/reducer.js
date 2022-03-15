@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import * as groupsTypes from "./groups/constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -541,6 +542,34 @@ export default function reducer(state = initialState, action) {
                     ...state.groups,
                     all: action.groups,
                     isLoading: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    active: action.group,
+                    isLoadingActive: false,
                 },
             };
         }
