@@ -52,6 +52,9 @@ exports[`EditGroup matches the snapshot 1`] = `
             value=""
           />
         </div>
+        <div
+          id="0"
+        />
       </div>
     </div>
     <div

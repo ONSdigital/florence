@@ -3,39 +3,39 @@ import { render, screen } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
-import Security from "./Security";
+import Delete from "./Delete";
 
 const defaultProps = {
-    signOutAllUsers: jest.fn(),
+    id: "0",
+    deleteGroup: jest.fn(),
     openModal: jest.fn(),
     closeModal: jest.fn(),
-    isLoading: false,
+    loading: false,
 };
 const handleSubmit = jest.fn();
 
-describe("Security", () => {
+describe("Delete", () => {
     it("matches the snapshot", () => {
-        const tree = renderer.create(<Security {...defaultProps} />);
+        const tree = renderer.create(<Delete {...defaultProps} />);
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
-    it("when loading matches the snapshot", () => {
+    it("when deleting is in progress matches the snapshot", () => {
         const props = { ...defaultProps, isLoading: true };
-        const tree = renderer.create(<Security {...props} />);
+        const tree = renderer.create(<Delete {...props} />);
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("requests to open Modal", () => {
-        render(<Security {...defaultProps} />);
+        render(<Delete {...defaultProps} />);
 
-        userEvent.click(screen.getByText(/sign out all users/i));
+        userEvent.click(screen.getByRole("button", { name: "Delete team" }));
 
-        expect(defaultProps.openModal).toBeCalledTimes(1);
         expect(defaultProps.openModal).toBeCalledWith(
             expect.objectContaining({
-                body: "Users will need to sign in to Florence again and may lose unsaved changes.",
-                id: "sign-out",
-                title: "Are you sure you want to sign out all users?",
+                body: "Team members cannot view content linked to this preview team after it has been deleted.",
+                id: "delete",
+                title: "Are you sure you want to delete this preview team?",
             })
         );
     });

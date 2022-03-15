@@ -34,7 +34,7 @@ jest.mock("../../../utilities/api-clients/teams.js", () => ({
         }),
 }));
 
-jest.mock("../../../config/actions.js", () => {
+jest.mock("../../../config/groups/actions.js", () => {
     return {
         loadGroupsSuccess: function (payload) {
             return payload;
