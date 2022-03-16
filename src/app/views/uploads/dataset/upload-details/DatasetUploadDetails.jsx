@@ -204,7 +204,7 @@ class DatasetUploadController extends Component {
     bindInputs() {
         document.querySelectorAll('input[type="file"]').forEach(input => {
             const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload";
-            const FIVE_MEGABYTES = 5 * 1024 * 1024
+            const FIVE_MEGABYTES = 5 * 1024 * 1024;
             const r = new Resumable({
                 target: `${UPLOAD_ENDPOINT}`,
                 method: "POST",
@@ -281,9 +281,10 @@ class DatasetUploadController extends Component {
                 http.get(UPLOAD_FETCH_PATH_ENDPOINT)
                     .then(response => {
                         const files = this.state.activeDataset.files.map(currentFile => {
+                            fileUrl = this.props.enableNewUpload ? response.path : response.url;
                             if (currentFile.alias_name === aliasName) {
                                 currentFile.progress = null;
-                                currentFile.url = this.props.enableNewUpload ? response.path : response.url;
+                                currentFile.url = fileUrl;
                             }
                             return currentFile;
                         });
@@ -292,7 +293,7 @@ class DatasetUploadController extends Component {
                             files,
                         };
                         this.setState({ activeDataset });
-                        this.addUploadedFileToJob(aliasName, response.path);
+                        this.addUploadedFileToJob(aliasName, fileUrl);
                     })
                     .catch(error => {
                         const files = this.state.activeDataset.files.map(currentFile => {

@@ -212,7 +212,7 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
-                    <Route path={`${rootPath}/upload-test`} component={userIsAuthenticated(UploadTest)} />
+                    <Route path={`${rootPath}/upload-test`} component={config.enableNewUpload ? userIsAuthenticated(UploadTest) : null} />
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
