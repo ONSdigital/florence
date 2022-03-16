@@ -204,10 +204,11 @@ class DatasetUploadController extends Component {
     bindInputs() {
         document.querySelectorAll('input[type="file"]').forEach(input => {
             const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload";
+            const FIVE_MEGABYTES = 5 * 1024 * 1024
             const r = new Resumable({
                 target: `${UPLOAD_ENDPOINT}`,
                 method: "POST",
-                chunkSize: 5 * 1024 * 1024,
+                chunkSize: FIVE_MEGABYTES,
                 query: {
                     aliasName: "",
                 },
