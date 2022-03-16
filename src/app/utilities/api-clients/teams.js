@@ -55,6 +55,24 @@ export default class teams {
         });
     }
 
+    static getGroup(id) {
+        return http.get(`/groups/${id}`).then(response => {
+            return response;
+        });
+    }
+
+    static updateGroup(id, body) {
+        return http.put(`/groups/${id}`, body).then(response => {
+            return response;
+        });
+    }
+
+    static deleteGroup(id) {
+        return http.delete(`/groups/${id}`).then(response => {
+            return response;
+        });
+    }
+
     static addGroupsToUser(name, body) {
         return http.post(`/groups/${name}`, body).then(response => {
             return response;

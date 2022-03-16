@@ -1,19 +1,12 @@
-import React, { useState } from "react";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
+import React from "react";
 import PropTypes from "prop-types";
 import BackButton from "../../components/back-button";
-
-import { deleteTokensRequest } from "../../config/actions";
-import { useDispatch } from "react-redux";
 import Loader from "../../components/loader/Loader";
 
-const Security = ({ signOutAllUsers, openModal, closeModal, isLoading }) => {
-    const [isSubmitting, setIsSubmitting] = useState(false);
-
+const Security = ({ signOutAllUsers, openModal, closeModal, loading }) => {
     const popout = {
         id: "sign-out",
-        title: "Are you sure you want sign out all users?",
+        title: "Are you sure you want to sign out all users?",
         body: "Users will need to sign in to Florence again and may lose unsaved changes.",
         buttons: [
             {
@@ -45,7 +38,7 @@ const Security = ({ signOutAllUsers, openModal, closeModal, isLoading }) => {
                 <h2 className="margin-top--1">Security</h2>
                 <div className="grid">
                     <div className="grid__col-lg-6">
-                        {isLoading ? (
+                        {loading ? (
                             <Loader />
                         ) : (
                             <div role="alert" className="panel panel--error panel--no-title margin-top--1 margin-bottom--1">
@@ -69,7 +62,7 @@ Security.propTypes = {
     signOutAllUsers: PropTypes.func.isRequired,
     openModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,
-    isLoading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
 };
 
 export default Security;

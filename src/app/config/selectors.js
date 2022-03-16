@@ -28,6 +28,8 @@ export const getPreviewUsers = state => state.users.previewUsers;
 
 export const getGroups = state => state.groups.all;
 export const getGroupsLoading = state => state.groups.isLoading;
+export const getGroup = state => state.groups.active;
+export const getGroupLoading = state => state.groups.isLoadingActive;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;
 
@@ -65,3 +67,4 @@ export const getRootPath = state => state.rootPath;
 export const getUserGroups = state => state.user.groups;
 
 export const getIsRemovingAllTokens = state => state.users.isRemovingAllTokens;
+export const getIsDeletingGroup = state => state.groups.isDeleting;

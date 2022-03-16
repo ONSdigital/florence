@@ -2,9 +2,8 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-
 import teams from "../../../utilities/api-clients/teams";
-import { loadGroupsSuccess } from "../../../config/actions";
+import { loadGroupsSuccess } from "../../../config/groups/actions";
 import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
 

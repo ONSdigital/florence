@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
@@ -12,7 +12,7 @@ import FormValidationErrors from "../../../components/form-validation-errors";
 import BackButton from "../../../components/back-button";
 import FormFooter from "../../../components/form-footer";
 import SelectedItemList from "../../../components/selected-items/SelectedItemList";
-import Loader from "../../../components/loader/index";
+import Loader from "../../../components/loader";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import TextArea from "../../../components/text-area/TextArea";
 import UserGroupsList from "../groups/UserGroupsList";
@@ -31,7 +31,7 @@ const USER_ACCESS_OPTIONS = [
 ];
 
 export const EditUser = props => {
-    const id = props.params.userID;
+    const id = props.params.id;
 
     useEffect(() => {
         if (id) {
