@@ -283,7 +283,7 @@ class DatasetUploadController extends Component {
                         const files = this.state.activeDataset.files.map(currentFile => {
                             if (currentFile.alias_name === aliasName) {
                                 currentFile.progress = null;
-                                currentFile.url = response.path;
+                                currentFile.url = this.props.enableNewUpload ? response.path : response.url;
                             }
                             return currentFile;
                         });
