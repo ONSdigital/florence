@@ -30,6 +30,8 @@ export const getGroups = state => state.groups.all;
 export const getGroupsLoading = state => state.groups.isLoading;
 export const getGroup = state => state.groups.active;
 export const getGroupLoading = state => state.groups.isLoadingActive;
+export const getGroupMembersLoading = state => state.groups.isLoadingMembers;
+export const getGroupMembers = state => state.groups.members;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;
 

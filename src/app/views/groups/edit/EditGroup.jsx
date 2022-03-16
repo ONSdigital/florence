@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import PropTypes from "prop-types";
+import { useInput } from "../../../hooks/useInput";
+import { Link } from "react-router";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
+import filter from "lodash/filter";
 import isEmpty from "lodash/isEmpty";
-import PropTypes from "prop-types";
 import BackButton from "../../../components/back-button";
 import Loader from "../../../components/loader";
 import Input from "../../../components/Input";
 import validate from "./validate";
+import Members from "../members";
 import DeletePanel from "../delete";
 import FormFooter from "../../../components/form-footer/FormFooter";
+import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
+import Magnifier from "../../../icons/Magnifier";
+import clsx from "clsx";
 
 const EditGroup = props => {
     const id = props.params.id;
@@ -19,8 +26,9 @@ const EditGroup = props => {
         }
     }, [id]);
 
-    const { group, loading, updateGroup } = props;
+    const { group, loading, updateGroup, users, loadUsers, isLoadingUsers } = props;
     const [values, setValues] = useState(null);
+    const [search, setSearch] = useInput("");
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const hasErrors = !isEmpty(errors);
@@ -30,6 +38,10 @@ const EditGroup = props => {
     const routerWillLeave = nextLocation => {
         if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
+
+    useEffect(() => {
+        loadUsers();
+    }, []);
 
     useEffect(() => {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
@@ -68,25 +80,35 @@ const EditGroup = props => {
     return (
         <form className="form">
             <div className="grid grid--justify-space-around">
-                <div className="grid__col-9">
+                <div className="grid grid__col-9">
                     <BackButton classNames="margin-top--2" />
                     <h1 className="margin-top--1 margin-bottom--1">{group.name}</h1>
                     <div className="grid__col-6">
                         {!specialGroup && (
-                            <>
-                                <Input
-                                    error={errors?.name}
-                                    id="name"
-                                    label="Name"
-                                    name="name"
-                                    type="text"
-                                    value={values ? values.name : ""}
-                                    onChange={handleChange}
-                                />
-                                <DeletePanel id={id} />
-                            </>
+                            <Input
+                                error={errors?.name}
+                                id="name"
+                                label="Name"
+                                name="name"
+                                type="text"
+                                value={values ? values.name : ""}
+                                onChange={handleChange}
+                            />
                         )}
+                        <Members id={id} />
+                        {!specialGroup && <DeletePanel id={id} />}
                     </div>
+                </div>
+                <div className="grid__col-6">
+                    <h2>Add member to team</h2>
+                    <div className="search__input-group ">
+                        <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
+                        <label htmlFor="search" className="visually-hidden">
+                            Search users by name or email
+                        </label>
+                        <input role="search" name="search" placeholder="Search users by name" {...search} />
+                    </div>
+                    {users ? <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} /> : "Nothing to show."}
                 </div>
                 <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
