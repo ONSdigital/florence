@@ -75,7 +75,6 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
         : teams
               .getAll()
               .then(response => {
-                  if (!response) return dispatch(actions.loadGroupsFailure());
                   return dispatch(actions.loadGroupsSuccess(response));
               })
               .catch(error => {
