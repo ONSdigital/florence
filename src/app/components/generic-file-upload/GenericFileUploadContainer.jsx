@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import Checkbox from "../Checkbox";
-import http from "../../utilities/http";
 
 import GenericFileUploader from "./GenericFileUploader";
 
@@ -43,17 +42,16 @@ const GenericFileUploadContainer = ({
             r.assignDrop(input);
             r.on("fileAdded", file => {
                 setIsUploading(true);
-                r.opts.query["collectionId"] = "test-collection";
                 r.opts.query["isPublishable"] = isPublishable;
                 r.opts.query["licence"] = "Open Government Licence v3.0";
                 r.opts.query["licenceUrl"] = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/";
-                r.opts.query["path"] = `${filePathPrefix}/${file.fileName}`;
+                r.opts.query["path"] = `${filePathPrefix}`;
                 r.upload();
             });
             r.on("fileProgress", file => {
                 setProgress(Math.round(Number(file.progress() * 100)));
             });
-            r.on("fileError", (file, error) => {
+            r.on("fileError", (_, error) => {
                 setIsUploading(false);
                 const { errors } = JSON.parse(error);
                 if (uploadErrors[errors[0]?.code]) {
@@ -63,15 +61,8 @@ const GenericFileUploadContainer = ({
                 }
             });
             r.on("fileSuccess", file => {
-                onSuccess();
-                setIsUploading(false);
-                http.get(`/upload/${file.uniqueIdentifier}`)
-                    .then(() => {
-                        setProgress(null);
-                    })
-                    .catch(error => {
-                        console.error(error);
-                    });
+                const PATH_TO_FILE_IN_FILES_API = `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`;
+                onSuccess(PATH_TO_FILE_IN_FILES_API);
             });
         });
     };
@@ -81,11 +72,11 @@ const GenericFileUploadContainer = ({
     };
 
     const sendRetryHandler = () => {
-        return typeof customRetryClick === "function" ? customRetryClick : handleRetryClick;
+        typeof customRetryClick === "function" ? customRetryClick : handleRetryClick;
     };
 
-    const handleRetryClick = event => {
-        console.log(event);
+    const handleRetryClick = () => {
+        location.reload();
     };
 
     return (
@@ -110,7 +101,7 @@ const GenericFileUploadContainer = ({
                             error={error}
                             accept="*"
                             url={url}
-                            onRetry={sendRetryHandler()}
+                            onRetry={sendRetryHandler}
                             progress={progress >= 0 ? progress : null}
                         />
                     </div>

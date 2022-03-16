@@ -28,7 +28,7 @@ const GenericFileUploader = ({
                         {error && (
                             <div>
                                 <div className="progress__error">{error}</div>
-                                <a onClick={onRetry} href="">
+                                <a onClick={() => onRetry()} href="">
                                     Retry
                                 </a>
                             </div>
