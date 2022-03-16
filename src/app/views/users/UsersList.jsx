@@ -8,6 +8,7 @@ import BackButton from "../../components/back-button";
 import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
+import search from "../../../components/search";
 
 const mapUsers = (users, rootPath) => {
     return users.map(user => ({
@@ -58,7 +59,7 @@ const UsersList = props => {
                                 <div className="search__input-group ">
                                     <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
                                     <label htmlFor="search" className="visually-hidden">
-                                        Search users by name
+                                        Search users by name or email
                                     </label>
                                     <input role="search" name="search" placeholder="Search users by name" {...search} />
                                 </div>
