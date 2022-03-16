@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import CreateNewCollection from "./CreateNewCollection";
-import { fetchGroupsRequest, createCollectionRequest } from "../../../config/thunks";
+import { fetchGroupsRequest } from "../../../config/groups/thunks";
+import { createCollectionRequest } from "../../../config/thunks";
 import { getGroupsLoading, getEnableNewSignIn, getMappedGroups } from "../../../config/selectors";
 
 export const mapStateToProps = state => ({

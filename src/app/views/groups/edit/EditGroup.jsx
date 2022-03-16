@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
+import isEqual from "lodash/isEqual";
+import isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
 import BackButton from "../../../components/back-button";
 import Loader from "../../../components/loader";
 import Input from "../../../components/Input";
 import validate from "./validate";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
+import DeletePanel from "../delete";
 import FormFooter from "../../../components/form-footer/FormFooter";
 
 const EditGroup = props => {
@@ -72,15 +73,18 @@ const EditGroup = props => {
                     <h1 className="margin-top--1 margin-bottom--1">{group.name}</h1>
                     <div className="grid__col-6">
                         {!specialGroup && (
-                            <Input
-                                error={errors?.name}
-                                id="name"
-                                label="Name"
-                                name="name"
-                                type="text"
-                                value={values ? values.name : ""}
-                                onChange={handleChange}
-                            />
+                            <>
+                                <Input
+                                    error={errors?.name}
+                                    id="name"
+                                    label="Name"
+                                    name="name"
+                                    type="text"
+                                    value={values ? values.name : ""}
+                                    onChange={handleChange}
+                                />
+                                <DeletePanel id={id} />
+                            </>
                         )}
                     </div>
                 </div>

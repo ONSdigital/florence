@@ -518,7 +518,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_PROGRESS: {
+        case groupsTypes.LOAD_GROUPS_PROGRESS: {
             return {
                 ...state,
                 groups: {
@@ -527,7 +527,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_FAILURE: {
+        case groupsTypes.LOAD_GROUPS_FAILURE: {
             return {
                 ...state,
                 groups: {
@@ -536,7 +536,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_SUCCESS: {
+        case groupsTypes.LOAD_GROUPS_SUCCESS: {
             return {
                 ...state,
                 groups: {
@@ -672,6 +672,16 @@ export default function reducer(state = initialState, action) {
                 users: {
                     ...state.users,
                     isRemovingAllTokens: false,
+                },
+            };
+        }
+        case groupsTypes.DELETE_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    all: state.groups.all.filter(group => group.id !== action.id),
+                    active: null,
                 },
             };
         }

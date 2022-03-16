@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { fetchGroupsRequest } from "../../config/thunks";
+import { fetchGroupsRequest } from "../../config/groups/thunks";
 import Groups from "./Groups";
 import { getEnableNewSignIn, getGroups, getGroupsLoading } from "../../config/selectors";
 

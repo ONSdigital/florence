@@ -37,8 +37,10 @@ export const initialState = {
         isLoading: false,
     },
     groups: {
+        active: null,
         all: [],
         isLoading: false,
+        isDeleting: false,
     },
     datasets: {
         all: [],
