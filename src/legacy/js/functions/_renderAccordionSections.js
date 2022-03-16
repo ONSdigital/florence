@@ -94,6 +94,7 @@
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -250,7 +251,7 @@
         if (pageData.tables) {
             loadTablesList(collectionId, pageData);
         }
-
+        tags(templateData)
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         addFile(collectionId, pageData, 'downloads', 'file');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
@@ -326,6 +327,7 @@
         if (pageData.equations) {
             loadEquationsList(collectionId, pageData);
         }
+        tags(templateData)
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -356,6 +358,7 @@
     else if (pageData.type === 'dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
+        tags(templateData)
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
