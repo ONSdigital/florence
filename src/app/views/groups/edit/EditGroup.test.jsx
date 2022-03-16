@@ -1,9 +1,10 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import { render, screen, within } from "@testing-library/react";
+// import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "../../../utilities/tests/test-utils";
 import { group, specialGroup } from "../../../utilities/tests/mockData";
 import EditGroup from "./EditGroup";
 
@@ -18,11 +19,12 @@ const props = {
 };
 
 const setRouteLeaveHook = jest.fn();
+jest.mock("../delete", () => "div");
 
 describe("EditGroup", () => {
     it("matches the snapshot", () => {
-        const tree = renderer.create(<EditGroup.WrappedComponent {...props} />);
-        expect(tree.toJSON()).toMatchSnapshot();
+        const tree = renderer.create(<EditGroup.WrappedComponent {...props} />).toJSON();
+        expect(tree).toMatchSnapshot();
     });
 
     it("requests group on load by params", () => {

@@ -36,3 +36,40 @@ export function updateGroupSuccess() {
         type: types.UPDATE_GROUP_SUCCESS,
     };
 }
+
+export function deleteGroupFailure() {
+    return {
+        type: types.DELETE_GROUP_FAILURE,
+    };
+}
+
+export function deleteGroupProgress() {
+    return {
+        type: types.DELETE_GROUP_PROGRESS,
+    };
+}
+
+export function deleteGroupSuccess() {
+    return {
+        type: types.DELETE_GROUP_SUCCESS,
+    };
+}
+
+export function loadGroupsFailure() {
+    return {
+        type: types.LOAD_GROUPS_FAILURE,
+    };
+}
+
+export function loadGroupsProgress() {
+    return {
+        type: types.LOAD_GROUPS_PROGRESS,
+    };
+}
+
+export function loadGroupsSuccess(groups) {
+    return {
+        type: types.LOAD_GROUPS_SUCCESS,
+        groups,
+    };
+}
