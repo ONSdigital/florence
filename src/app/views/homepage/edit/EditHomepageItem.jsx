@@ -133,11 +133,7 @@ export class EditHomepageItem extends Component {
 
     onFileUploadSuccess = url => {
         this.setState({ isImportingImage: true, imageState: "uploaded" });
-        if (this.props.enableNewUpload) {
-            this.addUploadToImageRecord(this.state.image, url);
-        } else {
-            this.addUploadToImageRecord(this.state.image, url);
-        }
+        this.addUploadToImageRecord(this.state.image, url);
     };
 
     handleSuccessClick = async () => {
