@@ -4,7 +4,6 @@ import { useInput } from "../../../hooks/useInput";
 import { Link } from "react-router";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
-import filter from "lodash/filter";
 import isEmpty from "lodash/isEmpty";
 import BackButton from "../../../components/back-button";
 import Loader from "../../../components/loader";
@@ -13,7 +12,7 @@ import validate from "./validate";
 import Members from "../members";
 import DeletePanel from "../delete";
 import FormFooter from "../../../components/form-footer/FormFooter";
-import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
+import UsersTable from "../../../components/table";
 import Magnifier from "../../../icons/Magnifier";
 import clsx from "clsx";
 
@@ -24,9 +23,15 @@ const EditGroup = props => {
         if (id) {
             props.loadGroup(id);
         }
-    }, [id]);
+    }, []);
 
-    const { group, loading, updateGroup, users, loadUsers, isLoadingUsers } = props;
+    useEffect(() => {
+        if (id) {
+            props.loadMembers(id);
+        }
+    }, []);
+
+    const { group, loading, users, updateGroup, loadUsers, loadingUsers, members, loadingMembers } = props;
     const [values, setValues] = useState(null);
     const [search, setSearch] = useInput("");
     const [errors, setErrors] = useState({});
@@ -34,6 +39,8 @@ const EditGroup = props => {
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
     const specialGroup = group?.precedence === (1 || 2);
+    const [groupMembers, setGroupMembers] = useState(members);
+    const [availableUsers, setAvailableUsers] = useState(users);
 
     const routerWillLeave = nextLocation => {
         if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
@@ -42,6 +49,14 @@ const EditGroup = props => {
     useEffect(() => {
         loadUsers();
     }, []);
+
+    useEffect(() => {
+        setGroupMembers(members);
+    }, [members]);
+
+    useEffect(() => {
+        setAvailableUsers(users);
+    }, [users]);
 
     useEffect(() => {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
@@ -74,45 +89,76 @@ const EditGroup = props => {
         setValues(values => ({ ...values, [key]: val }));
     };
 
+    useEffect(() => {
+        console.log("search.value", search.value);
+        getFilteredGroups();
+    }, [search.value]);
+
+    const getFilteredGroups = useCallback(() => {
+        if (!availableUsers || availableUsers.length == 0) return [];
+        const str = search.value.toLowerCase();
+
+        return availableUsers.filter(user => user.name?.toLowerCase().includes(str) || users.email?.toLowerCase().includes(str));
+    }, [search.value]);
+
+    const handleRemove = id => setGroupMembers(prevState => prevState.filter(member => member.id !== id));
+
+    const handleAdd = member => {
+        setGroupMembers(prevState => prevState.concat(member));
+        setAvailableUsers(prevState => prevState.filter(user => user.id !== member.id));
+    };
+
     if (loading) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
     if (!group) return <h1>No group found.</h1>;
 
     return (
-        <form className="form">
+        <div className="form">
             <div className="grid grid--justify-space-around">
-                <div className="grid grid__col-9">
+                <div className="grid__col-11 grid__col-md-9">
                     <BackButton classNames="margin-top--2" />
                     <h1 className="margin-top--1 margin-bottom--1">{group.name}</h1>
-                    <div className="grid__col-6">
-                        {!specialGroup && (
-                            <Input
-                                error={errors?.name}
-                                id="name"
-                                label="Name"
-                                name="name"
-                                type="text"
-                                value={values ? values.name : ""}
-                                onChange={handleChange}
-                            />
-                        )}
-                        <Members id={id} />
-                        {!specialGroup && <DeletePanel id={id} />}
+                    <div className="grid grid--justify-space-between">
+                        <div className="grid__col-md-6 margin-top--half">
+                            {!specialGroup && (
+                                <Input
+                                    error={errors?.name}
+                                    id="name"
+                                    label="Name"
+                                    name="name"
+                                    type="text"
+                                    value={values ? values.name : ""}
+                                    onChange={handleChange}
+                                />
+                            )}
+                            {loadingMembers && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
+                            {groupMembers && <Members members={groupMembers} loading={loadingMembers} />}
+
+                            {!specialGroup && <DeletePanel id={id} />}
+                        </div>
+                        <div className="grid__col-md-5">
+                            <h2 className="font-size--16">Add member to team</h2>
+                            <div className="search__input-group margin-bottom--1">
+                                <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
+                                <label htmlFor="search" className="visually-hidden">
+                                    Search users by name or email
+                                </label>
+                                <input role="search" name="search" placeholder="Search users by name" {...search} />
+                            </div>
+                            {loadingUsers ? (
+                                <Loader classNames="grid grid--align-center grid--align-self-center" />
+                            ) : (
+                                <UsersTable
+                                    testid="users-table"
+                                    items={search.value ? getFilteredGroups() : availableUsers}
+                                    handleClick={handleAdd}
+                                />
+                            )}
+                        </div>
                     </div>
-                </div>
-                <div className="grid__col-6">
-                    <h2>Add member to team</h2>
-                    <div className="search__input-group ">
-                        <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
-                        <label htmlFor="search" className="visually-hidden">
-                            Search users by name or email
-                        </label>
-                        <input role="search" name="search" placeholder="Search users by name" {...search} />
-                    </div>
-                    {users ? <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} /> : "Nothing to show."}
                 </div>
                 <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
-        </form>
+        </div>
     );
 };
 

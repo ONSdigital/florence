@@ -3,14 +3,10 @@ import PropTypes from "prop-types";
 import Chip from "../../../components/chip/Chip";
 import Loader from "../../../components/loader";
 
-const Members = ({ id, members, handleRemove, loadMembers, loading }) => {
-    useEffect(() => {
-        loadMembers(id);
-    }, []);
-
-    console.log("members", members);
+const Members = ({ id, members, handleRemove, loading }) => {
+    if (!members) return null;
     return (
-        <div classNames="" data-testid="members">
+        <div data-testid="members">
             <h2>Members</h2>
             {loading && <Loader classNames="grid grid--align-center grid--align-self-center" />}
             {members && members.length === 0 && <p>Team doesn't have any members. Please add them.</p>}

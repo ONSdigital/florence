@@ -1,7 +1,8 @@
 import { connect } from "react-redux";
 import { fetchGroupRequest, updateGroupRequest } from "../../../config/groups/thunks";
 import { getUsersRequest } from "../../../config/thunks";
-import { getGroup, getGroupLoading, getUsers } from "../../../config/selectors";
+import { getGroup, getGroupLoading, getMappedUsers, getUsersLoading, getGroupMembers, getGroupMembersLoading } from "../../../config/selectors";
+import { fetchGroupMembersRequest } from "../../../config/groups/thunks";
 import EditGroup from "./EditGroup";
 
 function mapStateToProps(state) {
@@ -9,7 +10,10 @@ function mapStateToProps(state) {
         rootPath: state.state.rootPath,
         group: getGroup(state.state),
         loading: getGroupLoading(state.state),
-        users: getUsers(state.state),
+        users: getMappedUsers(state.state),
+        loadingMembers: getGroupMembersLoading(state.state),
+        members: getGroupMembers(state.state),
+        loadingUsers: getUsersLoading(state.state),
     };
 }
 
@@ -17,6 +21,7 @@ const mapDispatchToProps = dispatch => ({
     loadGroup: id => dispatch(fetchGroupRequest(id)),
     updateGroup: (id, body) => dispatch(updateGroupRequest(id, body)),
     loadUsers: () => dispatch(getUsersRequest()),
+    loadMembers: id => dispatch(fetchGroupMembersRequest(id)),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditGroup);

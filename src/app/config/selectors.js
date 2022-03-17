@@ -52,6 +52,11 @@ export const getUserLoading = state => state.user.isLoading;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
 
 export const getUsers = state => state.users.all;
+export const getUsersLoading = state => state.users.isLoading;
+export const getMappedUsers = createSelector(getUsers, users => {
+    if (!users) return [];
+    return users.map(user => ({ ...user, name: `${user.forename} ${user.lastname}` }));
+});
 
 export const getActiveUsers = createSelector(getUsers, users => {
     if (!users) return [];
@@ -63,7 +68,6 @@ export const getSuspendedUsers = createSelector(getUsers, users => {
     return users.filter(user => user.active === false);
 });
 
-export const getUsersLoading = state => state.users.isLoading;
 export const getRootPath = state => state.rootPath;
 
 export const getUserGroups = state => state.user.groups;

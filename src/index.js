@@ -63,7 +63,7 @@ const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return true || state.user.isAuthenticated;
+        return state.user.isAuthenticated;
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "UserIsAuthenticated",
@@ -72,7 +72,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return true || auth.isAdminOrEditor(state.user);
+        return auth.isAdminOrEditor(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
@@ -82,7 +82,7 @@ const userIsAdminOrEditor = connectedReduxRedirect({
 
 const userIsAdmin = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return true || auth.isAdmin(state.user);
+        return auth.isAdmin(state.user);
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdmin",

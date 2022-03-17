@@ -1,14 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`EditGroup matches the snapshot 1`] = `
-<form
+<div
   className="form"
 >
   <div
     className="grid grid--justify-space-around"
   >
     <div
-      className="grid__col-9"
+      className="grid__col-11 grid__col-md-9"
     >
       <div
         className="margin-top--2"
@@ -28,33 +28,103 @@ exports[`EditGroup matches the snapshot 1`] = `
         Boo is fine
       </h1>
       <div
-        className="grid__col-6"
+        className="grid grid--justify-space-between"
       >
         <div
-          className="form__input"
+          className="grid__col-md-6 margin-top--half"
         >
-          <label
-            className="form__label"
-            htmlFor="name"
+          <div
+            className="form__input"
           >
-            Name
-          </label>
-          <input
-            autoComplete="new-password"
-            autoFocus={false}
-            className="input"
-            disabled={false}
-            id="name"
-            name="name"
-            onChange={[Function]}
-            onFocus={[Function]}
-            type="text"
-            value=""
+            <label
+              className="form__label"
+              htmlFor="name"
+            >
+              Name
+            </label>
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="name"
+              name="name"
+              onChange={[Function]}
+              onFocus={[Function]}
+              type="text"
+              value=""
+            />
+          </div>
+          <div
+            className="grid grid--align-center grid--align-self-center grid--full-height"
+            data-testid="loader"
+          >
+            <div
+              className="loader loader--large loader--dark"
+            />
+          </div>
+          <div
+            data-testid="members"
+          >
+            <h2>
+              Members
+            </h2>
+            <div
+              className="grid grid--align-center grid--align-self-center"
+              data-testid="loader"
+            >
+              <div
+                className="loader loader--large loader--dark"
+              />
+            </div>
+            <p>
+              Team doesn't have any members. Please add them.
+            </p>
+            <div
+              className="chip__container chip__container--gap-10"
+            />
+          </div>
+          <div
+            id="0"
           />
         </div>
         <div
-          id="0"
-        />
+          className="grid__col-md-5"
+        >
+          <h2
+            className="font-size--16"
+          >
+            Add member to team
+          </h2>
+          <div
+            className="search__input-group margin-bottom--1"
+          >
+            <svg
+              className="search__icon-magnifier"
+              role="presentation"
+              viewBox="0 0 28 28"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="m20.011 16.352h-1.2647l-0.4482-0.4014c1.5689-1.6947 2.5134-3.8948 2.5134-6.2881 0-5.3368-4.6587-9.6627-10.406-9.6627-5.7472 0-10.406 4.3259-10.406 9.6627 0 5.3367 4.6587 9.6626 10.406 9.6626 2.5775 0 4.9469-0.877 6.7719-2.3339l0.4323 0.4163v1.1743l8.0045 7.418 2.3854-2.215-7.9886-7.4328zm-9.6055 0c-3.9862 0-7.2041-2.988-7.2041-6.6895s3.2178-6.6895 7.2041-6.6895c3.9863 0 7.2042 2.988 7.2042 6.6895s-3.2179 6.6895-7.2042 6.6895z"
+                fill="#808080"
+              />
+            </svg>
+            <label
+              className="visually-hidden"
+              htmlFor="search"
+            >
+              Search users by name or email
+            </label>
+            <input
+              name="search"
+              onChange={[Function]}
+              placeholder="Search users by name"
+              role="search"
+              value=""
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div
@@ -102,5 +172,5 @@ exports[`EditGroup matches the snapshot 1`] = `
       </div>
     </div>
   </div>
-</form>
+</div>
 `;

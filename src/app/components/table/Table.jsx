@@ -2,6 +2,7 @@ import React from "react";
 import Row from "./Row";
 
 function Table({ items, testid, handleClick }) {
+    console.log("Table", items);
     if (!items) return null;
     if (items.length === 0) return <p>Nothing to show.</p>;
 

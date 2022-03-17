@@ -8,7 +8,6 @@ import BackButton from "../../components/back-button";
 import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
-import search from "../../../components/search";
 
 const mapUsers = (users, rootPath) => {
     return users.map(user => ({

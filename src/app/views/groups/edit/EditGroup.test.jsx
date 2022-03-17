@@ -10,18 +10,24 @@ import EditGroup from "./EditGroup";
 
 const props = {
     group: group,
-    loadGroup: jest.fn(),
     loading: false,
     params: { id: "0", router: setRouteLeaveHook },
     rootPath: "test",
     router: { setRouteLeaveHook: jest.fn() },
+    isLoadingUsers: false,
+    members: [],
+    loadingMembers: jest.fn(),
     updateGroup: jest.fn(),
+    loadMembers: jest.fn(),
+    loadUsers: jest.fn(),
+    loadGroup: jest.fn(),
 };
 
 const setRouteLeaveHook = jest.fn();
 jest.mock("../delete", () => "div");
 
 describe("EditGroup", () => {
+    const availableUsers = [];
     it("matches the snapshot", () => {
         const tree = renderer.create(<EditGroup.WrappedComponent {...props} />).toJSON();
         expect(tree).toMatchSnapshot();
