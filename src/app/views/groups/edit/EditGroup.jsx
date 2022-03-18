@@ -31,24 +31,24 @@ const EditGroup = props => {
         }
     }, []);
 
-    const { group, loading, users, updateGroup, loadUsers, loadingUsers, members, loadingMembers } = props;
+    useEffect(() => {
+        props.loadUsers();
+    }, []);
+
+    const { group, loading, users, updateGroup, loadingUsers, members, loadingMembers } = props;
     const [values, setValues] = useState(null);
     const [search, setSearch] = useInput("");
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [groupMembers, setGroupMembers] = useState(members);
+    const [availableUsers, setAvailableUsers] = useState(users);
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
     const specialGroup = group?.precedence === (1 || 2);
-    const [groupMembers, setGroupMembers] = useState(members);
-    const [availableUsers, setAvailableUsers] = useState(users);
 
     const routerWillLeave = nextLocation => {
         if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
-
-    useEffect(() => {
-        loadUsers();
-    }, []);
 
     useEffect(() => {
         setGroupMembers(members);
@@ -57,6 +57,11 @@ const EditGroup = props => {
     useEffect(() => {
         setAvailableUsers(users);
     }, [users]);
+
+    useEffect(() => {
+        const newAvailableUsers = availableUsers.filter(user => !groupMembers.some(m => m.id === user.id));
+        setAvailableUsers(newAvailableUsers);
+    }, [groupMembers]);
 
     useEffect(() => {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
@@ -89,16 +94,11 @@ const EditGroup = props => {
         setValues(values => ({ ...values, [key]: val }));
     };
 
-    useEffect(() => {
-        console.log("search.value", search.value);
-        getFilteredGroups();
-    }, [search.value]);
-
     const getFilteredGroups = useCallback(() => {
         if (!availableUsers || availableUsers.length == 0) return [];
         const str = search.value.toLowerCase();
-
-        return availableUsers.filter(user => user.name?.toLowerCase().includes(str) || users.email?.toLowerCase().includes(str));
+        const result = availableUsers.filter(user => user.name?.toLowerCase().includes(str) || users.email?.toLowerCase().includes(str));
+        setAvailableUsers(result);
     }, [search.value]);
 
     const handleRemove = id => setGroupMembers(prevState => prevState.filter(member => member.id !== id));
@@ -131,27 +131,28 @@ const EditGroup = props => {
                                 />
                             )}
                             {loadingMembers && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
-                            {groupMembers && <Members members={groupMembers} loading={loadingMembers} />}
-
+                            {groupMembers && <Members members={groupMembers} handleRemove={handleRemove} />}
                             {!specialGroup && <DeletePanel id={id} />}
                         </div>
                         <div className="grid__col-md-5">
                             <h2 className="font-size--16">Add member to team</h2>
-                            <div className="search__input-group margin-bottom--1">
-                                <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
-                                <label htmlFor="search" className="visually-hidden">
-                                    Search users by name or email
-                                </label>
-                                <input role="search" name="search" placeholder="Search users by name" {...search} />
-                            </div>
                             {loadingUsers ? (
                                 <Loader classNames="grid grid--align-center grid--align-self-center" />
                             ) : (
-                                <UsersTable
-                                    testid="users-table"
-                                    items={search.value ? getFilteredGroups() : availableUsers}
-                                    handleClick={handleAdd}
-                                />
+                                <>
+                                    <div className="search__input-group margin-bottom--1">
+                                        <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
+                                        <label htmlFor="search" className="visually-hidden">
+                                            Search users by name or email
+                                        </label>
+                                        <input role="search" name="search" placeholder="Search users by name" {...search} />
+                                    </div>
+                                    <UsersTable
+                                        testid="users-table"
+                                        items={search.value ? getFilteredGroups() : availableUsers}
+                                        handleClick={handleAdd}
+                                    />
+                                </>
                             )}
                         </div>
                     </div>

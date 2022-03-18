@@ -6,11 +6,11 @@ import Loader from "../../../components/loader";
 const Members = ({ id, members, handleRemove, loading }) => {
     if (!members) return null;
     return (
-        <div data-testid="members">
+        <div data-testid="members" className="simple-table__scroll">
             <h2>Members</h2>
             {loading && <Loader classNames="grid grid--align-center grid--align-self-center" />}
             {members && members.length === 0 && <p>Team doesn't have any members. Please add them.</p>}
-            <div className="chip__container chip__container--gap-10">
+            <div className="chip__container chip__container--gap-10 ">
                 {members.map(member => (
                     <Chip
                         key={member.id}
@@ -26,12 +26,19 @@ const Members = ({ id, members, handleRemove, loading }) => {
     );
 };
 
-// Members.propTypes = {
-//     members: PropTypes.arrayOf(
-//             id: PropTypes.string,
-//             forename: PropTypes.string,
-//     ).isRequired,
-//     handleRemove: PropTypes.func,
-// };
+Members.propTypes = {
+    members: PropTypes.arrayOf(
+        PropTypes.shape({
+            active: PropTypes.bool,
+            id: PropTypes.string,
+            email: PropTypes.string,
+            forename: PropTypes.string,
+            lastname: PropTypes.string,
+            status: PropTypes.string,
+            status_notes: PropTypes.string,
+        })
+    ).isRequired,
+    handleRemove: PropTypes.func.isRequired,
+};
 
 export default Members;

@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import collectionMapper from "../views/collections/mapper/collectionMapper";
+import differenceWith from "lodash/differenceWith";
 
 export const getCollections = state => state.collections.all;
 export const getSearch = state => state.search;
@@ -53,14 +54,16 @@ export const getUserAddingToGroups = state => state.isUserAddingToGroups;
 
 export const getUsers = state => state.users.all;
 export const getUsersLoading = state => state.users.isLoading;
-export const getMappedUsers = createSelector(getUsers, users => {
-    if (!users) return [];
-    return users.map(user => ({ ...user, name: `${user.forename} ${user.lastname}` }));
-});
 
 export const getActiveUsers = createSelector(getUsers, users => {
     if (!users) return [];
     return users.filter(user => user.active === true);
+});
+
+export const getMappedAvailableActiveUsers = createSelector(getActiveUsers, getGroupMembers, (users, members) => {
+    if (!users) return [];
+    const availableUsers = users.filter(user => !members.some(m => m.id === user.id));
+    return availableUsers.map(user => ({ ...user, name: `${user.forename} ${user.lastname}` }));
 });
 
 export const getSuspendedUsers = createSelector(getUsers, users => {

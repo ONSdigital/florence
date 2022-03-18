@@ -27,7 +27,6 @@ const setRouteLeaveHook = jest.fn();
 jest.mock("../delete", () => "div");
 
 describe("EditGroup", () => {
-    const availableUsers = [];
     it("matches the snapshot", () => {
         const tree = renderer.create(<EditGroup.WrappedComponent {...props} />).toJSON();
         expect(tree).toMatchSnapshot();
