@@ -162,7 +162,7 @@ const Index = () => {
                         </Route>
                     </Route>
                     <Route path={`${rootPath}/interactives`}>
-                        <Route path="index" component={userIsAuthenticated(InteractivesController)} />
+                        <IndexRoute component={userIsAuthenticated(InteractivesController)} />
                         <Route path="create" component={userIsAuthenticated(InteractivesFormController)} />
                         <Route path="edit/:interactiveId" component={userIsAuthenticated(InteractivesFormController)} />
                     </Route>
