@@ -6,7 +6,7 @@ import Loader from "../../../components/loader";
 const Members = ({ id, members, handleRemove, loading }) => {
     if (!members) return null;
     return (
-        <div data-testid="members" className="simple-table__scroll padding-bottom--2">
+        <div data-testid="members" className="simple-table__scroll margin-bottom--1">
             <h2>Members</h2>
             {loading && <Loader classNames="grid grid--align-center grid--align-self-center" />}
             {members && members.length === 0 && <p>Team doesn't have any members. Please add them.</p>}
