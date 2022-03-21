@@ -712,6 +712,15 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case groupsTypes.UPDATE_GROUP_MEMBERS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    members: action.members,
+                },
+            };
+        }
         default: {
             return state;
         }

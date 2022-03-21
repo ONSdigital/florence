@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { useInput } from "../../../hooks/useInput";
 import { Link } from "react-router";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
@@ -35,28 +34,28 @@ const EditGroup = props => {
         props.loadUsers();
     }, []);
 
-    const { group, loading, users, updateGroup, loadingUsers, members, loadingMembers } = props;
+    const { group, loading, users, updateGroup, loadingUsers, members, loadingMembers, updateGroupMembers } = props;
     const [values, setValues] = useState(null);
-    const [search, setSearch] = useInput("");
+    const [search, setSearch] = useState("");
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
+
     const [groupMembers, setGroupMembers] = useState(members);
-    const [availableUsers, setAvailableUsers] = useState(users);
+    const [availableUsers, setAvailableUsers] = useState(users); // all available - those in groups groupMembers
+
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
+    const hasUpdatedMembers = !isEqual(groupMembers, members);
     const specialGroup = group?.precedence === (1 || 2);
 
     const routerWillLeave = nextLocation => {
-        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
+        if ((hasNewValues || hasUpdatedMembers) && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
     };
 
     useEffect(() => {
-        setGroupMembers(members);
-    }, [members]);
-
-    useEffect(() => {
         setAvailableUsers(users);
-    }, [users]);
+        setGroupMembers(members);
+    }, [users, members]);
 
     useEffect(() => {
         const newAvailableUsers = availableUsers.filter(user => !groupMembers.some(m => m.id === user.id));
@@ -73,16 +72,31 @@ const EditGroup = props => {
         }
     }, [group]);
 
+    useEffect(() => {
+        const str = search.toLowerCase();
+        const newAvailableUsers = users.filter(user => !groupMembers.some(m => m.id === user.id));
+        const result = newAvailableUsers.filter(user => user.name?.toLowerCase().includes(str) || users.email?.toLowerCase().includes(str));
+
+        setAvailableUsers(result);
+    }, [search, groupMembers, users]);
+
     const handleSubmit = e => {
         if (e) e.preventDefault();
         setErrors(validate(values));
         setIsSubmitting(true);
 
         if (hasErrors || values.name === "") return;
+
         updateGroup(id, { name: values.name, precedence: 10 });
+        if (hasUpdatedMembers) {
+            updateGroupMembers(
+                id,
+                groupMembers.map(({ id }) => id)
+            );
+        }
     };
 
-    const handleChange = e => {
+    const handleInputChange = useCallback(e => {
         const key = e.target.name;
         const val = e.target.value;
         setIsSubmitting(false);
@@ -92,16 +106,14 @@ const EditGroup = props => {
             setErrors(errors);
         }
         setValues(values => ({ ...values, [key]: val }));
+    }, []);
+
+    const handleSearchChange = e => setSearch(e.target.value);
+
+    const handleRemove = user => {
+        setGroupMembers(prevState => prevState.filter(member => member.id !== user.id));
+        setAvailableUsers(prevState => prevState.concat(user));
     };
-
-    const getFilteredGroups = useCallback(() => {
-        if (!availableUsers || availableUsers.length == 0) return [];
-        const str = search.value.toLowerCase();
-        const result = availableUsers.filter(user => user.name?.toLowerCase().includes(str) || users.email?.toLowerCase().includes(str));
-        setAvailableUsers(result);
-    }, [search.value]);
-
-    const handleRemove = id => setGroupMembers(prevState => prevState.filter(member => member.id !== id));
 
     const handleAdd = member => {
         setGroupMembers(prevState => prevState.concat(member));
@@ -127,7 +139,7 @@ const EditGroup = props => {
                                     name="name"
                                     type="text"
                                     value={values ? values.name : ""}
-                                    onChange={handleChange}
+                                    onChange={handleInputChange}
                                 />
                             )}
                             {loadingMembers && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
@@ -145,13 +157,15 @@ const EditGroup = props => {
                                         <label htmlFor="search" className="visually-hidden">
                                             Search users by name or email
                                         </label>
-                                        <input role="search" name="search" placeholder="Search users by name" {...search} />
+                                        <input
+                                            role="search"
+                                            name="search"
+                                            placeholder="Search users by name"
+                                            value={search ? search : ""}
+                                            onChange={handleSearchChange}
+                                        />
                                     </div>
-                                    <UsersTable
-                                        testid="users-table"
-                                        items={search.value ? getFilteredGroups() : availableUsers}
-                                        handleClick={handleAdd}
-                                    />
+                                    <UsersTable testid="users-table" items={availableUsers} handleClick={handleAdd} />
                                 </>
                             )}
                         </div>

@@ -133,3 +133,17 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
                   console.error("Error fetching all teams:\n", error);
               });
 };
+
+export const updateGroupMembersRequest = (id, body) => dispatch => {
+    teams
+        .updateGroupMembers(id, body)
+        .then(response => {
+            dispatch(actions.updateGroupMembersSuccess(response));
+        })
+        .catch(error => {
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};

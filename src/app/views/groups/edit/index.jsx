@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { fetchGroupRequest, updateGroupRequest } from "../../../config/groups/thunks";
+import { fetchGroupRequest, updateGroupRequest, updateGroupMembers } from "../../../config/groups/thunks";
 import { getUsersRequest } from "../../../config/thunks";
 import {
     getGroup,
@@ -27,6 +27,7 @@ function mapStateToProps(state) {
 const mapDispatchToProps = dispatch => ({
     loadGroup: id => dispatch(fetchGroupRequest(id)),
     updateGroup: (id, body) => dispatch(updateGroupRequest(id, body)),
+    updateGroupMembers: (id, body) => dispatch(updateGroupMembersRequest(id, body)),
     loadUsers: () => dispatch(getUsersRequest()),
     loadMembers: id => dispatch(fetchGroupMembersRequest(id)),
 });

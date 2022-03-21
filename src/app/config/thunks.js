@@ -304,14 +304,14 @@ export const fetchUserRequest = id => dispatch => {
         });
 };
 
-export const addGroupsToUserRequest = (userId, groups) => dispatch => {
+export const addGroupsToUserRequest = (id, groups) => dispatch => {
     dispatch(actions.addGroupsToUserProgress());
     let promises = [];
-    groups.forEach(group => promises.push(teams.addMemberToTeam(group, userId)));
+    groups.forEach(group => promises.push(teams.addMemberToTeam(group, id)));
 
     Promise.all(promises)
         .then(response => {
-            dispatch(actions.addGroupsToUserSuccess(userId, response));
+            dispatch(actions.addGroupsToUserSuccess(id, response));
             dispatch(push(`/florence/users`));
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "Teams added to user successfully", autoDismiss: 5000 });

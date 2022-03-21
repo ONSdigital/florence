@@ -75,6 +75,12 @@ export default class teams {
         });
     }
 
+    static updateGroupMembers(id, body) {
+        return http.put(`/groups/${id}/members`, body).then(response => {
+            return response;
+        });
+    }
+
     static deleteGroup(id) {
         return http.delete(`/groups/${id}`).then(response => {
             return response;

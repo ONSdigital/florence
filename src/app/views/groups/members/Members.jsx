@@ -6,13 +6,14 @@ import Loader from "../../../components/loader";
 const Members = ({ id, members, handleRemove, loading }) => {
     if (!members) return null;
     return (
-        <div data-testid="members" className="simple-table__scroll">
+        <div data-testid="members" className="simple-table__scroll padding-bottom--2">
             <h2>Members</h2>
             {loading && <Loader classNames="grid grid--align-center grid--align-self-center" />}
             {members && members.length === 0 && <p>Team doesn't have any members. Please add them.</p>}
             <div className="chip__container chip__container--gap-10 ">
                 {members.map(member => (
                     <Chip
+                        member={member}
                         key={member.id}
                         id={member.id}
                         icon="person"

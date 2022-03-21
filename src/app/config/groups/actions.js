@@ -92,3 +92,10 @@ export function loadGroupsSuccess(groups) {
         groups,
     };
 }
+
+export function updateGroupMembersSuccess(members) {
+    return {
+        type: types.UPDATE_GROUP_MEMBERS_SUCCESS,
+        members,
+    };
+}
