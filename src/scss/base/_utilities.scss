@@ -22,9 +22,10 @@
     &-left--#{$i} {
       margin-left: $horizontal-spacing;
     }
-
   }
-
+  &-top--half {
+    margin-top: $lineheight * 0.66;
+  }
 }
 
 .padding {

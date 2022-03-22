@@ -40,6 +40,8 @@ export const initialState = {
         all: [],
         isLoading: false,
         isDeleting: false,
+        members: [],
+        isLoadingMembers: false,
     },
     datasets: {
         all: [],

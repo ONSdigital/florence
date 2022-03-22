@@ -56,6 +56,22 @@ export const deleteGroupRequest = id => dispatch => {
         });
 };
 
+export const fetchGroupMembersRequest = id => dispatch => {
+    dispatch(actions.loadGroupMembersProgress());
+    teams
+        .getGroupMembers(id)
+        .then(response => {
+            dispatch(actions.loadGroupMembersSuccess(response.users));
+        })
+        .catch(error => {
+            dispatch(actions.loadGroupMembersFailure());
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};
+
 export const fetchGroupsRequest = isNewSignIn => dispatch => {
     dispatch(actions.loadGroupsProgress());
     isNewSignIn
@@ -116,4 +132,18 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
                   }
                   console.error("Error fetching all teams:\n", error);
               });
+};
+
+export const updateGroupMembersRequest = (id, body) => dispatch => {
+    teams
+        .updateGroupMembers(id, body)
+        .then(response => {
+            dispatch(actions.updateGroupMembersSuccess(response));
+        })
+        .catch(error => {
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
 };

@@ -8,18 +8,69 @@ import { render, screen } from "../../../utilities/tests/test-utils";
 import { group, specialGroup } from "../../../utilities/tests/mockData";
 import EditGroup from "./EditGroup";
 
+const users = [
+    {
+        active: true,
+        email: "foo@ons.gov.uk",
+        forename: "Test",
+        groups: [],
+        id: "0234",
+        lastname: "Foo",
+        status: "CONFIRMED",
+        status_notes: "",
+    },
+    {
+        active: true,
+        email: "test.user@ons.gov.uk",
+        forename: "test",
+        groups: [],
+        id: "1234",
+        lastname: "user",
+        status: "CONFIRMED",
+        status_notes: "",
+    },
+    {
+        active: true,
+        email: "john.doe@ons.gov.uk",
+        forename: "John",
+        groups: [],
+        id: "0456",
+        lastname: "Doe",
+        status: "CONFIRMED",
+        status_notes: "",
+    },
+];
 const props = {
     group: group,
-    loadGroup: jest.fn(),
     loading: false,
     params: { id: "0", router: setRouteLeaveHook },
     rootPath: "test",
     router: { setRouteLeaveHook: jest.fn() },
+    loadingUsers: false,
+    members: [
+        {
+            active: true,
+            email: "test.user-199@ons.gov.uk",
+            forename: "test",
+            groups: [],
+            id: "test-user-199",
+            lastname: "user-199",
+            status: "CONFIRMED",
+            status_notes: "",
+        },
+    ],
+    loadingMembers: false,
+    users: users,
+    loadGroup: jest.fn(),
+    loadingMembers: jest.fn(),
+    loadMembers: jest.fn(),
+    loadUsers: jest.fn(),
     updateGroup: jest.fn(),
+    updateGroupMembers: jest.fn(),
 };
 
 const setRouteLeaveHook = jest.fn();
-jest.mock("../delete", () => "div");
+jest.mock("../delete", () => "div"); // faking connected component
 
 describe("EditGroup", () => {
     it("matches the snapshot", () => {
@@ -70,7 +121,7 @@ describe("EditGroup", () => {
             expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
         });
 
-        it("validates for emptiness", () => {
+        it("Updates group name and members", () => {
             render(<EditGroup.WrappedComponent {...props} />);
 
             userEvent.clear(screen.getByLabelText(/name/i));

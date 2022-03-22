@@ -684,6 +684,43 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case groupsTypes.LOAD_GROUP_MEMBERS_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingMembers: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_MEMBERS_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingMembers: true,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_MEMBERS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    members: state.groups.members.concat(action.members),
+                    isLoadingMembers: false,
+                },
+            };
+        }
+        case groupsTypes.UPDATE_GROUP_MEMBERS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    members: action.members,
+                },
+            };
+        }
         default: {
             return state;
         }
