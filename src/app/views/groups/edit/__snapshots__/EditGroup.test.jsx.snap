@@ -64,7 +64,7 @@ exports[`EditGroup matches the snapshot 1`] = `
             />
           </div>
           <div
-            className="simple-table__scroll"
+            className="simple-table__scroll margin-bottom--1"
             data-testid="members"
           >
             <h2>

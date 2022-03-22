@@ -9,7 +9,7 @@ function Table({ items, testid, handleClick }) {
         <table role="table" className="simple-table simple-table__scroll" data-testid={testid}>
             <tbody>
                 {items.map((item, i) => (
-                    <Row key={i + item.id} item={item} handleClick={handleClick} />
+                    <Row key={`${i}-${item.id || item.group_name}`} item={item} handleClick={handleClick} />
                 ))}
             </tbody>
         </table>
