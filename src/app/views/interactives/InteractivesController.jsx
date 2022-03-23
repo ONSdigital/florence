@@ -22,6 +22,8 @@ export class InteractivesController extends Component {
                 topics: [],
                 query: "",
                 sortBy: "desc",
+                // offset: 0,
+                // limit: 5
             },
         };
 
@@ -99,34 +101,38 @@ export class InteractivesController extends Component {
                             />
                         </div>
                         <label htmlFor="selectable-box">Primary topic</label>
-                        <div className="scrollable-box">
-                            <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
-                                {taxonomies.map(taxonomy => {
-                                    return (
-                                        <li>
-                                            <div className="grid">
-                                                <input
-                                                    type="checkbox"
-                                                    value={url.slug(taxonomy.uri)}
-                                                    name="topics"
-                                                    onChange={e =>
-                                                        this.setState({ [e.target.name]: toggleInArray(this.state.filters.topics, e.target.value) })
-                                                    }
-                                                />
-                                                <div>{taxonomy.description.title}</div>
-                                            </div>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                        <div>
+                            <div className="scrollable-box">
+                                <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
+                                    {taxonomies.map(taxonomy => {
+                                        return (
+                                            <li>
+                                                <div className="grid">
+                                                    <input
+                                                        type="checkbox"
+                                                        value={url.slug(taxonomy.uri)}
+                                                        name="topics"
+                                                        onChange={e =>
+                                                            this.setState({ [e.target.name]: toggleInArray(this.state.filters.topics, e.target.value) })
+                                                        }
+                                                    />
+                                                    <div>{taxonomy.description.title}</div>
+                                                </div>
+                                            </li>
+                                        );
+                                    })}
+                                </ul>
+                            </div>
                         </div>
-                        <div className={"grid grid--justify-space-between filter-buttons padding-top--1"}>
-                            <button type="submit" className="btn btn--success" disabled={this.state.isAwaitingResponse} onClick={this.handleFilter}>
-                                Apply
-                            </button>
-                            <button className="btn btn--secondary" onClick={this.clearCheckboxes}>
-                                Cancel
-                            </button>
+                        <div>
+                            <div className={"grid grid--justify-space-between filter-buttons padding-top--1"}>
+                                <button type="submit" className="btn btn--success" disabled={this.state.isAwaitingResponse} onClick={this.handleFilter}>
+                                    Apply
+                                </button>
+                                <button className="btn btn--secondary" onClick={this.clearCheckboxes}>
+                                    Cancel
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div id="interactives-table" className={"grid__col-sm-12 grid__col-md-5"}>

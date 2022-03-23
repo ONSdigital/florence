@@ -40,6 +40,10 @@ export default function reducer(state = initialState, action = {}) {
             return Object.assign({}, state, {
                 successMessage: initialState.successMessage,
             });
+        case types.INTERACTIVE_RESET_ERROR:
+            return Object.assign({}, state, {
+                errors: initialState.errors,
+            });
         case types.FILTER_INTERACTIVES:
             const { topics, query, sortBy } = action.filters;
             let filteredInteractives = state.interactives;
@@ -49,11 +53,6 @@ export default function reducer(state = initialState, action = {}) {
             if (query.length > 1) {
                 filteredInteractives = state.interactives.filter(interactive => isInArray(interactive.metadata.title, query));
             }
-            // if(sortBy === 'desc'){
-            //     filteredInteractives = state.interactives.sort((a, b) => new Date(a.metadata.release_at) - new Date(b.metadata.release_at));
-            // } else {
-            //     filteredInteractives = state.interactives.sort((a, b) => new Date(b.metadata.release_at) - new Date(a.metadata.release_at));
-            // }
             return Object.assign({}, state, {
                 filteredInteractives,
             });

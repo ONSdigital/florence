@@ -44,7 +44,7 @@ function Table({ columns, data }) {
 
     for (let i = 1; i <= pageCount; i++) {
         paginationButtons.push(
-            <button onClick={() => gotoPage(i)} disabled={!canNextPage} className={i === pageIndex + 1 ? "active" : null}>
+            <button onClick={() => gotoPage(i-1)} className={i === pageIndex + 1 ? "active" : null}>
                 {i}
             </button>
         );

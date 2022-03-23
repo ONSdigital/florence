@@ -7,6 +7,10 @@ export default class Interactives {
         return axios.get(`${baseURL}/interactives`);
     }
 
+    static get(query) {
+        return axios.get(`${baseURL}/interactives?${query}`);
+    }
+
     static store(body) {
         return axios.post(`${baseURL}/interactives`, body, {
             headers: {

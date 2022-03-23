@@ -69,6 +69,7 @@
       left: 0;
       font-size: 17px;
       color: #b8b8b8;
+      padding-left: 40px
     }
     .button-wrap {
       position: relative;
@@ -239,5 +240,13 @@
           color: #fff;
         }
       }
+    }
+
+  }
+
+  .interactives__form__back__button{
+    padding-left: 26px;
+    span{
+      padding-left: 10px;
     }
   }

@@ -49,10 +49,21 @@ export function setInteractiveError(error) {
     };
 }
 
-export function filterInteractives(filters) {
+export function resetInteractiveError() {
     return {
-        type: types.FILTER_INTERACTIVES,
-        filters,
+        type: types.INTERACTIVE_RESET_ERROR,
+    };
+}
+
+export function filterInteractives(filters) {
+    const query = new URLSearchParams(filters);
+    return async dispatch => {
+        try {
+            const res = await Interactives.get(query);
+            dispatch(setInteractives(res.data.items));
+        } catch (error) {
+            dispatch(setInteractiveError(error));
+        }
     };
 }
 
