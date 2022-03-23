@@ -272,6 +272,9 @@ export const getUsersRequest = () => dispatch => {
         })
         .catch(error => {
             dispatch(actions.loadUsersFailure());
+            if (error) {
+                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
             console.error(error);
         });
 };
