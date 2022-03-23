@@ -112,7 +112,7 @@ describe("AddGroupsToUser", () => {
             expect(within(userGroupsList).getByLabelText(/tick inside shield icon/i)).toBeInTheDocument();
             expect(within(userGroupsList).getByText(/admins group description/i)).toBeInTheDocument();
             expect(within(screen.getByTestId("form-footer")).getByText(/you have unsaved changes/i)).toBeInTheDocument();
-
+            screen.debug();
             userEvent.click(within(userGroupsList).getAllByLabelText("remove")[0]);
 
             expect(within(userGroupsList).queryByText(/my first test group description/i)).not.toBeInTheDocument();

@@ -60,11 +60,11 @@ const Chip = props => {
         );
 
     const handleOnClick = () => {
-        if (props.id) {
-            props.removeFunc(props.id);
-        } else {
-            props.removeFunc();
-        }
+        if (props.member) props.removeFunc(props.member);
+
+        if (props.id) return props.removeFunc(props.id);
+
+        props.removeFunc();
     };
 
     return (

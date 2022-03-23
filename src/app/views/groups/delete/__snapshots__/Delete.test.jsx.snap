@@ -1,0 +1,57 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Delete matches the snapshot 1`] = `
+<div
+  className="grid__col-11 grid__col-md-9"
+>
+  <div
+    className="panel panel--error panel--no-title margin-top--1 margin-bottom--1"
+    role="alert"
+  >
+    <h2
+      className="panel__error font-size--16"
+    >
+      <strong>
+        Delete preview team
+      </strong>
+    </h2>
+    <p>
+      Team members cannot view content linked to this preview team after it has been deleted.
+    </p>
+    <button
+      className="btn btn--warning margin-top--1 margin-bottom--1"
+      onClick={[Function]}
+    >
+      Delete team
+    </button>
+  </div>
+</div>
+`;
+
+exports[`Delete when deleting is in progress matches the snapshot 1`] = `
+<div
+  className="grid__col-11 grid__col-md-9"
+>
+  <div
+    className="panel panel--error panel--no-title margin-top--1 margin-bottom--1"
+    role="alert"
+  >
+    <h2
+      className="panel__error font-size--16"
+    >
+      <strong>
+        Delete preview team
+      </strong>
+    </h2>
+    <p>
+      Team members cannot view content linked to this preview team after it has been deleted.
+    </p>
+    <button
+      className="btn btn--warning margin-top--1 margin-bottom--1"
+      onClick={[Function]}
+    >
+      Delete team
+    </button>
+  </div>
+</div>
+`;

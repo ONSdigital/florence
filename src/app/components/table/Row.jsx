@@ -6,7 +6,7 @@ function Row({ item, handleClick }) {
     };
     return (
         <tr className="simple-table__row grid grid--align-center">
-            <td className="grid__col-10">{item.description}</td>
+            <td className="grid__col-10">{item.description ? item.description : item.name}</td>
             <td className="grid__col-2">
                 <button className="btn btn--info" onClick={handleOnClick}>
                     Add

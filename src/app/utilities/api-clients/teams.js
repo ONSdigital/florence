@@ -19,18 +19,6 @@ export default class teams {
         });
     }
 
-    static createTeam(body) {
-        return http.post(`/groups`, body).then(response => {
-            return response;
-        });
-    }
-
-    static addMemberToTeam(teamID, userID) {
-        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
-            return response;
-        });
-    }
-
     static remove(teamName) {
         return http.delete(`/zebedee/teams/${teamName}`).then(response => {
             return response;
@@ -48,7 +36,27 @@ export default class teams {
             return response;
         });
     }
+
     // TODO: new auth work
+
+    static createTeam(body) {
+        return http.post(`/groups`, body).then(response => {
+            return response;
+        });
+    }
+
+    static addMemberToTeam(id, userID) {
+        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
+            return response;
+        });
+    }
+
+    static deleteMemberFromTeam(id, body) {
+        return http.post(`/groups/${id}/members`, body).then(response => {
+            return response;
+        });
+    }
+
     static getGroups() {
         return http.get(`/groups`).then(response => {
             return response;
@@ -63,6 +71,24 @@ export default class teams {
 
     static updateGroup(id, body) {
         return http.put(`/groups/${id}`, body).then(response => {
+            return response;
+        });
+    }
+
+    static updateGroupMembers(id, body) {
+        return http.put(`/groups/${id}/members`, body).then(response => {
+            return response;
+        });
+    }
+
+    static deleteGroup(id) {
+        return http.delete(`/groups/${id}`).then(response => {
+            return response;
+        });
+    }
+
+    static getGroupMembers(id) {
+        return http.get(`/groups/${id}/members`).then(response => {
             return response;
         });
     }

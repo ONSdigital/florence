@@ -2,7 +2,7 @@ import React from "react";
 import { CollectionEditController, mapStateToProps } from "./CollectionEditController";
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
-import { LOAD_GROUPS_SUCCESS } from "../../../config/constants";
+import { LOAD_GROUPS_SUCCESS } from "../../../config/groups/constants";
 
 console.error = () => {};
 console.warn = () => {};
