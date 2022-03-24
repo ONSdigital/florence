@@ -11,6 +11,7 @@ const GenericFileUploadContainer = ({
     customRetryClick = null,
     canSetPublishableStatus = false,
     url = "",
+    collectionID = "",
     onSuccess = () => {},
     onError = () => {},
 }) => {
@@ -42,6 +43,7 @@ const GenericFileUploadContainer = ({
             r.assignDrop(input);
             r.on("fileAdded", file => {
                 setIsUploading(true);
+                if (collectionID) r.opts.query["collectionId"] = collectionID;
                 r.opts.query["isPublishable"] = isPublishable;
                 r.opts.query["licence"] = "Open Government Licence v3.0";
                 r.opts.query["licenceUrl"] = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/";
