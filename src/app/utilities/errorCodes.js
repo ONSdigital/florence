@@ -11,11 +11,14 @@ export const errCodes = {
     GET_USERS_NOT_FOUND: "Could not retrieve users. Please try again shortly, if the issue persists please contact an administrator",
     GET_USERS_UNEXPECTED_ERROR_SHORT:
         "An unexpected error has occurred whilst trying to get users. Please try again shortly, if the error persists please contact an administrator.",
+    GET_GROUPS_UNEXPECTED_ERROR_SHORT:
+        "An unexpected error has occurred whilst trying to get teams. Please try again shortly, if the error persists please contact an administrator.",
     GET_USERS_UNEXPECTED_ERROR:
         "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
     GET_USERS_NETWORK_ERROR: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
     UNIQ_NAME_ERROR: "A collection with this name already exists.",
     GET_USERS_RESPONSE_ERROR: "An error has occurred whilst trying to get users. You may only be able to see previously loaded information.",
+    GET_GROUPS_NOT_FOUND: "An error has occurred whilst trying to get teams. You may only be able to see previously loaded information.",
     GET_USERS_UNEXPECTED_FILTER_ERROR: "An error has occurred whilst trying to get users. Please contact an administrator",
     CREATE_GROUP_UNEXPECTED_ERROR: "An error has occurred whilst creating the new team. Please contact an administrator",
     INVALID_NEW_TEAM_NAME: "An invalid team name was provided, please change the name",

@@ -37,7 +37,7 @@ export default class SimpleSelectableList extends Component {
                       })
                     : null}
                 {showLoadingState && <span data-testid="loader" className="margin-top--1 loader loader--dark" />}
-                {!hasRows && !showLoadingState ? <p>Nothing to show</p> : ""}
+                {!hasRows && !showLoadingState && <p className="padding-top--1">Nothing to show.</p>}
             </ul>
         );
     }
