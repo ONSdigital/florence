@@ -13,6 +13,7 @@ describe("Collections", () => {
         editInteractive: jest.fn(),
         deleteInteractive: jest.fn(),
         createInteractive: jest.fn(),
+        resetInteractiveError: jest.fn(),
         rootPath: "/florence",
         errors: {},
         params: {
