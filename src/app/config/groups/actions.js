@@ -19,6 +19,25 @@ export function loadGroupSuccess(group) {
     };
 }
 
+export function loadGroupMembersFailure() {
+    return {
+        type: types.LOAD_GROUP_MEMBERS_FAILURE,
+    };
+}
+
+export function loadGroupMembersProgress() {
+    return {
+        type: types.LOAD_GROUP_MEMBERS_PROGRESS,
+    };
+}
+
+export function loadGroupMembersSuccess(members) {
+    return {
+        type: types.LOAD_GROUP_MEMBERS_SUCCESS,
+        members,
+    };
+}
+
 export function updateGroupFailure() {
     return {
         type: types.UPDATE_GROUP_FAILURE,
@@ -71,5 +90,12 @@ export function loadGroupsSuccess(groups) {
     return {
         type: types.LOAD_GROUPS_SUCCESS,
         groups,
+    };
+}
+
+export function updateGroupMembersSuccess(members) {
+    return {
+        type: types.UPDATE_GROUP_MEMBERS_SUCCESS,
+        members,
     };
 }

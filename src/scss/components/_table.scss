@@ -200,6 +200,7 @@
     &__scroll {
         overflow-y: auto;
         display: block;
+        margin-bottom: $lineheight * 4;
         max-height: calc(100vh - 380px); // the remaining space do not change
     }
 }
