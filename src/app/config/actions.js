@@ -394,25 +394,6 @@ export function addGroupsToUserProgress() {
     };
 }
 
-export function loadGroupsFailure() {
-    return {
-        type: types.LOAD_GROUPS_FAILURE,
-    };
-}
-
-export function loadGroupsProgress() {
-    return {
-        type: types.LOAD_GROUPS_PROGRESS,
-    };
-}
-
-export function loadGroupsSuccess(groups) {
-    return {
-        type: types.LOAD_GROUPS_SUCCESS,
-        groups,
-    };
-}
-
 export const updateUserFailure = () => ({
     type: types.UPDATE_USER_FAILURE,
 });

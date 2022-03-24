@@ -9,12 +9,12 @@ import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 import {
-    loadGroupsSuccess,
     updateActiveCollection,
     loadCollectionsSuccess,
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
 } from "../../../config/actions";
+import { loadGroupsSuccess } from "../../../config/groups/actions";
 import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";

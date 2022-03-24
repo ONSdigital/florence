@@ -1,5 +1,6 @@
 import { createSelector } from "reselect";
 import collectionMapper from "../views/collections/mapper/collectionMapper";
+import differenceWith from "lodash/differenceWith";
 
 export const getCollections = state => state.collections.all;
 export const getSearch = state => state.search;
@@ -30,6 +31,8 @@ export const getGroups = state => state.groups.all;
 export const getGroupsLoading = state => state.groups.isLoading;
 export const getGroup = state => state.groups.active;
 export const getGroupLoading = state => state.groups.isLoadingActive;
+export const getGroupMembersLoading = state => state.groups.isLoadingMembers;
+export const getGroupMembers = state => state.groups.members;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;
 
@@ -50,10 +53,17 @@ export const getUserLoading = state => state.user.isLoading;
 export const getUserAddingToGroups = state => state.isUserAddingToGroups;
 
 export const getUsers = state => state.users.all;
+export const getUsersLoading = state => state.users.isLoading;
 
 export const getActiveUsers = createSelector(getUsers, users => {
     if (!users) return [];
     return users.filter(user => user.active === true);
+});
+
+export const getMappedAvailableActiveUsers = createSelector(getActiveUsers, getGroupMembers, (users, members) => {
+    if (!users) return [];
+    const availableUsers = users.filter(user => !members.some(m => m.id === user.id));
+    return availableUsers.map(user => ({ ...user, name: `${user.forename} ${user.lastname}` }));
 });
 
 export const getSuspendedUsers = createSelector(getUsers, users => {
@@ -61,9 +71,9 @@ export const getSuspendedUsers = createSelector(getUsers, users => {
     return users.filter(user => user.active === false);
 });
 
-export const getUsersLoading = state => state.users.isLoading;
 export const getRootPath = state => state.rootPath;
 
 export const getUserGroups = state => state.user.groups;
 
 export const getIsRemovingAllTokens = state => state.users.isRemovingAllTokens;
+export const getIsDeletingGroup = state => state.groups.isDeleting;
