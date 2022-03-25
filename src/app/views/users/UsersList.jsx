@@ -91,7 +91,11 @@ const UsersList = props => {
                                 </div>
                             </div>
                         </div>
-                        {users ? <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} /> : "Nothing to show."}
+                        {users ? (
+                            <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} />
+                        ) : (
+                            <p className="padding-top--1">Nothing to show.</p>
+                        )}
                     </>
                 )}
             </div>
