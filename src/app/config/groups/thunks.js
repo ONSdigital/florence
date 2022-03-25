@@ -83,23 +83,12 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
               })
               .catch(error => {
                   dispatch(actions.loadGroupsFailure());
-                  if (error.status != null && error.status === 400) {
-                      const notification = {
-                          type: "warning",
-                          isDismissable: true,
-                          autoDismiss: 15000,
-                          message: errCodes.GET_GROUPS_NOT_FOUND, // TODO
-                      };
-                      notifications.add(notification);
-                  } else {
-                      const notification = {
-                          type: "warning",
-                          isDismissable: true,
-                          autoDismiss: 15000,
-                          message: errCodes.GET_GROUPS_UNEXPECTED_ERROR_SHORT, // TODO
-                      };
-                      notifications.add(notification);
-                  }
+                  notifications.add({
+                      type: "warning",
+                      isDismissable: true,
+                      autoDismiss: 15000,
+                      message: error.status === 400 ? errCodes.GET_GROUPS_NOT_FOUND : errCodes.GET_GROUPS_UNEXPECTED_ERROR_SHORT,
+                  });
                   console.error(error);
               })
         : teams
