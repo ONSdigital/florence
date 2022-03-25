@@ -1,9 +1,9 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import { render, screen, within, getByTestId } from "../../../utilities/tests/test-utils";
-import AddGroupsToUser from "./AddGroupsToUser";
 import "@testing-library/jest-dom/extend-expect";
 import userEvent from "@testing-library/user-event";
+import AddGroupsToUser from "./AddGroupsToUser";
 import { groups, user } from "../../../utilities/tests/mockData";
 
 const defaultProps = {
@@ -97,6 +97,7 @@ describe("AddGroupsToUser", () => {
             expect(screen.getByText(/user is not a member of a team. Please add them to a team/i)).toBeInTheDocument();
 
             const addButtons = screen.getAllByRole("button", { name: "Add" });
+
             expect(addButtons).toHaveLength(3);
 
             userEvent.click(addButtons[1]);
@@ -112,7 +113,7 @@ describe("AddGroupsToUser", () => {
             expect(within(userGroupsList).getByLabelText(/tick inside shield icon/i)).toBeInTheDocument();
             expect(within(userGroupsList).getByText(/admins group description/i)).toBeInTheDocument();
             expect(within(screen.getByTestId("form-footer")).getByText(/you have unsaved changes/i)).toBeInTheDocument();
-            screen.debug();
+
             userEvent.click(within(userGroupsList).getAllByLabelText("remove")[0]);
 
             expect(within(userGroupsList).queryByText(/my first test group description/i)).not.toBeInTheDocument();

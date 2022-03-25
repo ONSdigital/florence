@@ -124,7 +124,7 @@ const EditGroup = props => {
     if (!group) return <h1>No group found.</h1>;
 
     return (
-        <div className="form">
+        <div className="form form-with-sticky-footer">
             <div className="grid grid--justify-space-around">
                 <div className="grid__col-11 grid__col-md-9">
                     <BackButton classNames="margin-top--2" />

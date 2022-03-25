@@ -1,14 +1,13 @@
 import { connect } from "react-redux";
 import { fetchGroupsRequest } from "../../config/groups/thunks";
 import Groups from "./Groups";
-import { getEnableNewSignIn, getGroups, getGroupsLoading } from "../../config/selectors";
+import { getEnableNewSignIn, getGroupsLoading, getMappedSortedGroups } from "../../config/selectors";
 
 function mapStateToProps(state) {
     return {
-        groups: getGroups(state.state),
+        groups: getMappedSortedGroups(state.state),
         isNewSignIn: getEnableNewSignIn(state.state),
         isLoading: getGroupsLoading(state.state),
-        rootPath: state.state.rootPath,
     };
 }
 

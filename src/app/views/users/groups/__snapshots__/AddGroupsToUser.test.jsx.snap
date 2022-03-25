@@ -2,7 +2,7 @@
 
 exports[`AddGroupsToUser matches the snapshot 1`] = `
 <div
-  className="grid grid--justify-space-around"
+  className="grid grid--justify-space-around form-with-sticky-footer"
 >
   <div
     className="grid__col-11 grid__col-md-9"

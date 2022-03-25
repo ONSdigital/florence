@@ -41,7 +41,7 @@ function AddGroupsToUser(props) {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
     });
 
-    const handleRemove = id => console.log(id) || setUserGroups(prevState => prevState.filter(group => group.group_name !== id));
+    const handleRemove = id => setUserGroups(prevState => prevState.filter(group => group.id !== id));
 
     const handleAdd = group => {
         if (userGroups.includes(group)) {
@@ -53,13 +53,11 @@ function AddGroupsToUser(props) {
     };
 
     const getFilteredGroups = useCallback(() => {
-        const str = search.value.toLowerCase();
-        // TODO: backend returns invalid object structure, needs updating the group_name into name
-        return filter(groups, group => group.description?.toLowerCase().includes(str) || group.group_name?.toLowerCase().includes(str));
+        return filter(groups, group => group.name?.toLowerCase().includes(search.value.toLowerCase()));
     }, [search.value]);
 
     return (
-        <div className="grid grid--justify-space-around">
+        <div className="grid grid--justify-space-around form-with-sticky-footer">
             <div className="grid__col-11 grid__col-md-9">
                 <BackButton redirectUrl={`${rootPath}/users`} classNames="margin-top--2" />
                 <div className="grid grid--justify-space-between">
@@ -94,7 +92,7 @@ function AddGroupsToUser(props) {
                 handleSubmit={() =>
                     addGroupsToUser(
                         id,
-                        userGroups.map(group => group.group_name) // TODO: backend returns invalid object structure, needs updating to send id only
+                        userGroups.map(group => group.id)
                     )
                 }
             />
