@@ -62,8 +62,10 @@ exports[`Groups matches the snapshot 1`] = `
     <ul
       className="list list--neutral simple-select-list"
     >
-      <p>
-        Nothing to show
+      <p
+        className="padding-top--1"
+      >
+        Nothing to show.
       </p>
     </ul>
   </div>

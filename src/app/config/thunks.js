@@ -202,8 +202,22 @@ export const getUsersRequest = () => dispatch => {
         })
         .catch(error => {
             dispatch(actions.loadUsersFailure());
-            if (error) {
-                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.GET_USERS_NOT_FOUND, // TODO
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT, // TODO
+                };
+                notifications.add(notification);
             }
             console.error(error);
         });
@@ -330,7 +344,6 @@ export const deleteTokensRequest = () => dispatch => {
     dispatch(actions.singOutAllUsersProgress());
     user.deleteTokens()
         .then(response => {
-            console.log("deleteTokensRequest", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.singOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });
