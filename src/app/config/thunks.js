@@ -143,88 +143,18 @@ export const approveCollectionRequest = (id, redirect) => dispatch => {
         });
 };
 
-export const fetchGroupsRequest = isNewSignIn => dispatch => {
-    dispatch(actions.loadGroupsProgress());
-    isNewSignIn
-        ? teams
-              .getGroups()
-              .then(response => {
-                  dispatch(actions.loadGroupsSuccess(response.groups));
-              })
-              .catch(error => {
-                  dispatch(actions.loadGroupsFailure());
-                  //TODO: map responses to user friendly by content designer
-                  if (error) {
-                      notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
-                  }
-                  console.error(error);
-              })
-        : teams
-              .getAll()
-              .then(response => {
-                  if (!response) return dispatch(actions.loadGroupsFailure());
-                  return dispatch(actions.loadGroupsSuccess(response));
-              })
-              .catch(error => {
-                  dispatch(actions.loadGroupsFailure());
-                  switch (error.status) {
-                      case 401: {
-                          // This is handled by the request function, so do nothing here
-                          break;
-                      }
-                      case "RESPONSE_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message:
-                                  "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                      case "UNEXPECTED_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message:
-                                  "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                      case "FETCH_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message: "There's been a network error whilst trying to get teams. Try refresh the page.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                  }
-                  console.error("Error fetching all teams:\n", error);
-              });
-};
-
 export const createUserRequest = body => dispatch => {
     dispatch(actions.createUserProgress());
     user.createNewUser(body)
         .then(response => {
-            console.log("response", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
-            dispatch(actions.createUserSuccess());
-            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
-            dispatch(push(`/florence/users/create/${body.email}/groups`));
-
-            notifications.add({ type: "positive", message: "User created successfully", autoDismiss: 5000 });
+            dispatch(actions.createUserSuccess(response));
+            dispatch(push(`/florence/users/create/${response.id}/groups`));
+            notifications.add({ type: "positive", message: `User ${response.name} created successfully`, autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
-            //TODO: this is not working at the moment so I am faking. I will expect user ID not email
-            dispatch(push(`/florence/users/create/${body.email}/groups`));
-
-            // dispatch(push("/florence/users")); TODO: uncomment later when api works
             if (error) {
-                notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+                notifications.add({ type: "warning", message: error.body.errors[0].description || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });
@@ -272,6 +202,23 @@ export const getUsersRequest = () => dispatch => {
         })
         .catch(error => {
             dispatch(actions.loadUsersFailure());
+            if (error.status != null && error.status === 400) {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.GET_USERS_NOT_FOUND, // TODO
+                };
+                notifications.add(notification);
+            } else {
+                const notification = {
+                    type: "warning",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT, // TODO
+                };
+                notifications.add(notification);
+            }
             console.error(error);
         });
 };
@@ -371,14 +318,14 @@ export const fetchUserRequest = id => dispatch => {
         });
 };
 
-export const addGroupsToUserRequest = (userId, groups) => dispatch => {
+export const addGroupsToUserRequest = (id, groups) => dispatch => {
     dispatch(actions.addGroupsToUserProgress());
     let promises = [];
-    groups.forEach(group => promises.push(teams.addMemberToTeam(group, userId)));
+    groups.forEach(group => promises.push(teams.addMemberToTeam(group, id)));
 
     Promise.all(promises)
         .then(response => {
-            dispatch(actions.addGroupsToUserSuccess(userId, response));
+            dispatch(actions.addGroupsToUserSuccess(id, response));
             dispatch(push(`/florence/users`));
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "Teams added to user successfully", autoDismiss: 5000 });
@@ -397,7 +344,6 @@ export const deleteTokensRequest = () => dispatch => {
     dispatch(actions.singOutAllUsersProgress());
     user.deleteTokens()
         .then(response => {
-            console.log("deleteTokensRequest", response); // TODO: leaving this here to check what is actually coming back as couldn't test locally
             dispatch(actions.singOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });

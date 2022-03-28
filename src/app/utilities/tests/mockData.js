@@ -178,6 +178,19 @@ const teams = [
         path: "test_team_1",
     },
 ];
+const group = {
+    created: "2022-03-08T14:37:59.484Z",
+    id: "0",
+    name: "Boo is fine",
+    precedence: 10,
+};
+
+const specialGroup = {
+    created: "2022-03-10T14:37:59.484Z",
+    id: "1",
+    name: "Admins",
+    precedence: 1,
+};
 
 const groups = [
     {
@@ -246,4 +259,6 @@ module.exports = {
     popouts,
     user,
     groups,
+    group,
+    specialGroup,
 };

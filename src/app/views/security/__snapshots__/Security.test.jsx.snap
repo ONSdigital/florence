@@ -89,12 +89,26 @@ exports[`Security when loading matches the snapshot 1`] = `
         className="grid__col-lg-6"
       >
         <div
-          className=""
-          data-testid="loader"
+          className="panel panel--error panel--no-title margin-top--1 margin-bottom--1"
+          role="alert"
         >
-          <div
-            className="loader loader--large loader--dark"
-          />
+          <p
+            className="panel__error"
+          >
+            <strong>
+              Secure Florence
+            </strong>
+          </p>
+          <p>
+            All users will be signed out straight away and will need to sign in again.
+          </p>
+          <button
+            className="btn btn--warning margin-top--1 margin-bottom--1"
+            onClick={[Function]}
+            type="submit"
+          >
+            Sign out all users
+          </button>
         </div>
       </div>
     </div>

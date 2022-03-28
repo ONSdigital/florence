@@ -135,6 +135,16 @@ function datasetLandingEditor(collectionId, data) {
     });
     data.links = newLinks;
 
+    // tags
+    if ($("#selectTopic").val() && $("#selectSubTopic").val()) {
+      data.description.primaryTopic = $("#selectTopic").val()[0]
+      data.description.secondaryTopics = $("#selectSubTopic").val()
+    }
+    else if ($("#selectTopic").val() && !$("#selectSubTopic").val()) {
+      sweetAlert("Cannot save this page", "A value is required for 'Subtopic' if a 'Topic' has been selected");
+      return
+    } 
+
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 }

@@ -155,7 +155,7 @@ export class LoginController extends Component {
     };
 
     setPermissions = () => {
-        user.getPermissions(this.state.emailValue)
+        user.getPermissions()
             .then(userType => {
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);

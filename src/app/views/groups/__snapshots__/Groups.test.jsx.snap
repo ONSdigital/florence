@@ -1,18 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`TeamsList matches the snapshot 1`] = `
+exports[`Groups matches the snapshot 1`] = `
 <div
   className="grid grid--justify-space-around"
 >
   <div
-    className="grid__col-9"
+    className="grid__col-11 grid__col-md-9"
   >
     <div
       className="margin-top--2"
     >
-      ◀ 
+      ◀ 
       <a
         onClick={[Function]}
+        role="link"
         style={Object {}}
       >
         Back
@@ -26,12 +27,12 @@ exports[`TeamsList matches the snapshot 1`] = `
       >
         Preview teams
       </h1>
-       
       <a
+        className="margin-left--1"
         onClick={[Function]}
         style={Object {}}
       >
-         Create a new team 
+        Create a new team
       </a>
     </span>
     <div
@@ -61,11 +62,11 @@ exports[`TeamsList matches the snapshot 1`] = `
     <ul
       className="list list--neutral simple-select-list"
     >
-      <span
-        className="margin-top--1 loader loader--dark"
-        data-testid="loader"
-      />
-      
+      <p
+        className="padding-top--1"
+      >
+        Nothing to show.
+      </p>
     </ul>
   </div>
 </div>

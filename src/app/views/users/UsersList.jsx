@@ -58,7 +58,7 @@ const UsersList = props => {
                                 <div className="search__input-group ">
                                     <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
                                     <label htmlFor="search" className="visually-hidden">
-                                        Search users by name
+                                        Search users by name or email
                                     </label>
                                     <input role="search" name="search" placeholder="Search users by name" {...search} />
                                 </div>
@@ -91,7 +91,11 @@ const UsersList = props => {
                                 </div>
                             </div>
                         </div>
-                        {users ? <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} /> : "Nothing to show."}
+                        {users ? (
+                            <SimpleSelectableList rows={search.value ? getFilteredUsers() : users} />
+                        ) : (
+                            <p className="padding-top--1">Nothing to show.</p>
+                        )}
                     </>
                 )}
             </div>

@@ -1,5 +1,6 @@
 import { initialState } from "./initialState";
 import * as types from "./constants";
+import * as groupsTypes from "./groups/constants";
 
 export default function reducer(state = initialState, action) {
     switch (action.type) {
@@ -516,7 +517,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_PROGRESS: {
+        case groupsTypes.LOAD_GROUPS_PROGRESS: {
             return {
                 ...state,
                 groups: {
@@ -525,7 +526,7 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_FAILURE: {
+        case groupsTypes.LOAD_GROUPS_FAILURE: {
             return {
                 ...state,
                 groups: {
@@ -534,13 +535,41 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
-        case types.LOAD_GROUPS_SUCCESS: {
+        case groupsTypes.LOAD_GROUPS_SUCCESS: {
             return {
                 ...state,
                 groups: {
                     ...state.groups,
                     all: action.groups,
                     isLoading: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: true,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingActive: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    active: action.group,
+                    isLoadingActive: false,
                 },
             };
         }
@@ -642,6 +671,53 @@ export default function reducer(state = initialState, action) {
                 users: {
                     ...state.users,
                     isRemovingAllTokens: false,
+                },
+            };
+        }
+        case groupsTypes.DELETE_GROUP_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    all: state.groups.all.filter(group => group.id !== action.id),
+                    active: null,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_MEMBERS_FAILURE: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingMembers: false,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_MEMBERS_PROGRESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    isLoadingMembers: true,
+                },
+            };
+        }
+        case groupsTypes.LOAD_GROUP_MEMBERS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    members: state.groups.members.concat(action.members),
+                    isLoadingMembers: false,
+                },
+            };
+        }
+        case groupsTypes.UPDATE_GROUP_MEMBERS_SUCCESS: {
+            return {
+                ...state,
+                groups: {
+                    ...state.groups,
+                    members: action.members,
                 },
             };
         }

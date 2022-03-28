@@ -1,21 +1,13 @@
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
-import url from "../../../utilities/url";
-import Input from "../../../components/Input";
-import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
+import url from "../../utilities/url";
+import Input from "../../components/Input";
+import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
+import BackButton from "../../components/back-button";
 
-const propTypes = {
-    dispatch: PropTypes.func,
-    groups: PropTypes.array.isRequired,
-    loadTeams: PropTypes.func.isRequired,
-    isNewSignIn: PropTypes.bool.isRequired,
-};
-
-const TeamsList = props => {
-    const { groups, loadTeams, isNewSignIn } = props;
-
-    const [isFetchingTeams, setIsFetchingTeams] = useState(true);
+const Groups = props => {
+    const { groups, isLoading, loadTeams, isNewSignIn, rootPath } = props;
     const [filterTerm, setFilterTerm] = useState("");
     const [previewTeams, setPreviewTeams] = useState([]);
 
@@ -30,7 +22,7 @@ const TeamsList = props => {
                 row: {
                     title: team.description != null ? team.description : team.group_name,
                     id: team.group_name,
-                    url: `./groups/${team.group_name}`,
+                    url: `${rootPath}/groups/${team.group_name}`,
                     extraDetails: [[{ content: formatDateString(team.creation_date) }]],
                 },
                 date: team.creation_date, //used for sorting
@@ -41,18 +33,16 @@ const TeamsList = props => {
             });
         });
         setPreviewTeams(listOfPreviewTeams);
-        setIsFetchingTeams(false);
     }, [groups]);
 
     const formatDateString = date => {
         const utcDate = new Date(date);
         const datePart = utcDate.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
         const timePart = utcDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-        const completeFormattedDate = `${datePart} at ${timePart}`;
         return (
-            <>
-                Created <span className="font-weight--600">{completeFormattedDate}</span>
-            </>
+            <span>
+                Created <strong>{`${datePart} at ${timePart}`}</strong>
+            </span>
         );
     };
 
@@ -74,29 +64,28 @@ const TeamsList = props => {
 
     return (
         <div className="grid grid--justify-space-around">
-            <div className="grid__col-9">
-                <div className="margin-top--2">
-                    &#9664; <Link to={url.resolve("../")}>Back</Link>
-                </div>
+            <div className="grid__col-11 grid__col-md-9">
+                <BackButton classNames="margin-top--2" />
                 <span className="margin-top--1">
-                    <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>{" "}
-                    <Link to={url.resolve("./groups/create")}> Create a new team </Link>
+                    <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
+                    <Link className="margin-left--1" to={url.resolve("./groups/create")}>
+                        Create a new team
+                    </Link>
                 </span>
                 <div className="grid__col-6">
-                    <Input
-                        id="search-content-types"
-                        placeholder="Search teams by name or ID"
-                        onChange={e => {
-                            e.preventDefault();
-                            setFilterTerm(e.target.value);
-                        }}
-                    />
+                    <Input id="search-content-types" placeholder="Search teams by name or ID" onChange={e => setFilterTerm(e.target.value)} />
                 </div>
-                <SimpleSelectableList rows={rowsToDisplay} showLoadingState={isFetchingTeams} />
+                <SimpleSelectableList rows={rowsToDisplay} showLoadingState={isLoading} />
             </div>
         </div>
     );
 };
 
-TeamsList.propTypes = propTypes;
-export default TeamsList;
+Groups.propTypes = {
+    groups: PropTypes.array.isRequired,
+    loadTeams: PropTypes.func.isRequired,
+    isNewSignIn: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
+    rootPath: PropTypes.string.isRequired,
+};
+export default Groups;

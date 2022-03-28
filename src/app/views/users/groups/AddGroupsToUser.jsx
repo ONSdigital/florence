@@ -18,7 +18,7 @@ const notification = {
 };
 
 function AddGroupsToUser(props) {
-    const id = props.params.userID;
+    const id = props.params.id;
 
     useEffect(() => {
         if (id) {
@@ -41,7 +41,7 @@ function AddGroupsToUser(props) {
         props.router.setRouteLeaveHook(props.route, routerWillLeave);
     });
 
-    const handleRemove = id => setUserGroups(prevState => prevState.filter(group => group.group_name !== id));
+    const handleRemove = id => console.log(id) || setUserGroups(prevState => prevState.filter(group => group.group_name !== id));
 
     const handleAdd = group => {
         if (userGroups.includes(group)) {

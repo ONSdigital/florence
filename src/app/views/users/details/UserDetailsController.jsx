@@ -110,7 +110,7 @@ export class UserDetailsController extends Component {
 
     getUserPermissions(userID) {
         return new Promise(async (resolve, reject) => {
-            user.getPermissions(userID)
+            user.getPermissionsForUser(userID)
                 .then(userPermissions => {
                     // API still gives a 200 response even when an unrecognised user is requested
                     // we can check for this by the 'email' property being left empty, because for

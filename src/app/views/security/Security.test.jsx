@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
@@ -35,7 +35,7 @@ describe("Security", () => {
             expect.objectContaining({
                 body: "Users will need to sign in to Florence again and may lose unsaved changes.",
                 id: "sign-out",
-                title: "Are you sure you want sign out all users?",
+                title: "Are you sure you want to sign out all users?",
             })
         );
     });
