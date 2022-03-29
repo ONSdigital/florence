@@ -99,9 +99,13 @@
         bottom: 0;
     }
 
-    &-group{
+    &-group {
         border: 3px solid $scarpa-flow;
         padding: $lineheight ;
+    }
+
+    &-with-sticky-footer {
+        padding-bottom: 87px;
     }
 }
 

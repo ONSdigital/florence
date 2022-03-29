@@ -31,15 +31,15 @@ export default class SimpleSelectableListItem extends Component {
 
         if (this.props.externalLink) {
             return (
-                <a href={this.props.url}>
+                <a href={this.props.url} role="link">
                     <p className="simple-select-list__title">{this.props.title}</p>
                 </a>
             );
         }
 
         return (
-            <Link to={this.props.url}>
-                <p className="simple-select-list__title">{this.props.title}</p>
+            <Link to={this.props.url} role="link" className="simple-select-list__title">
+                {this.props.title}
             </Link>
         );
     };
