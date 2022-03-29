@@ -90,7 +90,7 @@ export const EditUser = props => {
     if (!user) return <h1>No user found.</h1>;
 
     return (
-        <form className="form">
+        <form className="form form-with-sticky-footer">
             <div className="grid grid--justify-space-around">
                 <div className="grid__col-11 grid__col-md-9">
                     <BackButton classNames="margin-top--2" />
@@ -99,34 +99,30 @@ export const EditUser = props => {
                             <h1 className="margin-top--1 margin-bottom--1">{`${user.forename} ${user.lastname}`}</h1>
                             <p>{user.email}</p>
                             {hasErrors && <FormValidationErrors errors={errors} />}
-                            <div className="grid">
-                                <div className="grid__col-lg-6 margin-top--1">
-                                    <Input
-                                        error={errors?.forename}
-                                        id="forename"
-                                        label="First name"
-                                        name="forename"
-                                        type="text"
-                                        value={values?.forename ? values.forename : ""}
-                                        onChange={handleChange}
-                                    />
-                                    <Input
-                                        error={errors?.lastname}
-                                        id="lastname"
-                                        label="Last name"
-                                        name="lastname"
-                                        type="text"
-                                        value={values?.lastname ? values.lastname : ""}
-                                        onChange={handleChange}
-                                    />
-                                    <h2 className="margin-top--1">Team Member</h2>
-                                    {userGroups && userGroups.length > 0 ? (
-                                        <UserGroupsList groups={userGroups} />
-                                    ) : (
-                                        <p>User is not a member of a team. Please add them to a team.</p>
-                                    )}
-                                </div>
-                            </div>
+                            <Input
+                                error={errors?.forename}
+                                id="forename"
+                                label="First name"
+                                name="forename"
+                                type="text"
+                                value={values?.forename ? values.forename : ""}
+                                onChange={handleChange}
+                            />
+                            <Input
+                                error={errors?.lastname}
+                                id="lastname"
+                                label="Last name"
+                                name="lastname"
+                                type="text"
+                                value={values?.lastname ? values.lastname : ""}
+                                onChange={handleChange}
+                            />
+                            <h2 className="margin-top--1">Team Member</h2>
+                            {userGroups && userGroups.length > 0 ? (
+                                <UserGroupsList groups={userGroups} />
+                            ) : (
+                                <p>User is not a member of a team. Please add them to a team.</p>
+                            )}
                         </div>
                         <div className="grid__col-md-5">
                             <div className="form-group margin-top--1 margin-bottom--1">
