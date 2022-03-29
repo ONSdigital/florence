@@ -143,14 +143,12 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           className="simple-select-list__col simple-select-list__cols-1"
         >
           <a
+            className="simple-select-list__title"
             onClick={[Function]}
+            role="link"
             style={Object {}}
           >
-            <p
-              className="simple-select-list__title"
-            >
-              Hello Group
-            </p>
+            Hello Group
           </a>
         </div>
       </li>
@@ -161,14 +159,12 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           className="simple-select-list__col simple-select-list__cols-1"
         >
           <a
+            className="simple-select-list__title"
             onClick={[Function]}
+            role="link"
             style={Object {}}
           >
-            <p
-              className="simple-select-list__title"
-            >
-              Test
-            </p>
+            Test
           </a>
         </div>
       </li>
@@ -179,14 +175,12 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           className="simple-select-list__col simple-select-list__cols-1"
         >
           <a
+            className="simple-select-list__title"
             onClick={[Function]}
+            role="link"
             style={Object {}}
           >
-            <p
-              className="simple-select-list__title"
-            >
-              This team has 5 members
-            </p>
+            This team has 5 members
           </a>
         </div>
       </li>
@@ -197,14 +191,12 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           className="simple-select-list__col simple-select-list__cols-1"
         >
           <a
+            className="simple-select-list__title"
             onClick={[Function]}
+            role="link"
             style={Object {}}
           >
-            <p
-              className="simple-select-list__title"
-            >
-              Admins
-            </p>
+            Admins
           </a>
         </div>
       </li>
