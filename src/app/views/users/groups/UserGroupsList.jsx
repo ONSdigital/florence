@@ -17,17 +17,16 @@ const UserGroupsList = ({ groups, handleRemove }) => (
                 icon = "shield-person";
                 style = "blue";
             }
-            return <Chip key={group.group_name} id={group.group_name} icon={icon} style={style} text={group.description} removeFunc={handleRemove} />;
+            return <Chip key={group.id} id={group.id} icon={icon} style={style} text={group.name} removeFunc={handleRemove} />;
         })}
     </div>
 );
 
 UserGroupsList.propTypes = {
     groups: PropTypes.arrayOf(
-        // TODO: backend returns invalid object structure, needs updating the props.groups
         PropTypes.shape({
-            group_name: PropTypes.string.isRequired, // id
-            description: PropTypes.string, // name
+            id: PropTypes.string.isRequired,
+            name: PropTypes.string.isRequired,
         })
     ).isRequired,
     handleRemove: PropTypes.func,

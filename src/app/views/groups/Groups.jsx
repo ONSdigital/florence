@@ -1,66 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import filter from "lodash/filter";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
+import { useInput } from "../../hooks/useInput";
 import url from "../../utilities/url";
 import Input from "../../components/Input";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import BackButton from "../../components/back-button";
 
 const Groups = props => {
-    const { groups, isLoading, loadTeams, isNewSignIn, rootPath } = props;
-    const [filterTerm, setFilterTerm] = useState("");
-    const [previewTeams, setPreviewTeams] = useState([]);
+    const { groups, isLoading, loadTeams, isNewSignIn } = props;
+    const [search, setSearch] = useInput("");
 
     useEffect(() => {
         loadTeams(isNewSignIn);
     }, []);
 
-    useEffect(() => {
-        const listOfPreviewTeams = [];
-        groups.forEach(team => {
-            const previewTeamData = {
-                row: {
-                    title: team.description != null ? team.description : team.group_name,
-                    id: team.group_name,
-                    url: `${rootPath}/groups/${team.group_name}`,
-                    extraDetails: [[{ content: formatDateString(team.creation_date) }]],
-                },
-                date: team.creation_date, //used for sorting
-            };
-            listOfPreviewTeams.push(previewTeamData);
-            listOfPreviewTeams.sort((a, b) => {
-                return new Date(b.date) - new Date(a.date);
-            });
-        });
-        setPreviewTeams(listOfPreviewTeams);
-    }, [groups]);
-
-    const formatDateString = date => {
-        const utcDate = new Date(date);
-        const datePart = utcDate.toLocaleDateString("en-GB", { day: "2-digit", month: "long", year: "numeric" });
-        const timePart = utcDate.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-        return (
-            <span>
-                Created <strong>{`${datePart} at ${timePart}`}</strong>
-            </span>
-        );
-    };
-
-    let allRowData = [];
-    let rowsToDisplay = [];
-    if (previewTeams.length > 0) {
-        previewTeams.map(pTeam => {
-            allRowData.push(pTeam.row);
-        });
-        rowsToDisplay =
-            filterTerm === ""
-                ? allRowData
-                : allRowData.filter(
-                      team =>
-                          team.id.toLowerCase().search(filterTerm.toLowerCase()) !== -1 ||
-                          team.title.toLowerCase().search(filterTerm.toLowerCase()) !== -1
-                  );
-    }
+    const getFilteredGroups = useCallback(() => {
+        return filter(groups, group => group.name?.toLowerCase().includes(search.value.toLowerCase()));
+    }, [search.value]);
 
     return (
         <div className="grid grid--justify-space-around">
@@ -73,9 +31,9 @@ const Groups = props => {
                     </Link>
                 </span>
                 <div className="grid__col-6">
-                    <Input id="search-content-types" placeholder="Search teams by name or ID" onChange={e => setFilterTerm(e.target.value)} />
+                    <Input id="search-content-types" placeholder="Search teams by name" {...search} />
                 </div>
-                <SimpleSelectableList rows={rowsToDisplay} showLoadingState={isLoading} />
+                <SimpleSelectableList rows={search.value ? getFilteredGroups() : groups} showLoadingState={isLoading} />
             </div>
         </div>
     );
@@ -86,6 +44,5 @@ Groups.propTypes = {
     loadTeams: PropTypes.func.isRequired,
     isNewSignIn: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
-    rootPath: PropTypes.string.isRequired,
 };
 export default Groups;

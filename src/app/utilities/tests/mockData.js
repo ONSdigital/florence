@@ -195,8 +195,8 @@ const specialGroup = {
 const groups = [
     {
         creation_date: "2021-10-12T14:32:50.913Z",
-        description: "my test group description",
-        group_name: "my test group",
+        name: "my test group description",
+        id: "510ce85879",
         last_modified_date: "2021-10-12T14:32:50.913Z",
         precedence: 19,
         role_arn: null,
@@ -204,8 +204,8 @@ const groups = [
     },
     {
         creation_date: "2022-10-12T14:32:50.913Z",
-        description: "my first test group description",
-        group_name: "my first group",
+        name: "my first test group description",
+        id: "078f79ba-51ce858790c5",
         last_modified_date: "2022-10-13T14:32:50.913Z",
         precedence: 10,
         role_arn: null,
@@ -213,8 +213,8 @@ const groups = [
     },
     {
         creation_date: "2021-10-12T14:32:50.913Z",
-        description: "admins group description",
-        group_name: "admins",
+        name: "admins group description",
+        id: "51ce858790c5",
         last_modified_date: "2021-10-12T14:32:50.913Z",
         precedence: 1,
         role_arn: null,
@@ -222,6 +222,56 @@ const groups = [
     },
 ];
 
+const mappedSortedGroups = [
+    {
+        creation_date: "2022-03-25T15:50:15.953Z",
+        extraDetails: [],
+        id: "4",
+        last_modified_date: "2022-03-28T13:33:29.586Z",
+        name: "Hello Group",
+        precedence: 10,
+        role_arn: null,
+        title: "Hello Group",
+        url: "/florence/groups/4",
+        user_pool_id: "foo",
+    },
+    {
+        creation_date: "2022-03-25T15:49:33.421Z",
+        extraDetails: [],
+        id: "1",
+        last_modified_date: "2022-03-28T13:26:11.637Z",
+        name: "Test",
+        precedence: 10,
+        role_arn: null,
+        title: "Test",
+        url: "/florence/groups/1",
+        user_pool_id: "foo",
+    },
+    {
+        creation_date: "2022-02-24T15:15:22.106Z",
+        extraDetails: [],
+        id: "2",
+        last_modified_date: "2022-03-16T16:12:06.761Z",
+        name: "This team has 5 members",
+        precedence: 10,
+        role_arn: null,
+        title: "This team has 5 members",
+        url: "/florence/groups/2",
+        user_pool_id: "foo",
+    },
+    {
+        creation_date: "2022-02-24T15:15:22.106Z",
+        extraDetails: [],
+        id: "0",
+        last_modified_date: "2022-03-16T16:12:06.761Z",
+        name: "Admins",
+        precedence: 1,
+        role_arn: null,
+        title: "Admins",
+        url: "/florence/groups/0",
+        user_pool_id: "foo",
+    },
+];
 const popouts = [
     {
         id: "foo",
@@ -259,6 +309,7 @@ module.exports = {
     popouts,
     user,
     groups,
+    mappedSortedGroups,
     group,
     specialGroup,
 };

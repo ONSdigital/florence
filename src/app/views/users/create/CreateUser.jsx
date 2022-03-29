@@ -25,7 +25,7 @@ const CreateUser = ({ createUser, rootPath, loading }) => {
     }
 
     return (
-        <form className="form">
+        <form className="form form-with-sticky-footer">
             <div className="grid grid--justify-space-around">
                 <div className="grid__col-11 grid__col-md-9">
                     <BackButton classNames="margin-top--2" />
