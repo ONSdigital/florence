@@ -2,11 +2,13 @@ import http from "../../utilities/http";
 
 import Resumable from "resumeablejs";
 
+const FIVE_MEGABYTES = 5 * 1024 * 1024;
+
 export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
         target: "/upload",
-        chunkSize: 5 * 1024 * 1024,
+        chunkSize: FIVE_MEGABYTES,
         query: {
             aliasName: "",
         },
@@ -16,7 +18,8 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     r.assignBrowse(input);
     r.assignDrop(input);
     r.on("fileAdded", file => {
-        beginUploadAndUpdateComponentState(r, file, updateState);
+        const options = { aliasName: file.container.name };
+        beginUploadAndUpdateComponentState(r, options, file, updateState);
     });
     r.on("fileProgress", file => {
         updateComponentState(file, updateState);
@@ -29,9 +32,41 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     });
 }
 
-function beginUploadAndUpdateComponentState(resumable, file, updateState) {
+// Used for the new static files system, currently feature flagged
+export function bindGenericFileUploadInput(inputID, resumableOptions, updateState, onSuccess, onError) {
+    const input = document.getElementById(inputID);
+    const r = new Resumable({
+        target: "/upload-new",
+        chunkSize: FIVE_MEGABYTES,
+        query: {
+            aliasName: "",
+        },
+        forceChunkSize: true,
+        simultaneousUploads: 1,
+    });
+    r.assignBrowse(input);
+    r.assignDrop(input);
+    r.on("fileAdded", file => {
+        const options = {
+            ...resumableOptions,
+            aliasName: file.container.name,
+        };
+        beginUploadAndUpdateComponentState(r, options, file, updateState);
+    });
+    r.on("fileProgress", file => {
+        updateComponentState(file, updateState);
+    });
+    r.on("fileError", file => {
+        handleErrorAndUpdateComponentState(file, updateState, onError);
+    });
+    r.on("fileSuccess", file => {
+        onSuccess(`${r.opts.query.path}/${file.relativePath}`);
+    });
+}
+
+function beginUploadAndUpdateComponentState(resumable, resumableOptions, file, updateState) {
     const aliasName = file.container.name;
-    resumable.opts.query.aliasName = aliasName;
+    resumable.opts.query = resumableOptions;
     resumable.upload();
     const fileUpload = {
         aliasName: aliasName,

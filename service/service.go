@@ -116,11 +116,19 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	topicsProxy := reverseproxy.Create(apiRouterURL, topicAPIDirector(cfg.APIRouterVersion), nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
+	filesAPIProxy := reverseproxy.Create(apiRouterURL, filesAPIDirector(cfg.APIRouterVersion), nil)
+	downloadServiceProxy := reverseproxy.Create(apiRouterURL, downloadServiceAPIDirector(cfg.APIRouterVersion), nil)
 	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
 
 	router = pat.New()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
+
+	if cfg.SharedConfig.EnableNewUpload {
+		router.Handle("/upload-new", uploadServiceAPIProxy)
+		router.Handle("/files{uri:.*}", filesAPIProxy)
+		router.Handle("/downloads-new{uri:.*}", downloadServiceProxy)
+	}
 
 	router.Handle("/upload", uploadServiceAPIProxy)
 	router.Handle("/upload/{id}", uploadServiceAPIProxy)
