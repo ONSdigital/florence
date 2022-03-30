@@ -113,7 +113,9 @@ export class InteractivesController extends Component {
                                                         value={url.slug(taxonomy.uri)}
                                                         name="topics"
                                                         onChange={e =>
-                                                            this.setState({ [e.target.name]: toggleInArray(this.state.filters.topics, e.target.value) })
+                                                            this.setState({
+                                                                [e.target.name]: toggleInArray(this.state.filters.topics, e.target.value),
+                                                            })
                                                         }
                                                     />
                                                     <div>{taxonomy.description.title}</div>
@@ -126,7 +128,12 @@ export class InteractivesController extends Component {
                         </div>
                         <div>
                             <div className={"grid grid--justify-space-between filter-buttons padding-top--1"}>
-                                <button type="submit" className="btn btn--success" disabled={this.state.isAwaitingResponse} onClick={this.handleFilter}>
+                                <button
+                                    type="submit"
+                                    className="btn btn--success"
+                                    disabled={this.state.isAwaitingResponse}
+                                    onClick={this.handleFilter}
+                                >
                                     Apply
                                 </button>
                                 <button className="btn btn--secondary" onClick={this.clearCheckboxes}>
@@ -185,4 +192,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController);
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController); 

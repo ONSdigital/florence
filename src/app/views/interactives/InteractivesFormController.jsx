@@ -9,7 +9,7 @@ import {
     editInteractive,
     deleteInteractive,
     resetSuccessMessage,
-    resetInteractiveError
+    resetInteractiveError,
 } from "../../actions/interactives";
 
 import { getTaxonomies } from "../../actions/taxonomies";
