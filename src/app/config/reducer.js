@@ -173,6 +173,7 @@ export default function reducer(state = initialState, action) {
                 config: {
                     enableDatasetImport: action.config.enableDatasetImport,
                     enableNewSignIn: action.config.enableNewSignIn,
+                    enableNewUpload: action.config.enableNewUpload,
                 },
             };
         }

@@ -72,6 +72,20 @@ func uploadServiceAPIDirector(apiRouterVersion string) func(req *http.Request) {
 	}
 }
 
+func filesAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
+	}
+}
+
+func downloadServiceAPIDirector(apiRouterVersion string) func(req *http.Request) {
+	return func(req *http.Request) {
+		director(req)
+		req.URL.Path = fmt.Sprintf("/%s%s", apiRouterVersion, req.URL.Path)
+	}
+}
+
 func importAPIDirector(apiRouterVersion string) func(req *http.Request) {
 	return func(req *http.Request) {
 		director(req)

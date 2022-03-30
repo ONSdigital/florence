@@ -10,6 +10,7 @@ import datasetImport from "../../../../utilities/api-clients/datasetImport";
 import notifications from "../../../../utilities/notifications";
 import http from "../../../../utilities/http";
 import FileUpload from "../../../../components/file-upload/FileUpload";
+import GenericFileUploader from "../../../../components/generic-file-upload/GenericFileUploader";
 import url from "../../../../utilities/url";
 
 const propTypes = {
@@ -40,6 +41,8 @@ class DatasetUploadController extends Component {
             loadingPageForFirstTime: false,
             activeDataset: null,
             isCantabular: false,
+            isUploading: false,
+            uploadFilePathPrefix: "datasets",
         };
 
         let intervalID = 0;
@@ -68,7 +71,10 @@ class DatasetUploadController extends Component {
                 return;
             }
 
-            this.setState({ activeDataset });
+            this.setState({
+                activeDataset: activeDataset,
+                uploadFilePathPrefix: `datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
+            });
         }
     }
 
@@ -94,7 +100,10 @@ class DatasetUploadController extends Component {
                 response.map(dimension => {
                     activeDataset.dimensions.push(dimension.name);
                 });
-                this.setState({ activeDataset });
+                this.setState({
+                    activeDataset: activeDataset,
+                    uploadFilePathPrefix: `datasets/${activeDataset.alias}/${activeDataset.editionsList[0]}`,
+                });
             });
         }
         this.bindInputs();
@@ -194,9 +203,12 @@ class DatasetUploadController extends Component {
 
     bindInputs() {
         document.querySelectorAll('input[type="file"]').forEach(input => {
+            const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload";
+            const FIVE_MEGABYTES = 5 * 1024 * 1024;
             const r = new Resumable({
-                target: "/upload",
-                chunkSize: 5 * 1024 * 1024,
+                target: `${UPLOAD_ENDPOINT}`,
+                method: "POST",
+                chunkSize: FIVE_MEGABYTES,
                 query: {
                     aliasName: "",
                 },
@@ -208,6 +220,15 @@ class DatasetUploadController extends Component {
             r.on("fileAdded", file => {
                 const aliasName = file.container.name;
                 r.opts.query.aliasName = aliasName;
+
+                if (this.props.enableNewUpload) {
+                    r.opts.query["isPublishable"] = true;
+                    r.opts.query["licence"] = "Open Government Licence v3.0";
+                    r.opts.query["licenceUrl"] = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/";
+                    r.opts.query["path"] = this.state.uploadFilePathPrefix;
+                }
+
+                this.setState({ isUploading: true });
                 r.upload();
                 const files = this.state.activeDataset.files.map(currentFile => {
                     if (currentFile.alias_name === aliasName) {
@@ -236,11 +257,10 @@ class DatasetUploadController extends Component {
                 };
                 this.setState({ activeDataset });
             });
-            r.on("fileError", file => {
+            r.on("fileError", (file, error) => {
+                this.setState({ isUploading: false });
                 const files = this.state.activeDataset.files.map(currentFile => {
-                    if (currentFile.alias_name === file.resumableObj.opts.query.aliasName) {
-                        currentFile.error = "An error occurred whilst uploading this file.";
-                    }
+                    currentFile.error = "An error occurred whilst uploading this file.";
                     return currentFile;
                 });
                 const activeDataset = {
@@ -252,13 +272,19 @@ class DatasetUploadController extends Component {
                 this.setState({ activeDataset });
             });
             r.on("fileSuccess", file => {
+                this.setState({ isUploading: false });
                 const aliasName = file.resumableObj.opts.query.aliasName;
-                http.get(`/upload/${file.uniqueIdentifier}`)
+                const UPLOAD_FETCH_PATH_ENDPOINT = this.props.enableNewUpload
+                    ? `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`
+                    : `/upload/${file.uniqueIdentifier}`;
+
+                http.get(UPLOAD_FETCH_PATH_ENDPOINT)
                     .then(response => {
                         const files = this.state.activeDataset.files.map(currentFile => {
+                            fileUrl = this.props.enableNewUpload ? response.path : response.url;
                             if (currentFile.alias_name === aliasName) {
                                 currentFile.progress = null;
-                                currentFile.url = response.url;
+                                currentFile.url = fileUrl;
                             }
                             return currentFile;
                         });
@@ -266,10 +292,8 @@ class DatasetUploadController extends Component {
                             ...this.state.activeDataset,
                             files,
                         };
-
                         this.setState({ activeDataset });
-
-                        this.addUploadedFileToJob(aliasName, response.url);
+                        this.addUploadedFileToJob(aliasName, fileUrl);
                     })
                     .catch(error => {
                         const files = this.state.activeDataset.files.map(currentFile => {
@@ -481,7 +505,21 @@ class DatasetUploadController extends Component {
         }
 
         return this.state.activeDataset.files.map((file, index) => {
-            return (
+            return this.props.enableNewUpload ? (
+                <GenericFileUploader
+                    label={file.alias_name}
+                    type="file"
+                    id={"dataset-upload-" + index.toString()}
+                    filePathPrefix={this.state.uploadFilePathPrefix}
+                    key={index}
+                    accept=".xls, .xlsx, .csv"
+                    url={file.url || null}
+                    extension={file.extension || null}
+                    error={file.error || null}
+                    progress={file.progress >= 0 ? file.progress : null}
+                    onRetry={this.handleRetryClick}
+                />
+            ) : (
                 <FileUpload
                     label={file.alias_name}
                     type="file"
@@ -571,7 +609,7 @@ class DatasetUploadController extends Component {
                                 {this.state.activeDataset.alias ? this.state.activeDataset.alias : "loading..."}
                             </p>
                         </div>
-                        <form className="simple-select-list__item" onSubmit={this.handleFormSubmit}>
+                        <form className="simple-select-list__item grid--align-center" onSubmit={this.handleFormSubmit}>
                             <h2 className="margin-top--0 margin-bottom--0">Create new instance</h2>
                             {!this.state.isCantabular && this.renderFileInputs()}
                             <button className="btn btn--positive" type="submit">
@@ -656,6 +694,8 @@ function mapStateToProps(state) {
     return {
         datasets: state.state.datasets.all,
         jobs: state.state.datasets.jobs,
+        enableNewUpload: state.state.config.enableNewUpload,
+        currentCollectionId: state.state.collections,
     };
 }
 

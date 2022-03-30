@@ -9,6 +9,7 @@ export const initialState = {
     config: {
         enableDatasetImport: false,
         enableNewSignIn: false,
+        enableNewUpload: false,
     },
     global: {
         workingOn: null,
