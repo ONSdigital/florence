@@ -46,7 +46,7 @@ export default class teams {
     }
 
     static addMemberToTeam(id, userID) {
-        return http.post(`/groups/${teamID}/members`, { user_id: userID }).then(response => {
+        return http.post(`/groups/${id}/members`, { user_id: userID }).then(response => {
             return response;
         });
     }
