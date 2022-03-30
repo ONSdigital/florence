@@ -56,7 +56,7 @@ const CreateNewCollection = props => {
         if (!e) return;
         setNewCollection(prevState => ({
             ...prevState,
-            teams: prevState.teams.concat(props.teams.find(team => team.id === e.target.value)),
+            teams: prevState.teams.concat(props.teams.find(team => team.id == e.target.value)),
         }));
     };
 

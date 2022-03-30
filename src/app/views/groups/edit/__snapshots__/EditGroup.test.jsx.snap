@@ -2,7 +2,7 @@
 
 exports[`EditGroup matches the snapshot 1`] = `
 <div
-  className="form"
+  className="form form-with-sticky-footer"
 >
   <div
     className="grid grid--justify-space-around"

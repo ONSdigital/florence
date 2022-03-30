@@ -1,9 +1,21 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-
 import SimpleSelectableListItem from "./SimpleSelectableListItem";
 
-const propTypes = {
+const SimpleSelectableList = props => {
+    const showLoadingState = props.showLoadingState;
+    const hasRows = !!props.rows?.length;
+    const colCount = hasRows && props.rows[0].extraDetails ? props.rows[0].extraDetails.length + 1 : 1;
+
+    return (
+        <ul className="list list--neutral simple-select-list">
+            {hasRows && props.rows.map(row => <SimpleSelectableListItem key={row.id} colCount={colCount} {...row} />)}
+            {showLoadingState && <span data-testid="loader" className="margin-top--1 loader loader--dark" />}
+            {!hasRows && !showLoadingState && <p className="padding-top--1">Nothing to show.</p>}
+        </ul>
+    );
+};
+SimpleSelectableList.propTypes = {
     rows: PropTypes.arrayOf(
         PropTypes.shape({
             title: PropTypes.string.isRequired,
@@ -18,29 +30,4 @@ const propTypes = {
     ).isRequired,
     showLoadingState: PropTypes.bool,
 };
-
-export default class SimpleSelectableList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        const showLoadingState = this.props.showLoadingState;
-        const hasRows = this.props.rows.length;
-        const colCount = hasRows && this.props.rows[0].extraDetails ? this.props.rows[0].extraDetails.length + 1 : 1;
-
-        return (
-            <ul className="list list--neutral simple-select-list">
-                {hasRows
-                    ? this.props.rows.map(row => {
-                          return <SimpleSelectableListItem key={row.id} colCount={colCount} {...row} />;
-                      })
-                    : null}
-                {showLoadingState && <span data-testid="loader" className="margin-top--1 loader loader--dark" />}
-                {!hasRows && !showLoadingState ? <p>Nothing to show</p> : ""}
-            </ul>
-        );
-    }
-}
-
-SimpleSelectableList.propTypes = propTypes;
+export default SimpleSelectableList;

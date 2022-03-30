@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`Groups matches the snapshot 1`] = `
+exports[`Groups matches the snapshot with empty props 1`] = `
 <div
   className="grid grid--justify-space-around"
 >
@@ -54,17 +54,152 @@ exports[`Groups matches the snapshot 1`] = `
           name="search-content-types"
           onChange={[Function]}
           onFocus={[Function]}
-          placeholder="Search teams by name or ID"
+          placeholder="Search teams by name"
           type="text"
+          value=""
         />
       </div>
     </div>
     <ul
       className="list list--neutral simple-select-list"
     >
-      <p>
-        Nothing to show
+      <p
+        className="padding-top--1"
+      >
+        Nothing to show.
       </p>
+    </ul>
+  </div>
+</div>
+`;
+
+exports[`Groups matches the snapshot with groups props 1`] = `
+<div
+  className="grid grid--justify-space-around"
+>
+  <div
+    className="grid__col-11 grid__col-md-9"
+  >
+    <div
+      className="margin-top--2"
+    >
+      ◀ 
+      <a
+        onClick={[Function]}
+        role="link"
+        style={Object {}}
+      >
+        Back
+      </a>
+    </div>
+    <span
+      className="margin-top--1"
+    >
+      <h1
+        className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
+      >
+        Preview teams
+      </h1>
+      <a
+        className="margin-left--1"
+        onClick={[Function]}
+        style={Object {}}
+      >
+        Create a new team
+      </a>
+    </span>
+    <div
+      className="grid__col-6"
+    >
+      <div
+        className="form__input"
+      >
+        <label
+          className="form__label"
+          htmlFor="search-content-types"
+        />
+        <input
+          autoComplete="new-password"
+          autoFocus={false}
+          className="input"
+          disabled={false}
+          id="search-content-types"
+          name="search-content-types"
+          onChange={[Function]}
+          onFocus={[Function]}
+          placeholder="Search teams by name"
+          type="text"
+          value=""
+        />
+      </div>
+    </div>
+    <ul
+      className="list list--neutral simple-select-list"
+    >
+      <li
+        className="simple-select-list__item"
+      >
+        <div
+          className="simple-select-list__col simple-select-list__cols-1"
+        >
+          <a
+            className="simple-select-list__title"
+            onClick={[Function]}
+            role="link"
+            style={Object {}}
+          >
+            Hello Group
+          </a>
+        </div>
+      </li>
+      <li
+        className="simple-select-list__item"
+      >
+        <div
+          className="simple-select-list__col simple-select-list__cols-1"
+        >
+          <a
+            className="simple-select-list__title"
+            onClick={[Function]}
+            role="link"
+            style={Object {}}
+          >
+            Test
+          </a>
+        </div>
+      </li>
+      <li
+        className="simple-select-list__item"
+      >
+        <div
+          className="simple-select-list__col simple-select-list__cols-1"
+        >
+          <a
+            className="simple-select-list__title"
+            onClick={[Function]}
+            role="link"
+            style={Object {}}
+          >
+            This team has 5 members
+          </a>
+        </div>
+      </li>
+      <li
+        className="simple-select-list__item"
+      >
+        <div
+          className="simple-select-list__col simple-select-list__cols-1"
+        >
+          <a
+            className="simple-select-list__title"
+            onClick={[Function]}
+            role="link"
+            style={Object {}}
+          >
+            Admins
+          </a>
+        </div>
+      </li>
     </ul>
   </div>
 </div>

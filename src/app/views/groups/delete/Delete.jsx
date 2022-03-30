@@ -43,7 +43,7 @@ const Delete = ({ id, deleteGroup, openModal, closeModal, loading }) => {
                         <strong>Delete preview team</strong>
                     </h2>
                     <p>Team members cannot view content linked to this preview team after it has been deleted.</p>
-                    <button className="btn btn--warning margin-top--1 margin-bottom--1" onClick={e => handleClick(e)}>
+                    <button className="btn btn--warning margin-top--1 margin-bottom--1" onClick={handleClick}>
                         Delete team
                     </button>
                 </div>

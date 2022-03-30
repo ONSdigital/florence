@@ -3,6 +3,7 @@ import * as actions from "./actions";
 import notifications from "../../utilities/notifications";
 import teams from "../../utilities/api-clients/teams";
 import url from "../../utilities/url";
+import { errCodes } from "../../utilities/errorCodes";
 
 export const fetchGroupRequest = id => dispatch => {
     dispatch(actions.loadGroupProgress());
@@ -82,10 +83,12 @@ export const fetchGroupsRequest = isNewSignIn => dispatch => {
               })
               .catch(error => {
                   dispatch(actions.loadGroupsFailure());
-                  //TODO: map responses to user friendly by content designer
-                  if (error) {
-                      notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
-                  }
+                  notifications.add({
+                      type: "warning",
+                      isDismissable: true,
+                      autoDismiss: 15000,
+                      message: error.status === 400 ? errCodes.GET_GROUPS_NOT_FOUND : errCodes.GET_GROUPS_UNEXPECTED_ERROR_SHORT,
+                  });
                   console.error(error);
               })
         : teams
