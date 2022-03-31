@@ -47,6 +47,11 @@ button {
         background-color: $tawny-port;
     }
 
+    &--secondary {
+        color: $black;
+        background-color: $iron-dark;
+    }
+
     &--subtle {
         color: $mirage;
         background-color: $cadet-blue;
