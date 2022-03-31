@@ -107,6 +107,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	routerProxy := reverseproxy.Create(routerURL, director, nil)
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
+	interactivesProxy := reverseproxy.Create(apiRouterURL, interactivesDirector, nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
 	tableProxy := reverseproxy.Create(tableURL, tableDirector, nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
@@ -151,6 +152,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
+	router.Handle("/interactives{uri:/.*}", interactivesProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)

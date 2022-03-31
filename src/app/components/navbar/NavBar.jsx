@@ -82,6 +82,17 @@ const NavBar = props => {
                                 Users and access
                             </Link>
                         </li>
+
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
+                                Teams
+                            </Link>
+                        </li>
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
+                                Interactives
+                            </Link>
+                        </li>
                         {props.config?.enableNewSignIn && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">

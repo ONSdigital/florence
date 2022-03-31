@@ -119,6 +119,11 @@ func datasetControllerDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/dataset-controller")
 }
 
+func interactivesDirector(req *http.Request) {
+	director(req)
+	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/interactives")
+}
+
 func tableDirector(req *http.Request) {
 	req.URL.Path = strings.TrimPrefix(req.URL.Path, "/table")
 }

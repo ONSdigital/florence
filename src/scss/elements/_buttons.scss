@@ -66,6 +66,24 @@
         box-sizing: border-box;
     }
 
+    &--invert-secondary,
+    &--secondary {
+        color: $black;
+        background-color: $iron-dark;
+    }
+
+    &--invert-success,
+    &--success {
+        color: $white;
+        background-color: $green;
+    }
+
+    &--invert-secondary,
+    &--secondary {
+        color: $black;
+        background-color: $iron-dark;
+    }
+
     &--link {
         color: $primary-link;
         text-decoration: underline;

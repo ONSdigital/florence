@@ -13,6 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
+import {InteractivesController, InteractivesFormController} from "./app/views/interactives";
 import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
@@ -162,6 +163,11 @@ const Index = () => {
                             <Route path="edit" component={userIsAuthenticated(TeamsController)} />
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
+                    </Route>
+                    <Route path={`${rootPath}/interactives`}>
+                        <IndexRoute component={userIsAuthenticated(InteractivesController)} />
+                        <Route path="create" component={userIsAuthenticated(InteractivesFormController)} />
+                        <Route path="edit/:interactiveId" component={userIsAuthenticated(InteractivesFormController)} />
                     </Route>
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}
