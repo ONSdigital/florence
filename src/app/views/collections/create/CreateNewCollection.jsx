@@ -36,8 +36,10 @@ export const EMPTY_COLLECTION = {
 };
 
 const CreateNewCollection = props => {
+    const {isEnablePermissionsAPI, createCollectionRequest} = props
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [selectedTeams, setSelectedTeams] = useState([]);
     const [showScheduleByRelease, setShowScheduleByRelease] = useState(false);
 
     useEffect(() => {
@@ -54,10 +56,13 @@ const CreateNewCollection = props => {
 
     const handleTeamSelect = e => {
         if (!e) return;
+        const member = props.teams.find(team => team.id == e.target.value);
         setNewCollection(prevState => ({
             ...prevState,
-            teams: prevState.teams.concat(props.teams.find(team => team.id == e.target.value)),
+            teams: prevState.teams.concat(member),
         }));
+
+        setSelectedTeams(prevState => ([...prevState, member]));
     };
 
     const handleTeamRemove = id => {
@@ -66,6 +71,8 @@ const CreateNewCollection = props => {
             ...prevState,
             teams: prevState.teams.filter(team => team.id !== id),
         }));
+
+        setSelectedTeams(prevState => (prevState.filter(team => team.id !== id)))
     };
 
     const handleCollectionTypeChange = e => {
@@ -140,20 +147,22 @@ const CreateNewCollection = props => {
     };
 
     const mapStateToPostBody = () => {
-        try {
-            return {
+        return isEnablePermissionsAPI ? {
                 name: newCollection.name.value,
                 type: newCollection.type,
                 publishDate: makePublishDate(),
-                teams: newCollection.teams.map(team => {
-                    return team.name;
-                }),
                 collectionOwner: props.user.userType,
                 releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
-            };
-        } catch (error) {
-            console.error("Error mapping new collection state to POST body" + error);
-        }
+        } : {
+            name: newCollection.name.value,
+            type: newCollection.type,
+            publishDate: makePublishDate(),
+            teams: newCollection.teams.map(team => {
+                return team.name;
+            }),
+            collectionOwner: props.user.userType,
+            releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
+        };
     };
 
     const handleSubmit = e => {
@@ -211,7 +220,7 @@ const CreateNewCollection = props => {
             return;
         }
 
-        props.createCollectionRequest(mapStateToPostBody());
+        createCollectionRequest(mapStateToPostBody(), selectedTeams, isEnablePermissionsAPI);
         setNewCollection(EMPTY_COLLECTION);
         setIsSubmitting(false);
     };
@@ -343,7 +352,10 @@ CreateNewCollection.propTypes = {
     createCollectionRequest: PropTypes.func.isRequired,
     fetchingTeams: PropTypes.bool.isRequired,
     loadTeams: PropTypes.func.isRequired,
-    teams: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.string.isRequired, name: PropTypes.string.isRequired })),
+    teams: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]).isRequired, name: PropTypes.string.isRequired })),
     user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 

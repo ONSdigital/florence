@@ -76,14 +76,32 @@ export const loadCollectionsRequest = redirect => async dispatch => {
         });
 };
 
-export const createCollectionRequest = collection => dispatch => {
-    collections
-        .create(collection)
-        .then(response => {
-            dispatch(actions.createCollectionSuccess(response));
-            dispatch(push("/florence/collections/" + response.id));
-        })
-        .catch(error => {
+export const createCollectionRequest =
+    (collection, teams, isEnablePermissionsAPI) =>
+    async dispatch => {
+        try {
+            const result = await collections.create(collection);
+            dispatch(actions.createCollectionSuccess(result));
+
+            const id = result.id;
+
+            if (isEnablePermissionsAPI) {
+                const policy = await collections.createPolicy({
+                    id,
+                    entities: teams.map(team => `groups/${id}`), // ideally I would like to take the teams from response but collection is returning names of teams
+                    role: "collection-previewer",
+                    conditions: [
+                        {
+                            attributes: ["collection_id"],
+                            operator: "StringEquals",
+                            values: [id],
+                        },
+                    ],
+                });
+            }
+
+            dispatch(push(`/florence/collections/${id}`));
+        } catch (error) {
             // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
             switch (error.status) {
                 case 401: {
@@ -119,8 +137,8 @@ export const createCollectionRequest = collection => dispatch => {
                 }
             }
             console.error(error);
-        });
-};
+        }
+    };
 
 export const approveCollectionRequest = (id, redirect) => dispatch => {
     dispatch(actions.updateCollectionProgress());

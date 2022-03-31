@@ -17,6 +17,12 @@ export default class collections {
         });
     }
 
+    static createPolicy(body) {
+        return http.post(`/policies`, body).then(response => {
+            return response;
+        });
+    }
+
     static approve(collectionID) {
         return http.post(`/zebedee/approve/${collectionID}`);
     }

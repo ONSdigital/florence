@@ -37,6 +37,7 @@ export const getGroupMembersLoading = state => state.groups.isLoadingMembers;
 export const getGroupMembers = state => state.groups.members;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;
+export const getEnablePermissionsAPI = state => state.config.enablePermissionsAPI;
 export const getNotifications = state => state.notifications;
 
 export const getActiveUser = state => state.users.active; //TODO: check if this is needed
