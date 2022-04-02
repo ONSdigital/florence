@@ -4,6 +4,7 @@ import (
 	"context"
 	"net/url"
 
+	"github.com/ONSdigital/florence/directors"
 	"github.com/ONSdigital/florence/service/modifiers"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
@@ -87,7 +88,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	routerURL, err := url.Parse(cfg.RouterURL)
+	frontendRouterURL, err := url.Parse(cfg.FrontendRouterURL)
 	if err != nil {
 		log.Event(ctx, "error parsing frontend router URL", log.FATAL, log.Error(err))
 		return nil, err
@@ -105,20 +106,24 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	routerProxy := reverseproxy.Create(routerURL, director, nil)
-	zebedeeProxy := reverseproxy.Create(apiRouterURL, zebedeeDirector, nil)
-	interactivesProxy := reverseproxy.Create(apiRouterURL, interactivesDirector, nil)
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, recipeAPIDirector(cfg.APIRouterVersion), nil)
-	tableProxy := reverseproxy.Create(tableURL, tableDirector, nil)
-	importAPIProxy := reverseproxy.Create(apiRouterURL, importAPIDirector(cfg.APIRouterVersion), nil)
-	datasetAPIProxy := reverseproxy.Create(apiRouterURL, datasetAPIDirector(cfg.APIRouterVersion), nil)
-	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, datasetControllerDirector, nil)
-	topicsProxy := reverseproxy.Create(apiRouterURL, topicAPIDirector(cfg.APIRouterVersion), nil)
-	imageAPIProxy := reverseproxy.Create(apiRouterURL, imageAPIDirector(cfg.APIRouterVersion), nil)
-	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, uploadServiceAPIDirector(cfg.APIRouterVersion), nil)
-	filesAPIProxy := reverseproxy.Create(apiRouterURL, filesAPIDirector(cfg.APIRouterVersion), nil)
-	downloadServiceProxy := reverseproxy.Create(apiRouterURL, downloadServiceAPIDirector(cfg.APIRouterVersion), nil)
-	identityAPIProxy := reverseproxy.Create(apiRouterURL, identityAPIDirector(cfg.APIRouterVersion), modifiers.IdentityResponseModifier)
+	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
+	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
+	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
+	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
+
+	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
+	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
+	interactivesProxy := reverseproxy.Create(apiRouterURL, directors.Director("/interactives"), nil)
+	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/import"), nil)
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/dataset"), nil)
+	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	topicsProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/image"), nil)
+	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	identityAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), modifiers.IdentityResponseModifier)
+	// End of deprecated proxies
 
 	router = pat.New()
 
@@ -156,6 +161,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)
+
+	// Florence endpoints
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
@@ -164,7 +171,10 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler(svc.version))
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
-	router.Handle("/{uri:.*}", routerProxy)
+
+	// API and Frontend Routers
+	router.Handle("/api/{uri:.*}", apiRouterProxy)
+	router.Handle("/{uri:.*}", frontendRouterProxy)
 
 	return router, nil
 }
