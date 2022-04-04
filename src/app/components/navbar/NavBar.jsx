@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
@@ -7,8 +7,35 @@ import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
+const LANG = {
+    "en": "English",
+    "cy" : "Welsh"
+}
+
 const NavBar = props => {
-    const [lang, setLang] = useState(cookies.get("lang"));
+    const [previewLanguage, setPreviewLanguage] = useState(null);
+
+    useEffect(() => {
+        if(cookies.get("lang")) {
+            setPreviewLanguage(cookies.get("lang"))
+        }
+        else {
+            cookies.add("lang", "en", null)
+            setPreviewLanguage("en")
+            };
+
+    }, []);
+
+    useEffect(() => {
+        if(previewLanguage) {
+            changeLanguageCookie(previewLanguage)
+        }
+    }, [previewLanguage, changeLanguageCookie]);
+
+    const changeLanguageCookie = (previewLanguage) => {
+        cookies.remove("lang");
+        cookies.add("lang", previewLanguage, null)
+    }
 
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
@@ -40,14 +67,10 @@ const NavBar = props => {
     };
 
     const changeLang = () => {
-        if (lang == "en") {
-            cookies.remove("lang");
-            cookies.add("lang", "cy", null);
-            setLang("cy");
+        if (previewLanguage == "en") {
+            setPreviewLanguage("cy");
         } else {
-            cookies.remove("lang");
-            cookies.add("lang", "en", null);
-            setLang("en");
+            setPreviewLanguage("en");
         }
         window.location.reload(true);
     };
@@ -149,7 +172,7 @@ const NavBar = props => {
             {isViewingPreview && (
                 <li className="global-nav__item">
                     <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
-                        Language: {lang == "en" ? "English" : "Welsh"}
+                        Language: {LANG[previewLanguage]}
                     </div>
                 </li>
             )}
