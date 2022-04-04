@@ -171,17 +171,17 @@ func TestIndexFile(t *testing.T) {
 			<head>
 				<meta charset="UTF-8">
 				<title>Florence</title>
-			
+
 				<link rel="stylesheet" href="/florence/dist/css/app.css">
 			</head>
 			<body>
 			<noscript><h1>Enable Javascript to use Florence</h1></noscript>
 			<div id="app"></div>
-			
+
 			<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
 				because the NPM module appears to be out-of-date and breaks our code. -->
 			<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
-			
+
 			<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
 			</body>
 			</html>
@@ -208,6 +208,7 @@ func TestIndexFile(t *testing.T) {
 				EnableDatasetImport: true,
 				EnableNewSignIn:     true,
 				EnableNewUpload:     true,
+				EnablePermissionsAPI:     true,
 			},
 		}
 		getAsset = func(path string) ([]byte, error) {
@@ -226,7 +227,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enablePermissionsAPI":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -236,7 +237,6 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true}`), ShouldBeTrue)
 		})
 
 	})
@@ -256,7 +256,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
 
 		})
 
@@ -267,7 +267,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
 		})
 
 	})
