@@ -1,12 +1,15 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
 import user from "../../utilities/api-clients/user";
+import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
 const NavBar = props => {
+    const [lang, setLang] = useState(cookies.get("lang"));
+
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
         const showWorkingOn = workingOn.id;
@@ -34,6 +37,19 @@ const NavBar = props => {
 
     const routeIsACollectionPage = path => {
         return path.indexOf(`/collections`) >= 0;
+    };
+
+    const changeLang = () => {
+        if (lang == "en") {
+            cookies.remove("lang");
+            cookies.add("lang", "cy", null);
+            setLang("cy");
+        } else {
+            cookies.remove("lang");
+            cookies.add("lang", "en", null);
+            setLang("en");
+        }
+        window.location.reload(true);
     };
 
     const renderNavItems = () => {
@@ -130,6 +146,13 @@ const NavBar = props => {
     return (
         <ul className="global-nav__list">
             {isViewingPreview && <PreviewNav />}
+            {isViewingPreview && (
+                <li className="global-nav__item">
+                    <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
+                        Language: {lang == "en" ? "English" : "Welsh"}
+                    </div>
+                </li>
+            )}
             {renderNavItems()}
         </ul>
     );
