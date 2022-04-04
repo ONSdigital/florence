@@ -20,10 +20,6 @@ func TestDirectorPrefixTrimming(t *testing.T) {
 				So(request.URL.String(), ShouldEqual, "/bar")
 			})
 		})
-	})
-
-	Convey("Given a request to '/foo/bar'", t, func() {
-		request, _ := http.NewRequest("GET", "/foo/bar", nil)
 
 		Convey("When the Director is called with an empty string", func() {
 			directors.Director("")(request)
