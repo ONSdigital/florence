@@ -1,11 +1,14 @@
-package modifiers
+package modifiers_test
 
 import (
-	. "github.com/smartystreets/goconvey/convey"
 	"net/http"
 	"net/url"
 	"strings"
 	"testing"
+
+	"github.com/ONSdigital/florence/service/modifiers"
+
+	. "github.com/smartystreets/goconvey/convey"
 )
 
 func TestIdentityResponseModifier(t *testing.T) {
@@ -28,7 +31,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 				},
 			},
 		}
-		err := IdentityResponseModifier(inBoundResponse)
+		err := modifiers.IdentityResponseModifier(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		var refreshTokenHeader string
 		var idTokenHeader string
@@ -67,7 +70,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 				},
 			},
 		}
-		err := IdentityResponseModifier(inBoundResponse)
+		err := modifiers.IdentityResponseModifier(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		So(err, ShouldBeNil)
 		So(cookieValues, ShouldBeNil)
