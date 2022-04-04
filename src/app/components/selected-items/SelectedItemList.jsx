@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import SelectedItem from "./SelectedItem";
 
 const SelectedItemList = ({ items, removeClassNames, classNames, handleRemoveItem }) => (
-    <div className="selected-item-list">
+    <div className="selected-item-list" data-testid="selected-item-list">
         {items.map((selectedItem, index) => (
             <SelectedItem
                 key={index}
@@ -19,10 +19,7 @@ const SelectedItemList = ({ items, removeClassNames, classNames, handleRemoveIte
 SelectedItemList.propTypes = {
     items: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.oneOfType([
-                PropTypes.string,
-                PropTypes.number
-            ]).isRequired,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
             name: PropTypes.string.isRequired,
         })
     ).isRequired,

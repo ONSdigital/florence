@@ -192,4 +192,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController); 
+export default connect(mapStateToProps, mapDispatchToProps)(InteractivesController);

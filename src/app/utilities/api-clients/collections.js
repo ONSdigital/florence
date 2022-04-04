@@ -18,7 +18,7 @@ export default class collections {
     }
 
     static createPolicy(body) {
-        return http.post(`/policies`, body).then(response => {
+        return http.post(`/api/v1/policies`, body).then(response => {
             return response;
         });
     }

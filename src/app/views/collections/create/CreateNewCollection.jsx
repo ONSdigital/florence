@@ -36,7 +36,7 @@ export const EMPTY_COLLECTION = {
 };
 
 const CreateNewCollection = props => {
-    const {isEnablePermissionsAPI, createCollectionRequest} = props
+    const { isEnablePermissionsAPI, createCollectionRequest } = props;
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTeams, setSelectedTeams] = useState([]);
@@ -62,7 +62,7 @@ const CreateNewCollection = props => {
             teams: prevState.teams.concat(member),
         }));
 
-        setSelectedTeams(prevState => ([...prevState, member]));
+        setSelectedTeams(prevState => [...prevState, member]);
     };
 
     const handleTeamRemove = id => {
@@ -72,7 +72,7 @@ const CreateNewCollection = props => {
             teams: prevState.teams.filter(team => team.id !== id),
         }));
 
-        setSelectedTeams(prevState => (prevState.filter(team => team.id !== id)))
+        setSelectedTeams(prevState => prevState.filter(team => team.id !== id));
     };
 
     const handleCollectionTypeChange = e => {
@@ -147,22 +147,24 @@ const CreateNewCollection = props => {
     };
 
     const mapStateToPostBody = () => {
-        return isEnablePermissionsAPI ? {
-                name: newCollection.name.value,
-                type: newCollection.type,
-                publishDate: makePublishDate(),
-                collectionOwner: props.user.userType,
-                releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
-        } : {
-            name: newCollection.name.value,
-            type: newCollection.type,
-            publishDate: makePublishDate(),
-            teams: newCollection.teams.map(team => {
-                return team.name;
-            }),
-            collectionOwner: props.user.userType,
-            releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
-        };
+        return isEnablePermissionsAPI
+            ? {
+                  name: newCollection.name.value,
+                  type: newCollection.type,
+                  publishDate: makePublishDate(),
+                  collectionOwner: props.user.userType,
+                  releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
+              }
+            : {
+                  name: newCollection.name.value,
+                  type: newCollection.type,
+                  publishDate: makePublishDate(),
+                  teams: newCollection.teams.map(team => {
+                      return team.name;
+                  }),
+                  collectionOwner: props.user.userType,
+                  releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
+              };
     };
 
     const handleSubmit = e => {
@@ -352,10 +354,9 @@ CreateNewCollection.propTypes = {
     createCollectionRequest: PropTypes.func.isRequired,
     fetchingTeams: PropTypes.bool.isRequired,
     loadTeams: PropTypes.func.isRequired,
-    teams: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]).isRequired, name: PropTypes.string.isRequired })),
+    teams: PropTypes.arrayOf(
+        PropTypes.shape({ id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired, name: PropTypes.string.isRequired })
+    ),
     user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 

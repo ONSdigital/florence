@@ -76,69 +76,67 @@ export const loadCollectionsRequest = redirect => async dispatch => {
         });
 };
 
-export const createCollectionRequest =
-    (collection, teams, isEnablePermissionsAPI) =>
-    async dispatch => {
-        try {
-            const result = await collections.create(collection);
-            dispatch(actions.createCollectionSuccess(result));
+export const createCollectionRequest = (collection, teams, isEnablePermissionsAPI) => async dispatch => {
+    try {
+        const result = await collections.create(collection);
+        dispatch(actions.createCollectionSuccess(result));
 
-            const id = result.id;
+        const id = result.id;
 
-            if (isEnablePermissionsAPI) {
-                const policy = await collections.createPolicy({
-                    id,
-                    entities: teams.map(team => `groups/${id}`), // ideally I would like to take the teams from response but collection is returning names of teams
-                    role: "collection-previewer",
-                    conditions: [
-                        {
-                            attributes: ["collection_id"],
-                            operator: "StringEquals",
-                            values: [id],
-                        },
-                    ],
-                });
-            }
-
-            dispatch(push(`/florence/collections/${id}`));
-        } catch (error) {
-            // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
-            switch (error.status) {
-                case 401: {
-                    break;
-                }
-                case 400: {
-                    const notification = {
-                        type: "warning",
-                        message: "There was an error creating the collection. Please check inputs and try again.",
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case 409: {
-                    const notification = {
-                        type: "warning",
-                        message: error.body,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error has occurred whilst creating collection`,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-            }
-            console.error(error);
+        if (isEnablePermissionsAPI) {
+            const policy = await collections.createPolicy({
+                id,
+                entities: teams.map(team => `groups/${id}`), // ideally I would like to take the teams from response but collection is returning names of teams
+                role: "collection-previewer",
+                conditions: [
+                    {
+                        attributes: ["collection_id"],
+                        operator: "StringEquals",
+                        values: [id],
+                    },
+                ],
+            });
         }
-    };
+
+        dispatch(push(`/florence/collections/${id}`));
+    } catch (error) {
+        // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
+        switch (error.status) {
+            case 401: {
+                break;
+            }
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error creating the collection. Please check inputs and try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst creating collection`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
+};
 
 export const approveCollectionRequest = (id, redirect) => dispatch => {
     dispatch(actions.updateCollectionProgress());

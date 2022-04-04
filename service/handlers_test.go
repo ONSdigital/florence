@@ -205,10 +205,10 @@ func TestIndexFile(t *testing.T) {
 	Convey("Environment variables are set", t, func() {
 		cfg := &config.Config{
 			SharedConfig: config.SharedConfig{
-				EnableDatasetImport: true,
-				EnableNewSignIn:     true,
-				EnableNewUpload:     true,
-				EnablePermissionsAPI:     true,
+				EnableDatasetImport:  true,
+				EnableNewSignIn:      true,
+				EnableNewUpload:      true,
+				EnablePermissionsAPI: true,
 			},
 		}
 		getAsset = func(path string) ([]byte, error) {

@@ -16,10 +16,7 @@ function SelectedItem({ id, name, removeClassNames, classNames, handleRemoveItem
 }
 
 SelectedItem.propTypes = {
-    id: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.number
-    ]).isRequired,
+    id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
     name: PropTypes.string.isRequired,
     handleRemoveItem: PropTypes.func,
     classNames: PropTypes.string,
