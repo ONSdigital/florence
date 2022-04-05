@@ -1,6 +1,5 @@
 import * as types from "./../actions/actionTypes";
 import { isInArray } from "../utilities/utils";
-// import moment from "moment";
 
 const initialState = {
     interactives: [],

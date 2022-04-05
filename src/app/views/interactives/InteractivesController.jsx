@@ -3,12 +3,7 @@ import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import { NavbarComponent } from "./components/NavbarComponent";
-import { getTaxonomies } from "../../actions/taxonomies";
-import { createInteractive, filterInteractives, getInteractives } from "../../actions/interactives";
-import moment from "moment";
-import url from "../../utilities/url";
-import { toggleInArray } from "../../utilities/utils";
-import { ReactTable } from "./components/ReactTable";
+import {filterInteractives, getInteractives, resetSuccessMessage} from "../../actions/interactives";
 import { Link } from "react-router";
 import { FooterComponent } from "./components/FooterComponent";
 
@@ -17,14 +12,11 @@ export class InteractivesController extends Component {
         super(props);
 
         this.state = {
-            query: "",
-            filters: {
-                topics: [],
-                query: "",
-                sortBy: "desc",
-                // offset: 0,
-                // limit: 5
-            },
+            internal_id: "",
+            title: "",
+            filter: {},
+            successCreate: false,
+            successUpdate: false,
         };
 
         this.handleFilter = this.handleFilter.bind(this);
@@ -35,43 +27,50 @@ export class InteractivesController extends Component {
         rootPath: PropTypes.string.isRequired,
         interactives: PropTypes.array,
         filteredInteractives: PropTypes.array,
-        taxonomies: PropTypes.array.isRequired,
         filterInteractives: PropTypes.func.isRequired,
-        getTaxonomies: PropTypes.func.isRequired,
         getInteractives: PropTypes.func.isRequired,
     };
 
     componentDidMount() {
-        this.props.getTaxonomies();
         this.props.getInteractives();
     }
 
-    mapTaxonomiesToSelectOptions(taxonomies) {
-        return taxonomies.map(taxonomy => {
-            return { id: url.slug(taxonomy.uri), name: taxonomy.description.title };
-        });
-    }
-
-    mapInteractivesToTableData(interactives) {
-        return interactives.map(interactive => {
-            const { id, metadata } = interactive;
-            const releaseDate = moment(metadata.release_date).format("DD MMMM YYYY");
-            const taxonomy = this.props.taxonomies.find(taxonomy => taxonomy.uri === "/" + metadata.primary_topic.replace(/-/g, "/"));
-            const taxonomyTitle = taxonomy ? taxonomy.description.title : "";
-            return {
-                data: [releaseDate, metadata.title, taxonomyTitle, id],
-            };
-        });
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.successMessage.success) {
+            if (nextProps.successMessage.type === "create") {
+                this.state.successCreate = true;
+                this.props.resetSuccessMessage();
+            }
+            if (nextProps.successMessage.type === "update") {
+                this.state.successUpdate = true;
+                this.props.resetSuccessMessage();
+            }
+            if (nextProps.successMessage.type === "delete") {
+                console.log('delete')
+                this.props.resetSuccessMessage();
+            }
+        }
     }
 
     handleFilter() {
-        this.state.filters.query = this.state.query;
-        this.props.filterInteractives(this.state.filters);
+        let filters = {}
+        if(this.state.title !== ''){
+            filters = Object.assign({}, filters, {
+                label: this.state.title,
+            });
+        }
+        if(this.state.internal_id !== ''){
+            filters = Object.assign({}, filters, {
+                internal_id: this.state.internal_id
+            });
+        }
+        this.state.filter.filter = JSON.stringify(filters);
+        this.props.filterInteractives(this.state.filter);
     }
 
     handleInteractivesOrder(e) {
-        this.state.filters.sortBy = e.target.value;
-        this.props.filterInteractives(this.state.filters);
+        this.state.filter.sortBy = e.target.value;
+        this.props.filterInteractives(this.state.filter);
     }
 
     clearCheckboxes() {
@@ -82,86 +81,218 @@ export class InteractivesController extends Component {
     }
 
     render() {
-        const { rootPath, taxonomies, filteredInteractives } = this.props;
-
+        const { rootPath, filteredInteractives } = this.props;
         return (
-            <div id="interactives-visualization">
-                <NavbarComponent>My visualizations</NavbarComponent>
-                <div className="grid grid--justify-space-around padding-top--4 padding-bottom--4">
-                    <div id="filters" className={"grid__col-sm-12 grid__col-md-3"}>
-                        <h2 className="text-left">Filters</h2>
-                        <label htmlFor="query">Title</label>
-                        <div className="search__input-group">
-                            <input
-                                type="text"
-                                id="query"
-                                placeholder="Search by title"
-                                name="query"
-                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
-                            />
-                        </div>
-                        <label htmlFor="selectable-box">Primary topic</label>
-                        <div>
-                            <div className="scrollable-box">
-                                <ul id="selectable-box" className="scrollable-box__list" data-testid="selectable-box">
-                                    {taxonomies.map(taxonomy => {
-                                        return (
-                                            <li>
-                                                <div className="grid">
+            <div id="interactivesPage" className="ons-page">
+                <div className="ons-page__content">
+                    <main className="ons-patternlib-page__body">
+                        <NavbarComponent/>
+                        <div className="ons-container ons-container--wide" style={{ marginTop:"30px" }}>
+                            {
+                                this.state.successCreate &&
+                                <div className="ons-panel ons-panel--success ons-panel--no-title" id="success-id" style={{borderLeftColor: "rgb(15, 130, 67)"}}>
+                                    <span className="ons-u-vh">Completed: </span>
+                                    <span className="ons-panel__icon ons-u-fs-r">
+                                       <svg className="ons-svg-icon" viewBox="0 0 13 10" xmlns="http://www.w3.org/2000/svg"
+                                            focusable="false" fill="currentColor">
+                                          <path
+                                              d="M14.35,3.9l-.71-.71a.5.5,0,0,0-.71,0h0L5.79,10.34,3.07,7.61a.51.51,0,0,0-.71,0l-.71.71a.51.51,0,0,0,0,.71l3.78,3.78a.5.5,0,0,0,.71,0h0L14.35,4.6A.5.5,0,0,0,14.35,3.9Z"
+                                              transform="translate(-1.51 -3.04)"/>
+                                       </svg>
+                                    </span>
+                                    <div className="ons-panel__body">Interactive has been successfully submitted</div>
+                                </div>
+                            }
+                            {
+                                this.state.successUpdate &&
+                                <div className="ons-panel ons-panel--success ons-panel--no-title" id="success-id"
+                                     style={{borderLeftColor: "rgb(15, 130, 67)"}}>
+                                    <span className="ons-u-vh">Completed: </span>
+                                    <span className="ons-panel__icon ons-u-fs-r">
+                                       <svg className="ons-svg-icon" viewBox="0 0 13 10"
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            focusable="false" fill="currentColor">
+                                          <path
+                                              d="M14.35,3.9l-.71-.71a.5.5,0,0,0-.71,0h0L5.79,10.34,3.07,7.61a.51.51,0,0,0-.71,0l-.71.71a.51.51,0,0,0,0,.71l3.78,3.78a.5.5,0,0,0,.71,0h0L14.35,4.6A.5.5,0,0,0,14.35,3.9Z"
+                                              transform="translate(-1.51 -3.04)"/>
+                                       </svg>
+                                    </span>
+                                    <div className="ons-panel__body">Interactive has been successfully updated</div>
+                                </div>
+                            }
+                            <div className='ons-grid' style={{marginTop: "5%"}}>
+                                <div className='ons-grid__col ons-col-3@m'>
+                                    <h3 className="text-left">Filter by</h3>
+                                    <div className="ons-field" >
+                                        <label
+                                            htmlFor="internal_id"
+                                            className={"ons-label"}
+                                        >Internal ID</label>
+                                        <input
+                                            type="text"
+                                            id="internal_id"
+                                            className={"ons-input ons-input--text ons-input-type__input ons-input--w-1@m"}
+                                            placeholder=""
+                                            name="internal_id"
+                                            onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                            data-testid="internal-id-input"
+                                        />
+                                    </div>
+                                    <div className="ons-field" >
+                                        <label
+                                            htmlFor="title"
+                                            className={"ons-label"}
+                                        >Title</label>
+                                        <input
+                                            type="text"
+                                            id="title"
+                                            className={"ons-input ons-input--text ons-input-type__input ons-input--w-1@m"}
+                                            placeholder=""
+                                            name="title"
+                                            onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                            data-testid="title-input"
+                                        />
+                                    </div>
+                                    <fieldset className="ons-fieldset">
+                                        <legend className="ons-fieldset__legend">Interactive type</legend>
+                                        <div className="ons-checkboxes__items">
+                                            <span className="ons-checkboxes__item ons-checkboxes__item--no-border">
+                                                <span className="ons-checkbox ons-checkbox--no-border">
                                                     <input
                                                         type="checkbox"
-                                                        value={url.slug(taxonomy.uri)}
-                                                        name="topics"
-                                                        onChange={e =>
-                                                            this.setState({
-                                                                [e.target.name]: toggleInArray(this.state.filters.topics, e.target.value),
-                                                            })
-                                                        }
+                                                        id="data"
+                                                        className="ons-checkbox__input ons-js-checkbox "
+                                                        value="data"
+                                                        data-testid="data-input"
                                                     />
-                                                    <div>{taxonomy.description.title}</div>
-                                                </div>
-                                            </li>
-                                        );
-                                    })}
-                                </ul>
-                            </div>
-                        </div>
-                        <div>
-                            <div className={"grid grid--justify-space-between filter-buttons padding-top--1"}>
-                                <button
-                                    type="submit"
-                                    className="btn btn--success"
-                                    disabled={this.state.isAwaitingResponse}
-                                    onClick={this.handleFilter}
-                                >
-                                    Apply
-                                </button>
-                                <button className="btn btn--secondary" onClick={this.clearCheckboxes}>
-                                    Cancel
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div id="interactives-table" className={"grid__col-sm-12 grid__col-md-5"}>
-                        <div className="filterable-table-box">
-                            <div className={"grid grid--justify-space-between filterable-buttons"}>
-                                <div className={"sort-filter"}>
-                                    <label htmlFor="sort">Sort by</label>
-                                    <select name="sort" id="sort" onChange={this.handleInteractivesOrder}>
-                                        <option value="desc">Latest</option>
-                                        <option value="asc">Oldest</option>
-                                    </select>
+                                                    <label
+                                                        className="ons-checkbox__label"
+                                                        htmlFor="data" id="data-label"
+                                                    >Embeddable (25)</label>
+                                                </span>
+                                            </span>
+                                            <br/>
+                                            <span className="ons-checkboxes__item ons-checkboxes__item--no-border">
+                                                <span className="ons-checkbox ons-checkbox--no-border">
+                                                    <input
+                                                        type="checkbox"
+                                                        id="publications"
+                                                        className="ons-checkbox__input ons-js-checkbox  ons-js-other ons-js-select-all-children"
+                                                        value="publications"
+                                                        data-testid="publications-input"
+                                                    />
+                                                    <label
+                                                        className="ons-checkbox__label"
+                                                        htmlFor="publications"
+                                                        id="publications-label"
+                                                    >Full-feature (0)</label>
+                                                    <span className="ons-checkbox__other" id="publications-other-wrap">
+                                                        <fieldset className="ons-fieldset ons-js-other-fieldset">
+                                                            <label className="ons-label" htmlFor="select">Primary topic</label>
+                                                            <select id="select" name="select" className="ons-input ons-input--select" style={{width:"100%"}}>
+                                                              <option value="" selected disabled>Select an option</option>
+                                                              <option value="general">General</option>
+                                                              <option value="people-who-live-here">People who live here</option>
+                                                              <option value="visitors">Visitors</option>
+                                                              <option value="household-accommodation">Household and accommodation</option>
+                                                              <option value="personal-details">Personal details</option>
+                                                              <option value="health">Health</option>
+                                                              <option value="qualifications">Qualifications</option>
+                                                              <option value="employment">Employment</option>
+                                                            </select>
+                                                        </fieldset>
+                                                        <fieldset className="ons-fieldset ons-js-other-fieldset">
+                                                            <label className="ons-label" htmlFor="select">Data source</label>
+                                                            <select id="select" name="select" className="ons-input ons-input--select" style={{ width : "100%" }}>
+                                                              <option value="" selected disabled>Select an option</option>
+                                                              <option value="general">General</option>
+                                                              <option value="people-who-live-here">People who live here</option>
+                                                              <option value="visitors">Visitors</option>
+                                                              <option value="household-accommodation">Household and accommodation</option>
+                                                              <option value="personal-details">Personal details</option>
+                                                              <option value="health">Health</option>
+                                                              <option value="qualifications">Qualifications</option>
+                                                              <option value="employment">Employment</option>
+                                                            </select>
+                                                        </fieldset>
+                                                    </span>
+                                                  </span>
+                                            </span>
+                                        </div>
+                                    </fieldset>
+                                    <div className="ons-u-mb-m" style={{marginTop:"20px"}}>
+                                        <button
+                                            type="button"
+                                            className="ons-btn ons-btn--small"
+                                            onClick={this.handleFilter}
+                                            data-testid="apply-button"
+                                        >
+                                            <span className="ons-btn__inner">Apply</span>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="ons-btn ons-btn--secondary ons-btn--small"
+                                            onClick={this.clearCheckboxes}
+                                            data-testid="reset-all-button"
+                                        >
+                                            <span className="ons-btn__inner">Reset all</span>
+                                        </button>
+                                    </div>
                                 </div>
-                                <Link to={`${rootPath}/interactives/create`} activeClassName="selected" className="btn btn--secondary">
-                                    Upload interactive
-                                </Link>
+                                <div className='ons-grid__col ons-col-1@m'/>
+                                <div className='ons-grid__col ons-col-6@m'>
+                                    <div className='head ons-u-mb-m' style={{ display : "flex", justifyContent: "space-between"}}>
+                                        <div className="ons-field ons-field--inline">
+                                            <label className="ons-label" htmlFor="sort">Sort by</label>
+                                            <select
+                                                name="sort"
+                                                id="sort"
+                                                className="ons-input ons-input--select ons-u-wa--@xxs"
+                                                onChange={this.handleInteractivesOrder}
+                                            >
+                                                <option value="desc">Latest published</option>
+                                                <option value="asc">Title</option>
+                                            </select>
+                                        </div>
+                                        <Link to={`${rootPath}/interactives/create`}
+                                            role="button"
+                                            className="ons-btn ons-btn--secondary ons-btn--small ons-btn--link ons-js-submit-btn"
+                                            data-testid="upload-interactive-button"
+                                        >
+                                            <span className="ons-btn__inner">
+                                                    Upload interactive
+                                            </span>
+                                        </Link>
+                                    </div>
+                                    <div
+                                        className="content-list"
+                                        data-testid="interactives-content-list"
+                                    >
+                                        {
+                                            filteredInteractives.map(interactive => {
+                                                const { id, metadata, published } = interactive
+                                                return (
+                                                    <article className="ons-article" style={{borderTop: "none", margin: "0 0 0", padding: "0 0 0"}}>
+                                                        <div className="ons-article__content">
+                                                            <h4 className="ons-article__heading">
+                                                            <span className={`ons-status ons-status--small ${published ? 'ons-status--success' : 'ons-status--error'}`} title="Published"/>
+                                                                <Link to={`${rootPath}/interactives/edit/${id}`}>
+                                                                    {metadata.label}
+                                                                </Link>
+                                                                - <time dateTime="2020-05-20">16 March 2022</time>
+                                                            </h4>
+                                                        </div>
+                                                    </article>
+                                                )
+                                            })
+                                        }
+                                    </div>
+                                </div>
                             </div>
-                            <ReactTable data={this.mapInteractivesToTableData(filteredInteractives)} />
                         </div>
-                    </div>
-                    <div className={"grid__col-1"} />
+                        <FooterComponent />
+                    </main>
                 </div>
-                <FooterComponent />
             </div>
         );
     }
@@ -172,22 +303,19 @@ const mapStateToProps = state => ({
     errors: state.interactives.errors,
     interactives: state.interactives.interactives,
     filteredInteractives: state.interactives.filteredInteractives,
-    taxonomies: state.taxonomies.taxonomies,
+    successMessage: state.interactives.successMessage,
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        getTaxonomies: () => {
-            dispatch(getTaxonomies());
-        },
         getInteractives: () => {
             dispatch(getInteractives());
         },
-        createInteractive: interactive => {
-            dispatch(createInteractive(interactive));
-        },
         filterInteractives: filters => {
             dispatch(filterInteractives(filters));
+        },
+        resetSuccessMessage: () => {
+            dispatch(resetSuccessMessage());
         },
     };
 };

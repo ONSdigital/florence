@@ -1,17 +1,12 @@
 import React from "react";
 import { render, fireEvent, screen, createMockUser } from "../../utilities/tests/test-utils";
 import { InteractivesFormController } from "./InteractivesFormController";
-import { prettyDOM } from "@testing-library/dom";
-import { shallow } from "enzyme";
 
 describe("Collections", () => {
     const defaultProps = {
         resetSuccessMessage: jest.fn(),
-        taxonomies: [],
-        getTaxonomies: jest.fn(),
         getInteractive: jest.fn(),
         editInteractive: jest.fn(),
-        deleteInteractive: jest.fn(),
         createInteractive: jest.fn(),
         resetInteractiveError: jest.fn(),
         rootPath: "/florence",
@@ -24,34 +19,22 @@ describe("Collections", () => {
     describe("when renders the component", () => {
         it("renders the initial content as creating mode", () => {
             render(<InteractivesFormController {...defaultProps} />);
-            expect(screen.getByText("Title")).toBeInTheDocument();
-            expect(screen.getByText("Interactive file")).toBeInTheDocument();
-            expect(screen.getByText("Primary topic")).toBeInTheDocument();
-            expect(screen.getByText("Surveys")).toBeInTheDocument();
-            expect(screen.getByText("Topics")).toBeInTheDocument();
-            expect(screen.getByText("URL")).toBeInTheDocument();
+            expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
+            expect(screen.getByLabelText("Title")).toBeInTheDocument();
+            expect(screen.getByLabelText("Upload a file")).toBeInTheDocument();
             // one button to create, one link to scape
             expect(screen.getAllByRole("button")).toHaveLength(1);
-            expect(screen.getByTestId("cancel-button")).toBeInTheDocument();
         });
 
         it("renders the initial content as edit/delete mode", () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             render(<InteractivesFormController {...defaultProps} />);
-            expect(screen.getByTestId("interactive-form")).toBeInTheDocument();
-            expect(screen.getByText("Title")).toBeInTheDocument();
-            expect(screen.getByText("Interactive file")).toBeInTheDocument();
-            expect(screen.getByText("Primary topic")).toBeInTheDocument();
-            expect(screen.getByText("Surveys")).toBeInTheDocument();
-            expect(screen.getByText("Topics")).toBeInTheDocument();
-            // two buttons, edit and delete
-            expect(screen.getByText("URL")).toBeInTheDocument();
-            expect(screen.getAllByRole("button")).toHaveLength(2);
-        });
-
-        it("should fetch taxonomies on render", () => {
-            render(<InteractivesFormController {...defaultProps} />);
-            expect(defaultProps.getTaxonomies).toHaveBeenCalled();
+            expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
+            expect(screen.getByLabelText("Title")).toBeInTheDocument();
+            expect(screen.getByLabelText("Upload a file")).toBeInTheDocument();
+            expect(screen.getByLabelText("URL")).toBeInTheDocument();
+            // Save changes, preview, delete
+            expect(screen.getAllByRole("button")).toHaveLength(3);
         });
 
         it("should submit the data when user clicks in create button", () => {
@@ -64,29 +47,29 @@ describe("Collections", () => {
 
         it("should leave in blank the form in create mode", () => {
             render(<InteractivesFormController {...defaultProps} />);
-            expect(defaultProps.getTaxonomies).toHaveBeenCalled();
+            const internalIdInput = screen.getByTestId("internal-id-input");
             const titleInput = screen.getByTestId("title-input");
-            const urlInput = screen.getByTestId("url-input");
+            const labelInput = screen.getByTestId("label-input");
+            const fileInput = screen.getByTestId("file-input");
+            expect(internalIdInput.value).toBe("");
             expect(titleInput.value).toBe("");
-            expect(urlInput.value).toBe("");
-            expect(titleInput).toBeInTheDocument();
+            expect(labelInput.value).toBe("");
+            expect(fileInput).toBeInTheDocument();
         });
 
         it("should fetch an interactive if detects an interactiveId", async () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             render(<InteractivesFormController {...defaultProps} />);
-            expect(defaultProps.getTaxonomies).toHaveBeenCalled();
             expect(defaultProps.getInteractive).toHaveBeenCalled();
         });
 
-        it("should delete an interactive when clicks the delete interactive button", () => {
+        it("should update an interactive when clicks the update interactive button", async () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             render(<InteractivesFormController {...defaultProps} />);
-            expect(defaultProps.getTaxonomies).toHaveBeenCalled();
             expect(defaultProps.getInteractive).toHaveBeenCalled();
-            const deleteButton = screen.getAllByRole("button")[1];
-            fireEvent.click(deleteButton);
-            expect(defaultProps.deleteInteractive).toHaveBeenCalled();
+            const titleInput = screen.getByTestId("save-changes-button");
+            fireEvent.click(titleInput);
+            expect(defaultProps.editInteractive).toHaveBeenCalled();
         });
     });
 });
