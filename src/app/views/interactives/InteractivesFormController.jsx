@@ -1,39 +1,31 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import url from "./../../utilities/url";
 
 import {
     createInteractive,
     getInteractive,
     editInteractive,
     deleteInteractive,
-    resetSuccessMessage,
-    resetInteractiveError,
+    resetInteractiveError
 } from "../../actions/interactives";
 
-import { getTaxonomies } from "../../actions/taxonomies";
 import { NavbarComponent } from "./components/NavbarComponent";
-import Select from "../../components/Select";
 import { Link } from "react-router";
-import { FooterComponent } from "./components/FooterComponent";
 
 export class InteractivesFormController extends Component {
     static propTypes = {
         params: PropTypes.shape({
             interactiveId: PropTypes.string,
         }),
-        getTaxonomies: PropTypes.func.isRequired,
         createInteractive: PropTypes.func.isRequired,
         editInteractive: PropTypes.func.isRequired,
         deleteInteractive: PropTypes.func.isRequired,
         getInteractive: PropTypes.func.isRequired,
-        resetSuccessMessage: PropTypes.func.isRequired,
         resetInteractiveError: PropTypes.func.isRequired,
         rootPath: PropTypes.string.isRequired,
         interactive: PropTypes.object,
         errors: PropTypes.object,
-        taxonomies: PropTypes.array.isRequired,
     };
 
     static contextTypes = {
@@ -44,18 +36,57 @@ export class InteractivesFormController extends Component {
         super(props);
 
         this.state = {
+            internal_id: "",
             title: "",
+            label: "",
             file: null,
-            primary: "",
-            surveys: "",
-            topics: "",
-            url: "",
+            slug: "",
             interactiveId: null,
+            published: false,
         };
 
         this.onSubmit = this.onSubmit.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.handleFile = this.handleFile.bind(this);
+    }
+
+    componentDidMount() {
+        const { interactiveId } = this.props.params;
+        if (interactiveId) {
+            this.setState({ interactiveId: interactiveId });
+            this.props.getInteractive(interactiveId);
+        } else {
+            this.state = {
+                internal_id: "",
+                title: "",
+                label: "",
+                file: null,
+                slug: "",
+                interactiveId: null,
+                published: false,
+            };
+        }
+        this.props.resetInteractiveError();
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.successMessage.success) {
+            const rootPath = this.props.rootPath;
+            if (nextProps.successMessage.type === "create") {
+                this.props.router.push(`${rootPath}/interactives`);
+            }
+            if (nextProps.successMessage.type === "update") {
+                this.props.router.push(`${rootPath}/interactives`);
+            }
+        }
+        if (nextProps.interactive.metadata) {
+            const { metadata } = nextProps.interactive;
+            this.state.internal_id = metadata.internal_id;
+            this.state.title = metadata.title;
+            this.state.label = metadata.label;
+            this.state.slug = metadata.slug;
+            this.state.published = metadata.published;
+        }
     }
 
     onSubmit(e) {
@@ -68,79 +99,23 @@ export class InteractivesFormController extends Component {
                 interactive: {
                     id: this.state.interactiveId,
                     metadata: {
-                        edition: "exercitation aute consectetur irure",
-                        meta_description: "ullamco incididunt eu",
+                        internal_id: this.state.internal_id,
                         title: this.state.title,
-                        uri: this.state.url,
-                        primary_topic: this.state.primary,
-                    },
+                        label: this.state.label,
+                        slug: this.state.slug,
+                    }
                 },
             })
         );
-        this.state.interactiveId ? this.props.editInteractive(this.state.interactiveId, formData) : this.props.createInteractive(formData);
-    }
-
-    componentDidMount() {
-        const { interactiveId } = this.props.params;
-        if (interactiveId) {
-            this.setState({ interactiveId: interactiveId });
-            this.props.getInteractive(interactiveId);
-        } else {
-            this.state = {
-                title: "",
-                file: null,
-                primary: "",
-                surveys: "",
-                topics: "",
-                url: "",
-                interactiveId: null,
-            };
-        }
-        this.props.getTaxonomies();
-        this.props.resetInteractiveError();
-    }
-
-    componentWillReceiveProps(nextProps, nextContext) {
-        if (nextProps.successMessage.success) {
-            const rootPath = this.props.rootPath;
-            if (nextProps.successMessage.type === "create") {
-                this.props.resetSuccessMessage();
-                this.props.router.push(`${rootPath}/interactives`);
-            }
-            if (nextProps.successMessage.type === "update") {
-                this.props.resetSuccessMessage();
-                this.props.router.push(`${rootPath}/interactives`);
-            }
-            if (nextProps.successMessage.type === "delete") {
-                this.props.resetSuccessMessage();
-                this.props.router.push(`${rootPath}/interactives`);
-            }
-        }
-        if (this.props.interactive.metadata) {
-            const { metadata } = this.props.interactive;
-            this.state.title = metadata.title;
-            this.state.primary = metadata.primary_topic;
-            this.state.surveys = metadata.surveys;
-            this.state.topics = metadata.topics;
-            this.state.url = metadata.uri;
-        }
-    }
-
-    mapTaxonomiesToSelectOptions(taxonomies) {
-        return taxonomies.map(taxonomy => {
-            return { id: url.slug(taxonomy.uri), name: taxonomy.description.title };
-        });
-    }
-
-    mapValuesToSelectOptions(values) {
-        return values.map(value => {
-            return { id: value.id, name: value.name };
-        });
+        this.state.interactiveId ?
+            this.props.editInteractive(this.state.interactiveId, formData) :
+            this.props.createInteractive(formData);
     }
 
     handleDelete(e) {
+        const rootPath = this.props.rootPath;
         e.preventDefault();
-        this.props.deleteInteractive(this.state.interactiveId);
+        this.props.router.push(`${rootPath}/interactives/delete/${this.state.interactiveId}`);
     }
 
     handleFile(e) {
@@ -149,188 +124,362 @@ export class InteractivesFormController extends Component {
     }
 
     render() {
-        const surveys = [
-            { id: 1, name: "Survey 1" },
-            { id: 2, name: "Survey 2" },
-            { id: 3, name: "Survey 3" },
-            { id: 4, name: "Survey 4" },
-        ];
-
-        const { errors, taxonomies, rootPath } = this.props;
-
+        const { errors, rootPath } = this.props;
         return (
-            <div>
-                <NavbarComponent>{!this.state.interactiveId ? "Upload interactive" : "Edit interactive"}</NavbarComponent>
-                <div>
-                    <div className="grid font-size--18">
-                        <div className="grid__col-1" />
-                        <div className="grid__col-sm-12 grid__col-md-7 padding-top--2 interactives__form__back__button">
-                            {this.state.interactiveId && (
-                                <div>
-                                    <Link to={`${rootPath}/interactives`} disabled={this.state.isAwaitingResponse}>
-                                        <svg width="8" height="13" viewBox="0 0 8 13" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path
-                                                d="M6.78296 12.6879L7.35296 12.1279C7.44761 12.034 7.50085 11.9062 7.50085 11.7729C7.50085 11.6396 7.44761 11.5118 7.35296 11.4179L2.35296 6.4179L7.35296 1.4179C7.44761 1.32402 7.50085 1.19622 7.50085 1.0629C7.50085 0.92958 7.44761 0.801782 7.35296 0.707899L6.78296 0.147899C6.68907 0.0532428 6.56127 0 6.42796 0C6.29464 0 6.16684 0.0532428 6.07296 0.147899L0.142955 6.0779C-0.047616 6.27232 -0.047616 6.58348 0.142955 6.7779L6.07296 12.6879C6.16684 12.7826 6.29464 12.8358 6.42796 12.8358C6.56127 12.8358 6.68907 12.7826 6.78296 12.6879Z"
-                                                fill="#222222"
-                                            />
+            <div id="interactivesPage" className="ons-page">
+                <div className="ons-page__content">
+                    <main className="ons-patternlib-page__body">
+                        <NavbarComponent/>
+                        <div className="ons-container ons-container--wide">
+                            <nav className="ons-breadcrumb" aria-label="Back">
+                                <ol className="ons-breadcrumb__items ons-u-fs-s">
+                                    <li className="ons-breadcrumb__item" id="breadcrumb-1">
+                                        <Link to={`${rootPath}/interactives`} className="ons-breadcrumb__link">Back</Link>
+                                        <svg className="ons-svg-icon" viewBox="0 0 8 13"
+                                             xmlns="http://www.w3.org/2000/svg" focusable="false" fill="currentColor">
+                                            <path d="M5.74,14.28l-.57-.56a.5.5,0,0,1,0-.71h0l5-5-5-5a.5.5,0,0,1,0-.71h0l.57-.56a.5.5,0,0,1,.71,0h0l5.93,5.93a.5.5,0,0,1,0,.7L6.45,14.28a.5.5,0,0,1-.71,0Z"
+                                                transform="translate(-5.02 -1.59)"/>
                                         </svg>
-                                        <span>Back</span>
-                                    </Link>
+                                    </li>
+                                </ol>
+                            </nav>
+                            <h1 className="ons-u-fs-xxl ons-u-mt-l">{!this.state.interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}</h1>
+
+                            {this.state.published &&
+                                <div className="ons-panel ons-panel--info ons-panel--no-title">
+                                    <span className="ons-u-vh">Important information: </span>
+                                    <div className="ons-panel__body"><p>This interactive has been published. You can
+                                        only
+                                        update the archive file via the upload button below.</p>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className={`grid font-size--18 padding-bottom--4 ${this.state.interactiveId ? "padding-top--2" : "padding-top--4"}`}>
-                        <div className="grid__col-1" />
-                        <div className="grid__col-sm-12 grid__col-md-7">
-                            <div className="grid grid--justify-space-around">
-                                <div className="grid__col-12">
-                                    <form id="interactives-form" className="form" onSubmit={this.handleSubmit} data-testid="interactive-form">
-                                        <div className={`form__input form__input__panel ${errors.title ? "form__input--error__panel" : ""}`}>
-                                            {errors.title && <span>Enter a correct title</span>}
-                                            <label className="form__label" htmlFor="title">
-                                                Title
-                                            </label>
+                            }
+
+                            {errors.msg ?
+                                <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                                    <span className="ons-u-vh">Error: </span>
+                                    <div className="ons-panel__body">
+                                        <p className="ons-panel__error">
+                                            <strong>Enter a correct internal ID</strong>
+                                        </p>
+                                        <div className="ons-field">
+                                            <label className="ons-label" htmlFor="internal_id">Internal ID</label>
+                                            <input
+                                                type="text"
+                                                id="internal_id"
+                                                className="ons-input ons-input--text ons-input-type__input"
+                                                name="internal_id"
+                                                disabled={this.state.isAwaitingResponse}
+                                                value={this.state.internal_id}
+                                                required
+                                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                                data-testid="internal-id-input"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                :
+                                <div className="ons-field" id="title-field">
+                                    <label className="ons-label" htmlFor="internal_id">Internal ID</label>
+                                    <input
+                                        type="text"
+                                        id="internal_id"
+                                        className="ons-input ons-input--text ons-input-type__input"
+                                        name="internal_id"
+                                        disabled={this.state.isAwaitingResponse}
+                                        value={this.state.internal_id}
+                                        required
+                                        onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                        data-testid="internal-id-input"
+                                    />
+                                </div>
+                            }
+
+                            {errors.msg ?
+                                <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                                    <span className="ons-u-vh">Error: </span>
+                                    <div className="ons-panel__body">
+                                        <p className="ons-panel__error">
+                                            <strong>Enter a correct title</strong>
+                                        </p>
+                                        <div className="ons-field">
+                                            <label className="ons-label" htmlFor="title">Title</label>
                                             <input
                                                 type="text"
                                                 id="title"
-                                                className="input"
+                                                className="ons-input ons-input--text ons-input-type__input"
                                                 name="title"
                                                 disabled={this.state.isAwaitingResponse}
                                                 value={this.state.title}
+                                                required
                                                 onChange={e => this.setState({ [e.target.name]: e.target.value })}
                                                 data-testid="title-input"
                                             />
                                         </div>
-                                        <div
-                                            className={`form__input form__input__panel ${
-                                                errors.file || errors.msg ? "form__input--error__panel" : ""
-                                            }`}
-                                        >
-                                            {errors.file && <span>Upload a correct file</span>}
-                                            {errors.msg && <span> Upload a correct file </span>}
-                                            <label className="form__label" htmlFor="file">
-                                                Interactive file
-                                            </label>
-                                            <span className={"file-description"}>File needs to be in .zip format</span>
-                                            <div className="button-wrap">
-                                                <label className="button" htmlFor="file">
-                                                    Choose file
-                                                </label>
-                                                <input
-                                                    type="file"
-                                                    id="file"
-                                                    name="file"
-                                                    className="input"
-                                                    onChange={this.handleFile}
-                                                    data-testid="file-input"
-                                                />
-                                            </div>
-                                        </div>
-                                        <div className={`form__input form__input__panel ${errors.primary ? "form__input--error__panel" : ""}`}>
-                                            {errors.primary && <span>Select a primary topic</span>}
-                                            <Select
-                                                id="primary"
-                                                name="primary"
-                                                label="Primary topic"
-                                                contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
-                                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
-                                                error={this.state.editionError}
-                                                selectedOption={this.state.primary}
-                                                disabled={this.state.isReadOnly || this.state.isSavingData}
-                                                data-testid="primary-input"
-                                            />
-                                        </div>
-                                        <div className={`form__input form__input__panel ${errors.surveys ? "form__input--error__panel" : ""}`}>
-                                            {errors.surveys && <span>Select surveys</span>}
-                                            <Select
-                                                id="surveys"
-                                                name="surveys"
-                                                label="Surveys"
-                                                contents={this.mapValuesToSelectOptions(surveys)}
-                                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
-                                                error={this.state.editionError}
-                                                selectedOption={this.state.surveys}
-                                                disabled={this.state.isAwaitingResponse}
-                                                data-testid="surveys-input"
-                                            />
-                                        </div>
-                                        <div className={`form__input form__input__panel ${errors.topics ? "form__input--error__panel" : ""}`}>
-                                            {errors.topics && <span>Select topics</span>}
-                                            <Select
-                                                id="topics"
-                                                name="topics"
-                                                label="Topics"
-                                                contents={this.mapTaxonomiesToSelectOptions(taxonomies)}
-                                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
-                                                error={this.state.editionError}
-                                                selectedOption={this.state.topics}
-                                                disabled={this.state.isAwaitingResponse}
-                                                data-testid="topics-input"
-                                            />
-                                        </div>
-                                        <div className={`form__input form__input__panel ${errors.url ? "form__input--error__panel" : ""}`}>
-                                            <label className="form__label" htmlFor="url">
-                                                URL
-                                            </label>
-                                            {errors.url && <span>Enter a correct url</span>}
+                                    </div>
+                                </div>
+                                :
+                                <div className="ons-field" id="title-field">
+                                    <label className="ons-label" htmlFor="title">Title</label>
+                                    <span id="description-hint"
+                                          className="ons-label__description  ons-input--with-description">It will help to search for the interactive later</span>
+                                    <input
+                                        type="text"
+                                        id="title"
+                                        className="ons-input ons-input--text ons-input-type__input"
+                                        name="title"
+                                        disabled={this.state.isAwaitingResponse}
+                                        value={this.state.title}
+                                        required
+                                        onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                        data-testid="title-input"
+                                    />
+                                </div>
+                            }
+
+                            {errors.msg ?
+                                <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                                    <span className="ons-u-vh">Error: </span>
+                                    <div className="ons-panel__body">
+                                        <p className="ons-panel__error">
+                                            <strong>Enter a correct label</strong>
+                                        </p>
+                                        <div className="ons-field">
+                                            <label className="ons-label" htmlFor="label">Label</label>
                                             <input
                                                 type="text"
-                                                id="url"
-                                                className="input"
-                                                name="url"
+                                                id="label"
+                                                className="ons-input ons-input--text ons-input-type__input"
+                                                name="label"
                                                 disabled={this.state.isAwaitingResponse}
-                                                value={this.state.url}
+                                                value={this.state.label}
+                                                required
                                                 onChange={e => this.setState({ [e.target.name]: e.target.value })}
-                                                data-testid="url-input"
+                                                data-testid="label-input"
                                             />
                                         </div>
-                                        <div className={"form__button__panel padding-top--1"}>
-                                            {!this.state.interactiveId ? (
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn--success"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.onSubmit}
-                                                >
-                                                    Create
-                                                </button>
-                                            ) : (
-                                                <button
-                                                    type="submit"
-                                                    className="btn btn--success"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.onSubmit}
-                                                >
-                                                    Save and preview
-                                                </button>
-                                            )}
-                                            {!this.state.interactiveId ? (
-                                                <Link
-                                                    to={`${rootPath}/interactives`}
-                                                    className="btn btn--secondary padding-left--1"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    data-testid="cancel-button"
-                                                >
-                                                    Cancel
-                                                </Link>
-                                            ) : (
-                                                <button
-                                                    className="btn btn--secondary padding-left--1"
-                                                    disabled={this.state.isAwaitingResponse}
-                                                    onClick={this.handleDelete}
-                                                >
-                                                    Delete interactive
-                                                </button>
-                                            )}
-                                        </div>
-                                    </form>
+                                    </div>
+                                </div>
+                                :
+                                <div className="ons-field" id="title-field">
+                                    <label className="ons-label" htmlFor="label">Label</label>
+                                    <span id="description-hint"
+                                          className="ons-label__description  ons-input--with-description">It will be used to generate the URL</span>
+                                    <input
+                                        type="text"
+                                        id="label"
+                                        className="ons-input ons-input--text ons-input-type__input"
+                                        name="label"
+                                        disabled={this.state.isAwaitingResponse}
+                                        value={this.state.label}
+                                        required
+                                        onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                        data-testid="label-input"
+                                    />
+                                </div>
+                            }
+                            <div className="ons-field">
+                                <div className="ons-field">
+                                    <label className="ons-label ons-label--with-description" htmlFor="file">Upload a
+                                        file</label>
+                                    <span id="description-hint"
+                                          className="ons-label__description  ons-input--with-description">Only file type accepted is ZIP</span>
+                                    <input
+                                        type="file"
+                                        id="file"
+                                        name="file"
+                                        accept=".zip"
+                                        className="ons-input ons-input--text ons-input-type__input ons-input--upload"
+                                        required
+                                        onChange={this.handleFile}
+                                        data-testid="file-input"
+                                    />
                                 </div>
                             </div>
+
+                            {this.state.interactiveId &&
+                                <>
+                                    {errors.msg ?
+                                        <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                                            <span className="ons-u-vh">Error: </span>
+                                            <div className="ons-panel__body">
+                                                <p className="ons-panel__error">
+                                                    <strong>Enter a correct URL</strong>
+                                                </p>
+                                                <div className="ons-field">
+                                                    <label className="ons-label" htmlFor="slug">URL</label>
+                                                    <input
+                                                        type="text"
+                                                        id="slug"
+                                                        className="ons-input ons-input--text ons-input-type__input"
+                                                        name="slug"
+                                                        disabled={this.state.isAwaitingResponse}
+                                                        value={this.state.slug}
+                                                        required
+                                                        onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                                        data-testid="slug-input"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        :
+                                        <div className="ons-field" id="title-field">
+                                            <label className="ons-label" htmlFor="slug">URL</label>
+                                            <input
+                                                type="text"
+                                                id="slug"
+                                                className="ons-input ons-input--text ons-input-type__input"
+                                                name="slug"
+                                                disabled={this.state.isAwaitingResponse}
+                                                value={this.state.slug}
+                                                required
+                                                onChange={e => this.setState({ [e.target.name]: e.target.value })}
+                                                data-testid="slug-input"
+                                            />
+                                        </div>
+                                    }
+                                </>
+                            }
+
+                            {!this.state.interactiveId ?
+                                <button
+                                    type="submit"
+                                    className="ons-btn ons-u-mb-m ons-u-mt-l ons-btn--link ons-js-submit-btn ons-btn--loader ons-js-loader ons-js-submit-btn"
+                                    id="button"
+                                    onClick={this.onSubmit}
+                                >
+                                    <span className="ons-btn__inner">Confirm</span>
+                                </button>
+                                :
+                                <>
+                                <a
+                                    href="#"
+                                    role="button"
+                                    className="ons-btn ons-u-mb-m ons-u-mt-l ons-btn--link ons-js-submit-btn ons-btn--loader ons-js-loader ons-js-submit-btn"
+                                    onClick={this.onSubmit}
+                                    data-testid="save-changes-button"
+                                >
+                                    <span className="ons-btn__inner">Save changes
+                                        <svg className="ons-svg-icon ons-u-ml-xs" xmlns="http://www.w3.org/2000/svg" focusable="false"
+                                             viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" fill="currentcolor">
+                                            <rect x="0" y="0" width="100" height="100" fill="none"></rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(0 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(30 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.08333333333333333s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(60 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.16666666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(90 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.25s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(120 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.3333333333333333s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(150 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.4166666666666667s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(180 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(210 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5833333333333334s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(240 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.6666666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(270 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.75s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(300 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.8333333333333334s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(330 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.9166666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                        </svg>
+                                    </span>
+                                </a>
+                                <a
+                                    href="#"
+                                    role="button"
+                                    className="ons-btn ons-u-mb-m ons-u-mt-l ons-btn--secondary ons-btn--link ons-js-submit-btn ons-btn--loader ons-js-loader ons-js-submit-btn"
+                                    data-testid="preview-button"
+                                >
+                                    <span className="ons-btn__inner">Preview
+                                        <svg className="ons-svg-icon ons-u-ml-xs" xmlns="http://www.w3.org/2000/svg" focusable="false"
+                                             viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" fill="currentcolor">
+                                            <rect x="0" y="0" width="100" height="100" fill="none"></rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(0 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(30 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.08333333333333333s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(60 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.16666666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(90 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.25s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(120 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.3333333333333333s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(150 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.4166666666666667s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(180 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(210 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.5833333333333334s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(240 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.6666666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(270 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.75s' repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(300 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.8333333333333334s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                            <rect x='46.5' y='40' width='7' height='20' rx='5' ry='5' transform='rotate(330 50 50) translate(0 -30)'>
+                                                <animate attributeName='opacity' from='1' to='0' dur='1s' begin='0.9166666666666666s'
+                                                         repeatCount='indefinite'/>
+                                            </rect>
+                                        </svg>
+                                    </span>
+                                </a>
+                                <button
+                                    type="button"
+                                    className="ons-btn ons-u-mb-m ons-u-mt-l ons-btn--secondary ons-btn--disabled"
+                                    onClick={this.handleDelete}
+                                    disabled={this.state.published}
+                                >
+                                    <span className="ons-btn__inner">Delete interactive</span>
+                                </button>
+                                </>
+                            }
                         </div>
-                    </div>
+                    </main>
                 </div>
-                <FooterComponent />
             </div>
         );
     }
@@ -341,14 +490,10 @@ const mapStateToProps = state => ({
     errors: state.interactives.errors,
     successMessage: state.interactives.successMessage,
     interactive: state.interactives.interactive,
-    taxonomies: state.taxonomies.taxonomies,
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        getTaxonomies: () => {
-            dispatch(getTaxonomies());
-        },
         createInteractive: interactive => {
             dispatch(createInteractive(interactive));
         },
@@ -360,9 +505,6 @@ const mapDispatchToProps = dispatch => {
         },
         deleteInteractive: interactiveId => {
             dispatch(deleteInteractive(interactiveId));
-        },
-        resetSuccessMessage: () => {
-            dispatch(resetSuccessMessage());
         },
         resetInteractiveError: () => {
             dispatch(resetInteractiveError());

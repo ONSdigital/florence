@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
 import Interactives from "../utilities/api-clients/interactives";
+import {objectToQueryString} from "../utilities/utils";
 
 export function setInteractives(interactives) {
     return {
@@ -56,7 +57,7 @@ export function resetInteractiveError() {
 }
 
 export function filterInteractives(filters) {
-    const query = new URLSearchParams(filters);
+    const query = objectToQueryString(filters);
     return async dispatch => {
         try {
             const res = await Interactives.get(query);
