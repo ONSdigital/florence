@@ -23,6 +23,24 @@ export default class collections {
         });
     }
 
+    static getPolicy(id) {
+        return http.get(`/api/v1/policies/${id}`).then(response => {
+            return response;
+        });
+    }
+
+    static updatePolicy(id) {
+        return http.put(`/api/v1/policies/${id}`).then(response => {
+            return response;
+        });
+    }
+
+    static createPolicy(body) {
+        return http.post(`/api/v1/policies`, body).then(response => {
+            return response;
+        });
+    }
+
     static approve(collectionID) {
         return http.post(`/zebedee/approve/${collectionID}`);
     }
