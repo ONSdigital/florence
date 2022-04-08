@@ -2,7 +2,7 @@ import mockAxios from "axios";
 import { getAll, create, destroy, update, show } from "../interactives-test";
 const fs = require("fs");
 
-const baseURL = "http://localhost:8081/interactives/v1";
+const baseURL = "/interactives/v1";
 
 test("Call interactives api and returns data that matches the right structure", async () => {
     jest.clearAllMocks();
