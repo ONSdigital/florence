@@ -2,13 +2,7 @@ import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import {
-    createInteractive,
-    getInteractive,
-    editInteractive,
-    deleteInteractive,
-    resetInteractiveError
-} from "../../actions/interactives";
+import { createInteractive, getInteractive, editInteractive, deleteInteractive, resetInteractiveError } from "../../actions/interactives";
 
 import BackButton from "../../components/back-button";
 import Input from "../../components/Input";
@@ -105,13 +99,11 @@ export class InteractivesForm extends Component {
                         title: this.state.title,
                         label: this.state.label,
                         slug: this.state.slug,
-                    }
+                    },
                 },
             })
         );
-        this.state.interactiveId ?
-            this.props.editInteractive(this.state.interactiveId, formData) :
-            this.props.createInteractive(formData);
+        this.state.interactiveId ? this.props.editInteractive(this.state.interactiveId, formData) : this.props.createInteractive(formData);
     }
 
     handleDelete(e) {
@@ -131,26 +123,24 @@ export class InteractivesForm extends Component {
             <FooterAndHeaderLayout>
                 <div className="grid grid--justify-space-around padding-bottom--2">
                     <div className={"grid__col-sm-12 grid__col-md-10 grid__col-xlg-8"}>
-                        <BackButton
-                            redirectUrl={`${rootPath}/interactives`}
-                            classNames={"ons-breadcrumb__item"}
-                        />
+                        <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
 
-                        <h1 className="ons-u-fs-xxl ons-u-mt-l">{!this.state.interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}</h1>
+                        <h1 className="ons-u-fs-xxl ons-u-mt-l">
+                            {!this.state.interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}
+                        </h1>
 
-                        {this.state.published &&
+                        {this.state.published && (
                             <div className="ons-panel ons-panel--info ons-panel--no-title">
                                 <span className="ons-u-vh">Important information: </span>
-                                <div className="ons-panel__body"><p>This interactive has been published. You can
-                                    only
-                                    update the archive file via the upload button below.</p>
+                                <div className="ons-panel__body">
+                                    <p>This interactive has been published. You can only update the archive file via the upload button below.</p>
                                 </div>
                             </div>
-                        }
+                        )}
 
                         {/* FORM */}
                         <div className="grid__col-sm-11 grid__col-md-6 grid__col-xl-4">
-                            {errors.msg ?
+                            {errors.msg ? (
                                 <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
                                     <span className="ons-u-vh">Error: </span>
                                     <div className="ons-panel__body">
@@ -171,7 +161,7 @@ export class InteractivesForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                :
+                            ) : (
                                 <Input
                                     type="text"
                                     id="internal_id"
@@ -184,8 +174,8 @@ export class InteractivesForm extends Component {
                                     onChange={e => this.setState({ [e.target.name]: e.target.value })}
                                     label="Internal ID"
                                 />
-                            }
-                            {errors.msg ?
+                            )}
+                            {errors.msg ? (
                                 <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
                                     <span className="ons-u-vh">Error: </span>
                                     <div className="ons-panel__body">
@@ -206,7 +196,7 @@ export class InteractivesForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                :
+                            ) : (
                                 <Input
                                     type="text"
                                     id="title"
@@ -219,8 +209,8 @@ export class InteractivesForm extends Component {
                                     label="Title"
                                     helpMessage="It will help to search for the interactive later"
                                 />
-                            }
-                            {errors.msg ?
+                            )}
+                            {errors.msg ? (
                                 <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
                                     <span className="ons-u-vh">Error: </span>
                                     <div className="ons-panel__body">
@@ -241,7 +231,7 @@ export class InteractivesForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                :
+                            ) : (
                                 <Input
                                     type="text"
                                     id="label"
@@ -254,7 +244,7 @@ export class InteractivesForm extends Component {
                                     label="Label"
                                     helpMessage="It will be used to generate the URL"
                                 />
-                            }
+                            )}
                             <Input
                                 type="file"
                                 id="file"
@@ -266,9 +256,9 @@ export class InteractivesForm extends Component {
                                 label="Upload a file"
                                 helpMessage="Only file type accepted is ZIP"
                             />
-                            {this.state.interactiveId &&
+                            {this.state.interactiveId && (
                                 <>
-                                    {errors.msg ?
+                                    {errors.msg ? (
                                         <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
                                             <span className="ons-u-vh">Error: </span>
                                             <div className="ons-panel__body">
@@ -288,7 +278,7 @@ export class InteractivesForm extends Component {
                                                 />
                                             </div>
                                         </div>
-                                        :
+                                    ) : (
                                         <Input
                                             type="text"
                                             id="slug"
@@ -300,25 +290,15 @@ export class InteractivesForm extends Component {
                                             onChange={e => this.setState({ [e.target.name]: e.target.value })}
                                             label="URL"
                                         />
-                                    }
+                                    )}
                                 </>
-                            }
+                            )}
                             <div className={"inline-block padding-top--1"}>
-                                {!this.state.interactiveId ?
-                                    <ButtonWithShadow
-                                        type="submit"
-                                        buttonText="Confirm"
-                                        onClick={this.onSubmit}
-                                        isSubmitting={false}
-                                    />
-                                    :
+                                {!this.state.interactiveId ? (
+                                    <ButtonWithShadow type="submit" buttonText="Confirm" onClick={this.onSubmit} isSubmitting={false} />
+                                ) : (
                                     <div className="inline-block">
-                                        <ButtonWithShadow
-                                            type="submit"
-                                            buttonText="Save changes"
-                                            onClick={this.onSubmit}
-                                            isSubmitting={false}
-                                        />
+                                        <ButtonWithShadow type="submit" buttonText="Save changes" onClick={this.onSubmit} isSubmitting={false} />
                                         <ButtonWithShadow
                                             type="button"
                                             buttonText="Preview"
@@ -335,7 +315,7 @@ export class InteractivesForm extends Component {
                                             disabled={this.state.published}
                                         />
                                     </div>
-                                }
+                                )}
                             </div>
                         </div>
                     </div>

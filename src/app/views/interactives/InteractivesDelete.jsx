@@ -1,18 +1,13 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 
-import {
-    deleteInteractive,
-    getInteractive,
-    resetInteractiveError
-} from "../../actions/interactives";
+import { deleteInteractive, getInteractive, resetInteractiveError } from "../../actions/interactives";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import BackButton from "../../components/back-button";
 import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
 
 export class InteractivesDelete extends Component {
-
     static propTypes = {
         params: PropTypes.shape({
             interactiveId: PropTypes.string,
@@ -73,64 +68,44 @@ export class InteractivesDelete extends Component {
         this.props.deleteInteractive(this.state.interactiveId);
     }
 
-    handleReturn(){
+    handleReturn() {
         const rootPath = this.props.rootPath;
         this.props.router.push(`${rootPath}/interactives/edit/${this.state.interactiveId}`);
     }
 
-    render(){
+    render() {
         const { rootPath } = this.props;
 
         return (
             <FooterAndHeaderLayout>
                 <div className="grid grid--justify-space-around padding-bottom--2">
                     <div className={"grid__col-8"}>
-                        <BackButton
-                            redirectUrl={`${rootPath}/interactives`}
-                            classNames={"ons-breadcrumb__item"}
-                        />
+                        <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
                         <h1 className="text-align-left">Delete interactive</h1>
                         <p className={"padding-bottom--1"}>You are about to delete this interactive:</p>
                         <ul className="list-simple">
-                            <li
-                                className="list-simple__item"
-                            >
+                            <li className="list-simple__item">
                                 Name - <b>{this.state.title}</b>
                             </li>
-                            <li
-                                className="list-simple__item"
-                            >
+                            <li className="list-simple__item">
                                 Published date - <b>11 March 2022</b>
                             </li>
-                            <li
-                                className="list-simple__item"
-                            >
+                            <li className="list-simple__item">
                                 Topic - <b>Health and social care (COVID-19)</b>
                             </li>
                         </ul>
                         <p className="">
-                            Are you sure you want to delete this interactive? You will permanently lose access to the
-                            data associated to it, including the uploaded file.
+                            Are you sure you want to delete this interactive? You will permanently lose access to the data associated to it, including
+                            the uploaded file.
                         </p>
                         <div className={"inline-block padding-top--2"}>
-                            <ButtonWithShadow
-                                type="button"
-                                buttonText="Continue"
-                                onClick={this.handleDelete}
-                                isSubmitting={false}
-                            />
-                            <ButtonWithShadow
-                                type="button"
-                                class="secondary"
-                                buttonText="Cancel"
-                                onClick={this.handleReturn}
-                                isSubmitting={false}
-                            />
+                            <ButtonWithShadow type="button" buttonText="Continue" onClick={this.handleDelete} isSubmitting={false} />
+                            <ButtonWithShadow type="button" class="secondary" buttonText="Cancel" onClick={this.handleReturn} isSubmitting={false} />
                         </div>
                     </div>
                 </div>
             </FooterAndHeaderLayout>
-        )
+        );
     }
 }
 

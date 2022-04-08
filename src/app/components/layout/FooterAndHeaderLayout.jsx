@@ -1,15 +1,15 @@
 import React from "react";
-import {HeaderComponent} from "./HeaderComponent";
-import {FooterComponent} from "./FooterComponent";
+import { HeaderComponent } from "./HeaderComponent";
+import { FooterComponent } from "./FooterComponent";
 
 const FooterAndHeaderLayout = props => {
     return (
         <div className="ons-page">
             <div className="ons-page__content">
                 <main className="ons-patternlib-page__body">
-                    <HeaderComponent/>
+                    <HeaderComponent />
                     {props.children}
-                    <FooterComponent/>
+                    <FooterComponent />
                 </main>
             </div>
         </div>

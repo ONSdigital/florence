@@ -18,11 +18,11 @@ test("Call interactives api and returns data that matches the right structure", 
                         metadata: {
                             title: "Title 1",
                             label: "Label 1",
-                            internal_id: 'internal_id_1',
+                            internal_id: "internal_id_1",
                             slug: "label-1",
                         },
                         published: false,
-                        state: "ArchiveUploaded"
+                        state: "ArchiveUploaded",
                     },
                     {
                         id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
@@ -32,11 +32,11 @@ test("Call interactives api and returns data that matches the right structure", 
                         metadata: {
                             title: "Title 2",
                             label: "Label 2",
-                            internal_id: 'internal_id_2',
+                            internal_id: "internal_id_2",
                             slug: "label-2",
                         },
                         published: true,
-                        state: "ArchiveUploaded"
+                        state: "ArchiveUploaded",
                     },
                 ],
                 count: 1,
@@ -81,13 +81,13 @@ test("Should create an interactive and returns the right structure", async () =>
                     name: "test.zip",
                 },
                 metadata: {
-                    internal_id: 'internal_id',
+                    internal_id: "internal_id",
                     title: "Title",
                     label: "Label",
                     slug: "label",
                 },
                 published: true,
-                state: "ArchiveUploaded"
+                state: "ArchiveUploaded",
             },
         })
     );
@@ -124,7 +124,7 @@ test("Should get an interactive", async () => {
                     name: "test.zip",
                 },
                 metadata: {
-                    internal_id: 'internal_id',
+                    internal_id: "internal_id",
                     title: "Title",
                     label: "Label",
                     slug: "label",
@@ -155,7 +155,7 @@ test("Should update an interactive", async () => {
             name: "test.zip",
         },
         metadata: {
-            internal_id: 'internal_id',
+            internal_id: "internal_id",
             title: "Title",
             label: "Label",
         },
@@ -174,13 +174,13 @@ test("Should update an interactive", async () => {
                     name: "test.zip",
                 },
                 metadata: {
-                    internal_id: 'internal_id',
+                    internal_id: "internal_id",
                     title: "Title",
                     label: "Label",
                     slug: "label",
                 },
                 published: false,
-                state: "ArchiveUploaded"
+                state: "ArchiveUploaded",
             },
         })
     );

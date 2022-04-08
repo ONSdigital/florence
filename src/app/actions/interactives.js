@@ -1,6 +1,6 @@
 import * as types from "./actionTypes";
 import Interactives from "../utilities/api-clients/interactives";
-import {objectToQueryString} from "../utilities/utils";
+import { objectToQueryString } from "../utilities/utils";
 
 export function setInteractives(interactives) {
     return {

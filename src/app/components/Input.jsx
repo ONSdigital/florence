@@ -143,11 +143,7 @@ export default class Input extends Component {
                         {this.props.error}
                     </div>
                 )}
-                {this.props.helpMessage && (
-                    <div className="help-msg">
-                        {this.props.helpMessage}
-                    </div>
-                )}
+                {this.props.helpMessage && <div className="help-msg">{this.props.helpMessage}</div>}
                 {this.renderInput()}
                 {this.state.displayShowHide && (
                     <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">

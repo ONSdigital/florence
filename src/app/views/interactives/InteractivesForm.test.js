@@ -2,7 +2,7 @@ import React from "react";
 import mockAxios from "axios";
 import { render, fireEvent, screen, createMockUser } from "../../utilities/tests/test-utils";
 import { InteractivesForm } from "./InteractivesForm";
-import {show} from "../../utilities/api-clients/interactives-test";
+import { show } from "../../utilities/api-clients/interactives-test";
 
 const baseURL = "http://localhost:8081/interactives/v1";
 
@@ -18,7 +18,7 @@ describe("Collections", () => {
             interactiveId: null,
         },
         interactive: {},
-        successMessage: {}
+        successMessage: {},
     };
 
     describe("when renders the component", () => {
@@ -46,7 +46,7 @@ describe("Collections", () => {
 
         it("should leave in blank the form in create mode", () => {
             render(<InteractivesForm {...defaultProps} />);
-            const internalIdInput = screen.getByLabelText("Internal ID")
+            const internalIdInput = screen.getByLabelText("Internal ID");
             const titleInput = screen.getByLabelText("Title");
             const labelInput = screen.getByLabelText("Label");
             const fileInput = screen.getByLabelText("Upload a file");
@@ -69,7 +69,7 @@ describe("Collections", () => {
         it("should fetch an interactive if detects an interactiveId and fill the form", async () => {
             jest.clearAllMocks();
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
-            const {rerender} = render(<InteractivesForm {...defaultProps} />);
+            const { rerender } = render(<InteractivesForm {...defaultProps} />);
             expect(defaultProps.getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -79,7 +79,7 @@ describe("Collections", () => {
                             name: "test.zip",
                         },
                         metadata: {
-                            internal_id: 'internal_id',
+                            internal_id: "internal_id",
                             title: "Title",
                             label: "Label",
                             slug: "label",
@@ -92,9 +92,9 @@ describe("Collections", () => {
             defaultProps.interactive = await show(defaultProps.params.interactiveId);
 
             // render component again with updated props (next props)
-            rerender(<InteractivesForm {...defaultProps} />)
+            rerender(<InteractivesForm {...defaultProps} />);
 
-            const internalIdInput = screen.getByLabelText("Internal ID")
+            const internalIdInput = screen.getByLabelText("Internal ID");
             const titleInput = screen.getByLabelText("Title");
             const labelInput = screen.getByLabelText("Label");
             const slugInput = screen.getByLabelText("URL");

@@ -2,7 +2,7 @@ import React from "react";
 import mockAxios from "axios";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import { InteractivesDelete } from "./InteractivesDelete";
-import {show} from "../../utilities/api-clients/interactives-test";
+import { show } from "../../utilities/api-clients/interactives-test";
 
 describe("Collections", () => {
     const defaultProps = {
@@ -14,7 +14,7 @@ describe("Collections", () => {
         params: {
             interactiveId: null,
         },
-        successMessage: {}
+        successMessage: {},
     };
 
     describe("when renders the component", () => {
@@ -31,7 +31,7 @@ describe("Collections", () => {
         it("should fetch the interactive", async () => {
             jest.clearAllMocks();
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
-            const {rerender} = render(<InteractivesDelete {...defaultProps} />);
+            const { rerender } = render(<InteractivesDelete {...defaultProps} />);
             expect(defaultProps.getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -41,7 +41,7 @@ describe("Collections", () => {
                             name: "test.zip",
                         },
                         metadata: {
-                            internal_id: 'internal_id',
+                            internal_id: "internal_id",
                             title: "Title",
                             label: "Label",
                             slug: "label",
@@ -53,10 +53,10 @@ describe("Collections", () => {
 
             defaultProps.interactive = await show(defaultProps.params.interactiveId);
 
-            rerender(<InteractivesDelete {...defaultProps} />)
+            rerender(<InteractivesDelete {...defaultProps} />);
 
             // Testing text inside, excluding HTML tags
-            expect(screen.getByText(/Name/i)).toHaveTextContent(`Name - Title`)
+            expect(screen.getByText(/Name/i)).toHaveTextContent(`Name - Title`);
         });
 
         it("should delete an interactive when clicks the delete interactive button", () => {

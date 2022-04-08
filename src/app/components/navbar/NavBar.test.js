@@ -47,7 +47,7 @@ describe("NavBar", () => {
         it("should render navigation with links", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
             const nav = component.find(Link);
-            
+
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
@@ -66,7 +66,7 @@ describe("NavBar", () => {
         describe("when enableNewSignIn feature flag is enabled", () => {
             const props = {
                 ...defaultProps,
-                isNewSignIn: true
+                isNewSignIn: true,
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
             it("Preview teams option should be present", () => {
