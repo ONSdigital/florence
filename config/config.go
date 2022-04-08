@@ -25,7 +25,7 @@ type SharedConfig struct {
 	EnableDatasetImport   bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 	EnableNewSignIn       bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
 	EnableNewUpload       bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnableNewInteractives bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewInteractives"`
+	EnableNewInteractives bool `envconfig:"ENABLE_NEW_INTERACTIVES" json:"enableNewInteractives"`
 	EnablePermissionsAPI  bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 }
 

@@ -134,7 +134,7 @@ function setupFlorence() {
     });
 
 
-    Florence.globalVars.activeTab = false;``
+    Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
     Florence.globalVars.config = config || { enableDatasetImport: false, enableNewSignIn: false, enableNewUpload: false, enableNewInteractives: false,  enablePermissionsAPI: false };
