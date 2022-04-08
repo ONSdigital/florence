@@ -8,34 +8,32 @@ import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
 const LANG = {
-    "en": "English",
-    "cy" : "Welsh"
-}
+    en: "English",
+    cy: "Welsh",
+};
 
 const NavBar = props => {
     const [previewLanguage, setPreviewLanguage] = useState(null);
 
     useEffect(() => {
-        if(cookies.get("lang")) {
-            setPreviewLanguage(cookies.get("lang"))
+        if (cookies.get("lang")) {
+            setPreviewLanguage(cookies.get("lang"));
+        } else {
+            cookies.add("lang", "en", null);
+            setPreviewLanguage("en");
         }
-        else {
-            cookies.add("lang", "en", null)
-            setPreviewLanguage("en")
-            };
-
     }, []);
 
     useEffect(() => {
-        if(previewLanguage) {
-            changeLanguageCookie(previewLanguage)
+        if (previewLanguage) {
+            changeLanguageCookie(previewLanguage);
         }
     }, [previewLanguage, changeLanguageCookie]);
 
-    const changeLanguageCookie = (previewLanguage) => {
+    const changeLanguageCookie = previewLanguage => {
         cookies.remove("lang");
-        cookies.add("lang", previewLanguage, null)
-    }
+        cookies.add("lang", previewLanguage, null);
+    };
 
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
@@ -109,37 +107,28 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-
                         <li className="global-nav__item">
                             <a className="global-nav__link" href="/florence/reports">
                                 Reports
                             </a>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
-                                Users and access
-                            </Link>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
-                                Teams
-                            </Link>
                         </li>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
                                 Interactives
                             </Link>
                         </li>
-                        {props.config?.enableNewSignIn && (
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                Users and access
+                            </Link>
+                        </li>
+                        {props.isNewSignIn ? (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                     Preview teams
                                 </Link>
                             </li>
-                        )}
-                        {!props.config?.enableNewSignIn && (
+                        ) : (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams
@@ -148,7 +137,7 @@ const NavBar = props => {
                         )}
                     </>
                 )}
-                {auth.isAdmin(props.user) && (
+                {auth.isAdmin(props.user) && props.isNewSignIn && (
                     <li className="global-nav__item">
                         <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
                             Security
