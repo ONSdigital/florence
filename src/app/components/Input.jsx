@@ -16,6 +16,7 @@ const propTypes = {
     inline: PropTypes.bool,
     accept: PropTypes.string,
     value: PropTypes.string,
+    helpMessage: PropTypes.string,
     min: PropTypes.string,
     max: PropTypes.string,
     allowAutoComplete: PropTypes.bool,
@@ -140,6 +141,11 @@ export default class Input extends Component {
                 {this.props.error && (
                     <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
                         {this.props.error}
+                    </div>
+                )}
+                {this.props.helpMessage && (
+                    <div className="help-msg">
+                        {this.props.helpMessage}
                     </div>
                 )}
                 {this.renderInput()}

@@ -13,38 +13,30 @@ test("Call interactives api and returns data that matches the right structure", 
                     {
                         id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
                         archive: {
-                            name: "test.zip",
-                        },
-                        metadata: {
-                            title: "Title",
-                            primary_topic: "businessindustryandtrade-constructionindustry",
-                            topics: null,
-                            surveys: null,
-                            release_date: "0001-01-01T00:00:00Z",
-                            uri: "https://www.figma.com",
-                            slug: "",
-                            edition: "exercitation aute consectetur irure",
-                            meta_description: "ullamco incididunt eu",
-                        },
-                        published: false,
-                    },
-                    {
-                        id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
-                        archive: {
                             name: "test1.zip",
                         },
                         metadata: {
                             title: "Title 1",
-                            primary_topic: "businessindustryandtrade-constructionindustry",
-                            topics: null,
-                            surveys: null,
-                            release_date: "0001-01-01T00:00:00Z",
-                            uri: "https://www.test.com",
-                            slug: "",
-                            edition: "exercitation aute consectetur irure",
-                            meta_description: "ullamco incididunt eu",
+                            label: "Label 1",
+                            internal_id: 'internal_id_1',
+                            slug: "label-1",
                         },
                         published: false,
+                        state: "ArchiveUploaded"
+                    },
+                    {
+                        id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
+                        archive: {
+                            name: "test2.zip",
+                        },
+                        metadata: {
+                            title: "Title 2",
+                            label: "Label 2",
+                            internal_id: 'internal_id_2',
+                            slug: "label-2",
+                        },
+                        published: true,
+                        state: "ArchiveUploaded"
                     },
                 ],
                 count: 1,
@@ -60,14 +52,9 @@ test("Call interactives api and returns data that matches the right structure", 
     expect(firstObject.hasOwnProperty("id")).toEqual(true);
     const { metadata } = firstObject;
     expect(metadata.hasOwnProperty("title")).toEqual(true);
-    expect(metadata.hasOwnProperty("primary_topic")).toEqual(true);
-    expect(metadata.hasOwnProperty("topics")).toEqual(true);
-    expect(metadata.hasOwnProperty("surveys")).toEqual(true);
-    expect(metadata.hasOwnProperty("release_date")).toEqual(true);
-    expect(metadata.hasOwnProperty("uri")).toEqual(true);
+    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
     expect(metadata.hasOwnProperty("slug")).toEqual(true);
-    expect(metadata.hasOwnProperty("edition")).toEqual(true);
-    expect(metadata.hasOwnProperty("meta_description")).toEqual(true);
 
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
     expect(mockAxios.get).toHaveBeenCalledWith(`${baseURL}/interactives`);
@@ -77,15 +64,9 @@ test("Should create an interactive and returns the right structure", async () =>
     jest.clearAllMocks();
     const testZip = fs.createReadStream(__dirname + "/../../../../files/test.zip").toString();
     const data = {
-        title: "Title proon",
-        primary_topic: "businessindustryandtrade-constructionindustry",
-        topics: null,
-        surveys: null,
-        release_date: "0001-01-01T00:00:00Z",
-        uri: "https://www.figma.com",
-        slug: "",
-        edition: "exercitation aute consectetur irure",
-        meta_description: "ullamco incididunt eu",
+        internal_id: "internal_id",
+        title: "Title",
+        label: "Label",
     };
 
     const formData = new FormData();
@@ -100,17 +81,13 @@ test("Should create an interactive and returns the right structure", async () =>
                     name: "test.zip",
                 },
                 metadata: {
-                    title: "Title proon",
-                    primary_topic: "businessindustryandtrade-constructionindustry",
-                    topics: null,
-                    surveys: null,
-                    release_date: "0001-01-01T00:00:00Z",
-                    uri: "https://www.figma.com",
-                    slug: "",
-                    edition: "exercitation aute consectetur irure",
-                    meta_description: "ullamco incididunt eu",
+                    internal_id: 'internal_id',
+                    title: "Title",
+                    label: "Label",
+                    slug: "label",
                 },
-                published: false,
+                published: true,
+                state: "ArchiveUploaded"
             },
         })
     );
@@ -118,18 +95,16 @@ test("Should create an interactive and returns the right structure", async () =>
     const interactive = await create(formData);
     expect(interactive.hasOwnProperty("id")).toEqual(true);
     const { metadata } = interactive;
+    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
+    expect(metadata.internal_id).toEqual(data.internal_id);
     expect(metadata.hasOwnProperty("title")).toEqual(true);
     expect(metadata.title).toEqual(data.title);
-    expect(metadata.hasOwnProperty("primary_topic")).toEqual(true);
-    expect(metadata.primary_topic).toEqual(data.primary_topic);
-    expect(metadata.hasOwnProperty("topics")).toEqual(true);
-    expect(metadata.hasOwnProperty("surveys")).toEqual(true);
-    expect(metadata.hasOwnProperty("release_date")).toEqual(true);
-    expect(metadata.hasOwnProperty("uri")).toEqual(true);
-    expect(metadata.uri).toEqual(data.uri);
+    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(metadata.label).toEqual(data.label);
     expect(metadata.hasOwnProperty("slug")).toEqual(true);
-    expect(metadata.hasOwnProperty("edition")).toEqual(true);
-    expect(metadata.hasOwnProperty("meta_description")).toEqual(true);
+    expect(metadata.slug).toEqual(data.label.toLowerCase());
+    expect(interactive.hasOwnProperty("published")).toEqual(true);
+    expect(interactive.hasOwnProperty("state")).toEqual(true);
 
     expect(mockAxios.post).toHaveBeenCalledTimes(1);
     expect(mockAxios.post).toHaveBeenCalledWith(`${baseURL}/interactives`, formData, {
@@ -149,15 +124,10 @@ test("Should get an interactive", async () => {
                     name: "test.zip",
                 },
                 metadata: {
-                    title: "Title proon",
-                    primary_topic: "businessindustryandtrade-constructionindustry",
-                    topics: null,
-                    surveys: null,
-                    release_date: "0001-01-01T00:00:00Z",
-                    uri: "https://www.figma.com",
-                    slug: "",
-                    edition: "exercitation aute consectetur irure",
-                    meta_description: "ullamco incididunt eu",
+                    internal_id: 'internal_id',
+                    title: "Title",
+                    label: "Label",
+                    slug: "label",
                 },
                 published: false,
             },
@@ -168,14 +138,9 @@ test("Should get an interactive", async () => {
     expect(interactive.hasOwnProperty("id")).toEqual(true);
     const { metadata } = interactive;
     expect(metadata.hasOwnProperty("title")).toEqual(true);
-    expect(metadata.hasOwnProperty("primary_topic")).toEqual(true);
-    expect(metadata.hasOwnProperty("topics")).toEqual(true);
-    expect(metadata.hasOwnProperty("surveys")).toEqual(true);
-    expect(metadata.hasOwnProperty("release_date")).toEqual(true);
-    expect(metadata.hasOwnProperty("uri")).toEqual(true);
+    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
     expect(metadata.hasOwnProperty("slug")).toEqual(true);
-    expect(metadata.hasOwnProperty("edition")).toEqual(true);
-    expect(metadata.hasOwnProperty("meta_description")).toEqual(true);
 
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
     expect(mockAxios.get).toHaveBeenCalledWith(`${baseURL}/interactives/65a93ed2-31a1-4bd5-89dd-9d44b8cda05b`);
@@ -190,15 +155,9 @@ test("Should update an interactive", async () => {
             name: "test.zip",
         },
         metadata: {
-            title: "Title proon",
-            primary_topic: "businessindustryandtrade-constructionindustry",
-            topics: null,
-            surveys: null,
-            release_date: "0001-01-01T00:00:00Z",
-            uri: "https://www.figma.com",
-            slug: "",
-            edition: "exercitation aute consectetur irure",
-            meta_description: "ullamco incididunt eu",
+            internal_id: 'internal_id',
+            title: "Title",
+            label: "Label",
         },
         published: false,
     };
@@ -215,17 +174,13 @@ test("Should update an interactive", async () => {
                     name: "test.zip",
                 },
                 metadata: {
-                    title: "Title proon",
-                    primary_topic: "businessindustryandtrade-constructionindustry",
-                    topics: null,
-                    surveys: null,
-                    release_date: "0001-01-01T00:00:00Z",
-                    uri: "https://www.figma.com",
-                    slug: "",
-                    edition: "exercitation aute consectetur irure",
-                    meta_description: "ullamco incididunt eu",
+                    internal_id: 'internal_id',
+                    title: "Title",
+                    label: "Label",
+                    slug: "label",
                 },
                 published: false,
+                state: "ArchiveUploaded"
             },
         })
     );
@@ -233,15 +188,16 @@ test("Should update an interactive", async () => {
     const interactive = await update("65a93ed2-31a1-4bd5-89dd-9d44b8cda05b", formData);
     expect(interactive.hasOwnProperty("id")).toEqual(true);
     const { metadata } = interactive;
+    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
+    expect(metadata.internal_id).toEqual(data.metadata.internal_id);
     expect(metadata.hasOwnProperty("title")).toEqual(true);
-    expect(metadata.hasOwnProperty("primary_topic")).toEqual(true);
-    expect(metadata.hasOwnProperty("topics")).toEqual(true);
-    expect(metadata.hasOwnProperty("surveys")).toEqual(true);
-    expect(metadata.hasOwnProperty("release_date")).toEqual(true);
-    expect(metadata.hasOwnProperty("uri")).toEqual(true);
+    expect(metadata.title).toEqual(data.metadata.title);
+    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(metadata.label).toEqual(data.metadata.label);
     expect(metadata.hasOwnProperty("slug")).toEqual(true);
-    expect(metadata.hasOwnProperty("edition")).toEqual(true);
-    expect(metadata.hasOwnProperty("meta_description")).toEqual(true);
+    expect(metadata.slug).toEqual(data.metadata.label.toLowerCase());
+    expect(interactive.hasOwnProperty("published")).toEqual(true);
+    expect(interactive.hasOwnProperty("state")).toEqual(true);
 
     expect(mockAxios.put).toHaveBeenCalledTimes(1);
     expect(mockAxios.put).toHaveBeenCalledWith(`${baseURL}/interactives/65a93ed2-31a1-4bd5-89dd-9d44b8cda05b`, formData, {

@@ -11,6 +11,7 @@ const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER"
 const defaultProps = {
     config: {
         enableDatasetImport: false,
+        enableNewInteractives: false,
     },
     user: notLoggedUser,
     rootPath: "/florence",
@@ -29,7 +30,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Interactives", "Users and access", "Teams", "Sign out"];
+const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -46,7 +47,7 @@ describe("NavBar", () => {
         it("should render navigation with links", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
             const nav = component.find(Link);
-
+            
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(NavbarItems.length);
             nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
@@ -90,18 +91,18 @@ describe("NavBar", () => {
             });
         });
 
-        describe("when enabled dataset import", () => {
-            it("should display Datasets", () => {
+        describe("when enabled upload interactives", () => {
+            it("should display Interactives module link", () => {
                 const props = {
                     ...defaultProps,
                     user: authenticatedUser,
                     config: {
                         ...defaultProps.config,
-                        enableDatasetImport: true,
+                        enableNewInteractives: true,
                     },
                 };
                 const component = shallow(<NavBar {...props} />);
-                expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
+                expect(component.find("Link[to='/florence/interactives']").exists()).toBe(true);
             });
         });
         describe("when on collections", () => {
