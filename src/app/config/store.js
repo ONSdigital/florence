@@ -6,6 +6,7 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import previousLocationMiddleware from "./previous-route-middleware";
 import reducer from "./reducer";
 import userReducer from "./user/userReducer";
+import languageReducer from "./language/languageReducer";
 import interactives from "./../reducers/interactives";
 import taxonomies from "./../reducers/taxonomies";
 
@@ -18,6 +19,7 @@ export const store = createStore(
     combineReducers({
         state: reducer,
         user: userReducer,
+        language: languageReducer,
         interactives,
         taxonomies,
         routing: routerReducer,

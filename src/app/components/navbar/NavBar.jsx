@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { store } from "../../config/store";
+import { setEnglish, setNotEnglish } from "../../config/language/languageActions";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
@@ -8,34 +10,32 @@ import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
 const LANG = {
-    "en": "English",
-    "cy" : "Welsh"
-}
+    en: "English",
+    cy: "Welsh",
+};
 
 const NavBar = props => {
     const [previewLanguage, setPreviewLanguage] = useState(null);
 
     useEffect(() => {
-        if(cookies.get("lang")) {
-            setPreviewLanguage(cookies.get("lang"))
+        if (cookies.get("lang")) {
+            setPreviewLanguage(cookies.get("lang"));
+        } else {
+            cookies.add("lang", "en", null);
+            setPreviewLanguage("en");
         }
-        else {
-            cookies.add("lang", "en", null)
-            setPreviewLanguage("en")
-            };
-
     }, []);
 
     useEffect(() => {
-        if(previewLanguage) {
-            changeLanguageCookie(previewLanguage)
+        if (previewLanguage) {
+            changeLanguageCookie(previewLanguage);
         }
     }, [previewLanguage, changeLanguageCookie]);
 
-    const changeLanguageCookie = (previewLanguage) => {
+    const changeLanguageCookie = previewLanguage => {
         cookies.remove("lang");
-        cookies.add("lang", previewLanguage, null)
-    }
+        cookies.add("lang", previewLanguage, null);
+    };
 
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
@@ -69,10 +69,11 @@ const NavBar = props => {
     const changeLang = () => {
         if (previewLanguage == "en") {
             setPreviewLanguage("cy");
+            store.dispatch(setNotEnglish());
         } else {
             setPreviewLanguage("en");
+            store.dispatch(setEnglish());
         }
-        window.location.reload(true);
     };
 
     const renderNavItems = () => {
