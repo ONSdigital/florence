@@ -1,13 +1,14 @@
 import * as types from "./languageConstants";
 
-export const setEnglish = () => {
+export const getLangauge = () => {
     return {
-        type: types.SET_ENGLISH
+        type: types.GET_LANGUAGE,
     };
 };
 
-export const setNotEnglish = () => {
+export const setLanguage = language => {
     return {
-        type: types.SET_NOT_ENGLISH,
+        type: types.SET_LANGUAGE,
+        language: language,
     };
 };

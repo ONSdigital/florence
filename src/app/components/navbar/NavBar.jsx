@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { store } from "../../config/store";
-import { setEnglish, setNotEnglish } from "../../config/language/languageActions";
+import { setLanguage } from "../../config/language/languageActions";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
@@ -69,10 +69,10 @@ const NavBar = props => {
     const changeLang = () => {
         if (previewLanguage == "en") {
             setPreviewLanguage("cy");
-            store.dispatch(setNotEnglish());
+            store.dispatch(setLanguage("cy"));
         } else {
             setPreviewLanguage("en");
-            store.dispatch(setEnglish());
+            store.dispatch(setLanguage("en"));
         }
     };
 

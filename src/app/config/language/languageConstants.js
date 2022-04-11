@@ -1,2 +1,2 @@
-export const SET_ENGLISH =  "SET_ENGLISH";
-export const SET_NOT_ENGLISH = "SET_NOT_ENGLISH";
+export const GET_LANGUAGE = "GET_LANGAUGE";
+export const SET_LANGUAGE = "SET_LANGAUGE";
