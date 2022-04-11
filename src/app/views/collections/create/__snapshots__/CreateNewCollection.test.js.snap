@@ -59,6 +59,7 @@ exports[`CreateNewCollection when no teams are available matches the snapshot 1`
   </div>
   <div
     className="selected-item-list"
+    data-testid="selected-item-list"
   />
   <fieldset
     className="fieldset"

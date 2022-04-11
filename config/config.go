@@ -22,9 +22,10 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
-	EnableDatasetImport bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
-	EnableNewSignIn     bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
-	EnableNewUpload     bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
+	EnableDatasetImport  bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
+	EnableNewSignIn      bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
+	EnableNewUpload      bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
+	EnablePermissionsAPI bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 }
 
 var cfg *Config
@@ -42,7 +43,7 @@ func Get() (*Config, error) {
 		FrontendRouterURL:          "http://localhost:20000",
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
-		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,

@@ -29,7 +29,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Users and access", "Teams", "Interactives", "Teams", "Security", "Sign out"];
+const NavbarItems = ["Collections", "Interactives", "Users and access", "Teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -65,15 +65,13 @@ describe("NavBar", () => {
         describe("when enableNewSignIn feature flag is enabled", () => {
             const props = {
                 ...defaultProps,
-                config: {
-                    ...defaultProps.config,
-                    enableNewSignIn: true,
-                },
+                isNewSignIn: true
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
             it("Preview teams option should be present", () => {
                 const link = component.find("Link[to='/florence/groups']");
                 expect(link.getElement().props.children[0].includes("Preview teams"));
+                expect(link.getElement().props.children[0].includes("Security"));
             });
         });
 
