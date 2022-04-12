@@ -64,6 +64,10 @@ export class CollectionEditController extends Component {
             },
         };
     }
+    componentDidMount() {
+        console.log("activeCollection", activeCollection);
+        this.props.dispatch(fetchPolicyRequest(activeCollection.id));
+    }
 
     UNSAFE_componentWillMount() {
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
@@ -493,7 +497,8 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
-        policy:
+        policy: state.state.policy.data,
+        policyLoading: state.state.policy.loading,
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
     };
 }
