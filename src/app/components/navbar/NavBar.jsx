@@ -46,9 +46,10 @@ const NavBar = props => {
     };
 
     const changeLang = () => {
-        cookies.remove("lang");
-        props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
-        props.previewLanguage === "en" ? setPreviewLanguage("cy") : setPreviewLanguage("en");
+        props.previewLanguage === "en" ? props.setPreviewLanguage("cy") : props.setPreviewLanguage("en");
+        // cookies.remove("lang");
+        // props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
+        // props.previewLanguage === "en" ? setPreviewLanguage("cy") : setPreviewLanguage("en");
     };
 
     const renderNavItems = () => {

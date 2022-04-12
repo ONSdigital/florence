@@ -11,6 +11,7 @@ import log from "../../utilities/logging/log";
 
 import Iframe from "../../components/iframe/Iframe";
 import content from "../../utilities/api-clients/content";
+import { getPreviewLanguage } from "../../config/selectors";
 
 const propTypes = {
     selectedPageUri: PropTypes.string,
@@ -166,7 +167,7 @@ export class PreviewController extends Component {
     render() {
         return (
             <div className="preview">
-                <Iframe path={this.props.selectedPageUri || "/"} />
+                <Iframe previewLanguage={this.props.previewLanguage} path={this.props.selectedPageUri || "/"} />
             </div>
         );
     }
@@ -180,6 +181,7 @@ export function mapStateToProps(state) {
         workingOn: state.state.global.workingOn,
         rootPath: state.state.rootPath,
         enableDatasetImport: state.state.config.enableDatasetImport,
+        previewLanguage: getPreviewLanguage(state.state),
     };
 }
 
