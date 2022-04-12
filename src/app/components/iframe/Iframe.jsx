@@ -23,6 +23,12 @@ export default class Iframe extends Component {
         }
         return true;
     }
+    shouldComponentUpdate(nextProps) {
+        if (nextProps.previewLanguage === this.props.previewLanguage) {
+            return false;
+        }
+        return true;
+    }
 
     bindWindowOnMessage() {
         window.addEventListener("message", this.handleIframeMessage, false);
