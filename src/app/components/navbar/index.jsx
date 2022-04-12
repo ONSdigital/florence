@@ -8,7 +8,7 @@ const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     workingOn: getActive(state.state),
     config: state.state.config,
-    previewLanguage: getPreviewLanguage(state),
+    previewLanguage: getPreviewLanguage(state.state),
 });
 
 const mapDispatchToProps = dispatch => {

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
@@ -13,6 +13,9 @@ const LANG = {
 };
 
 const NavBar = props => {
+    console.log("previewLanguage", props.previewLanguage);
+    useEffect(() => props.setPreviewLanguage("en"), []);
+
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
         const showWorkingOn = workingOn.id;
