@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { getActive, getPreviewLanguage } from "../../config/selectors";
-import { setPreviewLanguage } from "../../config/language/languageActions";
+import { setPreviewLanguage } from "../../config/actions";
 import NavBar from "./NavBar";
 
 const mapStateToProps = state => ({
@@ -16,4 +16,5 @@ const mapDispatchToProps = dispatch => {
         setPreviewLanguage: language => dispatch(setPreviewLanguage(language)),
     };
 };
-export default connect(mapStateToProps)(NavBar);
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

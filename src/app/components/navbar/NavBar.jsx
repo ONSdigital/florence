@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router";
-import { store } from "../../config/store";
-import { setLanguage } from "../../config/language/languageActions";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
@@ -9,19 +7,12 @@ import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
+const LANG = {
+    en: "English",
+    cy: "Welsh",
+};
+
 const NavBar = props => {
-    console.log("My language is: ", props.previewLanguage);
-    // useEffect(() => {
-    //     if (previewLanguage) {
-    //         changeLanguageCookie(previewLanguage);
-    //     }
-    // }, []);
-
-    const changeLanguageCookie = previewLanguage => {
-        cookies.remove("lang");
-        cookies.add("lang", previewLanguage, null);
-    };
-
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
         const showWorkingOn = workingOn.id;
@@ -51,7 +42,9 @@ const NavBar = props => {
         return path.indexOf(`/collections`) >= 0;
     };
 
-    const changeLang = language => {
+    const changeLang = () => {
+        cookies.remove("lang");
+        props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
         props.previewLanguage === "en" ? setPreviewLanguage("cy") : setPreviewLanguage("en");
     };
 
@@ -143,7 +136,7 @@ const NavBar = props => {
             {isViewingPreview && (
                 <li className="global-nav__item">
                     <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
-                        Language: {LANG[previewLanguage]}
+                        Language: {LANG[props.previewLanguage]}
                     </div>
                 </li>
             )}
@@ -164,6 +157,7 @@ NavBar.propTypes = {
     }),
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
+    setPreviewLanguage: PropTypes.func.isRequired,
     previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 

@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { getPreviewLanguage } from "../../config/selectors";
 import PropTypes from "prop-types";
 
 const propTypes = {
     path: PropTypes.string,
     onChange: PropTypes.func,
-    language: PropTypes.string,
+    previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 
 const defaultProps = {
@@ -15,7 +16,6 @@ const defaultProps = {
 export class Iframe extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
         this.bindWindowOnMessage();
     }
 
@@ -47,14 +47,8 @@ Iframe.propTypes = propTypes;
 Iframe.defaultProps = defaultProps;
 
 export function mapStateToProps(state) {
-    console.log(this.props);
-
-    console.log(state);
-    console.log(state.language);
-    console.log(state.language.language);
-
     return {
-        language: state.language.language,
+        previewLanguage: getPreviewLanguage(state),
     };
 }
 
