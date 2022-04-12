@@ -20,6 +20,7 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
+import { getEnablePermissionsAPI } from "../../../config/selectors";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -492,6 +493,8 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
+        policy:
+        isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
     };
 }
 

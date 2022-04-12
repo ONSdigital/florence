@@ -29,8 +29,8 @@ export default class collections {
         });
     }
 
-    static updatePolicy(id) {
-        return http.put(`/api/v1/policies/${id}`).then(response => {
+    static updatePolicy(id, body) {
+        return http.put(`/api/v1/policies/${id}`, body).then(response => {
             return response;
         });
     }
