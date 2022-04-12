@@ -25,3 +25,17 @@ function getCollectionDetails(collectionId, success, error) {
     }
   });
 }
+
+function getPublishingQueueCollectionDetails(collectionId, success, error) {
+  return $.ajax({
+    url: "/zebedee/publishingQueueCollectionDetails/" + collectionId,
+    dataType: 'json',
+    type: 'GET',
+    success: function (response) {
+      success(response);
+    },
+    error: function (response) {
+      error(response);
+    }
+  });
+}
