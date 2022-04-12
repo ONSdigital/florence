@@ -9,28 +9,13 @@ import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
 
-const LANG = {
-    en: "English",
-    cy: "Welsh",
-};
-
 const NavBar = props => {
-    const [previewLanguage, setPreviewLanguage] = useState(null);
-
-    useEffect(() => {
-        if (cookies.get("lang")) {
-            setPreviewLanguage(cookies.get("lang"));
-        } else {
-            cookies.add("lang", "en", null);
-            setPreviewLanguage("en");
-        }
-    }, []);
-
-    useEffect(() => {
-        if (previewLanguage) {
-            changeLanguageCookie(previewLanguage);
-        }
-    }, [previewLanguage, changeLanguageCookie]);
+    console.log("My language is: ", props.previewLanguage);
+    // useEffect(() => {
+    //     if (previewLanguage) {
+    //         changeLanguageCookie(previewLanguage);
+    //     }
+    // }, []);
 
     const changeLanguageCookie = previewLanguage => {
         cookies.remove("lang");
@@ -66,14 +51,8 @@ const NavBar = props => {
         return path.indexOf(`/collections`) >= 0;
     };
 
-    const changeLang = () => {
-        if (previewLanguage == "en") {
-            setPreviewLanguage("cy");
-            store.dispatch(setLanguage("cy"));
-        } else {
-            setPreviewLanguage("en");
-            store.dispatch(setLanguage("en"));
-        }
+    const changeLang = language => {
+        props.previewLanguage === "en" ? setPreviewLanguage("cy") : setPreviewLanguage("en");
     };
 
     const renderNavItems = () => {
@@ -185,6 +164,7 @@ NavBar.propTypes = {
     }),
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
+    previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 
 export default NavBar;

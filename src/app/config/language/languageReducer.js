@@ -1,17 +1,17 @@
 import * as types from "./languageConstants";
 
 const initialState = {
-    language: "en",
+    previewLanguage: "en",
 };
 
 const languageReducer = (state = initialState, action) => {
     switch (action.type) {
-        case types.SET_LANGUAGE: {
+        console.log('action', action)
+        case types.SET_PREVIEW_LANGUAGE:
             return {
                 ...state,
-                language: action.language,
+                previewLanguage: action.language,
             };
-        }
         default: {
             return state;
         }

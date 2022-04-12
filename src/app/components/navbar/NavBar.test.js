@@ -65,7 +65,7 @@ describe("NavBar", () => {
         describe("when enableNewSignIn feature flag is enabled", () => {
             const props = {
                 ...defaultProps,
-                isNewSignIn: true
+                isNewSignIn: true,
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
             it("Preview teams option should be present", () => {
