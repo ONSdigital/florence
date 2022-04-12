@@ -5,8 +5,8 @@ const initialState = {
 };
 
 const languageReducer = (state = initialState, action) => {
+    console.log("action", action);
     switch (action.type) {
-        console.log('action', action)
         case types.SET_PREVIEW_LANGUAGE:
             return {
                 ...state,
