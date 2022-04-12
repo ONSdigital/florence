@@ -137,8 +137,8 @@ function setupFlorence() {
     Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
-    Florence.globalVars.config = config || { enableDatasetImport: false, enableNewSignIn: false, enableNewUpload: false };
- 
+    Florence.globalVars.config = config || { enableDatasetImport: false, enableNewSignIn: false, enableNewUpload: false, enablePermissionsAPI: false };
+
     // load main florence template
     var florence = templates.florence;
 
@@ -429,4 +429,3 @@ function setupFlorence() {
     //     trimInputWhitespace($(this));
     // });
 }
-

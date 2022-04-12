@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { getActive } from "../../config/selectors";
+import { getActive, getGroupsLoading, getEnableNewSignIn } from "../../config/selectors";
 import NavBar from "./NavBar";
 
 const mapStateToProps = state => ({
@@ -7,6 +7,7 @@ const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     workingOn: getActive(state.state),
     config: state.state.config,
+    isNewSignIn: getEnableNewSignIn(state.state),
 });
 
 export default connect(mapStateToProps)(NavBar);

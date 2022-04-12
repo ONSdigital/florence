@@ -10,6 +10,7 @@ export const initialState = {
         enableDatasetImport: false,
         enableNewSignIn: false,
         enableNewUpload: false,
+        enablePermissionsAPI: false,
     },
     global: {
         workingOn: null,

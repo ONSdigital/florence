@@ -110,37 +110,28 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-
                         <li className="global-nav__item">
                             <a className="global-nav__link" href="/florence/reports">
                                 Reports
                             </a>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
-                                Users and access
-                            </Link>
-                        </li>
-
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
-                                Teams
-                            </Link>
                         </li>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
                                 Interactives
                             </Link>
                         </li>
-                        {props.config?.enableNewSignIn && (
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                Users and access
+                            </Link>
+                        </li>
+                        {props.isNewSignIn ? (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                     Preview teams
                                 </Link>
                             </li>
-                        )}
-                        {!props.config?.enableNewSignIn && (
+                        ) : (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams
@@ -149,7 +140,7 @@ const NavBar = props => {
                         )}
                     </>
                 )}
-                {auth.isAdmin(props.user) && (
+                {auth.isAdmin(props.user) && props.isNewSignIn && (
                     <li className="global-nav__item">
                         <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
                             Security
