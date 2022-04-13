@@ -10,6 +10,7 @@ import Input from "../../components/Input";
 import Select from "../../components/Select";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import Checkbox from "../../components/Checkbox";
+import Chip from "../../components/chip/Chip";
 
 export class InteractivesIndex extends Component {
     constructor(props) {
@@ -113,7 +114,7 @@ export class InteractivesIndex extends Component {
         const dataSources = topics;
 
         return (
-            <FooterAndHeaderLayout>
+            <FooterAndHeaderLayout title="Manage my interactives">
                 <div className="grid grid--justify-space-around padding-bottom--2">
                     <div className={"grid__col-sm-12 grid__col-md-10 grid__col-xlg-8"}>
                         {this.state.successCreate && <AlertSuccess text="Interactive has been successfully submitted" />}
@@ -139,7 +140,7 @@ export class InteractivesIndex extends Component {
                                     data-testid="title-input"
                                     label="Title"
                                 />
-                                <fieldset className="ons-fieldset" style={{display: 'none'}}>
+                                <fieldset className="ons-fieldset" style={{ display: "none" }}>
                                     <legend className="ons-fieldset__legend">Interactive type</legend>
                                     <div className="ons-checkboxes__items">
                                         <span className="ons-checkboxes__item ons-checkboxes__item--no-border">
@@ -185,15 +186,16 @@ export class InteractivesIndex extends Component {
                                         />
                                     </div>
                                 </div>
-                                <ul className="list--neutral" role="list">
+                                <ul className="list--neutral list--neutral__chips" role="list">
                                     {filteredInteractives.map((interactive, key) => {
                                         const { id, metadata, published } = interactive;
                                         return (
                                             <li key={key} className="list__item" role="listitem">
-                                                <Link to={`${rootPath}/interactives/edit/${id}`} className="font-weight--600">
+                                                <Link to={`${rootPath}/interactives/edit/${id}`} className="font-weight--600 font-size--18">
                                                     {metadata.label}
                                                 </Link>
-                                                - <b>16 March 2022</b>
+                                                - <b className="font-size--18">16 March 2022</b>
+                                                {published ? <Chip style="green" text="PUBLISHED" /> : <Chip style="blue" text="UPLOADED" />}
                                             </li>
                                         );
                                     })}

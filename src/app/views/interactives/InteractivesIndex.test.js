@@ -106,7 +106,7 @@ describe("Collections", () => {
             expect(newItems.length).toBe(3);
             const textContent = newItems.map(item => item.textContent);
 
-            const expectedContentInText = ["Label 1- 16 March 2022", "Label 2- 16 March 2022", "Label 3- 16 March 2022"];
+            const expectedContentInText = ["Label 1- 16 March 2022UPLOADED", "Label 2- 16 March 2022PUBLISHED", "Label 3- 16 March 2022PUBLISHED"];
 
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;

@@ -77,7 +77,7 @@ export class InteractivesDelete extends Component {
         const { rootPath } = this.props;
 
         return (
-            <FooterAndHeaderLayout>
+            <FooterAndHeaderLayout title="Manage my interactives">
                 <div className="grid grid--justify-space-around padding-bottom--2">
                     <div className={"grid__col-8"}>
                         <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />

@@ -120,7 +120,7 @@ export class InteractivesForm extends Component {
     render() {
         const { errors, rootPath } = this.props;
         return (
-            <FooterAndHeaderLayout>
+            <FooterAndHeaderLayout title="Manage my interactives">
                 <div className="grid grid--justify-space-around padding-bottom--2">
                     <div className={"grid__col-sm-12 grid__col-md-10 grid__col-xlg-8"}>
                         <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
