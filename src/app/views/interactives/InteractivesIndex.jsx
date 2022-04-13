@@ -139,7 +139,7 @@ export class InteractivesIndex extends Component {
                                     data-testid="title-input"
                                     label="Title"
                                 />
-                                <fieldset className="ons-fieldset">
+                                <fieldset className="ons-fieldset" style={{display: 'none'}}>
                                     <legend className="ons-fieldset__legend">Interactive type</legend>
                                     <div className="ons-checkboxes__items">
                                         <span className="ons-checkboxes__item ons-checkboxes__item--no-border">
@@ -156,7 +156,7 @@ export class InteractivesIndex extends Component {
                                         </span>
                                     </div>
                                 </fieldset>
-                                <div className="inline-block margin-top--2">
+                                <div className="inline-block margin-top--2 margin-bottom--5">
                                     <ButtonWithShadow type="button" buttonText="Apply" onClick={this.handleFilter} isSubmitting={false} />
                                     <ButtonWithShadow
                                         type="button"

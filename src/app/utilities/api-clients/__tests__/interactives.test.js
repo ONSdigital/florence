@@ -49,12 +49,12 @@ test("Call interactives api and returns data that matches the right structure", 
 
     const interactives = await getAll();
     const firstObject = interactives.items[0];
-    expect(firstObject.hasOwnProperty("id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(firstObject, "id")).toEqual(true);
     const { metadata } = firstObject;
-    expect(metadata.hasOwnProperty("title")).toEqual(true);
-    expect(metadata.hasOwnProperty("label")).toEqual(true);
-    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
-    expect(metadata.hasOwnProperty("slug")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "title")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "label")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "internal_id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "slug")).toEqual(true);
 
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
     expect(mockAxios.get).toHaveBeenCalledWith(`${baseURL}/interactives`);
@@ -93,18 +93,18 @@ test("Should create an interactive and returns the right structure", async () =>
     );
 
     const interactive = await create(formData);
-    expect(interactive.hasOwnProperty("id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "id")).toEqual(true);
     const { metadata } = interactive;
-    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "internal_id")).toEqual(true);
     expect(metadata.internal_id).toEqual(data.internal_id);
-    expect(metadata.hasOwnProperty("title")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "title")).toEqual(true);
     expect(metadata.title).toEqual(data.title);
-    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "label")).toEqual(true);
     expect(metadata.label).toEqual(data.label);
-    expect(metadata.hasOwnProperty("slug")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "slug")).toEqual(true);
     expect(metadata.slug).toEqual(data.label.toLowerCase());
-    expect(interactive.hasOwnProperty("published")).toEqual(true);
-    expect(interactive.hasOwnProperty("state")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "published")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "state")).toEqual(true);
 
     expect(mockAxios.post).toHaveBeenCalledTimes(1);
     expect(mockAxios.post).toHaveBeenCalledWith(`${baseURL}/interactives`, formData, {
@@ -135,12 +135,12 @@ test("Should get an interactive", async () => {
     );
 
     const interactive = await show("65a93ed2-31a1-4bd5-89dd-9d44b8cda05b");
-    expect(interactive.hasOwnProperty("id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "id")).toEqual(true);
     const { metadata } = interactive;
-    expect(metadata.hasOwnProperty("title")).toEqual(true);
-    expect(metadata.hasOwnProperty("label")).toEqual(true);
-    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
-    expect(metadata.hasOwnProperty("slug")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "title")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "label")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "internal_id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "slug")).toEqual(true);
 
     expect(mockAxios.get).toHaveBeenCalledTimes(1);
     expect(mockAxios.get).toHaveBeenCalledWith(`${baseURL}/interactives/65a93ed2-31a1-4bd5-89dd-9d44b8cda05b`);
@@ -186,18 +186,18 @@ test("Should update an interactive", async () => {
     );
 
     const interactive = await update("65a93ed2-31a1-4bd5-89dd-9d44b8cda05b", formData);
-    expect(interactive.hasOwnProperty("id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "id")).toEqual(true);
     const { metadata } = interactive;
-    expect(metadata.hasOwnProperty("internal_id")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "internal_id")).toEqual(true);
     expect(metadata.internal_id).toEqual(data.metadata.internal_id);
-    expect(metadata.hasOwnProperty("title")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "title")).toEqual(true);
     expect(metadata.title).toEqual(data.metadata.title);
-    expect(metadata.hasOwnProperty("label")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "label")).toEqual(true);
     expect(metadata.label).toEqual(data.metadata.label);
-    expect(metadata.hasOwnProperty("slug")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(metadata, "slug")).toEqual(true);
     expect(metadata.slug).toEqual(data.metadata.label.toLowerCase());
-    expect(interactive.hasOwnProperty("published")).toEqual(true);
-    expect(interactive.hasOwnProperty("state")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "published")).toEqual(true);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "state")).toEqual(true);
 
     expect(mockAxios.put).toHaveBeenCalledTimes(1);
     expect(mockAxios.put).toHaveBeenCalledWith(`${baseURL}/interactives/65a93ed2-31a1-4bd5-89dd-9d44b8cda05b`, formData, {
@@ -216,7 +216,7 @@ test("Should delete an interactive", async () => {
     );
 
     const interactive = await destroy("65a93ed2-31a1-4bd5-89dd-9d44b8cda05b");
-    expect(interactive.hasOwnProperty("id")).toEqual(false);
+    expect(Object.prototype.hasOwnProperty.call(interactive, "id")).toEqual(false);
 
     expect(mockAxios.delete).toHaveBeenCalledTimes(1);
     expect(mockAxios.delete).toHaveBeenCalledWith(`${baseURL}/interactives/65a93ed2-31a1-4bd5-89dd-9d44b8cda05b`);

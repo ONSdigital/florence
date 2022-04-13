@@ -43,8 +43,8 @@ export default function reducer(state = initialState, action = {}) {
             return Object.assign({}, state, {
                 errors: initialState.errors,
             });
-        case types.FILTER_INTERACTIVES:
-            const { topics, query, sortBy } = action.filters;
+        case types.FILTER_INTERACTIVES: {
+            const { topics, query } = action.filters;
             let filteredInteractives = state.interactives;
             if (topics.length > 0) {
                 filteredInteractives = state.interactives.filter(interactive => isInArray(topics, interactive.metadata.primary_topic));
@@ -55,6 +55,7 @@ export default function reducer(state = initialState, action = {}) {
             return Object.assign({}, state, {
                 filteredInteractives,
             });
+        }
         default:
             return state;
     }

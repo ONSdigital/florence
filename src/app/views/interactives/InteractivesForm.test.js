@@ -1,10 +1,8 @@
 import React from "react";
 import mockAxios from "axios";
-import { render, fireEvent, screen, createMockUser } from "../../utilities/tests/test-utils";
+import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import { InteractivesForm } from "./InteractivesForm";
 import { show } from "../../utilities/api-clients/interactives-test";
-
-const baseURL = "http://localhost:8081/interactives/v1";
 
 describe("Collections", () => {
     const defaultProps = {

@@ -16,7 +16,7 @@ export function isInArray(array, value) {
 export function objectToQueryString(obj) {
     const str = [];
     for (let p in obj)
-        if (obj.hasOwnProperty(p) && encodeURIComponent(obj[p]) !== "") {
+        if (Object.prototype.hasOwnProperty.call(obj, p) && encodeURIComponent(obj[p]) !== "") {
             str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
         }
     return str.join("&");

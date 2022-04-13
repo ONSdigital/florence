@@ -2,7 +2,6 @@ import React from "react";
 import mockAxios from "axios";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import { InteractivesIndex } from "./InteractivesIndex";
-import { shallow } from "enzyme";
 import { within } from "@testing-library/react";
 import { getAll } from "../../utilities/api-clients/interactives-test";
 
@@ -15,11 +14,6 @@ describe("Collections", () => {
         rootPath: "/florence",
         successMessage: {},
     };
-
-    let wrapper;
-    beforeEach(() => {
-        wrapper = shallow(<InteractivesIndex {...defaultProps} />);
-    });
 
     describe("when renders the component", () => {
         it("renders the initial content", () => {

@@ -114,7 +114,7 @@ export function createInteractive(data) {
 export function editInteractive(interactiveId, data) {
     return async dispatch => {
         try {
-            const res = await Interactives.update(interactiveId, data);
+            await Interactives.update(interactiveId, data);
             dispatch(
                 setSuccessMessage({
                     type: "update",
@@ -131,7 +131,7 @@ export function editInteractive(interactiveId, data) {
 export function deleteInteractive(interactiveId) {
     return async dispatch => {
         try {
-            const res = await Interactives.destroy(interactiveId);
+            await Interactives.destroy(interactiveId);
             dispatch(
                 setSuccessMessage({
                     type: "delete",
