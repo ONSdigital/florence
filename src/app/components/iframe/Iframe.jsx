@@ -44,7 +44,15 @@ export default class Iframe extends Component {
 
     render() {
         console.log("Now Iframe has language here too", this.props.previewLanguage);
-        return <iframe id="iframe" previewLanguage={this.props.previewLanguage} className="preview__iframe" src={this.props.path}></iframe>;
+        return (
+            <iframe
+                id="iframe"
+                key={this.props.previewLanguage}
+                previewLanguage={this.props.previewLanguage}
+                className="preview__iframe"
+                src={this.props.path}
+            ></iframe>
+        );
     }
 }
 

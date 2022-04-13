@@ -13,8 +13,9 @@ const LANG = {
 };
 
 const NavBar = props => {
-    console.log("previewLanguage", props.previewLanguage);
-    useEffect(() => props.setPreviewLanguage("en"), []);
+    useEffect(() => {
+        cookies.get("lang") ? props.setPreviewLanguage(cookies.get("lang")) : cookies.add("lang", "en", null);
+    }, []);
 
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
@@ -46,10 +47,9 @@ const NavBar = props => {
     };
 
     const changeLang = () => {
+        cookies.remove("lang");
+        props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
         props.previewLanguage === "en" ? props.setPreviewLanguage("cy") : props.setPreviewLanguage("en");
-        // cookies.remove("lang");
-        // props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
-        // props.previewLanguage === "en" ? setPreviewLanguage("cy") : setPreviewLanguage("en");
     };
 
     const renderNavItems = () => {
