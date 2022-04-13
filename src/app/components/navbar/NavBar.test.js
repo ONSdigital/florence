@@ -11,6 +11,7 @@ const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER"
 const defaultProps = {
     config: {
         enableDatasetImport: false,
+        enableNewInteractives: false,
     },
     user: notLoggedUser,
     rootPath: "/florence",
@@ -29,7 +30,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Interactives", "Users and access", "Teams", "Sign out"];
+const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -65,7 +66,7 @@ describe("NavBar", () => {
         describe("when enableNewSignIn feature flag is enabled", () => {
             const props = {
                 ...defaultProps,
-                isNewSignIn: true
+                isNewSignIn: true,
             };
             const component = shallow(<NavBar {...props} user={authenticatedUser} />);
             it("Preview teams option should be present", () => {
@@ -90,18 +91,18 @@ describe("NavBar", () => {
             });
         });
 
-        describe("when enabled dataset import", () => {
-            it("should display Datasets", () => {
+        describe("when enabled upload interactives", () => {
+            it("should display Interactives module link", () => {
                 const props = {
                     ...defaultProps,
                     user: authenticatedUser,
                     config: {
                         ...defaultProps.config,
-                        enableDatasetImport: true,
+                        enableNewInteractives: true,
                     },
                 };
                 const component = shallow(<NavBar {...props} />);
-                expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
+                expect(component.find("Link[to='/florence/interactives']").exists()).toBe(true);
             });
         });
         describe("when on collections", () => {

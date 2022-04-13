@@ -1,5 +1,6 @@
 import * as types from "./actionTypes";
 import Interactives from "../utilities/api-clients/interactives";
+import { objectToQueryString } from "../utilities/utils";
 
 export function setInteractives(interactives) {
     return {
@@ -56,7 +57,7 @@ export function resetInteractiveError() {
 }
 
 export function filterInteractives(filters) {
-    const query = new URLSearchParams(filters);
+    const query = objectToQueryString(filters);
     return async dispatch => {
         try {
             const res = await Interactives.get(query);
@@ -113,7 +114,7 @@ export function createInteractive(data) {
 export function editInteractive(interactiveId, data) {
     return async dispatch => {
         try {
-            const res = await Interactives.update(interactiveId, data);
+            await Interactives.update(interactiveId, data);
             dispatch(
                 setSuccessMessage({
                     type: "update",
@@ -130,7 +131,7 @@ export function editInteractive(interactiveId, data) {
 export function deleteInteractive(interactiveId) {
     return async dispatch => {
         try {
-            const res = await Interactives.destroy(interactiveId);
+            await Interactives.destroy(interactiveId);
             dispatch(
                 setSuccessMessage({
                     type: "delete",

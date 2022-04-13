@@ -11,6 +11,7 @@ export const initialState = {
         enableNewSignIn: false,
         enableNewUpload: false,
         enablePermissionsAPI: false,
+        enableNewInteractives: false,
     },
     global: {
         workingOn: null,

@@ -12,3 +12,12 @@ export function isInArray(array, value) {
     const index = array.indexOf(value);
     return index > -1;
 }
+
+export function objectToQueryString(obj) {
+    const str = [];
+    for (let p in obj)
+        if (Object.prototype.hasOwnProperty.call(obj, p) && encodeURIComponent(obj[p]) !== "") {
+            str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+        }
+    return str.join("&");
+}
