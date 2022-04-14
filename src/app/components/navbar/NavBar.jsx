@@ -91,11 +91,13 @@ const NavBar = props => {
                                 Reports
                             </a>
                         </li>
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
-                                Interactives
-                            </Link>
-                        </li>
+                        {props.config?.enableNewInteractives && (
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
+                                    Interactives
+                                </Link>
+                            </li>
+                        )}
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
                                 Users and access
@@ -153,6 +155,7 @@ NavBar.propTypes = {
     config: PropTypes.shape({
         enableDatasetImport: PropTypes.bool,
         enableNewSignIn: PropTypes.bool,
+        enableNewInteractives: PropTypes.bool,
     }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({

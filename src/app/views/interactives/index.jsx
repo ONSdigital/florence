@@ -1,4 +1,5 @@
-import InteractivesController from "./InteractivesController";
-import InteractivesFormController from "./InteractivesFormController";
+import InteractivesIndex from "./InteractivesIndex";
+import InteractivesForm from "./InteractivesForm";
+import InteractivesDelete from "./InteractivesDelete";
 
-export { InteractivesFormController, InteractivesController };
+export { InteractivesIndex, InteractivesForm, InteractivesDelete };
