@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 const propTypes = {
     path: PropTypes.string,
     onChange: PropTypes.func,
+    previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 
 const defaultProps = {
@@ -18,18 +19,11 @@ export default class Iframe extends Component {
     }
 
     shouldComponentUpdate(nextProps) {
-        if (nextProps.path === this.props.path) {
+        if (nextProps.path === this.props.path && nextProps.previewLanguage === this.props.previewLanguage) {
             return false;
         }
         return true;
     }
-    shouldComponentUpdate(nextProps) {
-        if (nextProps.previewLanguage === this.props.previewLanguage) {
-            return false;
-        }
-        return true;
-    }
-
     bindWindowOnMessage() {
         window.addEventListener("message", this.handleIframeMessage, false);
     }
@@ -43,16 +37,7 @@ export default class Iframe extends Component {
     }
 
     render() {
-        console.log("Now Iframe has language here too", this.props.previewLanguage);
-        return (
-            <iframe
-                id="iframe"
-                key={this.props.previewLanguage}
-                previewLanguage={this.props.previewLanguage}
-                className="preview__iframe"
-                src={this.props.path}
-            ></iframe>
-        );
+        return <iframe id="iframe" key={this.props.previewLanguage} className="preview__iframe" src={this.props.path}></iframe>;
     }
 }
 

@@ -23,6 +23,7 @@ const propTypes = {
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
+    previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 
 export class PreviewController extends Component {
