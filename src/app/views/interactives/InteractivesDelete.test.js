@@ -10,7 +10,7 @@ const initialState = {
     interactive: {},
     filteredInteractives: [],
     errors: {
-        msg: {}
+        msg: {},
     },
     successMessage: {
         type: null,
@@ -19,8 +19,8 @@ const initialState = {
 };
 
 describe("Delete an interactive", () => {
-    const useSelectorMock = jest.spyOn(reactRedux, "useSelector")
-    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch")
+    const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
+    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
     const deleteInteractive = jest.fn();
     const getInteractive = jest.fn();
@@ -31,13 +31,13 @@ describe("Delete an interactive", () => {
 
         useSelectorMock.mockReturnValue(initialState);
 
-        useSelectorMock.mockClear()
-        useDispatchMock.mockClear()
-    })
+        useSelectorMock.mockClear();
+        useDispatchMock.mockClear();
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     const defaultProps = {
         params: {
@@ -58,7 +58,7 @@ describe("Delete an interactive", () => {
 
         it("should fetch the interactive", async () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
-            useDispatchMock.mockReturnValue(getInteractive)
+            useDispatchMock.mockReturnValue(getInteractive);
             const { rerender } = render(<InteractivesDelete {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
@@ -82,8 +82,8 @@ describe("Delete an interactive", () => {
             const interactive = await show(defaultProps.params.interactiveId);
 
             const updatedState = Object.assign({}, initialState, {
-                interactive
-            })
+                interactive,
+            });
 
             // updating state
             useSelectorMock.mockReturnValue(updatedState);

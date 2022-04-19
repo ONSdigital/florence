@@ -3,7 +3,7 @@ import mockAxios from "axios";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import InteractivesIndex from "./InteractivesIndex";
 import { within } from "@testing-library/react";
-import {getAll, show} from "../../utilities/api-clients/interactives-test";
+import { getAll } from "../../utilities/api-clients/interactives-test";
 import * as reactRedux from "react-redux";
 
 const initialState = {
@@ -11,7 +11,7 @@ const initialState = {
     interactive: {},
     filteredInteractives: [],
     errors: {
-        msg: {}
+        msg: {},
     },
     successMessage: {
         type: null,
@@ -20,8 +20,8 @@ const initialState = {
 };
 
 describe("Interactives index", () => {
-    const useSelectorMock = jest.spyOn(reactRedux, "useSelector")
-    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch")
+    const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
+    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
     const filterInteractives = jest.fn();
     const getInteractives = jest.fn();
@@ -32,13 +32,13 @@ describe("Interactives index", () => {
 
         useSelectorMock.mockReturnValue(initialState);
 
-        useSelectorMock.mockClear()
-        useDispatchMock.mockClear()
-    })
+        useSelectorMock.mockClear();
+        useDispatchMock.mockClear();
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     const defaultProps = {
         params: {
@@ -65,7 +65,7 @@ describe("Interactives index", () => {
         });
 
         it("should fetch data when component is mounted and show the interactives in the list component", async () => {
-            useDispatchMock.mockReturnValue(getInteractives)
+            useDispatchMock.mockReturnValue(getInteractives);
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
             expect(getInteractives).toHaveBeenCalled();
             const list = screen.getByRole("list");
@@ -131,8 +131,8 @@ describe("Interactives index", () => {
             const { items } = await getAll();
 
             const updatedState = Object.assign({}, initialState, {
-                filteredInteractives : items
-            })
+                filteredInteractives: items,
+            });
             // updating state
             useSelectorMock.mockReturnValue(updatedState);
 
@@ -151,7 +151,7 @@ describe("Interactives index", () => {
         });
 
         it("should filter results when clicks apply button", () => {
-            useDispatchMock.mockReturnValue(filterInteractives)
+            useDispatchMock.mockReturnValue(filterInteractives);
             render(<InteractivesIndex {...defaultProps} />);
             const applyButton = screen.getByText("Apply");
             screen.getByLabelText("Internal ID").value = "Query";

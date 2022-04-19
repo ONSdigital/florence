@@ -1,6 +1,6 @@
 import React from "react";
 import mockAxios from "axios";
-import * as reactRedux from 'react-redux'
+import * as reactRedux from "react-redux";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import InteractivesForm from "./InteractivesForm";
 import { show } from "../../utilities/api-clients/interactives-test";
@@ -10,7 +10,7 @@ const initialState = {
     interactive: {},
     filteredInteractives: [],
     errors: {
-        msg: {}
+        msg: {},
     },
     successMessage: {
         type: null,
@@ -19,8 +19,8 @@ const initialState = {
 };
 
 describe("Create/Edit an Interactives", () => {
-    const useSelectorMock = jest.spyOn(reactRedux, "useSelector")
-    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch")
+    const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
+    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
     const createInteractive = jest.fn();
     const editInteractive = jest.fn();
@@ -33,13 +33,13 @@ describe("Create/Edit an Interactives", () => {
 
         useSelectorMock.mockReturnValue(initialState);
 
-        useSelectorMock.mockClear()
-        useDispatchMock.mockClear()
-    })
+        useSelectorMock.mockClear();
+        useDispatchMock.mockClear();
+    });
 
     afterEach(() => {
         jest.clearAllMocks();
-    })
+    });
 
     const defaultProps = {
         params: {
@@ -49,8 +49,8 @@ describe("Create/Edit an Interactives", () => {
 
     describe("when renders the component", () => {
         it("renders the initial content as creating mode", async () => {
-            useDispatchMock.mockReturnValue(resetInteractiveError)
-            render(<InteractivesForm {...defaultProps}/>);
+            useDispatchMock.mockReturnValue(resetInteractiveError);
+            render(<InteractivesForm {...defaultProps} />);
             expect(resetInteractiveError).toHaveBeenCalled();
             expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
             expect(screen.getByLabelText("Title")).toBeInTheDocument();
@@ -62,7 +62,7 @@ describe("Create/Edit an Interactives", () => {
         it("renders the initial content as edit/delete mode", () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             // Clear errors
-            useDispatchMock.mockReturnValue(resetInteractiveError)
+            useDispatchMock.mockReturnValue(resetInteractiveError);
             render(<InteractivesForm {...defaultProps} />);
             expect(resetInteractiveError).toHaveBeenCalled();
             expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
@@ -90,7 +90,7 @@ describe("Create/Edit an Interactives", () => {
 
     describe("when the component is rendered", () => {
         it("should submit the data when user clicks in create button", () => {
-            useDispatchMock.mockReturnValue(createInteractive)
+            useDispatchMock.mockReturnValue(createInteractive);
             defaultProps.params.interactiveId = null;
             render(<InteractivesForm {...defaultProps} />);
             const createButton = screen.getByText("Confirm");
@@ -99,7 +99,7 @@ describe("Create/Edit an Interactives", () => {
         });
 
         it("should fetch an interactive if detects an interactiveId and fill the form", async () => {
-            useDispatchMock.mockReturnValue(getInteractive)
+            useDispatchMock.mockReturnValue(getInteractive);
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
@@ -124,8 +124,8 @@ describe("Create/Edit an Interactives", () => {
             const interactive = await show(defaultProps.params.interactiveId);
 
             const updatedState = Object.assign({}, initialState, {
-                interactive
-            })
+                interactive,
+            });
 
             // updating state
             useSelectorMock.mockReturnValue(updatedState);

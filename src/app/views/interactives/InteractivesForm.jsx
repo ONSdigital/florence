@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { browserHistory } from 'react-router'
+import { browserHistory } from "react-router";
 
 import { createInteractive, getInteractive, editInteractive, resetInteractiveError } from "../../actions/interactives";
 
