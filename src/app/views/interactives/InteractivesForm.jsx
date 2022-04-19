@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { browserHistory } from 'react-router'
 
 import { createInteractive, getInteractive, editInteractive, resetInteractiveError } from "../../actions/interactives";
 
@@ -52,10 +53,10 @@ export default function InteractivesForm(props) {
     useEffect(() => {
         if (successMessage.success) {
             if (successMessage.type === "create") {
-                props.router.push(`${rootPath}/interactives`);
+                browserHistory.push(`${rootPath}/interactives`);
             }
             if (successMessage.type === "update") {
-                props.router.push(`${rootPath}/interactives`);
+                browserHistory.push(`${rootPath}/interactives`);
             }
         }
     }, [successMessage]);
@@ -83,7 +84,7 @@ export default function InteractivesForm(props) {
 
     const handleDelete = e => {
         e.preventDefault();
-        props.router.push(`${rootPath}/interactives/delete/${interactiveId}`);
+        browserHistory.push(`${rootPath}/interactives/delete/${interactiveId}`);
     };
 
     const handleFile = e => {

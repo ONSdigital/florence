@@ -1,27 +1,57 @@
 import React from "react";
 import mockAxios from "axios";
+import * as reactRedux from 'react-redux'
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
-import { InteractivesForm } from "./InteractivesForm";
+import InteractivesForm from "./InteractivesForm";
 import { show } from "../../utilities/api-clients/interactives-test";
 
-describe("Collections", () => {
+const initialState = {
+    interactives: [],
+    interactive: {},
+    filteredInteractives: [],
+    errors: {
+        msg: {}
+    },
+    successMessage: {
+        type: null,
+        success: false,
+    },
+};
+
+describe("Create/Edit an Interactives", () => {
+    const useSelectorMock = jest.spyOn(reactRedux, "useSelector")
+    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch")
+
+    const createInteractive = jest.fn();
+    const editInteractive = jest.fn();
+    const getInteractive = jest.fn();
+    const resetInteractiveError = jest.fn();
+
+    beforeEach(() => {
+        const dispatch = jest.fn();
+        useDispatchMock.mockReturnValue(dispatch);
+
+        useSelectorMock.mockReturnValue(initialState);
+
+        useSelectorMock.mockClear()
+        useDispatchMock.mockClear()
+    })
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    })
+
     const defaultProps = {
-        getInteractive: jest.fn(),
-        editInteractive: jest.fn(),
-        createInteractive: jest.fn(),
-        resetInteractiveError: jest.fn(),
-        rootPath: "/florence",
-        errors: {},
         params: {
             interactiveId: null,
         },
-        interactive: {},
-        successMessage: {},
     };
 
     describe("when renders the component", () => {
-        it("renders the initial content as creating mode", () => {
-            render(<InteractivesForm {...defaultProps} />);
+        it("renders the initial content as creating mode", async () => {
+            useDispatchMock.mockReturnValue(resetInteractiveError)
+            render(<InteractivesForm {...defaultProps}/>);
+            expect(resetInteractiveError).toHaveBeenCalled();
             expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
             expect(screen.getByLabelText("Title")).toBeInTheDocument();
             expect(screen.getByLabelText("Upload a file")).toBeInTheDocument();
@@ -31,7 +61,10 @@ describe("Collections", () => {
 
         it("renders the initial content as edit/delete mode", () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
+            // Clear errors
+            useDispatchMock.mockReturnValue(resetInteractiveError)
             render(<InteractivesForm {...defaultProps} />);
+            expect(resetInteractiveError).toHaveBeenCalled();
             expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
             expect(screen.getByLabelText("Title")).toBeInTheDocument();
             expect(screen.getByLabelText("Upload a file")).toBeInTheDocument();
@@ -57,18 +90,19 @@ describe("Collections", () => {
 
     describe("when the component is rendered", () => {
         it("should submit the data when user clicks in create button", () => {
+            useDispatchMock.mockReturnValue(createInteractive)
             defaultProps.params.interactiveId = null;
             render(<InteractivesForm {...defaultProps} />);
             const createButton = screen.getByText("Confirm");
             fireEvent.click(createButton);
-            expect(defaultProps.createInteractive).toHaveBeenCalled();
+            expect(createInteractive).toHaveBeenCalled();
         });
 
         it("should fetch an interactive if detects an interactiveId and fill the form", async () => {
-            jest.clearAllMocks();
+            useDispatchMock.mockReturnValue(getInteractive)
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
-            expect(defaultProps.getInteractive).toHaveBeenCalled();
+            expect(getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
                     data: {
@@ -87,8 +121,14 @@ describe("Collections", () => {
                 })
             );
 
-            defaultProps.interactive = await show(defaultProps.params.interactiveId);
+            const interactive = await show(defaultProps.params.interactiveId);
 
+            const updatedState = Object.assign({}, initialState, {
+                interactive
+            })
+
+            // updating state
+            useSelectorMock.mockReturnValue(updatedState);
             // render component again with updated props (next props)
             rerender(<InteractivesForm {...defaultProps} />);
 
@@ -104,12 +144,12 @@ describe("Collections", () => {
         });
 
         it("should update an interactive when clicks the update interactive button", async () => {
+            useDispatchMock.mockReturnValue(editInteractive);
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             render(<InteractivesForm {...defaultProps} />);
-            expect(defaultProps.getInteractive).toHaveBeenCalled();
             const saveChangesButton = screen.getByText("Save changes");
             fireEvent.click(saveChangesButton);
-            expect(defaultProps.editInteractive).toHaveBeenCalled();
+            expect(editInteractive).toHaveBeenCalled();
         });
     });
 });

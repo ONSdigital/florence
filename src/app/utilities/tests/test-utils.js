@@ -4,6 +4,7 @@ import { routerReducer } from "react-router-redux";
 import { Provider } from "react-redux";
 import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
+import interactives from "../../reducers/interactives";
 import thunkMiddleware from "redux-thunk";
 import { render as rtlRender } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
@@ -22,6 +23,7 @@ export const WrapperComponent = ({ children }) => {
         combineReducers({
             state: reducer,
             user: userReducer,
+            interactives,
             routing: routerReducer,
         }),
         applyMiddleware(thunkMiddleware)
@@ -41,6 +43,7 @@ function render(
             combineReducers({
                 state: reducer,
                 user: userReducer,
+                interactives,
                 routing: routerReducer,
             }),
             applyMiddleware(thunkMiddleware)
