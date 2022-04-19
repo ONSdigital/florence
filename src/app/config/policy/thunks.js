@@ -48,45 +48,45 @@ export const fetchPolicyRequest = id => async dispatch => {
     }
 };
 
-export const updatePolicyRequest = (id, body) => dispatch => {
-    dispatch(actions.updatePolicyProgress());
-    try {
-        const result = await collections.updatePolicy(id, body);
-        dispatch(actions.uploadPolicySuccess(result));
-    } catch (error) {
-        dispatch(actions.uploadPolicyFailure());
-        switch (error.status) {
-            case 401: {
-                break;
-            }
-            case 400: {
-                const notification = {
-                    type: "warning",
-                    message: "There was an error updating the collection data. Please try again.",
-                    isDismissable: true,
-                };
-                notifications.add(notification);
-                break;
-            }
-            case 409: {
-                const notification = {
-                    type: "warning",
-                    message: error.body,
-                    isDismissable: true,
-                };
-                notifications.add(notification);
+// export const updatePolicyRequest = (id, body) => dispatch => {
+//     dispatch(actions.updatePolicyProgress());
+//     try {
+//         const result = await collections.updatePolicy(id, body);
+//         dispatch(actions.uploadPolicySuccess(result));
+//     } catch (error) {
+//         dispatch(actions.uploadPolicyFailure());
+//         switch (error.status) {
+//             case 401: {
+//                 break;
+//             }
+//             case 400: {
+//                 const notification = {
+//                     type: "warning",
+//                     message: "There was an error updating the collection data. Please try again.",
+//                     isDismissable: true,
+//                 };
+//                 notifications.add(notification);
+//                 break;
+//             }
+//             case 409: {
+//                 const notification = {
+//                     type: "warning",
+//                     message: error.body,
+//                     isDismissable: true,
+//                 };
+//                 notifications.add(notification);
 
-                break;
-            }
-            default: {
-                const notification = {
-                    type: "warning",
-                    message: `An unexpected error has occurred whilst updating collection data`,
-                    isDismissable: true,
-                };
-                notifications.add(notification);
-                break;
-            }
-        }
-        console.error(error);
-};
+//                 break;
+//             }
+//             default: {
+//                 const notification = {
+//                     type: "warning",
+//                     message: `An unexpected error has occurred whilst updating collection data`,
+//                     isDismissable: true,
+//                 };
+//                 notifications.add(notification);
+//                 break;
+//             }
+//         }
+//         console.error(error);
+// }

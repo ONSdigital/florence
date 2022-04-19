@@ -37,3 +37,11 @@ export function updatePolicySuccess(data) {
         data,
     };
 }
+
+export function updatePolicySuccess(data) {
+    return {
+        type: types.UPDATE_POLICY_SUCCESS,
+        data,
+    };
+}
+// createCollectionPolicySuccess;

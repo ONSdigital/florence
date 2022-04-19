@@ -20,7 +20,7 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnablePermissionsAPI } from "../../../config/selectors";
+import { getEnablePermissionsAPI, getCollectionPolicy } from "../../../config/selectors";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -497,8 +497,8 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
-        policy: state.state.policy.data,
-        policyLoading: state.state.policy.loading,
+        policy: getCollectionPolicy(state.state),
+        policyLoading: getCollectionPolicyLoading(state.state),
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
     };
 }

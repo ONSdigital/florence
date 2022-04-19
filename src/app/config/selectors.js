@@ -1,6 +1,5 @@
 import { createSelector } from "reselect";
 import collectionMapper from "../views/collections/mapper/collectionMapper";
-import differenceWith from "lodash/differenceWith";
 import { formatDateString } from "../utilities/formatDateString";
 
 export const getCollections = state => state.collections.all;
@@ -20,7 +19,8 @@ export const getFilteredCollections = createSelector(getMappedCollections, getSe
         return name.includes(string);
     });
 });
-
+export const getCollectionPolicy = state => state.policy.data;
+export const getCollectionPolicyLoading = state => state.policy.loading;
 export const getWorkingOn = state => state.global.workingOn;
 export const rootPath = state => state.rootPath;
 export const getActive = state => state.collections.active;
