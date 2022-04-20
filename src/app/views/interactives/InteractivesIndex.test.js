@@ -3,8 +3,9 @@ import mockAxios from "axios";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import InteractivesIndex from "./InteractivesIndex";
 import { within } from "@testing-library/react";
-import { getAll } from "../../utilities/api-clients/interactives-test";
+import { getAll, get } from "../../utilities/api-clients/interactives-test";
 import * as reactRedux from "react-redux";
+import { objectToQueryString } from "../../utilities/utils";
 
 const initialState = {
     interactives: [],
@@ -142,7 +143,7 @@ describe("Interactives index", () => {
             expect(newItems.length).toBe(3);
             const textContent = newItems.map(item => item.textContent);
 
-            const expectedContentInText = ["Label 1- 16 March 2022UPLOADED", "Label 2- 16 March 2022PUBLISHED", "Label 3- 16 March 2022PUBLISHED"];
+            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED", "Label 2 - 16 March 2022PUBLISHED", "Label 3 - 16 March 2022PUBLISHED"];
 
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
@@ -150,13 +151,136 @@ describe("Interactives index", () => {
             });
         });
 
-        it("should filter results when clicks apply button", () => {
+        it("should filter results when clicks apply button", async () => {
             useDispatchMock.mockReturnValue(filterInteractives);
-            render(<InteractivesIndex {...defaultProps} />);
+            const { rerender } = render(<InteractivesIndex {...defaultProps} />);
+
+            mockAxios.get.mockImplementationOnce(() =>
+                Promise.resolve({
+                    data: {
+                        items: [
+                            {
+                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
+                                archive: {
+                                    name: "test1.zip",
+                                },
+                                metadata: {
+                                    title: "Title 1",
+                                    label: "Label 1",
+                                    internal_id: "internal_id_1",
+                                    slug: "label-1",
+                                },
+                                published: false,
+                                state: "ArchiveUploaded",
+                            },
+                            {
+                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
+                                archive: {
+                                    name: "test2.zip",
+                                },
+                                metadata: {
+                                    title: "Title 2",
+                                    label: "Label 2",
+                                    internal_id: "internal_id_2",
+                                    slug: "label-2",
+                                },
+                                published: true,
+                                state: "ArchiveUploaded",
+                            },
+                            {
+                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8rgu05c",
+                                archive: {
+                                    name: "test3.zip",
+                                },
+                                metadata: {
+                                    title: "Title 3",
+                                    label: "Label 3",
+                                    internal_id: "internal_id_3",
+                                    slug: "label-3",
+                                },
+                                published: true,
+                                state: "ArchiveUploaded",
+                            },
+                        ],
+                        count: 1,
+                        offset: 0,
+                        limit: 20,
+                        total_count: 3,
+                    },
+                })
+            );
+
+            const { items: allItems } = await getAll();
+
+            const list = screen.getByRole("list");
+            const { queryAllByRole } = within(list);
+
+            const updatedState = Object.assign({}, initialState, {
+                filteredInteractives: allItems,
+            });
+
+            useSelectorMock.mockReturnValue(updatedState);
+
+            rerender(<InteractivesIndex {...defaultProps} />);
+
+            const newItems = queryAllByRole("listitem");
+            expect(newItems.length).toBe(3);
+
             const applyButton = screen.getByText("Apply");
-            screen.getByLabelText("Internal ID").value = "Query";
+            screen.getByLabelText("Title").value = "Label 1";
             fireEvent.click(applyButton);
             expect(filterInteractives).toHaveBeenCalled();
+
+            const query = objectToQueryString({
+                label: screen.getByLabelText("Title").value,
+            });
+
+            mockAxios.get.mockImplementationOnce(() =>
+                Promise.resolve({
+                    data: {
+                        items: [
+                            {
+                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
+                                archive: {
+                                    name: "test1.zip",
+                                },
+                                metadata: {
+                                    title: "Title 1",
+                                    label: "Label 1",
+                                    internal_id: "internal_id_1",
+                                    slug: "label-1",
+                                },
+                                published: false,
+                                state: "ArchiveUploaded",
+                            },
+                        ],
+                        count: 1,
+                        offset: 0,
+                        limit: 20,
+                        total_count: 1,
+                    },
+                })
+            );
+
+            const { items: filteredItems } = await get(query);
+
+            const updatedFilteredState = Object.assign({}, initialState, {
+                filteredInteractives: filteredItems,
+            });
+
+            useSelectorMock.mockReturnValue(updatedFilteredState);
+
+            rerender(<InteractivesIndex {...defaultProps} />);
+            const newFilteredItems = queryAllByRole("listitem");
+            expect(newFilteredItems.length).toBe(1);
+
+            const textContent = newFilteredItems.map(item => item.textContent);
+            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED"];
+
+            textContent.forEach(function (content) {
+                let exist = expectedContentInText.indexOf(content) > -1;
+                expect(exist).toEqual(true);
+            });
         });
     });
 });

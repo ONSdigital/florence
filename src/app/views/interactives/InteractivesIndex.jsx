@@ -170,7 +170,7 @@ export default function InteractivesIndex(props) {
                                         <li key={key} className="list__item" role="listitem">
                                             <Link to={`${rootPath}/interactives/edit/${id}`} className="font-weight--600 font-size--18">
                                                 {metadata.label}
-                                            </Link>
+                                            </Link>{" "}
                                             - <b className="font-size--18">16 March 2022</b>
                                             {published ? <Chip style="green" text="PUBLISHED" /> : <Chip style="blue" text="UPLOADED" />}
                                         </li>

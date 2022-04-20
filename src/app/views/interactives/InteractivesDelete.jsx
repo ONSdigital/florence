@@ -33,7 +33,7 @@ export default function InteractivesDelete(props) {
             setSlug(metadata.slug);
             setPublished(metadata.published);
         }
-    }, [interactive]);
+    }, [interactive.metadata]);
 
     useEffect(() => {
         if (successMessage.success) {
@@ -41,7 +41,7 @@ export default function InteractivesDelete(props) {
                 props.router.push(`${rootPath}/interactives`);
             }
         }
-    }, [successMessage]);
+    }, [successMessage.success]);
 
     const handleDelete = e => {
         e.preventDefault();
@@ -49,7 +49,6 @@ export default function InteractivesDelete(props) {
     };
 
     const handleReturn = () => {
-        const rootPath = props.rootPath;
         props.router.push(`${rootPath}/interactives/edit/${interactiveId}`);
     };
 
@@ -59,7 +58,7 @@ export default function InteractivesDelete(props) {
                 <div className={"grid__col-8"}>
                     <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
                     <h1 className="text-align-left">Delete interactive</h1>
-                    <p className={"padding-bottom--1"}>You are about to delete this interactive:</p>
+                    <p className="padding-bottom--1">You are about to delete this interactive:</p>
                     <ul className="list-simple">
                         <li className="list-simple__item">
                             Name - <b>{title}</b>
@@ -71,11 +70,11 @@ export default function InteractivesDelete(props) {
                             Topic - <b>Health and social care (COVID-19)</b>
                         </li>
                     </ul>
-                    <p className="">
+                    <p>
                         Are you sure you want to delete this interactive? You will permanently lose access to the data associated to it, including the
                         uploaded file.
                     </p>
-                    <div className={"inline-block padding-top--2"}>
+                    <div className="inline-block padding-top--2">
                         <ButtonWithShadow type="button" buttonText="Continue" onClick={handleDelete} isSubmitting={false} />
                         <ButtonWithShadow type="button" class="secondary" buttonText="Cancel" onClick={handleReturn} isSubmitting={false} />
                     </div>
