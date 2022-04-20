@@ -505,6 +505,10 @@ describe("The mapPropsToState function", () => {
                     { id: "3", name: "Team 3", members: [] },
                 ],
             },
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false
+            },
         };
         const expectProps = {
             publishType: undefined,

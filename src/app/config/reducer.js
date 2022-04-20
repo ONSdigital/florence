@@ -727,6 +727,66 @@ export default function reducer(state = initialState, action) {
                 previewLanguage: action.language,
             };
         }
+        case types.LOAD_COLLECTIONS_SUCCESS: {
+            return {
+                ...state,
+                collections: {
+                    ...state.collections,
+                    isLoading: false,
+                    all: action.collections,
+                },
+            };
+        }
+        case types.LOAD_POLICY_PROGRESS:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    loading: true,
+                },
+            };
+        case types.LOAD_POLICY_FAILURE:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    loading: false,
+                },
+            };
+        case types.LOAD_POLICY_SUCCESS:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    data: action.data,
+                    loading: false,
+                },
+            };
+        case types.UPDATE_POLICY_PROGRESS:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    loading: true,
+                },
+            };
+        case types.UPDATE_POLICY_FAILURE:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    loading: false,
+                },
+            };
+        case types.UPDATE_POLICY_SUCCESS:
+            return {
+                ...state,
+                policy: {
+                    ...state.policy,
+                    loading: false,
+                    data: action.data,
+                },
+            };
         default: {
             return state;
         }

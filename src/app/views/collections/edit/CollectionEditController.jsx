@@ -63,6 +63,7 @@ export class CollectionEditController extends Component {
                 value: "09:30",
                 errorMsg: "",
             },
+            policy: null,
         };
     }
 
@@ -258,6 +259,10 @@ export class CollectionEditController extends Component {
             isSavingEdits: true,
         });
 
+        if (this.props.isEnablePermissionsAPI) {
+            collection.updatePolicy(this.props.id, this.state.policy).then(response => dispatch());
+        }
+
         collections
             .update(this.props.id, this.mapEditsToAPIRequestBody({ ...this.state }))
             .then(response => {
@@ -274,6 +279,9 @@ export class CollectionEditController extends Component {
                     }
                     return collectionMapper.collectionResponseToState(activeCollection);
                 });
+                if (this.props.isEnablePermissionsAPI) {
+                    this.props.dispatch(updatePolicy(this.props.id, this.state.policy));
+                }
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));
                 this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
@@ -407,6 +415,7 @@ export class CollectionEditController extends Component {
     }
 
     render() {
+        // console.log("PROPS", this.props);
         return (
             <CollectionEdit
                 {...this.props}

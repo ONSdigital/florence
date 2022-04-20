@@ -426,3 +426,21 @@ export const setPreviewLanguage = language => {
         language,
     };
 };
+export function updatePolicySuccess(data) {
+    return {
+        type: types.UPDATE_POLICY_SUCCESS,
+        data,
+    };
+}
+
+export function updatePolicyProgress() {
+    return {
+        type: types.UPDATE_POLICY_PROGRESS,
+    };
+}
+
+export function updatePolicyFailure() {
+    return {
+        type: types.UPDATE_POLICY_FAILURE,
+    };
+}
