@@ -415,7 +415,7 @@ export class CollectionEditController extends Component {
     }
 
     render() {
-        // console.log("PROPS", this.props);
+        console.log("PROPS", this.props);
         return (
             <CollectionEdit
                 {...this.props}
@@ -461,5 +461,10 @@ export function mapStateToProps(state) {
         loadingTeams: getGroupsLoading(state.state),
     };
 }
+const mapDispatchToProps = dispatch => ({
+    loadTeams: isNewSignIn => dispatch(fetchGroupsRequest(isNewSignIn)),
+    // createCollectionRequest: (collection, teams, isEnablePermissionsAPI) =>
+    //     dispatch(createCollectionRequest(collection, teams, isEnablePermissionsAPI)),
+});
 
-export default connect(mapStateToProps)(CollectionEditController);
+export default connect(mapStateToProps, mapDispatchToProps)(CollectionEditController);

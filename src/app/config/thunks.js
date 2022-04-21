@@ -379,9 +379,9 @@ export const updatePolicyRequest = (id, body) => async dispatch => {
     dispatch(actions.updatePolicyProgress());
     try {
         const result = await collections.updatePolicy(id, body);
-        dispatch(actions.uploadPolicySuccess(result));
+        dispatch(actions.updatePolicySuccess(result));
     } catch (error) {
-        dispatch(actions.uploadPolicyFailure());
+        dispatch(actions.updatePolicyFailure());
         switch (error.status) {
             case 401: {
                 break;
