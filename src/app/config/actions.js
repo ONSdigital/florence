@@ -444,3 +444,22 @@ export function updatePolicyFailure() {
         type: types.UPDATE_POLICY_FAILURE,
     };
 }
+
+export function loadPolicySuccess(data) {
+    return {
+        type: types.LOAD_POLICY_SUCCESS,
+        data,
+    };
+}
+
+export function loadPolicyProgress() {
+    return {
+        type: types.LOAD_POLICY_PROGRESS,
+    };
+}
+
+export function loadPolicyFailure() {
+    return {
+        type: types.LOAD_POLICY_FAILURE,
+    };
+}

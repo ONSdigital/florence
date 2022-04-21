@@ -29,6 +29,9 @@ export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
 export const getIsUpdatingCollection = state => state.collections.isUpdating;
 export const getPreviewUsers = state => state.users.previewUsers;
+export const getCollectionAccessPolicy = state => state.policy.data;
+export const getCollectionAccessPolicyLoading = state => state.policy.loading;
+export const getCollectionAccessPolicyUpdating = state => state.policy.updating;
 
 export const getGroups = state => state.groups.all;
 export const getGroupsLoading = state => state.groups.isLoading;

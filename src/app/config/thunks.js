@@ -97,6 +97,7 @@ export const createCollectionRequest = (collection, teams, isEnablePermissionsAP
                     },
                 ],
             });
+            console.log('policy',policy)
         }
 
         dispatch(push(`/florence/collections/${collectionId}`));
@@ -382,6 +383,50 @@ export const updatePolicyRequest = (id, body) => async dispatch => {
         dispatch(actions.updatePolicySuccess(result));
     } catch (error) {
         dispatch(actions.updatePolicyFailure());
+        switch (error.status) {
+            case 401: {
+                break;
+            }
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error updating the collection data. Please try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst updating collection data`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
+};
+
+export const loadPolicyRequest = (id, body) => async dispatch => {
+    dispatch(actions.loadPolicyProgress());
+    try {
+        const result = await collections.getPolicy(id, body);
+        dispatch(actions.loadPolicySuccess(result));
+    } catch (error) {
+        dispatch(actions.loadPolicyFailure());
         switch (error.status) {
             case 401: {
                 break;

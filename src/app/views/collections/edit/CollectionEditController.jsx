@@ -20,8 +20,9 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading } from "../../../config/selectors";
+import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
+import { loadPolicyRequest } from "../../../config/thunks"
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -69,6 +70,9 @@ export class CollectionEditController extends Component {
 
     componentDidMount() {
         this.props.dispatch(fetchGroupsRequest(this.props.isNewSignIn));
+
+        if(this.props.isNewSignIn) this.props.dispatch(loadPolicyRequest(this.props.id));
+
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
                 publishDate: {
@@ -459,12 +463,8 @@ export function mapStateToProps(state) {
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
         loadingTeams: getGroupsLoading(state.state),
+        policy: getCollectionAccessPolicy(state.state)
     };
 }
-const mapDispatchToProps = dispatch => ({
-    loadTeams: isNewSignIn => dispatch(fetchGroupsRequest(isNewSignIn)),
-    // createCollectionRequest: (collection, teams, isEnablePermissionsAPI) =>
-    //     dispatch(createCollectionRequest(collection, teams, isEnablePermissionsAPI)),
-});
 
-export default connect(mapStateToProps, mapDispatchToProps)(CollectionEditController);
+export default connect(mapStateToProps)(CollectionEditController);
