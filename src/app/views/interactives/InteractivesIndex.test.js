@@ -5,7 +5,8 @@ import InteractivesIndex from "./InteractivesIndex";
 import { within } from "@testing-library/react";
 import { getAll, get } from "../../utilities/api-clients/interactives-test";
 import * as reactRedux from "react-redux";
-import { objectToQueryString } from "../../utilities/utils";
+import userEvent from "@testing-library/user-event";
+import * as interactivesMock from "../../actions/interactives";
 
 const initialState = {
     interactives: [],
@@ -24,17 +25,12 @@ describe("Interactives index", () => {
     const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
     const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
-    const filterInteractives = jest.fn();
-    const getInteractives = jest.fn();
+    const filterInteractivesMock = jest.spyOn(interactivesMock, "filterInteractives").mockImplementation(() => Promise.resolve({ data: "foo1" }));
+    const getInteractivesMock = jest.spyOn(interactivesMock, "getInteractives").mockImplementation(() => Promise.resolve({ data: "foo2" }));
+    const dispatch = jest.fn();
 
     beforeEach(() => {
-        const dispatch = jest.fn();
-        useDispatchMock.mockReturnValue(dispatch);
-
         useSelectorMock.mockReturnValue(initialState);
-
-        useSelectorMock.mockClear();
-        useDispatchMock.mockClear();
     });
 
     afterEach(() => {
@@ -49,6 +45,7 @@ describe("Interactives index", () => {
 
     describe("when renders the component", () => {
         it("renders the initial content", () => {
+            useDispatchMock.mockReturnValue(getInteractivesMock);
             render(<InteractivesIndex {...defaultProps} />);
             // Filters
             expect(screen.getByLabelText("Internal ID")).toBeInTheDocument();
@@ -66,9 +63,10 @@ describe("Interactives index", () => {
         });
 
         it("should fetch data when component is mounted and show the interactives in the list component", async () => {
-            useDispatchMock.mockReturnValue(getInteractives);
+            useDispatchMock.mockReturnValue(getInteractivesMock);
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
-            expect(getInteractives).toHaveBeenCalled();
+            expect(getInteractivesMock).toHaveBeenCalled();
+
             const list = screen.getByRole("list");
             const { queryAllByRole } = within(list);
             const oldItems = queryAllByRole("listitem");
@@ -141,9 +139,9 @@ describe("Interactives index", () => {
 
             const newItems = queryAllByRole("listitem");
             expect(newItems.length).toBe(3);
-            const textContent = newItems.map(item => item.textContent);
 
-            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED", "Label 2 - 16 March 2022PUBLISHED", "Label 3 - 16 March 2022PUBLISHED"];
+            const textContent = newItems.map(item => item.textContent);
+            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED", "Label 2 - 16 March 2022PUBLISHED", "Label 3 - 16 March 2022PUBLISHED"];
 
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
@@ -152,8 +150,11 @@ describe("Interactives index", () => {
         });
 
         it("should filter results when clicks apply button", async () => {
-            useDispatchMock.mockReturnValue(filterInteractives);
+            useDispatchMock.mockReturnValue(dispatch).mockReturnValueOnce(getInteractivesMock).mockReturnValueOnce(filterInteractivesMock);
+
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
+
+            expect(getInteractivesMock).toHaveBeenCalled();
 
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -211,10 +212,8 @@ describe("Interactives index", () => {
             );
 
             const { items: allItems } = await getAll();
-
             const list = screen.getByRole("list");
             const { queryAllByRole } = within(list);
-
             const updatedState = Object.assign({}, initialState, {
                 filteredInteractives: allItems,
             });
@@ -225,15 +224,18 @@ describe("Interactives index", () => {
 
             const newItems = queryAllByRole("listitem");
             expect(newItems.length).toBe(3);
+            userEvent.paste(screen.getByLabelText("Title"), "Label 1");
+            expect(screen.getByLabelText("Title")).toHaveValue("Label 1");
 
             const applyButton = screen.getByText("Apply");
-            screen.getByLabelText("Title").value = "Label 1";
             fireEvent.click(applyButton);
-            expect(filterInteractives).toHaveBeenCalled();
 
-            const query = objectToQueryString({
-                label: screen.getByLabelText("Title").value,
-            });
+            const filters = {
+                label: "Label 1",
+            };
+
+            expect(filterInteractivesMock).toHaveBeenCalledTimes(1);
+            expect(filterInteractivesMock).toHaveBeenCalledWith(filters);
 
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -262,8 +264,7 @@ describe("Interactives index", () => {
                 })
             );
 
-            const { items: filteredItems } = await get(query);
-
+            const { items: filteredItems } = await get(filters);
             const updatedFilteredState = Object.assign({}, initialState, {
                 filteredInteractives: filteredItems,
             });
@@ -271,11 +272,12 @@ describe("Interactives index", () => {
             useSelectorMock.mockReturnValue(updatedFilteredState);
 
             rerender(<InteractivesIndex {...defaultProps} />);
+
             const newFilteredItems = queryAllByRole("listitem");
             expect(newFilteredItems.length).toBe(1);
 
             const textContent = newFilteredItems.map(item => item.textContent);
-            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED"];
+            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED"];
 
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
