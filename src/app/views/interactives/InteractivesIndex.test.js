@@ -27,7 +27,56 @@ describe("Interactives index", () => {
 
     const filterInteractivesMock = jest.spyOn(interactivesMock, "filterInteractives").mockImplementation(() => Promise.resolve({ data: "foo1" }));
     const getInteractivesMock = jest.spyOn(interactivesMock, "getInteractives").mockImplementation(() => Promise.resolve({ data: "foo2" }));
+    const sortInteractivesMock = jest.spyOn(interactivesMock, "sortInteractives").mockImplementation(() => Promise.resolve({ data: "foo3" }));
     const dispatch = jest.fn();
+
+    const allInteractives = [
+        {
+            id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
+            archive: {
+                name: "test1.zip",
+            },
+            metadata: {
+                title: "Title 1",
+                label: "A Label 1",
+                internal_id: "internal_id_1",
+                slug: "label-1",
+            },
+            published: false,
+            state: "ArchiveUploaded",
+            last_updated: "2022-03-21T13:29:49.901Z",
+        },
+        {
+            id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
+            archive: {
+                name: "test2.zip",
+            },
+            metadata: {
+                title: "Title 2",
+                label: "Z Label 2",
+                internal_id: "internal_id_2",
+                slug: "label-2",
+            },
+            published: true,
+            state: "ArchiveUploaded",
+            last_updated: "2022-04-20T13:10:48.107Z",
+        },
+        {
+            id: "65a93ed2-31a1-4bd5-89dd-9d44b8rgu05c",
+            archive: {
+                name: "test3.zip",
+            },
+            metadata: {
+                title: "Title 3",
+                label: "T Label 3",
+                internal_id: "internal_id_3",
+                slug: "label-3",
+            },
+            published: true,
+            state: "ArchiveUploaded",
+            last_updated: "2022-03-30T13:29:49.901Z",
+        },
+    ];
 
     beforeEach(() => {
         useSelectorMock.mockReturnValue(initialState);
@@ -75,50 +124,7 @@ describe("Interactives index", () => {
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
                     data: {
-                        items: [
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
-                                archive: {
-                                    name: "test1.zip",
-                                },
-                                metadata: {
-                                    title: "Title 1",
-                                    label: "Label 1",
-                                    internal_id: "internal_id_1",
-                                    slug: "label-1",
-                                },
-                                published: false,
-                                state: "ArchiveUploaded",
-                            },
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
-                                archive: {
-                                    name: "test2.zip",
-                                },
-                                metadata: {
-                                    title: "Title 2",
-                                    label: "Label 2",
-                                    internal_id: "internal_id_2",
-                                    slug: "label-2",
-                                },
-                                published: true,
-                                state: "ArchiveUploaded",
-                            },
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8rgu05c",
-                                archive: {
-                                    name: "test3.zip",
-                                },
-                                metadata: {
-                                    title: "Title 3",
-                                    label: "Label 3",
-                                    internal_id: "internal_id_3",
-                                    slug: "label-3",
-                                },
-                                published: true,
-                                state: "ArchiveUploaded",
-                            },
-                        ],
+                        items: allInteractives,
                         count: 1,
                         offset: 0,
                         limit: 20,
@@ -141,8 +147,11 @@ describe("Interactives index", () => {
             expect(newItems.length).toBe(3);
 
             const textContent = newItems.map(item => item.textContent);
-            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED", "Label 2 - 16 March 2022PUBLISHED", "Label 3 - 16 March 2022PUBLISHED"];
-
+            const expectedContentInText = [
+                "A Label 1 - 21 March 2022UPLOADED",
+                "Z Label 2 - 20 April 2022PUBLISHED",
+                "T Label 3 - 30 March 2022PUBLISHED",
+            ];
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
                 expect(exist).toEqual(true);
@@ -159,50 +168,7 @@ describe("Interactives index", () => {
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
                     data: {
-                        items: [
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
-                                archive: {
-                                    name: "test1.zip",
-                                },
-                                metadata: {
-                                    title: "Title 1",
-                                    label: "Label 1",
-                                    internal_id: "internal_id_1",
-                                    slug: "label-1",
-                                },
-                                published: false,
-                                state: "ArchiveUploaded",
-                            },
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
-                                archive: {
-                                    name: "test2.zip",
-                                },
-                                metadata: {
-                                    title: "Title 2",
-                                    label: "Label 2",
-                                    internal_id: "internal_id_2",
-                                    slug: "label-2",
-                                },
-                                published: true,
-                                state: "ArchiveUploaded",
-                            },
-                            {
-                                id: "65a93ed2-31a1-4bd5-89dd-9d44b8rgu05c",
-                                archive: {
-                                    name: "test3.zip",
-                                },
-                                metadata: {
-                                    title: "Title 3",
-                                    label: "Label 3",
-                                    internal_id: "internal_id_3",
-                                    slug: "label-3",
-                                },
-                                published: true,
-                                state: "ArchiveUploaded",
-                            },
-                        ],
+                        items: allInteractives,
                         count: 1,
                         offset: 0,
                         limit: 20,
@@ -248,12 +214,13 @@ describe("Interactives index", () => {
                                 },
                                 metadata: {
                                     title: "Title 1",
-                                    label: "Label 1",
+                                    label: "A Label 1",
                                     internal_id: "internal_id_1",
                                     slug: "label-1",
                                 },
                                 published: false,
                                 state: "ArchiveUploaded",
+                                last_updated: "2022-04-21T13:29:49.901Z",
                             },
                         ],
                         count: 1,
@@ -277,12 +244,78 @@ describe("Interactives index", () => {
             expect(newFilteredItems.length).toBe(1);
 
             const textContent = newFilteredItems.map(item => item.textContent);
-            const expectedContentInText = ["Label 1 - 16 March 2022UPLOADED"];
-
+            const expectedContentInText = ["A Label 1 - 21 April 2022UPLOADED"];
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
                 expect(exist).toEqual(true);
             });
+        });
+
+        it("Should sort list if user select a value from sort by", async () => {
+            useDispatchMock.mockReturnValue(sortInteractivesMock);
+
+            const { rerender } = render(<InteractivesIndex {...defaultProps} />);
+
+            mockAxios.get.mockImplementationOnce(() =>
+                Promise.resolve({
+                    data: {
+                        items: allInteractives,
+                        count: 1,
+                        offset: 0,
+                        limit: 20,
+                        total_count: 3,
+                    },
+                })
+            );
+
+            const { items: filteredInteractives } = await getAll();
+            const updatedState = Object.assign({}, initialState, {
+                filteredInteractives,
+            });
+
+            useSelectorMock.mockReturnValue(updatedState);
+            rerender(<InteractivesIndex {...defaultProps} />);
+
+            const items = screen.queryAllByRole("listitem");
+            const textContent = items.map(item => item.textContent);
+            //default order
+            expect(textContent[0]).toEqual("A Label 1 - 21 March 2022UPLOADED");
+            expect(textContent[1]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
+            expect(textContent[2]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
+
+            userEvent.selectOptions(screen.getByLabelText("Sort by"), ["date"]);
+            expect(screen.getByLabelText("Sort by")).toHaveValue("date");
+            expect(sortInteractivesMock).toHaveBeenCalledWith("date");
+
+            const sortedByDate = Object.assign({}, initialState, {
+                filteredInteractives: filteredInteractives.sort((a, b) => b.last_updated.localeCompare(a.last_updated)),
+            });
+            useSelectorMock.mockReturnValue(sortedByDate);
+            rerender(<InteractivesIndex {...defaultProps} />);
+
+            const items1 = screen.queryAllByRole("listitem");
+            const textContent1 = items1.map(item => item.textContent);
+            // Order by date desc
+            expect(textContent1[0]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
+            expect(textContent1[1]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
+            expect(textContent1[2]).toEqual("A Label 1 - 21 March 2022UPLOADED");
+
+            userEvent.selectOptions(screen.getByLabelText("Sort by"), ["title"]);
+            expect(screen.getByLabelText("Sort by")).toHaveValue("title");
+            expect(sortInteractivesMock).toHaveBeenCalledWith("title");
+
+            const sortedByTitleInteractives = Object.assign({}, initialState, {
+                filteredInteractives: filteredInteractives.sort((a, b) => a.metadata.label.localeCompare(b.metadata.label)),
+            });
+            useSelectorMock.mockReturnValue(sortedByTitleInteractives);
+            rerender(<InteractivesIndex {...defaultProps} />);
+
+            const items2 = screen.queryAllByRole("listitem");
+            const textContent2 = items2.map(item => item.textContent);
+            // Order by title
+            expect(textContent2[0]).toEqual("A Label 1 - 21 March 2022UPLOADED");
+            expect(textContent2[1]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
+            expect(textContent2[2]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
         });
     });
 });

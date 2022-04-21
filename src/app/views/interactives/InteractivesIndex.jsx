@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { filterInteractives, getInteractives, resetSuccessMessage } from "../../actions/interactives";
+import { filterInteractives, getInteractives, resetSuccessMessage, sortInteractives } from "../../actions/interactives";
 import { Link } from "react-router";
 import AlertSuccess from "../../components/alert/AlertSuccess";
 import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
@@ -10,6 +10,8 @@ import Select from "../../components/Select";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import Checkbox from "../../components/Checkbox";
 import Chip from "../../components/chip/Chip";
+import moment from "moment";
+import { isInArray } from "../../utilities/utils";
 
 export default function InteractivesIndex(props) {
     const dispatch = useDispatch();
@@ -18,6 +20,7 @@ export default function InteractivesIndex(props) {
 
     const [internalId, setInternalId] = useState("");
     const [title, setTitle] = useState("");
+    const [sort, setSort] = useState("");
 
     const [showSelects, setShowSelects] = useState(false);
     const [successCreate, setSuccessCreate] = useState(false);
@@ -55,8 +58,8 @@ export default function InteractivesIndex(props) {
     ];
 
     const sortOptions = [
-        { id: 1, name: "Latest published" },
-        { id: 2, name: "Title" },
+        { id: "date", name: "Latest published" },
+        { id: "title", name: "Title" },
     ];
 
     const clearCheckboxes = () => {
@@ -66,7 +69,7 @@ export default function InteractivesIndex(props) {
         });
     };
 
-    const handleFilter = e => {
+    const handleFilter = () => {
         let filters = {};
         if (title !== "") {
             filters = Object.assign({}, filters, {
@@ -79,6 +82,14 @@ export default function InteractivesIndex(props) {
             });
         }
         dispatch(filterInteractives(filters));
+    };
+
+    const handleSort = e => {
+        const sort = e.target.value;
+        setSort(sort);
+        if (isInArray(["date", "title"], sort)) {
+            dispatch(sortInteractives(sort));
+        }
     };
 
     const dataSources = topics;
@@ -151,9 +162,9 @@ export default function InteractivesIndex(props) {
                                     <label className="ons-label padding-right--1" htmlFor="sort-options">
                                         Sort by
                                     </label>
-                                    <Select contents={sortOptions} id="sort-options" />
+                                    <Select contents={sortOptions} id="sort-options" onChange={handleSort} />
                                 </div>
-                                <div className="">
+                                <div>
                                     <ButtonWithShadow
                                         type="button"
                                         buttonText="Upload interactive"
@@ -165,13 +176,13 @@ export default function InteractivesIndex(props) {
                             </div>
                             <ul className="list--neutral list--neutral__chips" role="list">
                                 {filteredInteractives.map((interactive, key) => {
-                                    const { id, metadata, published } = interactive;
+                                    const { id, metadata, last_updated, published } = interactive;
                                     return (
                                         <li key={key} className="list__item" role="listitem">
                                             <Link to={`${rootPath}/interactives/edit/${id}`} className="font-weight--600 font-size--18">
                                                 {metadata.label}
                                             </Link>
-                                            &nbsp;- <b className="font-size--18">16 March 2022</b>
+                                            &nbsp;- <b className="font-size--18">{moment(last_updated).format("DD MMMM YYYY")}</b>
                                             {published ? <Chip style="green" text="PUBLISHED" /> : <Chip style="blue" text="UPLOADED" />}
                                         </li>
                                     );
