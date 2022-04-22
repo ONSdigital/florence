@@ -38,6 +38,7 @@ const propTypes = {
     publishDate: PropTypes.string,
     activeCollection: PropTypes.object,
     collections: PropTypes.array,
+    policy: PropTypes.object
 };
 
 export class CollectionEditController extends Component {
@@ -85,6 +86,11 @@ export class CollectionEditController extends Component {
                 },
             });
         }
+    }
+
+     SelectedGroups = () => {
+        if (this.props.allTeams?.length === 0 || !this.props.policy ) return []
+        return this.props.allTeams.filter(team => this.props.policy?.entities.includes(team.id))
     }
 
     handleNameChange = name => {
@@ -419,7 +425,7 @@ export class CollectionEditController extends Component {
     }
 
     render() {
-        console.log("PROPS", this.props);
+        console.log("PROPS", this.SelectedGroups());
         return (
             <CollectionEdit
                 {...this.props}
@@ -441,7 +447,7 @@ export class CollectionEditController extends Component {
                 publishDateErrorMsg={this.state.publishDate.errorMsg}
                 publishTime={this.state.publishTime.value}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
-                teams={this.state.updatedTeamsList || this.props.teams || []}
+                teams={this.SelectedGroups()}
                 allTeams={this.state.isFetchingAllTeams ? [] : this.state.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
                 isSavingEdits={this.state.isSavingEdits}
