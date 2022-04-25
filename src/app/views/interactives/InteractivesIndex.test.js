@@ -37,8 +37,8 @@ describe("Interactives index", () => {
                 name: "test1.zip",
             },
             metadata: {
-                title: "Title 1",
-                label: "A Label 1",
+                title: "A Title 1",
+                label: "Label",
                 internal_id: "internal_id_1",
                 slug: "label-1",
             },
@@ -52,8 +52,8 @@ describe("Interactives index", () => {
                 name: "test2.zip",
             },
             metadata: {
-                title: "Title 2",
-                label: "Z Label 2",
+                title: "Z Title 2",
+                label: "Label",
                 internal_id: "internal_id_2",
                 slug: "label-2",
             },
@@ -67,8 +67,8 @@ describe("Interactives index", () => {
                 name: "test3.zip",
             },
             metadata: {
-                title: "Title 3",
-                label: "T Label 3",
+                title: "T Title 3",
+                label: "Label",
                 internal_id: "internal_id_3",
                 slug: "label-3",
             },
@@ -148,9 +148,9 @@ describe("Interactives index", () => {
 
             const textContent = newItems.map(item => item.textContent);
             const expectedContentInText = [
-                "A Label 1 - 21 March 2022UPLOADED",
-                "Z Label 2 - 20 April 2022PUBLISHED",
-                "T Label 3 - 30 March 2022PUBLISHED",
+                "A Title 1 - 21 March 2022UPLOADED",
+                "Z Title 2 - 20 April 2022PUBLISHED",
+                "T Title 3 - 30 March 2022PUBLISHED",
             ];
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
@@ -213,7 +213,7 @@ describe("Interactives index", () => {
                                     name: "test1.zip",
                                 },
                                 metadata: {
-                                    title: "Title 1",
+                                    title: "A Title 1",
                                     label: "A Label 1",
                                     internal_id: "internal_id_1",
                                     slug: "label-1",
@@ -244,7 +244,7 @@ describe("Interactives index", () => {
             expect(newFilteredItems.length).toBe(1);
 
             const textContent = newFilteredItems.map(item => item.textContent);
-            const expectedContentInText = ["A Label 1 - 21 April 2022UPLOADED"];
+            const expectedContentInText = ["A Title 1 - 21 April 2022UPLOADED"];
             textContent.forEach(function (content) {
                 let exist = expectedContentInText.indexOf(content) > -1;
                 expect(exist).toEqual(true);
@@ -279,9 +279,9 @@ describe("Interactives index", () => {
             const items = screen.queryAllByRole("listitem");
             const textContent = items.map(item => item.textContent);
             //default order
-            expect(textContent[0]).toEqual("A Label 1 - 21 March 2022UPLOADED");
-            expect(textContent[1]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
-            expect(textContent[2]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
+            expect(textContent[0]).toEqual("A Title 1 - 21 March 2022UPLOADED");
+            expect(textContent[1]).toEqual("Z Title 2 - 20 April 2022PUBLISHED");
+            expect(textContent[2]).toEqual("T Title 3 - 30 March 2022PUBLISHED");
 
             userEvent.selectOptions(screen.getByLabelText("Sort by"), ["date"]);
             expect(screen.getByLabelText("Sort by")).toHaveValue("date");
@@ -296,16 +296,16 @@ describe("Interactives index", () => {
             const items1 = screen.queryAllByRole("listitem");
             const textContent1 = items1.map(item => item.textContent);
             // Order by date desc
-            expect(textContent1[0]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
-            expect(textContent1[1]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
-            expect(textContent1[2]).toEqual("A Label 1 - 21 March 2022UPLOADED");
+            expect(textContent1[0]).toEqual("Z Title 2 - 20 April 2022PUBLISHED");
+            expect(textContent1[1]).toEqual("T Title 3 - 30 March 2022PUBLISHED");
+            expect(textContent1[2]).toEqual("A Title 1 - 21 March 2022UPLOADED");
 
             userEvent.selectOptions(screen.getByLabelText("Sort by"), ["title"]);
             expect(screen.getByLabelText("Sort by")).toHaveValue("title");
             expect(sortInteractivesMock).toHaveBeenCalledWith("title");
 
             const sortedByTitleInteractives = Object.assign({}, initialState, {
-                filteredInteractives: filteredInteractives.sort((a, b) => a.metadata.label.localeCompare(b.metadata.label)),
+                filteredInteractives: filteredInteractives.sort((a, b) => a.metadata.title.localeCompare(b.metadata.title)),
             });
             useSelectorMock.mockReturnValue(sortedByTitleInteractives);
             rerender(<InteractivesIndex {...defaultProps} />);
@@ -313,9 +313,9 @@ describe("Interactives index", () => {
             const items2 = screen.queryAllByRole("listitem");
             const textContent2 = items2.map(item => item.textContent);
             // Order by title
-            expect(textContent2[0]).toEqual("A Label 1 - 21 March 2022UPLOADED");
-            expect(textContent2[1]).toEqual("T Label 3 - 30 March 2022PUBLISHED");
-            expect(textContent2[2]).toEqual("Z Label 2 - 20 April 2022PUBLISHED");
+            expect(textContent2[0]).toEqual("A Title 1 - 21 March 2022UPLOADED");
+            expect(textContent2[1]).toEqual("T Title 3 - 30 March 2022PUBLISHED");
+            expect(textContent2[2]).toEqual("Z Title 2 - 20 April 2022PUBLISHED");
         });
     });
 });

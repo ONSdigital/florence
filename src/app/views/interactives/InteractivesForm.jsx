@@ -40,7 +40,7 @@ export default function InteractivesForm(props) {
     }, []);
 
     useEffect(() => {
-        if (interactive.metadata) {
+        if (interactive.metadata && interactiveId) {
             const { metadata } = interactive;
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);

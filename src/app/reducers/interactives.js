@@ -46,7 +46,7 @@ export default function reducer(state = initialState, action = {}) {
             const { sort } = action;
             let filteredInteractives = state.interactives;
             if (sort === "title") {
-                filteredInteractives = filteredInteractives.sort((a, b) => a.metadata.label.localeCompare(b.metadata.label));
+                filteredInteractives = filteredInteractives.sort((a, b) => a.metadata.title.localeCompare(b.metadata.title));
             }
             if (sort === "date") {
                 filteredInteractives = filteredInteractives.sort((a, b) => b.last_updated.localeCompare(a.last_updated));
