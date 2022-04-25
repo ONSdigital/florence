@@ -16,7 +16,6 @@ import (
 	"github.com/ONSdigital/florence/service/mock"
 	serviceMock "github.com/ONSdigital/florence/service/mock"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/pat"
 	"github.com/pkg/errors"
 	. "github.com/smartystreets/goconvey/convey"
 )
@@ -87,7 +86,7 @@ func TestRun(t *testing.T) {
 			}
 		}
 
-		funcHasRoute := func(r *pat.Router, method, path string, match *mux.RouteMatch) bool {
+		funcHasRoute := func(r *mux.Router, method, path string, match *mux.RouteMatch) bool {
 			req := httptest.NewRequest(method, path, nil)
 			return r.Match(req, match)
 		}
