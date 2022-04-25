@@ -507,7 +507,7 @@ describe("The mapPropsToState function", () => {
             },
             config: {
                 enablePermissionsAPI: false,
-                enableNewSignIn: false
+                enableNewSignIn: false,
             },
         };
         const expectProps = {

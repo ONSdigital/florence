@@ -66,6 +66,6 @@ export const initialState = {
     policy: {
         data: null,
         loading: false,
-        updating: false
-    }
+        updating: false,
+    },
 };

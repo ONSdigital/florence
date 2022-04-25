@@ -97,7 +97,6 @@ export const createCollectionRequest = (collection, teams, isEnablePermissionsAP
                     },
                 ],
             });
-            console.log('policy',policy)
         }
 
         dispatch(push(`/florence/collections/${collectionId}`));
