@@ -66,6 +66,7 @@ export class CollectionEditController extends Component {
             },
             policy: null,
             allTeams: null,
+            allTeams: props.allTeams
         };
     }
 
@@ -90,7 +91,7 @@ export class CollectionEditController extends Component {
     componentDidUpdate(prevProps) {
         // Typical usage (don't forget to compare props):
         if (this.props.allTeams !== prevProps.allTeams) {
-            this.availableTeams(this.props.allTeams, this.props.policy);
+            setState({allTeams: this.availableTeams(this.props.allTeams, this.props.policy)});
         }
     }
 
@@ -105,7 +106,7 @@ export class CollectionEditController extends Component {
     };
 
     handleAddTeam = teamID => {
-        const currentTeams = this.state.updatedTeamsList || this.props.teams || [];
+        const currentTeams = this.props.isEnablePermissionsAPI ? this.selectedTeams() : this.state.updatedTeamsList || this.props.teams || []
 
         if (!teamID) {
             return;
