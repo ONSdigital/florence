@@ -403,7 +403,7 @@ export class CollectionEditController extends Component {
             body.publishDate =
                 state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value).toISOString() : "";
         }
-
+        console.log('STATE OUT', body)
         return body;
     }
 
@@ -450,7 +450,7 @@ export function mapStateToProps(state) {
         isNewSignIn: getEnableNewSignIn(state.state),
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
-        loadingTeams: getGroupsLoading(state.state)
+        loadingTeams: getGroupsLoading(state.state),
     };
 }
 
