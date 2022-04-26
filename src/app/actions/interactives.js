@@ -143,3 +143,10 @@ export function deleteInteractive(interactiveId) {
         }
     };
 }
+
+export function sortInteractives(sort) {
+    return {
+        type: types.SORT_INTERACTIVES,
+        sort,
+    };
+}
