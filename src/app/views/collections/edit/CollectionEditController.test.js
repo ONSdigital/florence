@@ -2,7 +2,8 @@ import React from "react";
 import { CollectionEditController, mapStateToProps } from "./CollectionEditController";
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
-import { LOAD_GROUPS_SUCCESS } from "../../../config/groups/constants";
+import { LOAD_GROUPS_PROGRESS, LOAD_GROUPS_SUCCESS } from "../../../config/groups/constants";
+import { getGroups } from "../../../config/selectors";
 
 console.error = () => {};
 console.warn = () => {};
@@ -127,12 +128,6 @@ describe("Editing the collection's associated teams", () => {
 
     beforeEach(() => {
         editingTeamsComponent = shallow(<CollectionEditController {...propsWithTeams} />);
-    });
-
-    it("on mount it updates global state with the latest list of all teams", () => {
-        editingTeamsComponent.instance().UNSAFE_componentWillMount();
-        expect(dispatchedAction.type).toEqual(LOAD_GROUPS_SUCCESS);
-        expect(dispatchedAction.groups).toEqual(fetchedAllTeams);
     });
 
     it("adds a team to the state", () => {
@@ -491,18 +486,24 @@ describe("The mapPropsToState function", () => {
                     teams: ["Team 2", "Team 3"],
                 },
             },
-            teams: {
-                allIDsAndNames: [
+            groups: {
+                all: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
                 ],
+            },
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
             },
         };
         const expectProps = {
             publishType: "scheduled",
             publishDate: "2018-01-12T09:30:00.000Z",
             teams: ["Team 2", "Team 3"],
+            isEnablePermissionsAPI: false,
+            isNewSignIn: false,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -510,8 +511,12 @@ describe("The mapPropsToState function", () => {
     it("having no activeCollection returns the correct values", () => {
         const state = {
             collections: {},
-            teams: {
-                allIDsAndNames: [
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
+            },
+            groups: {
+                all: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
@@ -522,6 +527,8 @@ describe("The mapPropsToState function", () => {
             publishType: undefined,
             publishDate: undefined,
             teams: undefined,
+            isEnablePermissionsAPI: false,
+            isNewSignIn: false,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });

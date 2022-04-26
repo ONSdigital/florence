@@ -81,24 +81,24 @@ export const createCollectionRequest = (collection, teams, isEnablePermissionsAP
         const result = await collections.create(collection);
         dispatch(actions.createCollectionSuccess(result));
 
-        const id = result.id;
+        const collectionId = result.id;
 
-        if (isEnablePermissionsAPI) {
-            const policy = await collections.createPolicy({
-                id,
-                entities: teams.map(team => `groups/${id}`), // ideally I would like to take the teams from response but collection is returning names of teams
+        if (isEnablePermissionsAPI && teams?.length > 0) {
+            await collections.createPolicy(collectionId, {
+                id: collectionId,
+                entities: teams.map(team => `groups/${team.id}`), // ideally I would like to take the teams from response but collection is returning names of teams
                 role: "collection-previewer",
                 conditions: [
                     {
                         attributes: ["collection_id"],
                         operator: "StringEquals",
-                        values: [id],
+                        values: [collectionId],
                     },
                 ],
             });
         }
 
-        dispatch(push(`/florence/collections/${id}`));
+        dispatch(push(`/florence/collections/${collectionId}`));
     } catch (error) {
         // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
         switch (error.status) {

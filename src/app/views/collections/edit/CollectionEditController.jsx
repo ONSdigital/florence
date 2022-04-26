@@ -20,6 +20,8 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
+import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading } from "../../../config/selectors";
+import { fetchGroupsRequest } from "../../../config/groups/thunks";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -43,12 +45,12 @@ export class CollectionEditController extends Component {
 
         this.state = {
             isSavingEdits: false,
-            isFetchingAllTeams: false,
+            isFetchingAllTeams: props.loadingTeams,
             name: {
                 value: props.name,
                 errorMsg: "",
             },
-            allTeams: [],
+            allTeams: props.allTeams,
             updatedTeamsList: null,
             addedTeams: new Map(), // used to lookup on save to validate whether the teams have changed
             removedTeams: new Map(), // used to lookup on save to validate whether the teams have changed
@@ -64,7 +66,8 @@ export class CollectionEditController extends Component {
         };
     }
 
-    UNSAFE_componentWillMount() {
+    componentDidMount() {
+        this.props.dispatch(fetchGroupsRequest(this.props.isNewSignIn));
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
                 publishDate: {
@@ -77,54 +80,6 @@ export class CollectionEditController extends Component {
                 },
             });
         }
-        this.setState({ isFetchingAllTeams: true });
-        teams
-            .getAll()
-            .then(response => {
-                const allTeams = response.map(team => {
-                    let disabled = false;
-                    if (this.props.teams && this.props.teams.length > 0) {
-                        disabled = this.props.teams.some(addedTeam => team.id == addedTeam.id);
-                    }
-
-                    return {
-                        id: team.id.toString(),
-                        name: team.name,
-                        disabled,
-                    };
-                });
-                this.setState({
-                    isFetchingAllTeams: false,
-                    allTeams,
-                });
-
-                // Not needed for this screen but keeps teams array up-to-date for the teams screen
-                this.props.dispatch(loadGroupsSuccess(response));
-            })
-            .catch(error => {
-                this.setState({ isFetchingAllTeams: false });
-                log.event("Error fetching or mapping all teams", log.error(error));
-                console.error("Error fetching or mapping all teams", error);
-
-                if (error.status === "FETCH_ERR") {
-                    const notification = {
-                        type: "warning",
-                        message: "A network error occurred whilst getting the list of all teams, please check your connection and refresh Florence",
-                        autoDismiss: 5000,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    return;
-                }
-
-                const notification = {
-                    type: "warning",
-                    message: "An unexpected error occurred getting the list all teams, if you need to  edit the teams please try refreshing Florence",
-                    autoDismiss: 5000,
-                    isDismissable: true,
-                };
-                notifications.add(notification);
-            });
     }
 
     handleNameChange = name => {
@@ -437,7 +392,7 @@ export class CollectionEditController extends Component {
             // Switch the teams array of objects back to an array of strings.
             // Basically, we read from teamsDetails but write to teams, so not to
             // break what Zebedee is expecting but still be able to use the team IDs
-            body.teams = state.updatedTeamsList.map(team => team.name);
+            body.teams = this.props.isNewSignIn ? state.updatedTeamsList.map(team => team.id) : state.updatedTeamsList.map(team => team.name);
         }
 
         if (state.publishType !== this.props.publishType) {
@@ -492,6 +447,10 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
+        isNewSignIn: getEnableNewSignIn(state.state),
+        isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
+        allTeams: getGroups(state.state),
+        loadingTeams: getGroupsLoading(state.state)
     };
 }
 
