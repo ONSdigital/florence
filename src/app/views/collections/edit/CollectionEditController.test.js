@@ -256,47 +256,6 @@ describe("Editing the collection's publish type", () => {
     });
 });
 
-xdescribe("Checking whether associated teams have changed", () => {
-    it("returns 'true' when a new team has been added", () => {
-        const teamsLength = componentWithTeams.prop("teams").length;
-        componentWithTeams.instance().handleAddTeam("1");
-        expect(componentWithTeams.state("updatedTeamsList").length).toEqual(teamsLength + 1);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
-        componentWithTeams.instance().handleRemoveTeam("1");
-    });
-
-    it("returns 'true' when an existing team has been removed", () => {
-        const teamsLength = componentWithTeams.prop("teams").length;
-
-        componentWithTeams.instance().handleRemoveTeam("2");
-        expect(componentWithTeams.state("updatedTeamsList").length).toEqual(teamsLength - 1);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
-        componentWithTeams.instance().handleAddTeam("2");
-    });
-
-    it("returns 'false' when an existing team has been removed and added again", () => {
-        const teamIDToBeRemoved = "2";
-        const stateContainsTeamToRemove = componentWithTeams.prop("teams").some(team => team.id === teamIDToBeRemoved);
-        expect(stateContainsTeamToRemove).toEqual(true);
-
-        componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
-        componentWithTeams.instance().handleAddTeam(teamIDToBeRemoved);
-
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(false);
-    });
-
-    it("returns 'false' when a new team is added and removed", () => {
-        const teamIDToBeRemoved = "2";
-        componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
-
-        const stateContainsTeamToRemove = componentWithTeams.prop("teams").some(team => team.id === teamIDToBeRemoved);
-        expect(stateContainsTeamToRemove).toEqual(false);
-
-        componentWithTeams.instance().handleAddTeam(teamIDToBeRemoved);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(false);
-    });
-});
-
 describe("Checking whether publish type has changed", () => {
     it("uses a publish type of 'scheduled' if it was 'manual' and has been changed to 'scheduled'", () => {
         defaultComponent.setProps({ publishType: "manual" });

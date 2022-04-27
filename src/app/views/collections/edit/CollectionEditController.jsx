@@ -403,7 +403,6 @@ export class CollectionEditController extends Component {
             body.publishDate =
                 state.publishType === "scheduled" ? new Date(state.publishDate.value + " " + state.publishTime.value).toISOString() : "";
         }
-        console.log('STATE OUT', body)
         return body;
     }
 
