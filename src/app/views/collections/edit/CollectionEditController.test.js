@@ -46,7 +46,7 @@ const defaultProps = {
     teams: [],
     publishType: "manual",
     isNewSignIn: false,
-    isEnablePermissionsAPI: false
+    isEnablePermissionsAPI: false,
 };
 
 const propsWithScheduleDetails = {
@@ -286,19 +286,19 @@ describe("Data sent as request body on save", () => {
         const state = {
             isSavingEdits: true,
             isFetchingAllTeams: false,
-            name: { value: 'Test collection Boo', errorMsg: '' },
+            name: { value: "Test collection Boo", errorMsg: "" },
             allTeams: [
-                { id: '1', name: 'Team 1', members: [Array] },
-                { id: '2', name: 'Team 2', members: [] },
-                { id: '3', name: 'Team 3', members: [Array] }
+                { id: "1", name: "Team 1", members: [Array] },
+                { id: "2", name: "Team 2", members: [] },
+                { id: "3", name: "Team 3", members: [Array] },
             ],
-            updatedTeamsList: [{ id: '10', name: 'Team 10', members: [Array] }],
+            updatedTeamsList: [{ id: "10", name: "Team 10", members: [Array] }],
             addedTeams: new Map([addedTeam]),
-            removedTeams: new Map([{ id: '1', name: 'Team 1', members: [Array] },]),
-            publishType: 'manual',
-            publishDate: { value: '', errorMsg: '' },
-            publishTime: { value: '09:30', errorMsg: '' }
-        }
+            removedTeams: new Map([{ id: "1", name: "Team 1", members: [Array] }]),
+            publishType: "manual",
+            publishDate: { value: "", errorMsg: "" },
+            publishTime: { value: "09:30", errorMsg: "" },
+        };
 
         const request = componentWithTeams.instance().mapEditsToAPIRequestBody(state);
 

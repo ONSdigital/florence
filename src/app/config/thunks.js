@@ -170,7 +170,7 @@ export const createUserRequest = body => dispatch => {
         .catch(error => {
             dispatch(actions.createUserFailure());
             if (error) {
-                notifications.add({ type: "warning", message: error.body.errors[0].description || error.status, autoDismiss: 5000 });
+                notifications.add({ type: "warning", message: error, autoDismiss: 5000 });
             }
             console.error(error);
         });
