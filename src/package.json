@@ -25,6 +25,14 @@
     "@babel/preset-env": "^7.15.8",
     "@babel/preset-react": "^7.14.5",
     "@babel/register": "^7.15.3",
+    "@storybook/addon-actions": "^6.5.0-beta.0",
+    "@storybook/addon-essentials": "^6.5.0-beta.0",
+    "@storybook/addon-interactions": "^6.5.0-beta.0",
+    "@storybook/addon-links": "^6.5.0-beta.0",
+    "@storybook/builder-webpack5": "^6.5.0-beta.0",
+    "@storybook/manager-webpack5": "^6.5.0-beta.0",
+    "@storybook/react": "^6.5.0-beta.0",
+    "@storybook/testing-library": "^0.0.11",
     "@testing-library/dom": "^8.11.1",
     "@testing-library/jest-dom": "^5.16.1",
     "@testing-library/react": "^12.1.2",
@@ -88,7 +96,9 @@
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "dependencies": {
     "acorn": "^8.4.1",
@@ -121,7 +131,7 @@
     "ssri": "^6.0.2",
     "uuid": "^3.4.0"
   },
-  "resolutions": {
+  "overrides": {
     "lodash": "4.17.21",
     "lodash-es": "^4.17.21",
     "js-yaml": "^3.13.1",
