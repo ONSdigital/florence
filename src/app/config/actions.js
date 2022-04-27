@@ -419,3 +419,10 @@ export const singOutAllUsersSuccess = user => ({
     type: types.SIGN_OUT_ALL_USERS_SUCCESS,
     user,
 });
+
+export const setPreviewLanguage = language => {
+    return {
+        type: types.SET_PREVIEW_LANGUAGE,
+        language,
+    };
+};

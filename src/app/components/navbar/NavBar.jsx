@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
@@ -13,27 +13,9 @@ const LANG = {
 };
 
 const NavBar = props => {
-    const [previewLanguage, setPreviewLanguage] = useState(null);
-
     useEffect(() => {
-        if (cookies.get("lang")) {
-            setPreviewLanguage(cookies.get("lang"));
-        } else {
-            cookies.add("lang", "en", null);
-            setPreviewLanguage("en");
-        }
+        cookies.get("lang") ? props.setPreviewLanguage(cookies.get("lang")) : cookies.add("lang", "en", null);
     }, []);
-
-    useEffect(() => {
-        if (previewLanguage) {
-            changeLanguageCookie(previewLanguage);
-        }
-    }, [previewLanguage, changeLanguageCookie]);
-
-    const changeLanguageCookie = previewLanguage => {
-        cookies.remove("lang");
-        cookies.add("lang", previewLanguage, null);
-    };
 
     const renderWorkingOnItem = () => {
         const workingOn = props.workingOn || {};
@@ -65,12 +47,9 @@ const NavBar = props => {
     };
 
     const changeLang = () => {
-        if (previewLanguage == "en") {
-            setPreviewLanguage("cy");
-        } else {
-            setPreviewLanguage("en");
-        }
-        window.location.reload(true);
+        cookies.remove("lang");
+        props.previewLanguage === "en" ? cookies.add("lang", "cy", null) : cookies.add("lang", "en", null);
+        props.previewLanguage === "en" ? props.setPreviewLanguage("cy") : props.setPreviewLanguage("en");
     };
 
     const renderNavItems = () => {
@@ -163,7 +142,7 @@ const NavBar = props => {
             {isViewingPreview && (
                 <li className="global-nav__item">
                     <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
-                        Language: {LANG[previewLanguage]}
+                        Language: {LANG[props.previewLanguage]}
                     </div>
                 </li>
             )}
@@ -185,6 +164,8 @@ NavBar.propTypes = {
     }),
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
+    setPreviewLanguage: PropTypes.func.isRequired,
+    previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
 
 export default NavBar;
