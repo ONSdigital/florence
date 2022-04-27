@@ -23,6 +23,7 @@ export const getFilteredCollections = createSelector(getMappedCollections, getSe
 
 export const getWorkingOn = state => state.global.workingOn;
 export const rootPath = state => state.rootPath;
+export const getPreviewLanguage = state => state.previewLanguage;
 export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
