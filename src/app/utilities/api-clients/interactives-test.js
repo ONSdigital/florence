@@ -6,6 +6,12 @@ async function getAll() {
     return response.data;
 }
 
+// Filter by query string
+async function get(query) {
+    const response = await Interactives.get(query);
+    return response.data;
+}
+
 // store
 async function create(data) {
     const response = await Interactives.store(data);
@@ -32,6 +38,7 @@ async function destroy(interactiveId) {
 
 module.exports = {
     getAll,
+    get,
     create,
     show,
     update,

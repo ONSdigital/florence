@@ -1,20 +1,48 @@
 import React from "react";
 import mockAxios from "axios";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
-import { InteractivesDelete } from "./InteractivesDelete";
+import InteractivesDelete from "./InteractivesDelete";
 import { show } from "../../utilities/api-clients/interactives-test";
+import * as reactRedux from "react-redux";
 
-describe("Collections", () => {
+const initialState = {
+    interactives: [],
+    interactive: {},
+    filteredInteractives: [],
+    errors: {
+        msg: {},
+    },
+    successMessage: {
+        type: null,
+        success: false,
+    },
+};
+
+describe("Delete an interactive", () => {
+    const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
+    const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
+
+    const deleteInteractive = jest.fn();
+    const getInteractive = jest.fn();
+
+    beforeEach(() => {
+        const dispatch = jest.fn();
+        useDispatchMock.mockReturnValue(dispatch);
+
+        useSelectorMock.mockReturnValue(initialState);
+
+        useSelectorMock.mockClear();
+        useDispatchMock.mockClear();
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
     const defaultProps = {
-        getInteractive: jest.fn(),
-        deleteInteractive: jest.fn(),
-        resetInteractiveError: jest.fn(),
-        rootPath: "/florence",
-        errors: {},
         params: {
             interactiveId: null,
         },
-        successMessage: {},
     };
 
     describe("when renders the component", () => {
@@ -29,10 +57,10 @@ describe("Collections", () => {
         });
 
         it("should fetch the interactive", async () => {
-            jest.clearAllMocks();
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
+            useDispatchMock.mockReturnValue(getInteractive);
             const { rerender } = render(<InteractivesDelete {...defaultProps} />);
-            expect(defaultProps.getInteractive).toHaveBeenCalled();
+            expect(getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
                     data: {
@@ -51,8 +79,14 @@ describe("Collections", () => {
                 })
             );
 
-            defaultProps.interactive = await show(defaultProps.params.interactiveId);
+            const interactive = await show(defaultProps.params.interactiveId);
 
+            const updatedState = Object.assign({}, initialState, {
+                interactive,
+            });
+
+            // updating state
+            useSelectorMock.mockReturnValue(updatedState);
             rerender(<InteractivesDelete {...defaultProps} />);
 
             // Testing text inside, excluding HTML tags
@@ -60,12 +94,12 @@ describe("Collections", () => {
         });
 
         it("should delete an interactive when clicks the delete interactive button", () => {
+            useDispatchMock.mockReturnValue(deleteInteractive);
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             render(<InteractivesDelete {...defaultProps} />);
-            expect(defaultProps.getInteractive).toHaveBeenCalled();
             const deleteButton = screen.getByText("Continue");
             fireEvent.click(deleteButton);
-            expect(defaultProps.deleteInteractive).toHaveBeenCalled();
+            expect(deleteInteractive).toHaveBeenCalled();
         });
     });
 });

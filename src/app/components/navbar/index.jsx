@@ -1,5 +1,6 @@
 import { connect } from "react-redux";
-import { getActive, getGroupsLoading, getEnableNewSignIn } from "../../config/selectors";
+import { getActive, getPreviewLanguage } from "../../config/selectors";
+import { setPreviewLanguage } from "../../config/actions";
 import NavBar from "./NavBar";
 
 const mapStateToProps = state => ({
@@ -7,7 +8,13 @@ const mapStateToProps = state => ({
     rootPath: state.state.rootPath,
     workingOn: getActive(state.state),
     config: state.state.config,
-    isNewSignIn: getEnableNewSignIn(state.state),
+    previewLanguage: getPreviewLanguage(state.state),
 });
 
-export default connect(mapStateToProps)(NavBar);
+const mapDispatchToProps = dispatch => {
+    return {
+        setPreviewLanguage: language => dispatch(setPreviewLanguage(language)),
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(NavBar);

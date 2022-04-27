@@ -721,6 +721,12 @@ export default function reducer(state = initialState, action) {
                 },
             };
         }
+        case types.SET_PREVIEW_LANGUAGE: {
+            return {
+                ...state,
+                previewLanguage: action.language,
+            };
+        }
         default: {
             return state;
         }
