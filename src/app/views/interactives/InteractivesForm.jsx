@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { browserHistory } from "react-router";
 
-import { createInteractive, getInteractive, editInteractive, resetInteractiveError } from "../../actions/interactives";
+import { createInteractive, getInteractive, editInteractive, resetInteractiveError, resetSuccessMessage } from "../../actions/interactives";
 
 import BackButton from "../../components/back-button";
 import Input from "../../components/Input";
@@ -274,7 +274,7 @@ export default function InteractivesForm(props) {
                                         type="button"
                                         buttonText="Preview"
                                         class="secondary"
-                                        onClick={() => console.log()}
+                                        onClick={() => props.router.push(`${rootPath}/interactives/show/${interactiveId}`)}
                                         isSubmitting={false}
                                     />
                                     <ButtonWithShadow
