@@ -46,7 +46,7 @@ export default function InteractivesShow(props) {
                     {successCreate && <AlertSuccess classNames={"margin-top--2"} text="Interactive has been successfully submitted" />}
                     <h1 className="text-align-left">Your interactive has been uploaded</h1>
                     <div>
-                        <iframe title="Embed website" src={url} name="iframe" width="600" height="400"></iframe>
+                        <iframe title="Embed website" src={url} name="iframe" width="800" height="500"></iframe>
                     </div>
                     <p className="padding-top--1">
                         Embedded preview of uploaded interactive - <a href={url}>{url}</a>

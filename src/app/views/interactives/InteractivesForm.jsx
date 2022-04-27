@@ -274,7 +274,7 @@ export default function InteractivesForm(props) {
                                         type="button"
                                         buttonText="Preview"
                                         class="secondary"
-                                        onClick={() => props.router.push(`${rootPath}/interactives/show/${interactiveId}`)}
+                                        onClick={() => window.open(`${rootPath}/interactives/show/${interactiveId}`)}
                                         isSubmitting={false}
                                     />
                                     <ButtonWithShadow
