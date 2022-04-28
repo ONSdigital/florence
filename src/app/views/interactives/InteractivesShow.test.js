@@ -18,7 +18,7 @@ const initialState = {
     },
 };
 
-describe("Delete an interactive", () => {
+describe("Show interactive preview", () => {
     const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
     const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
@@ -45,7 +45,7 @@ describe("Delete an interactive", () => {
     };
 
     describe("when renders the component", () => {
-        it("should display the right content it the view", async () => {
+        it("should fetch the interactive and displays the right content in the show view", async () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             useDispatchMock.mockReturnValue(getInteractive);
             const { rerender } = render(<InteractivesShow {...defaultProps} />);
