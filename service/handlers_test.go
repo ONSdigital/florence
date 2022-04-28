@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"errors"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -45,23 +46,31 @@ func TestStaticFiles(t *testing.T) {
 
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
-		request, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
-		request.URL.RawQuery = ":uri=js/app.bundle.js"
+		req, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
 		So(err, ShouldBeNil)
-		request.Header.Set("Accept-Language", "en")
-		staticFiles(recorder, request)
-		So(recorder.Code, ShouldEqual, 200)
+		req.Header.Set("Accept-Language", "en")
+
+		router := mux.NewRouter()
+		router.HandleFunc("/florence/dist/{uri:.*}", func(writer http.ResponseWriter, request *http.Request) {
+			staticFiles(recorder, request)
+			So(recorder.Code, ShouldEqual, 200)
+		})
+		router.ServeHTTP(recorder, req)
 	})
 
 	Convey("Returns 404 when an unrecognised asset path is given", t, func() {
 		recorder := httptest.NewRecorder()
 		rdr := bytes.NewReader([]byte(``))
-		request, err := http.NewRequest("GET", "/florence/dist/foo", rdr)
-		request.URL.RawQuery = ":uri=foo"
+		req, err := http.NewRequest("GET", "/florence/dist/foo", rdr)
 		So(err, ShouldBeNil)
-		request.Header.Set("Accept-Language", "en")
-		staticFiles(recorder, request)
-		So(recorder.Code, ShouldEqual, 404)
+		req.Header.Set("Accept-Language", "en")
+
+		router := mux.NewRouter()
+		router.HandleFunc("/florence/dist/{uri:.*}", func(writer http.ResponseWriter, request *http.Request) {
+			staticFiles(recorder, request)
+			So(recorder.Code, ShouldEqual, 404)
+		})
+		router.ServeHTTP(recorder, req)
 	})
 }
 
