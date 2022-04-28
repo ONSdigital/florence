@@ -274,7 +274,8 @@ export default function InteractivesForm(props) {
                                         type="button"
                                         buttonText="Preview"
                                         class="secondary"
-                                        onClick={() => window.open(`${rootPath}/interactives/show/${interactiveId}`)}
+                                        link={`${rootPath}/interactives/show/${interactiveId}`}
+                                        newTab={true}
                                         isSubmitting={false}
                                     />
                                     <ButtonWithShadow
