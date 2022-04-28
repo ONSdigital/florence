@@ -103,13 +103,7 @@ const NavBar = props => {
                                 Users and access
                             </Link>
                         </li>
-                        {props.isNewSignIn ? (
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
-                                    Preview teams
-                                </Link>
-                            </li>
-                        ) : (
+                        {!props.isNewSignIn && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams
@@ -118,13 +112,20 @@ const NavBar = props => {
                         )}
                     </>
                 )}
-                {auth.isAdmin(props.user) && props.isNewSignIn && (
-                    <li className="global-nav__item">
-                        <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
-                            Security
-                        </Link>
-                    </li>
-                )}
+                {auth.isAdmin(props.user) && props.isNewSignIn &&
+                    <>
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
+                                Preview teams
+                            </Link>
+                        </li>
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
+                                Security
+                            </Link>
+                        </li>
+                    </>
+                }
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
                         Sign out
