@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
 
@@ -19,60 +19,52 @@ const defaultProps = {
     externalLink: false,
 };
 
-export default class SimpleSelectableListItem extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    renderTitle = () => {
-        if (this.props.disabled) {
-            return <p className="simple-select-list__title simple-select-list__title--disabled">{this.props.title}</p>;
+const SimpleSelectableListItem = ({ title, id, url, externalLink, details = [], extraDetails = [], colCount, disabled }) => {
+    const renderTitle = () => {
+        if (disabled) {
+            return <p className="simple-select-list__title simple-select-list__title--disabled">{title}</p>;
         }
 
-        if (this.props.externalLink) {
+        if (externalLink) {
             return (
-                <a href={this.props.url} role="link">
-                    <p className="simple-select-list__title">{this.props.title}</p>
+                <a href={url} role="link">
+                    <p className="simple-select-list__title">{title}</p>
                 </a>
             );
         }
 
         return (
-            <Link to={this.props.url} role="link" className="simple-select-list__title">
-                {this.props.title}
+            <Link to={url} role="link" className="simple-select-list__title">
+                {title}
             </Link>
         );
     };
-
-    render() {
-        const details = this.props.details || [];
-        const extraDetails = this.props.extraDetails || [];
-        const colCount = this.props.colCount;
-        return (
-            <li className="simple-select-list__item">
-                <div className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
-                    {this.renderTitle()}
-                    {details.map((detail, i) => {
-                        return <p key={`detail-${i}`}>{detail}</p>;
-                    })}
-                </div>
-                {extraDetails.map((column, i) => {
-                    return (
-                        <div key={`detail-${i}`} className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
-                            {column.map((detail, j) => {
-                                return (
-                                    <span key={`detail-${j}`} className={detail.classes}>
-                                        {detail.content}
-                                    </span>
-                                );
-                            })}
-                        </div>
-                    );
+    return (
+        <li className="simple-select-list__item">
+            <div className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
+                {renderTitle()}
+                {details.map((detail, i) => {
+                    return <p key={`detail-${i}`}>{detail}</p>;
                 })}
-            </li>
-        );
-    }
+            </div>
+            {extraDetails.map((column, i) => {
+                return (
+                    <div key={`detail-${i}`} className={`simple-select-list__col simple-select-list__cols-${colCount}`}>
+                        {column.map((detail, j) => {
+                            return (
+                                <span key={`detail-${j}`} className={detail.classes}>
+                                    {detail.content}
+                                </span>
+                            );
+                        })}
+                    </div>
+                );
+            })}
+        </li>
+    );
 }
+
+export default SimpleSelectableListItem;
 
 SimpleSelectableListItem.propTypes = propTypes;
 SimpleSelectableListItem.defaultProps = defaultProps;
