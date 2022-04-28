@@ -13,7 +13,7 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
-import {InteractivesIndex, InteractivesForm, InteractivesDelete} from "./app/views/interactives";
+import {InteractivesIndex, InteractivesForm, InteractivesDelete, InteractivesShow} from "./app/views/interactives";
 import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
@@ -167,6 +167,7 @@ const Index = () => {
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives`} exact component={userIsAuthenticated(InteractivesIndex)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/create`} exact component={userIsAuthenticated(InteractivesForm)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/edit/:interactiveId`} exact component={userIsAuthenticated(InteractivesForm)}/>}
+                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/show/:interactiveId`} exact component={userIsAuthenticated(InteractivesShow)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/delete/:interactiveId`} exact component={userIsAuthenticated(InteractivesDelete)}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}

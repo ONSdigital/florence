@@ -97,12 +97,12 @@ export default function InteractivesIndex(props) {
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
             <div className="grid grid--justify-space-around padding-bottom--2">
-                <div className={"grid__col-sm-12 grid__col-md-10 grid__col-xlg-8"}>
+                <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
                     {successCreate && <AlertSuccess text="Interactive has been successfully submitted" />}
                     {successUpdate && <AlertSuccess text="Interactive has been successfully updated" />}
                     {successDelete && <AlertSuccess text="Interactive has been successfully deleted" />}
                     <div className="grid grid--justify-space-around margin-top--1">
-                        <div className={"grid__col-sm-12 grid__col-md-3"}>
+                        <div className="grid__col-sm-12 grid__col-md-3">
                             <h3 className="text-left">Filter by</h3>
                             <Input
                                 type="text"
@@ -156,7 +156,7 @@ export default function InteractivesIndex(props) {
                                 />
                             </div>
                         </div>
-                        <div className={"grid__col-sm-12 grid__col-md-6"}>
+                        <div className="grid__col-sm-12 grid__col-md-6">
                             <div className="grid--justify-space-between" style={{ display: "flex" }}>
                                 <div className="grid--align-center" style={{ display: "flex" }}>
                                     <label className="ons-label padding-right--1" htmlFor="sort-options">

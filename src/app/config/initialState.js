@@ -63,4 +63,5 @@ export const initialState = {
     interactives: {
         all: [],
     },
+    previewLanguage: "en",
 };

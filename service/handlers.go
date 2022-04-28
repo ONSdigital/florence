@@ -12,6 +12,7 @@ import (
 
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/log.go/log"
+	"github.com/gorilla/mux"
 )
 
 // generated files constants
@@ -44,7 +45,7 @@ func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
 }
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
-	path := req.URL.Query().Get(":uri")
+	path := mux.Vars(req)["uri"]
 	assetPath := assetStaticRoot + path
 
 	etag, err := getAssetETag(assetPath)
