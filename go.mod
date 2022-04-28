@@ -13,7 +13,6 @@ require (
 	github.com/chromedp/chromedp v0.6.8
 	github.com/cucumber/godog v0.10.0
 	github.com/gorilla/mux v1.8.0
-	github.com/gorilla/pat v1.0.1
 	github.com/gorilla/websocket v1.4.2
 	github.com/hashicorp/go-uuid v1.0.0
 	github.com/kelseyhightower/envconfig v1.4.0
@@ -41,7 +40,6 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20210202160940-bed99a852dfe // indirect
-	github.com/gorilla/context v1.1.1 // 	indirect
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
 	github.com/hashicorp/go-memdb v1.2.1 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
