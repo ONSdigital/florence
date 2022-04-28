@@ -112,7 +112,7 @@ const NavBar = props => {
                         )}
                     </>
                 )}
-                {auth.isAdmin(props.user) && props.isNewSignIn &&
+                {auth.isAdmin(props.user) && props.isNewSignIn && (
                     <>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
@@ -125,7 +125,7 @@ const NavBar = props => {
                             </Link>
                         </li>
                     </>
-                }
+                )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
                         Sign out
