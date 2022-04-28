@@ -58,7 +58,7 @@ export default function InteractivesIndex(props) {
     ];
 
     const sortOptions = [
-        { id: "date", name: "Latest published" },
+        { id: "date", name: "Latest updated" },
         { id: "title", name: "Title" },
     ];
 
