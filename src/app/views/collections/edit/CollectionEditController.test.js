@@ -2,7 +2,8 @@ import React from "react";
 import { CollectionEditController, mapStateToProps } from "./CollectionEditController";
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
-import { LOAD_GROUPS_SUCCESS } from "../../../config/groups/constants";
+import { LOAD_GROUPS_PROGRESS, LOAD_GROUPS_SUCCESS } from "../../../config/groups/constants";
+import { getGroups } from "../../../config/selectors";
 
 console.error = () => {};
 console.warn = () => {};
@@ -44,6 +45,8 @@ const defaultProps = {
     },
     teams: [],
     publishType: "manual",
+    isNewSignIn: false,
+    isEnablePermissionsAPI: false,
 };
 
 const propsWithScheduleDetails = {
@@ -56,6 +59,12 @@ const propsWithTeams = {
     ...defaultProps,
     teams: [{ id: "2", name: "Team 2" }],
 };
+
+const fetchedAllTeams = [
+    { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
+    { id: "2", name: "Team 2", members: [] },
+    { id: "3", name: "Team 3", members: ["member2@email.com"] },
+];
 
 const defaultComponent = shallow(<CollectionEditController {...defaultProps} />);
 const scheduledComponent = shallow(<CollectionEditController {...propsWithScheduleDetails} />);
@@ -118,21 +127,10 @@ describe("Editing the collection name", () => {
 });
 
 describe("Editing the collection's associated teams", () => {
-    const fetchedAllTeams = [
-        { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
-        { id: "2", name: "Team 2", members: [] },
-        { id: "3", name: "Team 3", members: ["member2@email.com"] },
-    ];
     let editingTeamsComponent;
 
     beforeEach(() => {
-        editingTeamsComponent = shallow(<CollectionEditController {...propsWithTeams} />);
-    });
-
-    it("on mount it updates global state with the latest list of all teams", () => {
-        editingTeamsComponent.instance().UNSAFE_componentWillMount();
-        expect(dispatchedAction.type).toEqual(LOAD_GROUPS_SUCCESS);
-        expect(dispatchedAction.groups).toEqual(fetchedAllTeams);
+        editingTeamsComponent = shallow(<CollectionEditController {...propsWithTeams} allTeams={fetchedAllTeams} />);
     });
 
     it("adds a team to the state", () => {
@@ -143,24 +141,17 @@ describe("Editing the collection's associated teams", () => {
         expect(editingTeamsComponent.state("updatedTeamsList").some(team => team.id == addedTeam.id)).toEqual(true);
     });
 
-    it("disables a team option if it's added at load", () => {
-        const disabledTeams = editingTeamsComponent.prop("allTeams").filter(team => team.disabled);
-        expect(disabledTeams.length).toBe(1);
-        expect(disabledTeams[0].name).toBe("Team 2");
-        expect(disabledTeams[0].id).toBe("2");
-    });
-
     it("disables a team option after a user has added it", () => {
         const addedTeam = { id: "3", name: "Team 3" };
         const getDisabledTeams = () => editingTeamsComponent.state("allTeams").filter(team => team.disabled);
 
         // First verify that the component's state is as expected
-        expect(getDisabledTeams().length).toBe(1);
+        expect(getDisabledTeams().length).toBe(0);
         expect(getDisabledTeams().some(team => team.id === addedTeam.id)).toBe(false);
 
         editingTeamsComponent.instance().handleAddTeam(addedTeam.id);
 
-        expect(getDisabledTeams().length).toBe(2);
+        expect(getDisabledTeams().length).toBe(1);
         expect(getDisabledTeams().some(team => team.id === addedTeam.id)).toBe(true);
     });
 
@@ -176,22 +167,32 @@ describe("Editing the collection's associated teams", () => {
     it("enables a team option if it's not added at load", () => {
         const getEnabledTeams = () => editingTeamsComponent.state("allTeams").filter(team => !team.disabled);
         expect(editingTeamsComponent.state("allTeams").length).toBe(3);
-        expect(getEnabledTeams().length).toBe(2);
+        expect(getEnabledTeams().length).toBe(3);
     });
 
     it("enables a team option after a user has removed it", () => {
-        const removedTeamID = "2";
-        const getEnabledTeams = () => editingTeamsComponent.state("allTeams").filter(team => !team.disabled);
+        const team = { id: "3", name: "Team 3" };
         const getDisabledTeams = () => editingTeamsComponent.state("allTeams").filter(team => team.disabled);
 
-        expect(getEnabledTeams().length).toBe(2);
-        expect(getDisabledTeams().some(team => team.id === removedTeamID)).toBe(true);
-        expect(getEnabledTeams().some(team => team.id === removedTeamID)).toBe(false);
+        // First verify that the component's state is as expected
+        expect(getDisabledTeams().length).toBe(0);
+        expect(getDisabledTeams().some(team => team.id === team.id)).toBe(false);
 
-        editingTeamsComponent.instance().handleRemoveTeam(removedTeamID);
+        editingTeamsComponent.instance().handleAddTeam(team.id);
+
+        expect(getDisabledTeams().length).toBe(1);
+        expect(getDisabledTeams().some(team => team.id === team.id)).toBe(true);
+
+        const getEnabledTeams = () => editingTeamsComponent.state("allTeams").filter(team => !team.disabled);
+
+        expect(getEnabledTeams().length).toBe(2);
+        expect(getDisabledTeams().some(t => t.id === team.id)).toBe(true);
+        expect(getEnabledTeams().some(t => t.id === team.id)).toBe(false);
+
+        editingTeamsComponent.instance().handleRemoveTeam(team.id);
         expect(getEnabledTeams().length).toBe(3);
-        expect(getDisabledTeams().some(team => team.id === removedTeamID)).toBe(false);
-        expect(getEnabledTeams().some(team => team.id === removedTeamID)).toBe(true);
+        expect(getDisabledTeams().some(team => team.id === team.id)).toBe(false);
+        expect(getEnabledTeams().some(team => team.id === team.id)).toBe(true);
     });
 
     it("doesn't add the same team twice", () => {
@@ -255,48 +256,6 @@ describe("Editing the collection's publish type", () => {
     });
 });
 
-describe("Checking whether associated teams have changed", () => {
-    it("returns 'true' when a new team has been added", () => {
-        const teamsLength = componentWithTeams.prop("teams").length;
-
-        componentWithTeams.instance().handleAddTeam("1");
-        expect(componentWithTeams.state("updatedTeamsList").length).toEqual(teamsLength + 1);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
-        componentWithTeams.instance().handleRemoveTeam("1");
-    });
-
-    it("returns 'true' when an existing team has been removed", () => {
-        const teamsLength = componentWithTeams.prop("teams").length;
-
-        componentWithTeams.instance().handleRemoveTeam("2");
-        expect(componentWithTeams.state("updatedTeamsList").length).toEqual(teamsLength - 1);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(true);
-        componentWithTeams.instance().handleAddTeam("2");
-    });
-
-    it("returns 'false' when an existing team has been removed and added again", () => {
-        const teamIDToBeRemoved = "2";
-        const stateContainsTeamToRemove = componentWithTeams.prop("teams").some(team => team.id === teamIDToBeRemoved);
-        expect(stateContainsTeamToRemove).toEqual(true);
-
-        componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
-        componentWithTeams.instance().handleAddTeam(teamIDToBeRemoved);
-
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(false);
-    });
-
-    it("returns 'false' when a new team is added and removed", () => {
-        const teamIDToBeRemoved = "2";
-        componentWithTeams.instance().handleRemoveTeam(teamIDToBeRemoved);
-
-        const stateContainsTeamToRemove = componentWithTeams.prop("teams").some(team => team.id === teamIDToBeRemoved);
-        expect(stateContainsTeamToRemove).toEqual(false);
-
-        componentWithTeams.instance().handleAddTeam(teamIDToBeRemoved);
-        expect(componentWithTeams.instance().teamsHaveChanged(componentWithTeams.state())).toEqual(false);
-    });
-});
-
 describe("Checking whether publish type has changed", () => {
     it("uses a publish type of 'scheduled' if it was 'manual' and has been changed to 'scheduled'", () => {
         defaultComponent.setProps({ publishType: "manual" });
@@ -320,11 +279,30 @@ describe("Checking whether publish type has changed", () => {
 
 describe("Data sent as request body on save", () => {
     it("teams value matches the value the API expects", () => {
-        const addedTeam = { id: "3", name: "Team 3" };
+        const componentWithTeams = shallow(<CollectionEditController {...propsWithTeams} allTeams={fetchedAllTeams} />);
+        const addedTeam = { id: "10", name: "Team 10" };
         componentWithTeams.instance().handleAddTeam(addedTeam.id);
-        const request = componentWithTeams.instance().mapEditsToAPIRequestBody(componentWithTeams.state());
+
+        const state = {
+            isSavingEdits: true,
+            isFetchingAllTeams: false,
+            name: { value: "Test collection Boo", errorMsg: "" },
+            allTeams: [
+                { id: "1", name: "Team 1", members: [Array] },
+                { id: "2", name: "Team 2", members: [] },
+                { id: "3", name: "Team 3", members: [Array] },
+            ],
+            updatedTeamsList: [{ id: "10", name: "Team 10", members: [Array] }],
+            addedTeams: new Map([addedTeam]),
+            removedTeams: new Map([{ id: "1", name: "Team 1", members: [Array] }]),
+            publishType: "manual",
+            publishDate: { value: "", errorMsg: "" },
+            publishTime: { value: "09:30", errorMsg: "" },
+        };
+
+        const request = componentWithTeams.instance().mapEditsToAPIRequestBody(state);
+
         expect(request.teams).toEqual(expect.arrayContaining([addedTeam.name]));
-        componentWithTeams.instance().handleRemoveTeam(addedTeam.id);
     });
 
     it("publish date matches the value the API expects", () => {
@@ -491,18 +469,24 @@ describe("The mapPropsToState function", () => {
                     teams: ["Team 2", "Team 3"],
                 },
             },
-            teams: {
-                allIDsAndNames: [
+            groups: {
+                all: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
                 ],
+            },
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
             },
         };
         const expectProps = {
             publishType: "scheduled",
             publishDate: "2018-01-12T09:30:00.000Z",
             teams: ["Team 2", "Team 3"],
+            isEnablePermissionsAPI: false,
+            isNewSignIn: false,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -510,8 +494,12 @@ describe("The mapPropsToState function", () => {
     it("having no activeCollection returns the correct values", () => {
         const state = {
             collections: {},
-            teams: {
-                allIDsAndNames: [
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
+            },
+            groups: {
+                all: [
                     { id: "1", name: "Team 1", members: [] },
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
@@ -522,6 +510,8 @@ describe("The mapPropsToState function", () => {
             publishType: undefined,
             publishDate: undefined,
             teams: undefined,
+            isEnablePermissionsAPI: false,
+            isNewSignIn: false,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
