@@ -92,6 +92,34 @@ export default function InteractivesIndex(props) {
         }
     };
 
+    const getChips = interactive => {
+        const { state, published, metadata } = interactive;
+        let chips = [];
+
+        if (metadata.collection_id) {
+            chips.push(<Chip style="standard" text="LINKED TO COLLECTION" />);
+        } else if (published) {
+            chips.push(<Chip style="green" text="PUBLISHED" />);
+        }
+
+        switch (state) {
+            case "ArchiveUploaded":
+            case "ArchiveDispatchedToImporter":
+                chips.push(<Chip style="blue" text="UPLOADING" />);
+                break;
+            case "ImportSuccess":
+                chips.push(<Chip style="blue" text="UPLOADED" />);
+                break;
+            case "ArchiveDispatchFailed":
+            case "ImportFailure":
+                chips.push(<Chip style="red" text="ERROR" />);
+                break;
+            default:
+                chips.push(<Chip style="red" text="ERROR" />);
+        }
+
+        return chips;
+    };
     const dataSources = topics;
 
     return (
@@ -176,14 +204,14 @@ export default function InteractivesIndex(props) {
                             </div>
                             <ul className="list--neutral list--neutral__chips" role="list">
                                 {filteredInteractives.map((interactive, key) => {
-                                    const { id, metadata, last_updated, published } = interactive;
+                                    const { id, metadata, last_updated } = interactive;
                                     return (
                                         <li key={key} className="list__item" role="listitem">
                                             <Link to={`${rootPath}/interactives/edit/${id}`} className="font-weight--600 font-size--18">
                                                 {metadata.title}
                                             </Link>
                                             &nbsp;- <b className="font-size--18">{moment(last_updated).format("DD MMMM YYYY")}</b>
-                                            {published ? <Chip style="green" text="PUBLISHED" /> : <Chip style="blue" text="UPLOADED" />}
+                                            {getChips(interactive)}
                                         </li>
                                     );
                                 })}
