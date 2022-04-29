@@ -76,50 +76,66 @@ export const loadCollectionsRequest = redirect => async dispatch => {
         });
 };
 
-export const createCollectionRequest = collection => dispatch => {
-    collections
-        .create(collection)
-        .then(response => {
-            dispatch(actions.createCollectionSuccess(response));
-            dispatch(push("/florence/collections/" + response.id));
-        })
-        .catch(error => {
-            // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
-            switch (error.status) {
-                case 401: {
-                    break;
-                }
-                case 400: {
-                    const notification = {
-                        type: "warning",
-                        message: "There was an error creating the collection. Please check inputs and try again.",
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
-                case 409: {
-                    const notification = {
-                        type: "warning",
-                        message: error.body,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
+export const createCollectionRequest = (collection, teams, isEnablePermissionsAPI) => async dispatch => {
+    try {
+        const result = await collections.create(collection);
+        dispatch(actions.createCollectionSuccess(result));
 
-                    break;
-                }
-                default: {
-                    const notification = {
-                        type: "warning",
-                        message: `An unexpected error has occurred whilst creating collection`,
-                        isDismissable: true,
-                    };
-                    notifications.add(notification);
-                    break;
-                }
+        const collectionId = result.id;
+
+        if (isEnablePermissionsAPI && teams?.length > 0) {
+            await collections.createPolicy(collectionId, {
+                id: collectionId,
+                entities: teams.map(team => `groups/${team.id}`), // ideally I would like to take the teams from response but collection is returning names of teams
+                role: "collection-previewer",
+                conditions: [
+                    {
+                        attributes: ["collection_id"],
+                        operator: "StringEquals",
+                        values: [collectionId],
+                    },
+                ],
+            });
+        }
+
+        dispatch(push(`/florence/collections/${collectionId}`));
+    } catch (error) {
+        // TODO: those were copied form the component will be here temporarily so we can agree on methods to deal with it
+        switch (error.status) {
+            case 401: {
+                break;
             }
-            console.error(error);
-        });
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error creating the collection. Please check inputs and try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst creating collection`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
 };
 
 export const approveCollectionRequest = (id, redirect) => dispatch => {
@@ -154,7 +170,7 @@ export const createUserRequest = body => dispatch => {
         .catch(error => {
             dispatch(actions.createUserFailure());
             if (error) {
-                notifications.add({ type: "warning", message: error.body.errors[0].description || error.status, autoDismiss: 5000 });
+                notifications.add({ type: "warning", message: error, autoDismiss: 5000 });
             }
             console.error(error);
         });

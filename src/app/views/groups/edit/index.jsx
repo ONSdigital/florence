@@ -9,7 +9,7 @@ import {
     getGroupMembers,
     getGroupMembersLoading,
 } from "../../../config/selectors";
-import { fetchGroupMembersRequest } from "../../../config/groups/thunks";
+import { fetchGroupMembersRequest, updateGroupMembersRequest } from "../../../config/groups/thunks";
 import EditGroup from "./EditGroup";
 
 function mapStateToProps(state) {

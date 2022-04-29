@@ -1,0 +1,61 @@
+
+// Alert
+.ons-svg-icon {
+  height: 1rem;
+  vertical-align: middle;
+  width: 1rem;
+}
+
+.ons-panel {
+  border-radius: 0;
+  position: relative;
+
+  &--success {
+    background: #e7f3ec;
+    border-color: #0f8243;
+
+    .ons-panel__icon .ons-svg-icon {
+      fill: #0f8243 !important;
+      margin-top: -15% !important;
+    }
+
+    .ons-panel__body {
+      padding-left: 2rem;
+    }
+
+    .ons-panel__icon {
+      position: absolute;
+    }
+  }
+
+  &--error {
+    background: #fae6e8;
+    border-color: #d0021b;
+  }
+
+  &--no-title {
+    border-left: 8px solid transparent;
+    border-left-color: transparent;
+    padding: 1rem;
+  }
+
+  &__body {
+    background: none;
+    padding: 0;
+  }
+}
+
+.ons-u-vh {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  width: 1px;
+}

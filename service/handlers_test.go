@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"errors"
+	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -45,23 +46,31 @@ func TestStaticFiles(t *testing.T) {
 
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
-		request, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
-		request.URL.RawQuery = ":uri=js/app.bundle.js"
+		req, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
 		So(err, ShouldBeNil)
-		request.Header.Set("Accept-Language", "en")
-		staticFiles(recorder, request)
-		So(recorder.Code, ShouldEqual, 200)
+		req.Header.Set("Accept-Language", "en")
+
+		router := mux.NewRouter()
+		router.HandleFunc("/florence/dist/{uri:.*}", func(writer http.ResponseWriter, request *http.Request) {
+			staticFiles(recorder, request)
+			So(recorder.Code, ShouldEqual, 200)
+		})
+		router.ServeHTTP(recorder, req)
 	})
 
 	Convey("Returns 404 when an unrecognised asset path is given", t, func() {
 		recorder := httptest.NewRecorder()
 		rdr := bytes.NewReader([]byte(``))
-		request, err := http.NewRequest("GET", "/florence/dist/foo", rdr)
-		request.URL.RawQuery = ":uri=foo"
+		req, err := http.NewRequest("GET", "/florence/dist/foo", rdr)
 		So(err, ShouldBeNil)
-		request.Header.Set("Accept-Language", "en")
-		staticFiles(recorder, request)
-		So(recorder.Code, ShouldEqual, 404)
+		req.Header.Set("Accept-Language", "en")
+
+		router := mux.NewRouter()
+		router.HandleFunc("/florence/dist/{uri:.*}", func(writer http.ResponseWriter, request *http.Request) {
+			staticFiles(recorder, request)
+			So(recorder.Code, ShouldEqual, 404)
+		})
+		router.ServeHTTP(recorder, req)
 	})
 }
 
@@ -171,17 +180,17 @@ func TestIndexFile(t *testing.T) {
 			<head>
 				<meta charset="UTF-8">
 				<title>Florence</title>
-			
+
 				<link rel="stylesheet" href="/florence/dist/css/app.css">
 			</head>
 			<body>
 			<noscript><h1>Enable Javascript to use Florence</h1></noscript>
 			<div id="app"></div>
-			
+
 			<!-- We're using an external version of ResumableJS (from http://www.resumablejs.com/) and not importing it via NPM
 				because the NPM module appears to be out-of-date and breaks our code. -->
 			<script type="text/javascript" src="https://cdn.ons.gov.uk/vendor/resumable-js/1.0.0/resumable.js"></script>
-			
+
 			<script type="text/javascript" src="/florence/dist/js/app.bundle.js"></script>
 			</body>
 			</html>
@@ -205,8 +214,11 @@ func TestIndexFile(t *testing.T) {
 	Convey("Environment variables are set", t, func() {
 		cfg := &config.Config{
 			SharedConfig: config.SharedConfig{
-				EnableDatasetImport: true,
-				EnableNewSignIn:     true,
+				EnableDatasetImport:   true,
+				EnableNewSignIn:       true,
+				EnableNewUpload:       true,
+				EnableNewInteractives: true,
+				EnablePermissionsAPI:  true,
 			},
 		}
 		getAsset = func(path string) ([]byte, error) {
@@ -225,7 +237,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enableNewInteractives":true,"enablePermissionsAPI":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -235,7 +247,6 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true}`), ShouldBeTrue)
 		})
 
 	})
@@ -255,7 +266,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
 
 		})
 
@@ -266,7 +277,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
 		})
 
 	})

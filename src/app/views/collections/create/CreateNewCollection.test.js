@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, within } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
@@ -14,6 +14,7 @@ const defaultProps = {
     user: {
         userType: "ADMIN",
     },
+    isEnablePermissionsAPI: false,
 };
 
 describe("CreateNewCollection", () => {
@@ -155,8 +156,7 @@ describe("CreateNewCollection", () => {
     });
 
     describe("when there are teams available", () => {
-        it("allows adding teams that can view this collection", () => {
-            const initialState = {};
+        it("allows adding and removing teams that can view this collection", () => {
             const props = {
                 ...defaultProps,
                 teams: [
@@ -164,18 +164,77 @@ describe("CreateNewCollection", () => {
                     { id: "2", name: "Team2" },
                 ],
             };
-            render(<CreateNewCollection {...props} />, { initialState });
+            render(<CreateNewCollection {...props} />);
 
             expect(screen.getByLabelText("Select a team(s) that can view this collection")).toHaveValue("Select an option");
             expect(screen.getByRole("option", { name: "Team1" })).toBeInTheDocument();
             expect(screen.getByRole("option", { name: "Team2" })).toBeInTheDocument();
             expect(screen.getByText("Select an option").selected).toBe(true);
 
-            userEvent.click(screen.getByText("Team1"), [1]);
+            userEvent.selectOptions(screen.getByRole("combobox"), "1");
+            userEvent.selectOptions(screen.getByRole("combobox"), "2");
 
-            expect(screen.queryByText("Team1")).toBeInTheDocument();
-            expect(screen.getByText("Select an option").selected).toBe(true);
-            expect(screen.queryByText("Select an option").selected).toBe(true);
+            const teams = screen.getByTestId("selected-item-list");
+            const team1RemoveBtn = within(teams).getAllByRole("button", { name: /×/i });
+
+            expect(within(teams).getByText("Team1")).toBeInTheDocument();
+            expect(within(teams).getByText("Team2")).toBeInTheDocument();
+
+            userEvent.click(team1RemoveBtn[0]);
+
+            expect(within(teams).queryByText("Team1")).not.toBeInTheDocument();
+            expect(within(teams).getByText("Team2")).toBeInTheDocument();
+        });
+
+        it("passed the value isEnablePermissionsAPI value when creating collection", () => {
+            const props = {
+                ...defaultProps,
+                teams: [
+                    { id: "1", name: "Team1" },
+                    { id: "2", name: "Team2" },
+                ],
+                isEnablePermissionsAPI: true,
+                createCollectionRequest: jest.fn(),
+            };
+
+            render(<CreateNewCollection {...props} />);
+
+            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
+            userEvent.click(screen.getByLabelText("Manual publish"));
+
+            userEvent.click(screen.getByText("Create collection"));
+
+            expect(props.createCollectionRequest).toBeCalledWith(
+                { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual" },
+                [],
+                true
+            );
+        });
+
+        it("passed teams in separate array when creating collection", () => {
+            const props = {
+                ...defaultProps,
+                teams: [
+                    { id: "1", name: "Team1" },
+                    { id: "2", name: "Team2" },
+                ],
+                isEnablePermissionsAPI: true,
+                createCollectionRequest: jest.fn(),
+            };
+
+            render(<CreateNewCollection {...props} />);
+
+            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
+            userEvent.click(screen.getByLabelText("Manual publish"));
+            userEvent.selectOptions(screen.getByRole("combobox"), "1"); // select
+
+            userEvent.click(screen.getByText("Create collection"));
+
+            expect(props.createCollectionRequest).toBeCalledWith(
+                { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual" },
+                [{ id: "1", name: "Team1" }],
+                true
+            );
         });
     });
 });

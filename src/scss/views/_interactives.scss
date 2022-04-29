@@ -1,0 +1,28 @@
+.ons-checkbox__other, .ons-radio__other {
+  border-left: 4px solid #bcbcbd;
+  display: block;
+  margin: 0 1rem .5rem 1.1rem;
+  padding: 0 11px 11px 21px;
+}
+
+fieldset {
+  width: 100%;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.list--neutral__chips {
+  .chip {
+    margin-left: 10px;
+    padding: 2px;
+
+    &__text {
+      font-weight: bold;
+    }
+  }
+}
+
+.ons-content {
+  min-height: 54vh;
+}

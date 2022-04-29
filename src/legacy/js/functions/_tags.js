@@ -30,38 +30,34 @@
     });
 
     // Prepopulate widget based on existing entries on disk.
-    getTopics(templateData.description.primaryTopic)
-    getSubTopics(templateData.description.primaryTopic, templateData.description.secondaryTopics)
+    getTopics(templateData.description.canonicalTopic)
+    getSubTopics(templateData.description.canonicalTopic, templateData.description.secondaryTopics)
 }
 
-function getTopics(primaryTopic){
+function getTopics(canonicalTopic){
     $.ajax({
         url: "/topics",
         dataType: 'json',
         crossDomain: true,
         success: function (result) {
             result.items.forEach(function(topic) {
-                var newOption
-                if(topic.id == primaryTopic){
-                    newOption = new Option(topic.current.title, topic.id, false, true);
-                } else {
-                    newOption = new Option(topic.current.title, topic.id, false, false);
-                }
+                var optionSelected = topic.id == canonicalTopic
+                var newOption = new Option(topic.current.title, topic.id, false, optionSelected)
                 $('#selectTopic').append(newOption)
             })
         }
     });
 }
 
-function getSubTopics(primaryTopic = null, secondaryTopics = null){ 
+function getSubTopics(canonicalTopic = null, secondaryTopics = null){ 
 
     $('#selectSubTopic').empty();
     var id
 
-    if(!primaryTopic){
+    if(!canonicalTopic){
         id = $("#selectTopic").val();
     } else {
-        id = primaryTopic
+        id = canonicalTopic
     }
 
     $.ajax({

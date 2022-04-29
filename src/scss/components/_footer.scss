@@ -1,0 +1,12 @@
+.ons-footer{
+    
+    background-color: #f5f5f6;
+
+    &__body {
+      padding: 2rem 0 4rem;
+    }
+
+    .ons-svg-logo, .ons-svg-logo__group {
+      fill: #222 !important;
+    }
+}
