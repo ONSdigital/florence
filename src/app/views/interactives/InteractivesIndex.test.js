@@ -285,7 +285,7 @@ describe("Interactives index", () => {
                 },
 
                 {
-                    // metadata contains collection_id, ArchiveUploaded = "Published + Uploading"
+                    // metadata contains collection_id, ArchiveUploaded = "Linked to collection + Uploading"
                     id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05b",
                     archive: {
                         name: "test11.zip",
@@ -302,7 +302,7 @@ describe("Interactives index", () => {
                     last_updated: "2022-03-21T13:29:49.901Z",
                 },
                 {
-                    // metadata contains collection_id, ArchiveDispatchedToImporter = "Published + Uploading"
+                    // metadata contains collection_id, ArchiveDispatchedToImporter = "Linked to collection + Uploading"
                     id: "65a93ed2-31a1-4gd5-89dd-9d44b2cda05b",
                     archive: {
                         name: "test12.zip",
@@ -319,7 +319,7 @@ describe("Interactives index", () => {
                     last_updated: "2022-03-21T13:29:49.901Z",
                 },
                 {
-                    // metadata contains collection_id, ImportSuccess = "Published + Uploaded"
+                    // metadata contains collection_id, ImportSuccess = "Linked to collection + Uploaded"
                     id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
                     archive: {
                         name: "test13.zip",
@@ -336,7 +336,7 @@ describe("Interactives index", () => {
                     last_updated: "2022-04-20T13:10:48.107Z",
                 },
                 {
-                    // metadata contains collection_id, ArchiveDispatchFailed = "Published + Error"
+                    // metadata contains collection_id, ArchiveDispatchFailed = "Linked to collection + Error"
                     id: "65a93ed2-31a1-4bd5-89dd-9d44b8cda05c",
                     archive: {
                         name: "test14.zip",
@@ -353,7 +353,7 @@ describe("Interactives index", () => {
                     last_updated: "2022-04-20T13:10:48.107Z",
                 },
                 {
-                    // metadata contains collection_id, ImportFailure = "Published + Error"
+                    // metadata contains collection_id, ImportFailure = "Linked to collection + Error"
                     id: "65a93ed2-31a1-4bd5-89dd-9d44b8rgu05c",
                     archive: {
                         name: "test15.zip",
