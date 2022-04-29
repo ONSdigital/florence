@@ -47,6 +47,7 @@ const defaultProps = {
     publishType: "manual",
     isNewSignIn: false,
     isEnablePermissionsAPI: false,
+    policy: null
 };
 
 const propsWithScheduleDetails = {
@@ -459,7 +460,7 @@ describe("Validating the edited collection", () => {
     });
 });
 
-describe("The mapPropsToState function", () => {
+describe.only("The mapPropsToState function", () => {
     it("existing activeCollection returns the correct values", () => {
         const state = {
             collections: {
@@ -480,6 +481,9 @@ describe("The mapPropsToState function", () => {
                 enablePermissionsAPI: false,
                 enableNewSignIn: false,
             },
+            policy: {
+                data: null
+            }
         };
         const expectProps = {
             publishType: "scheduled",
@@ -487,6 +491,7 @@ describe("The mapPropsToState function", () => {
             teams: ["Team 2", "Team 3"],
             isEnablePermissionsAPI: false,
             isNewSignIn: false,
+            policy: null
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -508,7 +513,9 @@ describe("The mapPropsToState function", () => {
             config: {
                 enablePermissionsAPI: false,
                 enableNewSignIn: false,
-            },
+            },            policy: {
+                data: null
+            }
         };
         const expectProps = {
             publishType: undefined,
