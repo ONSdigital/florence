@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { browserHistory } from "react-router";
+import { browserHistory, Link } from "react-router";
 
 import { createInteractive, getInteractive, editInteractive, resetInteractiveError } from "../../actions/interactives";
 
@@ -95,8 +95,8 @@ export default function InteractivesForm(props) {
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
             <div className="grid grid--justify-space-around padding-bottom--2">
-                <div className={"grid__col-sm-12 grid__col-md-10 grid__col-xlg-8"}>
-                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
+                <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
+                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
 
                     <h1 className="ons-u-fs-xxl ons-u-mt-l">{!interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}</h1>
 
@@ -264,19 +264,19 @@ export default function InteractivesForm(props) {
                                 )}
                             </>
                         )}
-                        <div className={"inline-block padding-top--1"}>
+                        <div className="inline-block padding-top--1">
                             {!interactiveId ? (
                                 <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} isSubmitting={false} />
                             ) : (
                                 <div className="inline-block">
                                     <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
-                                    <ButtonWithShadow
-                                        type="button"
-                                        buttonText="Preview"
-                                        class="secondary"
-                                        onClick={() => console.log()}
-                                        isSubmitting={false}
-                                    />
+                                    <Link
+                                        to={`${rootPath}/interactives/show/${interactiveId}`}
+                                        target="_blank"
+                                        className="ons-btn ons-btn--secondary"
+                                    >
+                                        <span className="ons-btn__inner">Preview</span>
+                                    </Link>
                                     <ButtonWithShadow
                                         type="button"
                                         buttonText="Delete interactive"

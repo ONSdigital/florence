@@ -54,9 +54,9 @@ export default function InteractivesDelete(props) {
 
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
-            <div className="grid grid--justify-space-around padding-bottom--2">
-                <div className={"grid__col-8"}>
-                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
+            <div className="grid grid--justify-space-around padding-bottom--2 ons-content">
+                <div className="grid__col-8">
+                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
                     <h1 className="text-align-left">Delete interactive</h1>
                     <p className="padding-bottom--1">You are about to delete this interactive:</p>
                     <ul className="list-simple">

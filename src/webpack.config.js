@@ -21,6 +21,9 @@ module.exports = {
   },
   devServer: {
     contentBase: path.join(__dirname, "src"),
+    headers: {
+      "X-Frame-Options": "sameorigin",
+    },
   },
   module: {
     rules: [
