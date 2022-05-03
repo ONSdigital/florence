@@ -184,7 +184,7 @@ export default function InteractivesIndex(props) {
                                 />
                             </div>
                         </div>
-                        <div className="grid__col-sm-12 grid__col-md-6">
+                        <div className="grid__col-sm-12 grid__col-md-7">
                             <div className="grid--justify-space-between" style={{ display: "flex" }}>
                                 <div className="grid--align-center" style={{ display: "flex" }}>
                                     <label className="ons-label padding-right--1" htmlFor="sort-options">
