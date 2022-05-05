@@ -18,7 +18,7 @@ export default function InteractivesForm(props) {
     const [title, setTitle] = useState("");
     const [label, setLabel] = useState("");
     const [file, setFile] = useState(null);
-    const [slug, setSlug] = useState("");
+    const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
 
@@ -32,7 +32,7 @@ export default function InteractivesForm(props) {
             setTitle("");
             setLabel("");
             setFile(null);
-            setSlug("");
+            setUrl("");
             setInteractiveId("");
             setPublished(false);
         }
@@ -45,7 +45,7 @@ export default function InteractivesForm(props) {
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
-            setSlug(metadata.slug);
+            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}`);
             setPublished(metadata.published);
         }
     }, [interactive]);
@@ -74,7 +74,6 @@ export default function InteractivesForm(props) {
                         internal_id: internalId,
                         title: title,
                         label: label,
-                        slug: slug,
                     },
                 },
             })
@@ -238,13 +237,13 @@ export default function InteractivesForm(props) {
                                             </p>
                                             <Input
                                                 type="text"
-                                                id="slug"
+                                                id="url"
                                                 className="ons-input ons-input--text ons-input-type__input"
-                                                name="slug"
+                                                name="url"
                                                 disabled={props.isAwaitingResponse}
-                                                value={slug}
+                                                value={url}
                                                 required
-                                                onChange={e => setSlug(e.target.value)}
+                                                onChange={e => setUrl(e.target.value)}
                                                 label="URL"
                                             />
                                         </div>
@@ -252,13 +251,13 @@ export default function InteractivesForm(props) {
                                 ) : (
                                     <Input
                                         type="text"
-                                        id="slug"
+                                        id="url"
                                         className="ons-input ons-input--text ons-input-type__input"
-                                        name="slug"
+                                        name="url"
                                         disabled={true}
-                                        value={slug}
+                                        value={url}
                                         required
-                                        onChange={e => setSlug(e.target.value)}
+                                        onChange={e => setUrl(e.target.value)}
                                         label="URL"
                                     />
                                 )}
