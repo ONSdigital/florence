@@ -26,3 +26,10 @@ fieldset {
 .ons-content {
   min-height: 54vh;
 }
+
+.input:disabled {
+  border-color: #AEA99C;
+  color: #58585B;
+  background-color: #e2e2e3;
+  position: relative;
+}
