@@ -45,7 +45,7 @@ export default function InteractivesForm(props) {
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
-            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}`);
+            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
             setPublished(metadata.published);
         }
     }, [interactive]);
