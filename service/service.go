@@ -112,7 +112,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
-	interactivesProxy := reverseproxy.Create(apiRouterURL, directors.Director("/interactives"), nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
@@ -156,7 +155,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/interactives{uri:/.*}", interactivesProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)
