@@ -90,6 +90,9 @@ describe("Interactives index", () => {
         params: {
             interactiveId: null,
         },
+        location: {
+            search: null
+        }
     };
 
     describe("when renders the component", () => {

@@ -1,4 +1,5 @@
 import * as types from "./../actions/actionTypes";
+import queryString from "query-string";
 
 const initialState = {
     interactives: [],
@@ -14,9 +15,27 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
         case types.FETCH_INTERACTIVES:
+            const collectionId = queryString.parse(window.location.search).collection
+            const { interactives } = action
+            let filteredInteractives = interactives
+            if(collectionId) {
+                filteredInteractives = interactives.filter(function(interactive) {
+                    if(interactive.metadata.collection_id === collectionId) {
+                        return true
+                    }
+                    switch (interactive.state) {
+                        case "ArchiveUploaded":
+                        case "ArchiveDispatchedToImporter":
+                        case "ImportSuccess":
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+            }
             return Object.assign({}, state, {
-                interactives: action.interactives,
-                filteredInteractives: action.interactives,
+                interactives,
+                filteredInteractives
             });
         case types.GET_INTERACTIVE:
         case types.STORE_INTERACTIVE:
@@ -44,7 +63,7 @@ export default function reducer(state = initialState, action = {}) {
             });
         case types.SORT_INTERACTIVES: {
             const { sort } = action;
-            let filteredInteractives = state.interactives;
+            let filteredInteractives = state.filteredInteractives;
             if (sort === "title") {
                 filteredInteractives = filteredInteractives.sort((a, b) => a.metadata.title.localeCompare(b.metadata.title));
             }
