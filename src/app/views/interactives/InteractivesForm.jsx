@@ -66,15 +66,13 @@ export default function InteractivesForm(props) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append(
-            "update",
+            "interactive",
             JSON.stringify({
-                interactive: {
-                    id: interactiveId,
-                    metadata: {
-                        internal_id: internalId,
-                        title: title,
-                        label: label,
-                    },
+                id: interactiveId,
+                metadata: {
+                    internal_id: internalId,
+                    title: title,
+                    label: label,
                 },
             })
         );
