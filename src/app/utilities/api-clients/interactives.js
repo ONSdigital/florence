@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const baseURL = "/interactives/v1";
+const baseURL = "/api/v1";
 
 export default class Interactives {
     static getAll() {
