@@ -145,7 +145,7 @@ describe("Create/Edit an Interactives", () => {
             expect(internalIdInput.value).toBe("internal_id");
             expect(titleInput.value).toBe("Title");
             expect(labelInput.value).toBe("Label");
-            expect(urlInput.value).toBe(`${baseUrl}/${resourceType}/${interactive.metadata.slug}-${interactive.metadata.resource_id}`);
+            expect(urlInput.value).toBe(`${baseUrl}/${resourceType}/${interactive.metadata.slug}-${interactive.metadata.resource_id}/embed`);
         });
 
         it("should update an interactive when clicks the update interactive button", async () => {
