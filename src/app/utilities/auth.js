@@ -34,10 +34,10 @@ export function setAuthToken(userData) {
     const userJSONData = JSON.stringify(userData);
     window.localStorage.setItem(_AUTH_TOKEN_NAME, userJSONData);
     /* Legacy florence */
-    window.localStorage.setItem("loggedInAs", userJSONData.email);
+    window.localStorage.setItem("loggedInAs", userData.email);
     // Store the user type in localStorage. Used in old Florence
     // where views can depend on user type. e.g. Browse tree
-    localStorage.setItem("userType", user.getOldUserType(userJSONData));
+    localStorage.setItem("userType", user.getOldUserType(userData));
 }
 
 export function getAuthToken() {
