@@ -9,7 +9,7 @@ const mapStateToProps = state => ({
     workingOn: getActive(state.state),
     config: state.state.config,
     previewLanguage: getPreviewLanguage(state.state),
-    isNewSignIn: getEnableNewSignIn(state.state)
+    isNewSignIn: getEnableNewSignIn(state.state),
 });
 
 const mapDispatchToProps = dispatch => {

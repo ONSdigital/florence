@@ -71,12 +71,11 @@ describe("NavBar", () => {
                 };
                 const component = shallow(<NavBar {...props} user={authenticatedUser} />);
                 expect(component.find(Link)).toHaveLength(5);
-                expect(component.find(Link).getElements()[0].props.children).toBe("Collections")
-                expect(component.find(Link).getElements()[1].props.children).toBe("Users and access")
-                expect(component.find(Link).getElements()[2].props.children).toBe("Preview teams")
-                expect(component.find(Link).getElements()[3].props.children).toBe("Security")
-                expect(component.find(Link).getElements()[4].props.children).toBe("Sign out")
-
+                expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
+                expect(component.find(Link).getElements()[1].props.children).toBe("Users and access");
+                expect(component.find(Link).getElements()[2].props.children).toBe("Preview teams");
+                expect(component.find(Link).getElements()[3].props.children).toBe("Security");
+                expect(component.find(Link).getElements()[4].props.children).toBe("Sign out");
             });
         });
 
@@ -137,8 +136,8 @@ describe("NavBar", () => {
 
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(2);
-            expect(component.find(Link).getElements()[0].props.children).toBe("Collections")
-            expect(component.find(Link).getElements()[1].props.children).toBe("Sign out")
+            expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
+            expect(component.find(Link).getElements()[1].props.children).toBe("Sign out");
         });
 
         describe("when on collections url", () => {
