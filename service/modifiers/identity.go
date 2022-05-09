@@ -8,6 +8,12 @@ import (
 	"time"
 )
 
+type Permission struct {
+	Email  string `json:"email"`
+	Admin  bool   `json:"admin"`
+	Editor bool   `json:"editor"`
+}
+
 // Edits the response before proxying it back.
 // If Auth tokens are present then set them as cookies
 func IdentityResponseModifier(r *http.Response) error {
