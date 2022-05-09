@@ -21,3 +21,9 @@ export function objectToQueryString(obj) {
         }
     return str.join("&");
 }
+
+// get a value from query strings
+export function getParameterByName(name) {
+    const match = RegExp("[?&]" + name + "=([^&]*)").exec(window.location.search);
+    return match && decodeURIComponent(match[1].replace(/\+/g, " "));
+}

@@ -38,6 +38,11 @@ export class CreateContent extends Component {
                     id: "homepage",
                     url: url.resolve("../") + "/homepage",
                 },
+                {
+                    title: "Interactives",
+                    id: "interactives",
+                    url: url.resolve("../../../") + `/interactives?collection=${this.props.params.collectionID}`,
+                },
             ],
             filteredContentTypes: [],
             searchTerm: "",
