@@ -27,7 +27,6 @@ export default class LoginForm extends Component {
     render() {
         const inputs = this.props.formData.inputs;
         const isSubmitting = this.props.formData.isSubmitting;
-
         return (
             <div className="grid grid--justify-center">
                 <div className="grid__col-3">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 export const useGetPermissions = (userToken) => {
     const [userState, setUserState] = useState();
     useEffect(() => {
-            if (!userToken) {
+            if (userToken) {
                 user.getPermissions().then(userData => {
                     // TODO this needs to be removed when we get a correct 401 status back from zebedee.
                     if (userData === "Access Token required but none provided.") {
@@ -16,6 +16,6 @@ export const useGetPermissions = (userToken) => {
             } else {
                 setUserState(userToken);
             }
-    }, []);
+    }, [userState]);
     return userState;
 };
