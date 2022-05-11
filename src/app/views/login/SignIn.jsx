@@ -24,6 +24,7 @@ const propTypes = {
 };
 
 export class LoginController extends Component {
+    validationErrors = {};
     emailErrorMsg = "";
     passwordErrorMsg = "";
     session = "";
@@ -36,29 +37,28 @@ export class LoginController extends Component {
             passwordType: "password",
             status: status.WAITING_USER_INITIAL_CREDS,
             firstTimeSignIn: false,
-            validationErrors: {},
         };
     }
 
-    componentDidUpdate(prevProps, prevState) {
+    UNSAFE_componentWillMount() {
         if (this.props.isAuthenticated) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
-            return true;
-        }
-        if (this.state.validationErrors !== nextState.validationErrors) {
-            return true;
-        }
-        if (this.state.firstTimeSignIn !== nextState.firstTimeSignIn) {
-            return true;
-        }
-
-        return false;
-    }
+    // shouldComponentUpdate(nextProps, nextState) {
+    //     if (this.props.isAuthenticated !== nextProps.isAuthenticated) {
+    //         return true;
+    //     }
+    //     if (this.state.validationErrors !== nextState.validationErrors) {
+    //         return true;
+    //     }
+    //     if (this.state.firstTimeSignIn !== nextState.firstTimeSignIn) {
+    //         return true;
+    //     }
+    //
+    //     return false;
+    // }
 
     requestSignIn = credentials => {
         user.signIn(credentials)
@@ -114,12 +114,10 @@ export class LoginController extends Component {
                 } else {
                     this.notifyUnexpectedError(notification);
                 }
-                this.setState({
-                    validationErrors: {
-                        heading: "Fix the following: ",
-                        body: errorsForBody,
-                    },
-                });
+                this.validationErrors = {
+                    heading: "Fix the following: ",
+                    body: errorsForBody,
+                };
             } else {
                 this.notifyUnexpectedError(notification);
             }
@@ -194,9 +192,8 @@ export class LoginController extends Component {
     };
 
     clearErrors = () => {
-        this.setState({
-            validationErrors: {},
-        });
+        this.validationErrors = {};
+
         this.emailErrorMsg = "";
         this.passwordErrorMsg = "";
     };
@@ -350,7 +347,7 @@ export class LoginController extends Component {
                     inputs={inputs}
                     isSubmitting={this.state.status === status.SUBMITTING_SIGN_IN || this.state.status === status.SUBMITTING_PERMISSIONS}
                     onSubmit={this.submitSignIn}
-                    validationErrors={this.state.validationErrors}
+                    validationErrors={this.validationErrors}
                 />
             );
         }
