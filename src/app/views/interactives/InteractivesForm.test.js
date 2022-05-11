@@ -9,9 +9,7 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: {
-        msg: {},
-    },
+    errors: {},
     successMessage: {
         type: null,
         success: false,

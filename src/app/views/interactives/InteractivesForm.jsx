@@ -89,11 +89,29 @@ export default function InteractivesForm(props) {
         setFile(file);
     };
 
+    const displayedErrors =  Object.values(errors);
+
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
             <div className="grid grid--justify-space-around padding-bottom--2">
                 <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
                     <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
+                    {
+                        (displayedErrors.length > 0) && <div className="grid__col-sm-12 grid__col-xl-4 padding-top--2">
+                            <div className="ons-panel ons-panel--errors">
+                                <div className="ons-panel--errors__title">
+                                    <span className="">There are {displayedErrors.length} problems with your answer: </span>
+                                </div>
+                                <div className="ons-panel--errors__body">
+                                    {
+                                        displayedErrors.map((error, index) => {
+                                            return <p>{index + 1}. <span>{error}</span> </p>
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
 
                     <h1 className="ons-u-fs-xxl ons-u-mt-l">{!interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}</h1>
 
@@ -107,123 +125,160 @@ export default function InteractivesForm(props) {
                     )}
 
                     {/* FORM */}
-                    <div className="grid__col-sm-11 grid__col-md-6 grid__col-xl-4">
-                        {errors.msg ? (
-                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                    <div className="grid__col-sm-12 grid__col-xl-4">
+                        {errors.internalId ? (
+                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel">
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>Enter a correct internal ID</strong>
+                                        <strong>{ errors.internalId }</strong>
                                     </p>
-                                    <Input
-                                        type="text"
-                                        id="internal_id"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="internal_id"
-                                        disabled={props.isAwaitingResponse}
-                                        value={internalId}
-                                        error={""}
-                                        required
-                                        onChange={e => setInternalId(e.target.value)}
-                                        label="Internal ID"
-                                    />
+                                    <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                        <Input
+                                            type="text"
+                                            id="internal_id"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="internal_id"
+                                            disabled={props.isAwaitingResponse}
+                                            value={internalId}
+                                            error={""}
+                                            required
+                                            onChange={e => setInternalId(e.target.value)}
+                                            label="Internal ID"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <Input
-                                type="text"
-                                id="internal_id"
-                                className="ons-input ons-input--text ons-input-type__input"
-                                name="internal_id"
-                                disabled={props.isAwaitingResponse}
-                                value={internalId}
-                                error={""}
-                                required
-                                onChange={e => setInternalId(e.target.value)}
-                                label="Internal ID"
-                            />
+                            <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                <Input
+                                    type="text"
+                                    id="internal_id"
+                                    className="ons-input ons-input--text ons-input-type__input"
+                                    name="internal_id"
+                                    disabled={props.isAwaitingResponse}
+                                    value={internalId}
+                                    error={""}
+                                    required
+                                    onChange={e => setInternalId(e.target.value)}
+                                    label="Internal ID"
+                                />
+                            </div>
                         )}
-                        {errors.msg ? (
-                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                        {errors.title ? (
+                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel">
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>Enter a correct title</strong>
+                                        <strong>{ errors.title }</strong>
                                     </p>
-                                    <Input
-                                        type="text"
-                                        id="title"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="title"
-                                        disabled={props.isAwaitingResponse}
-                                        value={title}
-                                        required
-                                        onChange={e => setTitle(e.target.value)}
-                                        label="Title"
-                                        help="It will help to search for the interactive later"
-                                    />
+                                    <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                        <Input
+                                            type="text"
+                                            id="title"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="title"
+                                            disabled={props.isAwaitingResponse}
+                                            value={title}
+                                            required
+                                            onChange={e => setTitle(e.target.value)}
+                                            label="Title"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <Input
-                                type="text"
-                                id="title"
-                                className="ons-input ons-input--text ons-input-type__input"
-                                name="title"
-                                disabled={props.isAwaitingResponse}
-                                value={title}
-                                required
-                                onChange={e => setTitle(e.target.value)}
-                                label="Title"
-                                helpMessage="It will help to search for the interactive later"
-                            />
+                            <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                <Input
+                                    type="text"
+                                    id="title"
+                                    className="ons-input ons-input--text ons-input-type__input"
+                                    name="title"
+                                    disabled={props.isAwaitingResponse}
+                                    value={title}
+                                    required
+                                    onChange={e => setTitle(e.target.value)}
+                                    label="Title"
+                                    helpMessage="It will help to search for the interactive later"
+                                />
+                            </div>
                         )}
-                        {errors.msg ? (
-                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s" id="error-panel">
+                        {errors.label ? (
+                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel">
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>Enter a correct label</strong>
+                                        <strong>{ errors.label }</strong>
                                     </p>
-                                    <Input
-                                        type="text"
-                                        id="label"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="label"
-                                        disabled={props.isAwaitingResponse}
-                                        value={label}
-                                        required
-                                        onChange={e => setLabel(e.target.value)}
-                                        label="Label"
-                                        helpMessage="It will be used to generate the URL"
-                                    />
+                                    <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                        <Input
+                                            type="text"
+                                            id="label"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="label"
+                                            disabled={props.isAwaitingResponse}
+                                            value={label}
+                                            required
+                                            onChange={e => setLabel(e.target.value)}
+                                            label="Label"
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ) : (
-                            <Input
-                                type="text"
-                                id="label"
-                                className="ons-input ons-input--text ons-input-type__input"
-                                name="label"
-                                disabled={props.isAwaitingResponse}
-                                value={label}
-                                required
-                                onChange={e => setLabel(e.target.value)}
-                                label="Label"
-                                helpMessage="It will be used to generate the URL"
-                            />
+                            <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                <Input
+                                    type="text"
+                                    id="label"
+                                    className="ons-input ons-input--text ons-input-type__input"
+                                    name="label"
+                                    disabled={props.isAwaitingResponse}
+                                    value={label}
+                                    required
+                                    onChange={e => setLabel(e.target.value)}
+                                    label="Label"
+                                    helpMessage="It will be used to generate the URL"
+                                />
+                            </div>
                         )}
-                        <Input
-                            type="file"
-                            id="file"
-                            name="file"
-                            accept=".zip"
-                            className="ons-input ons-input--text ons-input-type__input ons-input--upload"
-                            required
-                            onChange={handleFile}
-                            label="Upload a file"
-                            helpMessage="Only file type accepted is ZIP"
-                        />
+                        {errors.file ? (
+                            <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel">
+                                <span className="ons-u-vh">Error: </span>
+                                <div className="ons-panel__body">
+                                    <p className="ons-panel__error">
+                                        <strong>{ errors.file }</strong>
+                                    </p>
+                                    <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                        <Input
+                                            type="file"
+                                            id="file"
+                                            name="file"
+                                            accept=".zip"
+                                            className="ons-input ons-input--text ons-input-type__input ons-input--upload"
+                                            required
+                                            onChange={handleFile}
+                                            label="Upload a file"
+                                            helpMessage="File types accepted are XLS and XLSX or PDF"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ) : (
+                            <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                <Input
+                                    type="file"
+                                    id="file"
+                                    name="file"
+                                    accept=".zip"
+                                    className="ons-input ons-input--text ons-input-type__input ons-input--upload"
+                                    required
+                                    onChange={handleFile}
+                                    label="Upload a file"
+                                    helpMessage="Only file type accepted is ZIP"
+                                />
+                            </div>
+                        )}
+
                         {interactiveId && (
                             <>
                                 {errors.msg ? (
@@ -233,31 +288,35 @@ export default function InteractivesForm(props) {
                                             <p className="ons-panel__error">
                                                 <strong>Enter a correct URL</strong>
                                             </p>
-                                            <Input
-                                                type="text"
-                                                id="url"
-                                                className="ons-input ons-input--text ons-input-type__input"
-                                                name="url"
-                                                disabled={props.isAwaitingResponse}
-                                                value={url}
-                                                required
-                                                onChange={e => setUrl(e.target.value)}
-                                                label="URL"
-                                            />
+                                            <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                                <Input
+                                                    type="text"
+                                                    id="url"
+                                                    className="ons-input ons-input--text ons-input-type__input"
+                                                    name="url"
+                                                    disabled={props.isAwaitingResponse}
+                                                    value={url}
+                                                    required
+                                                    onChange={e => setUrl(e.target.value)}
+                                                    label="URL"
+                                                />
+                                            </div>
                                         </div>
                                     </div>
                                 ) : (
-                                    <Input
-                                        type="text"
-                                        id="url"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="url"
-                                        disabled={true}
-                                        value={url}
-                                        required
-                                        onChange={e => setUrl(e.target.value)}
-                                        label="URL"
-                                    />
+                                    <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
+                                        <Input
+                                            type="text"
+                                            id="url"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="url"
+                                            disabled={true}
+                                            value={url}
+                                            required
+                                            onChange={e => setUrl(e.target.value)}
+                                            label="URL"
+                                        />
+                                    </div>
                                 )}
                             </>
                         )}

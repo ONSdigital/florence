@@ -30,7 +30,15 @@
 
   &--error {
     background: #fae6e8;
-    border-color: #d0021b;
+    border-color: #d0021b !important;
+    strong {
+      color: #d0021b;
+      font-weight: bold;
+    }
+
+    .ons-panel__error {
+      padding-bottom: 20px;
+    }
   }
 
   &--no-title {
