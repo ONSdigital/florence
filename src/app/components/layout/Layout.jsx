@@ -35,7 +35,7 @@ const Layout = props => {
                 isDismissable: true,
             });
         }
-    }, [userPermissions, isCheckingAuthentication]);
+    }, [userPermissions, isCheckingAuthentication], props.user);
 
     useEffect(() => {
         log.initialise();
