@@ -21,3 +21,10 @@ const mockedGetElement = () => ({
 Object.defineProperty(document, 'getElementById', {
     value: mockedGetElement,
 });
+
+Object.defineProperty(window, 'getEnv', {
+    writable: true,
+    value: jest.fn().mockImplementation(() => ({
+        enableNewInteractives: false,
+    })),
+});
