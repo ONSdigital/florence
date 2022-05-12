@@ -207,10 +207,7 @@ export default class user {
             if (cookies.get("collection")) {
                 cookies.remove("collection");
             }
-            removeAuthToken(); // TODO added
-            // TODO remove
-            // localStorage.removeItem("loggedInAs");
-            // localStorage.removeItem("userType");
+            removeAuthToken();
             store.dispatch(userLoggedOut());
             store.dispatch(reset());
         }

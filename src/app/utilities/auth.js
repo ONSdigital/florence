@@ -47,6 +47,8 @@ export function getAuthToken() {
 
 export function removeAuthToken() {
     window.localStorage.removeItem(_AUTH_TOKEN_NAME);
+    /* ENABLE_NEW_SIGN_IN legacy */
+    window.localStorage.removeItem("access_token");
     /* Florence legacy */
     window.localStorage.removeItem("loggedInAs");
     window.localStorage.removeItem("userType");

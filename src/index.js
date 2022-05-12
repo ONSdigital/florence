@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
@@ -6,7 +6,7 @@ import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
-import auth from "./app/utilities/auth";
+import auth, {getAuthToken} from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
@@ -66,7 +66,8 @@ const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.user.isAuthenticated;
+        // TODO Remove getAuthToken() call when ENABLE_NEW_INTERACTIVES feature in prod
+        return state.user.isAuthenticated || getAuthToken();
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "UserIsAuthenticated",
