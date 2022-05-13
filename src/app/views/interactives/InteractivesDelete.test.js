@@ -49,8 +49,7 @@ describe("Delete an interactive", () => {
         it("renders the initial content as creating mode", () => {
             render(<InteractivesDelete {...defaultProps} />);
             expect(screen.getByText(/Name/i)).toBeInTheDocument();
-            expect(screen.getByText(/Published date/i)).toBeInTheDocument();
-            expect(screen.getByText(/Topic/i)).toBeInTheDocument();
+            expect(screen.getByText(/Last updated/i)).toBeInTheDocument();
             // // one button to create, one link to scape
             expect(screen.getByText("Continue")).toBeInTheDocument();
             expect(screen.getByText("Cancel")).toBeInTheDocument();
@@ -74,6 +73,7 @@ describe("Delete an interactive", () => {
                             label: "Label",
                             slug: "label",
                         },
+                        last_updated: "2022-04-20T13:10:48.107Z",
                         published: false,
                     },
                 })
@@ -91,6 +91,7 @@ describe("Delete an interactive", () => {
 
             // Testing text inside, excluding HTML tags
             expect(screen.getByText(/Name/i)).toHaveTextContent(`Name - Title`);
+            expect(screen.getByText(/Last updated/i)).toHaveTextContent(`Last updated - 20 April 2022`);
         });
 
         it("should delete an interactive when clicks the delete interactive button", () => {
