@@ -101,6 +101,10 @@ function bulletinEditor(collectionId, data) {
         data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
     });
 
+    $("#survey-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
+        data.description.survey = $("#survey-checkbox").prop('checked') ? 'census' : null;
+    });
+
     // Save
     var editNav = $('.edit-nav');
     editNav.off(); // remove any existing event handlers.

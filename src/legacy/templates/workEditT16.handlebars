@@ -5,7 +5,7 @@
                 <h1>Metadata</h1>
 
                 <p id="metadata-d">Title | Summary | Release date | Next release | Contact | Summary | NS status |
-                    Cancel</p>
+                    Cancel | Census</p>
             </div>
             <div class="edit-section__content">
                 <div id="metadata-list">
@@ -81,6 +81,10 @@
                     <div id="cancelled">
                         <label for="cancelled">Cancelled </label>
                         <input type="checkbox" name="cancelled" value="false" class="checkbox"/>
+                    </div>
+                    <div id="survey">
+                        <label for="survey-checkbox">Census </label>
+                        <input id="survey-checkbox" type="checkbox" name="survey" {{#if this.description.survey}}checked{{/if}}/>
                     </div>
                 </div>
             </div>
