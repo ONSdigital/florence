@@ -81,8 +81,8 @@ function articleEditor(collectionId, data) {
       data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
-  $("#survey-checkbox").click(function () {
-    data.description.survey = $("#survey-checkbox").prop('checked') ? 'census' : null;
+  $("#census").click(function () {
+    data.description.survey = $("#census").prop('checked') ? 'census' : null;
   });
   
   $("#articleType-checkbox").click(function () {

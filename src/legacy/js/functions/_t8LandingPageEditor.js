@@ -95,8 +95,8 @@ function datasetLandingEditor(collectionId, data) {
     data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
   });
 
-  $("#survey-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
-    data.description.survey = $("#survey-checkbox").prop('checked') ? 'census' : null;
+  $("#census").prop('checked', data.description.survey ? true : false).click(function () {
+    data.description.survey = $("#census").prop('checked') ? 'census' : null;
   });
 
   // Save

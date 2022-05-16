@@ -115,8 +115,8 @@ function releaseEditor(collectionId, data) {
         
     });
 
-    $("#survey-checkbox").click(function () {
-        data.description.survey = $("#survey-checkbox").prop('checked') ? 'census' : null;
+    $("#census").click(function () {
+        data.description.survey = $("#census").prop('checked') ? 'census' : null;
     });
 
     $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
