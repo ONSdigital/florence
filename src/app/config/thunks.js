@@ -244,7 +244,7 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
+                dispatch(addMembersToNewTeam(response.id, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
@@ -290,7 +290,7 @@ const addMembersToNewTeam = (groupName, members) => dispatch => {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, members.length || ""),
+                message: errCodes.CREATE_TEAM_SUCCESS(groupName, members.length || ""),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);
