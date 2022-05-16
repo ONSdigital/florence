@@ -7,7 +7,7 @@ import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
-import {removeAuthToken, setAuthToken} from "../auth";
+import { removeAuthToken, setAuthToken } from "../auth";
 
 export default class user {
     static get(email) {
