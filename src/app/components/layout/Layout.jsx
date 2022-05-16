@@ -9,7 +9,7 @@ import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 import Popouts from "../popouts/Popouts";
 import { useGetPermissions } from "../../config/user/userHooks";
-import {getAuthToken} from "../../utilities/auth";
+import { getAuthToken } from "../../utilities/auth";
 import fp from "lodash/fp";
 
 const Layout = props => {
@@ -27,15 +27,8 @@ const Layout = props => {
                 console.warn(`Unable to find auth token in local storage`);
                 return;
             }
-        } else if (!isCheckingAuthentication) {
-            notifications.add({
-                type: "warning",
-                message: "Unable to start Florence due to an error getting your account's permissions. Please try refreshing Florence.",
-                autoDismiss: 8000,
-                isDismissable: true,
-            });
         }
-    }, [userPermissions, isCheckingAuthentication], props.user);
+    }, [userPermissions, isCheckingAuthentication]);
 
     useEffect(() => {
         log.initialise();
