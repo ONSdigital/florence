@@ -71,30 +71,21 @@ function timeseriesEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
-   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-  var checkBoxStatus = function () {
-    if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
-      return false;
-    } else {
-      return true;
+  /* The checked attribute is a boolean attribute and the corresponding property 
+  will be true if the attribute is present and has a value other than false */
+   var checkBoxStatus = function (value) {
+    if (value === "" || value === "false" || value === false) {
+        return false;
     }
+    return true;
   };
 
-  $("#metadata-list #natStat input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-    data.description.nationalStatistic = $("#metadata-list #natStat input[type='checkbox']").prop('checked') ? true : false;
+  $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
+    data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
-  var isIndexStatus = function () {
-    if (data.description.isIndex === true) {
-      return true;
-    } else {
-      return false;
-    }
-  };
-
-  $("#metadata-list #isIndex input[type='checkbox']").prop('checked', isIndexStatus).click(function () {
-    data.description.isIndex = $("#metadata-list #isIndex input[type='checkbox']").prop('checked') ? true : false;
+  $("#metadata-list #isIndex input[type='checkbox']").prop('checked', checkBoxStatus(data.description.isIndex)).click(function () {
+    data.description.isIndex = $("#metadata-list #isIndex input[type='checkbox']").prop('checked');
   });
 
   // Save

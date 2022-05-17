@@ -86,41 +86,26 @@ function releaseEditor(collectionId, data) {
         
     });
 
-    /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-    var checkBoxStatus = function (id) {
-        if (id === 'natStat') {
-            if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
-                return false;
-            } else {
-                return true;
-            }
-        } else if (id === 'cancelled') {
-            if (data.description.cancelled === "false" || data.description.cancelled === false) {
-                return false;
-            } else {
-                return true;
-            }
-        } else if (id === 'finalised') {
-            if (data.description.finalised === "false" || data.description.finalised === false) {
-                return false;
-            } else {
-                return true;
-            }
+    /* The checked attribute is a boolean attribute and the corresponding property 
+    will be true if the attribute is present and has a value other than false */
+    var checkBoxStatus = function (value) {
+        if (value === "" || value === "false" || value === false) {
+            return false;
         }
+        return true;
     };
 
     // Gets status of checkbox and sets JSON to match
-    $("#natStat input[type='checkbox']").prop('checked', checkBoxStatus($('#natStat').attr('id'))).click(function () {
-        data.description.nationalStatistic = $("#natStat input[type='checkbox']").prop('checked') ? true : false;
-        
+    $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
+        data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
     });
 
-    $("#census").click(function () {
-        data.description.survey = $("#census").prop('checked') ? 'census' : null;
+    $("#census-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
+        data.description.survey = $("#census-checkbox").prop('checked') ? 'census' : null;
     });
 
-    $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus($('#cancelled').attr('id'))).click(function () {
-        data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked') ? true : false;
+    $("#cancelled input[type='checkbox']").prop('checked', checkBoxStatus(data.description.cancelled)).click(function () {
+        data.description.cancelled = $("#cancelled input[type='checkbox']").prop('checked');
         if (data.description.cancelled) {
             var editedSectionValue = {};
             editedSectionValue.title = "Please enter the reason for the cancellation";
@@ -150,12 +135,12 @@ function releaseEditor(collectionId, data) {
     });
 
     if (data.description.finalised) {
-        $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function (e) {
+        $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus(data.description.finalised)).click(function (e) {
             sweetAlert('You cannot change this field once it is finalised.');
             e.preventDefault();
         });
     } else {
-        $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus($('#finalised').attr('id'))).click(function () {
+        $("#finalised input[type='checkbox']").prop('checked', checkBoxStatus(data.description.finalised)).click(function () {
             swal({
                 title: "Warning",
                 text: "You will not be able reset the date to provisional once you've done this. Are you sure you want to proceed?",
