@@ -77,16 +77,15 @@ function compendiumChapterEditor(collectionId, data) {
 
     /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
      is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
-    var checkBoxStatus = function () {
-        if (data.description.nationalStatistic === "false" || data.description.nationalStatistic === false) {
+    var checkBoxStatus = function (value) {
+        if (value === "" || value === "false" || value === false) {
             return false;
-        } else {
-            return true;
         }
+        return true;
     };
 
-    $("#metadata-list input[type='checkbox']").prop('checked', checkBoxStatus).click(function () {
-        data.description.nationalStatistic = $("#metadata-list input[type='checkbox']").prop('checked') ? true : false;
+    $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
+        data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
     });
 
     // Save

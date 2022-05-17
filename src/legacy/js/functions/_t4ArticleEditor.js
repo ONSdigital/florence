@@ -77,12 +77,21 @@ function articleEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  $("#natStat-checkbox").click(function () {
+  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
+  is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  var checkBoxStatus = function (value) {
+    if (value === "" || value === "false" || value === false) {
+      return false;
+    }
+    return true;
+  };
+
+  $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
       data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
-  $("#census").click(function () {
-    data.description.survey = $("#census").prop('checked') ? 'census' : null;
+  $("#census-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
+    data.description.survey = $("#census-checkbox").prop('checked') ? 'census' : null;
   });
   
   $("#articleType-checkbox").click(function () {
