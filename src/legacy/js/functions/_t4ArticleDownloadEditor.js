@@ -76,8 +76,8 @@ function ArticleDownloadEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  /* The checked attribute is a boolean attribute, which means the corresponding property is true if the attribute
-   is present at all—even if, for example, the attribute has no value or is set to empty string value or even "false" */
+  /* The checked attribute is a boolean attribute and the corresponding property 
+  will be true if the attribute is present and has a value other than false */
   var checkBoxStatus = function (value) {
     if (value === "" || value === "false" || value === false) {
       return false;
