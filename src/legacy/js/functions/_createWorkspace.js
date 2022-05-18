@@ -28,9 +28,9 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
 
         Florence.globalVars.pagePath = safePath;
         if (Florence.globalVars.welsh !== true) {
-            document.cookie = "lang=" + "en;path=/";
+            document.cookie = "lang=" + "en;path=/" + ";domain=" + location.hostname;
         } else {
-            document.cookie = "lang=" + "cy;path=/";
+            document.cookie = "lang=" + "cy;path=/" + ";domain=" + location.hostname;
         }
         Florence.refreshAdminMenu();
 
