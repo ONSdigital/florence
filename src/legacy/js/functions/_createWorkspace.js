@@ -33,8 +33,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         } else {
             languageCookie += "cy"
         }
-        languageCookie += ";path=/;domain=" + location.hostname;
-        document.cookie = languageCookie
+        document.cookie = languageCookie + ";path=/;domain=" + location.hostname;
         Florence.refreshAdminMenu();
 
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);
