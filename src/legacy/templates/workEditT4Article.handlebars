@@ -4,7 +4,7 @@
             <div class="edit-section">
                 <div class="edit-section__head">
                     <h1>Metadata</h1>
-                    <p id="metadata-a">Title | Contact | Abstract | Keywords</p>
+                    <p id="metadata-a">Title | Contact | Abstract | Keywords | Census</p>
                 </div>
                 <div class="edit-section__content">
                     <div id="metadata-list">
@@ -77,7 +77,11 @@
                         </div>
                         <div id="natStat">
                             <label for="natStat-checkbox">National statistic</label>
-                            <input id="natStat-checkbox" type="checkbox" name="natStat" {{#if this.description.nationalStatistic}}checked{{/if}}/>
+                            <input id="natStat-checkbox" type="checkbox" name="natStat" class="checkbox" />
+                        </div>
+                        <div id="census">
+                            <label for="census-checkbox">Census </label>
+                            <input id="census-checkbox" type="checkbox" name="census" class="checkbox" />
                         </div>
                         <div>
                             <label for="keywords">Keywords

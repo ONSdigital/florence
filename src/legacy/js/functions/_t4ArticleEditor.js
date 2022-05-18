@@ -77,10 +77,23 @@ function articleEditor(collectionId, data) {
     data.description.metaDescription = $(this).val();
   });
 
-  $("#natStat-checkbox").click(function () {
+  /* The checked attribute is a boolean attribute and the corresponding property 
+  will be true if the attribute is present and has a value other than false */
+  var checkBoxStatus = function (value) {
+    if (value === "" || value === "false" || value === false) {
+      return false;
+    }
+    return true;
+  };
+
+  $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
       data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
+  $("#census-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
+    data.description.survey = $("#census-checkbox").prop('checked') ? 'census' : null;
+  });
+  
   $("#articleType-checkbox").click(function () {
       data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
       if (data.isPrototypeArticle) {
