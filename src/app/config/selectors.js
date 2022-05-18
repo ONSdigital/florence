@@ -1,13 +1,14 @@
 import { createSelector } from "reselect";
 import collectionMapper from "../views/collections/mapper/collectionMapper";
-import differenceWith from "lodash/differenceWith";
 import { formatDateString } from "../utilities/formatDateString";
 
 export const getCollections = state => state.collections.all;
 export const getSearch = state => state.search;
 
 export const getMappedCollections = createSelector(getCollections, collections => {
-    if (!collections) return [];
+    if (!collections || !Array.isArray(collections)) {
+        return [];
+    }
     return collections.sort((a, b) => a.name.localeCompare(b.name)).map(collection => collectionMapper.collectionResponseToState(collection));
 });
 

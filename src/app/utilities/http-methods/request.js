@@ -69,7 +69,6 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         });
                         return;
                     }
-
                     // To save doing this exact same function throughout the app we handle a 401
                     // here (ie at the lowest level possible)
                     const notification = {

@@ -9,9 +9,7 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: {
-        msg: {},
-    },
+    errors: {},
     successMessage: {
         type: null,
         success: false,
@@ -101,6 +99,10 @@ describe("Create/Edit an Interactives", () => {
         it("should fetch an interactive if detects an interactiveId and fill the form", async () => {
             useDispatchMock.mockReturnValue(getInteractive);
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
+
+            const baseUrl = window.location.origin;
+            const resourceType = "interactives";
+
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
@@ -114,7 +116,8 @@ describe("Create/Edit an Interactives", () => {
                             internal_id: "internal_id",
                             title: "Title",
                             label: "Label",
-                            slug: "label",
+                            slug: "test-slug",
+                            resource_id: "resource_id",
                         },
                         published: false,
                     },
@@ -135,12 +138,12 @@ describe("Create/Edit an Interactives", () => {
             const internalIdInput = screen.getByLabelText("Internal ID");
             const titleInput = screen.getByLabelText("Title");
             const labelInput = screen.getByLabelText("Label");
-            const slugInput = screen.getByLabelText("URL");
+            const urlInput = screen.getByLabelText("URL");
 
             expect(internalIdInput.value).toBe("internal_id");
             expect(titleInput.value).toBe("Title");
             expect(labelInput.value).toBe("Label");
-            expect(slugInput.value).toBe("label");
+            expect(urlInput.value).toBe(`${baseUrl}/${resourceType}/${interactive.metadata.slug}-${interactive.metadata.resource_id}/embed`);
         });
 
         it("should update an interactive when clicks the update interactive button", async () => {

@@ -1,9 +1,9 @@
 import React from "react";
 import PropTypes from "prop-types";
 
-function AlertSuccess({ text = "Action has been completed successfully" }) {
+function AlertSuccess({ text = "Action has been completed successfully", classNames = "" }) {
     return (
-        <div className="ons-panel ons-panel--success ons-panel--no-title" style={{ borderLeftColor: "rgb(15, 130, 67)" }}>
+        <div className={`ons-panel ons-panel--success ons-panel--no-title ${classNames}`} style={{ borderLeftColor: "rgb(15, 130, 67)" }}>
             <span className="ons-u-vh">Completed: </span>
             <span className="ons-panel__icon ons-u-fs-r">
                 <svg className="ons-svg-icon" viewBox="0 0 13 10" xmlns="http://www.w3.org/2000/svg" focusable="false" fill="currentColor">

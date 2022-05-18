@@ -70,17 +70,18 @@ describe("SignIn", () => {
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
                     firstTimeSignIn: false,
+                    validationErrors: {
+                        heading: "Fix the following: ",
+                        body: [
+                            <p key="error">
+                                <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
+                                    Enter a password
+                                </a>
+                            </p>,
+                        ],
+                    },
                 };
-                component.instance().validationErrors = {
-                    heading: "Fix the following: ",
-                    body: [
-                        <p key="error">
-                            <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
-                                Enter a password
-                            </a>
-                        </p>,
-                    ],
-                };
+
                 component.instance().passwordErrorMsg = "Enter a password";
                 component.setState(state);
                 it("should show an error", () => {
@@ -97,18 +98,19 @@ describe("SignIn", () => {
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
                     firstTimeSignIn: false,
+                    validationErrors: {
+                        heading: "Fix the following: ",
+                        body: [
+                            <p key="email-error">
+                                <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
+                                    Enter a valid email address
+                                </a>
+                            </p>,
+                        ],
+                    },
                 };
                 component.instance().emailErrorMsg = "Enter a valid email address";
-                component.instance().validationErrors = {
-                    heading: "Fix the following: ",
-                    body: [
-                        <p key="email-error">
-                            <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
-                                Enter a valid email address
-                            </a>
-                        </p>,
-                    ],
-                };
+
                 component.setState(state);
                 it("should show an error", () => {
                     expect(component.find(".panel__error").length).toBe(1);
@@ -124,24 +126,24 @@ describe("SignIn", () => {
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
                     firstTimeSignIn: false,
+                    validationErrors: {
+                        heading: "Fix the following: ",
+                        body: [
+                            <p key="email-error">
+                                <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
+                                    Enter a valid email address
+                                </a>
+                            </p>,
+                            <p key="error-invalid-password">
+                                <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
+                                    Enter a password
+                                </a>
+                            </p>,
+                        ],
+                    },
                 };
                 component.instance().emailErrorMsg = "Enter a valid email address";
                 component.instance().passwordErrorMsg = "Enter a password";
-                component.instance().validationErrors = {
-                    heading: "Fix the following: ",
-                    body: [
-                        <p key="email-error">
-                            <a href="javascript:document.getElementById('email').focus()" className="colour--night-shadz">
-                                Enter a valid email address
-                            </a>
-                        </p>,
-                        <p key="error-invalid-password">
-                            <a href="javascript:document.getElementById('password').focus()" className="colour--night-shadz">
-                                Enter a password
-                            </a>
-                        </p>,
-                    ],
-                };
                 component.setState(state);
                 it("should show multiple errors", () => {
                     expect(component.find(".panel__error").length).toBe(1);
@@ -157,10 +159,10 @@ describe("SignIn", () => {
                     passwordType: "password",
                     status: status.WAITING_USER_INITIAL_CREDS,
                     firstTimeSignIn: false,
-                };
-                component.instance().validationErrors = {
-                    heading: "Fix the following: ",
-                    body: [<p key="error">Email address or password are incorrect</p>],
+                    validationErrors: {
+                        heading: "Fix the following: ",
+                        body: [<p key="error">Email address or password are incorrect</p>],
+                    },
                 };
                 component.setState(state);
                 it("should show an error", () => {

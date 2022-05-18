@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
@@ -6,14 +6,14 @@ import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
-import auth from "./app/utilities/auth";
+import auth, {getAuthToken, getUserTypeFromAuthToken} from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
-import {InteractivesIndex, InteractivesForm, InteractivesDelete} from "./app/views/interactives";
+import {InteractivesIndex, InteractivesForm, InteractivesDelete, InteractivesShow} from "./app/views/interactives";
 import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
@@ -66,7 +66,8 @@ const rootPath = store.getState().state.rootPath;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return state.user.isAuthenticated;
+        // TODO Remove getAuthToken() call when ENABLE_NEW_INTERACTIVES feature in prod
+        return state.user.isAuthenticated || !!getAuthToken();
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "UserIsAuthenticated",
@@ -75,7 +76,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdminOrEditor(state.user);
+        return auth.isAdminOrEditor(state.user) || auth.isAdmin(getUserTypeFromAuthToken());
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
@@ -85,7 +86,7 @@ const userIsAdminOrEditor = connectedReduxRedirect({
 
 const userIsAdmin = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdmin(state.user);
+        return auth.isAdmin(state.user) || auth.isAdmin(getUserTypeFromAuthToken());
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdmin",
@@ -167,6 +168,7 @@ const Index = () => {
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives`} exact component={userIsAuthenticated(InteractivesIndex)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/create`} exact component={userIsAuthenticated(InteractivesForm)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/edit/:interactiveId`} exact component={userIsAuthenticated(InteractivesForm)}/>}
+                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/show/:interactiveId`} exact component={userIsAuthenticated(InteractivesShow)}/>}
                     {config.enableNewInteractives && <Route path={`${rootPath}/interactives/delete/:interactiveId`} exact component={userIsAuthenticated(InteractivesDelete)}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}

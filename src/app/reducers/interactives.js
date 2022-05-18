@@ -1,4 +1,5 @@
 import * as types from "./../actions/actionTypes";
+import { getParameterByName } from "../utilities/utils";
 
 const initialState = {
     interactives: [],
@@ -14,9 +15,27 @@ const initialState = {
 export default function reducer(state = initialState, action = {}) {
     switch (action.type) {
         case types.FETCH_INTERACTIVES:
+            const collectionId = getParameterByName("collection");
+            const { interactives } = action;
+            let filteredInteractives = interactives;
+            if (collectionId) {
+                filteredInteractives = interactives.filter(function (interactive) {
+                    if (interactive.metadata.collection_id === collectionId) {
+                        return true;
+                    }
+                    switch (interactive.state) {
+                        case "ArchiveUploaded":
+                        case "ArchiveDispatchedToImporter":
+                        case "ImportSuccess":
+                            return true;
+                        default:
+                            return false;
+                    }
+                });
+            }
             return Object.assign({}, state, {
-                interactives: action.interactives,
-                filteredInteractives: action.interactives,
+                interactives,
+                filteredInteractives,
             });
         case types.GET_INTERACTIVE:
         case types.STORE_INTERACTIVE:
@@ -25,10 +44,34 @@ export default function reducer(state = initialState, action = {}) {
                 interactive: action.interactive,
             });
         case types.INTERACTIVE_ERROR:
+            const { errors: errorsResponse } = action.error.response.data
+            let errors = {}
+            if(errorsResponse.indexOf('file: expecting one attachment with metadata') >= 0){
+                errors.file = "Select a file that is a ZIP file"
+            }
+            if(errorsResponse.indexOf('interactive.metadata.internalid: required') >= 0){
+                errors.internalId = "Enter a correct internal ID"
+            }
+            if(errorsResponse.indexOf('interactive.metadata.internalid: alphanum') >= 0){
+                errors.internalId = "Enter a correct internal ID, using only letters and numbers"
+            }
+            if(errorsResponse.indexOf('interactive.metadata.title: required') >= 0){
+                errors.title = "Enter a correct title"
+            }
+            if(errorsResponse[0].indexOf('archive with title') >= 0){
+                errors.title ="Archive with this title already exists"
+            }
+            if(errorsResponse.indexOf('interactive.metadata.label: required') >= 0){
+                errors.label ="Enter a correct label, using only letters and numbers"
+            }
+            if(errorsResponse.indexOf('interactive.metadata.label: alphanum') >= 0){
+                errors.label ="Enter a correct label, using only letters and numbers"
+            }
+            if(errorsResponse[0].indexOf('archive with label') >= 0){
+                errors.label ="Archive with this label already exists"
+            }
             return Object.assign({}, state, {
-                errors: {
-                    msg: action.error.response,
-                },
+                errors,
             });
         case types.INTERACTIVE_SUCCESS:
             return Object.assign({}, state, {
@@ -44,7 +87,7 @@ export default function reducer(state = initialState, action = {}) {
             });
         case types.SORT_INTERACTIVES: {
             const { sort } = action;
-            let filteredInteractives = state.interactives;
+            let filteredInteractives = state.filteredInteractives;
             if (sort === "title") {
                 filteredInteractives = filteredInteractives.sort((a, b) => a.metadata.title.localeCompare(b.metadata.title));
             }

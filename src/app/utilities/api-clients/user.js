@@ -7,6 +7,7 @@ import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
+import { removeAuthToken, setAuthToken } from "../auth";
 
 export default class user {
     static get(email) {
@@ -190,15 +191,11 @@ export default class user {
     }
 
     static setUserState(user) {
+        setAuthToken(user);
         const email = user.email;
         const role = this.getUserRole(user.admin, user.editor);
         const isAdmin = !!user.admin;
         store.dispatch(userLoggedIn(email, role, isAdmin));
-        localStorage.setItem("loggedInAs", email);
-
-        // Store the user type in localStorage. Used in old Florence
-        // where views can depend on user type. e.g. Browse tree
-        localStorage.setItem("userType", this.getOldUserType(user));
     }
 
     static logOut() {
@@ -210,8 +207,7 @@ export default class user {
             if (cookies.get("collection")) {
                 cookies.remove("collection");
             }
-            localStorage.removeItem("loggedInAs");
-            localStorage.removeItem("userType");
+            removeAuthToken();
             store.dispatch(userLoggedOut());
             store.dispatch(reset());
         }

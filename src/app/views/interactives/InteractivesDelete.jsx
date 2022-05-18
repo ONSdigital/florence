@@ -5,18 +5,16 @@ import { deleteInteractive, getInteractive } from "../../actions/interactives";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import BackButton from "../../components/back-button";
 import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
+import moment from "moment";
 
 export default function InteractivesDelete(props) {
     const dispatch = useDispatch();
     const { successMessage, interactive } = useSelector(state => state.interactives);
     const { rootPath } = useSelector(state => state.state);
 
-    const [internalId, setInternalId] = useState("");
     const [title, setTitle] = useState("");
-    const [label, setLabel] = useState("");
-    const [slug, setSlug] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
-    const [published, setPublished] = useState(false);
+    const [lastUpdated, setLastUpdated] = useState("");
 
     useEffect(() => {
         const { interactiveId } = props.params;
@@ -27,11 +25,8 @@ export default function InteractivesDelete(props) {
     useEffect(() => {
         if (interactive.metadata) {
             const { metadata } = interactive;
-            setInternalId(metadata.internal_id);
             setTitle(metadata.title);
-            setLabel(metadata.label);
-            setSlug(metadata.slug);
-            setPublished(metadata.published);
+            setLastUpdated(interactive.last_updated);
         }
     }, [interactive.metadata]);
 
@@ -54,9 +49,9 @@ export default function InteractivesDelete(props) {
 
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
-            <div className="grid grid--justify-space-around padding-bottom--2">
-                <div className={"grid__col-8"}>
-                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames={"ons-breadcrumb__item"} />
+            <div className="grid grid--justify-space-around padding-bottom--2 ons-content">
+                <div className="grid__col-8">
+                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
                     <h1 className="text-align-left">Delete interactive</h1>
                     <p className="padding-bottom--1">You are about to delete this interactive:</p>
                     <ul className="list-simple">
@@ -64,10 +59,7 @@ export default function InteractivesDelete(props) {
                             Name - <b>{title}</b>
                         </li>
                         <li className="list-simple__item">
-                            Published date - <b>11 March 2022</b>
-                        </li>
-                        <li className="list-simple__item">
-                            Topic - <b>Health and social care (COVID-19)</b>
+                            Last updated - <b>{moment(lastUpdated).format("DD MMMM YYYY")}</b>
                         </li>
                     </ul>
                     <p>

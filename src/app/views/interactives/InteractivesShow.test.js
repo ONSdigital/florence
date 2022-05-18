@@ -1,7 +1,7 @@
 import React from "react";
 import mockAxios from "axios";
-import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
-import InteractivesDelete from "./InteractivesDelete";
+import { render, screen } from "../../utilities/tests/test-utils";
+import InteractivesShow from "./InteractivesShow";
 import { show } from "../../utilities/api-clients/interactives-test";
 import * as reactRedux from "react-redux";
 
@@ -18,11 +18,10 @@ const initialState = {
     },
 };
 
-describe("Delete an interactive", () => {
+describe("Show interactive preview", () => {
     const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
     const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
-    const deleteInteractive = jest.fn();
     const getInteractive = jest.fn();
 
     beforeEach(() => {
@@ -46,19 +45,10 @@ describe("Delete an interactive", () => {
     };
 
     describe("when renders the component", () => {
-        it("renders the initial content as creating mode", () => {
-            render(<InteractivesDelete {...defaultProps} />);
-            expect(screen.getByText(/Name/i)).toBeInTheDocument();
-            expect(screen.getByText(/Last updated/i)).toBeInTheDocument();
-            // // one button to create, one link to scape
-            expect(screen.getByText("Continue")).toBeInTheDocument();
-            expect(screen.getByText("Cancel")).toBeInTheDocument();
-        });
-
-        it("should fetch the interactive", async () => {
+        it("should fetch the interactive and displays the right content in the show view", async () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
             useDispatchMock.mockReturnValue(getInteractive);
-            const { rerender } = render(<InteractivesDelete {...defaultProps} />);
+            const { rerender } = render(<InteractivesShow {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -73,8 +63,9 @@ describe("Delete an interactive", () => {
                             label: "Label",
                             slug: "label",
                         },
-                        last_updated: "2022-04-20T13:10:48.107Z",
                         published: false,
+                        last_updated: "2022-04-27T03:56:48.57Z",
+                        url: "https://interactives.co.uk/embed",
                     },
                 })
             );
@@ -87,20 +78,16 @@ describe("Delete an interactive", () => {
 
             // updating state
             useSelectorMock.mockReturnValue(updatedState);
-            rerender(<InteractivesDelete {...defaultProps} />);
-
-            // Testing text inside, excluding HTML tags
-            expect(screen.getByText(/Name/i)).toHaveTextContent(`Name - Title`);
-            expect(screen.getByText(/Last updated/i)).toHaveTextContent(`Last updated - 20 April 2022`);
-        });
-
-        it("should delete an interactive when clicks the delete interactive button", () => {
-            useDispatchMock.mockReturnValue(deleteInteractive);
-            defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
-            render(<InteractivesDelete {...defaultProps} />);
-            const deleteButton = screen.getByText("Continue");
-            fireEvent.click(deleteButton);
-            expect(deleteInteractive).toHaveBeenCalled();
+            rerender(<InteractivesShow {...defaultProps} />);
+            //Title
+            expect(screen.getByText(/Your interactive has been uploaded/i)).toBeInTheDocument();
+            //Iframe
+            const iframe = screen.getByTitle("Embed website");
+            expect(iframe).toBeInTheDocument;
+            expect(iframe).toHaveAttribute("src", "https://interactives.co.uk/embed");
+            //Text and link
+            expect(screen.getByText(/Embedded preview of uploaded interactive -/i)).toBeInTheDocument();
+            expect(screen.getByText("https://interactives.co.uk/embed")).toBeInTheDocument;
         });
     });
 });

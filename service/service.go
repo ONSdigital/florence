@@ -4,15 +4,14 @@ import (
 	"context"
 	"net/url"
 
-	"github.com/ONSdigital/florence/directors"
-	"github.com/ONSdigital/florence/service/modifiers"
-
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
+	"github.com/ONSdigital/florence/directors"
+	"github.com/ONSdigital/florence/service/modifiers"
 	"github.com/ONSdigital/log.go/log"
-	"github.com/gorilla/pat"
+	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
 )
@@ -29,7 +28,7 @@ type Service struct {
 	Config       *config.Config
 	healthClient *health.Client
 	HealthCheck  HealthChecker
-	Router       *pat.Router
+	Router       *mux.Router
 	Server       HTTPServer
 	ServiceList  *ExternalServiceList
 }
@@ -80,7 +79,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 // createRouter creates a Router with the necessary reverse proxies for services that florence needs to call,
 // and handlers legacy index files.
 // CMD API calls (recipe, import and dataset APIs) are proxied through the API router.
-func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *pat.Router, err error) {
+func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *mux.Router, err error) {
 
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
 	if err != nil {
@@ -113,7 +112,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
-	interactivesProxy := reverseproxy.Create(apiRouterURL, directors.Director("/interactives"), nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
@@ -125,7 +123,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	identityAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), modifiers.IdentityResponseModifier)
 	// End of deprecated proxies
 
-	router = pat.New()
+	router = mux.NewRouter()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
@@ -157,7 +155,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	}
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
-	router.Handle("/interactives{uri:/.*}", interactivesProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)

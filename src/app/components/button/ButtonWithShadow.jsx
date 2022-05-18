@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Spinner from "../../icons/Spinner";
+import clsx from "clsx";
 
 const propTypes = {
     buttonText: PropTypes.string.isRequired,
@@ -12,7 +13,7 @@ const propTypes = {
 };
 
 const ButtonWithShadow = props => (
-    <button type={props.type} className={`ons-btn ${props.class ? "ons-btn--" + props.class : ""}`} onClick={props.onClick} disabled={props.disabled}>
+    <button type={props.type} className={clsx("ons-btn", props.class && `ons-btn--${props.class}`)} onClick={props.onClick} disabled={props.disabled}>
         <span className="ons-btn__inner">
             {props.buttonText}
             {props.isSubmitting && <Spinner />}

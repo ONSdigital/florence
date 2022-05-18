@@ -8,41 +8,27 @@ import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 import Popouts from "../popouts/Popouts";
+import { useGetPermissions } from "../../config/user/userHooks";
+import { getAuthToken } from "../../utilities/auth";
+import fp from "lodash/fp";
 
 const Layout = props => {
-    const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(null);
-    useMemo(() => {
-        setIsCheckingAuthentication(true);
-        hasValidAuthToken().then(isValid => {
-            if (isValid) {
-                const email = localStorage.getItem("loggedInAs");
-                if (!email) {
-                    user.logOut();
-                    setIsCheckingAuthentication(false);
-                    console.warn(`Unable to find item 'loggedInAs' from local storage`);
-                    return;
-                }
-                user.getPermissions()
-                    .then(userType => {
-                        user.setUserState(userType);
-                        setIsCheckingAuthentication(false);
-                    })
-                    .catch(error => {
-                        setIsCheckingAuthentication(false);
-                        notifications.add({
-                            type: "warning",
-                            message: "Unable to start Florence due to an error getting your account's permissions. Please try refreshing Florence.",
-                            autoDismiss: 8000,
-                            isDismissable: true,
-                        });
-                        log.event("Error getting a user's permissions on startup", log.error(error));
-                        console.error("Error getting a user's permissions on startup", error);
-                    });
+    const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
+    const userStateFromAuthToken = getAuthToken();
+    const userPermissions = useGetPermissions(userStateFromAuthToken);
+    useEffect(() => {
+        setIsCheckingAuthentication(false);
+        if (userPermissions) {
+            user.setUserState(userPermissions);
+            const email = fp.get("email")(getAuthToken());
+            if (!email) {
+                user.logOut();
+                setIsCheckingAuthentication(false);
+                console.warn(`Unable to find auth token in local storage`);
                 return;
             }
-            setIsCheckingAuthentication(false);
-        });
-    }, []);
+        }
+    }, [userPermissions, isCheckingAuthentication]);
 
     useEffect(() => {
         log.initialise();
@@ -56,12 +42,13 @@ const Layout = props => {
         }
     }, []);
 
-    if (isCheckingAuthentication)
+    if (isCheckingAuthentication) {
         return (
             <div className="grid grid--align-center grid--align-self-center grid--full-height">
                 <div className="loader loader--large loader--dark" />
             </div>
         );
+    }
 
     return (
         <React.StrictMode>

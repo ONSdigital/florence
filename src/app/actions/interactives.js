@@ -61,7 +61,7 @@ export function filterInteractives(filters) {
     return async dispatch => {
         try {
             const res = await Interactives.get(query);
-            dispatch(setInteractives(res.data.items));
+            dispatch(setInteractives(res.data));
         } catch (error) {
             dispatch(setInteractiveError(error));
         }
@@ -73,7 +73,7 @@ export function getInteractives() {
     return async dispatch => {
         try {
             const res = await Interactives.getAll();
-            dispatch(setInteractives(res.data.items));
+            dispatch(setInteractives(res.data));
         } catch (error) {
             dispatch(setInteractiveError(error));
         }
