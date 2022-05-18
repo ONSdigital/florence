@@ -244,7 +244,7 @@ export const createTeam = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.groupname, usersInTeam));
+                dispatch(addMembersToNewTeam(response.id, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
