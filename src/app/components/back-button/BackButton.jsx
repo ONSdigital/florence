@@ -1,6 +1,6 @@
 import React from "react";
 import url from "../../utilities/url";
-import { Link } from "react-router";
+import { Link, useHistory } from "react-router";
 import clsx from "clsx";
 import PropTypes from "prop-types";
 

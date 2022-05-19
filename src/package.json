@@ -88,7 +88,8 @@
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/",
+    "test:update": "export NODE_ENV=testing && jest --updateSnapshot"
   },
   "dependencies": {
     "acorn": "^8.4.1",

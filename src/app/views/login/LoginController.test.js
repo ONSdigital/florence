@@ -28,7 +28,7 @@ jest.mock("../../utilities/api-clients/user.js", () => {
         },
     };
 });
-jest.mock("../../utilities/redirectToMainScreen.js", () => {
+jest.mock("../../utilities/redirect.js", () => {
     return {
         redirectToMainScreen: function () {
             // do nothing

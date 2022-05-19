@@ -1,5 +1,7 @@
+import { fromPairs } from "lodash";
 import { browserHistory } from "react-router";
 import { store } from "../config/store";
+import fp from "lodash/fp";
 
 /**
  * Redirects to one of the main views in Florence - chooses whether it needs to redirect to old Florence or route within the new application
@@ -31,4 +33,8 @@ export default function redirectToMainScreen(screen) {
     }
 
     browserHistory.push(`${rootPath}/collections`);
+}
+
+export function getPreviousPathnameFromProps(props) {
+    return fp.get("router.location.previousPathname")(props);
 }

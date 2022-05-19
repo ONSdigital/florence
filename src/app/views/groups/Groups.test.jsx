@@ -30,11 +30,6 @@ describe("Groups", () => {
         expect(defaultProps.loadTeams).toHaveBeenCalledWith(true);
     });
 
-    it("shows Back Button", () => {
-        render(<Groups {...defaultProps} />);
-        expect(screen.getByText(/Back/i)).toBeInTheDocument();
-    });
-
     it("shows, message if no teams found", () => {
         render(<Groups {...defaultProps} />);
         expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();
@@ -50,7 +45,6 @@ describe("Groups", () => {
         const props = { ...defaultProps, groups: mappedSortedGroups };
         render(<Groups {...props} />);
 
-        expect(screen.getByText(/Back/i)).toBeInTheDocument();
         expect(screen.getByText(/Preview teams/i)).toBeInTheDocument();
         expect(screen.getByText(/Hello Group/i)).toBeInTheDocument();
         expect(screen.getByText(/Test/i)).toBeInTheDocument();
