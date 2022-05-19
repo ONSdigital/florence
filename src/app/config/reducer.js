@@ -2,6 +2,7 @@ import { initialState } from "./initialState";
 import * as types from "./constants";
 import * as groupsTypes from "./groups/constants";
 
+
 export default function reducer(state = initialState, action) {
     switch (action.type) {
         case types.CREATE_COLLECTION_SUCCESS: {
@@ -707,7 +708,7 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 groups: {
                     ...state.groups,
-                    members: state.groups.members.concat(action.members),
+                    members: action.members,
                     isLoadingMembers: false,
                 },
             };
