@@ -40,7 +40,7 @@ const contentTypes = [
         url: url.resolve("../../../") + `/interactives`,
         enabled: false, // from setupJest.js
     },
-]
+];
 
 const defaultProps = {
     dispatch: event => {
