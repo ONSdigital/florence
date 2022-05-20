@@ -53,7 +53,7 @@ export function setAuthToken(userData) {
 
 /** Assumes user is authenticated if ons_user exists in local storage */
 export function getAuthToken() {
-    let userData =  window.localStorage.getItem(_AUTH_TOKEN_NAME);
+    let userData = window.localStorage.getItem(_AUTH_TOKEN_NAME);
     try {
         userData = JSON.parse(userData);
     } catch (err) {
@@ -79,7 +79,7 @@ export function getIsAdminFromAuthToken() {
 /** User Schema - represents the `user` type stored in redux. */
 class _UserSchema {
     isAuthenticated = false;
-    email =  "";
+    email = "";
     userType = ""; // PUBLISHING_SUPPORT...
     isAdmin = false;
 }

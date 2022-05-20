@@ -2,7 +2,6 @@ import { initialState } from "./initialState";
 import * as types from "./constants";
 import * as groupsTypes from "./groups/constants";
 
-
 export default function reducer(state = initialState, action) {
     switch (action.type) {
         case types.CREATE_COLLECTION_SUCCESS: {
