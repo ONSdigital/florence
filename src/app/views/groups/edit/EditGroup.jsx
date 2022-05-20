@@ -91,7 +91,7 @@ const EditGroup = props => {
         if (hasUpdatedMembers) {
             updateGroupMembers(
                 id,
-                groupMembers.map(({ id }) => id)
+                groupMembers.map(({ id }) => ({"user_id": id})),
             );
         }
     };
