@@ -89,29 +89,31 @@ export default function InteractivesForm(props) {
         setFile(file);
     };
 
-    const displayedErrors =  Object.values(errors);
+    const displayedErrors = Object.values(errors);
 
     return (
         <FooterAndHeaderLayout title="Manage my interactives">
             <div className="grid grid--justify-space-around padding-bottom--2">
                 <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
                     <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
-                    {
-                        (displayedErrors.length > 0) && <div className="grid__col-sm-12 grid__col-xl-4 padding-top--2">
+                    {displayedErrors.length > 0 && (
+                        <div className="grid__col-sm-12 grid__col-xl-4 padding-top--2">
                             <div className="ons-panel ons-panel--errors">
                                 <div className="ons-panel--errors__title">
                                     <span className="">There are {displayedErrors.length} problems with your answer: </span>
                                 </div>
                                 <div className="ons-panel--errors__body">
-                                    {
-                                        displayedErrors.map((error, index) => {
-                                            return <p>{index + 1}. <span>{error}</span> </p>
-                                        })
-                                    }
+                                    {displayedErrors.map((error, index) => {
+                                        return (
+                                            <p>
+                                                {index + 1}. <span>{error}</span>{" "}
+                                            </p>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
-                    }
+                    )}
 
                     <h1 className="ons-u-fs-xxl ons-u-mt-l">{!interactiveId ? "Upload a new interactive" : "Edit an existing interactive"}</h1>
 
@@ -131,7 +133,7 @@ export default function InteractivesForm(props) {
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>{ errors.internalId }</strong>
+                                        <strong>{errors.internalId}</strong>
                                     </p>
                                     <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
                                         <Input
@@ -170,7 +172,7 @@ export default function InteractivesForm(props) {
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>{ errors.title }</strong>
+                                        <strong>{errors.title}</strong>
                                     </p>
                                     <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
                                         <Input
@@ -208,7 +210,7 @@ export default function InteractivesForm(props) {
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>{ errors.label }</strong>
+                                        <strong>{errors.label}</strong>
                                     </p>
                                     <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
                                         <Input
@@ -246,7 +248,7 @@ export default function InteractivesForm(props) {
                                 <span className="ons-u-vh">Error: </span>
                                 <div className="ons-panel__body">
                                     <p className="ons-panel__error">
-                                        <strong>{ errors.file }</strong>
+                                        <strong>{errors.file}</strong>
                                     </p>
                                     <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
                                         <Input
