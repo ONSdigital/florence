@@ -23,8 +23,6 @@ build/florence
 .sass-cache/
 node_modules
 npm-debug.log*
-src/package-lock.json
-
 
 #Jest
 src/coverage
