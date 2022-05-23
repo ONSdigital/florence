@@ -23,7 +23,6 @@ const Groups = props => {
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-11 grid__col-md-9">
-                <BackButton classNames="margin-top--2" />
                 <span className="margin-top--1">
                     <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
                     <Link className="margin-left--1" to={url.resolve("./groups/create")}>

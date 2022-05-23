@@ -7,18 +7,6 @@ exports[`Security matches the snapshot 1`] = `
   <div
     className="grid__col-11 grid__col-md-9"
   >
-    <div
-      className="margin-top--2"
-    >
-      ◀ 
-      <a
-        onClick={[Function]}
-        role="link"
-        style={Object {}}
-      >
-        Back
-      </a>
-    </div>
     <h2
       className="margin-top--1"
     >
@@ -65,18 +53,6 @@ exports[`Security when loading matches the snapshot 1`] = `
   <div
     className="grid__col-11 grid__col-md-9"
   >
-    <div
-      className="margin-top--2"
-    >
-      ◀ 
-      <a
-        onClick={[Function]}
-        role="link"
-        style={Object {}}
-      >
-        Back
-      </a>
-    </div>
     <h2
       className="margin-top--1"
     >

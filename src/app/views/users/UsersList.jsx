@@ -9,6 +9,7 @@ import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
 
+
 const mapUsers = (users, rootPath) => {
     return users.map(user => ({
         ...user,
@@ -36,7 +37,6 @@ const UsersList = props => {
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-9">
-                <BackButton classNames="margin-top--2" />
                 <div className="grid grid--align-baseline">
                     <div className="grid__col">
                         <h1>Users</h1>

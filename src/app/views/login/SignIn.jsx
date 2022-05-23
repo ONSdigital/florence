@@ -6,7 +6,7 @@ import LoginForm from "./SignInForm";
 import notifications from "../../utilities/notifications";
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
-import redirectToMainScreen from "../../utilities/redirectToMainScreen";
+import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";

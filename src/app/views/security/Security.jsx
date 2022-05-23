@@ -34,7 +34,6 @@ const Security = ({ signOutAllUsers, openModal, closeModal, loading }) => {
     return (
         <div className="grid grid--justify-space-around">
             <div className="grid__col-11 grid__col-md-9">
-                <BackButton classNames="margin-top--2" />
                 <h2 className="margin-top--1">Security</h2>
                 <div className="grid">
                     <div className="grid__col-lg-6">

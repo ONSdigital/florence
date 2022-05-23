@@ -7,18 +7,6 @@ exports[`Groups matches the snapshot with empty props 1`] = `
   <div
     className="grid__col-11 grid__col-md-9"
   >
-    <div
-      className="margin-top--2"
-    >
-      ◀ 
-      <a
-        onClick={[Function]}
-        role="link"
-        style={Object {}}
-      >
-        Back
-      </a>
-    </div>
     <span
       className="margin-top--1"
     >
@@ -80,18 +68,6 @@ exports[`Groups matches the snapshot with groups props 1`] = `
   <div
     className="grid__col-11 grid__col-md-9"
   >
-    <div
-      className="margin-top--2"
-    >
-      ◀ 
-      <a
-        onClick={[Function]}
-        role="link"
-        style={Object {}}
-      >
-        Back
-      </a>
-    </div>
     <span
       className="margin-top--1"
     >

@@ -12,7 +12,7 @@ import http from "../../utilities/http";
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
-import redirectToMainScreen from "../../utilities/redirectToMainScreen";
+import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 
 const propTypes = {
