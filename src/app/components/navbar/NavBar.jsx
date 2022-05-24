@@ -91,13 +91,6 @@ const NavBar = props => {
                                 Reports
                             </a>
                         </li>
-                        {props.config?.enableNewInteractives && (
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/interactives`} activeClassName="selected" className="global-nav__link">
-                                    Interactives
-                                </Link>
-                            </li>
-                        )}
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
                                 Users and access

@@ -94,20 +94,6 @@ describe("NavBar", () => {
             });
         });
 
-        describe("when enabled upload interactives", () => {
-            it("should display Interactives module link", () => {
-                const props = {
-                    ...defaultProps,
-                    user: authenticatedUser,
-                    config: {
-                        ...defaultProps.config,
-                        enableNewInteractives: true,
-                    },
-                };
-                const component = shallow(<NavBar {...props} />);
-                expect(component.find("Link[to='/florence/interactives']").exists()).toBe(true);
-            });
-        });
         describe("when on collections", () => {
             it("should display Working On: ", () => {
                 const props = {
