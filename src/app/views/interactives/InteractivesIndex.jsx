@@ -70,7 +70,7 @@ export default function InteractivesIndex(props) {
     }, [successMessage]);
 
     const sortOptions = [
-        { id: "date", name: "Latest updated" },
+        { id: "date", name: "Last edited" },
         { id: "title", name: "Title" },
     ];
 
@@ -83,10 +83,13 @@ export default function InteractivesIndex(props) {
         }
         if (internalId !== "") {
             filters = Object.assign({}, filters, {
-                internalId,
+                internal_id: internalId
             });
         }
-        dispatch(filterInteractives(filters));
+        const data = JSON.stringify({
+            metadata: filters
+        })
+        dispatch(filterInteractives(data));
     };
 
     const linkToCollection = interactive => {
@@ -153,41 +156,61 @@ export default function InteractivesIndex(props) {
                     {collectionId && (
                         <>
                             <h2 className="ons-u-fs-xxl ons-u-mt-l margin-top--1">Selected collection: {collection.name}</h2>
-                            <h1 className="margin-top--1">Select an available Interactive to link</h1>
+                            <h1 className="margin-top--0">Select an available Interactive to link</h1>
                         </>
                     )}
-                    <div className="grid grid--justify-space-around margin-top--1">
-                        <div className="grid__col-sm-12 grid__col-md-3">
-                            <h3 className="text-left">Filter by</h3>
-                            <Input
-                                type="text"
-                                id="internal_id"
-                                placeholder=""
-                                name="internal_id"
-                                onChange={e => setInternalId(e.target.value)}
-                                label="Internal ID"
-                                value={internalId}
-                            />
-                            <Input
-                                type="text"
-                                id="title"
-                                placeholder=""
-                                name="title"
-                                onChange={e => setTitle(e.target.value)}
-                                data-testid="title-input"
-                                label="Title"
-                                value={title}
-                            />
+                    <div className="grid margin-top--1">
+                        <div className="grid__col-sm-12 grid__col-md-3 filters-container">
+                            <table>
+                                <tr>
+                                    <th>
+                                        <h3 className="text-left">Filter by</h3>
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <Input
+                                            type="text"
+                                            id="internal_id"
+                                            placeholder=""
+                                            name="internal_id"
+                                            onChange={e => setInternalId(e.target.value)}
+                                            label="Internal ID"
+                                            value={internalId}
+                                        />
+                                        <Input
+                                            type="text"
+                                            id="title"
+                                            placeholder=""
+                                            name="title"
+                                            onChange={e => setTitle(e.target.value)}
+                                            data-testid="title-input"
+                                            label="Title"
+                                            value={title}
+                                        />
+                                    </td>
+                                </tr>
+                            </table>
                             <div className="inline-block margin-top--2 margin-bottom--5">
                                 <ButtonWithShadow type="button" buttonText="Apply" onClick={handleFilter} isSubmitting={false} />
                             </div>
                         </div>
-                        <div className="grid__col-sm-12 grid__col-md-7">
+                        <div className="grid__col-sm-12 grid__col-md-1"/>
+                        <div className="grid__col-sm-12 grid__col-md-8">
                             <div className="grid--justify-space-between" style={{ display: "flex" }}>
                                 <div>
                                     <b className="font-size--18">{filteredInteractives.length} results </b>
                                 </div>
-                                <div>
+                            </div>
+                            <hr className="ons-separator__regular margin-top--1" />
+                            <div className="grid--justify-space-between sort-container" style={{ display: "flex" }}>
+                                <div className="grid--align-center" style={{ display: "flex" }}>
+                                    <label className="ons-label" htmlFor="sort-options">
+                                        Sort by
+                                    </label>
+                                    <Select contents={sortOptions} selectedOption={sort} id="sort-options" onChange={e => setSort(e.target.value)} />
+                                </div>
+                                <div className="grid--align-center">
                                     <ButtonWithShadow
                                         type="button"
                                         buttonText="Upload interactive"
@@ -195,15 +218,6 @@ export default function InteractivesIndex(props) {
                                         onClick={() => props.router.push(`${rootPath}/interactives/create?collection=${collectionId}`)}
                                         isSubmitting={false}
                                     />
-                                </div>
-                            </div>
-                            <hr className="ons-separator__regular margin-top--1" />
-                            <div className="grid--justify-space-between sort-container" style={{ display: "flex" }}>
-                                <div className="grid--align-center margin-top--1" style={{ display: "flex" }}>
-                                    <label className="ons-label padding-right--1" htmlFor="sort-options">
-                                        Sort by
-                                    </label>
-                                    <Select contents={sortOptions} selectedOption={sort} id="sort-options" onChange={e => setSort(e.target.value)} />
                                 </div>
                             </div>
                             <hr className="ons-separator__light margin-bottom--1" />
