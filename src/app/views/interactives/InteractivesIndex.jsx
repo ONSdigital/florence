@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import { editInteractive, filterInteractives, getInteractives, resetSuccessMessage, sortInteractives } from "../../actions/interactives";
 import { Link } from "react-router";
 import AlertSuccess from "../../components/alert/AlertSuccess";
@@ -154,123 +153,121 @@ export default function InteractivesIndex(props) {
     };
 
     return (
-        <FooterAndHeaderLayout title="Manage my interactives">
-            <div className="grid grid--justify-space-around padding-bottom--2">
-                <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
-                    {collectionId && (
-                        <BackButton
-                            redirectUrl={`${rootPath}/collections/${collectionId}`}
-                            classNames={`ons-breadcrumb__item ${successUpdate && "padding-bottom--1"}`}
-                        />
-                    )}
-                    {successCreate && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully submitted" />}
-                    {successUpdate && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully updated" />}
-                    {successDelete && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully deleted" />}
-                    {collectionId && (
-                        <>
-                            <h2 className="ons-u-fs-xxl ons-u-mt-l margin-top--1">Selected collection: {collection.name}</h2>
-                            <h1 className="margin-top--0">Select an available Interactive to link</h1>
-                        </>
-                    )}
-                    <div className="grid margin-top--1">
-                        <div className="grid__col-sm-12 grid__col-md-3 filters-container">
-                            <table>
-                                <tr>
-                                    <th>
-                                        <h3 className="text-left">Filter by</h3>
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <Input
-                                            type="text"
-                                            id="internal_id"
-                                            placeholder=""
-                                            name="internal_id"
-                                            onChange={e => setInternalId(e.target.value)}
-                                            label="Internal ID"
-                                            value={internalId}
-                                        />
-                                        <Input
-                                            type="text"
-                                            id="title"
-                                            placeholder=""
-                                            name="title"
-                                            onChange={e => setTitle(e.target.value)}
-                                            data-testid="title-input"
-                                            label="Title"
-                                            value={title}
-                                        />
-                                    </td>
-                                </tr>
-                            </table>
-                            <div className="inline-block margin-top--2 margin-bottom--5">
-                                <ButtonWithShadow type="button" buttonText="Apply" onClick={handleFilter} isSubmitting={false} />
+        <div className="grid grid--justify-space-around padding-bottom--2 padding-top--2">
+            <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
+                {collectionId && (
+                    <BackButton
+                        redirectUrl={`${rootPath}/collections/${collectionId}`}
+                        classNames={`ons-breadcrumb__item ${successUpdate && "padding-bottom--1"}`}
+                    />
+                )}
+                {successCreate && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully submitted" />}
+                {successUpdate && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully updated" />}
+                {successDelete && <AlertSuccess classNames="margin-top--1" text="Interactive has been successfully deleted" />}
+                {collectionId && (
+                    <>
+                        <h2 className="ons-u-fs-xxl ons-u-mt-l margin-top--1">Selected collection: {collection.name}</h2>
+                        <h1 className="margin-top--0">Select an available Interactive to link</h1>
+                    </>
+                )}
+                <div className="grid margin-top--1">
+                    <div className="grid__col-sm-12 grid__col-md-3 filters-container">
+                        <table>
+                            <tr>
+                                <th>
+                                    <h3 className="text-left">Filter by</h3>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <Input
+                                        type="text"
+                                        id="internal_id"
+                                        placeholder=""
+                                        name="internal_id"
+                                        onChange={e => setInternalId(e.target.value)}
+                                        label="Internal ID"
+                                        value={internalId}
+                                    />
+                                    <Input
+                                        type="text"
+                                        id="title"
+                                        placeholder=""
+                                        name="title"
+                                        onChange={e => setTitle(e.target.value)}
+                                        data-testid="title-input"
+                                        label="Title"
+                                        value={title}
+                                    />
+                                </td>
+                            </tr>
+                        </table>
+                        <div className="inline-block margin-top--2 margin-bottom--5">
+                            <ButtonWithShadow type="button" buttonText="Apply" onClick={handleFilter} isSubmitting={false} />
+                        </div>
+                    </div>
+                    <div className="grid__col-sm-12 grid__col-md-1" />
+                    <div className="grid__col-sm-12 grid__col-md-8">
+                        <div className="grid--justify-space-between" style={{ display: "flex" }}>
+                            <div>
+                                <b className="font-size--18">{filteredInteractives.length} results </b>
                             </div>
                         </div>
-                        <div className="grid__col-sm-12 grid__col-md-1"/>
-                        <div className="grid__col-sm-12 grid__col-md-8">
-                            <div className="grid--justify-space-between" style={{ display: "flex" }}>
-                                <div>
-                                    <b className="font-size--18">{filteredInteractives.length} results </b>
-                                </div>
+                        <hr className="ons-separator__regular margin-top--1" />
+                        <div className="grid--justify-space-between sort-container" style={{ display: "flex" }}>
+                            <div className="grid--align-center" style={{ display: "flex" }}>
+                                <label className="ons-label" htmlFor="sort-options">
+                                    Sort by
+                                </label>
+                                <Select contents={sortOptions} selectedOption={sort} id="sort-options" onChange={e => setSort(e.target.value)} />
                             </div>
-                            <hr className="ons-separator__regular margin-top--1" />
-                            <div className="grid--justify-space-between sort-container" style={{ display: "flex" }}>
-                                <div className="grid--align-center" style={{ display: "flex" }}>
-                                    <label className="ons-label" htmlFor="sort-options">
-                                        Sort by
-                                    </label>
-                                    <Select contents={sortOptions} selectedOption={sort} id="sort-options" onChange={e => setSort(e.target.value)} />
-                                </div>
-                                <div className="grid--align-center">
-                                    <ButtonWithShadow
-                                        type="button"
-                                        buttonText="Upload interactive"
-                                        class="secondary"
-                                        onClick={() => props.router.push(`${rootPath}/interactives/create?collection=${collectionId}`)}
-                                        isSubmitting={false}
-                                    />
-                                </div>
+                            <div className="grid--align-center">
+                                <ButtonWithShadow
+                                    type="button"
+                                    buttonText="Upload interactive"
+                                    class="secondary"
+                                    onClick={() => props.router.push(`${rootPath}/interactives/create?collection=${collectionId}`)}
+                                    isSubmitting={false}
+                                />
                             </div>
-                            <hr className="ons-separator__light margin-bottom--1" />
-                            <ul className="list--neutral list--neutral__chips" role="list">
-                                {filteredInteractives.map((interactive, key) => {
-                                    const { id, metadata, last_updated } = interactive;
-                                    return (
-                                        <li key={key} className="list__item" role="listitem">
-                                            <div style={{ display: "flex" }}>
-                                                <div className="list__item__title grid__col-sm-12 grid__col-md-6">
-                                                    <Link to={`${rootPath}/interactives/edit/${id}?collection=${collectionId}`}>
-                                                        {metadata.title} {metadata.internal_id}
-                                                    </Link>
-                                                    <p>Last edited on {moment(last_updated).format("Do MMMM YYYY")}</p>
-                                                </div>
-                                                <div className="list__item__statuses grid__col-sm-12 grid__col-md-3">{getChips(interactive)}</div>
-                                                <div className="list__item__buttons grid__col-sm-12 grid__col-md-3">
-                                                    <div>
-                                                        {collectionId && (
-                                                            <ButtonWithShadow
-                                                                type="button"
-                                                                buttonText="Link"
-                                                                class="success"
-                                                                onClick={() => linkToCollection(interactive)}
-                                                                isSubmitting={false}
-                                                                disabled={metadata.collection_id}
-                                                            />
-                                                        )}
-                                                    </div>
+                        </div>
+                        <hr className="ons-separator__light margin-bottom--1" />
+                        <ul className="list--neutral list--neutral__chips" role="list">
+                            {filteredInteractives.map((interactive, key) => {
+                                const { id, metadata, last_updated } = interactive;
+                                return (
+                                    <li key={key} className="list__item" role="listitem">
+                                        <div style={{ display: "flex" }}>
+                                            <div className="list__item__title grid__col-sm-12 grid__col-md-6">
+                                                <Link to={`${rootPath}/interactives/edit/${id}?collection=${collectionId}`}>
+                                                    {metadata.title} {metadata.internal_id}
+                                                </Link>
+                                                <p>Last edited on {moment(last_updated).format("Do MMMM YYYY")}</p>
+                                            </div>
+                                            <div className="list__item__statuses grid__col-sm-12 grid__col-md-3">{getChips(interactive)}</div>
+                                            <div className="list__item__buttons grid__col-sm-12 grid__col-md-3">
+                                                <div>
+                                                    {collectionId && (
+                                                        <ButtonWithShadow
+                                                            type="button"
+                                                            buttonText="Link"
+                                                            class="success"
+                                                            onClick={() => linkToCollection(interactive)}
+                                                            isSubmitting={false}
+                                                            disabled={metadata.collection_id}
+                                                        />
+                                                    )}
                                                 </div>
                                             </div>
-                                            <hr className="ons-separator__light margin-top--1" />
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </div>
+                                        </div>
+                                        <hr className="ons-separator__light margin-top--1" />
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
                 </div>
             </div>
-        </FooterAndHeaderLayout>
+        </div>
     );
 }
