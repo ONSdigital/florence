@@ -8,6 +8,7 @@ import Input from "../../components/Input";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
 import { useDispatch, useSelector } from "react-redux";
+import { getParameterByName } from "../../utilities/utils";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -21,8 +22,10 @@ export default function InteractivesForm(props) {
     const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
+    const [collectionId, setCollectionId] = useState("");
 
     useEffect(() => {
+        setCollectionId(getParameterByName("collection"));
         const { interactiveId } = props.params;
         if (interactiveId) {
             setInteractiveId(interactiveId);
@@ -53,10 +56,10 @@ export default function InteractivesForm(props) {
     useEffect(() => {
         if (successMessage.success) {
             if (successMessage.type === "create") {
-                browserHistory.push(`${rootPath}/interactives`);
+                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
             if (successMessage.type === "update") {
-                browserHistory.push(`${rootPath}/interactives`);
+                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
         }
     }, [successMessage]);
@@ -73,6 +76,7 @@ export default function InteractivesForm(props) {
                     internal_id: internalId,
                     title: title,
                     label: label,
+                    collection_id: collectionId,
                 },
             })
         );
@@ -95,7 +99,7 @@ export default function InteractivesForm(props) {
         <FooterAndHeaderLayout title="Manage my interactives">
             <div className="grid grid--justify-space-around padding-bottom--2">
                 <div className="grid__col-sm-12 grid__col-md-10 grid__col-xlg-8">
-                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
+                    <BackButton redirectUrl={`${rootPath}/interactives?collection=${collectionId}`} classNames="ons-breadcrumb__item" />
                     {displayedErrors.length > 0 && (
                         <div className="grid__col-sm-12 grid__col-xl-4 padding-top--2">
                             <div className="ons-panel ons-panel--errors">
