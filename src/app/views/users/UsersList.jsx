@@ -9,7 +9,6 @@ import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
 
-
 const mapUsers = (users, rootPath) => {
     return users.map(user => ({
         ...user,
