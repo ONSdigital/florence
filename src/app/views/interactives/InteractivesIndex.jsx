@@ -31,7 +31,6 @@ export default function InteractivesIndex(props) {
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
-        dispatch(getInteractives());
     }, []);
 
     useEffect(() => {
@@ -44,6 +43,16 @@ export default function InteractivesIndex(props) {
                     setCollection(data);
                 })
                 .catch(console.error);
+
+            let filters = {};
+            filters = Object.assign({}, filters, {
+                collection_id: collectionId,
+            });
+            const data = JSON.stringify({
+                metadata: filters,
+                associate_collection: true
+            });
+            dispatch(filterInteractives(data));
             setSort("date");
         }
     }, [collectionId]);
@@ -86,9 +95,13 @@ export default function InteractivesIndex(props) {
                 internal_id: internalId
             });
         }
+        filters = Object.assign({}, filters, {
+            collection_id: collectionId,
+        });
         const data = JSON.stringify({
-            metadata: filters
-        })
+            metadata: filters,
+            associate_collection: true
+        });
         dispatch(filterInteractives(data));
     };
 
