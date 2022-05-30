@@ -10,6 +10,7 @@ const propTypes = {
     onChange: PropTypes.func,
     onBlur: PropTypes.func,
     error: PropTypes.string,
+    fileError: PropTypes.string,
     displayInputAsErrored: PropTypes.bool,
     disabled: PropTypes.bool,
     isFocused: PropTypes.bool,
@@ -144,6 +145,11 @@ export default class Input extends Component {
                     </div>
                 )}
                 {this.props.helpMessage && <div className="help-msg">{this.props.helpMessage}</div>}
+                {this.props.fileError && (
+                    <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
+                        {this.props.fileError}
+                    </div>
+                )}
                 {this.renderInput()}
                 {this.state.displayShowHide && (
                     <span className="btn btn--password" onClick={this.showHide} onKeyPress={this.showHide} tabIndex="0" role="button">

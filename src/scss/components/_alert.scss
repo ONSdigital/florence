@@ -28,6 +28,29 @@
     }
   }
 
+  &--file-error {
+    border-color: #d0021b !important;
+    strong {
+      color: #d0021b;
+      font-weight: bold;
+    }
+
+    input {
+      border-color: #58585B !important;
+      background-color: #FFF !important;
+    }
+
+    .error-msg {
+      color: #d0021b;
+      padding-bottom: 15px;
+      font-weight: bold;
+    }
+
+    .ons-panel__error {
+      padding-bottom: 20px;
+    }
+  }
+
   &--error {
     background: #fae6e8;
     border-color: #d0021b !important;
