@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { editInteractive, filterInteractives, getInteractives, resetSuccessMessage, sortInteractives } from "../../actions/interactives";
 import { Link } from "react-router";
 import AlertSuccess from "../../components/alert/AlertSuccess";
-import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
 import Input from "../../components/Input";
 import Select from "../../components/Select";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
