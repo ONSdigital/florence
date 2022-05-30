@@ -1,0 +1,38 @@
+.filterable-table-box{
+
+    table {
+        width: 100%;
+
+        td {
+            border-bottom: 1px solid #979797;
+        }
+
+        .table-link{
+            color: $slate-blue;
+            font-size: 26px;
+            line-height: 36px;
+            font-weight: 700;
+            font-style: bold;
+            font-family: 'Open Sans';
+        }
+
+        .metas{
+            padding: 18px 0;
+            span, a {
+                color: #595959;
+                font-size: 16px;
+                line-height: 24px;
+                font-weight: 400;
+                padding-bottom: 18px;
+            }
+            a {
+                padding-left: 18px;
+            }
+        }
+    }
+
+    .pageCounter{
+        padding-top: 39px;
+    }
+
+}

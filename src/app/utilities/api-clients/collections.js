@@ -142,4 +142,21 @@ export default class collections {
         const versionURL = `/datasets/${datasetID}/editions/${version.edition}/versions/${version.version}`;
         return versionURL;
     }
+    // to create policy we use put not post as we are 'forcing' it to have the collection id
+    static createPolicy(id, body) {
+        return http.put(`/api/v1/policies/${id}`, body).then(response => {
+            return response;
+        });
+    }
+    static getPolicy(id) {
+        return http.get(`/api/v1/policies/${id}`).then(response => {
+            return response;
+        });
+    }
+
+    static updatePolicy(id, body) {
+        return http.put(`/api/v1/policies/${id}`, body).then(response => {
+            return response;
+        });
+    }
 }

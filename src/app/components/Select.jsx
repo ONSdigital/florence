@@ -6,7 +6,7 @@ const propTypes = {
     label: PropTypes.string,
     contents: PropTypes.arrayOf(
         PropTypes.shape({
-            id: PropTypes.string.isRequired,
+            id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
             name: PropTypes.string.isRequired,
             disabled: PropTypes.bool,
             isGroup: PropTypes.bool,

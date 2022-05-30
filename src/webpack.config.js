@@ -19,7 +19,10 @@ module.exports = {
         extensions: ['.js', '.jsx']
     },
     devServer: {
-        contentBase: path.join(__dirname, 'src')
+        contentBase: path.join(__dirname, 'src'),
+        headers: {
+            'X-Frame-Options': 'sameorigin'
+        }
     },
     module: {
         rules: [

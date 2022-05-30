@@ -1,0 +1,15 @@
+.list {
+    &-simple {
+        margin: 0 0 1rem;
+        padding: 0 0 0 1.5rem;
+    
+        &__item {
+            margin-bottom: .5rem;
+
+        }
+    }
+}
+
+b {
+    font-weight: bold;
+}

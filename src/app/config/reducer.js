@@ -171,8 +171,8 @@ export default function reducer(state = initialState, action) {
             return {
                 ...state,
                 config: {
-                    enableDatasetImport: action.config.enableDatasetImport,
-                    enableNewSignIn: action.config.enableNewSignIn,
+                    ...state.config,
+                    ...action.config,
                 },
             };
         }
@@ -719,6 +719,12 @@ export default function reducer(state = initialState, action) {
                     ...state.groups,
                     members: action.members,
                 },
+            };
+        }
+        case types.SET_PREVIEW_LANGUAGE: {
+            return {
+                ...state,
+                previewLanguage: action.language,
             };
         }
         default: {

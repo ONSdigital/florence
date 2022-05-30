@@ -9,6 +9,9 @@ export const initialState = {
     config: {
         enableDatasetImport: false,
         enableNewSignIn: false,
+        enableNewUpload: false,
+        enablePermissionsAPI: false,
+        enableNewInteractives: false,
     },
     global: {
         workingOn: null,
@@ -57,4 +60,8 @@ export const initialState = {
     preview: {
         selectedPage: null,
     },
+    interactives: {
+        all: [],
+    },
+    previewLanguage: "en",
 };

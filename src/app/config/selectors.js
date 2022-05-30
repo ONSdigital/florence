@@ -7,7 +7,7 @@ export const getCollections = state => state.collections.all;
 export const getSearch = state => state.search;
 
 export const getMappedCollections = createSelector(getCollections, collections => {
-    if (!collections) return [];
+    if (!collections || collections.length === 0 || typeof collections === "string") return [];
     return collections.sort((a, b) => a.name.localeCompare(b.name)).map(collection => collectionMapper.collectionResponseToState(collection));
 });
 
@@ -23,6 +23,7 @@ export const getFilteredCollections = createSelector(getMappedCollections, getSe
 
 export const getWorkingOn = state => state.global.workingOn;
 export const rootPath = state => state.rootPath;
+export const getPreviewLanguage = state => state.previewLanguage;
 export const getActive = state => state.collections.active;
 export const getCollectionsLoading = state => state.collections.isLoading;
 export const getCollectionCreating = state => state.collections.isCreating;
@@ -37,6 +38,7 @@ export const getGroupMembersLoading = state => state.groups.isLoadingMembers;
 export const getGroupMembers = state => state.groups.members;
 
 export const getEnableNewSignIn = state => state.config.enableNewSignIn;
+export const getEnablePermissionsAPI = state => state.config.enablePermissionsAPI;
 export const getNotifications = state => state.notifications;
 
 export const getActiveUser = state => state.users.active; //TODO: check if this is needed

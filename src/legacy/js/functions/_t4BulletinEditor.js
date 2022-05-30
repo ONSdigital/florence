@@ -183,7 +183,7 @@ function bulletinEditor(collectionId, data) {
         
         // tags
         if ($("#selectTopic").val() && $("#selectSubTopic").val()) {
-            data.description.primaryTopic = $("#selectTopic").val()[0]
+            data.description.canonicalTopic = $("#selectTopic").val()[0]
             data.description.secondaryTopics = $("#selectSubTopic").val()
         }
         else if ($("#selectTopic").val() && !$("#selectSubTopic").val()) {

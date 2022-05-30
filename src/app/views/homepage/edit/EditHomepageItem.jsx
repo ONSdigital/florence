@@ -8,7 +8,11 @@ import notifications from "../../../utilities/notifications";
 import Modal from "../../../components/Modal";
 import Input from "../../../components/Input";
 import FileUpload from "../../../components/file-upload/FileUpload";
-import { bindFileUploadInput } from "../../../components/file-upload/bind";
+import GenericFileUploader from "../../../components/generic-file-upload/GenericFileUploader";
+
+import { bindFileUploadInput, bindGenericFileUploadInput } from "../../../components/file-upload/bind";
+import { connect } from "react-redux";
+import http from "../../../utilities/http";
 
 const propTypes = {
     params: PropTypes.shape({
@@ -35,7 +39,7 @@ const STATUS_IMPORTING_ERROR = "Image import errored";
 const STATUS_GETTING_IMAGE = "Image is loading";
 const STATUS_IMAGE_LOADED = "Image loaded";
 
-export default class EditHomepageItem extends Component {
+export class EditHomepageItem extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -55,6 +59,7 @@ export default class EditHomepageItem extends Component {
             isGettingImage: false,
             isImportingImage: false,
             imageImportStatus: STATUS_IMAGE_RECORD_CREATED,
+            uploadFilePathPrefix: "homepage-images",
         };
     }
 
@@ -69,7 +74,49 @@ export default class EditHomepageItem extends Component {
     };
 
     bindInput = () => {
-        bindFileUploadInput(FILE_UPLOAD_ID, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
+        if (this.props.enableNewUpload) {
+            const resumableOptions = {
+                isPublishable: true,
+                licence: "Open Government Licence v3.0",
+                licenceUrl: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+                collectionId: this.props.params.collectionID,
+                path: this.state.uploadFilePathPrefix,
+            };
+            bindGenericFileUploadInput(FILE_UPLOAD_ID, resumableOptions, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
+        } else {
+            bindFileUploadInput(FILE_UPLOAD_ID, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
+        }
+    };
+
+    renderFileUploader = () => {
+        const upload = this.state.upload;
+        return this.props.enableNewUpload ? (
+            <GenericFileUploader
+                label="Image upload"
+                type="file"
+                id={FILE_UPLOAD_ID}
+                filePathPrefix={this.state.uploadFilePathPrefix}
+                accept=".png"
+                url={upload.url || null}
+                extension={upload.extension || null}
+                error={upload.error || null}
+                isUploading={this.state.isUploadingImage}
+                progress={upload.progress >= 0 ? upload.progress : null}
+                onRetry={this.handleRetryClick}
+            />
+        ) : (
+            <FileUpload
+                label="File upload"
+                type="file"
+                id={FILE_UPLOAD_ID}
+                accept=".png"
+                url={upload.url || null}
+                extension={upload.extension || null}
+                error={upload.error || null}
+                progress={upload.progress >= 0 ? upload.progress : null}
+                onRetry={this.handleRetryClick}
+            />
+        );
     };
 
     updateUploadState = upload => {
@@ -318,25 +365,7 @@ export default class EditHomepageItem extends Component {
 
     renderImageUpload = () => {
         const upload = this.state.upload;
-        return (
-            <div>
-                {this.state.image && this.state.imageState !== "created" ? (
-                    this.renderImagePreview()
-                ) : (
-                    <FileUpload
-                        label="File upload"
-                        type="file"
-                        id={FILE_UPLOAD_ID}
-                        accept=".png"
-                        url={upload.url || null}
-                        extension={upload.extension || null}
-                        error={upload.error || null}
-                        progress={upload.progress >= 0 ? upload.progress : null}
-                        onRetry={this.handleRetryClick}
-                    />
-                )}
-            </div>
-        );
+        return <div>{this.state.image && this.state.imageState !== "created" ? this.renderImagePreview() : this.renderFileUploader()}</div>;
     };
 
     renderModalBody = isDisabled => {
@@ -398,5 +427,14 @@ export default class EditHomepageItem extends Component {
         );
     }
 }
+
+function mapStateToProps(state) {
+    return {
+        currentCollectionId: state.state.collections,
+        enableNewUpload: state.state.config.enableNewUpload,
+    };
+}
+
+export default connect(mapStateToProps)(EditHomepageItem);
 
 EditHomepageItem.propTypes = propTypes;

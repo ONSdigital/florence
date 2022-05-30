@@ -247,11 +247,17 @@ describe("Store", () => {
 
             expect(store.getState().state.config.enableDatasetImport).toEqual(false);
             expect(store.getState().state.config.enableNewSignIn).toEqual(false);
+            expect(store.getState().state.config.enableNewInteractives).toEqual(false);
+            expect(store.getState().state.config.enablePermissionsAPI).toEqual(false);
 
-            store.dispatch(actions.setConfig({ enableDatasetImport: true, enableNewSignIn: true }));
+            store.dispatch(
+                actions.setConfig({ enableDatasetImport: true, enableNewSignIn: true, enableNewInteractives: true, enablePermissionsAPI: true })
+            );
 
             expect(store.getState().state.config.enableDatasetImport).toEqual(true);
             expect(store.getState().state.config.enableNewSignIn).toEqual(true);
+            expect(store.getState().state.config.enableNewInteractives).toEqual(true);
+            expect(store.getState().state.config.enablePermissionsAPI).toEqual(true);
         });
     });
 
@@ -329,6 +335,7 @@ describe("Store", () => {
                     config: {
                         enableDatasetImport: true,
                         enableNewSignIn: true,
+                        enableNewInteractives: true,
                     },
                     groups: {
                         active: {},
@@ -352,6 +359,7 @@ describe("Store", () => {
         expect(store.getState().state.popouts.length).toEqual(popouts.length);
         expect(store.getState().state.config.enableDatasetImport).toEqual(true);
         expect(store.getState().state.config.enableNewSignIn).toEqual(true);
+        expect(store.getState().state.config.enableNewInteractives).toEqual(true);
 
         store.dispatch(actions.reset());
 
@@ -366,5 +374,6 @@ describe("Store", () => {
         expect(store.getState().state.popouts.length).toEqual(2);
         expect(store.getState().state.config.enableDatasetImport).toEqual(true);
         expect(store.getState().state.config.enableNewSignIn).toEqual(true);
+        expect(store.getState().state.config.enableNewInteractives).toEqual(true);
     });
 });

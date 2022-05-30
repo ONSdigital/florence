@@ -21,10 +21,35 @@
                 font-weight: 600;
                 color: $night-shadz;
             }
+
+            &__panel{
+
+                span {
+                    color: $ruby-red;
+                    font-weight: 700;
+                }
+
+                label {
+                    padding-top: 18px;
+                }
+
+                background-color: $light-pink;
+                border-left: 8px solid $ruby-red;
+                padding: 18px 81px 18px 26px !important;
+            }
+        }
+
+        .help-msg {
+            font-size: 12px;
+            padding-bottom: 5px;
         }
 
         &--flush {
             margin: 0;
+        }
+
+        &__panel{
+            padding: 0 81px 0px 26px;
         }
     }
 
@@ -37,6 +62,39 @@
         display: flex;
         height: $lineheight * 2;
         flex-wrap: nowrap;
+    }
+
+    &__button{
+        &__panel{
+            padding: 0 81px 0px 26px;
+
+            button, a {
+                font-family: "Open Sans";
+                font-size: 18px;
+                border-bottom: 3px solid rgba(0, 0, 0, .6);
+            }
+
+            button:nth-child(1) {
+                font-weight: 700;
+            }
+
+            a{
+                color: $black;
+                font-weight: 400;
+            }
+        }
+    }
+
+    &__back__button {
+        padding: 0 81px 0px 26px;
+        a {
+            color: $black;
+            display: flex;
+
+            img {
+                padding-right: 10px;
+            }
+        }
     }
 
     &-footer {
