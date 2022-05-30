@@ -56,9 +56,7 @@ export class CreateContent extends Component {
     }
 
     componentDidMount() {
-        const filteredContentTypes = this.state.contentTypes.filter(
-            contentType => contentType.enabled
-        );
+        const filteredContentTypes = this.state.contentTypes.filter(contentType => contentType.enabled);
         this.setState({
             filteredContentTypes,
         });
@@ -72,7 +70,9 @@ export class CreateContent extends Component {
     handleSearchInput = event => {
         const searchTerm = event.target.value.toLowerCase();
         const filteredContentTypes = this.state.contentTypes.filter(
-            contentType => (contentType.title.toLowerCase().search(searchTerm) !== -1 || contentType.id.toLowerCase().search(searchTerm) !== -1) && contentType.enabled
+            contentType =>
+                (contentType.title.toLowerCase().search(searchTerm) !== -1 || contentType.id.toLowerCase().search(searchTerm) !== -1) &&
+                contentType.enabled
         );
         this.setState({
             filteredContentTypes,
@@ -92,7 +92,7 @@ export class CreateContent extends Component {
                     </div>
                     <h1 className="margin-top--1 margin-bottom--1">Select a content type to create/edit</h1>
                     <Input id="search-content-types" placeholder="Search by name" onChange={this.handleSearchInput} />
-                    <SimpleSelectableList rows={ this.state.filteredContentTypes } />
+                    <SimpleSelectableList rows={this.state.filteredContentTypes} />
                 </div>
             </div>
         );

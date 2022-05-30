@@ -46,7 +46,7 @@
     "eslint-webpack-plugin": "^3.0.1",
     "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
-    "handsontable": "^9.0.2",
+    "handsontable": "^12.0.1",
     "isomorphic-fetch": "^2.2.1",
     "jest": "^24.9.0",
     "jest-dom": "^4.0.0",
@@ -88,11 +88,12 @@
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/",
+    "test:update": "export NODE_ENV=testing && jest --updateSnapshot"
   },
   "dependencies": {
     "acorn": "^8.4.1",
-    "auditjs": "^4.0.31",
+    "auditjs": "^4.0.37",
     "axios": "^0.26.1",
     "dateformat": "^2.0.0",
     "dp-table-builder-ui": "^1.1.0",
@@ -123,9 +124,9 @@
   },
   "resolutions": {
     "lodash": "4.17.21",
-    "lodash-es": "^4.17.21",
-    "js-yaml": "^3.13.1",
-    "ini": "^1.3.8",
-    "moment": "^2.29.1"
+    "minimist": "^1.2.6",
+    "minimatch": "^3.0.5",
+    "handsontable": "^12.0.1",
+    "react": "^17.0.2"
   }
 }

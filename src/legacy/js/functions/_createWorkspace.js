@@ -27,11 +27,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         }
 
         Florence.globalVars.pagePath = safePath;
+        var languageCookie = "lang="
         if (Florence.globalVars.welsh !== true) {
-            document.cookie = "lang=" + "en;path=/";
+            languageCookie += "en"
         } else {
-            document.cookie = "lang=" + "cy;path=/";
+            languageCookie += "cy"
         }
+        document.cookie = languageCookie + ";path=/;domain=" + location.hostname;
         Florence.refreshAdminMenu();
 
         var workSpace = templates.workSpace(Florence.babbageBaseUrl + safePath);

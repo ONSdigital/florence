@@ -2,19 +2,17 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
-
 import LoginForm from "./SignInForm";
 import notifications from "../../utilities/notifications";
-
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
-import redirectToMainScreen from "../../utilities/redirectToMainScreen";
+import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import {setAuthToken} from "../../utilities/auth";
+import { setAuthToken } from "../../utilities/auth";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -47,9 +45,8 @@ export class LoginController extends Component {
     }
 
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.isAuthenticated !== nextProps.isAuthenticated)  return true;
-        if (this.state.validationErrors !== nextState.validationErrors) return true;
-        if (this.state.firstTimeSignIn !== nextState.firstTimeSignIn) return true;
+        if (this.props.isAuthenticated !== nextProps.isAuthenticated) return true;
+        if (this.state !== nextState) return true;
         return false;
     }
 

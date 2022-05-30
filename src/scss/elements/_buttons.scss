@@ -227,6 +227,14 @@
     }
 }
 
+button:disabled.ons-btn,
+button[disabled].ons-btn{
+  span {
+    background-color: #9acdb5;
+    color: #fff;
+  }
+}
+
 .ons-btn + .ons-btn {
     margin-left: .5rem;
 }

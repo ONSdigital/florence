@@ -19,7 +19,6 @@ const props = {
 describe("UserList", () => {
     it("renders empty list with message if no users found", () => {
         render(<UsersList {...props} />);
-        expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Users/i);
         expect(screen.getByRole("link", { name: "Create new user" })).toBeInTheDocument();
         expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();

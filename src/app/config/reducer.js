@@ -707,7 +707,7 @@ export default function reducer(state = initialState, action) {
                 ...state,
                 groups: {
                     ...state.groups,
-                    members: state.groups.members.concat(action.members),
+                    members: action.members,
                     isLoadingMembers: false,
                 },
             };

@@ -16,6 +16,8 @@ fieldset {
   .chip {
     margin-left: 10px;
     padding: 2px;
+    font-size: 12px;
+    margin-bottom: 4px;
 
     &__text {
       font-weight: bold;
@@ -54,5 +56,80 @@ fieldset {
         }
       }
     }
+  }
+}
+
+.ons-separator{
+  &__regular {
+    border: 1px solid #AEAEAE;
+  }
+
+  &__light {
+    border: 1px solid #DDDDDD;
+  }
+}
+
+.list__item__title {
+  display: block;
+  a{
+    font-weight: bold;
+    font-size: 20px;
+    text-decoration: none;
+  }
+  p {
+    font-weight: 400;
+    padding-top: 10px;
+  }
+}
+
+.sort-container {
+  label {
+    padding-bottom: 7px;
+    margin-right: 15px;
+  }
+
+  button {
+    margin-bottom: 21px;
+    margin-top: 12px;
+  }
+
+  .select-wrap {
+    border: 2px solid #58585B;
+    &::before {
+      color: #58585B !important;
+      background-color: #FFFFFF;
+    }
+
+    &--focus {
+      &::before {
+        border: 2px solid #58585B !important;
+      }
+    }
+  }
+}
+
+.filters-container {
+  table {
+    border: 1px solid #58585B;
+    th {
+      text-align: left;
+      background-color: #E9E9E9;
+    }
+    th {
+      padding: 0 10px;
+    }
+    td {
+      padding: 20px;
+    }
+  }
+}
+
+.list__item__statuses {
+  text-align: center;
+}
+
+.list__item__buttons {
+  button {
+    float: right;
   }
 }

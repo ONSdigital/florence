@@ -3,7 +3,7 @@ Florence
 
 The publishing platform used for the [ONS website](https://www.ons.gov.uk).
 
-![Florence screenshot](images/Florence screenshot.png)
+![Florence screenshot](images/Florence%20screenshot.png "Florence screenshot")
 
 ### Getting started
 
