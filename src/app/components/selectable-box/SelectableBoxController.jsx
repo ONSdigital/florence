@@ -39,7 +39,7 @@ export default class SelectableBoxController extends Component {
                     {this.props.heading}
                     {this.props.isUpdating && <span className="selectable-box__status loader" />}
                 </h2>
-                {this.props.items.length > 0 ? (
+                {this.props.items && this.props.items.length > 0 ? (
                     this.renderList()
                 ) : (
                     <p className="margin-top--1 margin-right--1 margin-bottom--1 margin-left--1">No items to display</p>

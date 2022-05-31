@@ -3,6 +3,7 @@
 exports[`Groups matches the snapshot with empty props 1`] = `
 <div
   className="grid grid--justify-space-around"
+  data-testid="groups"
 >
   <div
     className="grid__col-11 grid__col-md-9"
@@ -64,6 +65,7 @@ exports[`Groups matches the snapshot with empty props 1`] = `
 exports[`Groups matches the snapshot with groups props 1`] = `
 <div
   className="grid grid--justify-space-around"
+  data-testid="groups"
 >
   <div
     className="grid__col-11 grid__col-md-9"

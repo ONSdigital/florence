@@ -12,7 +12,7 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import { setAuthToken } from "../../utilities/auth";
+import { setAuthState } from "../../utilities/auth";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -163,7 +163,7 @@ export class LoginController extends Component {
     setPermissions = () => {
         user.getPermissions()
             .then(userType => {
-                setAuthToken(userType);
+                setAuthState(userType);
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);
             })

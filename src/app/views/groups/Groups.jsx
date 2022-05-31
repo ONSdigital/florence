@@ -21,7 +21,7 @@ const Groups = props => {
     }, [search.value]);
 
     return (
-        <div className="grid grid--justify-space-around">
+        <div className="grid grid--justify-space-around" data-testid="groups">
             <div className="grid__col-11 grid__col-md-9">
                 <span className="margin-top--1">
                     <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>

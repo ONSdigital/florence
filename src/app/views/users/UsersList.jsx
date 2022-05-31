@@ -34,7 +34,7 @@ const UsersList = props => {
     }, [search.value]);
 
     return (
-        <div className="grid grid--justify-space-around">
+        <div className="grid grid--justify-space-around" data-testid="users">
             <div className="grid__col-9">
                 <div className="grid grid--align-baseline">
                     <div className="grid__col">

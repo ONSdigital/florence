@@ -4,6 +4,7 @@ exports[`Admin users have option to edit teams 1`] = `
 <div>
   <div
     className="grid grid--justify-space-around"
+    data-testid="teams"
   >
     <div
       className="grid__col-4"
@@ -229,6 +230,7 @@ exports[`Non-admin users can't view option to edit teams 1`] = `
 <div>
   <div
     className="grid grid--justify-space-around"
+    data-testid="teams"
   >
     <div
       className="grid__col-4"

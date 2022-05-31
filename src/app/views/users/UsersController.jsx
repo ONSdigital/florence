@@ -142,7 +142,7 @@ export class UsersController extends Component {
     render() {
         return (
             <div>
-                <div className="grid grid--justify-space-around">
+                <div className="grid grid--justify-space-around" data-testid="users">
                     <div className="grid__col-4">
                         <h1>Select a user</h1>
                         <SelectableBox

@@ -30,17 +30,18 @@ export default class SelectableBox extends Component {
     renderList() {
         return (
             <ul className="selectable-box__list">
-                {this.props.rows.map(row => {
-                    return (
-                        <SelectableBoxItem
-                            columns={this.props.columns}
-                            key={row.id}
-                            {...row}
-                            isSelected={this.props.activeRowID === row.id}
-                            handleClick={this.bindItemClick}
-                        />
-                    );
-                })}
+                {this.props.rows &&
+                    this.props.rows.map(row => {
+                        return (
+                            <SelectableBoxItem
+                                columns={this.props.columns}
+                                key={row.id}
+                                {...row}
+                                isSelected={this.props.activeRowID === row.id}
+                                handleClick={this.bindItemClick}
+                            />
+                        );
+                    })}
             </ul>
         );
     }

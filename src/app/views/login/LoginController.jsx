@@ -207,7 +207,7 @@ export class LoginController extends Component {
         };
 
         return (
-            <div>
+            <div data-testid="login">
                 <LoginForm formData={formData} />
 
                 {this.state.requestPasswordChange ? (

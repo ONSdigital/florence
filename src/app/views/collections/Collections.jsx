@@ -36,7 +36,7 @@ const Collections = props => {
 
     return (
         <>
-            <div className="grid grid--justify-space-around">
+            <div className="grid grid--justify-space-around" data-testid="collections">
                 <div className={isViewer ? "grid__col-8" : "grid__col-4"}>
                     <h1 className="text-center">Select a collection</h1>
                     <Search />

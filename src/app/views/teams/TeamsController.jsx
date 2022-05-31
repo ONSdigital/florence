@@ -353,7 +353,7 @@ export class TeamsController extends Component {
     render() {
         return (
             <div>
-                <div className="grid grid--justify-space-around">
+                <div className="grid grid--justify-space-around" data-testid="teams">
                     <div className="grid__col-4">
                         <h1 className="text-center">Select a team</h1>
                         <SelectableBoxController

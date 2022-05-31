@@ -28,7 +28,7 @@ const LoginForm = props => {
     const firstTimeSignIn = new URLSearchParams(location.search).get("first-time");
     const isFirstTimeSignIn = firstTimeSignIn != null && firstTimeSignIn === "true";
     return (
-        <div className="grid grid--justify-center">
+        <div className="grid grid--justify-center" data-testid="signin">
             <div className="grid__col-3">
                 <h1>Sign in to your Florence account</h1>
                 {showValidationErrorPanel && (

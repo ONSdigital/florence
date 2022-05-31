@@ -1,7 +1,7 @@
 /**
- * Auth Token:
- *  The concept of Auth Token is an object as a string stored in LocalStorage with a
- *  key of `ons_user`. The value is in the format of -
+ * Auth State:
+ *  The concept of Auth State is an object as a string stored in LocalStorage with a
+ *  key of `ons_auth_state`. The value is in the format of -
  *  {
  *      "email":"<EMAIL>",
  *      "admin": true,
@@ -11,7 +11,7 @@
 import user from "../utilities/api-clients/user";
 import fp from "lodash/fp";
 
-const _AUTH_TOKEN_NAME = "ons_user";
+const _AUTH_STATE_NAME = "ons_auth_state";
 
 export const UserRole = Object.freeze({
     ADMIN: "ADMIN",
@@ -41,9 +41,9 @@ export default class auth {
     }
 }
 
-export function setAuthToken(userData) {
+export function setAuthState(userData) {
     const userJSONData = JSON.stringify(userData);
-    window.localStorage.setItem(_AUTH_TOKEN_NAME, userJSONData);
+    window.localStorage.setItem(_AUTH_STATE_NAME, userJSONData);
     /* Legacy florence */
     window.localStorage.setItem("loggedInAs", userData.email);
     // Store the user type in localStorage. Used in old Florence
@@ -52,8 +52,8 @@ export function setAuthToken(userData) {
 }
 
 /** Assumes user is authenticated if ons_user exists in local storage */
-export function getAuthToken() {
-    let userData = window.localStorage.getItem(_AUTH_TOKEN_NAME);
+export function getAuthState() {
+    let userData = window.localStorage.getItem(_AUTH_STATE_NAME);
     try {
         userData = JSON.parse(userData);
     } catch (err) {
@@ -63,8 +63,8 @@ export function getAuthToken() {
     return userData;
 }
 
-export function removeAuthToken() {
-    window.localStorage.removeItem(_AUTH_TOKEN_NAME);
+export function removeAuthState() {
+    window.localStorage.removeItem(_AUTH_STATE_NAME);
     /* ENABLE_NEW_SIGN_IN legacy */
     window.localStorage.removeItem("access_token");
     /* Florence legacy */
@@ -72,8 +72,8 @@ export function removeAuthToken() {
     window.localStorage.removeItem("userType");
 }
 
-export function getIsAdminFromAuthToken() {
-    return fp.get("admin")(getAuthToken());
+export function getIsAdminFromAuthState() {
+    return fp.get("admin")(getAuthState());
 }
 
 /** User Schema - represents the `user` type stored in redux. */
@@ -89,8 +89,8 @@ class _UserSchema {
  * an empty valid new user instance.
  * @returns {_UserSchema}
  */
-export function getUserTypeFromAuthToken() {
-    const userData = getAuthToken();
+export function getUserTypeFromAuthState() {
+    const userData = getAuthState();
     if (!userData) {
         // Return a new empty user object to respect the factory functions return type
         return new _UserSchema();
