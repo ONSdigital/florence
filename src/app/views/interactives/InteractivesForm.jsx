@@ -6,7 +6,6 @@ import { createInteractive, getInteractive, editInteractive, resetInteractiveErr
 import BackButton from "../../components/back-button";
 import Input from "../../components/Input";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
-import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
 import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 
@@ -23,6 +22,7 @@ export default function InteractivesForm(props) {
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
     const [collectionId, setCollectionId] = useState("");
+    const [fileError, setFileError] = useState("");
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
@@ -44,12 +44,16 @@ export default function InteractivesForm(props) {
 
     useEffect(() => {
         if (interactive.metadata && interactiveId) {
-            const { metadata } = interactive;
+            const { metadata, archive } = interactive;
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
             setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
             setPublished(metadata.published);
+
+            if(interactive.state === "ImportFailure"){
+                setFileError(archive.import_message)
+            }
         }
     }, [interactive]);
 
@@ -246,8 +250,8 @@ export default function InteractivesForm(props) {
                             />
                         </div>
                     )}
-                    {errors.file ? (
-                        <div className="ons-panel ons-panel--error ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel">
+                    {errors.file || fileError ? (
+                        <div className={`ons-panel ${fileError ? 'ons-panel--file-error' : 'ons-panel--error'} ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel`}>
                             <span className="ons-u-vh">Error: </span>
                             <div className="ons-panel__body">
                                 <p className="ons-panel__error">
@@ -258,12 +262,13 @@ export default function InteractivesForm(props) {
                                         type="file"
                                         id="file"
                                         name="file"
-                                        accept=".zip"
+                                        accept=".zip,.csv,.ods,.xls"
                                         className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                         required
+                                        fileError={fileError}
                                         onChange={handleFile}
                                         label="Upload a file"
-                                        helpMessage="File types accepted are XLS and XLSX or PDF"
+                                        helpMessage="The file must be a CSV, ODS or Excel format and no larger than 2mb in size."
                                     />
                                 </div>
                             </div>
@@ -274,12 +279,12 @@ export default function InteractivesForm(props) {
                                 type="file"
                                 id="file"
                                 name="file"
-                                accept=".zip"
+                                accept=".zip,.csv,.ods,.xls"
                                 className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                 required
                                 onChange={handleFile}
                                 label="Upload a file"
-                                helpMessage="Only file type accepted is ZIP"
+                                helpMessage="The file must be a CSV, ODS or Excel format and no larger than 2mb in size."
                             />
                         </div>
                     )}
