@@ -49,7 +49,7 @@ export default function InteractivesIndex(props) {
             });
             const data = JSON.stringify({
                 metadata: filters,
-                associate_collection: true
+                associate_collection: true,
             });
             dispatch(filterInteractives(data));
             setSort("date");
@@ -91,7 +91,7 @@ export default function InteractivesIndex(props) {
         }
         if (internalId !== "") {
             filters = Object.assign({}, filters, {
-                internal_id: internalId
+                internal_id: internalId,
             });
         }
         filters = Object.assign({}, filters, {
@@ -99,7 +99,7 @@ export default function InteractivesIndex(props) {
         });
         const data = JSON.stringify({
             metadata: filters,
-            associate_collection: true
+            associate_collection: true,
         });
         dispatch(filterInteractives(data));
     };
