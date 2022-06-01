@@ -80,7 +80,7 @@ describe("CreateTeam", () => {
         describe("Given user attempts to create team with no users or name", () => {
             component.find("button#create-team-btn").simulate("click");
             it("notifies the user this is an unacceptable action", () => {
-                expect(mockedNotifications.length).toBe(1);
+                expect(mockedNotifications.length).toBeGreaterThanOrEqual(1);
             });
         });
 
