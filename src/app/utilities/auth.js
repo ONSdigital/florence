@@ -5,7 +5,10 @@
  *  {
  *      "email":"<EMAIL>",
  *      "admin": true,
- *      "editor":true
+ *      "editor":true,
+ *      "error?": string,
+ *      "session_expiry_time": Date,
+ *      "refresh_expiry_time": Date
  *  }
  */
 import user from "../utilities/api-clients/user";
@@ -43,7 +46,18 @@ export default class auth {
 
 export function setAuthToken(userData) {
   const userJSONData = JSON.stringify(userData);
-  window.localStorage.setItem(_AUTH_TOKEN_NAME, userJSONData);
+
+  if (window.localStorage.getItem(_AUTH_TOKEN_NAME)) {
+    const store = JSON.parse(localStorage.getItem(_AUTH_TOKEN_NAME));
+    if (typeof userData === "object") {
+      const merge = { ...store, ...userJSONData };
+      localStorage.setItem(_AUTH_TOKEN_NAME, JSON.stringify(merge));
+    } else {
+      store["error"] = userJSONData;
+      localStorage.setItem(_AUTH_TOKEN_NAME, JSON.stringify(store));
+    }
+  }
+
   /* Legacy florence */
   window.localStorage.setItem("loggedInAs", userData.email);
   // Store the user type in localStorage. Used in old Florence
