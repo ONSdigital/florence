@@ -101,24 +101,20 @@ export default function InteractivesForm(props) {
         );
         if(interactiveId) {
             dispatch(editInteractive(interactiveId, formData))
-            if(file){
-                collections.addInteractive(collectionId, interactiveId)
-                    .catch((error) => {
-                        console.log('error changing status to InProgress', error)
-                    })
-            }
+            collections.addInteractive(collectionId, interactiveId)
+                .catch((error) => {
+                    console.log('error changing status to InProgress', error)
+                })
         }  else {
             dispatch(createInteractive(formData));
         }
     };
 
     const onSubmitApproval = async () => {
-        try {
-            await collections.setInteractiveStatusToComplete(collectionId, interactiveId)
-            await collections.setInteractiveStatusToReviewed(collectionId, interactiveId)
-        } catch (e) {
-            console.log('error changing status to Reviewed', e)
-        }
+        collections.setInteractiveStatusToReviewed(collectionId, interactiveId)
+            .catch((e) => {
+                console.log('error changing status to REVIEWED', e)
+            })
     }
 
     const handleDelete = e => {

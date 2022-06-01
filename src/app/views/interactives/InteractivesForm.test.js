@@ -189,7 +189,6 @@ describe("Create/Edit an Interactives", () => {
             const saveChangesButton = screen.getByText("Save and submit for approval");
             expect(saveChangesButton).toBeInTheDocument();
             fireEvent.click(saveChangesButton);
-            await expect(setInteractiveStatusToComplete).toHaveBeenCalled();
             await expect(setInteractiveStatusToReviewed).toHaveBeenCalled();
         });
 
