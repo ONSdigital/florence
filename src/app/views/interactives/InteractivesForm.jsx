@@ -51,8 +51,8 @@ export default function InteractivesForm(props) {
             setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
             setPublished(metadata.published);
 
-            if(interactive.state === "ImportFailure"){
-                setFileError(archive.import_message)
+            if (interactive.state === "ImportFailure") {
+                setFileError(archive.import_message);
             }
         }
     }, [interactive]);
@@ -251,7 +251,11 @@ export default function InteractivesForm(props) {
                         </div>
                     )}
                     {errors.file || fileError ? (
-                        <div className={`ons-panel ${fileError ? 'ons-panel--file-error' : 'ons-panel--error'} ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel`}>
+                        <div
+                            className={`ons-panel ${
+                                fileError ? "ons-panel--file-error" : "ons-panel--error"
+                            } ons-panel--no-title ons-u-mb-s margin-bottom--1" id="error-panel`}
+                        >
                             <span className="ons-u-vh">Error: </span>
                             <div className="ons-panel__body">
                                 <p className="ons-panel__error">
@@ -336,11 +340,7 @@ export default function InteractivesForm(props) {
                         ) : (
                             <div className="inline-block">
                                 <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
-                                <Link
-                                    to={`${rootPath}/interactives/show/${interactiveId}`}
-                                    target="_blank"
-                                    className="ons-btn ons-btn--secondary"
-                                >
+                                <Link to={`${rootPath}/interactives/show/${interactiveId}`} target="_blank" className="ons-btn ons-btn--secondary">
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
                                 <ButtonWithShadow
