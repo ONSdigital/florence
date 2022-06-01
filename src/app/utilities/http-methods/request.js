@@ -108,8 +108,10 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 let responseIsJSON = false;
                 let responseIsText = false;
                 try {
-                    responseIsJSON = response.headers.get("content-type").match(/application\/json/);
-                    responseIsText = response.headers.get("content-type").match(/text\/plain/);
+                    if(response.headers && Object.entries(response.headers).length !== 0){
+                        responseIsJSON = response.headers.get("content-type").match(/application\/json/);
+                        responseIsText = response.headers.get("content-type").match(/text\/plain/);
+                    }
                 } catch (error) {
                     console.error(`Error trying to parse content-type header`, error);
                     log.event(

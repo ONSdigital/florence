@@ -159,4 +159,29 @@ export default class collections {
             return response;
         });
     }
+
+    static addInteractive(collectionID, interactiveID) {
+        const body = { state: "InProgress" };
+        return http.put(`/zebedee/collections/${collectionID}/interactives/${interactiveID}`, body, true).then(response => {
+            return response;
+        });
+    }
+
+    static setInteractiveStatusToComplete(collectionID, interactiveID) {
+        const body = { state: "Complete" };
+        return http.put(`/zebedee/collections/${collectionID}/interactives/${interactiveID}`, body, true).then(response => {
+            return response;
+        });
+    }
+
+    static setInteractiveStatusToReviewed(collectionID, interactiveID) {
+        const body = { state: "Reviewed" };
+        return http.put(`/zebedee/collections/${collectionID}/interactives/${interactiveID}`, body, true).then(response => {
+            return response;
+        });
+    }
+
+    static removeInteractive(collectionID, interactiveID) {
+        return http.delete(`/zebedee/collections/${collectionID}/interactives/${interactiveID}`, true);
+    }
 }

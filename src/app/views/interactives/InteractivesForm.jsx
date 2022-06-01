@@ -8,6 +8,7 @@ import Input from "../../components/Input";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
+import collections from "../../utilities/api-clients/collections";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -23,6 +24,7 @@ export default function InteractivesForm(props) {
     const [published, setPublished] = useState(false);
     const [collectionId, setCollectionId] = useState("");
     const [fileError, setFileError] = useState("");
+    const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
@@ -41,6 +43,19 @@ export default function InteractivesForm(props) {
         }
         dispatch(resetInteractiveError());
     }, []);
+
+    useEffect(() => {
+        const { interactiveId } = props.params;
+        if (interactiveId && interactive.id) {
+            const { metadata } = interactive;
+            (
+                internalId !== metadata.internal_id ||
+                title !== metadata.title ||
+                label !== metadata.label ||
+                file
+            ) ? setEditMode(true) : setEditMode(false)
+        }
+    }, [internalId, title, label, file])
 
     useEffect(() => {
         if (interactive.metadata && interactiveId) {
@@ -84,8 +99,23 @@ export default function InteractivesForm(props) {
                 },
             })
         );
-        interactiveId ? dispatch(editInteractive(interactiveId, formData)) : dispatch(createInteractive(formData));
+        if(interactiveId) {
+            dispatch(editInteractive(interactiveId, formData))
+            collections.addInteractive(collectionId, interactiveId)
+                .catch((error) => {
+                    console.log('error changing status to InProgress', error)
+                })
+        }  else {
+            dispatch(createInteractive(formData));
+        }
     };
+
+    const onSubmitApproval = async () => {
+        collections.setInteractiveStatusToReviewed(collectionId, interactiveId)
+            .catch((e) => {
+                console.log('error changing status to REVIEWED', e)
+            })
+    }
 
     const handleDelete = e => {
         e.preventDefault();
@@ -339,8 +369,17 @@ export default function InteractivesForm(props) {
                             <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} isSubmitting={false} />
                         ) : (
                             <div className="inline-block">
-                                <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
-                                <Link to={`${rootPath}/interactives/show/${interactiveId}`} target="_blank" className="ons-btn ons-btn--secondary">
+                                {
+                                    editMode ?
+                                    <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
+                                        :
+                                    <ButtonWithShadow type="submit" buttonText="Save and submit for approval" onClick={onSubmitApproval} isSubmitting={false} />
+                                }
+                                <Link
+                                    to={`${rootPath}/interactives/show/${interactiveId}`}
+                                    target="_blank"
+                                    className="ons-btn ons-btn--secondary"
+                                >
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
                                 <ButtonWithShadow
