@@ -48,30 +48,28 @@ export default function InteractivesDelete(props) {
     };
 
     return (
-        <FooterAndHeaderLayout title="Manage my interactives">
-            <div className="grid grid--justify-space-around padding-bottom--2 ons-content">
-                <div className="grid__col-8">
-                    <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
-                    <h1 className="text-align-left">Delete interactive</h1>
-                    <p className="padding-bottom--1">You are about to delete this interactive:</p>
-                    <ul className="list-simple">
-                        <li className="list-simple__item">
-                            Name - <b>{title}</b>
-                        </li>
-                        <li className="list-simple__item">
-                            Last updated - <b>{moment(lastUpdated).format("DD MMMM YYYY")}</b>
-                        </li>
-                    </ul>
-                    <p>
-                        Are you sure you want to delete this interactive? You will permanently lose access to the data associated to it, including the
-                        uploaded file.
-                    </p>
-                    <div className="inline-block padding-top--2">
-                        <ButtonWithShadow type="button" buttonText="Continue" onClick={handleDelete} isSubmitting={false} />
-                        <ButtonWithShadow type="button" class="secondary" buttonText="Cancel" onClick={handleReturn} isSubmitting={false} />
-                    </div>
+        <div className="grid grid--justify-space-around padding-bottom--2 padding-top--2 ons-content">
+            <div className="grid__col-8">
+                <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
+                <h1 className="text-align-left">Delete interactive</h1>
+                <p className="padding-bottom--1">You are about to delete this interactive:</p>
+                <ul className="list-simple">
+                    <li className="list-simple__item">
+                        Name - <b>{title}</b>
+                    </li>
+                    <li className="list-simple__item">
+                        Last updated - <b>{moment(lastUpdated).format("DD MMMM YYYY")}</b>
+                    </li>
+                </ul>
+                <p>
+                    Are you sure you want to delete this interactive? You will permanently lose access to the data associated to it, including the
+                    uploaded file.
+                </p>
+                <div className="inline-block padding-top--2">
+                    <ButtonWithShadow type="button" buttonText="Continue" onClick={handleDelete} isSubmitting={false} />
+                    <ButtonWithShadow type="button" class="secondary" buttonText="Cancel" onClick={handleReturn} isSubmitting={false} />
                 </div>
             </div>
-        </FooterAndHeaderLayout>
+        </div>
     );
 }
