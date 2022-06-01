@@ -133,3 +133,28 @@ fieldset {
     float: right;
   }
 }
+
+span.deleteIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+
+  span {
+    position: absolute;
+    display: block;
+    right: 10px;
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    color: #fff;
+    background-color: #ccc;
+    font: 13px monospace;
+    text-align: center;
+    line-height: 1em;
+    cursor: pointer;
+  }
+  input {
+    padding-right: 18px;
+    box-sizing: border-box;
+  }
+}

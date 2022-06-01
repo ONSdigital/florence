@@ -8,6 +8,7 @@ const propTypes = {
     label: PropTypes.string,
     type: PropTypes.string,
     onChange: PropTypes.func,
+    onClearValue: PropTypes.func,
     onBlur: PropTypes.func,
     error: PropTypes.string,
     fileError: PropTypes.string,
@@ -97,6 +98,29 @@ export default class Input extends Component {
                         placeholder={this.props.inline && this.props.label}
                         value={this.props.value}
                     />
+                );
+            case "clear":
+                return (
+                    <span className="deleteIcon">
+                        <input
+                            id={this.props.id}
+                            type="text"
+                            className={this.getInputClasses()}
+                            name={this.props.name || this.props.id}
+                            disabled={this.props.disabled}
+                            onChange={this.props.onChange}
+                            onBlur={this.props.onBlur}
+                            autoFocus={this.props.isFocused}
+                            onFocus={this.moveCaretToEnd}
+                            placeholder={this.props.inline ? this.props.label : this.props.placeholder}
+                            accept={this.props.accept}
+                            value={this.props.value}
+                            min={this.props.min}
+                            max={this.props.max}
+                            autoComplete={!this.props.allowAutoComplete && "new-password"}
+                        />
+                        <span onClick={this.props.onClearValue}>x</span>
+                    </span>
                 );
             default:
                 return (
