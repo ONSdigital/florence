@@ -40,7 +40,10 @@ export default function InteractivesDelete(props) {
 
     const handleDelete = e => {
         e.preventDefault();
-        dispatch(deleteInteractive(interactiveId));
+
+        collections.removeInteractive(collectionId, interactiveId).catch(e => {
+            console.log("error removing interactive from collection", e);
+        });
     };
 
     const handleReturn = () => {
