@@ -180,16 +180,17 @@ export default function InteractivesIndex(props) {
                             <tr>
                                 <td>
                                     <Input
-                                        type="text"
+                                        type="clear"
                                         id="internal_id"
                                         placeholder=""
                                         name="internal_id"
                                         onChange={e => setInternalId(e.target.value)}
                                         label="Internal ID"
                                         value={internalId}
+                                        onClearValue={e => setInternalId("")}
                                     />
                                     <Input
-                                        type="text"
+                                        type="clear"
                                         id="title"
                                         placeholder=""
                                         name="title"
@@ -197,6 +198,7 @@ export default function InteractivesIndex(props) {
                                         data-testid="title-input"
                                         label="Title"
                                         value={title}
+                                        onClearValue={e => setTitle("")}
                                     />
                                 </td>
                             </tr>
