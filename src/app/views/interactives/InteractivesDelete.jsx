@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { deleteInteractive, editInteractive, getInteractive } from "../../actions/interactives";
+import { deleteInteractive, getInteractive } from "../../actions/interactives";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import BackButton from "../../components/back-button";
 import moment from "moment";
 import { getParameterByName } from "../../utilities/utils";
-import collections from "../../utilities/api-clients/collections";
 
 export default function InteractivesDelete(props) {
     const dispatch = useDispatch();
@@ -17,9 +16,7 @@ export default function InteractivesDelete(props) {
     const [lastUpdated, setLastUpdated] = useState("");
     const [collectionId, setCollectionId] = useState("");
 
-    const [internalId, setInternalId] = useState("");
     const [title, setTitle] = useState("");
-    const [label, setLabel] = useState("");
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
@@ -32,8 +29,6 @@ export default function InteractivesDelete(props) {
         if (interactive.metadata) {
             const { metadata } = interactive;
             setTitle(metadata.title);
-            setLabel(metadata.label);
-            setInternalId(metadata.internal_id);
             setLastUpdated(interactive.last_updated);
         }
     }, [interactive.metadata]);
@@ -48,11 +43,7 @@ export default function InteractivesDelete(props) {
 
     const handleDelete = e => {
         e.preventDefault();
-
-        collections.removeInteractive(collectionId, interactiveId)
-            .catch((e) => {
-                console.log('error removing interactive from collection', e)
-            })
+        dispatch(deleteInteractive(interactiveId));
     };
 
     const handleReturn = () => {
