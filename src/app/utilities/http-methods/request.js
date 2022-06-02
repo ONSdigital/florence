@@ -108,7 +108,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 let responseIsJSON = false;
                 let responseIsText = false;
                 try {
-                    if(response.headers && Object.entries(response.headers).length !== 0){
+                    if (response.headers && Object.entries(response.headers).length !== 0) {
                         responseIsJSON = response.headers.get("content-type").match(/application\/json/);
                         responseIsText = response.headers.get("content-type").match(/text\/plain/);
                     }

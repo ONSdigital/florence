@@ -4,8 +4,8 @@ import * as reactRedux from "react-redux";
 import { render, fireEvent, screen } from "../../utilities/tests/test-utils";
 import InteractivesForm from "./InteractivesForm";
 import { show } from "../../utilities/api-clients/interactives-test";
-import * as interactivesActions from '../../actions/interactives';
-import collections from '../../utilities/api-clients/collections';
+import * as interactivesActions from "../../actions/interactives";
+import collections from "../../utilities/api-clients/collections";
 
 const initialState = {
     interactives: [],
@@ -23,12 +23,12 @@ describe("Create/Edit an Interactives", () => {
     const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
     const createInteractive = jest.fn();
-    const editInteractive = jest.spyOn(interactivesActions, 'editInteractive');
-    const getInteractive = jest.spyOn(interactivesActions, 'getInteractive');
+    const editInteractive = jest.spyOn(interactivesActions, "editInteractive");
+    const getInteractive = jest.spyOn(interactivesActions, "getInteractive");
     const resetInteractiveError = jest.fn();
 
-    const setInteractiveStatusToComplete = jest.spyOn(collections, 'setInteractiveStatusToComplete');
-    const setInteractiveStatusToReviewed = jest.spyOn(collections, 'setInteractiveStatusToReviewed');
+    const setInteractiveStatusToComplete = jest.spyOn(collections, "setInteractiveStatusToComplete");
+    const setInteractiveStatusToReviewed = jest.spyOn(collections, "setInteractiveStatusToReviewed");
 
     beforeEach(() => {
         const dispatch = jest.fn();
@@ -153,7 +153,9 @@ describe("Create/Edit an Interactives", () => {
 
         it("User can review the interactive and move to REVIEW status if there is not any change", async () => {
             useDispatchMock.mockReturnValue(getInteractive);
-            setInteractiveStatusToComplete.mockImplementation(() => {return Promise.resolve({data: ''});});
+            setInteractiveStatusToComplete.mockImplementation(() => {
+                return Promise.resolve({ data: "" });
+            });
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
 
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
@@ -249,7 +251,7 @@ describe("Create/Edit an Interactives", () => {
             expect(internalIdInput.value).toBe("internal_id");
 
             fireEvent.change(internalIdInput, {
-                target: { value: "new value" }
+                target: { value: "new value" },
             });
 
             // input has changed, so SAVE CHANGES button appears instead
