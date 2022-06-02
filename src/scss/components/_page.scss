@@ -145,6 +145,11 @@
             content: 'VIS';
         }
     }
+    &--interactive {
+        &:after {
+            content: 'INT';
+        }
+    }
     &--api_dataset_landing_page {
         &:after {
             content: 'DS';
