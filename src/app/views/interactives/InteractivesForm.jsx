@@ -103,14 +103,18 @@ export default function InteractivesForm(props) {
                 },
             })
         );
-        if (interactiveId) {
-            dispatch(editInteractive(interactiveId, formData));
-            collections.addInteractive(collectionId, interactiveId).catch(error => {
-                console.log("error changing status to InProgress", error);
-            });
-        } else {
-            dispatch(createInteractive(formData));
-        }
+
+        interactiveId ? dispatch(editInteractive(interactiveId, formData)) : dispatch(createInteractive(formData));
+        collections.addInteractive(collectionId, interactiveId).catch(e => {
+            setNotifications([
+                {
+                    type: "warning",
+                    message: e.body.message,
+                    id: "1",
+                    buttons: [],
+                },
+            ]);
+        });
     };
 
     const onSubmitApproval = async () => {
