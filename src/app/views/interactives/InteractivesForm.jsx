@@ -84,6 +84,16 @@ export default function InteractivesForm(props) {
             if (successMessage.type === "update") {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
+            collections.addInteractive(collectionId, interactiveId).catch(e => {
+                setNotifications([
+                    {
+                        type: "warning",
+                        message: e.body ? e.body.message : e.message,
+                        id: "1",
+                        buttons: [],
+                    },
+                ]);
+            });
         }
     }, [successMessage]);
 
@@ -105,16 +115,6 @@ export default function InteractivesForm(props) {
         );
 
         interactiveId ? dispatch(editInteractive(interactiveId, formData)) : dispatch(createInteractive(formData));
-        collections.addInteractive(collectionId, interactiveId).catch(e => {
-            setNotifications([
-                {
-                    type: "warning",
-                    message: e.body.message,
-                    id: "1",
-                    buttons: [],
-                },
-            ]);
-        });
     };
 
     const onSubmitApproval = async () => {
