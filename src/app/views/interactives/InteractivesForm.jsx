@@ -23,13 +23,12 @@ export default function InteractivesForm(props) {
     const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
-    const [collectionId, setCollectionId] = useState("");
+    const [collectionId, setCollectionId] = useState(getParameterByName("collection"));
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
-        setCollectionId(getParameterByName("collection"));
         const { interactiveId } = props.params;
         if (interactiveId) {
             setInteractiveId(interactiveId);
@@ -45,6 +44,12 @@ export default function InteractivesForm(props) {
         }
         dispatch(resetInteractiveError());
     }, []);
+
+    useEffect(() => {
+        if (!collectionId) {
+            props.router.push(`${rootPath}/collections`);
+        }
+    }, [collectionId]);
 
     useEffect(() => {
         const { interactiveId } = props.params;

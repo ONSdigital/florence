@@ -16,13 +16,14 @@ const initialState = {
         type: null,
         success: false,
     },
+    rootPath: "/florence",
 };
 
 describe("Create/Edit an Interactives", () => {
     const useSelectorMock = jest.spyOn(reactRedux, "useSelector");
     const useDispatchMock = jest.spyOn(reactRedux, "useDispatch");
 
-    const createInteractive = jest.fn();
+    const createInteractive = jest.spyOn(interactivesActions, "createInteractive");
     const editInteractive = jest.spyOn(interactivesActions, "editInteractive");
     const getInteractive = jest.spyOn(interactivesActions, "getInteractive");
     const resetInteractiveError = jest.fn();
@@ -38,6 +39,16 @@ describe("Create/Edit an Interactives", () => {
 
         useSelectorMock.mockClear();
         useDispatchMock.mockClear();
+
+        const collectionId = "interactivecollection-1305b56aceadac9686a3896e6ab95977b07fcecd0545bab10ef2ae44887b3a1f";
+        const location = {
+            ...window.location,
+            search: "?collection=" + collectionId,
+        };
+        Object.defineProperty(window, "location", {
+            writable: true,
+            value: location,
+        });
     });
 
     afterEach(() => {
@@ -48,6 +59,7 @@ describe("Create/Edit an Interactives", () => {
         params: {
             interactiveId: null,
         },
+        router: [],
     };
 
     describe("when renders the component", () => {
@@ -89,16 +101,32 @@ describe("Create/Edit an Interactives", () => {
             expect(labelInput.value).toBe("");
             expect(fileInput).toBeInTheDocument();
         });
+
+        it("should redirects to collections index if url doesn't contains the collectionId", () => {
+            const location = {
+                ...window.location,
+                search: null,
+            };
+            Object.defineProperty(window, "location", {
+                writable: true,
+                value: location,
+            });
+            render(<InteractivesForm {...defaultProps} />);
+
+            expect(defaultProps.router[0]).toBe("/florence/collections");
+        });
     });
 
     describe("when the component is rendered", () => {
         it("should submit the data when user clicks in create button", () => {
-            useDispatchMock.mockReturnValue(createInteractive);
             defaultProps.params.interactiveId = null;
             render(<InteractivesForm {...defaultProps} />);
+            const labelInput = screen.getByLabelText("Label");
+            labelInput.value = "Hello World";
+            expect(labelInput.value).toBe("Hello World");
             const createButton = screen.getByText("Confirm");
             fireEvent.click(createButton);
-            expect(createInteractive).toHaveBeenCalled();
+            expect(createInteractive).toHaveBeenCalledTimes(1);
         });
 
         it("should fetch an interactive if detects an interactiveId and fill the form", async () => {
