@@ -70,6 +70,9 @@ export default function reducer(state = initialState, action = {}) {
             if (errorsResponse[0].indexOf("archive with label") >= 0) {
                 errors.label = "Archive with this label already exists";
             }
+            if (errorsResponse.length >= 0) {
+                errors.errors = errorsResponse;
+            }
             return Object.assign({}, state, {
                 errors,
             });

@@ -84,6 +84,16 @@ export default function InteractivesForm(props) {
             if (successMessage.type === "update") {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
+            collections.addInteractive(collectionId, interactiveId).catch(e => {
+                setNotifications([
+                    {
+                        type: "warning",
+                        message: e.body ? e.body.message : e.message,
+                        id: "1",
+                        buttons: [],
+                    },
+                ]);
+            });
         }
     }, [successMessage]);
 
@@ -103,14 +113,8 @@ export default function InteractivesForm(props) {
                 },
             })
         );
-        if (interactiveId) {
-            dispatch(editInteractive(interactiveId, formData));
-            collections.addInteractive(collectionId, interactiveId).catch(error => {
-                console.log("error changing status to InProgress", error);
-            });
-        } else {
-            dispatch(createInteractive(formData));
-        }
+
+        interactiveId ? dispatch(editInteractive(interactiveId, formData)) : dispatch(createInteractive(formData));
     };
 
     const onSubmitApproval = async () => {

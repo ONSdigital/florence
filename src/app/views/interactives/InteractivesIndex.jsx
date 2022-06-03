@@ -11,10 +11,11 @@ import moment from "moment";
 import { getParameterByName, isInArray } from "../../utilities/utils";
 import BackButton from "../../components/back-button";
 import collections from "../../utilities/api-clients/collections";
+import Notifications from "../../components/notifications";
 
 export default function InteractivesIndex(props) {
     const dispatch = useDispatch();
-    const { filteredInteractives, successMessage } = useSelector(state => state.interactives);
+    const { filteredInteractives, successMessage, errors } = useSelector(state => state.interactives);
     const { rootPath } = useSelector(state => state.state);
 
     const [internalId, setInternalId] = useState("");
@@ -26,6 +27,8 @@ export default function InteractivesIndex(props) {
     const [successDelete, setSuccessDelete] = useState(false);
     const [collection, setCollection] = useState({});
     const [collectionId, setCollectionId] = useState("");
+
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
@@ -120,7 +123,35 @@ export default function InteractivesIndex(props) {
             })
         );
         dispatch(editInteractive(interactiveId, formData));
+        collections.addInteractive(collectionId, interactiveId).catch(e => {
+            setNotifications([e.body.message]);
+        });
         dispatch(getInteractives());
+    };
+
+    const mapErrors = () => {
+        let errorsArray = [];
+        errors.errors.forEach((error, index) => {
+            errorsArray.push({
+                type: "warning",
+                message: error,
+                id: `${index}`,
+                buttons: [],
+            });
+        });
+
+        if (notifications.length > 0) {
+            notifications.errors.forEach((error, index) => {
+                errorsArray.push({
+                    type: "warning",
+                    message: error,
+                    id: `${index + errors.errors.length}`,
+                    buttons: [],
+                });
+            });
+        }
+
+        return errorsArray;
     };
 
     const getChips = interactive => {
@@ -269,6 +300,7 @@ export default function InteractivesIndex(props) {
                     </div>
                 </div>
             </div>
+            {errors.errors && errors.errors.length > 0 && <Notifications notifications={mapErrors()} />}
         </div>
     );
 }
