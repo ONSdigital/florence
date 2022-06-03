@@ -9,6 +9,7 @@ import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 import collections from "../../utilities/api-clients/collections";
+import Notifications from "../../components/notifications";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -25,6 +26,7 @@ export default function InteractivesForm(props) {
     const [collectionId, setCollectionId] = useState("");
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
+    const [notifications, setNotifications] = useState([]);
 
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
@@ -107,9 +109,28 @@ export default function InteractivesForm(props) {
     };
 
     const onSubmitApproval = async () => {
-        collections.setInteractiveStatusToReviewed(collectionId, interactiveId).catch(e => {
-            console.log("error changing status to REVIEWED", e);
-        });
+        collections
+            .setInteractiveStatusToReviewed(collectionId, interactiveId)
+            .then(() => {
+                setNotifications([
+                    {
+                        type: "positive",
+                        message: "Interactive successfully submitted for approval",
+                        id: "1",
+                        buttons: [],
+                    },
+                ]);
+            })
+            .catch(e => {
+                setNotifications([
+                    {
+                        type: "warning",
+                        message: e.body.message,
+                        id: "1",
+                        buttons: [],
+                    },
+                ]);
+            });
     };
 
     const handleDelete = e => {
@@ -390,6 +411,7 @@ export default function InteractivesForm(props) {
                     </div>
                 </div>
             </div>
+            <Notifications notifications={notifications} />
         </div>
     );
 }
