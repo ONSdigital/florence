@@ -4,19 +4,22 @@ import { useDispatch, useSelector } from "react-redux";
 import { deleteInteractive, getInteractive } from "../../actions/interactives";
 import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import BackButton from "../../components/back-button";
-import FooterAndHeaderLayout from "../../components/layout/FooterAndHeaderLayout";
 import moment from "moment";
+import { getParameterByName } from "../../utilities/utils";
 
 export default function InteractivesDelete(props) {
     const dispatch = useDispatch();
     const { successMessage, interactive } = useSelector(state => state.interactives);
     const { rootPath } = useSelector(state => state.state);
 
-    const [title, setTitle] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [lastUpdated, setLastUpdated] = useState("");
+    const [collectionId, setCollectionId] = useState("");
+
+    const [title, setTitle] = useState("");
 
     useEffect(() => {
+        setCollectionId(getParameterByName("collection"));
         const { interactiveId } = props.params;
         setInteractiveId(interactiveId);
         dispatch(getInteractive(interactiveId));
@@ -33,7 +36,7 @@ export default function InteractivesDelete(props) {
     useEffect(() => {
         if (successMessage.success) {
             if (successMessage.type === "delete") {
-                props.router.push(`${rootPath}/interactives`);
+                props.router.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
         }
     }, [successMessage.success]);
@@ -44,13 +47,16 @@ export default function InteractivesDelete(props) {
     };
 
     const handleReturn = () => {
-        props.router.push(`${rootPath}/interactives/edit/${interactiveId}`);
+        props.router.push(`${rootPath}/interactives/edit/${interactiveId}?collection=${collectionId}`);
     };
 
     return (
         <div className="grid grid--justify-space-around padding-bottom--2 padding-top--2 ons-content">
             <div className="grid__col-8">
-                <BackButton redirectUrl={`${rootPath}/interactives`} classNames="ons-breadcrumb__item" />
+                <BackButton
+                    redirectUrl={`${rootPath}/interactives/edit/${interactiveId}?collection=${collectionId}`}
+                    classNames="ons-breadcrumb__item"
+                />
                 <h1 className="text-align-left">Delete interactive</h1>
                 <p className="padding-bottom--1">You are about to delete this interactive:</p>
                 <ul className="list-simple">

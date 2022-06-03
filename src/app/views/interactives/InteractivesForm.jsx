@@ -135,7 +135,7 @@ export default function InteractivesForm(props) {
 
     const handleDelete = e => {
         e.preventDefault();
-        browserHistory.push(`${rootPath}/interactives/delete/${interactiveId}`);
+        browserHistory.push(`${rootPath}/interactives/delete/${interactiveId}?collection=${collectionId}`);
     };
 
     const handleFile = e => {
