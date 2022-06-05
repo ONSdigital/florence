@@ -136,7 +136,7 @@ export default function InteractivesForm(props) {
                 setNotifications([
                     {
                         type: "warning",
-                        message: e.body.message,
+                        message: e.body ? e.body.message : e.error.response.statusText,
                         id: "1",
                         buttons: [],
                     },
