@@ -23,7 +23,8 @@ function viewPublishDetails(collections) {
                             datasets: response.datasets,
                             datasetVersions: response.datasetVersions,
                             pageType: 'manual',
-                            pendingDeletes: response.pendingDeletes
+                            pendingDeletes: response.pendingDeletes,
+                            interactives: response.interactives
                         });
                     } else {
                         result.collectionDetails.push({
@@ -32,6 +33,7 @@ function viewPublishDetails(collections) {
                             pageDetails: response.reviewed,
                             datasets: response.datasets,
                             datasetVersions: response.datasetVersions,
+                            interactives: response.interactives
                         });
                     }
                 },
