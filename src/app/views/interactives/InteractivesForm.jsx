@@ -409,14 +409,6 @@ export default function InteractivesForm(props) {
                                 <Link to={`${rootPath}/interactives/show/${interactiveId}`} target="_blank" className="ons-btn ons-btn--secondary">
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
-                                <ButtonWithShadow
-                                    type="button"
-                                    buttonText="Delete interactive"
-                                    class="secondary"
-                                    onClick={handleDelete}
-                                    isSubmitting={false}
-                                    disabled={published}
-                                />
                             </div>
                         )}
                     </div>
