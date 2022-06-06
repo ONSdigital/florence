@@ -84,18 +84,20 @@ export default function InteractivesForm(props) {
             if (successMessage.type === "update") {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
-            collections.addInteractive(collectionId, interactiveId).catch(e => {
-                setNotifications([
-                    {
-                        type: "warning",
-                        message: e.body ? e.body.message : e.message,
-                        id: "1",
-                        buttons: [],
-                    },
-                ]);
-            });
+            if(interactive.id){
+                collections.addInteractive(collectionId, interactive.id).catch(e => {
+                    setNotifications([
+                        {
+                            type: "warning",
+                            message: e.body ? e.body.message : e.message,
+                            id: "1",
+                            buttons: [],
+                        },
+                    ]);
+                });
+            }
         }
-    }, [successMessage]);
+    }, [successMessage, interactive.id]);
 
     const onSubmit = e => {
         e.preventDefault();
