@@ -320,6 +320,12 @@ export class CollectionDetailsController extends Component {
     };
 
     handleCollectionPageEditClick = async (page, state) => {
+        if (page.type === "interactive") {
+            const newURL = url.resolve(`/interactives/edit/${page.id}?collection=${this.props.activeCollection.id}`);
+            this.props.dispatch(push(newURL));
+            return newURL;
+        }
+
         if (page.type === "dataset_details") {
             // This is a horrible hack to get the latest version url.
             // This could possibly be given to us from Zebedee.

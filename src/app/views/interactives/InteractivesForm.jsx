@@ -84,7 +84,7 @@ export default function InteractivesForm(props) {
             if (successMessage.type === "update") {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
-            if(interactive.id){
+            if (interactive.id) {
                 collections.addInteractive(collectionId, interactive.id).catch(e => {
                     setNotifications([
                         {
