@@ -58,10 +58,13 @@ export class PreviewController extends Component {
     fetchCollectionAndPages(collectionID) {
         this.fetchCollection(collectionID)
             .then(async collection => {
+                let pages = [];
                 const nonDatasetPages = await this.mapPages([...collection.inProgress, ...collection.complete, ...collection.reviewed]);
+                const interactivesPages = await this.mapInteractivesToPages([...collection.interactives]);
                 if (this.props.enableDatasetImport) {
                     const datasetPages = [...collection.datasetVersions, ...collection.datasets];
-                    const pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+                    pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+                    pages = pages.concat(interactivesPages);
                     this.props.dispatch(
                         addPreviewCollection({
                             collectionID,
@@ -70,7 +73,8 @@ export class PreviewController extends Component {
                         })
                     );
                 } else {
-                    const pages = nonDatasetPages;
+                    pages = nonDatasetPages;
+                    pages = pages.concat(interactivesPages);
                     this.props.dispatch(
                         addPreviewCollection({
                             collectionID,
@@ -123,6 +127,25 @@ export class PreviewController extends Component {
                 mappedPages.push(pages[i]);
             }
         }
+        return mappedPages;
+    };
+
+    mapInteractivesToPages = async interactives => {
+        const mappedPages = [];
+        interactives.forEach(interactive => {
+            const { html_files } = interactive;
+            if (html_files) {
+                html_files.forEach(htmlFile => {
+                    mappedPages.push({
+                        type: "interactive",
+                        uri: htmlFile.uri,
+                        description: {
+                            title: htmlFile.name,
+                        },
+                    });
+                });
+            }
+        });
         return mappedPages;
     };
 
