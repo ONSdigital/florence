@@ -123,10 +123,16 @@ export default function InteractivesIndex(props) {
             })
         );
         dispatch(editInteractive(interactiveId, formData));
-        collections.addInteractive(collectionId, interactiveId).catch(e => {
-            setNotifications([e.body.message]);
-        });
-        dispatch(getInteractives());
+        collections
+            .addInteractive(collectionId, interactiveId)
+            .then(() => {
+                setTimeout(function () {
+                    props.router.push(`${rootPath}/collections`);
+                }, 1500);
+            })
+            .catch(e => {
+                setNotifications([e.body ? e.body.message : "Error adding interactive"]);
+            });
     };
 
     const mapErrors = () => {
@@ -300,7 +306,7 @@ export default function InteractivesIndex(props) {
                     </div>
                 </div>
             </div>
-            {errors.errors && errors.errors.length > 0 && <Notifications notifications={mapErrors()} />}
+            {errors.errors && (errors.errors.length > 0 || notifications.length > 0) && <Notifications notifications={mapErrors()} />}
         </div>
     );
 }
