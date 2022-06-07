@@ -135,7 +135,7 @@ export class PreviewController extends Component {
         interactives.forEach(interactive => {
             const { files, title, uri } = interactive;
             mappedPages.push({
-                type: "visualisation",
+                type: "interactive",
                 uri,
                 description: {
                     title,
