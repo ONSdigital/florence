@@ -26,6 +26,16 @@ const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
                             }),
                         };
                     }
+                    if (page.type === "interactive" && page.files) {
+                        return {
+                            id: page.uri,
+                            name: createPageTitle(page),
+                            isGroup: true,
+                            groupOptions: page.files.map(file => {
+                                return { id: file.URI, name: file.name };
+                            }),
+                        };
+                    }
                     return {
                         id: page.uri,
                         name: createPageTitle(page),
