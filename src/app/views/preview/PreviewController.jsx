@@ -133,9 +133,9 @@ export class PreviewController extends Component {
     mapInteractivesToPages = async interactives => {
         const mappedPages = [];
         interactives.forEach(interactive => {
-            const { html_files } = interactive;
-            if (html_files) {
-                html_files.forEach(htmlFile => {
+            const { files } = interactive;
+            if (files) {
+                files.forEach(htmlFile => {
                     mappedPages.push({
                         type: "interactive",
                         uri: htmlFile.uri,
