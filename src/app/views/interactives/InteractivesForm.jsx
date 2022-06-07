@@ -345,7 +345,7 @@ export default function InteractivesForm(props) {
                                 required
                                 onChange={handleFile}
                                 label="Upload a file"
-                                helpMessage="The file must be a CSV, ODS or Excel format and no larger than 2mb in size."
+                                helpMessage="The zip file must not exceed 20mb without password protection, containing only 1 index.html/htm, without special characters & saved in the root folder."
                             />
                         </div>
                     )}
