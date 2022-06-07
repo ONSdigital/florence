@@ -75,7 +75,7 @@ export class CollectionEditController extends Component {
                     errorMsg: "",
                 },
                 publishTime: {
-                    value: date.format(this.props.publishDate, "hh:MM"),
+                    value: date.format(this.props.publishDate, "HH:MM"),
                     errorMsg: "",
                 },
             });
