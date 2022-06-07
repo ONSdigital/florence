@@ -96,6 +96,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
         });
 
         $('#UploadForm').one('submit', function (e) {
+            console.log("INFO: #UploadForm submit event (versions only)");
             e.preventDefault();
             e.stopImmediatePropagation();
 

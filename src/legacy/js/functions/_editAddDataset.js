@@ -28,6 +28,7 @@ function addDataset(collectionId, data, field, idField) {
     }
 
     $('#add-' + idField).one('click', function () {
+        console.log(`INFO: #add-${idField} clicked`);
         // check that a timeseries dataset has max one file
         if (data.timeseries && (data[field] && data[field].length < 1) || !data.timeseries) {
             var position = $(".workspace-edit").scrollTop();
@@ -70,6 +71,7 @@ function addDataset(collectionId, data, field, idField) {
             });
 
             $('#UploadForm').submit(function (e) {
+                console.log(`INFO: #UploadForm submit`);
                 e.preventDefault();
                 e.stopImmediatePropagation();
 
