@@ -113,6 +113,17 @@ describe("Interactives index", () => {
 
         it("should fetch data when component is mounted and show the interactives in the list component", async () => {
             useDispatchMock.mockReturnValue(getInteractivesMock);
+            const collectionId = "interactivecollection-1305b56aceadac9686a3896e6ab95977b07fcecd0545bab10ef2ae44887b3a1f";
+            const location = {
+                ...window.location,
+                search: "?collection=" + collectionId,
+            };
+            Object.defineProperty(window, "location", {
+                writable: true,
+                value: location,
+            });
+
+            useDispatchMock.mockReturnValue(getInteractivesMock);
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
             expect(getInteractivesMock).toHaveBeenCalled();
 
@@ -398,29 +409,38 @@ describe("Interactives index", () => {
 
             const textContent = newItems.map(item => item.textContent);
 
-            expect(textContent[0]).toEqual("Title 1 internal_id_1Last edited on 21st March 2022UPLOADING");
-            expect(textContent[1]).toEqual("Title 2 internal_id_2Last edited on 21st March 2022UPLOADING");
-            expect(textContent[2]).toEqual("Title 3 internal_id_3Last edited on 20th April 2022UPLOADED");
-            expect(textContent[3]).toEqual("Title 4 internal_id_4Last edited on 20th April 2022ERROR");
-            expect(textContent[4]).toEqual("Title 5 internal_id_5Last edited on 30th March 2022ERROR");
-            expect(textContent[5]).toEqual("Title 6 internal_id_6Last edited on 21st March 2022PUBLISHEDUPLOADING");
-            expect(textContent[6]).toEqual("Title 7 internal_id_7Last edited on 21st March 2022PUBLISHEDUPLOADING");
-            expect(textContent[7]).toEqual("Title 8 internal_id_8Last edited on 20th April 2022PUBLISHEDUPLOADED");
-            expect(textContent[8]).toEqual("Title 9 internal_id_9Last edited on 20th April 2022PUBLISHEDERROR");
-            expect(textContent[9]).toEqual("Title 10 internal_id_10Last edited on 30th March 2022PUBLISHEDERROR");
-            expect(textContent[10]).toEqual("Title 11 internal_id_11Last edited on 21st March 2022LINKED TO COLLECTIONUPLOADING");
-            expect(textContent[11]).toEqual("Title 12 internal_id_12Last edited on 21st March 2022LINKED TO COLLECTIONUPLOADING");
-            expect(textContent[12]).toEqual("Title 13 internal_id_13Last edited on 20th April 2022LINKED TO COLLECTIONUPLOADED");
-            expect(textContent[13]).toEqual("Title 14 internal_id_14Last edited on 20th April 2022LINKED TO COLLECTIONERROR");
-            expect(textContent[14]).toEqual("Title 15 internal_id_15Last edited on 30th March 2022LINKED TO COLLECTIONERROR");
+            expect(textContent[0]).toEqual("Title 1 internal_id_1Last edited on 21st March 2022UPLOADINGLink");
+            expect(textContent[1]).toEqual("Title 2 internal_id_2Last edited on 21st March 2022UPLOADINGLink");
+            expect(textContent[2]).toEqual("Title 3 internal_id_3Last edited on 20th April 2022UPLOADEDLink");
+            expect(textContent[3]).toEqual("Title 4 internal_id_4Last edited on 20th April 2022ERRORLink");
+            expect(textContent[4]).toEqual("Title 5 internal_id_5Last edited on 30th March 2022ERRORLink");
+            expect(textContent[5]).toEqual("Title 6 internal_id_6Last edited on 21st March 2022PUBLISHEDUPLOADINGLink");
+            expect(textContent[6]).toEqual("Title 7 internal_id_7Last edited on 21st March 2022PUBLISHEDUPLOADINGLink");
+            expect(textContent[7]).toEqual("Title 8 internal_id_8Last edited on 20th April 2022PUBLISHEDUPLOADEDLink");
+            expect(textContent[8]).toEqual("Title 9 internal_id_9Last edited on 20th April 2022PUBLISHEDERRORLink");
+            expect(textContent[9]).toEqual("Title 10 internal_id_10Last edited on 30th March 2022PUBLISHEDERRORLink");
+            expect(textContent[10]).toEqual("Title 11 internal_id_11Last edited on 21st March 2022LINKED TO COLLECTIONUPLOADINGLink");
+            expect(textContent[11]).toEqual("Title 12 internal_id_12Last edited on 21st March 2022LINKED TO COLLECTIONUPLOADINGLink");
+            expect(textContent[12]).toEqual("Title 13 internal_id_13Last edited on 20th April 2022LINKED TO COLLECTIONUPLOADEDLink");
+            expect(textContent[13]).toEqual("Title 14 internal_id_14Last edited on 20th April 2022LINKED TO COLLECTIONERRORLink");
+            expect(textContent[14]).toEqual("Title 15 internal_id_15Last edited on 30th March 2022LINKED TO COLLECTIONERRORLink");
         });
 
         it("should filter results when clicks apply button", async () => {
+            useDispatchMock.mockReturnValue(getInteractivesMock);
+            const collectionId = "interactivecollection-1305b56aceadac9686a3896e6ab95977b07fcecd0545bab10ef2ae44887b3a1f";
+            const location = {
+                ...window.location,
+                search: "?collection=" + collectionId,
+            };
+            Object.defineProperty(window, "location", {
+                writable: true,
+                value: location,
+            });
+
             useDispatchMock.mockReturnValue(dispatch).mockReturnValueOnce(getInteractivesMock).mockReturnValueOnce(filterInteractivesMock);
 
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
-
-            expect(getInteractivesMock).toHaveBeenCalled();
 
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -454,11 +474,14 @@ describe("Interactives index", () => {
             fireEvent.click(applyButton);
 
             const filters = {
-                label: "Label 1",
+                metadata: {
+                    collection_id: collectionId,
+                },
+                associate_collection: true,
             };
 
-            expect(filterInteractivesMock).toHaveBeenCalledTimes(1);
-            expect(filterInteractivesMock).toHaveBeenCalledWith(filters);
+            expect(filterInteractivesMock).toHaveBeenCalled();
+            expect(filterInteractivesMock).toHaveBeenCalledWith(JSON.stringify(filters));
 
             mockAxios.get.mockImplementationOnce(() =>
                 Promise.resolve({
@@ -501,10 +524,21 @@ describe("Interactives index", () => {
             expect(newFilteredItems.length).toBe(1);
 
             const textContent = newFilteredItems.map(item => item.textContent);
-            expect(textContent[0]).toEqual("A Title 1 internal_id_1Last edited on 21st April 2022UPLOADING");
+            expect(textContent[0]).toEqual("A Title 1 internal_id_1Last edited on 21st April 2022UPLOADINGLink");
         });
 
         it("Should sort list if user select a value from sort by", async () => {
+            useDispatchMock.mockReturnValue(getInteractivesMock);
+            const collectionId = "interactivecollection-1305b56aceadac9686a3896e6ab95977b07fcecd0545bab10ef2ae44887b3a1f";
+            const location = {
+                ...window.location,
+                search: "?collection=" + collectionId,
+            };
+            Object.defineProperty(window, "location", {
+                writable: true,
+                value: location,
+            });
+
             useDispatchMock.mockReturnValue(sortInteractivesMock);
 
             const { rerender } = render(<InteractivesIndex {...defaultProps} />);
@@ -532,9 +566,9 @@ describe("Interactives index", () => {
             const items = screen.queryAllByRole("listitem");
             const textContent = items.map(item => item.textContent);
             //default order
-            expect(textContent[0]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADING");
-            expect(textContent[1]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADING");
-            expect(textContent[2]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADING");
+            expect(textContent[0]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADINGLink");
+            expect(textContent[1]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADINGLink");
+            expect(textContent[2]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADINGLink");
 
             userEvent.selectOptions(screen.getByLabelText("Sort by"), ["date"]);
             expect(screen.getByLabelText("Sort by")).toHaveValue("date");
@@ -549,9 +583,9 @@ describe("Interactives index", () => {
             const items1 = screen.queryAllByRole("listitem");
             const textContent1 = items1.map(item => item.textContent);
             // Order by date desc
-            expect(textContent1[0]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADING");
-            expect(textContent1[1]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADING");
-            expect(textContent1[2]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADING");
+            expect(textContent1[0]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADINGLink");
+            expect(textContent1[1]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADINGLink");
+            expect(textContent1[2]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADINGLink");
 
             userEvent.selectOptions(screen.getByLabelText("Sort by"), ["title"]);
             expect(screen.getByLabelText("Sort by")).toHaveValue("title");
@@ -566,12 +600,12 @@ describe("Interactives index", () => {
             const items2 = screen.queryAllByRole("listitem");
             const textContent2 = items2.map(item => item.textContent);
             // Order by title
-            expect(textContent2[0]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADING");
-            expect(textContent2[1]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADING");
-            expect(textContent2[2]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADING");
+            expect(textContent2[0]).toEqual("A Title 1 internal_id_1Last edited on 21st March 2022UPLOADINGLink");
+            expect(textContent2[1]).toEqual("T Title 3 internal_id_3Last edited on 30th March 2022UPLOADINGLink");
+            expect(textContent2[2]).toEqual("Z Title 2 internal_id_2Last edited on 20th April 2022UPLOADINGLink");
         });
 
-        it.only("should fetch a collection and shows the link to collection button if a collectionID is detected", async () => {
+        it("should fetch a collection and shows the link to collection button if a collectionID is detected", async () => {
             useDispatchMock.mockReturnValue(getInteractivesMock);
             const collectionId = "interactivecollection-1305b56aceadac9686a3896e6ab95977b07fcecd0545bab10ef2ae44887b3a1f";
             const location = {
