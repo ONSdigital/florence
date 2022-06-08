@@ -406,7 +406,7 @@ export default function InteractivesForm(props) {
                                         isSubmitting={false}
                                     />
                                 )}
-                                <Link to={`${rootPath}/interactives/show/${interactiveId}`} target="_blank" className="ons-btn ons-btn--secondary">
+                                <Link to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`} className="ons-btn ons-btn--secondary">
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
                             </div>
