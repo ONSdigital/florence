@@ -175,6 +175,16 @@ export default class collectionDetailsErrorNotifications {
                 notifications.add(notification);
                 break;
             }
+            case 200: {
+                const notification = {
+                    type: "positive",
+                    message: `Page '${title}' deleted successfully from this collection`,
+                    autoDismiss: 5000,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
             case "FETCH_ERR": {
                 const notification = {
                     type: "warning",
