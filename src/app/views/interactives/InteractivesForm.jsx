@@ -24,6 +24,7 @@ export default function InteractivesForm(props) {
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
     const [collectionId, setCollectionId] = useState(getParameterByName("collection"));
+    const [collection, setCollection] = useState({});
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [notifications, setNotifications] = useState([]);
@@ -48,6 +49,15 @@ export default function InteractivesForm(props) {
     useEffect(() => {
         if (!collectionId) {
             props.router.push(`${rootPath}/collections`);
+        } else {
+            const fetchCollection = async () => {
+                return await collections.get(collectionId);
+            };
+            fetchCollection()
+                .then(data => {
+                    setCollection(data);
+                })
+                .catch(console.error);
         }
     }, [collectionId]);
 
@@ -85,16 +95,29 @@ export default function InteractivesForm(props) {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
             if (interactive.id) {
-                collections.addInteractive(collectionId, interactive.id).catch(e => {
-                    setNotifications([
-                        {
+                const interactiveFromCollection = collection.interactives.find((elements) => elements.id === interactive.id);
+                const isReviewed = interactiveFromCollection && interactiveFromCollection.state === "Reviewed";
+                if(editMode && isReviewed) {
+                    collections.setInteractiveStatusToComplete(collectionId, interactive.id)
+                        .then(() => {
+                            browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                        })
+                        .catch(e => {
+                            notifications.add({
+                                type: "warning",
+                                message: e.body ? e.body.message : e.message,
+                                autoDismiss: 5000,
+                            });
+                        });
+                } else {
+                    collections.addInteractive(collectionId, interactive.id).catch(e => {
+                        notifications.add({
                             type: "warning",
                             message: e.body ? e.body.message : e.message,
-                            id: "1",
-                            buttons: [],
-                        },
-                    ]);
-                });
+                            autoDismiss: 5000,
+                        });
+                    });
+                }
             }
         }
     }, [successMessage, interactive.id]);
@@ -123,30 +146,19 @@ export default function InteractivesForm(props) {
         collections
             .setInteractiveStatusToReviewed(collectionId, interactiveId)
             .then(() => {
-                setNotifications([
-                    {
-                        type: "positive",
-                        message: "Interactive successfully submitted for approval",
-                        id: "1",
-                        buttons: [],
-                    },
-                ]);
+                notifications.add({
+                    type: "positive",
+                    message: "Interactive successfully submitted for approval",
+                    autoDismiss: 5000,
+                });
             })
             .catch(e => {
-                setNotifications([
-                    {
-                        type: "warning",
-                        message: e.body ? e.body.message : e.error.response.statusText,
-                        id: "1",
-                        buttons: [],
-                    },
-                ]);
+                notifications.add({
+                    type: "warning",
+                    message: e.body.message,
+                    autoDismiss: 5000,
+                });
             });
-    };
-
-    const handleDelete = e => {
-        e.preventDefault();
-        browserHistory.push(`${rootPath}/interactives/delete/${interactiveId}?collection=${collectionId}`);
     };
 
     const handleFile = e => {
