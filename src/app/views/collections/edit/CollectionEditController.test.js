@@ -60,6 +60,12 @@ const propsWithTeams = {
     teams: [{ id: "2", name: "Team 2" }],
 };
 
+const propsWithNewSigninAndWithTeams = {
+    ...defaultProps,
+    isNewSignIn: true,
+    teams: [{ id: "2", name: "Team 2" }],
+};
+
 const fetchedAllTeams = [
     { id: "1", name: "Team 1", members: ["member1@email.com", "member2@email.com"] },
     { id: "2", name: "Team 2", members: [] },
@@ -303,6 +309,33 @@ describe("Data sent as request body on save", () => {
         const request = componentWithTeams.instance().mapEditsToAPIRequestBody(state);
 
         expect(request.teams).toEqual(expect.arrayContaining([addedTeam.name]));
+    });
+
+    it("teams contains the IDs that an isNewSignin-enabled API expects", () => {
+        const componentWithTeams = shallow(<CollectionEditController {...propsWithNewSigninAndWithTeams} allTeams={fetchedAllTeams} />);
+        const addedTeam = { id: "10", name: "Team Ten" };
+        componentWithTeams.instance().handleAddTeam(addedTeam.id);
+
+        const state = {
+            isSavingEdits: true,
+            isFetchingAllTeams: false,
+            name: { value: "Test collection Boo", errorMsg: "" },
+            allTeams: [
+                { id: "1", name: "Team 1", members: [Array] },
+                { id: "2", name: "Team 2", members: [] },
+                { id: "3", name: "Team 3", members: [Array] },
+            ],
+            updatedTeamsList: [{ id: "10", name: "Team Ten", members: [Array] }],
+            addedTeams: new Map([addedTeam]),
+            removedTeams: new Map([{ id: "1", name: "Team 1", members: [Array] }]),
+            publishType: "manual",
+            publishDate: { value: "", errorMsg: "" },
+            publishTime: { value: "09:30", errorMsg: "" },
+        };
+
+        const request = componentWithTeams.instance().mapEditsToAPIRequestBody(state);
+
+        expect(request.teams).toEqual(expect.arrayContaining([addedTeam.id]));
     });
 
     it("publish date matches the value the API expects", () => {
