@@ -87,7 +87,6 @@ describe("Create/Edit an Interactives", () => {
             // Save changes, preview, delete
             expect(screen.getByText("Save and submit for approval")).toBeInTheDocument();
             expect(screen.getByText("Preview")).toBeInTheDocument();
-            expect(screen.getByText("Delete interactive")).toBeInTheDocument();
         });
 
         it("should leave in blank the form in create mode", () => {
