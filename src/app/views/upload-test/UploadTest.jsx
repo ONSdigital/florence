@@ -4,7 +4,13 @@ import { useState } from "react";
 import GenericFileUploadContainer from "../../components/generic-file-upload/GenericFileUploadContainer";
 import http from "../../utilities/http";
 
+console.log("INFO: UploadTest.jsx triggered");
+
+// TODO: Accept props: period, label, data
+
 const UploadTest = () => {
+    console.log("INFO: UploadTest() triggered");
+
     const [fileMetadata, setFileMetadata] = useState(null);
     const onSuccess = fileUploadURL => {
         http.get(fileUploadURL).then(response => {
