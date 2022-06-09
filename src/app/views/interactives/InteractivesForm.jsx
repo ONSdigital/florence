@@ -95,10 +95,11 @@ export default function InteractivesForm(props) {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
             if (interactive.id) {
-                const interactiveFromCollection = collection.interactives.find((elements) => elements.id === interactive.id);
+                const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
                 const isReviewed = interactiveFromCollection && interactiveFromCollection.state === "Reviewed";
-                if(editMode && isReviewed) {
-                    collections.setInteractiveStatusToComplete(collectionId, interactive.id)
+                if (editMode && isReviewed) {
+                    collections
+                        .setInteractiveStatusToComplete(collectionId, interactive.id)
                         .then(() => {
                             browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
                         })
@@ -159,6 +160,7 @@ export default function InteractivesForm(props) {
                     autoDismiss: 5000,
                 });
             });
+        props.router.push(`${rootPath}/interactives?collection=${collectionId}`);
     };
 
     const handleFile = e => {
@@ -418,7 +420,10 @@ export default function InteractivesForm(props) {
                                         isSubmitting={false}
                                     />
                                 )}
-                                <Link to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`} className="ons-btn ons-btn--secondary">
+                                <Link
+                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`}
+                                    className="ons-btn ons-btn--secondary"
+                                >
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
                             </div>
