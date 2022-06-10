@@ -160,11 +160,11 @@ export default function InteractivesForm(props) {
             .catch(e => {
                 notifications.add({
                     type: "warning",
-                    message: e.body.message,
+                    message: e.body ? e.body.message : e.message,
                     autoDismiss: 5000,
                 });
             });
-        props.router.push(`${rootPath}/interactives?collection=${collectionId}`);
+            props.router.push(`${rootPath}/collections/${collectionId}`);
     };
 
     const handleFile = e => {
