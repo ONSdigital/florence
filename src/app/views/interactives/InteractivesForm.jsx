@@ -73,11 +73,15 @@ export default function InteractivesForm(props) {
 
     useEffect(() => {
         if (interactive.metadata && interactiveId) {
-            const { metadata, archive } = interactive;
+            const { metadata, archive, html_files } = interactive;
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
-            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
+
+            //tactical fix to support MVP requirements of supporting single interactive
+            //needs more work to support multiple interactives: https://trello.com/c/juxhzj1D
+            setUrl(window.location.origin + html_files[0].uri);
+
             setPublished(metadata.published);
 
             if (interactive.state === "ImportFailure") {

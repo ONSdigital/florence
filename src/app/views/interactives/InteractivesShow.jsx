@@ -20,7 +20,7 @@ export default function InteractivesShow(props) {
 
     useEffect(() => {
         if (interactive.metadata) {
-            setUrl(interactive.url);
+            setUrl(window.location.origin + interactive.html_files[0].uri);
         }
     }, [interactive.metadata]);
 
