@@ -207,7 +207,7 @@ export default function InteractivesIndex(props) {
                     </>
                 )}
                 <div className="grid margin-top--1">
-                    <div style="display: none;" className="grid__col-sm-12 grid__col-md-3 filters-container">
+                    <div style={{ display: "none" }} className="grid__col-sm-12 grid__col-md-3 filters-container">
                         <table>
                             <tr>
                                 <th>
