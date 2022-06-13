@@ -51,18 +51,19 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
         fetch(URI, fetchConfig)
             .then(response => {
+                let status = response.status;
                 const responseReceivedAt = new Date(Date.now()).toISOString();
-                log.event("Response received", log.http(UID, method, URL, requestSentAt, response.status, responseReceivedAt));
+                log.event("Response received", log.http(UID, method, URL, requestSentAt, status, responseReceivedAt));
 
-                if (response.status >= 500) {
+                if (status >= 500) {
                     throw new HttpError(response);
                 }
 
-                if (response.status === 401) {
+                if (status === 401) {
                     if (callerHandles401) {
                         response.text().then(body => {
                             reject({
-                                status: response.status,
+                                status: status,
                                 message: response.statusText,
                                 body: parseBodyAsJson(body),
                             });
@@ -80,7 +81,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     user.logOut();
                     notifications.add(notification);
                     reject({
-                        status: response.status,
+                        status: status,
                         message: response.statusText,
                     });
                     return;
@@ -89,7 +90,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 if (!response.ok) {
                     response.text().then(body => {
                         reject({
-                            status: response.status,
+                            status: status,
                             message: response.statusText,
                             body: parseBodyAsJson(body),
                         });
@@ -97,9 +98,9 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     return;
                 }
 
-                if (response.status === 204) {
+                if (status === 204) {
                     resolve({
-                        status: response.status,
+                        status: status,
                         message: response.statusText,
                     });
                     return;
@@ -124,7 +125,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                     // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
                     // unless we just allow 204 responses to resolve, instead of reject with an error
-                    if (response.status >= 200) {
+                    if (status >= 200) {
                         resolve();
                         return;
                     }
@@ -160,7 +161,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             }
 
                             reject({
-                                status: response.status,
+                                status: status,
                                 message: "Text response body couldn't be parsed",
                             });
                         }
@@ -188,7 +189,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         // We're trying to get data at this point and the body can't be parsed
                         // which means this request is a failure and the promise should be rejected
                         reject({
-                            status: response.status,
+                            status: status,
                             message: "JSON response body couldn't be parsed",
                         });
                     }

@@ -51,7 +51,7 @@ Florence.globalVars = {pagePath: '', activeTab: false, pagePos: '', welsh: false
 Florence.Authentication = {
     accessToken: function () {
         var cookie = CookieUtils.getCookieValue("access_token");
-        var token = localStorage.getItem("ons_user");
+        var token = localStorage.getItem("ons_auth_state");
         return cookie || token;
     },
     isAuthenticated: function () {

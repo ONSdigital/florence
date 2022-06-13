@@ -7,7 +7,7 @@ import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
-import { removeAuthToken, setAuthToken } from "../auth";
+import { removeAuthState, setAuthState } from "../auth";
 
 export default class user {
     static get(email) {
@@ -191,7 +191,7 @@ export default class user {
     }
 
     static setUserState(user) {
-        setAuthToken(user);
+        setAuthState(user);
         const email = user.email;
         const role = this.getUserRole(user.admin, user.editor);
         const isAdmin = !!user.admin;
@@ -207,7 +207,7 @@ export default class user {
             if (cookies.get("collection")) {
                 cookies.remove("collection");
             }
-            removeAuthToken();
+            removeAuthState();
             store.dispatch(userLoggedOut());
             store.dispatch(reset());
         }

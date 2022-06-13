@@ -14,6 +14,8 @@ import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
+import sessionManagement from "../../utilities/sessionManagement";
+import { addExpiryToAuthState } from "../../utilities/auth";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -54,6 +56,11 @@ export class LoginController extends Component {
         this.postLoginCredentials(credentials)
             .then(accessToken => {
                 cookies.add("access_token", accessToken);
+                // Session
+                const session = sessionManagement.createSessionExpiryTime();
+                sessionManagement.setSessionExpiryTime(session.session_expiry_time, session.refresh_expiry_time);
+                addExpiryToAuthState(session);
+                // Get perms
                 user.getPermissions()
                     .then(userType => {
                         user.setUserState(userType);

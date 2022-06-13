@@ -4,6 +4,9 @@ import { errCodes as errorCodes } from "./errorCodes";
 import { store } from "../config/store";
 import { addPopout, removePopouts } from "../config/actions";
 
+
+const config = window.getEnv();
+
 export default class sessionManagement {
     static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
@@ -12,12 +15,29 @@ export default class sessionManagement {
         invasiveRenewal: 120000,
     };
 
+    /**
+     * Only use if enableNewSignIn=false
+     */
+    static createSessionExpiryTime() {
+        if (!config.enableNewSignIn) {
+            const now = new Date();
+            const tomorrow = now.setHours(now.getHours() + 23);
+           sessionStorage.setItem("session_expiry_time", tomorrow);
+           sessionStorage.setItem("refresh_expiry_time", tomorrow);
+           return {
+                session_expiry_time: tomorrow,
+                refresh_expiry_time: tomorrow,
+           };
+        }
+        return null;
+    }
+
     // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
     // used to get a new session token. The session token is what gives the user access to the system and has a very
     // short life. If the user is active then we extend their session. The refresh token has a long life but also
-    // expires and can't be renewed. So we extend it one last time and let the user know they will be kicked out and
+    // expires and can't be renewed. So we extend it one last timse and let the user know they will be kicked out and
     // need to sign back in manually
-    static setSessionExpiryTime = (sessionExpiryTime, refreshExpiryTime) => {
+    static setSessionExpiryTime = (sessionExpiryTime = null, refreshExpiryTime = null) => {
         if (sessionExpiryTime != null) {
             sessionStorage.setItem("session_expiry_time", sessionExpiryTime);
         }
@@ -58,9 +78,14 @@ export default class sessionManagement {
     static startExpiryTimer = (name, expiryTime, offsetInMilliseconds, callback) => {
         if (expiryTime != null) {
             // Convert API time to usable JS Date object
-            const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
-            const expireTimeInUTCDate = new Date(expireTimeInUTCString);
-            // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
+            let expireTimeInUTCDate;
+            if(config.enableNewSignIn) {
+                const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
+                expireTimeInUTCDate = new Date(expireTimeInUTCString);
+                // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
+            } else {
+                expireTimeInUTCDate = expiryTime;
+            }
             const now = new Date();
             const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
             const nowInUTC = new Date(nowUTCInMS);
@@ -69,6 +94,7 @@ export default class sessionManagement {
             if (this.timers[name] != null) {
                 clearTimeout(this.timers[name]);
             }
+            console.log(`${name}: ${timerInterval}`)
             this.timers[name] = setTimeout(callback, timerInterval);
         }
     };

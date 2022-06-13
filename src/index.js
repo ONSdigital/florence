@@ -6,7 +6,7 @@ import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
-import auth, {getAuthToken, getUserTypeFromAuthToken} from "./app/utilities/auth";
+import auth, {getAuthState, getUserTypeFromAuthState} from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
@@ -67,7 +67,7 @@ const rootPath = store.getState().state.rootPath;
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
         // TODO Remove getAuthToken() call when ENABLE_NEW_INTERACTIVES feature in prod
-        return state.user.isAuthenticated || !!getAuthToken();
+        return state.user.isAuthenticated || !!getAuthState();
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "UserIsAuthenticated",
@@ -76,7 +76,7 @@ const userIsAuthenticated = connectedReduxRedirect({
 
 const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdminOrEditor(state.user) || auth.isAdmin(getUserTypeFromAuthToken());
+        return auth.isAdminOrEditor(state.user) || auth.isAdmin(getUserTypeFromAuthState());
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdminOrEditor",
@@ -86,7 +86,7 @@ const userIsAdminOrEditor = connectedReduxRedirect({
 
 const userIsAdmin = connectedReduxRedirect({
     authenticatedSelector: state => {
-        return auth.isAdmin(state.user) || auth.isAdmin(getUserTypeFromAuthToken());
+        return auth.isAdmin(state.user) || auth.isAdmin(getUserTypeFromAuthState());
     },
     redirectAction: routerActions.replace,
     wrapperDisplayName: "userIsAdmin",
