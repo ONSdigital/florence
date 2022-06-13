@@ -87,7 +87,6 @@ describe("Create/Edit an Interactives", () => {
             // Save changes, preview, delete
             expect(screen.getByText("Save and submit for approval")).toBeInTheDocument();
             expect(screen.getByText("Preview")).toBeInTheDocument();
-            expect(screen.getByText("Delete interactive")).toBeInTheDocument();
         });
 
         it("should leave in blank the form in create mode", () => {
@@ -134,7 +133,6 @@ describe("Create/Edit an Interactives", () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
 
             const baseUrl = window.location.origin;
-            const resourceType = "interactives";
 
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
@@ -153,6 +151,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -176,7 +175,7 @@ describe("Create/Edit an Interactives", () => {
             expect(internalIdInput.value).toBe("internal_id");
             expect(titleInput.value).toBe("Title");
             expect(labelInput.value).toBe("Label");
-            expect(urlInput.value).toBe(`${baseUrl}/${resourceType}/${interactive.metadata.slug}-${interactive.metadata.resource_id}/embed`);
+            expect(urlInput.value).toBe(`${baseUrl}/uri`);
         });
 
         it("User can review the interactive and move to REVIEW status if there is not any change", async () => {
@@ -203,6 +202,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -238,6 +238,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -262,6 +263,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );

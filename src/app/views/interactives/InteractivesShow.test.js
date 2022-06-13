@@ -65,7 +65,7 @@ describe("Show interactive preview", () => {
                         },
                         published: false,
                         last_updated: "2022-04-27T03:56:48.57Z",
-                        url: "https://interactives.co.uk/embed",
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -84,10 +84,10 @@ describe("Show interactive preview", () => {
             //Iframe
             const iframe = screen.getByTitle("Embed website");
             expect(iframe).toBeInTheDocument;
-            expect(iframe).toHaveAttribute("src", "https://interactives.co.uk/embed");
+            expect(iframe).toHaveAttribute("src", "http://localhost/uri");
             //Text and link
             expect(screen.getByText(/Embedded preview of uploaded interactive -/i)).toBeInTheDocument();
-            expect(screen.getByText("https://interactives.co.uk/embed")).toBeInTheDocument;
+            expect(screen.getByText("http://localhost/uri")).toBeInTheDocument;
         });
     });
 });
