@@ -170,12 +170,10 @@ describe("Create/Edit an Interactives", () => {
             const internalIdInput = screen.getByLabelText("Internal ID");
             const titleInput = screen.getByLabelText("Title");
             const labelInput = screen.getByLabelText("Label");
-            const urlInput = screen.getByLabelText("URL");
 
             expect(internalIdInput.value).toBe("internal_id");
             expect(titleInput.value).toBe("Title");
             expect(labelInput.value).toBe("Label");
-            expect(urlInput.value).toBe(`${baseUrl}/uri`);
         });
 
         it("User can review the interactive and move to REVIEW status if there is not any change", async () => {
