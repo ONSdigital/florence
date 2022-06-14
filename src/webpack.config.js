@@ -8,7 +8,8 @@ module.exports = {
     devtool: isProduction ? false :'source-map',
     entry: {
         app: ['./index.js'],
-        tablebuilder: './tablebuilder/tablebuilder.js'
+        tablebuilder: './tablebuilder/tablebuilder.js',
+        resumableuploader: './resumableuploader/resumableuploader.js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
