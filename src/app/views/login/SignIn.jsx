@@ -12,7 +12,8 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import { addExpiryToAuthState, setAuthState } from "../../utilities/auth";
+import { updateAuthState, setAuthState } from "../../utilities/auth";
+import fp from "lodash/fp";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -54,7 +55,6 @@ export class LoginController extends Component {
         user.signIn(credentials)
             .then(response => {
                 let newPasswordRequired = false;
-                addExpiryToAuthState(response.body);
                 if (response.body != null && response.body.new_password_required != null) {
                     newPasswordRequired = response.body.new_password_required.toLowerCase() === "true";
                 }
@@ -67,7 +67,9 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
-                        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
+                        const refreshTokenExpirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
+                        sessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
                     }
                     this.setState(
                         {

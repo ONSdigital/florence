@@ -12,7 +12,7 @@
 import user from "../utilities/api-clients/user";
 import fp from "lodash/fp";
 
-const _AUTH_STATE_NAME = "ons_auth_state";
+export const AUTH_STATE_NAME = "ons_auth_state";
 
 export const UserRole = Object.freeze({
     ADMIN: "ADMIN",
@@ -45,7 +45,7 @@ export default class auth {
 export function setAuthState(userData = {}) {
     let authState = getAuthState() || {};
     const userJSONData = JSON.stringify({...authState, ...userData, });
-    window.localStorage.setItem(_AUTH_STATE_NAME, userJSONData);
+    window.localStorage.setItem(AUTH_STATE_NAME, userJSONData);
     /* Legacy florence */
     window.localStorage.setItem("loggedInAs", userData.email);
     // Store the user type in localStorage. Used in old Florence
@@ -53,16 +53,16 @@ export function setAuthState(userData = {}) {
     localStorage.setItem("userType", user.getOldUserType(userData));
 }
 
-export function addExpiryToAuthState(expiryData = {}) {
+export function updateAuthState(data = {}) {
     let authState = getAuthState() || {};
-    authState = { ...authState, ...expiryData };
+    authState = { ...authState, ...data };
     authState = JSON.stringify(authState);
-    window.localStorage.setItem(_AUTH_STATE_NAME, authState);
+    window.localStorage.setItem(AUTH_STATE_NAME, authState);
 }
 
 /** Assumes user is authenticated if ons_auth_state exists in local storage */
 export function getAuthState() {
-    let userData = window.localStorage.getItem(_AUTH_STATE_NAME);
+    let userData = window.localStorage.getItem(AUTH_STATE_NAME);
     try {
         userData = JSON.parse(userData);
     } catch (err) {
@@ -73,7 +73,7 @@ export function getAuthState() {
 }
 
 export function removeAuthState() {
-    window.localStorage.removeItem(_AUTH_STATE_NAME);
+    window.localStorage.removeItem(AUTH_STATE_NAME);
     /* ENABLE_NEW_SIGN_IN legacy */
     window.localStorage.removeItem("access_token");
     /* Florence legacy */
