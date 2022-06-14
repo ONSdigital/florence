@@ -6,6 +6,7 @@ import { addPopout, removePopouts } from "../config/actions";
 import { getAuthState, updateAuthState } from "./auth";
 import fp from "lodash/fp";
 
+
 export default class sessionManagement {
     static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
