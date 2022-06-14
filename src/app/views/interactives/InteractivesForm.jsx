@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 import collections from "../../utilities/api-clients/collections";
 import Notifications from "../../components/notifications";
+import Select from "../../components/Select";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function InteractivesForm(props) {
     const [title, setTitle] = useState("");
     const [label, setLabel] = useState("");
     const [file, setFile] = useState(null);
+    const [urlIndex, setUrlIndex] = useState("");
     const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
@@ -40,6 +42,7 @@ export default function InteractivesForm(props) {
             setLabel("");
             setFile(null);
             setUrl("");
+            setUrlIndex(0);
             setInteractiveId("");
             setPublished(false);
         }
@@ -164,12 +167,45 @@ export default function InteractivesForm(props) {
                     autoDismiss: 5000,
                 });
             });
-            props.router.push(`${rootPath}/collections/${collectionId}`);
+        props.router.push(`${rootPath}/collections/${collectionId}`);
+    };
+
+    const copyAllUrls = async () => {
+        var allUrls = "";
+        if (interactive) {
+            try {
+                interactive.html_files.map((htm, index) => {
+                    allUrls += window.location.origin + htm.uri + "\n";
+                });
+            } catch (err) {
+                console.error("Error fetching all interactive URL's", err);
+                allUrls = "Error fetching all interactive URL's";
+            }
+        } else {
+            allUrls = "No interactive URL's available";
+        }
+        navigator.clipboard.writeText(allUrls);
     };
 
     const handleFile = e => {
         const file = e.target.files[0];
         setFile(file);
+    };
+
+    const mapInteractives = interactives => {
+        if (interactives) {
+            try {
+                return interactives.map((interactive, index) => {
+                    return {
+                        id: index,
+                        name: window.location.origin + interactive.uri,
+                    };
+                });
+            } catch (err) {
+                console.error("Error mapping interactives to select", err);
+            }
+        }
+        return;
     };
 
     const displayedErrors = Object.values(errors);
@@ -394,15 +430,11 @@ export default function InteractivesForm(props) {
                                 </div>
                             ) : (
                                 <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
-                                    <Input
-                                        type="text"
-                                        id="url"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="url"
-                                        disabled={true}
-                                        value={url}
-                                        required
-                                        onChange={e => setUrl(e.target.value)}
+                                    <Select
+                                        contents={mapInteractives(interactive.html_files) || []}
+                                        id="urls"
+                                        onChange={e => setUrlIndex(e.target.value)}
+                                        showDefaultOption="false"
                                         label="URL"
                                     />
                                 </div>
@@ -424,8 +456,11 @@ export default function InteractivesForm(props) {
                                         isSubmitting={false}
                                     />
                                 )}
+
+                                <ButtonWithShadow buttonText="Copy all URL's" onClick={copyAllUrls} />
+
                                 <Link
-                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`}
+                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}&urlIndex=${urlIndex}`}
                                     className="ons-btn ons-btn--secondary"
                                 >
                                     <span className="ons-btn__inner">Preview</span>
