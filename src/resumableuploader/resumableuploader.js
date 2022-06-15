@@ -10,7 +10,7 @@ window.startResumableUploader = (domID, data) => {
     console.log("INFO: startrResumableUploader()")
 
     if (!node) {
-        onError(`Element with ID ${domID} doesn't exist`);
+        console.error(`Element with ID ${domID} doesn't exist`);
         return;
     }
 
@@ -23,7 +23,7 @@ window.closerResumableUploader = (domID) => {
     console.log("INFO: closerResumableUploader()")
 
     if (!node) {
-        onError(`Element with ID ${domID} doesn't exist`);
+        console.error(`Element with ID ${domID} doesn't exist`);
         return;
     }
 
