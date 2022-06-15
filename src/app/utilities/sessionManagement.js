@@ -3,6 +3,9 @@ import notifications from "./notifications";
 import { errCodes as errorCodes } from "./errorCodes";
 import { store } from "../config/store";
 import { addPopout, removePopouts } from "../config/actions";
+import { getAuthState, updateAuthState } from "./auth";
+import fp from "lodash/fp";
+
 
 export default class sessionManagement {
     static timers = {};
@@ -12,24 +15,36 @@ export default class sessionManagement {
         invasiveRenewal: 120000,
     };
 
+    static createDefaultExpireTimes() {
+        // TODO this is used up until enableNewSignIn goes live then remove this
+        const now = new Date();
+        const tomorrow = now.setHours(now.getHours() + 23);
+       return {
+            session_expiry_time: tomorrow,
+            refresh_expiry_time: tomorrow,
+       };
+    }
+
+    static createSessionExpiryTime(sessionExpiryTime = undefined, refreshExpiryTime = undefined) {
+        return {
+            refresh_expiry_time: refreshExpiryTime,
+            session_expiry_time: sessionExpiryTime,
+        };
+    }
+
     // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
     // used to get a new session token. The session token is what gives the user access to the system and has a very
     // short life. If the user is active then we extend their session. The refresh token has a long life but also
-    // expires and can't be renewed. So we extend it one last time and let the user know they will be kicked out and
-    // need to sign back in manually
+    // expires and can't be renewed. So we extend it one last timse and let the user know they will be kicked out and
+    // need to sign back in manuall
+    y
     static setSessionExpiryTime = (sessionExpiryTime, refreshExpiryTime) => {
-        if (sessionExpiryTime != null) {
-            sessionStorage.setItem("session_expiry_time", sessionExpiryTime);
-        }
-        if (refreshExpiryTime != null) {
-            sessionStorage.setItem("refresh_expiry_time", refreshExpiryTime);
-        }
-        this.initialiseSessionExpiryTimers();
+        const session = sessionManagement.createSessionExpiryTime(sessionExpiryTime, refreshExpiryTime );
+        updateAuthState(session);
+        this.initialiseSessionExpiryTimers(sessionExpiryTime, refreshExpiryTime);
     };
 
     static removeTimers = () => {
-        sessionStorage.removeItem("session_expiry_time");
-        sessionStorage.removeItem("refresh_expiry_time");
         this.removeInteractionMonitoring();
         this.removeWarnings();
         for (const [key] of Object.entries(this.timers)) {
@@ -38,16 +53,14 @@ export default class sessionManagement {
         this.timers = {};
     };
 
-    static initialiseSessionExpiryTimers = () => {
-        const sessionExpiryTime = sessionStorage.getItem("session_expiry_time");
-        const refreshExpiryTime = sessionStorage.getItem("refresh_expiry_time");
-        if (sessionExpiryTime != null) {
+    static initialiseSessionExpiryTimers = (sessionExpiryTime, refreshExpiryTime) => {
+        if (sessionExpiryTime) {
             // Timer to start monitoring user interaction to add additional time to their session
             this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
             // Timer to tell the user their session is about to expire unless they interact with the page
             this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.warnSessionSoonExpire);
         }
-        if (refreshExpiryTime != null) {
+        if (refreshExpiryTime) {
             // Timer to start monitoring user interaction to add a final extra amount of time to their session
             this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
             // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
@@ -55,17 +68,22 @@ export default class sessionManagement {
         }
     };
 
-    static startExpiryTimer = (name, expiryTime, offsetInMilliseconds, callback) => {
-        if (expiryTime != null) {
-            // Convert API time to usable JS Date object
+    static convertUTCToJSDate(expiryTime) {
+        if (expiryTime) {
             const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
-            const expireTimeInUTCDate = new Date(expireTimeInUTCString);
-            // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
+            return new Date(expireTimeInUTCString);
+        }
+        return null;
+    }
+
+    /** If expiryTime is UTC use convertUTCToJSDate */
+    static startExpiryTimer = (name, expiryTime, offsetInMilliseconds, callback) => {
+        if (expiryTime) {
             const now = new Date();
             const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
             const nowInUTC = new Date(nowUTCInMS);
             // Get the time difference between now and the expiry time minus the timer offset
-            const timerInterval = expireTimeInUTCDate - offsetInMilliseconds - nowInUTC;
+            const timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
             if (this.timers[name] != null) {
                 clearTimeout(this.timers[name]);
             }
@@ -146,8 +164,12 @@ export default class sessionManagement {
         };
         user.renewSession()
             .then(response => {
-                if (response.expirationTime != null) {
-                    this.setSessionExpiryTime(response.expirationTime);
+                if (response) {
+                    // TODO test this response
+                    // We only need to update the session so get the existing refresh
+                    const authState = getAuthState();
+                    const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
+                    this.setSessionExpiryTime(expirationTime, authState.refresh_expiry_time);
                 } else {
                     renewError();
                 }

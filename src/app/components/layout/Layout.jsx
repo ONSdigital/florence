@@ -9,18 +9,18 @@ import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 import Popouts from "../popouts/Popouts";
 import { useGetPermissions } from "../../config/user/userHooks";
-import { getAuthToken } from "../../utilities/auth";
+import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 
 const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
-    const userStateFromAuthToken = getAuthToken();
+    const userStateFromAuthToken = getAuthState();
     const userPermissions = useGetPermissions(userStateFromAuthToken);
     useEffect(() => {
         setIsCheckingAuthentication(false);
         if (userPermissions) {
             user.setUserState(userPermissions);
-            const email = fp.get("email")(getAuthToken());
+            const email = fp.get("email")(getAuthState());
             if (!email) {
                 user.logOut();
                 setIsCheckingAuthentication(false);

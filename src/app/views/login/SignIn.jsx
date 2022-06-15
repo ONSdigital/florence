@@ -12,7 +12,8 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import { setAuthToken } from "../../utilities/auth";
+import { updateAuthState, setAuthState } from "../../utilities/auth";
+import fp from "lodash/fp";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -66,7 +67,9 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
-                        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
+                        const refreshTokenExpirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
+                        sessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
                     }
                     this.setState(
                         {
@@ -163,7 +166,7 @@ export class LoginController extends Component {
     setPermissions = () => {
         user.getPermissions()
             .then(userType => {
-                setAuthToken(userType);
+                setAuthState(userType);
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);
             })
