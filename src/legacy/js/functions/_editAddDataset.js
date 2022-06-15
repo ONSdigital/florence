@@ -34,6 +34,9 @@ function addDataset(collectionId, data, field, idField) {
             var position = $(".workspace-edit").scrollTop();
             Florence.globalVars.pagePos = position + 200;
 
+            loadResumableUploader(data); // TODO: Temporarily load resumable uploader regardless of what it is to get the component in place; move it to Submit with all the data later
+
+
             $('#sortable-' + idField).append(
                 '<div id="' + lastIndex + '" class="edit-section__item">' +
                 '  <form id="UploadForm">' +
@@ -49,6 +52,7 @@ function addDataset(collectionId, data, field, idField) {
                 '  <div id="response"></div>' +
                 '  <ul id="list"></ul>' +
                 '</div>');
+                
             if (!data.timeseries) {
                 $('#no-file').remove();
             }
