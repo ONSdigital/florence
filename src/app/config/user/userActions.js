@@ -14,3 +14,25 @@ export const userLoggedOut = () => {
         type: types.USER_LOGGED_OUT,
     };
 };
+
+export const startRefeshAndSession = (refresh_expiry_time, session_expiry_time) => {
+    return {
+        type: types.START_REFRESH_AND_SESSION,
+        payload: {
+            sessionTimer: {
+                active: true,
+                expire: session_expiry_time,
+            },
+            refreshTimer: {
+                active: true,
+                expire: refresh_expiry_time,
+            },
+        },
+    };
+};
+
+export const endSession = () => {
+    return {
+        type: types.END_SESSION,
+    };
+};
