@@ -1,4 +1,4 @@
-function isDevOrSandpit () {
+function isDevOrSandbox () {
     var hostname = window.location.hostname;
     var env = {};
 

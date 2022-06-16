@@ -7,7 +7,7 @@
     </li>
 
     {{#if this.Authentication.isAuthenticated}}
-        {{!-- display envirnoment if develop or sandpit --}}
+        {{!-- display envirnoment if develop or sandbox --}}
         {{#if environment.name}}<li class="environment-notification">You're on {{environment.name}} environment</li>{{/if}}
 
         {{#if this.collection.name}}
