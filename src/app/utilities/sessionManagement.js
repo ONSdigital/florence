@@ -5,6 +5,10 @@ import { store } from "../config/store";
 import { addPopout, removePopouts } from "../config/actions";
 import { getAuthState, updateAuthState } from "./auth";
 import fp from "lodash/fp";
+<<<<<<< HEAD
+=======
+import { startRefeshAndSession } from "../config/user/userActions";
+>>>>>>> c5293bce5 (#986: Check for existing auth state on login)
 
 export default class sessionManagement {
     static timers = {};
@@ -51,24 +55,34 @@ export default class sessionManagement {
         this.timers = {};
     };
 
+    static startSessionTimer(sessionExpiryTime) {
+        // Timer to start monitoring user interaction to add additional time to their session
+        this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
+        // Timer to tell the user their session is about to expire unless they interact with the page
+        this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.warnSessionSoonExpire);
+    }
+
+    static startRefreshTimer(refreshExpiryTime) {
+        // Timer to start monitoring user interaction to add a final extra amount of time to their session
+        this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
+        // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
+        this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+    }
+
     static initialiseSessionExpiryTimers = (sessionExpiryTime, refreshExpiryTime) => {
         if (sessionExpiryTime) {
-            // Timer to start monitoring user interaction to add additional time to their session
-            this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-            // Timer to tell the user their session is about to expire unless they interact with the page
-            this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.warnSessionSoonExpire);
+            sessionManagement.startSessionTimer(sessionExpiryTime);
         }
         if (refreshExpiryTime) {
-            // Timer to start monitoring user interaction to add a final extra amount of time to their session
-            this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-            // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-            this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+            sessionManagement.startRefreshTimer(refreshExpiryTime);
         }
     };
 
     static convertUTCToJSDate(expiryTime) {
+        // Convert API time to usable JS Date object
         if (expiryTime) {
-            const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
+            const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", ""); //- this doesn't work
+            // See https://github.com/ONSdigital/florence/blob/5a216ab029c945787997162af57263c819e15b5f/src/app/utilities/sessionManagement.js#L55
             return new Date(expireTimeInUTCString);
         }
         return null;
@@ -76,16 +90,34 @@ export default class sessionManagement {
 
     /** If expiryTime is UTC use convertUTCToJSDate */
     static startExpiryTimer = (name, expiryTime, offsetInMilliseconds, callback) => {
+        // TODO testing ---->
+        if (name === "sessionTimerPassive") {
+            offsetInMilliseconds = 3480000;
+        }
+        if (name === "sessionTimerInvasive") {
+            offsetInMilliseconds = 3570000;
+        }
+        // <----- Testing
+
         if (expiryTime) {
+            // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
             const now = new Date();
             const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
             const nowInUTC = new Date(nowUTCInMS);
+            console.log({
+                expiryTime,
+                offsetInMilliseconds,
+                nowInUTC,
+            });
             // Get the time difference between now and the expiry time minus the timer offset
             const timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
             if (this.timers[name] != null) {
                 clearTimeout(this.timers[name]);
             }
             this.timers[name] = setTimeout(callback, timerInterval);
+            console.log("time interval: ", {
+                [name]: timerInterval,
+            });
         }
     };
 
@@ -121,6 +153,7 @@ export default class sessionManagement {
     };
 
     static warnRefreshSoonExpire = () => {
+        console.log("WARNING!!!!!!");
         this.removeInteractionMonitoring();
         const popoutOptions = {
             id: "refresh-expire-soon",
@@ -163,11 +196,10 @@ export default class sessionManagement {
         user.renewSession()
             .then(response => {
                 if (response) {
-                    // TODO test this response
-                    // We only need to update the session so get the existing refresh
-                    const authState = getAuthState();
                     const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
-                    this.setSessionExpiryTime(expirationTime, authState.refresh_expiry_time);
+                    sessionManagement.startSessionTimer(expirationTime);
+                    const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
+                    store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
                 } else {
                     renewError();
                 }
@@ -176,4 +208,17 @@ export default class sessionManagement {
                 renewError(error);
             });
     };
+
+    /**
+     *  @param sessionExpiryTime must be in js date format (not UTC from server)
+     *  @returns true if session has expired
+     *  */
+    static isSessionExpired(sessionExpiryTime) {
+        let timeDiff = new Date() - sessionExpiryTime;
+        let diffInSeconds = Math.round(timeDiff / 1000);
+        if (diffInSeconds <= 0) {
+            return false;
+        }
+        return true;
+    }
 }

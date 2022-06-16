@@ -5,6 +5,14 @@ const initialState = {
     email: "",
     userType: "",
     isAdmin: false,
+    sessionTimer: {
+        active: false,
+        expire: "",
+    },
+    refreshTimer: {
+        active: false,
+        expire: "",
+    },
 };
 
 const userReducer = (state = initialState, action) => {
@@ -25,6 +33,18 @@ const userReducer = (state = initialState, action) => {
                 email: null,
                 userType: null,
                 isAdmin: null,
+            };
+        }
+        case types.START_REFRESH_AND_SESSION: {
+            return {
+                ...state,
+                ...action.payload,
+            };
+        }
+        case types.START_REFRESH_AND_SESSION: {
+            return {
+                ...state,
+                ...action.payload,
             };
         }
         default: {

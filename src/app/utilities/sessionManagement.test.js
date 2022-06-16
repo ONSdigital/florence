@@ -99,3 +99,39 @@ it("given timers exist and when timers are requested to be removed they are actu
     expect(sessionManagement.timers["refreshTimerPassive"]).toBeUndefined();
     expect(sessionManagement.timers["refreshTimerInvasive"]).toBeUndefined();
 });
+
+describe("#isSessionExpired()", () => {
+    it("should return true if session UTC time from server has not expired", () => {
+        let sessionExpiryTime = new Date();
+        sessionExpiryTime = sessionExpiryTime.setHours(sessionExpiryTime.getHours() - 1);
+        // Convert time format to same that the server sends
+        sessionExpiryTime = new Date(sessionExpiryTime).toISOString().replace(/Z/, " +0000 UTC");
+        const actual = sessionManagement.isSessionExpired(sessionExpiryTime);
+        const expected = true;
+        expect(actual).toEqual(expected);
+    });
+    it("should return true if session UTC time from server has not expired", () => {
+        let sessionExpiryTime = new Date();
+        sessionExpiryTime = sessionExpiryTime.setHours(sessionExpiryTime.getHours() + 1);
+        // Convert time format to same that the server sends
+        sessionExpiryTime = new Date(sessionExpiryTime).toISOString().replace(/Z/, " +0000 UTC");
+        const expirationTime = sessionManagement.convertUTCToJSDate(sessionExpiryTime);
+        const actual = sessionManagement.isSessionExpired(expirationTime);
+        const expected = false;
+        expect(actual).toEqual(expected);
+    });
+    it("should return true if client created session time has not expired", () => {
+        const seconds30 = 30 * 60 * 1000;
+        let sessionExpiryTime = new Date().getTime() - seconds30;
+        const actual = sessionManagement.isSessionExpired(sessionExpiryTime);
+        const expected = true;
+        expect(actual).toEqual(expected);
+    });
+    it("should return true if client created session time has not expired", () => {
+        const seconds30 = 30 * 60 * 1000;
+        let sessionExpiryTime = new Date().getTime() + seconds30;
+        const actual = sessionManagement.isSessionExpired(sessionExpiryTime);
+        const expected = false;
+        expect(actual).toEqual(expected);
+    });
+});
