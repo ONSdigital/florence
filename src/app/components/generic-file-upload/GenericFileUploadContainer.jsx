@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Checkbox from "../Checkbox";
 
+import Resumable from "resumeablejs";
+
 import GenericFileUploader from "./GenericFileUploader";
 
 const FIVE_MEGABYTES = 5 * 1024 * 1024;
