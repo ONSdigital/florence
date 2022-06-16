@@ -6,8 +6,8 @@ function isDevOrSandpit () {
         env.name = 'develop'
     }
 
-    if(hostname.indexOf('sandpit') > -1) {
-        env.name = 'sandpit'
+    if(hostname.indexOf('.dp.aws.') > -1) {
+        env.name = 'sandbox'
     }
 
     // if((hostname.indexOf('127') > -1) || (hostname.indexOf('localhost')) > -1) {
