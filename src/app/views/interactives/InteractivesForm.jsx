@@ -96,10 +96,10 @@ export default function InteractivesForm(props) {
     useEffect(() => {
         if (successMessage.success) {
             if (successMessage.type === "create") {
-                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                props.router.push(`${rootPath}/collections/${collectionId}`);
             }
             if (successMessage.type === "update") {
-                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                props.router.push(`${rootPath}/collections/${collectionId}`);
             }
             if (interactive.id) {
                 const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
