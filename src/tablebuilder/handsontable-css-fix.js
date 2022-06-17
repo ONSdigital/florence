@@ -18,7 +18,7 @@ console.log("Temporary fix until the next version of react-handsontable updates 
 console.log("It replicates the changes here: https://github.com/handsontable/handsontable/pull/4337");
 try {
     const changes = replace.sync(options);
-    console.log('Modified files:', changes.join(', '));
+    console.log('Modified files:', changes.filter(r => r.hasChanged).map(r => r.file).join(', '));
 }
 catch (error) {
     console.error('Error occurred:', error);

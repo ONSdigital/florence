@@ -13,6 +13,7 @@ export default function InteractivesShow(props) {
     const { interactiveId } = props.params;
     const [url, setUrl] = useState("");
     const collectionId = getParameterByName("collection");
+    const urlIndex = getParameterByName("urlIndex");
 
     useEffect(() => {
         dispatch(getInteractive(interactiveId));
@@ -20,7 +21,11 @@ export default function InteractivesShow(props) {
 
     useEffect(() => {
         if (interactive.metadata) {
-            setUrl(interactive.url);
+            var index = 0;
+            if (urlIndex) {
+                index = urlIndex;
+            }
+            setUrl(window.location.origin + interactive.html_files[index].uri);
         }
     }, [interactive.metadata]);
 

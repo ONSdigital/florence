@@ -133,7 +133,6 @@ describe("Create/Edit an Interactives", () => {
             defaultProps.params.interactiveId = "2ab8d731-e3ec-4109-a573-55e12951b704";
 
             const baseUrl = window.location.origin;
-            const resourceType = "interactives";
 
             const { rerender } = render(<InteractivesForm {...defaultProps} />);
             expect(getInteractive).toHaveBeenCalled();
@@ -152,6 +151,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -170,12 +170,10 @@ describe("Create/Edit an Interactives", () => {
             const internalIdInput = screen.getByLabelText("Internal ID");
             const titleInput = screen.getByLabelText("Title");
             const labelInput = screen.getByLabelText("Label");
-            const urlInput = screen.getByLabelText("URL");
 
             expect(internalIdInput.value).toBe("internal_id");
             expect(titleInput.value).toBe("Title");
             expect(labelInput.value).toBe("Label");
-            expect(urlInput.value).toBe(`${baseUrl}/${resourceType}/${interactive.metadata.slug}-${interactive.metadata.resource_id}/embed`);
         });
 
         it("User can review the interactive and move to REVIEW status if there is not any change", async () => {
@@ -202,6 +200,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -237,6 +236,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );
@@ -261,6 +261,7 @@ describe("Create/Edit an Interactives", () => {
                             resource_id: "resource_id",
                         },
                         published: false,
+                        html_files: [{ name: "name", uri: "/uri" }],
                     },
                 })
             );

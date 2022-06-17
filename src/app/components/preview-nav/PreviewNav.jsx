@@ -32,7 +32,7 @@ const PreviewNav = ({ workingOn, preview, rootPath, updateSelected }) => {
                             name: createPageTitle(page),
                             isGroup: true,
                             groupOptions: page.files.map(file => {
-                                return { id: file.URI, name: file.name };
+                                return { id: file.uri, name: file.uri };
                             }),
                         };
                     }

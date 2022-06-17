@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 import collections from "../../utilities/api-clients/collections";
 import Notifications from "../../components/notifications";
+import Select from "../../components/Select";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -20,10 +21,12 @@ export default function InteractivesForm(props) {
     const [title, setTitle] = useState("");
     const [label, setLabel] = useState("");
     const [file, setFile] = useState(null);
+    const [urlIndex, setUrlIndex] = useState("");
     const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
     const [collectionId, setCollectionId] = useState(getParameterByName("collection"));
+    const [collection, setCollection] = useState({});
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
     const [notifications, setNotifications] = useState([]);
@@ -39,6 +42,7 @@ export default function InteractivesForm(props) {
             setLabel("");
             setFile(null);
             setUrl("");
+            setUrlIndex(0);
             setInteractiveId("");
             setPublished(false);
         }
@@ -48,6 +52,15 @@ export default function InteractivesForm(props) {
     useEffect(() => {
         if (!collectionId) {
             props.router.push(`${rootPath}/collections`);
+        } else {
+            const fetchCollection = async () => {
+                return await collections.get(collectionId);
+            };
+            fetchCollection()
+                .then(data => {
+                    setCollection(data);
+                })
+                .catch(console.error);
         }
     }, [collectionId]);
 
@@ -63,11 +76,15 @@ export default function InteractivesForm(props) {
 
     useEffect(() => {
         if (interactive.metadata && interactiveId) {
-            const { metadata, archive } = interactive;
+            const { metadata, archive, html_files } = interactive;
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
-            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
+
+            //tactical fix to support MVP requirements of supporting single interactive
+            //needs more work to support multiple interactives: https://trello.com/c/juxhzj1D
+            setUrl(window.location.origin + html_files[0].uri);
+
             setPublished(metadata.published);
 
             if (interactive.state === "ImportFailure") {
@@ -85,16 +102,30 @@ export default function InteractivesForm(props) {
                 browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
             }
             if (interactive.id) {
-                collections.addInteractive(collectionId, interactive.id).catch(e => {
-                    setNotifications([
-                        {
+                const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
+                const isReviewed = interactiveFromCollection && interactiveFromCollection.state === "Reviewed";
+                if (editMode && isReviewed) {
+                    collections
+                        .setInteractiveStatusToComplete(collectionId, interactive.id)
+                        .then(() => {
+                            browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                        })
+                        .catch(e => {
+                            notifications.add({
+                                type: "warning",
+                                message: e.body ? e.body.message : e.message,
+                                autoDismiss: 5000,
+                            });
+                        });
+                } else {
+                    collections.addInteractive(collectionId, interactive.id).catch(e => {
+                        notifications.add({
                             type: "warning",
                             message: e.body ? e.body.message : e.message,
-                            id: "1",
-                            buttons: [],
-                        },
-                    ]);
-                });
+                            autoDismiss: 5000,
+                        });
+                    });
+                }
             }
         }
     }, [successMessage, interactive.id]);
@@ -123,35 +154,58 @@ export default function InteractivesForm(props) {
         collections
             .setInteractiveStatusToReviewed(collectionId, interactiveId)
             .then(() => {
-                setNotifications([
-                    {
-                        type: "positive",
-                        message: "Interactive successfully submitted for approval",
-                        id: "1",
-                        buttons: [],
-                    },
-                ]);
+                notifications.add({
+                    type: "positive",
+                    message: "Interactive successfully submitted for approval",
+                    autoDismiss: 5000,
+                });
             })
             .catch(e => {
-                setNotifications([
-                    {
-                        type: "warning",
-                        message: e.body ? e.body.message : e.error.response.statusText,
-                        id: "1",
-                        buttons: [],
-                    },
-                ]);
+                notifications.add({
+                    type: "warning",
+                    message: e.body ? e.body.message : e.message,
+                    autoDismiss: 5000,
+                });
             });
+        props.router.push(`${rootPath}/collections/${collectionId}`);
     };
 
-    const handleDelete = e => {
-        e.preventDefault();
-        browserHistory.push(`${rootPath}/interactives/delete/${interactiveId}?collection=${collectionId}`);
+    const copyAllUrls = async () => {
+        var allUrls = "";
+        if (interactive) {
+            try {
+                interactive.html_files.map((htm, index) => {
+                    allUrls += window.location.origin + htm.uri + "\n";
+                });
+            } catch (err) {
+                console.error("Error fetching all interactive URL's", err);
+                allUrls = "Error fetching all interactive URL's";
+            }
+        } else {
+            allUrls = "No interactive URL's available";
+        }
+        navigator.clipboard.writeText(allUrls);
     };
 
     const handleFile = e => {
         const file = e.target.files[0];
         setFile(file);
+    };
+
+    const mapInteractives = interactives => {
+        if (interactives) {
+            try {
+                return interactives.map((interactive, index) => {
+                    return {
+                        id: index,
+                        name: window.location.origin + interactive.uri,
+                    };
+                });
+            } catch (err) {
+                console.error("Error mapping interactives to select", err);
+            }
+        }
+        return;
     };
 
     const displayedErrors = Object.values(errors);
@@ -376,15 +430,11 @@ export default function InteractivesForm(props) {
                                 </div>
                             ) : (
                                 <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
-                                    <Input
-                                        type="text"
-                                        id="url"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="url"
-                                        disabled={true}
-                                        value={url}
-                                        required
-                                        onChange={e => setUrl(e.target.value)}
+                                    <Select
+                                        contents={mapInteractives(interactive.html_files) || []}
+                                        id="urls"
+                                        onChange={e => setUrlIndex(e.target.value)}
+                                        showDefaultOption="false"
                                         label="URL"
                                     />
                                 </div>
@@ -406,8 +456,11 @@ export default function InteractivesForm(props) {
                                         isSubmitting={false}
                                     />
                                 )}
+
+                                <ButtonWithShadow buttonText="Copy all URL's" onClick={copyAllUrls} />
+
                                 <Link
-                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`}
+                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}&urlIndex=${urlIndex}`}
                                     className="ons-btn ons-btn--secondary"
                                 >
                                     <span className="ons-btn__inner">Preview</span>
