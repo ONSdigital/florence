@@ -2,7 +2,6 @@ import auth, { getAuthState } from "./auth";
 
 import sessionManagement from "./sessionManagement";
 
-
 // Local Storage
 var localStorageMock = (function () {
     var store = {};
@@ -22,7 +21,6 @@ var localStorageMock = (function () {
     };
 })();
 
-
 beforeEach(() => {
     Object.defineProperty(window, "localStorage", { value: localStorageMock, writable: true });
 });
@@ -35,7 +33,7 @@ afterEach(() => {
 it("should add expire times to auth state", () => {
     // Used in the LoginController component
     const { session_expiry_time, refresh_expiry_time } = sessionManagement.createDefaultExpireTimes();
-    sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time)
+    sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
     const actual = getAuthState();
     expect(actual.session_expiry_time).toBeGreaterThan(0);
     expect(actual.refresh_expiry_time).toBeGreaterThan(0);
