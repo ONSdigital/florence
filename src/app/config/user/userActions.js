@@ -1,4 +1,4 @@
-import * as types from "./userConstants";
+import types from "./userConstants";
 
 export const userLoggedIn = (email, userType, isAdmin) => {
     return {

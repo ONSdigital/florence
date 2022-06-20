@@ -1,34 +1,27 @@
-import React, { Component, useEffect, useMemo, useState } from "react";
-import { hasValidAuthToken } from "../../utilities/hasValidAuthToken";
+import React, { Component, useEffect, useState } from "react";
 import log from "../../utilities/logging/log";
-import notifications from "../../utilities/notifications";
 import ping from "../../utilities/api-clients/ping";
-import sessionManagement from "../../utilities/sessionManagement";
 import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 import Popouts from "../popouts/Popouts";
-import { useGetPermissions } from "../../config/user/userHooks";
+import { useGetPermissions, useUpdateTimers } from "../../config/user/userHooks";
 import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
-import { startRefeshAndSession, startSession } from "../../config/user/userActions";
+
 import { useDispatch } from "react-redux";
 
 const Layout = props => {
     const dispatch = useDispatch();
-    const authState = getAuthState();
-    const session_expiry_time = fp.get("session_expiry_time")(authState);
+    let authState = getAuthState();
     const sessionTimerIsActive = fp.get("user.sessionTimer.active")(props);
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
     const [shouldUpdateAccessToken, setShouldUpdateAccessToken] = useState(false);
-
+    // Get Permissions
     const userPermissions = useGetPermissions(authState, setShouldUpdateAccessToken);
-
-    useEffect(() => {
-        // Check that we are on a page reload (not coming from login or signin)
-        // dispatch(startSession());
-    }, []);
-
+    // Check timers & update if required
+    useUpdateTimers(props, sessionTimerIsActive, dispatch);
+    // Update store with permissions
     useEffect(() => {
         setIsCheckingAuthentication(false);
         if (userPermissions) {
@@ -48,19 +41,7 @@ const Layout = props => {
         window.setInterval(() => {
             ping();
         }, 10000);
-        if (props.location.pathname !== "/florence/login" && !sessionTimerIsActive) {
-            if (sessionManagement.isSessionExpired(session_expiry_time)) {
-                user.renewSession()
-                    .then(res => {
-                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
-                        sessionManagement.startSessionTimer(expirationTime);
-                        const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
-                        dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
-                    })
-                    .catch(err => console.error(err));
-            }
-        }
-    }, [sessionTimerIsActive]);
+    }, []);
 
     if (isCheckingAuthentication) {
         return (

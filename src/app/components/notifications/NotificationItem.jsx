@@ -3,7 +3,11 @@ import PropTypes from "prop-types";
 import clsx from "clsx";
 
 const NotificationItem = props => (
-    <li key={props.id + props.type} className={clsx("notifications__item", { visible: props.isVisible }, `notifications__item--${props.type}`)}>
+    <li
+        key={props.id + props.type}
+        className={clsx("notifications__item", { visible: props.isVisible }, `notifications__item--${props.type}`)}
+        data-testid={props.id + props.type}
+    >
         {props.message}
         {props.buttons.map((button, i) => {
             return (

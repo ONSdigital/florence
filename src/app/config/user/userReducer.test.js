@@ -8,6 +8,14 @@ describe("userReducer", () => {
             email: "",
             userType: "",
             isAdmin: false,
+            "refreshTimer": {
+                "active": false,
+                "expire": "",
+            },
+            "sessionTimer": {
+                "active": false,
+                "expire": "",
+            },
         });
     });
 
