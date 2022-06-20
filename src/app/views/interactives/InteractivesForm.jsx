@@ -175,7 +175,7 @@ export default function InteractivesForm(props) {
         if (interactive) {
             try {
                 interactive.html_files.map((htm, index) => {
-                    allUrls += window.location.origin + htm.uri + "\n";
+                    allUrls += htm.uri + "\n";
                 });
             } catch (err) {
                 console.error("Error fetching all interactive URL's", err);
@@ -430,13 +430,27 @@ export default function InteractivesForm(props) {
                                 </div>
                             ) : (
                                 <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
-                                    <Select
-                                        contents={mapInteractives(interactive.html_files) || []}
-                                        id="urls"
-                                        onChange={e => setUrlIndex(e.target.value)}
-                                        showDefaultOption="false"
-                                        label="URL"
-                                    />
+                                    {interactive.html_files && interactive.html_files.length <= 1 ? (
+                                        <Input
+                                            type="text"
+                                            id="url"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="url"
+                                            disabled={true}
+                                            value={url}
+                                            required
+                                            onChange={e => setUrl(e.target.value)}
+                                            label="URL"
+                                        />
+                                    ) : (
+                                        <Select
+                                            contents={mapInteractives(interactive.html_files) || []}
+                                            id="urls"
+                                            onChange={e => setUrlIndex(e.target.value)}
+                                            showDefaultOption="false"
+                                            label="URL"
+                                        />
+                                    )}
                                 </div>
                             )}
                         </>
