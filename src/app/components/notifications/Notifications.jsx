@@ -6,7 +6,7 @@ const Notifications = ({ notifications }) => {
     if (notifications.length === 0) return null;
 
     return (
-        <ul className="notifications">
+        <ul className="notifications" data-testid="notifications">
             {notifications.map((notification, i) => (
                 <NotificationItem key={notification + i} {...notification} />
             ))}

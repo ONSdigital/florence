@@ -131,7 +131,7 @@ const NavBar = props => {
     const regex = new RegExp(`${props.rootPath}/collections/[\\w|-]*/preview`, "g");
     const isViewingPreview = regex.test(props.location.pathname);
     return (
-        <ul className="global-nav__list">
+        <ul className="global-nav__list" data-testid="navbar">
             {isViewingPreview && <PreviewNav />}
             {isViewingPreview && (
                 <li className="global-nav__item">

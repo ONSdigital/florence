@@ -47,10 +47,12 @@ export function setAuthState(userData = {}) {
     const userJSONData = JSON.stringify({ ...authState, ...userData });
     window.localStorage.setItem(AUTH_STATE_NAME, userJSONData);
     /* Legacy florence */
-    window.localStorage.setItem("loggedInAs", userData.email);
+    if (userData && userData.email) {
+        window.localStorage.setItem("loggedInAs", userData.email);
+    }
     // Store the user type in localStorage. Used in old Florence
     // where views can depend on user type. e.g. Browse tree
-    localStorage.setItem("userType", user.getOldUserType(userData));
+    localStorage.setItem("userType", user.getOldUserType(userData) || "");
 }
 
 export function updateAuthState(data = {}) {
