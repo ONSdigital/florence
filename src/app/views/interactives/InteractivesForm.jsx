@@ -83,7 +83,9 @@ export default function InteractivesForm(props) {
 
             //tactical fix to support MVP requirements of supporting single interactive
             //needs more work to support multiple interactives: https://trello.com/c/juxhzj1D
-            setUrl(window.location.origin + html_files[0].uri);
+            if (html_files && html_files.length > 0) {
+                setUrl(window.location.origin + html_files[0].uri);
+            }
 
             setPublished(metadata.published);
 
