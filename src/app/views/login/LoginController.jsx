@@ -58,7 +58,7 @@ export class LoginController extends Component {
                 cookies.add("access_token", accessToken);
                 // Session
                 const { session_expiry_time, refresh_expiry_time } = sessionManagement.createDefaultExpireTimes();
-                sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time)
+                sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
                 // Get perms
                 user.getPermissions()
                     .then(userType => {

@@ -6,7 +6,6 @@ import { addPopout, removePopouts } from "../config/actions";
 import { getAuthState, updateAuthState } from "./auth";
 import fp from "lodash/fp";
 
-
 export default class sessionManagement {
     static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
@@ -19,10 +18,10 @@ export default class sessionManagement {
         // TODO this is used up until enableNewSignIn goes live then remove this
         const now = new Date();
         const tomorrow = now.setHours(now.getHours() + 23);
-       return {
+        return {
             session_expiry_time: tomorrow,
             refresh_expiry_time: tomorrow,
-       };
+        };
     }
 
     static createSessionExpiryTime(sessionExpiryTime = undefined, refreshExpiryTime = undefined) {
@@ -36,10 +35,9 @@ export default class sessionManagement {
     // used to get a new session token. The session token is what gives the user access to the system and has a very
     // short life. If the user is active then we extend their session. The refresh token has a long life but also
     // expires and can't be renewed. So we extend it one last timse and let the user know they will be kicked out and
-    // need to sign back in manuall
-    y
+    // need to sign back in manually
     static setSessionExpiryTime = (sessionExpiryTime, refreshExpiryTime) => {
-        const session = sessionManagement.createSessionExpiryTime(sessionExpiryTime, refreshExpiryTime );
+        const session = sessionManagement.createSessionExpiryTime(sessionExpiryTime, refreshExpiryTime);
         updateAuthState(session);
         this.initialiseSessionExpiryTimers(sessionExpiryTime, refreshExpiryTime);
     };

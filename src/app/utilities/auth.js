@@ -44,7 +44,7 @@ export default class auth {
 
 export function setAuthState(userData = {}) {
     let authState = getAuthState() || {};
-    const userJSONData = JSON.stringify({...authState, ...userData, });
+    const userJSONData = JSON.stringify({ ...authState, ...userData });
     window.localStorage.setItem(AUTH_STATE_NAME, userJSONData);
     /* Legacy florence */
     window.localStorage.setItem("loggedInAs", userData.email);
