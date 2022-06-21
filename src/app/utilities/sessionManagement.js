@@ -19,10 +19,10 @@ export default class sessionManagement {
     static createDefaultExpireTimes(hours) {
         // TODO this is used up until enableNewSignIn goes live then remove this
         const now = new Date();
-        const expirey = now.setHours(now.getHours() + hours);
+        const expiry = now.setHours(now.getHours() + hours);
         return {
-            session_expiry_time: expirey,
-            refresh_expiry_time: expirey,
+            session_expiry_time: expiry,
+            refresh_expiry_time: expiry,
         };
     }
 
