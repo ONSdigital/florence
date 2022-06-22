@@ -5,6 +5,13 @@ import user from "../api-clients/user";
 import notifications from "../notifications";
 import { errCodes } from "../errorCodes";
 
+import { store } from "../../config/store";
+import { getAuthState } from "../auth";
+import fp from "lodash/fp";
+import sessionManagement from "../sessionManagement";
+import { startRefeshAndSession } from "../../config/user/userActions";
+
+const config = window.getEnv();
 /**
  *
  * @param {string} method - must match an HTTP method (eg "GET")
@@ -60,6 +67,33 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 }
 
                 if (status === 401) {
+                    if (config.enableNewInteractives) {
+                        // Attempt to get a new refresh the access_token
+                        const authState = getAuthState();
+                        const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
+                        user.renewSession()
+                            .then(res => {
+                                // update the authState, start the session timer with the next session response value
+                                // & restart the refresh timer with the existing refresh value.
+                                const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
+                                sessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
+                                store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+                                // Retry the resource request with new access_token
+                                tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
+                            })
+                            .catch(err => {
+                                // log out
+                                console.error(err);
+                                user.logOut();
+                                notifications.add(notification);
+                                reject({
+                                    status: status,
+                                    message: response.statusText,
+                                });
+                                return;
+                            });
+                    }
+
                     if (callerHandles401) {
                         response.text().then(body => {
                             reject({
