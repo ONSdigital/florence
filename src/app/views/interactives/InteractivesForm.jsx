@@ -477,6 +477,7 @@ export default function InteractivesForm(props) {
 
                                 <Link
                                     to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}&urlIndex=${urlIndex}`}
+                                    style={{ pointerEvents: interactive.state === "ImportSuccess" ? "" : "none" }}
                                     className="ons-btn ons-btn--secondary"
                                 >
                                     <span className="ons-btn__inner">Preview</span>
