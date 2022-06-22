@@ -54,7 +54,6 @@ import AddGroupsToUser from "./app/views/users/groups";
 import Groups from "./app/views/groups"
 import EditUser from "./app/views/users/edit";
 import UploadTest from "./app/views/upload-test/UploadTest";
-
 import "./scss/main.scss";
 import Security from "./app/views/security";
 import EditGroup from "./app/views/groups/edit"
