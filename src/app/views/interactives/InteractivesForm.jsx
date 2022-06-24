@@ -97,9 +97,6 @@ export default function InteractivesForm(props) {
 
     useEffect(() => {
         if (successMessage.success) {
-            if (successMessage.type === "create") {
-                props.router.push(`${rootPath}/collections/${collectionId}`);
-            }
             if (successMessage.type === "update") {
                 props.router.push(`${rootPath}/collections/${collectionId}`);
             }
@@ -120,13 +117,16 @@ export default function InteractivesForm(props) {
                             });
                         });
                 } else {
-                    collections.addInteractive(collectionId, interactive.id).catch(e => {
-                        notifications.add({
-                            type: "warning",
-                            message: e.body ? e.body.message : e.message,
-                            autoDismiss: 5000,
+                    collections
+                        .addInteractive(collectionId, interactive.id)
+                        .then(() => props.router.push(`${rootPath}/collections/${collectionId}`))
+                        .catch(e => {
+                            notifications.add({
+                                type: "warning",
+                                message: e.body ? e.body.message : e.message,
+                                autoDismiss: 5000,
+                            });
                         });
-                    });
                 }
             }
         }
