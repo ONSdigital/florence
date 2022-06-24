@@ -49,7 +49,7 @@ export default class sessionManagement {
         // Timer to start monitoring user interaction to add additional time to their session
         this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
         // Timer to tell the user their session is about to expire unless they interact with the page
-        this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.warnSessionSoonExpire);
+        this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.refreshAccessToken);
     }
 
     static startRefreshTimer(refreshExpiryTime) {
@@ -107,23 +107,10 @@ export default class sessionManagement {
         });
     };
 
-    static warnSessionSoonExpire = () => {
+    static refreshAccessToken = () => {
         this.removeInteractionMonitoring();
-        const popoutOptions = {
-            id: "session-expire-soon",
-            title: "Your session will end in 1 minute",
-            body: "This is because you have been inactive. If you want to continue using Florence you must stay signed in. If not, you will be signed out and will need to sign in again.",
-            buttons: [
-                {
-                    onClick: () => {
-                        this.refreshSession();
-                    },
-                    text: "Stay signed in",
-                    style: "primary",
-                },
-            ],
-        };
-        store.dispatch(addPopout(popoutOptions));
+        // refresh token & PUT /api/v1/tokens/self & restart timers
+        this.refreshSession();
     };
 
     static warnRefreshSoonExpire = () => {
