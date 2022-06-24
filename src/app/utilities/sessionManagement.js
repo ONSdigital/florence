@@ -8,6 +8,21 @@ import fp from "lodash/fp";
 
 import { startRefeshAndSession } from "../config/user/userActions";
 
+const config = window.getEnv();
+
+// Warning: for testing only
+function __TEST_TIMERS(name, match, i, mins = 57) {
+    const minutes = 60 * 1000;
+    if (name === match) {
+        const now = new Date();
+        // interval will be less than a minute
+        const interval = now.setTime(now.getTime() - mins * minutes);
+        console.debug("[TEST] Updating " + name + " interval of " + interval + " : " + new Date(interval));
+        return new Date(interval);
+    }
+    return i;
+}
+
 export default class sessionManagement {
     static timers = {};
     static eventsToMonitor = ["mousedown", "mousemove", "keypress", "scroll", "touchstart"];
@@ -21,8 +36,8 @@ export default class sessionManagement {
         const now = new Date();
         const expiry = now.setHours(now.getHours() + hours);
         return {
-            session_expiry_time: expiry,
-            refresh_expiry_time: expiry,
+            session_expiry_time: new Date(expiry),
+            refresh_expiry_time: new Date(expiry),
         };
     }
 
@@ -46,18 +61,30 @@ export default class sessionManagement {
 
     static startSessionTimer(sessionExpiryTime) {
         updateAuthState({ session_expiry_time: sessionExpiryTime });
-        // Timer to start monitoring user interaction to add additional time to their session
-        this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-        // Timer to tell the user their session is about to expire unless they interact with the page
-        this.startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.refreshAccessToken);
+        if (config.enableNewSignIn) {
+            // Timer to start monitoring user interaction to add additional time to their session
+            this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
+        } else {
+            // Display a popup passiveRenewal ms before manual refresh expire interval.
+            this.startExpiryTimer(
+                "warnManaulSessionTimerExpiry",
+                sessionExpiryTime,
+                this.timeOffsets.passiveRenewal,
+                this.warnManaulRefreshTimerExpiry
+            );
+            // Logout the user on invasiveRenewal expire interval.
+            this.startExpiryTimer("endManaulSessionTimerExpiry", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.endManualSession);
+        }
     }
 
     static startRefreshTimer(refreshExpiryTime) {
-        updateAuthState({ refresh_expiry_time: refreshExpiryTime });
-        // Timer to start monitoring user interaction to add a final extra amount of time to their session
-        this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-        // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-        this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+        if (config.enableNewSignIn) {
+            updateAuthState({ refresh_expiry_time: refreshExpiryTime });
+            // Timer to start monitoring user interaction to add a final extra amount of time to their session
+            this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
+            // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
+            this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+        }
     }
 
     static initialiseSessionExpiryTimers = (sessionExpiryTime, refreshExpiryTime) => {
@@ -72,8 +99,7 @@ export default class sessionManagement {
     static convertUTCToJSDate(expiryTime) {
         // Convert API time to usable JS Date object
         if (expiryTime) {
-            const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", ""); //- this doesn't work
-            // See https://github.com/ONSdigital/florence/blob/5a216ab029c945787997162af57263c819e15b5f/src/app/utilities/sessionManagement.js#L55
+            const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "Z");
             return new Date(expireTimeInUTCString);
         }
         return null;
@@ -88,9 +114,13 @@ export default class sessionManagement {
             const nowInUTC = new Date(nowUTCInMS);
             // Get the time difference between now and the expiry time minus the timer offset
             let timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
+            if (isNaN(timerInterval)) {
+                console.error(`[FLORENCE] time interval for ${name} is not a valid date format.`);
+            }
             if (this.timers[name] != null) {
                 clearTimeout(this.timers[name]);
             }
+            console.debug("[FLORENCE] Interval for " + name + " set to " + timerInterval);
             this.timers[name] = setTimeout(callback, timerInterval);
         }
     };
@@ -105,12 +135,6 @@ export default class sessionManagement {
         this.eventsToMonitor.forEach(name => {
             document.removeEventListener(name, this.refreshSession);
         });
-    };
-
-    static refreshAccessToken = () => {
-        this.removeInteractionMonitoring();
-        // refresh token & PUT /api/v1/tokens/self & restart timers
-        this.refreshSession();
     };
 
     static warnRefreshSoonExpire = () => {
@@ -133,6 +157,29 @@ export default class sessionManagement {
         store.dispatch(addPopout(popoutOptions));
     };
 
+    static warnManaulRefreshTimerExpiry = () => {
+        const popoutOptions = {
+            id: "manual-refresh-expire-soon",
+            title: "You will be signed out soon",
+            body: "This is because you have been signed in for the maximum amount of time possible. Please save your work and sign back in to continue using Florence.",
+            buttons: [
+                {
+                    onClick: () => {
+                        store.dispatch(removePopouts(["manual-refresh-expire-soon"]));
+                    },
+                    text: "Ok",
+                    style: "primary",
+                },
+            ],
+        };
+        store.dispatch(addPopout(popoutOptions));
+    };
+
+    static endManualSession = () => {
+        console.info("[FLORENCE] Timer has expired so logging out user");
+        user.logOut();
+    };
+
     static removeWarnings = () => {
         store.dispatch(removePopouts(["session-expire-soon", "refresh-expire-soon"])); // Todo all
     };
@@ -141,7 +188,7 @@ export default class sessionManagement {
         this.removeInteractionMonitoring();
         this.removeWarnings();
         const renewError = error => {
-            console.error("an unexpected error has occurred when extending the users session");
+            console.error("[FLORENCE] an unexpected error has occurred when extending the users session");
             if (error != null) {
                 console.error(error);
             }
@@ -153,20 +200,29 @@ export default class sessionManagement {
             };
             notifications.add(notification);
         };
-        user.renewSession()
-            .then(response => {
-                if (response) {
-                    const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
-                    sessionManagement.startSessionTimer(expirationTime);
-                    const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
-                    store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
-                } else {
-                    renewError();
-                }
-            })
-            .catch(error => {
-                renewError(error);
-            });
+        const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
+        if (config.enableNewSignIn) {
+            user.renewSession()
+                .then(response => {
+                    if (response) {
+                        console.log("[FLORENCE] Updating session timer via API");
+                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
+                        sessionManagement.startSessionTimer(expirationTime);
+                        store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+                    } else {
+                        renewError();
+                    }
+                })
+                .catch(error => {
+                    renewError(error);
+                });
+        } else {
+            // refresh sessions manually for current / legacy
+            console.log("[FLORENCE] Updating session timer manually");
+            const expireTimes = sessionManagement.createDefaultExpireTimes(12);
+            sessionManagement.startSessionTimer(expireTimes.session_expiry_time);
+            store.dispatch(startRefeshAndSession(null, expireTimes.session_expiry_time));
+        }
     };
 
     /**

@@ -8,7 +8,28 @@ function handleApiError(response) {
     if (!response || response.status === 200)
         return;
 
-    if (response.status === 403 || response.status === 401) {
+    if (response.status === 401) {
+        if (Florence.globalVars.config.enableNewSignIn) {
+            const authState = getAuthState();
+            const refresh_expiry_time = new Date(authState.refresh_expiry_time);
+            console.debug("[FLORENCE] Timers / enableNewSignIn: requesting a new access_token");
+            renewSession()
+                .then(res => {
+                    if (res) {
+                        console.debug("[FLORENCE] Updating access_token & session timer: ", res)
+                        // update the authState, start the session timer with the next session response value
+                        // & restart the refresh timer with the existing refresh value.
+                        const expirationTime = convertUTCToJSDate(res.expirationTime);
+                        setSessionExpiryTime(expirationTime, refresh_expiry_time);
+                    }
+                })
+                .catch(err => console.error("[FLORENCE]: ", err));
+        } else {
+            logout(window.location.pathname);
+        }
+        return;
+    }    
+    if (response.status === 403) {
         //sweetAlert('You are not logged in', 'Please refresh Florence and log back in.');
         // passing pathname through so the user can be brought back to the page once they log back in
         logout(window.location.pathname);

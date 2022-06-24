@@ -69,11 +69,6 @@ export class LoginController extends Component {
                     if (response.body != null) {
                         const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
                         const refreshTokenExpirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
-                        console.log("convert: ", {
-                            expirationTime,
-                            refreshTokenExpirationTime,
-                            original: fp.get("body.expirationTime")(response),
-                        });
                         sessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
                     }
                     this.setState(
