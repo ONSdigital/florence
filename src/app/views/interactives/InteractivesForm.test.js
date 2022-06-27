@@ -11,7 +11,10 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: {},
+    errors: {
+        validations: {},
+        apiErrors: {},
+    },
     successMessage: {
         type: null,
         success: false,
