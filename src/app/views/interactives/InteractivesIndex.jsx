@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { editInteractive, filterInteractives, getInteractives, resetSuccessMessage, sortInteractives } from "../../actions/interactives";
+import {
+    editInteractive,
+    filterInteractives,
+    getInteractives,
+    resetInteractiveError,
+    resetSuccessMessage,
+    sortInteractives,
+} from "../../actions/interactives";
 import { Link } from "react-router";
 import AlertSuccess from "../../components/alert/AlertSuccess";
 import Input from "../../components/Input";
@@ -11,7 +18,7 @@ import moment from "moment";
 import { getParameterByName, isInArray } from "../../utilities/utils";
 import BackButton from "../../components/back-button";
 import collections from "../../utilities/api-clients/collections";
-import Notifications from "../../components/notifications";
+import notifications from "../../utilities/notifications";
 
 export default function InteractivesIndex(props) {
     const dispatch = useDispatch();
@@ -28,11 +35,20 @@ export default function InteractivesIndex(props) {
     const [collection, setCollection] = useState({});
     const [collectionId, setCollectionId] = useState("");
 
-    const [notifications, setNotifications] = useState([]);
-
     useEffect(() => {
         setCollectionId(getParameterByName("collection"));
     }, []);
+
+    useEffect(() => {
+        if (errors.apiErrors && errors.apiErrors.message) {
+            notifications.add({
+                type: "warning",
+                message: errors.apiErrors.message,
+                autoDismiss: 5000,
+            });
+            dispatch(resetInteractiveError());
+        }
+    }, [errors.apiErrors]);
 
     useEffect(() => {
         if (collectionId) {
@@ -131,33 +147,12 @@ export default function InteractivesIndex(props) {
                 }, 1500);
             })
             .catch(e => {
-                setNotifications([e.body ? e.body.message : "Error adding interactive"]);
-            });
-    };
-
-    const mapErrors = () => {
-        let errorsArray = [];
-        errors.errors.forEach((error, index) => {
-            errorsArray.push({
-                type: "warning",
-                message: error,
-                id: `${index}`,
-                buttons: [],
-            });
-        });
-
-        if (notifications.length > 0) {
-            notifications.errors.forEach((error, index) => {
-                errorsArray.push({
+                notifications.add({
                     type: "warning",
-                    message: error,
-                    id: `${index + errors.errors.length}`,
-                    buttons: [],
+                    message: e.body ? e.body.message : "Error adding interactive",
+                    autoDismiss: 5000,
                 });
             });
-        }
-
-        return errorsArray;
     };
 
     const getChips = interactive => {
@@ -306,7 +301,6 @@ export default function InteractivesIndex(props) {
                     </div>
                 </div>
             </div>
-            {errors.errors && (errors.errors.length > 0 || notifications.length > 0) && <Notifications notifications={mapErrors()} />}
         </div>
     );
 }
