@@ -16,6 +16,8 @@ export default class Interactives {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
         });
     }
 
@@ -28,6 +30,8 @@ export default class Interactives {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
+            maxBodyLength: Infinity,
+            maxContentLength: Infinity,
         });
     };
 
