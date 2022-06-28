@@ -5,7 +5,10 @@ const initialState = {
     interactives: [],
     interactive: {},
     filteredInteractives: [],
-    errors: {},
+    errors: {
+        validations: {},
+        apiErrors: {},
+    },
     successMessage: {
         type: null,
         success: false,
@@ -45,33 +48,47 @@ export default function reducer(state = initialState, action = {}) {
             });
         case types.INTERACTIVE_ERROR:
             const { errors: errorsResponse } = action.error.response.data;
-            let errors = {};
-            if (errorsResponse.indexOf("file: expecting one attachment with metadata") >= 0) {
-                errors.file = "Select a file that is a ZIP file";
+            const { status } = action.error.response;
+            let errors = {
+                apiErrors: {},
+                validations: {},
+            };
+
+            switch (status) {
+                case 502: {
+                    errors.apiErrors.message = "Error connecting with interactives API";
+                    break;
+                }
             }
-            if (errorsResponse.indexOf("interactive.metadata.internalid: required") >= 0) {
-                errors.internalId = "Enter a correct internal ID";
-            }
-            if (errorsResponse.indexOf("interactive.metadata.internalid: alphanum") >= 0) {
-                errors.internalId = "Enter a correct internal ID, using only letters and numbers";
-            }
-            if (errorsResponse.indexOf("interactive.metadata.title: required") >= 0) {
-                errors.title = "Enter a correct title";
-            }
-            if (errorsResponse[0].indexOf("archive with title") >= 0) {
-                errors.title = "Archive with this title already exists";
-            }
-            if (errorsResponse.indexOf("interactive.metadata.label: required") >= 0) {
-                errors.label = "Enter a correct label, using only letters and numbers";
-            }
-            if (errorsResponse.indexOf("interactive.metadata.label: alphanum") >= 0) {
-                errors.label = "Enter a correct label, using only letters and numbers";
-            }
-            if (errorsResponse[0].indexOf("archive with label") >= 0) {
-                errors.label = "Archive with this label already exists";
-            }
-            if (errorsResponse.length >= 0) {
-                errors.errors = errorsResponse;
+
+            if (errorsResponse) {
+                if (errorsResponse.indexOf("file: expecting one attachment with metadata") >= 0) {
+                    errors.validations.file = "Select a file that is a ZIP file";
+                }
+                if (errorsResponse.indexOf("interactive.metadata.internalid: required") >= 0) {
+                    errors.validations.internalId = "Enter a correct internal ID";
+                }
+                if (errorsResponse.indexOf("interactive.metadata.internalid: alphanum") >= 0) {
+                    errors.validations.internalId = "Enter a correct internal ID, using only letters and numbers";
+                }
+                if (errorsResponse.indexOf("interactive.metadata.title: required") >= 0) {
+                    errors.validations.title = "Enter a correct title";
+                }
+                if (errorsResponse[0].indexOf("archive with title") >= 0) {
+                    errors.validations.title = "Archive with this title already exists";
+                }
+                if (errorsResponse.indexOf("interactive.metadata.label: required") >= 0) {
+                    errors.validations.label = "Enter a correct label, using only letters and numbers";
+                }
+                if (errorsResponse.indexOf("interactive.metadata.label: alphanum") >= 0) {
+                    errors.validations.label = "Enter a correct label, using only letters and numbers";
+                }
+                if (errorsResponse[0].indexOf("archive with label") >= 0) {
+                    errors.validations.label = "Archive with this label already exists";
+                }
+                if (errorsResponse.length >= 0) {
+                    errors.validations.errors = errorsResponse;
+                }
             }
             return Object.assign({}, state, {
                 errors,

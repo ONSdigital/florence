@@ -9,8 +9,8 @@ import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 import collections from "../../utilities/api-clients/collections";
-import Notifications from "../../components/notifications";
 import Select from "../../components/Select";
+import notifications from "../../utilities/notifications";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -29,7 +29,7 @@ export default function InteractivesForm(props) {
     const [collection, setCollection] = useState({});
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
-    const [notifications, setNotifications] = useState([]);
+    const [blockActions, setBlockActions] = useState(false);
 
     useEffect(() => {
         const { interactiveId } = props.params;
@@ -73,6 +73,17 @@ export default function InteractivesForm(props) {
                 : setEditMode(false);
         }
     }, [internalId, title, label, file]);
+
+    useEffect(() => {
+        if (errors.apiErrors && errors.apiErrors.message) {
+            notifications.add({
+                type: "warning",
+                message: errors.apiErrors.message,
+                autoDismiss: 5000,
+            });
+            setBlockActions(true);
+        }
+    }, [errors.apiErrors]);
 
     useEffect(() => {
         if (interactive.metadata && interactiveId) {
@@ -210,7 +221,7 @@ export default function InteractivesForm(props) {
         return;
     };
 
-    const displayedErrors = Object.values(errors);
+    const displayedErrors = Object.values(errors.validations);
 
     return (
         <div className="grid grid--justify-space-around padding-bottom--2 padding-top--2">
@@ -261,7 +272,7 @@ export default function InteractivesForm(props) {
                                         id="internal_id"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="internal_id"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={internalId}
                                         error={""}
                                         required
@@ -278,7 +289,7 @@ export default function InteractivesForm(props) {
                                 id="internal_id"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="internal_id"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={internalId}
                                 error={""}
                                 required
@@ -300,7 +311,7 @@ export default function InteractivesForm(props) {
                                         id="title"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="title"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={title}
                                         required
                                         onChange={e => setTitle(e.target.value)}
@@ -316,7 +327,7 @@ export default function InteractivesForm(props) {
                                 id="title"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="title"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={title}
                                 required
                                 onChange={e => setTitle(e.target.value)}
@@ -338,7 +349,7 @@ export default function InteractivesForm(props) {
                                         id="label"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="label"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={label}
                                         required
                                         onChange={e => setLabel(e.target.value)}
@@ -354,7 +365,7 @@ export default function InteractivesForm(props) {
                                 id="label"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="label"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={label}
                                 required
                                 onChange={e => setLabel(e.target.value)}
@@ -383,6 +394,7 @@ export default function InteractivesForm(props) {
                                         className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                         required
                                         fileError={fileError}
+                                        disabled={blockActions}
                                         onChange={handleFile}
                                         label="Upload a file"
                                         helpMessage="The file must be a CSV, ODS or Excel format and no larger than 2mb in size."
@@ -400,6 +412,7 @@ export default function InteractivesForm(props) {
                                 className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                 required
                                 onChange={handleFile}
+                                disabled={blockActions}
                                 label="Upload a file"
                                 helpMessage="The zip file must not exceed 2.5gb without password protection, containing atleast 1 html/htm file, without special characters."
                             />
@@ -421,7 +434,7 @@ export default function InteractivesForm(props) {
                                                 id="url"
                                                 className="ons-input ons-input--text ons-input-type__input"
                                                 name="url"
-                                                disabled={props.isAwaitingResponse}
+                                                disabled={blockActions}
                                                 value={url}
                                                 required
                                                 onChange={e => setUrl(e.target.value)}
@@ -451,6 +464,7 @@ export default function InteractivesForm(props) {
                                             onChange={e => setUrlIndex(e.target.value)}
                                             showDefaultOption="false"
                                             label="URL"
+                                            disabled={blockActions}
                                         />
                                     )}
                                 </div>
@@ -459,26 +473,34 @@ export default function InteractivesForm(props) {
                     )}
                     <div className="inline-block padding-top--1">
                         {!interactiveId ? (
-                            <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} isSubmitting={false} />
+                            <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} disabled={blockActions} isSubmitting={false} />
                         ) : (
                             <div className="inline-block">
                                 {editMode ? (
-                                    <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
+                                    <ButtonWithShadow
+                                        type="submit"
+                                        buttonText="Save changes"
+                                        onClick={onSubmit}
+                                        isSubmitting={false}
+                                        disabled={blockActions}
+                                    />
                                 ) : (
                                     <ButtonWithShadow
                                         type="submit"
                                         buttonText="Save and submit for approval"
                                         onClick={onSubmitApproval}
                                         isSubmitting={false}
+                                        disabled={blockActions}
                                     />
                                 )}
 
-                                <ButtonWithShadow buttonText="Copy all URL's" onClick={copyAllUrls} />
+                                <ButtonWithShadow buttonText="Copy all URL's" onClick={copyAllUrls} disabled={blockActions} />
 
                                 <Link
                                     to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}&urlIndex=${urlIndex}`}
                                     style={{ pointerEvents: interactive.state === "ImportSuccess" ? "" : "none" }}
                                     className="ons-btn ons-btn--secondary"
+                                    disabled={blockActions}
                                 >
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
@@ -487,7 +509,6 @@ export default function InteractivesForm(props) {
                     </div>
                 </div>
             </div>
-            <Notifications notifications={notifications} />
         </div>
     );
 }
