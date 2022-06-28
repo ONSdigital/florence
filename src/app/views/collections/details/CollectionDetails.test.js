@@ -267,63 +267,83 @@ describe("'Last edit' information for a page in a collection", () => {
     });
 
     it("Renders the correct message", () => {
-        const event = {
-            email: "foobar@email.com",
-            date: "2017-12-14T11:36:03.402Z",
+        const page = {
+            lastEdit: {
+                email: "foobar@email.com",
+                date: "2017-12-14T11:36:03.402Z",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Thu 14 Dec 2017 - 11:36:03)");
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (Thu 14 Dec 2017 - 11:36:03)");
     });
 
     it("Renders the correct date and time during BST", () => {
-        const event = {
-            email: "foobar@email.com",
-            date: "2020-06-14T14:25:03.402Z",
+        const page = {
+            lastEdit: {
+                email: "foobar@email.com",
+                date: "2020-06-14T14:25:03.402Z",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (Sun 14 Jun 2020 - 15:25:03)");
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (Sun 14 Jun 2020 - 15:25:03)");
     });
 
     it("Excludes the date if the data isn't available", () => {
-        const event = {
-            email: "foobar@email.com",
-            date: "",
+        const page = {
+            lastEdit: {
+                email: "foobar@email.com",
+                date: "",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (date not available)");
 
-        delete event.date;
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+        delete page.lastEdit.date;
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (date not available)");
     });
 
     it("Excludes the date if it isn't a valid date", () => {
-        const event = {
-            email: "foobar@email.com",
-            date: "not a valid date",
+        const page = {
+            lastEdit: {
+                email: "foobar@email.com",
+                date: "not a valid date",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: foobar@email.com (date not available)");
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (date not available)");
     });
 
     it("Excludes the email if the data isn't available", () => {
-        const event = {
-            email: "",
-            date: "2017-12-14T11:36:03.402Z",
+        const page = {
+            lastEdit: {
+                email: "",
+                date: "2017-12-14T11:36:03.402Z",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
 
-        delete event.email;
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
+        delete page.lastEdit.email;
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: email not available (Thu 14 Dec 2017 - 11:36:03)");
     });
 
     it("Renders an error message if neither the email or date are available", () => {
-        const event = {};
-        expect(component.instance().renderLastEditText(event)).toBe("Last edit: information not available");
-        expect(component.instance().renderLastEditText()).toBe("Last edit: information not available");
+        const page = {
+            lastEdit: {},
+        };
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: information not available");
     });
 
     it("Renders an error message if it isn't a valid date and no email is available", () => {
-        const event = {
-            email: "",
-            date: "not a valid date",
+        const page = {
+            lastEdit: {
+                email: "",
+                date: "not a valid date",
+            },
         };
-        expect(component.instance().renderLastEditText(event)).toBe("Error showing 'last edit' details");
+        expect(component.instance().renderLastEditText(page)).toBe("Error showing 'last edit' details");
+    });
+
+    it("Renders the lastEditedBy info if it is available", () => {
+        const page = {
+            lastEditedBy: "foobar@email.com",
+        };
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com");
     });
 });
 
