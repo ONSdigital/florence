@@ -414,7 +414,7 @@ export default function InteractivesForm(props) {
                                 onChange={handleFile}
                                 disabled={blockActions}
                                 label="Upload a file"
-                                helpMessage="The zip file must not exceed 2.5gb without password protection, containing atleast 1 html/htm file, without special characters."
+                                helpMessage="The zip file must not exceed 2.5gb, contain at least 1 html/htm file, and be without password protection or special characters in the filename."
                             />
                         </div>
                     )}
