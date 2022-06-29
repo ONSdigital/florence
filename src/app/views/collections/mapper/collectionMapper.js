@@ -190,6 +190,7 @@ export default class collectionMapper {
                 id: interactive.id,
                 uri: `/interactive/${interactive.id}`,
                 lastEditedBy: interactive.lastEditedBy,
+                lastEditedAt: interactive.lastEditedAt,
             });
 
             const mapInteractives = () => {

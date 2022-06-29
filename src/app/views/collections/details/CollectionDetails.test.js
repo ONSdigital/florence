@@ -345,6 +345,14 @@ describe("'Last edit' information for a page in a collection", () => {
         };
         expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com");
     });
+
+    it("Renders the lastEditedBy adn lastEditedAt info if it is available", () => {
+        const page = {
+            lastEditedBy: "foobar@email.com",
+            lastEditedAt: "2022-06-29T13:32:56.381Z",
+        };
+        expect(component.instance().renderLastEditText(page)).toBe("Last edit: foobar@email.com (Wed 29 Jun 2022 - 14:32:56)");
+    });
 });
 
 describe("Approve collection button", () => {

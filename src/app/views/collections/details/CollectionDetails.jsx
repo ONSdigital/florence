@@ -87,7 +87,12 @@ export class CollectionDetails extends Component {
         const { lastEdit } = page;
         try {
             if (page.lastEditedBy) {
-                return `Last edit: ${page.lastEditedBy}`;
+                if (page.lastEditedAt) {
+                    const formattedDate = date.format(new Date(page.lastEditedAt), "ddd d mmm yyyy - HH:MM:ss");
+                    return `Last edit: ${page.lastEditedBy} (${formattedDate})`;
+                } else {
+                    return `Last edit: ${page.lastEditedBy}`;
+                }
             }
 
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
