@@ -5,6 +5,7 @@ import CollectionDetails from "./CollectionDetails";
 import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
 import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
+import datasets from "../../../utilities/api-clients/datasets";
 
 console.error = () => {};
 
@@ -32,11 +33,16 @@ jest.mock("../../../utilities/api-clients/collections", () => ({
     }),
 }));
 
-jest.mock("../../../utilities/api-clients/datasets", () => ({
-    getLatestVersionURL: jest.fn(() => {
-        return Promise.resolve("/datasets/cpi/editions/current/versions/2");
-    }),
-}));
+jest.mock("../../../utilities/api-clients/datasets", () => {
+    return {
+        getLatestVersionURL: jest.fn(() => {
+            return Promise.resolve("/datasets/cpi/editions/current/versions/2");
+        }),
+        get: jest.fn(() => {
+            return Promise.resolve();
+        }),
+    };
+});
 
 function setLocation(href) {
     jsdom.reconfigure({
@@ -424,6 +430,12 @@ describe("Clicking 'edit' for a page", () => {
     const editClickComponent = shallow(<CollectionDetailsController {...props} />);
 
     it("routes to the datasets screen for dataset/versions", async () => {
+        const mockedDatasetType = {
+            next: {
+                type: "test_type",
+            },
+        };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
         const datasetURL = await editClickComponent
             .instance()
             .handleCollectionPageEditClick(
@@ -444,6 +456,7 @@ describe("Clicking 'edit' for a page", () => {
             },
             "complete"
         );
+        expect(editClickComponent.state("isCantabularDataset")).toBe(false);
         expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2");
     });
 
@@ -451,7 +464,44 @@ describe("Clicking 'edit' for a page", () => {
         const pageURL = await editClickComponent
             .instance()
             .handleCollectionPageEditClick({ type: "article", uri: "/economy/grossdomesticproductgdp/articles/ansarticle" });
+        expect(editClickComponent.state("isCantabularDataset")).toBe(false);
         expect(pageURL).toBe("/florence/workspace?collection=my-collection-12345&uri=/economy/grossdomesticproductgdp/articles/ansarticle");
+    });
+    it("routes to the cantabular edit metadata form if the dataset type is a cantabular_table", async () => {
+        const mockedDatasetType = { next: { type: "cantabular_table" } };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+        const versionURL = await editClickComponent.instance().handleCollectionPageEditClick(
+            {
+                type: "dataset_version",
+                datasetID: "cpi",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com",
+            },
+            "complete"
+        );
+        expect(editClickComponent.state("isCantabularDataset")).toBe(true);
+        expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
+    });
+    it("routes to the cantabular edit metadata form if the dataset type is a cantabular_flexible_table", async () => {
+        const mockedDatasetType = { next: { type: "cantabular_flexible_table" } };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+        const versionURL = await editClickComponent.instance().handleCollectionPageEditClick(
+            {
+                type: "dataset_version",
+                datasetID: "cpi",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com",
+            },
+            "complete"
+        );
+        expect(editClickComponent.state("isCantabularDataset")).toBe(true);
+        expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
     });
 });
 

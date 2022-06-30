@@ -78,6 +78,7 @@ export class CollectionDetailsController extends Component {
             pendingDeletedPages: [],
             drawerIsAnimatable: false,
             drawerIsVisible: false,
+            isCantabularDataset: false,
         };
     }
 
@@ -320,6 +321,7 @@ export class CollectionDetailsController extends Component {
     };
 
     handleCollectionPageEditClick = async (page, state) => {
+        await this.getDatasetType(page.id);
         if (page.type === "interactive") {
             const newURL = url.resolve(`/interactives/edit/${page.id}?collection=${this.props.activeCollection.id}`);
             this.props.dispatch(push(newURL));
@@ -350,9 +352,14 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(
+            let newURL = url.resolve(
                 `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`
             );
+            if (this.state.isCantabularDataset) {
+                newURL = url.resolve(
+                    `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}/cantabular`
+                );
+            }
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
@@ -586,6 +593,20 @@ export class CollectionDetailsController extends Component {
 
         this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
         this.handleRestoreDeletedContentClose();
+    };
+
+    getDatasetType = pageID => {
+        if (pageID && pageID.includes("/")) {
+            let pageIDArray = pageID.split("/");
+            const datasetID = pageIDArray[0].trim();
+            return datasets.get(datasetID).then(response => {
+                if (response.next.type === "cantabular_flexible_table" || response.next.type === "cantabular_table") {
+                    this.setState({ isCantabularDataset: true });
+                } else {
+                    this.setState({ isCantabularDataset: false });
+                }
+            });
+        }
     };
 
     renderLoadingCollectionDetails() {

@@ -19,6 +19,7 @@ import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
 import DatasetVersionsController from "./app/views/datasets-new/versions/DatasetVersionsController";
 import DatasetMetadataController from "./app/views/datasets-new/edit-metadata/DatasetMetadataController";
+import CantabularMetadataController from "./app/views/datasets-new/edit-metadata-cantabular/CantabularMetadataController";
 import CreateDatasetController from "./app/views/datasets-new/create/CreateDatasetController";
 import CreateDatasetTaxonomyController from "./app/views/datasets-new/create/CreateDatasetTaxonomyController";
 import CreateCantabularDatasetController from "./app/views/datasets-new/create/CreateCantabularDatasetController";
@@ -146,6 +147,12 @@ const Index = () => {
                                         <Route path={`instances`} component={userIsAuthenticated(CreateVersionController)} />
                                         <IndexRoute component={userIsAuthenticated(DatasetVersionsController)} />
                                         <Route path={`versions/:versionID`} component={userIsAuthenticated(DatasetMetadataController)}>
+                                            <Route
+                                                path={`edit/:metadataField/:metadataItemID`}
+                                                component={userIsAuthenticated(EditMetadataItem)}
+                                            />
+                                        </Route>
+                                        <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
                                             <Route
                                                 path={`edit/:metadataField/:metadataItemID`}
                                                 component={userIsAuthenticated(EditMetadataItem)}

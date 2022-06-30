@@ -28,15 +28,26 @@ export class DatasetVersionsController extends Component {
             datasetTitle: "",
             editionTitle: "",
             versions: [],
+            cantabularDataset: false,
         };
     }
 
     async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
-
+        this.getDatasetType(datasetID);
         this.getAllVersions(datasetID, editionID);
     }
+
+    getDatasetType = datasetID => {
+        return datasets.get(datasetID).then(response => {
+            if (response.next.type === "cantabular_table" || response.next.type === "cantabular_flexible_table") {
+                this.setState({ cantabularDataset: true });
+            } else {
+                this.setState({ cantabularDataset: false });
+            }
+        });
+    };
 
     getAllVersions = (datasetID, editions) => {
         this.setState({ isFetchingData: true });
@@ -117,7 +128,9 @@ export class DatasetVersionsController extends Component {
                 return {
                     id: version.id,
                     title: version.title,
-                    url: this.props.location.pathname + "/versions/" + version.version,
+                    url: this.state.cantabularDataset
+                        ? this.props.location.pathname + "/versions/" + version.version + "/cantabular"
+                        : this.props.location.pathname + "/versions/" + version.version,
                     version: version.version,
                     details: [`Release date: ${version.release_date || "Not yet set"}`],
                 };
