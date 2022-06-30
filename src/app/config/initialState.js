@@ -12,6 +12,7 @@ export const initialState = {
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableNewInteractives: false,
+        enableCantabularJourney: false,
     },
     global: {
         workingOn: null,

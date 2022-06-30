@@ -152,7 +152,7 @@ const Index = () => {
                                                 component={userIsAuthenticated(EditMetadataItem)}
                                             />
                                         </Route>
-                                        <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
+                                        <Route path={`versions/:versionID/cantabular`} component={config.enableCantabularJourney ? userIsAuthenticated(CantabularMetadataController) : null}>
                                             <Route
                                                 path={`edit/:metadataField/:metadataItemID`}
                                                 component={userIsAuthenticated(EditMetadataItem)}

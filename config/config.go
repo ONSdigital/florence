@@ -8,12 +8,12 @@ import (
 
 // Config represents the configuration required for florence
 type Config struct {
-	BindAddr                          string        `envconfig:"BIND_ADDR"`
-	APIRouterURL                      string        `envconfig:"API_ROUTER_URL"`
-	APIRouterVersion                  string        `envconfig:"API_ROUTER_VERSION"`
-	FrontendRouterURL                 string        `envconfig:"ROUTER_URL"`
-	DatasetControllerURL              string        `envconfig:"DATASET_CONTROLLER_URL"`
-	TableRendererURL                  string        `envconfig:"TABLE_RENDERER_URL"`
+	BindAddr             string `envconfig:"BIND_ADDR"`
+	APIRouterURL         string `envconfig:"API_ROUTER_URL"`
+	APIRouterVersion     string `envconfig:"API_ROUTER_VERSION"`
+	FrontendRouterURL    string `envconfig:"ROUTER_URL"`
+	DatasetControllerURL string `envconfig:"DATASET_CONTROLLER_URL"`
+	TableRendererURL     string `envconfig:"TABLE_RENDERER_URL"`
 	// should be removed when we use api-router
 	CantabularMetadataExtractorAPIURL string        `envconfig:"CANTABULAR_METADATA_EXTRACTOR_API_URL"`
 	GracefulShutdownTimeout           time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
@@ -24,11 +24,12 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
-	EnableDatasetImport   bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
-	EnableNewSignIn       bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
-	EnableNewUpload       bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnableNewInteractives bool `envconfig:"ENABLE_NEW_INTERACTIVES" json:"enableNewInteractives"`
-	EnablePermissionsAPI  bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
+	EnableDatasetImport     bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
+	EnableNewSignIn         bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
+	EnableNewUpload         bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
+	EnableNewInteractives   bool `envconfig:"ENABLE_NEW_INTERACTIVES" json:"enableNewInteractives"`
+	EnablePermissionsAPI    bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
+	EnableCantabularJourney bool `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
 }
 
 var cfg *Config
@@ -47,7 +48,7 @@ func Get() (*Config, error) {
 		DatasetControllerURL:              "http://localhost:24000",
 		TableRendererURL:                  "http://localhost:23300",
 		CantabularMetadataExtractorAPIURL: "http://localhost:28300",
-		SharedConfig:                      SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnableNewInteractives: false, EnablePermissionsAPI: false},
+		SharedConfig:                      SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnableNewInteractives: false, EnablePermissionsAPI: false, EnableCantabularJourney: false},
 		GracefulShutdownTimeout:           10 * time.Second,
 		HealthCheckInterval:               30 * time.Second,
 		HealthCheckCriticalTimeout:        90 * time.Second,

@@ -344,7 +344,6 @@ describe("Calling getMetadata", () => {
 describe("Mapping cantabular metadata to state", () => {
     it("maps correctly", () => {
         component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        expect(component.state("cantabularMetadata")).toEqual(mockedCantabularDatasetMetadata);
         const returnValue = component.instance().mapMetadataToState(mockedNonCantDatasetMetadata, component.state("cantabularMetadata"));
         expect(returnValue).toMatchObject(mockedState);
     });

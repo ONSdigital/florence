@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
@@ -17,6 +18,7 @@ const propTypes = {
         pathname: PropTypes.string.isRequired,
     }).isRequired,
     dispatch: PropTypes.func.isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class DatasetVersionsController extends Component {
@@ -35,7 +37,9 @@ export class DatasetVersionsController extends Component {
     async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
-        this.getDatasetType(datasetID);
+        if (this.props.enableCantabularJourney) {
+            this.getDatasetType(datasetID);
+        }
         this.getAllVersions(datasetID, editionID);
     }
 
@@ -179,4 +183,10 @@ export class DatasetVersionsController extends Component {
 
 DatasetVersionsController.propTypes = propTypes;
 
-export default DatasetVersionsController;
+export function mapStateToProps(state) {
+    return {
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
+    };
+}
+
+export default connect(mapStateToProps)(DatasetVersionsController);

@@ -149,7 +149,9 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
-		router.Handle("/metadata/{uri:.*}", cantabularMetadataExtractorAPIProxi)
+		if cfg.SharedConfig.EnableCantabularJourney {
+			router.Handle("/metadata/{uri:.*}", cantabularMetadataExtractorAPIProxi)
+		}
 	}
 	if cfg.SharedConfig.EnableNewSignIn {
 		router.Handle("/tokens", identityAPIProxy)
