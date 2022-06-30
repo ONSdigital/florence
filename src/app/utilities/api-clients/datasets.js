@@ -205,6 +205,12 @@ export default class datasets {
         });
     }
 
+    static getCantabularMetadata(datasetID, cantabularDatasetId, lang) {
+        return http.get(`/metadata/dataset/${datasetID}/cantabular/${cantabularDatasetId}/lang/${lang}`).then(response => {
+            return response;
+        });
+    }
+
     static putEditMetadata(datasetID, editionID, versionID, body) {
         return http
             .put(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true)
