@@ -21,7 +21,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			FrontendRouterURL:          "http://localhost:20000",
 			DatasetControllerURL:       "http://localhost:24000",
 			TableRendererURL:           "http://localhost:23300",
-			CantabularMetadataExtractorAPIURL: "http://localhost:28300",
+			// CantabularMetadataExtractorAPIURL: "http://localhost:28300",
 			SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnableCantabularJourney: false},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
