@@ -18,7 +18,6 @@ const propTypes = {
     handleDeleteClick: PropTypes.func.isRequired,
     disableActions: PropTypes.bool,
     maximumNumberOfEntries: PropTypes.number,
-    disableEditFunctionality: PropTypes.bool,
 };
 
 export default class SimpleEditableList extends Component {
@@ -60,7 +59,7 @@ export default class SimpleEditableList extends Component {
                                     field={field}
                                     handleEditClick={this.handleEditClick}
                                     handleDeleteClick={this.handleDeleteClick}
-                                    disabled={this.props.disableActions || this.props.disableEditFunctionality}
+                                    disabled={this.props.disableActions}
                                 />
                             );
                         })}
@@ -70,7 +69,7 @@ export default class SimpleEditableList extends Component {
                     type="button"
                     className={"btn btn--link " + (this.props.fields?.length ? "margin-top--1" : "")}
                     onClick={this.handleAddClick}
-                    disabled={this.props.disableActions || this.hasReachedMaximumNumberOfEntries() || this.props.disableEditFunctionality}
+                    disabled={this.props.disableActions || this.hasReachedMaximumNumberOfEntries()}
                 >
                     {this.props.addText ? this.props.addText : "Add a new item"}
                 </button>
