@@ -148,8 +148,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm}
-                disableEditFunctionality={metadata.notices?.length ? true : false}
+                disableActions={disableForm || metadata.notices?.length}
             />
 
             <h2 className="margin-top--1">About</h2>
@@ -209,8 +208,7 @@ const CantabularMetadata = ({
                     handleAddClick={handleSimpleEditableListAdd}
                     handleEditClick={handleSimpleEditableListEdit}
                     handleDeleteClick={handleSimpleEditableListDelete}
-                    disableActions={disableForm}
-                    disableEditFunctionality={metadata.usageNotes?.length ? true : false}
+                    disableActions={disableForm || metadata.usageNotes?.length}
                 />
             </div>
 
@@ -304,8 +302,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || versionIsPublished}
-                disableEditFunctionality={metadata.latestChanges?.length ? true : false}
+                disableActions={disableForm || versionIsPublished || metadata.latestChanges?.length}
             />
 
             <div className="margin-top--2">
