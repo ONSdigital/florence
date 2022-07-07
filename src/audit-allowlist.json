@@ -5,14 +5,6 @@
             "reason": "fb-watchman@2.0.1 is the latest version"
         },
         {
-            "id" : "CVE-2021-23446",
-            "reason" : "It requires upgrading handsontable to 10.0.0+ but it breaks table builder. See https://trello.com/c/fIZ6RyXD/1029-upgrade-handsontable"
-        },
-        {
-            "id" : "sonatype-2020-1025",
-            "reason" : "It requires upgrading handsontable to 10.0.0+ but it breaks table builder. See https://trello.com/c/fIZ6RyXD/1029-upgrade-handsontable"
-        },
-        {
             "id" : "CVE-2021-23362",
             "reason" : "hosted-git-info@2.8.9 is a dependency of auditjs for which we use the latest version"
         },
