@@ -33,9 +33,8 @@ export class WorkflowPreview extends Component {
 
     getDatasetType = datasetID => {
         return datasets.get(datasetID).then(response => {
-            if (response.next.type === "cantabular_table" || response.next.type === "cantabular_flexible_table") {
-                this.setState({ cantabularDataset: true });
-            }
+            const type = response.next.type;
+            this.setState({ cantabularDataset: type === "cantabular_table" || type === "cantabular_flexible_table" });
         });
     };
 
