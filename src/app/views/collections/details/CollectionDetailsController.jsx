@@ -589,17 +589,12 @@ export class CollectionDetailsController extends Component {
         this.handleRestoreDeletedContentClose();
     };
 
-    getDatasetType = pageID => {
+    getDatasetType = async pageID => {
         if (pageID && pageID.includes("/")) {
-            let pageIDArray = pageID.split("/");
-            const datasetID = pageIDArray[0].trim();
-            return datasets.get(datasetID).then(response => {
-                if (response.next.type === "cantabular_flexible_table" || response.next.type === "cantabular_table") {
-                    this.setState({ isCantabularDataset: true });
-                } else {
-                    this.setState({ isCantabularDataset: false });
-                }
-            });
+            const datasetID = pageID.split("/")[0].trim();
+            const response = await datasets.get(datasetID);
+            const type = response.next.type;
+            this.setState({ isCantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
         }
     };
 
