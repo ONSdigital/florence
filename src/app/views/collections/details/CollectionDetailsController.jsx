@@ -352,14 +352,8 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            let newURL = url.resolve(
-                `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`
-            );
-            if (this.state.isCantabularDataset) {
-                newURL = url.resolve(
-                    `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}/cantabular`
-                );
-            }
+            const path = `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`;
+            const newURL = url.resolve(this.state.isCantabularDataset ? `${path}/cantabular` : path);
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
