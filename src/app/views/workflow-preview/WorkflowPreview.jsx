@@ -26,13 +26,9 @@ export class WorkflowPreview extends Component {
     }
 
     handleBackButton = async () => {
-        const previousUrl = url.resolve("../");
         await this.getDatasetType(this.props.params.datasetID);
-        if (this.state.cantabularDataset) {
-            this.props.dispatch(push(previousUrl + "/cantabular"));
-        } else {
-            this.props.dispatch(push(previousUrl));
-        }
+        const previousUrl = `${url.resolve("../")}${this.state.cantabularDataset ? "/cantabular" : ""}`;
+        this.props.dispatch(push(previousUrl));
     };
 
     getDatasetType = datasetID => {
