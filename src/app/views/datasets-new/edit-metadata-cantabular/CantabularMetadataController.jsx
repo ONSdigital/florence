@@ -282,9 +282,8 @@ export class CantabularMetadataController extends Component {
                 isDismissable: true,
             });
         }
-        mapped.state === "created"
-            ? this.setState({ allowPreview: false, disableCancel: false })
-            : this.setState({ allowPreview: true, disableCancel: true });
+        const isCreated = mapped.state === "created";
+        this.setState({ allowPreview: !isCreated, disableCancel: !isCreated });
         this.setState({
             metadata: mapped.metadata,
             datasetIsInCollection: mapped.collection,
@@ -298,16 +297,14 @@ export class CantabularMetadataController extends Component {
 
     mapRelatedContentToState = (relatedDatasets, datasetID) => {
         try {
-            return relatedDatasets.map((link, index) => {
-                return {
-                    id: index,
-                    description: link.description,
-                    href: link.href,
-                    title: link.title,
-                    simpleListHeading: link.title,
-                    simpleListDescription: link.description,
-                };
-            });
+            return relatedDatasets.map((link, index) => ({
+                id: index,
+                description: link.description,
+                href: link.href,
+                title: link.title,
+                simpleListHeading: link.title,
+                simpleListDescription: link.description,
+            }));
         } catch (error) {
             log.event("Error mapping related links to state", log.data({ datasetID: datasetID }), log.error(error));
             // throw an error to let parent mapper catch and display notification
@@ -318,16 +315,14 @@ export class CantabularMetadataController extends Component {
 
     mapNoticesToState = (notices, versionID) => {
         try {
-            return notices.map((notice, index) => {
-                return {
-                    id: index,
-                    type: notice.type,
-                    date: notice.date,
-                    description: notice.description,
-                    simpleListHeading: `${notice.type} (${date.format(notice.date, "dd mmmm yyyy")})`,
-                    simpleListDescription: notice.description,
-                };
-            });
+            return notices.map((notice, index) => ({
+                id: index,
+                type: notice.type,
+                date: notice.date,
+                description: notice.description,
+                simpleListHeading: `${notice.type} (${date.format(notice.date, "dd mmmm yyyy")})`,
+                simpleListDescription: notice.description,
+            }));
         } catch (error) {
             log.event("Error mapping notices to state", log.data({ versionID: versionID }), log.error(error));
             // throw an error to let parent mapper catch and display notification
@@ -338,15 +333,13 @@ export class CantabularMetadataController extends Component {
 
     mapUsageNotesToState = (usageNotes, versionID) => {
         try {
-            return usageNotes.map((note, index) => {
-                return {
-                    id: index,
-                    title: note.title,
-                    note: note.note,
-                    simpleListHeading: note.title,
-                    simpleListDescription: note.note,
-                };
-            });
+            return usageNotes.map((note, index) => ({
+                id: index,
+                title: note.title,
+                note: note.note,
+                simpleListHeading: note.title,
+                simpleListDescription: note.note,
+            }));
         } catch (error) {
             log.event("Error mapping usage notes to state", log.data({ versionID: versionID }), log.error(error));
             // throw an error to let parent mapper catch and display notification
@@ -357,15 +350,13 @@ export class CantabularMetadataController extends Component {
 
     mapLatestChangesToState = (latestChanges, versionID) => {
         try {
-            return latestChanges.map((latestChange, index) => {
-                return {
-                    id: index,
-                    title: latestChange.title,
-                    description: latestChange.description,
-                    simpleListHeading: latestChange.title,
-                    simpleListDescription: latestChange.description,
-                };
-            });
+            return latestChanges.map((latestChange, index) => ({
+                id: index,
+                title: latestChange.title,
+                description: latestChange.description,
+                simpleListHeading: latestChange.title,
+                simpleListDescription: latestChange.description,
+            }));
         } catch (error) {
             log.event("Error mapping usage notes to state", log.data({ versionID: versionID }), log.error(error));
             // throw an error to let parent mapper catch and display notification
@@ -445,7 +436,8 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSimpleEditableListAdd = stateFieldName => {
-        this.props.dispatch(push(`${this.props.location.pathname}/edit/${stateFieldName}/${this.state.metadata[stateFieldName].length}`));
+        const path = `${this.props.location.pathname}/edit/${stateFieldName}/${this.state.metadata[stateFieldName].length}`;
+        this.props.dispatch(push(path));
     };
 
     handleSimpleEditableListEdit = (editedField, stateFieldName) => {
