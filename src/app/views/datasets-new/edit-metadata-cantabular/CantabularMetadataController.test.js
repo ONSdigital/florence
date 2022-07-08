@@ -440,7 +440,7 @@ describe("Calling saveMetadata", () => {
     });
 });
 
-describe("Calling getCantMetadata", () => {
+describe("Calling getCantabularMetadata", () => {
     beforeEach(() => {
         mockedNotifications = [];
     });
@@ -450,20 +450,20 @@ describe("Calling getCantMetadata", () => {
             is_based_on: {},
         },
     };
-    mockDatasetResp.next.is_based_on["@id"] = "cantDatasetId";
+    mockDatasetResp.next.is_based_on["@id"] = "cantabularDatasetId";
 
     datasets.get = jest.fn(() => Promise.resolve(mockDatasetResp));
     cookies.get = jest.fn(() => "cy");
 
     it("calls getCantabularMetadata with expected args", async () => {
-        await component.instance().getCantMetadata("datasetId", mockedNonCantDatasetMetadata);
-        expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantDatasetId", "cy");
+        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
+        expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantabularDatasetId", "cy");
     });
 
     it("sets state correctly when getCantabularMetadata returns 200", async () => {
         component.instance().marshalCantabularMetadata = jest.fn();
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-        await component.instance().getCantMetadata("datasetId", mockedNonCantDatasetMetadata);
+        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
         expect(component.state("isReadOnly")).toBe(true);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
     });
@@ -472,7 +472,7 @@ describe("Calling getCantMetadata", () => {
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject());
         component.instance().marshalCantabularMetadata = jest.fn();
         component.instance().handleGETSuccess = jest.fn();
-        await component.instance().getCantMetadata("datasetId", mockedNonCantDatasetMetadata);
+        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(0);
         expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(0);
         expect(component.state("isGettingMetadata")).toBe(false);

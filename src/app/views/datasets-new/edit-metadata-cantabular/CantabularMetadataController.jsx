@@ -104,7 +104,7 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantMetadata(datasetID, metadata);
+                this.getCantabularMetadata(datasetID, metadata);
             })
             .catch(error => {
                 this.setState({
@@ -123,14 +123,14 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    getCantMetadata = (datasetID, nonCantDatasetMetadata) => {
+    getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
         return datasets
             .get(datasetID)
             .then(dataset => {
-                const cantDatasetId = dataset.next.is_based_on["@id"];
+                const cantabularDatasetId = dataset.next.is_based_on["@id"];
                 const language = cookies.get("lang") || "en";
                 datasets
-                    .getCantabularMetadata(datasetID, cantDatasetId, language)
+                    .getCantabularMetadata(datasetID, cantabularDatasetId, language)
                     .then(cantMetadata => {
                         this.setState({ isReadOnly: true });
                         this.setState({
@@ -147,7 +147,7 @@ export class CantabularMetadataController extends Component {
                         });
                         log.event(
                             "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                            log.data({ datasetID, cantDatasetId, language }),
+                            log.data({ datasetID, cantabularDatasetId, language }),
                             log.error()
                         );
                         notifications.add({
