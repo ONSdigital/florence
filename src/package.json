@@ -76,6 +76,7 @@
     "audit": "npx auditjs ossi --whitelist ./audit-allowlist.json --quiet",
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
     "watch-refactored": "export NODE_ENV=development && npx webpack -w & npm run prettier-watch",
+    "legacy:watch": "cd legacy && npm run watch",
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "npm run prettier-cli; node ./node_modules/webpack/bin/webpack.js --mode=production",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",

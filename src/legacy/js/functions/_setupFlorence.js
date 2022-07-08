@@ -144,12 +144,21 @@ function setupFlorence() {
 
     $('body').append(florence);
     Florence.refreshAdminMenu();
+    // ---------------------------------------------------
+    // Auth / Timers
+    // ---------------------------------------------------
+    // Florence.globalVars.config.enableNewSignIn
+
+    Florence.sessionManagement = {
+        timers: {}
+    };
+    // Check local state to get ons_auth_state and the expiry times within &
+    // if access token has expired (based on time in auth state object then refresh it
     if (Florence.globalVars.config.enableNewSignIn) {
-        Florence.sessionManagement = {
-            timers: {}
-        };
-        initialiseSessionExpiryTimers();
+        initialiseSessionOrUpdateTimers();
     }
+    // ---------------------------------------------------
+
     var adminMenu = $('.js-nav');
     // dirty checks on admin menu
     adminMenu.on('click', '.js-nav-item', function () {
@@ -273,7 +282,7 @@ function setupFlorence() {
 
                 lastPingTime = time;
 
-                networkStatus(lastPingTime);
+                networkStatus(lastPingTime); 
 
                 Florence.ping.add(time)
 
@@ -291,9 +300,16 @@ function setupFlorence() {
         });
     }
 
-    var pingTimer = setTimeout(function () {
-        doPing();
-    }, 10000);
+    // ----------------------------------------------
+    // Initiate zebedee session (AUTH)
+    // ----------------------------------------------
+    var pingTimer;
+    if (!Florence.globalVars.config.enableNewSignIn) {
+        pingTimer = setTimeout(function () {
+            doPing();
+        }, 10000);
+    }
+    
 
     // Alert user if ping states that their session is going to log out (log out if it's run out too)
     var countdownIsShown = false,
