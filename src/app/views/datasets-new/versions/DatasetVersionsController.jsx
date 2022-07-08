@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
@@ -17,6 +18,7 @@ const propTypes = {
         pathname: PropTypes.string.isRequired,
     }).isRequired,
     dispatch: PropTypes.func.isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class DatasetVersionsController extends Component {
@@ -28,15 +30,24 @@ export class DatasetVersionsController extends Component {
             datasetTitle: "",
             editionTitle: "",
             versions: [],
+            cantabularDataset: false,
         };
     }
 
     async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
-
+        if (this.props.enableCantabularJourney) {
+            await this.getDatasetType(datasetID);
+        }
         this.getAllVersions(datasetID, editionID);
     }
+
+    getDatasetType = async datasetID => {
+        const response = await datasets.get(datasetID);
+        const type = response.next.type;
+        this.setState({ cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+    };
 
     getAllVersions = (datasetID, editions) => {
         this.setState({ isFetchingData: true });
@@ -114,10 +125,11 @@ export class DatasetVersionsController extends Component {
     mapDatasetVersionsToState = versions => {
         try {
             const versionsList = versions.map(version => {
+                const path = `${this.props.location.pathname}/versions/${version.version}`;
                 return {
                     id: version.id,
                     title: version.title,
-                    url: this.props.location.pathname + "/versions/" + version.version,
+                    url: `${path}${this.state.cantabularDataset ? "/cantabular" : ""}`,
                     version: version.version,
                     details: [`Release date: ${version.release_date || "Not yet set"}`],
                 };
@@ -166,4 +178,10 @@ export class DatasetVersionsController extends Component {
 
 DatasetVersionsController.propTypes = propTypes;
 
-export default DatasetVersionsController;
+export function mapStateToProps(state) {
+    return {
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
+    };
+}
+
+export default connect(mapStateToProps)(DatasetVersionsController);

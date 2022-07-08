@@ -7,6 +7,7 @@ import url from "../../utilities/url";
 import notifications from "../../utilities/notifications";
 
 import Iframe from "../../components/iframe/Iframe";
+import datasets from "../../utilities/api-clients/datasets";
 
 const propTypes = {
     location: PropTypes.shape({
@@ -21,11 +22,20 @@ const propTypes = {
 export class WorkflowPreview extends Component {
     constructor(props) {
         super(props);
+        this.state = { cantabularDataset: false };
     }
 
-    handleBackButton = () => {
-        const previousUrl = url.resolve("../");
+    handleBackButton = async () => {
+        await this.getDatasetType(this.props.params.datasetID);
+        const previousUrl = `${url.resolve("../")}${this.state.cantabularDataset ? "/cantabular" : ""}`;
         this.props.dispatch(push(previousUrl));
+    };
+
+    getDatasetType = datasetID => {
+        return datasets.get(datasetID).then(response => {
+            const type = response.next.type;
+            this.setState({ cantabularDataset: type === "cantabular_table" || type === "cantabular_flexible_table" });
+        });
     };
 
     // getPreviewIframeURL returns the url for the content to be reviewed when the url is
