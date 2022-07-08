@@ -38,19 +38,15 @@ export class DatasetVersionsController extends Component {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         if (this.props.enableCantabularJourney) {
-            this.getDatasetType(datasetID);
+            await this.getDatasetType(datasetID);
         }
         this.getAllVersions(datasetID, editionID);
     }
 
-    getDatasetType = datasetID => {
-        return datasets.get(datasetID).then(response => {
-            if (response.next.type === "cantabular_table" || response.next.type === "cantabular_flexible_table") {
-                this.setState({ cantabularDataset: true });
-            } else {
-                this.setState({ cantabularDataset: false });
-            }
-        });
+    getDatasetType = async datasetID => {
+        const response = await datasets.get(datasetID);
+        const type = response.next.type;
+        this.setState({ cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
     };
 
     getAllVersions = (datasetID, editions) => {
@@ -129,12 +125,11 @@ export class DatasetVersionsController extends Component {
     mapDatasetVersionsToState = versions => {
         try {
             const versionsList = versions.map(version => {
+                const path = `${this.props.location.pathname}/versions/${version.version}`;
                 return {
                     id: version.id,
                     title: version.title,
-                    url: this.state.cantabularDataset
-                        ? this.props.location.pathname + "/versions/" + version.version + "/cantabular"
-                        : this.props.location.pathname + "/versions/" + version.version,
+                    url: `${path}${this.state.cantabularDataset ? "/cantabular" : ""}`,
                     version: version.version,
                     details: [`Release date: ${version.release_date || "Not yet set"}`],
                 };
