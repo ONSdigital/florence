@@ -61,6 +61,7 @@ const propTypes = {
     }),
     activePageURI: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class CollectionDetailsController extends Component {
@@ -353,7 +354,7 @@ export class CollectionDetailsController extends Component {
         }
         if (page.type === "dataset_version") {
             const path = `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`;
-            const newURL = url.resolve(this.state.isCantabularDataset ? `${path}/cantabular` : path);
+            const newURL = url.resolve(this.props.enableCantabularJourney && this.state.isCantabularDataset ? `${path}/cantabular` : path);
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
@@ -684,6 +685,7 @@ export function mapStateToProps(state) {
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,
         isUpdating: getIsUpdatingCollection(state.state),
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
     };
 }
 

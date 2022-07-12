@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 
@@ -17,6 +18,7 @@ const propTypes = {
         collectionID: PropTypes.string.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class WorkflowPreview extends Component {
@@ -27,7 +29,7 @@ export class WorkflowPreview extends Component {
 
     handleBackButton = async () => {
         await this.getDatasetType(this.props.params.datasetID);
-        const previousUrl = `${url.resolve("../")}${this.state.cantabularDataset ? "/cantabular" : ""}`;
+        const previousUrl = `${url.resolve("../")}${this.props.enableCantabularJourney && this.state.cantabularDataset ? "/cantabular" : ""}`;
         this.props.dispatch(push(previousUrl));
     };
 
@@ -100,4 +102,10 @@ export class WorkflowPreview extends Component {
 
 WorkflowPreview.propTypes = propTypes;
 
-export default WorkflowPreview;
+export function mapStateToProps(state) {
+    return {
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
+    };
+}
+
+export default connect(mapStateToProps)(WorkflowPreview);
