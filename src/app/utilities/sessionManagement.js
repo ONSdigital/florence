@@ -110,10 +110,7 @@ export default class sessionManagement {
         if (expiryTime) {
             // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
             const now = new Date();
-            const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
-            const nowInUTC = new Date(nowUTCInMS);
-            // Get the time difference between now and the expiry time minus the timer offset
-            let timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
+            let timerInterval = expiryTime - now.getTime() - offsetInMilliseconds;
             if (isNaN(timerInterval)) {
                 console.error(`[FLORENCE] time interval for ${name} is not a valid date format.`);
             }
