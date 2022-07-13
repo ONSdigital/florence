@@ -75,11 +75,18 @@ export default class ChangePasswordController extends Component {
                     email: this.props.email,
                 };
                 log.add(eventTypes.passwordChangeSuccess, eventPayload);
-                const notification = {
+                let notification = {
                     type: "positive",
                     isDismissable: true,
                     autoDismiss: 15000,
-                    message: "Password successfully changed",
+                    message: "Your password has been changed",
+                };
+                notifications.add(notification);
+                notification = {
+                    type: "positive",
+                    isDismissable: true,
+                    autoDismiss: 15000,
+                    message: "Please sign back in again with your new password",
                 };
                 notifications.add(notification);
             })
@@ -124,6 +131,11 @@ export default class ChangePasswordController extends Component {
                         break;
                     }
                 }
+            })
+            .finally(() => {
+                this.setState({
+                    isSubmitting: false,
+                });
             });
     };
 

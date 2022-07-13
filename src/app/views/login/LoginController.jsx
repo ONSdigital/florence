@@ -15,7 +15,6 @@ import cookies from "../../utilities/cookies";
 import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 import sessionManagement from "../../utilities/sessionManagement";
-import { updateAuthState } from "../../utilities/auth";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -173,13 +172,18 @@ export class LoginController extends Component {
         }
     };
 
-    handlePasswordChangeSuccess = newPassword => {
-        const credentials = {
-            email: this.state.email.value,
-            password: newPassword,
-        };
-
-        this.handleLogin(credentials);
+    handlePasswordChangeSuccess = () => {
+        this.setState({
+            requestPasswordChange: false,
+            email: {
+                value: "",
+                errorMsg: "",
+            },
+            password: {
+                value: "",
+                errorMsg: "",
+            },
+        });
     };
 
     handlePasswordChangeCancel = event => {
@@ -197,6 +201,7 @@ export class LoginController extends Component {
                     id: "email",
                     label: "Email",
                     type: "email",
+                    value: this.state.email.value,
                     onChange: this.handleInputChange,
                     error: this.state.email.errorMsg,
                 },
@@ -204,6 +209,7 @@ export class LoginController extends Component {
                     id: "password",
                     label: "Password",
                     type: "password",
+                    value: this.state.password.value,
                     onChange: this.handleInputChange,
                     error: this.state.password.errorMsg,
                 },
@@ -216,7 +222,7 @@ export class LoginController extends Component {
             <div>
                 <LoginForm formData={formData} />
 
-                {this.state.requestPasswordChange ? (
+                {this.state.requestPasswordChange && (
                     <Modal sizeClass={"grid__col-3"}>
                         <ChangePasswordController
                             handleCancel={this.handlePasswordChangeCancel}
@@ -225,8 +231,6 @@ export class LoginController extends Component {
                             email={this.state.email.value}
                         />
                     </Modal>
-                ) : (
-                    ""
                 )}
             </div>
         );
