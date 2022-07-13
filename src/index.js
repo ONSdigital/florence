@@ -4,7 +4,7 @@ import { Provider } from "react-redux";
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
 import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
-import { store, history } from "./app/config/store";
+import { store, history, persistor } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
 import auth, {getAuthState, getUserTypeFromAuthState} from "./app/utilities/auth";
 import Layout from "./app/components/layout";
@@ -57,7 +57,8 @@ import EditUser from "./app/views/users/edit";
 import UploadTest from "./app/views/upload-test/UploadTest";
 import "./scss/main.scss";
 import Security from "./app/views/security";
-import EditGroup from "./app/views/groups/edit"
+import EditGroup from "./app/views/groups/edit";
+import { PersistGate } from 'redux-persist/integration/react';
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -111,6 +112,7 @@ const hasRedirect = () => {
 const Index = () => {
     return (
         <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
             <Router history={history}>
                 <Route component={Layout}>
                     <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
@@ -238,6 +240,7 @@ const Index = () => {
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
+            </PersistGate>
         </Provider>
     );
 };
