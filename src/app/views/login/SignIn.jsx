@@ -186,6 +186,10 @@ export class LoginController extends Component {
             });
     };
 
+    redirectToLogin = () => {
+        location.reload();
+    };
+
     clearErrors = () => {
         this.setState({
             validationErrors: {},
@@ -270,7 +274,11 @@ export class LoginController extends Component {
     };
 
     passwordChangeSuccess = response => {
-        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+        if (response) {
+            console.debug("[FLORENCE] passwordChangeSuccess: ", resp);
+            // TODO convert to UTC
+            sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+        }
         this.setState({
             status: status.SUBMITTED_PASSWORD_CHANGE,
         });
@@ -296,6 +304,7 @@ export class LoginController extends Component {
                     this.passwordChangeSuccess(response);
                 })
                 .catch(error => {
+                    console.error(error);
                     this.passwordChangeFail(error);
                 });
         });
@@ -307,7 +316,7 @@ export class LoginController extends Component {
                 heading: "Change your password",
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
-                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
+                changeConformation: <ChangePasswordConfirmed handleClick={this.redirectToLogin} />,
                 status: this.state.status,
             };
 

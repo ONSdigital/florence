@@ -7,7 +7,7 @@ import { errCodes } from "../../utilities/errorCodes";
 import notifications from "../../utilities/notifications";
 
 const propTypes = {
-    dispatch: PropTypes.func.isRequired,
+    // dispatch: PropTypes.func.isRequired, // not used, can we remove?
 };
 
 export class ForgottenPasswordController extends Component {
