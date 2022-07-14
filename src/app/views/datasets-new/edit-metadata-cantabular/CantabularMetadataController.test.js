@@ -143,40 +143,34 @@ const mockedCantabularExtractorResp = {
                     national_statistic_certified: "Y",
                 },
             },
-            variables: {
-                edges: [
-                    {
-                        node: {
-                            name: "Dimension1",
-                            meta: {
-                                ons_variable: {
-                                    variable_description: "Dimension description",
-                                    keywords: [],
-                                    statistical_unit: {
-                                        statistical_unit: "",
-                                        statistical_unit_desc: "",
-                                    },
-                                },
+            vars: [
+                {
+                    name: "Dimension1",
+                    meta: {
+                        ons_variable: {
+                            variable_description: "Dimension description",
+                            keywords: [],
+                            statistical_unit: {
+                                statistical_unit: "",
+                                statistical_unit_desc: "",
                             },
                         },
                     },
-                    {
-                        node: {
-                            name: "Dimension2",
-                            meta: {
-                                ons_variable: {
-                                    variable_description: "Dimension description",
-                                    keywords: [],
-                                    statistical_unit: {
-                                        statistical_unit: "",
-                                        statistical_unit_desc: "",
-                                    },
-                                },
+                },
+                {
+                    name: "Dimension2",
+                    meta: {
+                        ons_variable: {
+                            variable_description: "Dimension description",
+                            keywords: [],
+                            statistical_unit: {
+                                statistical_unit: "",
+                                statistical_unit_desc: "",
                             },
                         },
                     },
-                ],
-            },
+                },
+            ],
         },
     },
 };
