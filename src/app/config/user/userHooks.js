@@ -5,6 +5,8 @@ import sessionManagement from "../../utilities/sessionManagement";
 import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 
+const nonAuthRoutes = ["/florence/login", "/florence/forgotten-password"];
+
 export const useGetPermissions = (authState, setShouldUpdateAccessToken) => {
     const [userState, setUserState] = useState();
     useEffect(() => {
@@ -28,7 +30,7 @@ export const useGetPermissions = (authState, setShouldUpdateAccessToken) => {
 
 export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
-        if (props.location.pathname !== "/florence/login" && !sessionTimerIsActive) {
+        if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
             const enableNewSignIn = fp.get("config.enableNewSignIn")(props);
             const authState = getAuthState(); // Get the lastest authState
             const session_expiry_time = fp.get("session_expiry_time")(authState);

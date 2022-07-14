@@ -17,8 +17,9 @@ const ChangePasswordConfirmed = props => {
         <div className="grid grid--justify-center">
             <div className="grid__col-3">
                 <h1>Your password has been changed</h1>
+                <p>Please Sign back in to start using Florence</p>
                 <button type="button" onClick={props.handleClick} className="btn btn--primary margin-bottom--2 margin-right--5">
-                    Start using Florence
+                    Sign back in
                 </button>
                 <Panel type={"information"} body={changePasswordPanelBody} />
             </div>
