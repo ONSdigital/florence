@@ -260,11 +260,11 @@ export class CantabularMetadataController extends Component {
                 ],
             },
             version: {
-                dimensions: cantResponse.dataset_query_result.dataset.variables.edges.map(dimension => {
+                dimensions: cantResponse.dataset_query_result.dataset.vars.map(dimension => {
                     return {
-                        name: dimension.node.name,
-                        description: dimension.node.meta.ons_variable.variable_description,
-                        label: dimension.node.name,
+                        name: dimension.name,
+                        description: dimension.meta.ons_variable.variable_description,
+                        label: dimension.name,
                     };
                 }),
                 release_date: [year, month, day].join("/"),
