@@ -87,6 +87,13 @@ export function getIsAdminFromAuthState() {
     return fp.get("admin")(getAuthState());
 }
 
+/** @returns True if user type = "VIEWER" */
+export function isViewerFromAuthState() {
+    const isAdmin = fp.get("admin")(getAuthState());
+    const isPublisher = fp.get("publisher")(getAuthState());
+    return !isAdmin && !isPublisher;
+}
+
 /** User Schema - represents the `user` type stored in redux. */
 class _UserSchema {
     isAuthenticated = false;

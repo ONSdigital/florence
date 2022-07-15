@@ -6,10 +6,14 @@ import CreateNewCollection from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
+import ConfirmUserDeleteController from "../users/confirm-delete/ConfirmUserDeleteController";
+import { getAuthState, isViewerFromAuthState } from "../../utilities/auth";
+import fp from "lodash/fp";
 
 const Collections = props => {
     const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
-    const isViewer = user && user.userType === "VIEWER";
+    // Get viewer from local storage as we don't want to make a call to /groups if userType is undefined
+    const isViewer = isViewerFromAuthState();
 
     useEffect(() => {
         props.loadCollections(`${props.rootPath}/collections`);
