@@ -90,7 +90,7 @@ export function getIsAdminFromAuthState() {
 /** @returns True if user type = "VIEWER" */
 export function isViewerFromAuthState() {
     const isAdmin = fp.get("admin")(getAuthState());
-    const isPublisher = fp.get("publisher")(getAuthState());
+    const isPublisher = fp.get("editor")(getAuthState());
     return !isAdmin && !isPublisher;
 }
 
