@@ -85,6 +85,7 @@ export default function reducer(state = initialState, action) {
                         isForcedManualType: action.collection.isForcedManualType,
                         canBeApproved: action.collection.canBeApproved,
                         canBeDeleted: action.collection.canBeDeleted,
+                        teams: action.collection.teams,
                     },
                 },
             };

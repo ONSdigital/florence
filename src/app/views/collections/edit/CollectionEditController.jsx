@@ -20,8 +20,9 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading } from "../../../config/selectors";
+import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsByCollectionID, getGroupsLoading } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
+import ChangePasswordController from "../../new-password/changePasswordController";
 
 const propTypes = {
     name: PropTypes.string.isRequired,

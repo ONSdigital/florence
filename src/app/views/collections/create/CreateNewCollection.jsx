@@ -56,7 +56,11 @@ const CreateNewCollection = props => {
 
     const handleTeamSelect = e => {
         if (!e) return;
-        const member = props.teams.find(team => team.id == e.target.value);
+        const member = props.teams.find(team => {
+            if (team.id === e.target.value) {
+                return true;
+            }
+        });
         setNewCollection(prevState => ({
             ...prevState,
             teams: prevState.teams.concat(member),
@@ -229,7 +233,6 @@ const CreateNewCollection = props => {
             setIsSubmitting(false);
             return;
         }
-
         createCollectionRequest(mapStateToPostBody(), selectedTeams, isEnablePermissionsAPI);
         setNewCollection(EMPTY_COLLECTION);
         setIsSubmitting(false);

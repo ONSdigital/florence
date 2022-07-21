@@ -141,7 +141,8 @@ class CollectionEdit extends Component {
                                 selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
                             />
-                            <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} handleRemoveItem={this.handleTeamRemove} />
+                            {this.props.teams.length ? <SelectedItemList items={this.props.teams} handleRemoveItem={this.handleTeamRemove} /> : null}
+                            {/* <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} handleRemoveItem={this.onRemoveTeam} /> */}
                             <RadioGroup
                                 groupName="collection-edit-type"
                                 radioData={this.publishTypeRadioButtons}
