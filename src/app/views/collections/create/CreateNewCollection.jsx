@@ -146,6 +146,16 @@ const CreateNewCollection = props => {
         return new Date(`${newCollection.publishDate.value} ${newCollection.publishTime.value}`).toISOString();
     };
 
+    const makeTeams = () => {
+        return newCollection.teams.map(team => {
+            // POST to group create endpoint expects: <names> in legacy, but <IDs> in new auth (isNewSignIn)
+            if (!props.isNewSignIn) {
+                return team.name;
+            }
+            return team.id;
+        });
+    };
+
     const mapStateToPostBody = () => {
         return isEnablePermissionsAPI
             ? {
@@ -159,9 +169,7 @@ const CreateNewCollection = props => {
                   name: newCollection.name.value,
                   type: newCollection.type,
                   publishDate: makePublishDate(),
-                  teams: newCollection.teams.map(team => {
-                      return team.name;
-                  }),
+                  teams: makeTeams(),
                   collectionOwner: props.user.userType,
                   releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
               };
