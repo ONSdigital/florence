@@ -9,7 +9,8 @@ import ButtonWithShadow from "../../components/button/ButtonWithShadow";
 import { useDispatch, useSelector } from "react-redux";
 import { getParameterByName } from "../../utilities/utils";
 import collections from "../../utilities/api-clients/collections";
-import Notifications from "../../components/notifications";
+import Select from "../../components/Select";
+import notifications from "../../utilities/notifications";
 
 export default function InteractivesForm(props) {
     const dispatch = useDispatch();
@@ -20,6 +21,7 @@ export default function InteractivesForm(props) {
     const [title, setTitle] = useState("");
     const [label, setLabel] = useState("");
     const [file, setFile] = useState(null);
+    const [urlIndex, setUrlIndex] = useState("");
     const [url, setUrl] = useState("");
     const [interactiveId, setInteractiveId] = useState("");
     const [published, setPublished] = useState(false);
@@ -27,7 +29,7 @@ export default function InteractivesForm(props) {
     const [collection, setCollection] = useState({});
     const [fileError, setFileError] = useState("");
     const [editMode, setEditMode] = useState(false);
-    const [notifications, setNotifications] = useState([]);
+    const [blockActions, setBlockActions] = useState(false);
 
     useEffect(() => {
         const { interactiveId } = props.params;
@@ -40,6 +42,7 @@ export default function InteractivesForm(props) {
             setLabel("");
             setFile(null);
             setUrl("");
+            setUrlIndex(0);
             setInteractiveId("");
             setPublished(false);
         }
@@ -72,12 +75,29 @@ export default function InteractivesForm(props) {
     }, [internalId, title, label, file]);
 
     useEffect(() => {
+        if (errors.apiErrors && errors.apiErrors.message) {
+            notifications.add({
+                type: "warning",
+                message: errors.apiErrors.message,
+                autoDismiss: 5000,
+            });
+            setBlockActions(true);
+        }
+    }, [errors.apiErrors]);
+
+    useEffect(() => {
         if (interactive.metadata && interactiveId) {
-            const { metadata, archive } = interactive;
+            const { metadata, archive, html_files } = interactive;
             setInternalId(metadata.internal_id);
             setTitle(metadata.title);
             setLabel(metadata.label);
-            setUrl(`${window.location.origin}/interactives/${metadata.slug}-${metadata.resource_id}/embed`);
+
+            //tactical fix to support MVP requirements of supporting single interactive
+            //needs more work to support multiple interactives: https://trello.com/c/juxhzj1D
+            if (html_files && html_files.length > 0) {
+                setUrl(window.location.origin + html_files[0].uri);
+            }
+
             setPublished(metadata.published);
 
             if (interactive.state === "ImportFailure") {
@@ -88,11 +108,8 @@ export default function InteractivesForm(props) {
 
     useEffect(() => {
         if (successMessage.success) {
-            if (successMessage.type === "create") {
-                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
-            }
             if (successMessage.type === "update") {
-                browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                props.router.push(`${rootPath}/collections/${collectionId}`);
             }
             if (interactive.id) {
                 const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
@@ -111,13 +128,16 @@ export default function InteractivesForm(props) {
                             });
                         });
                 } else {
-                    collections.addInteractive(collectionId, interactive.id).catch(e => {
-                        notifications.add({
-                            type: "warning",
-                            message: e.body ? e.body.message : e.message,
-                            autoDismiss: 5000,
+                    collections
+                        .addInteractive(collectionId, interactive.id)
+                        .then(() => props.router.push(`${rootPath}/collections/${collectionId}`))
+                        .catch(e => {
+                            notifications.add({
+                                type: "warning",
+                                message: e.body ? e.body.message : e.message,
+                                autoDismiss: 5000,
+                            });
                         });
-                    });
                 }
             }
         }
@@ -156,11 +176,28 @@ export default function InteractivesForm(props) {
             .catch(e => {
                 notifications.add({
                     type: "warning",
-                    message: e.body.message,
+                    message: e.body ? e.body.message : e.message,
                     autoDismiss: 5000,
                 });
             });
-        props.router.push(`${rootPath}/interactives?collection=${collectionId}`);
+        props.router.push(`${rootPath}/collections/${collectionId}`);
+    };
+
+    const copyAllUrls = async () => {
+        var allUrls = "";
+        if (interactive) {
+            try {
+                interactive.html_files.map((htm, index) => {
+                    allUrls += htm.uri + "\n";
+                });
+            } catch (err) {
+                console.error("Error fetching all interactive URL's", err);
+                allUrls = "Error fetching all interactive URL's";
+            }
+        } else {
+            allUrls = "No interactive URL's available";
+        }
+        navigator.clipboard.writeText(allUrls);
     };
 
     const handleFile = e => {
@@ -168,7 +205,23 @@ export default function InteractivesForm(props) {
         setFile(file);
     };
 
-    const displayedErrors = Object.values(errors);
+    const mapInteractives = interactives => {
+        if (interactives) {
+            try {
+                return interactives.map((interactive, index) => {
+                    return {
+                        id: index,
+                        name: window.location.origin + interactive.uri,
+                    };
+                });
+            } catch (err) {
+                console.error("Error mapping interactives to select", err);
+            }
+        }
+        return;
+    };
+
+    const displayedErrors = Object.values(errors.validations);
 
     return (
         <div className="grid grid--justify-space-around padding-bottom--2 padding-top--2">
@@ -219,7 +272,7 @@ export default function InteractivesForm(props) {
                                         id="internal_id"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="internal_id"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={internalId}
                                         error={""}
                                         required
@@ -236,7 +289,7 @@ export default function InteractivesForm(props) {
                                 id="internal_id"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="internal_id"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={internalId}
                                 error={""}
                                 required
@@ -258,7 +311,7 @@ export default function InteractivesForm(props) {
                                         id="title"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="title"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={title}
                                         required
                                         onChange={e => setTitle(e.target.value)}
@@ -274,7 +327,7 @@ export default function InteractivesForm(props) {
                                 id="title"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="title"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={title}
                                 required
                                 onChange={e => setTitle(e.target.value)}
@@ -296,7 +349,7 @@ export default function InteractivesForm(props) {
                                         id="label"
                                         className="ons-input ons-input--text ons-input-type__input"
                                         name="label"
-                                        disabled={props.isAwaitingResponse}
+                                        disabled={blockActions}
                                         value={label}
                                         required
                                         onChange={e => setLabel(e.target.value)}
@@ -312,7 +365,7 @@ export default function InteractivesForm(props) {
                                 id="label"
                                 className="ons-input ons-input--text ons-input-type__input"
                                 name="label"
-                                disabled={props.isAwaitingResponse}
+                                disabled={blockActions}
                                 value={label}
                                 required
                                 onChange={e => setLabel(e.target.value)}
@@ -341,6 +394,7 @@ export default function InteractivesForm(props) {
                                         className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                         required
                                         fileError={fileError}
+                                        disabled={blockActions}
                                         onChange={handleFile}
                                         label="Upload a file"
                                         helpMessage="The file must be a CSV, ODS or Excel format and no larger than 2mb in size."
@@ -358,8 +412,9 @@ export default function InteractivesForm(props) {
                                 className="ons-input ons-input--text ons-input-type__input ons-input--upload"
                                 required
                                 onChange={handleFile}
+                                disabled={blockActions}
                                 label="Upload a file"
-                                helpMessage="The zip file must not exceed 20mb without password protection, containing only 1 index.html/htm, without special characters & saved in the root folder."
+                                helpMessage="The zip file must not exceed 2.5gb, contain at least 1 html/htm file, and be without password protection or special characters in the filename."
                             />
                         </div>
                     )}
@@ -379,7 +434,7 @@ export default function InteractivesForm(props) {
                                                 id="url"
                                                 className="ons-input ons-input--text ons-input-type__input"
                                                 name="url"
-                                                disabled={props.isAwaitingResponse}
+                                                disabled={blockActions}
                                                 value={url}
                                                 required
                                                 onChange={e => setUrl(e.target.value)}
@@ -390,39 +445,62 @@ export default function InteractivesForm(props) {
                                 </div>
                             ) : (
                                 <div className="grid__col-sm-12 grid__col-md-6 grid__col-xl-4">
-                                    <Input
-                                        type="text"
-                                        id="url"
-                                        className="ons-input ons-input--text ons-input-type__input"
-                                        name="url"
-                                        disabled={true}
-                                        value={url}
-                                        required
-                                        onChange={e => setUrl(e.target.value)}
-                                        label="URL"
-                                    />
+                                    {interactive.html_files && interactive.html_files.length <= 1 ? (
+                                        <Input
+                                            type="text"
+                                            id="url"
+                                            className="ons-input ons-input--text ons-input-type__input"
+                                            name="url"
+                                            disabled={true}
+                                            value={url}
+                                            required
+                                            onChange={e => setUrl(e.target.value)}
+                                            label="URL"
+                                        />
+                                    ) : (
+                                        <Select
+                                            contents={mapInteractives(interactive.html_files) || []}
+                                            id="urls"
+                                            onChange={e => setUrlIndex(e.target.value)}
+                                            showDefaultOption="false"
+                                            label="URL"
+                                            disabled={blockActions}
+                                        />
+                                    )}
                                 </div>
                             )}
                         </>
                     )}
                     <div className="inline-block padding-top--1">
                         {!interactiveId ? (
-                            <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} isSubmitting={false} />
+                            <ButtonWithShadow type="submit" buttonText="Confirm" onClick={onSubmit} disabled={blockActions} isSubmitting={false} />
                         ) : (
                             <div className="inline-block">
                                 {editMode ? (
-                                    <ButtonWithShadow type="submit" buttonText="Save changes" onClick={onSubmit} isSubmitting={false} />
+                                    <ButtonWithShadow
+                                        type="submit"
+                                        buttonText="Save changes"
+                                        onClick={onSubmit}
+                                        isSubmitting={false}
+                                        disabled={blockActions}
+                                    />
                                 ) : (
                                     <ButtonWithShadow
                                         type="submit"
                                         buttonText="Save and submit for approval"
                                         onClick={onSubmitApproval}
                                         isSubmitting={false}
+                                        disabled={blockActions}
                                     />
                                 )}
+
+                                <ButtonWithShadow buttonText="Copy all URL's" onClick={copyAllUrls} disabled={blockActions} />
+
                                 <Link
-                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}`}
+                                    to={`${rootPath}/interactives/show/${interactiveId}?collection=${collectionId}&urlIndex=${urlIndex}`}
+                                    style={{ pointerEvents: interactive.state === "ImportSuccess" ? "" : "none" }}
                                     className="ons-btn ons-btn--secondary"
+                                    disabled={blockActions}
                                 >
                                     <span className="ons-btn__inner">Preview</span>
                                 </Link>
@@ -431,7 +509,6 @@ export default function InteractivesForm(props) {
                     </div>
                 </div>
             </div>
-            <Notifications notifications={notifications} />
         </div>
     );
 }

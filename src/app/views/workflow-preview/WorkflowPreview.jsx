@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 import { Link } from "react-router";
 import PropTypes from "prop-types";
 
@@ -7,6 +8,7 @@ import url from "../../utilities/url";
 import notifications from "../../utilities/notifications";
 
 import Iframe from "../../components/iframe/Iframe";
+import datasets from "../../utilities/api-clients/datasets";
 
 const propTypes = {
     location: PropTypes.shape({
@@ -16,16 +18,26 @@ const propTypes = {
         collectionID: PropTypes.string.isRequired,
     }),
     dispatch: PropTypes.func.isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class WorkflowPreview extends Component {
     constructor(props) {
         super(props);
+        this.state = { cantabularDataset: false };
     }
 
-    handleBackButton = () => {
-        const previousUrl = url.resolve("../");
+    handleBackButton = async () => {
+        await this.getDatasetType(this.props.params.datasetID);
+        const previousUrl = `${url.resolve("../")}${this.props.enableCantabularJourney && this.state.cantabularDataset ? "/cantabular" : ""}`;
         this.props.dispatch(push(previousUrl));
+    };
+
+    getDatasetType = datasetID => {
+        return datasets.get(datasetID).then(response => {
+            const type = response.next.type;
+            this.setState({ cantabularDataset: type === "cantabular_table" || type === "cantabular_flexible_table" });
+        });
     };
 
     // getPreviewIframeURL returns the url for the content to be reviewed when the url is
@@ -90,4 +102,10 @@ export class WorkflowPreview extends Component {
 
 WorkflowPreview.propTypes = propTypes;
 
-export default WorkflowPreview;
+export function mapStateToProps(state) {
+    return {
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
+    };
+}
+
+export default connect(mapStateToProps)(WorkflowPreview);

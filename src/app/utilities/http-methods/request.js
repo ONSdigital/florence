@@ -5,6 +5,13 @@ import user from "../api-clients/user";
 import notifications from "../notifications";
 import { errCodes } from "../errorCodes";
 
+import { store } from "../../config/store";
+import { getAuthState } from "../auth";
+import fp from "lodash/fp";
+import sessionManagement from "../sessionManagement";
+import { startRefeshAndSession } from "../../config/user/userActions";
+
+const config = window.getEnv();
 /**
  *
  * @param {string} method - must match an HTTP method (eg "GET")
@@ -51,18 +58,46 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
         fetch(URI, fetchConfig)
             .then(response => {
+                let status = response.status;
                 const responseReceivedAt = new Date(Date.now()).toISOString();
-                log.event("Response received", log.http(UID, method, URL, requestSentAt, response.status, responseReceivedAt));
+                log.event("Response received", log.http(UID, method, URL, requestSentAt, status, responseReceivedAt));
 
-                if (response.status >= 500) {
+                if (status >= 500) {
                     throw new HttpError(response);
                 }
 
-                if (response.status === 401) {
+                if (status === 401) {
+                    if (config.enableNewSignIn) {
+                        // Attempt to get a new refresh the access_token
+                        const authState = getAuthState();
+                        const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
+                        user.renewSession()
+                            .then(res => {
+                                // update the authState, start the session timer with the next session response value
+                                // & restart the refresh timer with the existing refresh value.
+                                const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
+                                sessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
+                                store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+                                // Retry the resource request with new access_token
+                                tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
+                            })
+                            .catch(err => {
+                                // log out
+                                console.error(err);
+                                user.logOut();
+                                notifications.add(notification);
+                                reject({
+                                    status: status,
+                                    message: response.statusText,
+                                });
+                                return;
+                            });
+                    }
+
                     if (callerHandles401) {
                         response.text().then(body => {
                             reject({
-                                status: response.status,
+                                status: status,
                                 message: response.statusText,
                                 body: parseBodyAsJson(body),
                             });
@@ -80,7 +115,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     user.logOut();
                     notifications.add(notification);
                     reject({
-                        status: response.status,
+                        status: status,
                         message: response.statusText,
                     });
                     return;
@@ -89,7 +124,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 if (!response.ok) {
                     response.text().then(body => {
                         reject({
-                            status: response.status,
+                            status: status,
                             message: response.statusText,
                             body: parseBodyAsJson(body),
                         });
@@ -97,9 +132,9 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     return;
                 }
 
-                if (response.status === 204) {
+                if (status === 204) {
                     resolve({
-                        status: response.status,
+                        status: status,
                         message: response.statusText,
                     });
                     return;
@@ -124,7 +159,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                     // This is a temporary fix because one of our CMD APIs doesn't return a content-type header and it's break the entire journey
                     // unless we just allow 204 responses to resolve, instead of reject with an error
-                    if (response.status >= 200) {
+                    if (status >= 200) {
                         resolve();
                         return;
                     }
@@ -160,7 +195,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             }
 
                             reject({
-                                status: response.status,
+                                status: status,
                                 message: "Text response body couldn't be parsed",
                             });
                         }
@@ -188,7 +223,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                         // We're trying to get data at this point and the body can't be parsed
                         // which means this request is a failure and the promise should be rejected
                         reject({
-                            status: response.status,
+                            status: status,
                             message: "JSON response body couldn't be parsed",
                         });
                     }

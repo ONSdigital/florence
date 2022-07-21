@@ -61,6 +61,7 @@ const propTypes = {
     }),
     activePageURI: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
+    enableCantabularJourney: PropTypes.bool,
 };
 
 export class CollectionDetailsController extends Component {
@@ -78,6 +79,7 @@ export class CollectionDetailsController extends Component {
             pendingDeletedPages: [],
             drawerIsAnimatable: false,
             drawerIsVisible: false,
+            isCantabularDataset: false,
         };
     }
 
@@ -320,6 +322,7 @@ export class CollectionDetailsController extends Component {
     };
 
     handleCollectionPageEditClick = async (page, state) => {
+        await this.getDatasetType(page.id);
         if (page.type === "interactive") {
             const newURL = url.resolve(`/interactives/edit/${page.id}?collection=${this.props.activeCollection.id}`);
             this.props.dispatch(push(newURL));
@@ -350,9 +353,8 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const newURL = url.resolve(
-                `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`
-            );
+            const path = `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`;
+            const newURL = url.resolve(this.props.enableCantabularJourney && this.state.isCantabularDataset ? `${path}/cantabular` : path);
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
                     return false;
@@ -588,6 +590,15 @@ export class CollectionDetailsController extends Component {
         this.handleRestoreDeletedContentClose();
     };
 
+    getDatasetType = async pageID => {
+        if (pageID && pageID.includes("/")) {
+            const datasetID = pageID.split("/")[0].trim();
+            const response = await datasets.get(datasetID);
+            const type = response.next.type;
+            this.setState({ isCantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+        }
+    };
+
     renderLoadingCollectionDetails() {
         return (
             <CollectionDetails
@@ -674,6 +685,7 @@ export function mapStateToProps(state) {
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
         enableDatasetImport: state.state.config.enableDatasetImport,
         isUpdating: getIsUpdatingCollection(state.state),
+        enableCantabularJourney: state.state.config.enableCantabularJourney,
     };
 }
 

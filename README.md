@@ -86,6 +86,16 @@ For example:
 ```
 make debug BIND_ADDR=:20000
 ```
+
+### Testing
+Run all tests
+```
+npm run test
+```
+Testing a single file
+```
+npm run test:file --file=<YOUR_FILE>
+```
 ### Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.

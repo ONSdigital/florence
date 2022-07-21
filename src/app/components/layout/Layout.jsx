@@ -1,26 +1,32 @@
-import React, { Component, useEffect, useMemo, useState } from "react";
-import { hasValidAuthToken } from "../../utilities/hasValidAuthToken";
+import React, { Component, useEffect, useState } from "react";
 import log from "../../utilities/logging/log";
-import notifications from "../../utilities/notifications";
 import ping from "../../utilities/api-clients/ping";
-import sessionManagement from "../../utilities/sessionManagement";
 import user from "../../utilities/api-clients/user";
 import Notifications from "../notifications";
 import NavBar from "../../components/navbar";
 import Popouts from "../popouts/Popouts";
-import { useGetPermissions } from "../../config/user/userHooks";
-import { getAuthToken } from "../../utilities/auth";
+import { useGetPermissions, useUpdateTimers } from "../../config/user/userHooks";
+import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 
+import { useDispatch } from "react-redux";
+
 const Layout = props => {
+    const dispatch = useDispatch();
+    let authState = getAuthState();
+    const sessionTimerIsActive = fp.get("user.sessionTimer.active")(props);
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
-    const userStateFromAuthToken = getAuthToken();
-    const userPermissions = useGetPermissions(userStateFromAuthToken);
+    const [shouldUpdateAccessToken, setShouldUpdateAccessToken] = useState(false);
+    // Get Permissions
+    const userPermissions = useGetPermissions(authState, setShouldUpdateAccessToken);
+    // Check timers & update if required
+    useUpdateTimers(props, sessionTimerIsActive, dispatch);
+    // Update store with permissions
     useEffect(() => {
         setIsCheckingAuthentication(false);
         if (userPermissions) {
             user.setUserState(userPermissions);
-            const email = fp.get("email")(getAuthToken());
+            const email = fp.get("email")(getAuthState());
             if (!email) {
                 user.logOut();
                 setIsCheckingAuthentication(false);
@@ -32,14 +38,9 @@ const Layout = props => {
 
     useEffect(() => {
         log.initialise();
-
         window.setInterval(() => {
             ping();
         }, 10000);
-
-        if (props.location.pathname !== "/florence/login" && props.enableNewSignIn) {
-            sessionManagement.startSessionExpiryTimers();
-        }
     }, []);
 
     if (isCheckingAuthentication) {

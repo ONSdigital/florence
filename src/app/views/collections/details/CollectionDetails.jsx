@@ -83,8 +83,18 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     };
 
-    renderLastEditText(lastEdit) {
+    renderLastEditText(page) {
+        const { lastEdit } = page;
         try {
+            if (page.lastEditedBy) {
+                if (page.lastEditedAt) {
+                    const formattedDate = date.format(new Date(page.lastEditedAt), "ddd d mmm yyyy - HH:MM:ss");
+                    return `Last edit: ${page.lastEditedBy} (${formattedDate})`;
+                } else {
+                    return `Last edit: ${page.lastEditedBy}`;
+                }
+            }
+
             if (!lastEdit || (!lastEdit.date && !lastEdit.email)) {
                 return "Last edit: information not available";
             }
@@ -139,7 +149,7 @@ export class CollectionDetails extends Component {
                 </div>
                 <div className="expandable-item__contents">
                     <div className="margin-bottom--1 margin-left--2">
-                        <p>{this.renderLastEditText(page.lastEdit)}</p>
+                        <p>{this.renderLastEditText(page)}</p>
                     </div>
                     <button className="btn btn--primary" onClick={handleEditClick} type="button">
                         {state === "complete" ? "Review" : "Edit"}

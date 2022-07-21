@@ -111,6 +111,8 @@ test("Should create an interactive and returns the right structure", async () =>
         headers: {
             "Content-Type": "multipart/form-data",
         },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
     });
 });
 
@@ -204,6 +206,8 @@ test("Should update an interactive", async () => {
         headers: {
             "Content-Type": "multipart/form-data",
         },
+        maxBodyLength: Infinity,
+        maxContentLength: Infinity,
     });
 });
 

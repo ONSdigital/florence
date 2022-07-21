@@ -3,26 +3,23 @@
  */
 async function logout(currentPath) {
     if (Florence.globalVars.config.enableNewSignIn) {
-        const response = await fetch('/tokens/self', {
+        const res = await fetch('/tokens/self', {
             method: 'DELETE',
             headers: {
                 "Content-Type": "application/json",
             }
         })
-        const data = await response.json()
-        if (data.status === 400) {
+        if (res.status === 400) {
             sweetAlert("An error occurred during sign out 'InvalidToken', please contact a system administrator");
             console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
-        } else if (data.status !== 204) {
+        } else if (res.status !== 204) {
             sweetAlert("Unexpected error occurred during sign out");
             console.error("Error occurred sending DELETE to /tokens/self");
         }
-        removeTimers();
     }
     delete_cookie('access_token');
     delete_cookie('collection');
-    localStorage.setItem("loggedInAs", "");
-    localStorage.setItem("userType", "");
+    removeAuthState();
 
     // Redirect to login page adding an address to return to on login if one provided.
     if (currentPath) {

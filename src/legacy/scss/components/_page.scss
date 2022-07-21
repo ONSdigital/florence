@@ -153,6 +153,11 @@
                 content: 'VIS';
             }
         }
+        &--interactive {
+            &:after {
+                content: 'INT';
+            }
+        }
         &--directory {
             &:after {
                 background: transparent url(../../img/sprite.png) no-repeat -4px -418px;

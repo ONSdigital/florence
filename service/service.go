@@ -109,6 +109,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
+	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion,""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
@@ -142,6 +143,9 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
+		if cfg.SharedConfig.EnableCantabularJourney {
+			router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
+		}
 	}
 	if cfg.SharedConfig.EnableNewSignIn {
 		router.Handle("/tokens", identityAPIProxy)

@@ -12,7 +12,8 @@ import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
-import { setAuthToken } from "../../utilities/auth";
+import { updateAuthState, setAuthState } from "../../utilities/auth";
+import fp from "lodash/fp";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -66,7 +67,9 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
-                        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
+                        const refreshTokenExpirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
+                        sessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
                     }
                     this.setState(
                         {
@@ -163,7 +166,7 @@ export class LoginController extends Component {
     setPermissions = () => {
         user.getPermissions()
             .then(userType => {
-                setAuthToken(userType);
+                setAuthState(userType);
                 user.setUserState(userType);
                 redirectToMainScreen(this.props.location.query.redirect);
             })
@@ -181,6 +184,10 @@ export class LoginController extends Component {
                     this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
                 }
             });
+    };
+
+    redirectToLogin = () => {
+        location.reload();
     };
 
     clearErrors = () => {
@@ -267,7 +274,11 @@ export class LoginController extends Component {
     };
 
     passwordChangeSuccess = response => {
-        sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+        if (response) {
+            console.debug("[FLORENCE] passwordChangeSuccess: ", resp);
+            // TODO convert to UTC
+            sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+        }
         this.setState({
             status: status.SUBMITTED_PASSWORD_CHANGE,
         });
@@ -293,6 +304,7 @@ export class LoginController extends Component {
                     this.passwordChangeSuccess(response);
                 })
                 .catch(error => {
+                    console.error(error);
                     this.passwordChangeFail(error);
                 });
         });
@@ -304,7 +316,7 @@ export class LoginController extends Component {
                 heading: "Change your password",
                 buttonText: "Change password",
                 requestPasswordChange: this.requestPasswordChange,
-                changeConformation: <ChangePasswordConfirmed handleClick={this.setPermissions} />,
+                changeConformation: <ChangePasswordConfirmed handleClick={this.redirectToLogin} />,
                 status: this.state.status,
             };
 
