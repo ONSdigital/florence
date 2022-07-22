@@ -91,12 +91,14 @@ const NavBar = props => {
                                 Reports
                             </a>
                         </li>
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
-                                Users and access
-                            </Link>
-                        </li>
-                        {!props.isNewSignIn && (
+                        {auth.isAdmin(props.user) && (
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                    Users and access
+                                </Link>
+                            </li>
+                        )}
+                        {!props.isNewSignIn && auth.isAdmin(props.user) && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams
