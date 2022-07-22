@@ -37,7 +37,6 @@ const Collections = props => {
         }
         return collections;
     };
-
     return (
         <>
             <div className="grid grid--justify-space-around" data-testid="collections">

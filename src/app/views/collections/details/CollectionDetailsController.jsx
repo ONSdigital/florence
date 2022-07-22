@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-import { getCollections, getIsUpdatingCollection } from "../../../config/selectors";
+import { getCollections, getEnableNewSignIn, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
 import { approveCollectionRequest } from "../../../config/thunks";
 import {
     loadCollectionsSuccess,
@@ -175,8 +175,7 @@ export class CollectionDetailsController extends Component {
                     // User has closed collection details or moved to another one, so do not update state
                     return;
                 }
-
-                const mappedCollection = collectionMapper.collectionResponseToState(collection);
+                const mappedCollection = collectionMapper.collectionResponseToState(collection, this.props.groups);
                 const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
 
                 // If we have no data in state yet for the collection then use this opportunity to add it.
@@ -678,6 +677,7 @@ CollectionDetailsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
+        isNewSignIn: getEnableNewSignIn(state.state),
         user: state.user,
         collections: getCollections(state.state),
         activeCollection: state.state.collections.active,
@@ -686,6 +686,7 @@ export function mapStateToProps(state) {
         enableDatasetImport: state.state.config.enableDatasetImport,
         isUpdating: getIsUpdatingCollection(state.state),
         enableCantabularJourney: state.state.config.enableCantabularJourney,
+        groups: getGroups(state.state),
     };
 }
 
