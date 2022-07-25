@@ -479,13 +479,11 @@ export default function reducer(state = initialState, action) {
         }
         case types.CREATE_USER_SUCCESS: {
             //TODO: can not test the response object atm so will change this later
-            const users = state.users.concat(action.user);
             return {
                 ...state,
                 users: {
                     ...state.users,
                     active: action.user,
-                    all: users,
                     isLoadingActive: true,
                 },
             };

@@ -165,14 +165,19 @@ export const createUserRequest = body => dispatch => {
         .then(response => {
             dispatch(actions.createUserSuccess(response));
             dispatch(push(`/florence/users/create/${response.id}/groups`));
-            notifications.add({ type: "positive", message: `User ${response.name} created successfully`, autoDismiss: 5000 });
+            notifications.add({ type: "positive", message: `User ${response.forename} created successfully`, autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.createUserFailure());
             if (error) {
-                notifications.add({ type: "warning", message: error, autoDismiss: 5000 });
+                if (error.body) {
+                    error.body.errors.forEach(function (error) {
+                        notifications.add({ type: "warning", message: error.description, autoDismiss: 5000 });
+                    });
+                } else {
+                    notifications.add({ type: "warning", message: error.message, autoDismiss: 5000 });
+                }
             }
-            console.error(error);
         });
 };
 
