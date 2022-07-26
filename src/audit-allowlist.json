@@ -19,6 +19,10 @@
         {
             "id" : "sonatype-2017-0717",
             "reason" : "We are using the latest react 17 (17.0.2) - require major upgrade"
+        },
+        {
+            "id" : "sonatype-2022-3677",
+            "reason" : "We are using node-fetch"
         }
     ]
 }
