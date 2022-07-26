@@ -109,7 +109,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
-	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion,""), nil)
+	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
@@ -162,7 +162,10 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/table/{uri:.*}", tableProxy)
 	router.Handle("/topics", topicsProxy)
 	router.Handle("/topics/{uri:.*}", topicsProxy)
-
+	if !cfg.SharedConfig.EnableNewSignIn {
+		// Roots for !EnableNewSignIn Florence React app
+		router.HandleFunc("/cookies", DeleteHttpCookie()).Methods("DELETE")
+	}
 	// Florence endpoints
 	router.HandleFunc("/florence/dist/{uri:.*}", staticFiles)
 	router.HandleFunc("/florence/", redirectToFlorence)
@@ -176,7 +179,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	// API and Frontend Routers
 	router.Handle("/api/{uri:.*}", apiRouterProxy)
 	router.Handle("/{uri:.*}", frontendRouterProxy)
-
 	return router, nil
 }
 
