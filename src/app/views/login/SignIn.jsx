@@ -41,7 +41,11 @@ export class LoginController extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (this.props.isAuthenticated) {
-            this.props.dispatch(push(`${this.props.rootPath}/collections`));
+            if (this.props.location.query.redirect) {
+                this.props.dispatch(push(`${this.props.location.query.redirect}`));
+            } else {
+                this.props.dispatch(push(`${this.props.rootPath}/collections`));
+            }
         }
     }
 
