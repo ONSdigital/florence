@@ -23,6 +23,18 @@
         {
             "id" : "sonatype-2022-3677",
             "reason" : "We are using node-fetch"
+        },
+        {
+            "id" : "CVE-2022-24785",
+            "reason" : "Moment.js"
+        },
+        {
+            "id" : "CVE-2022-31129",
+            "reason" : "Moment.js"
+        },
+        {
+            "id" : "CVE-2017-18214",
+            "reason" : "Moment.js"
         }
     ]
 }
