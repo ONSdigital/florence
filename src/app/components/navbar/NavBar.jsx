@@ -86,12 +86,7 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-                        <li className="global-nav__item">
-                            <a className="global-nav__link" href="/florence/reports">
-                                Reports
-                            </a>
-                        </li>
-                        {auth.isAdmin(props.user) && (
+                        {auth.isAdminOrEditor(props.user) && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
                                     Users and access
