@@ -18,7 +18,7 @@ const Members = ({ id, members, handleRemove, loading }) => {
                         id={member.id}
                         icon="person"
                         style="standard"
-                        text={`${member.forename} ${member.lastname}`}
+                        text={`${member.forename} ${member.lastname} (${member.email})`}
                         removeFunc={handleRemove}
                     />
                 ))}
