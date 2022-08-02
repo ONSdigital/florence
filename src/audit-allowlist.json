@@ -33,7 +33,7 @@
             "reason" : "Moment.js"
         },
         {
-            "id" : "CVE-2017-18214",
+            "id" : "sonatype-2017-0422",
             "reason" : "Moment.js"
         }
     ]
