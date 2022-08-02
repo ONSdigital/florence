@@ -135,16 +135,4 @@ describe("EditGroup", () => {
             expect(props.updateGroup).toHaveBeenCalledWith("0", { name: "Foo", precedence: 10 });
         });
     });
-    describe("when special group ", () => {
-        it("shows details but do not allow to change the name", () => {
-            render(<EditGroup.WrappedComponent {...props} group={specialGroup} />);
-
-            expect(screen.getByRole("heading", { level: 1, name: "Admins" })).toBeInTheDocument();
-            expect(screen.queryByLabelText("Name")).not.toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
-            expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
-            expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
-        });
-    });
 });
