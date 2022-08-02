@@ -5,7 +5,7 @@ import sessionManagement from "../../utilities/sessionManagement";
 import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 
-const nonAuthRoutes = ["/florence/login", "/florence/forgotten-password"];
+const nonAuthRoutes = ["/florence/login", "/florence/forgotten-password", "/florence/password-reset"];
 
 export const useGetPermissions = (authState, setShouldUpdateAccessToken) => {
     const [userState, setUserState] = useState();
