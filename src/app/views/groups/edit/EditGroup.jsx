@@ -171,7 +171,7 @@ const EditGroup = props => {
                         </div>
                     </div>
                 </div>
-                <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </div>
     );
