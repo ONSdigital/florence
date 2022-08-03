@@ -22,7 +22,11 @@
         },
         {
             "id" : "sonatype-2022-3677",
-            "reason" : "We are using node-fetch"
+            "reason" : "node-fetch@3.2.10 is the latest version"
+        },
+        {
+            "id" : "CVE-2022-2596",
+            "reason" : "node-fetch@3.2.10 is the latest version"
         },
         {
             "id" : "CVE-2022-24785",
