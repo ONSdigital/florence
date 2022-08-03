@@ -23,6 +23,10 @@
         {
             "id" : "sonatype-2022-3677",
             "reason" : "Latest node-fetch@3.2.6 does not fix the vulnerability"
+        },
+        {
+            "id": "CVE-2022-2596",
+            "reason": "Several libraries appear locked to node-fetch@2 & cannot bump to node-fetch@3.2.10"
         }
     ]
 }
