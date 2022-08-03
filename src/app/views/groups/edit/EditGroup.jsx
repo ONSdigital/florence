@@ -46,7 +46,7 @@ const EditGroup = props => {
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
     const hasUpdatedMembers = !isEqual(groupMembers, members);
-    const specialGroup = group?.precedence === (1 || 2);
+    const specialGroup = group?.id === "role-admin" || group?.id === "role-publisher";
 
     const routerWillLeave = nextLocation => {
         if ((hasNewValues || hasUpdatedMembers) && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
@@ -119,7 +119,7 @@ const EditGroup = props => {
         setGroupMembers(prevState => prevState.concat(member));
         setAvailableUsers(prevState => prevState.filter(user => user.id !== member.id));
     };
-
+    console.log("specialGroup", specialGroup);
     if (loading) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
     if (!group) return <h1>No group found.</h1>;
 
