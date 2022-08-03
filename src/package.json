@@ -73,22 +73,23 @@
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
-    "dev": "export NODE_ENV=development && npx webpack -w",
     "audit": "npx auditjs ossi --whitelist ./audit-allowlist.json --quiet",
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
-    "watch-refactored": "node ./node_modules/webpack/bin/webpack.js -d --watch & npm run prettier-watch",
+    "watch-refactored": "export NODE_ENV=development && npx webpack -w & npm run prettier-watch",
+    "legacy:watch": "cd legacy && npm run watch",
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "npm run prettier-cli; node ./node_modules/webpack/bin/webpack.js --mode=production",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "test": "export NODE_ENV=testing TZ='Europe/London' && jest",
     "test-watch": "export NODE_ENV=testing  TZ='Europe/London' && ./node_modules/jest/bin/jest.js --watch --no-cache",
+    "test:file": "export NODE_ENV=testing TZ='Europe/London' && jest $npm_config_file",
+    "test:update": "export NODE_ENV=testing && jest --updateSnapshot",
     "preinstall": "npx npm-force-resolutions && mkdir -p ../dist && cp -R img/ ../dist/img/",
     "postinstall": "node tablebuilder/handsontable-css-fix.js && npm run build-refactored",
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/",
-    "test:update": "export NODE_ENV=testing && jest --updateSnapshot"
+    "eslint-check": "eslint -c ./.eslintrc.json 'app/**/*.{js, jsx}' --ignore-pattern node_modules/"
   },
   "dependencies": {
     "acorn": "^8.4.1",
