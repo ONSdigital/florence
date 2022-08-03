@@ -7,6 +7,7 @@ import Select from "../../../components/Select";
 import SelectedItemList from "../../../components/selected-items/SelectedItemList";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import date from "../../../utilities/date";
+import auth from "../../../utilities/auth";
 
 const propTypes = {
     originalName: PropTypes.string,
@@ -41,6 +42,7 @@ const propTypes = {
     originalPublishDate: PropTypes.string.isRequired,
     isFetchingAllTeams: PropTypes.bool,
     isSavingEdits: PropTypes.bool,
+    user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 
 class CollectionEdit extends Component {
@@ -106,6 +108,15 @@ class CollectionEdit extends Component {
             return <p>Publish date: no publish date available</p>;
         }
     }
+
+    getTeamsToSelect = () => {
+        let filteredTeams = this.props.allTeams ?? [];
+        if (auth.isAdminOrEditor(this.props.user)) {
+            filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.activeCollection.teams.includes(team) }));
+        }
+        return filteredTeams;
+    };
 
     render() {
         return (

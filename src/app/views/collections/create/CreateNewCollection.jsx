@@ -8,6 +8,7 @@ import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import Modal from "../../../components/Modal";
 import ScheduleByRelease from "../schedule-by-release/ScheduleByRelease";
 import date from "../../../utilities/date";
+import auth from "../../../utilities/auth";
 
 export const EMPTY_COLLECTION = {
     name: {
@@ -238,7 +239,14 @@ const CreateNewCollection = props => {
         setIsSubmitting(false);
     };
 
-    const getTeamsToSelect = () => (props.teams ? props.teams.map(team => ({ ...team, disabled: newCollection.teams.includes(team) })) : []);
+    const getTeamsToSelect = () => {
+        let filteredTeams = props.teams ?? [];
+        if (auth.isAdminOrEditor(props.user)) {
+            filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: newCollection.teams.includes(team) }));
+        }
+        return filteredTeams;
+    };
 
     const releaseTypeRadioData = [
         {
