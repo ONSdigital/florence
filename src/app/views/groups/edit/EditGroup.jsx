@@ -119,7 +119,7 @@ const EditGroup = props => {
         setGroupMembers(prevState => prevState.concat(member));
         setAvailableUsers(prevState => prevState.filter(user => user.id !== member.id));
     };
-    console.log("specialGroup", specialGroup);
+
     if (loading) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
     if (!group) return <h1>No group found.</h1>;
 
