@@ -22,7 +22,7 @@
         },
         {
             "id" : "sonatype-2022-3677",
-            "reason" : "Latest node-fetch@3.2.6 does not fix the vulnerability"
+            "reason" : "We are using node-fetch"
         }
     ]
 }
