@@ -22,23 +22,11 @@
         },
         {
             "id" : "sonatype-2022-3677",
-            "reason" : "node-fetch@3.2.10 is the latest version"
+            "reason" : "Latest node-fetch@3.2.6 does not fix the vulnerability"
         },
         {
-            "id" : "CVE-2022-2596",
-            "reason" : "node-fetch@3.2.10 is the latest version"
-        },
-        {
-            "id" : "CVE-2022-24785",
-            "reason" : "Moment.js"
-        },
-        {
-            "id" : "CVE-2022-31129",
-            "reason" : "Moment.js"
-        },
-        {
-            "id" : "sonatype-2017-0422",
-            "reason" : "Moment.js"
+            "id": "CVE-2022-2596",
+            "reason": "Several libraries appear locked to node-fetch@2 & cannot bump to node-fetch@3.2.10"
         }
     ]
 }
