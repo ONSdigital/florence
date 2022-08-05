@@ -27,18 +27,6 @@
         {
             "id": "CVE-2022-2596",
             "reason": "Several libraries appear locked to node-fetch@2 & cannot bump to node-fetch@3.2.10"
-        },
-        {
-            "id" : "CVE-2022-24785",
-            "reason" : "Moment.js"
-        },
-        {
-            "id" : "CVE-2022-31129",
-            "reason" : "Moment.js"
-        },
-        {
-            "id" : "sonatype-2017-0422",
-            "reason" : "Moment.js"
         }
     ]
 }
