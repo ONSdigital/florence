@@ -130,7 +130,9 @@ export class CantabularMetadataController extends Component {
                 const cantabularDatasetId = dataset.next.is_based_on["@id"];
                 const language = cookies.get("lang") || "en";
                 datasets
-                    .getCantabularMetadata(datasetID, cantabularDatasetId, language)
+                    // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
+                    // should be removed when the cantabular metadata extractor returns 2021 metadata 
+                    .getMockCantabularMetadata()
                     .then(cantMetadata => {
                         this.setState({ isReadOnly: true });
                         this.setState({
