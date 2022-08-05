@@ -194,7 +194,9 @@ export class CantabularMetadataController extends Component {
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset.publications, this.props.params.datasetID)
                     : [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
-                releaseFrequency: cantabularMetadata.dataset.release_frequency || "",
+                //no release_frequency field found in 2021 cantabular metadata response
+                // releaseFrequency: cantabularMetadata.dataset.release_frequency || "",
+                releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: cantabularMetadata.dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release,
                 qmi: cantabularMetadata.dataset.qmi.href,
@@ -202,7 +204,9 @@ export class CantabularMetadataController extends Component {
                 version: version.version,
                 versionID: version.id,
                 releaseDate: {
-                    value: cantabularMetadata.version.release_date || "",
+                    //no release_date field found in 2021 cantabular metadata response
+                    // value: cantabularMetadata.version.release_date || "",
+                    value: version.release_date || "",
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
@@ -236,10 +240,12 @@ export class CantabularMetadataController extends Component {
     };
 
     marshalCantabularMetadata = cantResponse => {
-        const [day, month, year] = cantResponse.table_query_result.service.tables[0].meta.census_releases[0].release_date.split("/");
+        console.log("cantResponse", cantResponse);
+        //no release_date field found in 2021 cantabular metadata response
+        // const [day, month, year] = cantResponse.table_query_result.service.tables[0].meta.census_releases[0].release_date.split("/");
         return {
             dataset: {
-                title: cantResponse.table_query_result.service.tables[0].name,
+                title: `${cantResponse.table_query_result.service.tables[0].name} (${cantResponse.table_query_result.service.tables[0].label})`,
                 description: cantResponse.table_query_result.service.tables[0].description,
                 keywords: cantResponse.table_query_result.service.tables[0].vars,
                 national_statistic:
@@ -248,7 +254,8 @@ export class CantabularMetadataController extends Component {
                 related_datasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets,
                 publications: cantResponse.table_query_result.service.tables[0].meta.publications,
                 unit_of_measure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
-                release_frequency: cantResponse.table_query_result.service.tables[0].meta.release_frequency,
+                //no release_frequency field found in 2021 cantabular metadata response
+                // release_frequency: cantResponse.table_query_result.service.tables[0].meta.release_frequency,
                 qmi: {
                     href: cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
                 },
@@ -265,11 +272,12 @@ export class CantabularMetadataController extends Component {
                 dimensions: cantResponse.dataset_query_result.dataset.vars.map(dimension => {
                     return {
                         name: dimension.name,
-                        description: dimension.meta.ons_variable.variable_description,
-                        label: dimension.name,
+                        description: dimension.description,
+                        label: dimension.label,
                     };
                 }),
-                release_date: [year, month, day].join("/"),
+                //no release_date field found in 2021 cantabular metadata response
+                // release_date: [year, month, day].join("/"),
             },
         };
     };
