@@ -46,7 +46,7 @@ const EditGroup = props => {
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, group);
     const hasUpdatedMembers = !isEqual(groupMembers, members);
-    const specialGroup = group?.precedence === (1 || 2);
+    const specialGroup = group?.id === "role-admin" || group?.id === "role-publisher";
 
     const routerWillLeave = nextLocation => {
         if ((hasNewValues || hasUpdatedMembers) && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
@@ -171,7 +171,7 @@ const EditGroup = props => {
                         </div>
                     </div>
                 </div>
-                <FormFooter hasNewValues={hasNewValues} hasErrors={specialGroup ? true : hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
             </div>
         </div>
     );
