@@ -451,6 +451,7 @@ export function mapStateToProps(state) {
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
         loadingTeams: getGroupsLoading(state.state),
+        user: state.user,
     };
 }
 

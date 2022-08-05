@@ -7,6 +7,7 @@ import Select from "../../../components/Select";
 import SelectedItemList from "../../../components/selected-items/SelectedItemList";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import date from "../../../utilities/date";
+import auth from "../../../utilities/auth";
 
 const propTypes = {
     originalName: PropTypes.string,
@@ -41,6 +42,7 @@ const propTypes = {
     originalPublishDate: PropTypes.string.isRequired,
     isFetchingAllTeams: PropTypes.bool,
     isSavingEdits: PropTypes.bool,
+    user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,
 };
 
 class CollectionEdit extends Component {
@@ -107,6 +109,15 @@ class CollectionEdit extends Component {
         }
     }
 
+    getTeamsToSelect = () => {
+        let filteredTeams = this.props.allTeams ?? [];
+        if (auth.isAdminOrEditor(this.props.user)) {
+            filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.activeCollection.teams.includes(team) }));
+        }
+        return filteredTeams;
+    };
+
     render() {
         return (
             <div className="drawer__container">
@@ -136,7 +147,7 @@ class CollectionEdit extends Component {
                             <Select
                                 id="collection-edit-teams"
                                 label="Select a team(s) that can view this collection"
-                                contents={this.props.allTeams}
+                                contents={this.getTeamsToSelect()}
                                 defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
                                 selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
