@@ -9,7 +9,7 @@ const SimpleSelectableList = props => {
 
     return (
         <ul className="list list--neutral simple-select-list">
-            {hasRows && props.rows.map(row => <SimpleSelectableListItem key={row.id} colCount={colCount} {...row} />)}
+            {hasRows && props.rows.map((row, i) => <SimpleSelectableListItem key={`${row.id} - ${i}`} colCount={colCount} {...row} />)}
             {showLoadingState && <span data-testid="loader" className="margin-top--1 loader loader--dark" />}
             {!hasRows && !showLoadingState && <p className="padding-top--1">Nothing to show.</p>}
         </ul>
