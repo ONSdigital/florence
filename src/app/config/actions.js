@@ -1,4 +1,6 @@
 import * as types from "./constants";
+import collections from "../utilities/api-clients/collections";
+import notifications from "../utilities/notifications";
 
 export function reset() {
     return {
@@ -426,3 +428,60 @@ export const setPreviewLanguage = language => {
         language,
     };
 };
+export function updatePolicySuccess(data) {
+    return {
+        type: types.UPDATE_POLICY_SUCCESS,
+        data,
+    };
+}
+
+export function updatePolicyProgress() {
+    return {
+        type: types.UPDATE_POLICY_PROGRESS,
+    };
+}
+
+export function updatePolicyFailure() {
+    return {
+        type: types.UPDATE_POLICY_FAILURE,
+    };
+}
+
+export function loadPolicySuccess(data) {
+    return {
+        type: types.LOAD_POLICY_SUCCESS,
+        data,
+    };
+}
+
+export function loadPolicyProgress() {
+    return {
+        type: types.LOAD_POLICY_PROGRESS,
+    };
+}
+
+export function loadPolicyFailure() {
+    return {
+        type: types.LOAD_POLICY_FAILURE,
+    };
+}
+
+export function updatePolicy(collectionId, policies) {
+    return async () => {
+        try {
+            await collections.updatePolicy(collectionId, policies);
+        } catch (error) {
+            let message = "";
+            if (error.body) {
+                message = error.body;
+            }
+            const notification = {
+                type: "warning",
+                message: `Error updating policies ${message}.`,
+                isDismissable: true,
+                autoDismiss: 4000,
+            };
+            notifications.add(notification);
+        }
+    };
+}

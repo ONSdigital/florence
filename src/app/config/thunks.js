@@ -8,6 +8,7 @@ import users from "../utilities/api-clients/user";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
+import { async } from "regenerator-runtime";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(actions.loadCollectionsProgress());
@@ -377,4 +378,92 @@ export const deleteTokensRequest = () => dispatch => {
             }
             console.error(error);
         });
+};
+
+export const updatePolicyRequest = (id, body) => async dispatch => {
+    dispatch(actions.updatePolicyProgress());
+    try {
+        const result = await collections.updatePolicy(id, body);
+        dispatch(actions.updatePolicySuccess(result));
+    } catch (error) {
+        dispatch(actions.updatePolicyFailure());
+        switch (error.status) {
+            case 401: {
+                break;
+            }
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error updating the collection data. Please try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst updating collection data`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
+};
+
+export const loadPolicyRequest = (id, body) => async dispatch => {
+    dispatch(actions.loadPolicyProgress());
+    try {
+        const result = await collections.getPolicy(id, body);
+        dispatch(actions.loadPolicySuccess(result));
+    } catch (error) {
+        dispatch(actions.loadPolicyFailure());
+        switch (error.status) {
+            case 401: {
+                break;
+            }
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error updating the collection data. Please try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst updating collection data`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
 };

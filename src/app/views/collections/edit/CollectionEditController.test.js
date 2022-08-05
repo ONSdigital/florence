@@ -47,6 +47,7 @@ const defaultProps = {
     publishType: "manual",
     isNewSignIn: false,
     isEnablePermissionsAPI: false,
+    policy: null,
 };
 
 const propsWithScheduleDetails = {
@@ -513,6 +514,9 @@ describe("The mapPropsToState function", () => {
                 enablePermissionsAPI: false,
                 enableNewSignIn: false,
             },
+            policy: {
+                data: null,
+            },
         };
         const expectProps = {
             publishType: "scheduled",
@@ -520,6 +524,7 @@ describe("The mapPropsToState function", () => {
             teams: ["Team 2", "Team 3"],
             isEnablePermissionsAPI: false,
             isNewSignIn: false,
+            policy: null,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -537,6 +542,13 @@ describe("The mapPropsToState function", () => {
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
                 ],
+            },
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
+            },
+            policy: {
+                data: null,
             },
         };
         const expectProps = {
