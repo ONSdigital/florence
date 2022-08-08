@@ -332,6 +332,17 @@ export class CantabularMetadataController extends Component {
         };
     };
 
+    checksMandatoryFieldsReturned = (hasTitle, hasDimensions) => {
+        if (!hasTitle || !hasDimensions) {
+            this.setState({ disableScreen: true, allowPreview: false, disableCancel: true });
+            notifications.add({
+                type: "warning",
+                message: `There has been an error sourcing one or more of the following: dataset title,dimension title, dimension description. Please correct in order to publish.`,
+                isDismissable: true,
+            });
+        }
+    };
+
     handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
@@ -353,6 +364,7 @@ export class CantabularMetadataController extends Component {
             lastEditedBy: mapped.lastEditedBy,
             versionIsPublished: mapped.versionIsPublished,
         });
+        this.checksMandatoryFieldsReturned(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
     };
 
     mapRelatedContentToState = (relatedDatasets, datasetID) => {
