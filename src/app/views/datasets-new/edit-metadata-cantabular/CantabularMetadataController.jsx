@@ -38,7 +38,7 @@ export class CantabularMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
-            isReadOnly: false,
+            // isReadOnly: false,
             allowPreview: false,
             disableCancel: false,
             datasetCollectionState: "",
@@ -74,6 +74,28 @@ export class CantabularMetadataController extends Component {
                 usageNotes: [],
                 latestChanges: [],
                 qmi: "",
+            },
+            fieldsReturned: {
+                title: false,
+                summary: false,
+                keywords: false,
+                nationalStatistic: false,
+                licence: false,
+                contactName: false,
+                contactEmail: false,
+                contactTelephone: false,
+                relatedDatasets: false,
+                relatedPublications: false,
+                relatedMethodologies: false,
+                releaseFrequency: false,
+                releaseDate: false,
+                nextReleaseDate: false,
+                unitOfMeasure: false,
+                notices: false,
+                dimensions: false,
+                usageNotes: false,
+                latestChanges: false,
+                qmi: false,
             },
             cantabularMetadata: {
                 dataset: {
@@ -131,12 +153,15 @@ export class CantabularMetadataController extends Component {
                 const language = cookies.get("lang") || "en";
                 datasets
                     // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
-                    // should be removed when the cantabular metadata extractor returns 2021 metadata 
+                    // should be removed when the cantabular metadata extractor returns 2021 metadata
                     .getMockCantabularMetadata()
                     .then(cantMetadata => {
-                        this.setState({ isReadOnly: true });
+                        // this.setState({ isReadOnly: true });
                         this.setState({
                             cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
+                        });
+                        this.setState({
+                            fieldsReturned: this.checksFieldsReturned(cantMetadata),
                         });
                         this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
                     })
@@ -239,8 +264,33 @@ export class CantabularMetadataController extends Component {
         }
     };
 
+    checksFieldsReturned = cantResponse => {
+        const areMetadataFieldsReturned = {
+            title: cantResponse.table_query_result.service.tables[0].name ? true : false,
+            summary: cantResponse.table_query_result.service.tables[0].description ? true : false,
+            keywords: cantResponse.table_query_result.service.tables[0].vars ? true : false,
+            nationalStatistic: cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified ? true : false,
+            licence: cantResponse.dataset_query_result.dataset.meta.source.licence ? true : false,
+            contactName: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name ? true : false,
+            contactEmail: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email ? true : false,
+            contactTelephone: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone ? true : false,
+            relatedDatasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets ? true : false,
+            relatedPublications: cantResponse.table_query_result.service.tables[0].meta.publications ? true : false,
+            relatedMethodologies: false,
+            releaseFrequency: false,
+            releaseDate: false,
+            nextReleaseDate: false,
+            unitOfMeasure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit ? true : false,
+            notices: false,
+            dimensions: cantResponse.dataset_query_result.dataset.vars ? true : false,
+            usageNotes: false,
+            latestChanges: false,
+            qmi: cantResponse.dataset_query_result.dataset.meta.source.methodology_link ? true : false,
+        };
+        return { ...this.state.fieldsReturned, ...areMetadataFieldsReturned };
+    };
+
     marshalCantabularMetadata = cantResponse => {
-        console.log("cantResponse", cantResponse);
         //no release_date field found in 2021 cantabular metadata response
         // const [day, month, year] = cantResponse.table_query_result.service.tables[0].meta.census_releases[0].release_date.split("/");
         return {
@@ -742,7 +792,8 @@ export class CantabularMetadataController extends Component {
                     collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState : this.state.versionCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
-                    isReadOnly={this.state.isReadOnly}
+                    // isReadOnly={this.state.isReadOnly}
+                    fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
                 />
 

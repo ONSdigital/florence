@@ -209,7 +209,7 @@ export default class datasets {
     //     return http.get(`/cantabular-metadata/dataset/${datasetID}/cantabular/${cantabularDatasetId}/lang/${lang}`);
     // }
 
-    // should be removed when the cantabular metadata extractor returns 2021 metadata 
+    // should be removed when the cantabular metadata extractor returns 2021 metadata
     static getMockCantabularMetadata() {
         return http.get(`/mock-metadata`);
     }
