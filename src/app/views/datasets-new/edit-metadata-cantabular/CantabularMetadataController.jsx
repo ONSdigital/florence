@@ -38,7 +38,6 @@ export class CantabularMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
-            // isReadOnly: false,
             allowPreview: false,
             disableCancel: false,
             datasetCollectionState: "",
@@ -156,7 +155,6 @@ export class CantabularMetadataController extends Component {
                     // should be removed when the cantabular metadata extractor returns 2021 metadata
                     .getMockCantabularMetadata()
                     .then(cantMetadata => {
-                        // this.setState({ isReadOnly: true });
                         this.setState({
                             cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
                         });
@@ -219,8 +217,6 @@ export class CantabularMetadataController extends Component {
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset.publications, this.props.params.datasetID)
                     : [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
-                //no release_frequency field found in 2021 cantabular metadata response
-                // releaseFrequency: cantabularMetadata.dataset.release_frequency || "",
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: cantabularMetadata.dataset.unit_of_measure || "",
                 nextReleaseDate: dataset.next_release,
@@ -229,8 +225,6 @@ export class CantabularMetadataController extends Component {
                 version: version.version,
                 versionID: version.id,
                 releaseDate: {
-                    //no release_date field found in 2021 cantabular metadata response
-                    // value: cantabularMetadata.version.release_date || "",
                     value: version.release_date || "",
                     error: "",
                 },
@@ -268,31 +262,22 @@ export class CantabularMetadataController extends Component {
         const areMetadataFieldsReturned = {
             title: cantResponse.table_query_result.service.tables[0].name ? true : false,
             summary: cantResponse.table_query_result.service.tables[0].description ? true : false,
-            keywords: cantResponse.table_query_result.service.tables[0].vars ? true : false,
+            keywords: cantResponse.table_query_result.service.tables[0].vars.length ? true : false,
             nationalStatistic: cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified ? true : false,
             licence: cantResponse.dataset_query_result.dataset.meta.source.licence ? true : false,
             contactName: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name ? true : false,
             contactEmail: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email ? true : false,
             contactTelephone: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone ? true : false,
-            relatedDatasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets ? true : false,
-            relatedPublications: cantResponse.table_query_result.service.tables[0].meta.publications ? true : false,
-            relatedMethodologies: false,
-            releaseFrequency: false,
-            releaseDate: false,
-            nextReleaseDate: false,
+            relatedDatasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets.length ? true : false,
+            relatedPublications: cantResponse.table_query_result.service.tables[0].meta.publications.length ? true : false,
             unitOfMeasure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit ? true : false,
-            notices: false,
-            dimensions: cantResponse.dataset_query_result.dataset.vars ? true : false,
-            usageNotes: false,
-            latestChanges: false,
+            dimensions: cantResponse.dataset_query_result.dataset.vars.length ? true : false,
             qmi: cantResponse.dataset_query_result.dataset.meta.source.methodology_link ? true : false,
         };
         return { ...this.state.fieldsReturned, ...areMetadataFieldsReturned };
     };
 
     marshalCantabularMetadata = cantResponse => {
-        //no release_date field found in 2021 cantabular metadata response
-        // const [day, month, year] = cantResponse.table_query_result.service.tables[0].meta.census_releases[0].release_date.split("/");
         return {
             dataset: {
                 title: `${cantResponse.table_query_result.service.tables[0].name} (${cantResponse.table_query_result.service.tables[0].label})`,
@@ -304,8 +289,6 @@ export class CantabularMetadataController extends Component {
                 related_datasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets,
                 publications: cantResponse.table_query_result.service.tables[0].meta.publications,
                 unit_of_measure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
-                //no release_frequency field found in 2021 cantabular metadata response
-                // release_frequency: cantResponse.table_query_result.service.tables[0].meta.release_frequency,
                 qmi: {
                     href: cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
                 },
@@ -326,8 +309,6 @@ export class CantabularMetadataController extends Component {
                         label: dimension.label,
                     };
                 }),
-                //no release_date field found in 2021 cantabular metadata response
-                // release_date: [year, month, day].join("/"),
             },
         };
     };
@@ -804,7 +785,6 @@ export class CantabularMetadataController extends Component {
                     collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState : this.state.versionCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
-                    // isReadOnly={this.state.isReadOnly}
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
                 />

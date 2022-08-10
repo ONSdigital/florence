@@ -80,7 +80,6 @@ const propTypes = {
     handleRedirectOnReject: PropTypes.func.isRequired,
     disableForm: PropTypes.bool.isRequired,
     isSaving: PropTypes.bool,
-    // isReadOnly: PropTypes.bool,
     disableCancel: PropTypes.bool,
 };
 
@@ -107,7 +106,6 @@ const CantabularMetadata = ({
     isSaving,
     allowPreview,
     disableCancel,
-    // isReadOnly,
     fieldsReturned,
 }) => {
     return (
@@ -130,13 +128,7 @@ const CantabularMetadata = ({
             </p>
 
             <h2>Title</h2>
-            <Input
-                id="title"
-                value={metadata.title}
-                onChange={handleStringInputChange}
-                // disabled={disableForm || isReadOnly}
-                disabled={disableForm || fieldsReturned.title}
-            />
+            <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
 
             <h2>Release dates</h2>
             <Input
@@ -146,7 +138,6 @@ const CantabularMetadata = ({
                 type="date"
                 onChange={handleDateInputChange}
                 value={metadata.releaseDate.value && date.format(metadata.releaseDate.value, "yyyy-mm-dd")}
-                // disabled={disableForm || versionIsPublished || (metadata.releaseDate.value ? isReadOnly : false)}
                 disabled={disableForm || versionIsPublished || fieldsReturned.releaseDate}
                 error={metadata.releaseDate.error}
             />
@@ -157,7 +148,6 @@ const CantabularMetadata = ({
                 label="Next release date"
                 onChange={handleStringInputChange}
                 value={metadata.nextReleaseDate}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.nextReleaseDate}
             />
 
@@ -167,7 +157,6 @@ const CantabularMetadata = ({
                 label="Release frequency"
                 onChange={handleStringInputChange}
                 value={metadata.releaseFrequency}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.releaseFrequency}
             />
 
@@ -180,7 +169,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || metadata.notices?.length}
+                disableActions={disableForm || fieldsReturned.notices}
             />
 
             <h2 className="margin-top--1">About</h2>
@@ -190,7 +179,6 @@ const CantabularMetadata = ({
                 type="textarea"
                 value={metadata.summary}
                 onChange={handleStringInputChange}
-                // disabled={disableForm || (metadata.summary ? isReadOnly : false)}
                 disabled={disableForm || fieldsReturned.summary}
             />
 
@@ -201,7 +189,6 @@ const CantabularMetadata = ({
                 type="input"
                 value={metadata.unitOfMeasure}
                 onChange={handleStringInputChange}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.unitOfMeasure}
             />
 
@@ -214,7 +201,6 @@ const CantabularMetadata = ({
                             label="Title"
                             value={dimension.label ? dimension.label : dimension.name}
                             onChange={handleDimensionNameChange}
-                            // disabled={disableForm || versionIsPublished || isReadOnly}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                         />
                         <Input
@@ -223,7 +209,6 @@ const CantabularMetadata = ({
                             type="textarea"
                             value={dimension.description}
                             onChange={handleDimensionDescriptionChange}
-                            // disabled={disableForm || versionIsPublished || isReadOnly}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                         />
                     </div>
@@ -236,7 +221,6 @@ const CantabularMetadata = ({
                 label="Keywords"
                 value={metadata.keywords}
                 onChange={handleStringInputChange}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.keywords}
             />
 
@@ -245,7 +229,6 @@ const CantabularMetadata = ({
                 label="Licence"
                 onChange={handleStringInputChange}
                 value={metadata.licence}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.licence}
             />
 
@@ -258,7 +241,7 @@ const CantabularMetadata = ({
                     handleAddClick={handleSimpleEditableListAdd}
                     handleEditClick={handleSimpleEditableListEdit}
                     handleDeleteClick={handleSimpleEditableListDelete}
-                    disableActions={disableForm || metadata.usageNotes?.length}
+                    disableActions={disableForm || fieldsReturned.usageNotes}
                 />
             </div>
 
@@ -280,7 +263,6 @@ const CantabularMetadata = ({
                 onChange={handleNationalStatisticChange}
                 inline={true}
                 legend={"National Statistic"}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.nationalStatistic}
             />
             <h2>Contact details</h2>
@@ -290,7 +272,6 @@ const CantabularMetadata = ({
                 label="Contact name"
                 onChange={handleStringInputChange}
                 value={metadata.contactName}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.contactName}
             />
             <Input
@@ -299,7 +280,6 @@ const CantabularMetadata = ({
                 label="Contact email"
                 onChange={handleStringInputChange}
                 value={metadata.contactEmail}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.contactEmail}
             />
 
@@ -309,7 +289,6 @@ const CantabularMetadata = ({
                 label="Contact telephone"
                 onChange={handleStringInputChange}
                 value={metadata.contactTelephone}
-                // disabled={disableForm || isReadOnly}
                 disabled={disableForm || fieldsReturned.contactTelephone}
             />
 
@@ -322,7 +301,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm}
+                disableActions={disableForm || fieldsReturned.relatedDatasets}
             />
 
             <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
@@ -333,17 +312,10 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm}
+                disableActions={disableForm || fieldsReturned.relatedPublications}
             />
             <h3 className="margin-top--1">Quality and methodology information</h3>
-            <Input
-                id="qmi"
-                label="QMI URL"
-                onChange={handleStringInputChange}
-                value={metadata.qmi}
-                // disabled={disableForm || isReadOnly}
-                disabled={disableForm || fieldsReturned.qmi}
-            />
+            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm || fieldsReturned.qmi} />
             <h3>Methodologies</h3>
             <SimpleEditableList
                 addText={"Add a methodology"}
@@ -352,7 +324,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm}
+                disableActions={disableForm || fieldsReturned.relatedMethodologies}
             />
 
             <h2 className="margin-top--1">What's changed</h2>
@@ -363,7 +335,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || versionIsPublished || metadata.latestChanges?.length}
+                disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
             />
 
             <div className="margin-top--2">
