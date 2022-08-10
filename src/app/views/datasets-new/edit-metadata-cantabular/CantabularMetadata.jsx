@@ -108,6 +108,8 @@ const CantabularMetadata = ({
     disableCancel,
     fieldsReturned,
 }) => {
+    console.log("userEmail", userEmail);
+    console.log("lastEditedBy", lastEditedBy);
     return (
         <div className="grid__col-6 margin-bottom--4">
             <div className="margin-top--2">
@@ -339,9 +341,13 @@ const CantabularMetadata = ({
             />
 
             <div className="margin-top--2">
-                <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
-                    Save
-                </button>
+                {userEmail !== lastEditedBy && (collectionState.toLowerCase() === "complete" || collectionState.toLowerCase() === "reviewed") ? (
+                    <span></span>
+                ) : (
+                    <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
+                        Save
+                    </button>
+                )}
                 <SaveAndReviewActions
                     disabled={disableForm}
                     reviewState={collectionState}

@@ -203,6 +203,7 @@ export class CantabularMetadataController extends Component {
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
+        console.log("nonCantDatasetMetadata", nonCantDatasetMetadata);
         try {
             const mappedMetadata = {
                 title: cantabularMetadata.dataset.title,
