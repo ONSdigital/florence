@@ -204,24 +204,34 @@ export class CantabularMetadataController extends Component {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
         console.log("nonCantDatasetMetadata", nonCantDatasetMetadata);
+        const collectionState = nonCantDatasetMetadata.collection_state.toLowerCase().trim();
         try {
             const mappedMetadata = {
-                title: cantabularMetadata.dataset.title,
-                summary: cantabularMetadata.dataset.description,
-                keywords: cantabularMetadata.dataset.keywords ? cantabularMetadata.dataset.keywords.join().replace(",", ", ") : "",
-                nationalStatistic: cantabularMetadata.dataset.national_statistic,
-                licence: cantabularMetadata.dataset.license || "",
-                relatedDatasets: cantabularMetadata.dataset.related_datasets
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset.related_datasets, this.props.params.datasetID)
-                    : [],
-                relatedPublications: cantabularMetadata.dataset.publications
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset.publications, this.props.params.datasetID)
-                    : [],
+                title: collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.dataset.title : dataset.title,
+                summary: collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.dataset.description : dataset.description,
+                keywords:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
+                        : dataset?.keywords?.join().replace(",", ", "),
+                nationalStatistic:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? cantabularMetadata.dataset.national_statistic
+                        : dataset.national_statistic,
+                licence: collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.dataset.license : dataset.license,
+                relatedDatasets:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
+                        : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
+                relatedPublications:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
+                        : this.mapRelatedContentToState(dataset?.publications, dataset.id),
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
-                unitOfMeasure: cantabularMetadata.dataset.unit_of_measure || "",
+                unitOfMeasure:
+                    collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release,
-                qmi: cantabularMetadata.dataset.qmi.href,
+                qmi: collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
                 edition: version.edition,
                 version: version.version,
                 versionID: version.id,
@@ -230,12 +240,21 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: cantabularMetadata.version.dimensions ? cantabularMetadata.version.dimensions : [],
+                dimensions: collectionState === "inprogress" || collectionState === "" ? cantabularMetadata.version?.dimensions : version?.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: cantabularMetadata.dataset.contacts[0].name ? cantabularMetadata.dataset.contacts[0].name : "",
-                contactEmail: cantabularMetadata.dataset.contacts[0].email ? cantabularMetadata.dataset.contacts[0].email : "",
-                contactTelephone: cantabularMetadata.dataset.contacts[0].telephone ? cantabularMetadata.dataset.contacts[0].telephone : "",
+                contactName:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? cantabularMetadata.dataset.contacts[0]?.name
+                        : dataset.contacts[0]?.name,
+                contactEmail:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? cantabularMetadata.dataset.contacts[0]?.email
+                        : dataset.contacts[0]?.email,
+                contactTelephone:
+                    collectionState === "inprogress" || collectionState === ""
+                        ? cantabularMetadata.dataset.contacts[0]?.telephone
+                        : dataset.contacts[0]?.telephone,
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
