@@ -341,13 +341,9 @@ const CantabularMetadata = ({
             />
 
             <div className="margin-top--2">
-                {userEmail !== lastEditedBy && (collectionState.toLowerCase() === "complete" || collectionState.toLowerCase() === "reviewed") ? (
-                    <span></span>
-                ) : (
-                    <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
-                        Save
-                    </button>
-                )}
+                <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
+                    Save
+                </button>
                 <SaveAndReviewActions
                     disabled={disableForm}
                     reviewState={collectionState}
