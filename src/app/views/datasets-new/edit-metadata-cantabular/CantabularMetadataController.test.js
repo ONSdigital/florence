@@ -433,6 +433,18 @@ describe("Allowing preview functionality", () => {
         expect(component.state("allowPreview")).toBe(true);
     });
 
+    it("disables preview for datasets if one of the cantabular metadata mandatory fields is missing :title and dimensions ", () => {
+        component.setState({ fieldsReturned: { title: false, dimensions: true } });
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
+        expect(component.state("allowPreview")).toBe(false);
+        component.setState({ fieldsReturned: { title: true, dimensions: false } });
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
+        expect(component.state("allowPreview")).toBe(false);
+        component.setState({ fieldsReturned: { title: false, dimensions: false } });
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
+        expect(component.state("allowPreview")).toBe(false);
+    });
+
     it("disables preview for datasets with state of 'created'", () => {
         component.instance().handleGETSuccess(mockedCantabularDataset, mockedCantabularDatasetMetadata);
         expect(component.state("allowPreview")).toBe(false);
