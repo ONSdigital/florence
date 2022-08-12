@@ -427,7 +427,8 @@ describe("Mapping metadata to state", () => {
 });
 
 describe("Allowing preview functionality", () => {
-    it("enables preview on GET metadata success", () => {
+    it("enables preview on GET metadata success and when all the mandatory cantabular metadata fields (title, dimensions) are returned", () => {
+        component.setState({ fieldsReturned: { title: true, dimensions: true } });
         component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
         expect(component.state("allowPreview")).toBe(true);
     });
