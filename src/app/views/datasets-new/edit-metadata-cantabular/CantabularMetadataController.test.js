@@ -258,7 +258,7 @@ const mockedUnSavedNonCantabularDatasetMetadata = {
     dimensions: [],
     collection_id: "test_collection_253275687",
     collection_state: "",
-    collection_last_edited_by: "test2@user.com",
+    collection_last_edited_by: "",
 };
 
 const mockedCantabularDataset = {
@@ -310,7 +310,7 @@ const mockCantabularMetadataState = {
     },
     datasetCollectionState: "",
     versionCollectionState: "",
-    lastEditedBy: mockedUnSavedNonCantabularDatasetMetadata.collection_last_edited_by,
+    lastEditedBy: mockedUnSavedNonCantabularDatasetMetadata.collection_last_edited_by || null,
 };
 
 const mockDatasetApiMetadataState = {
@@ -421,8 +421,7 @@ describe("Mapping metadata to state", () => {
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
-        component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata, collectionState: "inProgress" });
-        const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata, component.state("cantabularMetadata"));
+        const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata);
         expect(returnValue).toMatchObject(mockDatasetApiMetadataState);
     });
 });
