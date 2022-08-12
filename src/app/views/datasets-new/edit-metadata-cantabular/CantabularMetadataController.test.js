@@ -247,7 +247,7 @@ const mockedUnSavedNonCantabularDatasetMetadata = {
         latest_changes: [],
         usage_notes: [
             {
-                id: 1,
+                id: 0,
                 note: "usage note 1",
                 simpleListDescription: "usage note 1",
                 simpleListHeading: "usage note title 1",
@@ -416,15 +416,14 @@ describe("Calling getMetadata", () => {
 
 describe("Mapping metadata to state", () => {
     it("maps cantabular metadata when the collection state is an empty string", async () => {
-        const datasetAPIResponse =  datasets.getEditMetadata.mockResolvedValue(mockedUnSavedNonCantabularDatasetMetadata)
         component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        const returnValue = component.instance().mapMetadataToState(datasetAPIResponse, component.state("cantabularMetadata"));
+        const returnValue = component.instance().mapMetadataToState(mockedUnSavedNonCantabularDatasetMetadata, component.state("cantabularMetadata"));
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
-        // component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        // const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata, component.state("cantabularMetadata"));
-        // expect(returnValue).toMatchObject(mockCantabularMetadataState);
+        component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata, collectionState: "inProgress" });
+        const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata, component.state("cantabularMetadata"));
+        expect(returnValue).toMatchObject(mockDatasetApiMetadataState);
     });
 });
 
