@@ -203,7 +203,6 @@ export class CantabularMetadataController extends Component {
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
-        console.log("nonCantDatasetMetadata", nonCantDatasetMetadata);
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         try {
             const mappedMetadata = {
@@ -727,11 +726,10 @@ export class CantabularMetadataController extends Component {
         const versionID = this.props.params.versionID;
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
 
-        this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
+        await this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
+        
         const datasetMetadata = await datasets.getEditMetadata(datasetID, editionID, versionID);
-        console.log(datasetMetadata);
         this.mapMetadataToState(datasetMetadata);
-        console.log(this.state.metadata);
     };
 
     handleRedirectOnReject = isCancellingPublication => {

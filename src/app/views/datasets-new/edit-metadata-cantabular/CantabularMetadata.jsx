@@ -108,8 +108,6 @@ const CantabularMetadata = ({
     disableCancel,
     fieldsReturned,
 }) => {
-    console.log("userEmail", userEmail);
-    console.log("lastEditedBy", lastEditedBy);
     return (
         <div className="grid__col-6 margin-bottom--4">
             <div className="margin-top--2">
