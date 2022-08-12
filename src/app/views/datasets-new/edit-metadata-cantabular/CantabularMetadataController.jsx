@@ -727,7 +727,7 @@ export class CantabularMetadataController extends Component {
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
 
         await this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
-        
+
         const datasetMetadata = await datasets.getEditMetadata(datasetID, editionID, versionID);
         this.mapMetadataToState(datasetMetadata);
     };

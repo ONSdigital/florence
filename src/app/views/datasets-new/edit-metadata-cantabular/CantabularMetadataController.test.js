@@ -34,7 +34,7 @@ jest.mock("../../../utilities/notifications", () => {
 jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         getEditMetadata: jest.fn(() => {
-            return Promise.resolve(mockedNonCantDatasetMetadata);
+            return Promise.resolve(mockedSavedNonCantDatasetMetadata);
         }),
         putEditMetadata: jest.fn(() => {
             return Promise.resolve();
@@ -88,7 +88,6 @@ const mockedCantabularDatasetMetadata = {
                 label: "Dimension2",
             },
         ],
-        release_date: "2022/06/28",
     },
 };
 
@@ -103,7 +102,7 @@ const mockedCantabularExtractorResp = {
                     vars: ["Dimension1", "Dimension2"],
                     meta: {
                         contact: {},
-                        census_releases: [{ release_date: "28/06/2022" }],
+                        census_releases: [],
                         dataset_mnemonic2011: "",
                         dataset_population: "",
                         dissemination_source: "",
@@ -113,7 +112,6 @@ const mockedCantabularExtractorResp = {
                         keywords: [],
                         publications: [],
                         related_datasets: [],
-                        release_frequency: "",
                         statistical_unit: {
                             statistical_unit: "unit",
                             statistical_unit_description: "",
@@ -175,11 +173,31 @@ const mockedCantabularExtractorResp = {
     },
 };
 
-const mockedNonCantDatasetMetadata = {
+const mockedSavedNonCantDatasetMetadata = {
     dataset: {
         id: "456",
         methodologies: [],
         next_release: "",
+        release_frequency: "2",
+        title: "Dataset-API test metadata",
+        description: "Cantabular metadata description",
+        keywords: ["Dimension1", "Dimension2"],
+        national_statistic: false,
+        license: "www.testData.com/licence",
+        related_datasets: [],
+        publications: [],
+        unit_of_measure: "unit",
+        qmi: {
+            href: "www.testData.com/methodology",
+        },
+        contacts: [
+            {
+                name: "Test Name",
+                email: "testEmail@email.com",
+                telephone: "2222222",
+                website: "www.testData.com/contact",
+            },
+        ],
     },
     version: {
         alerts: [],
@@ -212,6 +230,37 @@ const mockedNonCantDatasetMetadata = {
     collection_last_edited_by: "test@user.com",
 };
 
+const mockedUnSavedNonCantabularDatasetMetadata = {
+    dataset: {
+        id: "567",
+        methodologies: [],
+        next_release: "",
+        release_frequency: "1",
+    },
+    version: {
+        alerts: [],
+        collection_id: "test_collection_253275687",
+        edition: "2021",
+        id: "3be1d978-ead1-4fc5-8cd7-2bf58199728b",
+        release_date: "2022-12-03T00:00:00.000Z",
+        version: 1,
+        latest_changes: [],
+        usage_notes: [
+            {
+                id: 1,
+                note: "usage note 1",
+                simpleListDescription: "usage note 1",
+                simpleListHeading: "usage note title 1",
+                title: "usage note title 1",
+            },
+        ]
+    },
+    dimensions: [],
+    collection_id: "test_collection_253275687",
+    collection_state: "",
+    collection_last_edited_by: "test2@user.com",
+};
+
 const mockedCantabularDataset = {
     dataset: {
         id: "cantabular",
@@ -234,34 +283,64 @@ const mockedCantabularDataset = {
     collection_last_edited_by: "test@user.com",
 };
 
-const mockedState = {
+const mockCantabularMetadataState = {
     metadata: {
         title: mockedCantabularDatasetMetadata.dataset.title,
         summary: mockedCantabularDatasetMetadata.dataset.description,
-        keywords: mockedCantabularDatasetMetadata.dataset.keywords.join().replace(",", ", "),
+        keywords: mockedCantabularDatasetMetadata.dataset.keywords?.join().replace(",", ", "),
         nationalStatistic: mockedCantabularDatasetMetadata.dataset.national_statistic,
         licence: mockedCantabularDatasetMetadata.dataset.license,
         relatedDatasets: mockedCantabularDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedCantabularDatasetMetadata.dataset.publications,
-        relatedMethodologies: mockedNonCantDatasetMetadata.dataset.methodologies,
-        releaseFrequency: mockedCantabularDatasetMetadata.dataset.release_frequency,
+        relatedMethodologies: mockedUnSavedNonCantabularDatasetMetadata.dataset.methodologies,
+        releaseFrequency: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: mockedNonCantDatasetMetadata.dataset.next_release,
+        nextReleaseDate: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
         contactName: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
         contactEmail: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
         contactTelephone: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
-        edition: mockedNonCantDatasetMetadata.version.edition,
-        version: mockedNonCantDatasetMetadata.version.version,
-        releaseDate: { value: mockedCantabularDatasetMetadata.version.release_date, error: "" },
-        notices: mockedNonCantDatasetMetadata.version.alerts,
+        edition: mockedUnSavedNonCantabularDatasetMetadata.version.edition,
+        version: mockedUnSavedNonCantabularDatasetMetadata.version.version,
+        releaseDate: { value: mockedUnSavedNonCantabularDatasetMetadata.version.release_date, error: "" },
+        notices: mockedUnSavedNonCantabularDatasetMetadata.version.alerts,
         dimensions: mockedCantabularDatasetMetadata.version.dimensions,
-        usageNotes: mockedNonCantDatasetMetadata.version.usage_notes,
-        latestChanges: mockedNonCantDatasetMetadata.version.latest_changes,
+        usageNotes: mockedUnSavedNonCantabularDatasetMetadata.version.usage_notes,
+        latestChanges: mockedUnSavedNonCantabularDatasetMetadata.version.latest_changes,
     },
-    datasetCollectionState: mockedNonCantDatasetMetadata.collection_state,
-    versionCollectionState: mockedNonCantDatasetMetadata.collection_state,
-    lastEditedBy: mockedNonCantDatasetMetadata.collection_last_edited_by,
+    datasetCollectionState: "",
+    versionCollectionState: "",
+    lastEditedBy: mockedUnSavedNonCantabularDatasetMetadata.collection_last_edited_by,
+};
+
+const mockDatasetApiMetadataState = {
+    metadata: {
+        title: mockedSavedNonCantDatasetMetadata.dataset.title,
+        summary: mockedSavedNonCantDatasetMetadata.dataset.description,
+        keywords: mockedSavedNonCantDatasetMetadata.dataset.keywords?.join().replace(",", ", "),
+        nationalStatistic: mockedSavedNonCantDatasetMetadata.dataset.national_statistic,
+        licence: mockedSavedNonCantDatasetMetadata.dataset.license,
+        relatedDatasets: mockedSavedNonCantDatasetMetadata.dataset.related_datasets,
+        relatedPublications: mockedSavedNonCantDatasetMetadata.dataset.publications,
+        relatedMethodologies: mockedSavedNonCantDatasetMetadata.dataset.methodologies,
+        releaseFrequency: mockedSavedNonCantDatasetMetadata.dataset.release_frequency,
+        unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
+        nextReleaseDate: mockedSavedNonCantDatasetMetadata.dataset.next_release,
+        qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
+        contactName: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
+        contactEmail: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
+        contactTelephone: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].telephone,
+        edition: mockedSavedNonCantDatasetMetadata.version.edition,
+        version: mockedSavedNonCantDatasetMetadata.version.version,
+        releaseDate: { value: mockedSavedNonCantDatasetMetadata.version.release_date, error: "" },
+        notices: mockedSavedNonCantDatasetMetadata.version.alerts,
+        dimensions: mockedSavedNonCantDatasetMetadata.version.dimensions,
+        usageNotes: mockedSavedNonCantDatasetMetadata.version.usage_notes,
+        latestChanges: mockedSavedNonCantDatasetMetadata.version.latest_changes,
+    },
+    datasetCollectionState: mockedSavedNonCantDatasetMetadata.collection_state,
+    versionCollectionState: mockedSavedNonCantDatasetMetadata.collection_state,
+    lastEditedBy: mockedSavedNonCantDatasetMetadata.collection_last_edited_by,
 };
 
 let mockedNotifications = [];
@@ -335,17 +414,23 @@ describe("Calling getMetadata", () => {
     });
 });
 
-describe("Mapping cantabular metadata to state", () => {
-    it("maps correctly", () => {
+describe("Mapping metadata to state", () => {
+    it("maps cantabular metadata when the collection state is an empty string", async () => {
+        const datasetAPIResponse =  datasets.getEditMetadata.mockResolvedValue(mockedUnSavedNonCantabularDatasetMetadata)
         component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        const returnValue = component.instance().mapMetadataToState(mockedNonCantDatasetMetadata, component.state("cantabularMetadata"));
-        expect(returnValue).toMatchObject(mockedState);
+        const returnValue = component.instance().mapMetadataToState(datasetAPIResponse, component.state("cantabularMetadata"));
+        expect(returnValue).toMatchObject(mockCantabularMetadataState);
+    });
+    it("maps dataset-API metadata when the collection state is not an empty string", () => {
+        // component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
+        // const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata, component.state("cantabularMetadata"));
+        // expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
 });
 
 describe("Allowing preview functionality", () => {
     it("enables preview on GET metadata success", () => {
-        component.instance().handleGETSuccess(mockedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
         expect(component.state("allowPreview")).toBe(true);
     });
 
@@ -374,15 +459,15 @@ describe("Allowing preview functionality", () => {
 
 describe("Mapping state to put body", () => {
     it("maps correctly", () => {
-        component.setState(mockedState);
+        component.setState(mockCantabularMetadataState);
         const returnValue = component.instance().mapMetadataToPutBody(false, false);
-        expect(returnValue.dataset.id).toBe(mockedNonCantDatasetMetadata.dataset.id);
+        expect(returnValue.dataset.id).toBe(mockedSavedNonCantDatasetMetadata.dataset.id);
         expect(returnValue.collection_id).toBe("123");
         expect(returnValue.collection_state).toBe("InProgress");
     });
 
     it("maps state correctly", () => {
-        component.setState(mockedState);
+        component.setState(mockCantabularMetadataState);
         const expectComplete = component.instance().mapMetadataToPutBody(true, false);
         expect(expectComplete.collection_state).toBe("Complete");
         const expectReviewed = component.instance().mapMetadataToPutBody(false, true);
@@ -450,14 +535,14 @@ describe("Calling getCantabularMetadata", () => {
     cookies.get = jest.fn(() => "cy");
 
     it("calls getCantabularMetadata with expected args", async () => {
-        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
         expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantabularDatasetId", "cy");
     });
 
     it("sets state correctly when getCantabularMetadata returns 200", async () => {
         component.instance().marshalCantabularMetadata = jest.fn();
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
         expect(component.state("isReadOnly")).toBe(true);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
     });
@@ -466,7 +551,7 @@ describe("Calling getCantabularMetadata", () => {
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject());
         component.instance().marshalCantabularMetadata = jest.fn();
         component.instance().handleGETSuccess = jest.fn();
-        await component.instance().getCantabularMetadata("datasetId", mockedNonCantDatasetMetadata);
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(0);
         expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(0);
         expect(component.state("isGettingMetadata")).toBe(false);
