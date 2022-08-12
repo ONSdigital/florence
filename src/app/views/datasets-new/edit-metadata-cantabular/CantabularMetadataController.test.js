@@ -52,45 +52,6 @@ jest.mock("../../../utilities/cookies.js", () => {
     };
 });
 
-const mockedCantabularDatasetMetadata = {
-    dataset: {
-        title: "Cantabular metadata",
-        description: "Cantabular metadata description",
-        keywords: ["Dimension1", "Dimension2"],
-        national_statistic: true,
-        license: "www.test.com/licence",
-        related_datasets: [],
-        publications: [],
-        unit_of_measure: "unit",
-        release_frequency: "",
-        qmi: {
-            href: "www.test.com/methodology",
-        },
-        contacts: [
-            {
-                name: "Name",
-                email: "email@email.com",
-                telephone: "1111111",
-                website: "www.test.com/contact",
-            },
-        ],
-    },
-    version: {
-        dimensions: [
-            {
-                name: "Dimension1",
-                description: "Dimension description",
-                label: "Dimension1",
-            },
-            {
-                name: "Dimension2",
-                description: "Dimension description",
-                label: "Dimension2",
-            },
-        ],
-    },
-};
-
 const mockedCantabularExtractorResp = {
     table_query_result: {
         service: {
@@ -143,33 +104,55 @@ const mockedCantabularExtractorResp = {
             },
             vars: [
                 {
-                    name: "Dimension1",
-                    meta: {
-                        ons_variable: {
-                            variable_description: "Dimension description",
-                            keywords: [],
-                            statistical_unit: {
-                                statistical_unit: "",
-                                statistical_unit_desc: "",
-                            },
-                        },
-                    },
+                    name: "Dimension1 Name",
+                    description: "Dimension1 description",
+                    label:"Dimension1 Label"
                 },
                 {
-                    name: "Dimension2",
-                    meta: {
-                        ons_variable: {
-                            variable_description: "Dimension description",
-                            keywords: [],
-                            statistical_unit: {
-                                statistical_unit: "",
-                                statistical_unit_desc: "",
-                            },
-                        },
-                    },
+                    name: "Dimension2 Name",
+                    description: "Dimension2 description",
+                    label:"Dimension2 Label"
                 },
             ],
         },
+    },
+};
+
+const mockedCantabularDatasetMetadata = {
+    dataset: {
+        title: `Cantabular metadata (${mockedCantabularExtractorResp.table_query_result.service.tables[0].label})`,
+        description: "Cantabular metadata description",
+        keywords: ["Dimension1", "Dimension2"],
+        national_statistic: true,
+        license: "www.test.com/licence",
+        related_datasets: [],
+        publications: [],
+        unit_of_measure: "unit",
+        qmi: {
+            href: "www.test.com/methodology",
+        },
+        contacts: [
+            {
+                name: "Name",
+                email: "email@email.com",
+                telephone: "1111111",
+                website: "www.test.com/contact",
+            },
+        ],
+    },
+    version: {
+        dimensions: [
+            {
+                name: "Dimension1 Name",
+                description: "Dimension1 description",
+                label: "Dimension1 Label",
+            },
+            {
+                name: "Dimension2 Name",
+                description: "Dimension2 description",
+                label: "Dimension2 Label",
+            },
+        ],
     },
 };
 
