@@ -319,7 +319,7 @@ export class CantabularMetadataController extends Component {
         };
     };
 
-    checksMandatoryFieldsReturned = (hasTitle, hasDimensions) => {
+    checksMandatoryFieldsReturnedByMetadataExtractor = (hasTitle, hasDimensions) => {
         if (!hasTitle || !hasDimensions) {
             this.setState({ disableScreen: true, allowPreview: false, disableCancel: true });
             notifications.add({
@@ -351,7 +351,9 @@ export class CantabularMetadataController extends Component {
             lastEditedBy: mapped.lastEditedBy,
             versionIsPublished: mapped.versionIsPublished,
         });
-        this.checksMandatoryFieldsReturned(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
+        if (!nonCantDatasetMetadata.collection_state) {
+            this.checksMandatoryFieldsReturnedByMetadataExtractor(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
+        }
     };
 
     mapRelatedContentToState = (relatedDatasets, datasetID) => {
