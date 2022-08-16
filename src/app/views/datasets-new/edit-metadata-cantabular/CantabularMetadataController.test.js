@@ -106,12 +106,12 @@ const mockedCantabularExtractorResp = {
                 {
                     name: "Dimension1 Name",
                     description: "Dimension1 description",
-                    label:"Dimension1 Label"
+                    label: "Dimension1 Label",
                 },
                 {
                     name: "Dimension2 Name",
                     description: "Dimension2 description",
-                    label:"Dimension2 Label"
+                    label: "Dimension2 Label",
                 },
             ],
         },
@@ -236,7 +236,7 @@ const mockedUnSavedNonCantabularDatasetMetadata = {
                 simpleListHeading: "usage note title 1",
                 title: "usage note title 1",
             },
-        ]
+        ],
     },
     dimensions: [],
     collection_id: "test_collection_253275687",
