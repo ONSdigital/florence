@@ -150,38 +150,42 @@ export class CantabularMetadataController extends Component {
             .then(dataset => {
                 const cantabularDatasetId = dataset.next.is_based_on["@id"];
                 const language = cookies.get("lang") || "en";
-                datasets
-                    // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
-                    // should be removed when the cantabular metadata extractor returns 2021 metadata
-                    .getMockCantabularMetadata()
-                    .then(cantMetadata => {
-                        this.setState({
-                            cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
+                if (nonCantDatasetMetadata.collection_state.trim() === "") {
+                    datasets
+                        // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
+                        // should be removed when the cantabular metadata extractor returns 2021 metadata
+                        .getMockCantabularMetadata()
+                        .then(cantMetadata => {
+                            this.setState({
+                                cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
+                            });
+                            this.setState({
+                                fieldsReturned: this.checksFieldsReturned(cantMetadata),
+                            });
+                            this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
+                        })
+                        .catch(error => {
+                            this.setState({
+                                isGettingMetadata: false,
+                                disableScreen: true,
+                                allowPreview: false,
+                                disableCancel: false,
+                            });
+                            log.event(
+                                "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
+                                log.data({ datasetID, cantabularDatasetId, language }),
+                                log.error()
+                            );
+                            notifications.add({
+                                type: "warning",
+                                message: `Error occurred during dataset selection, please try again`,
+                                isDismissable: true,
+                            });
+                            console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
                         });
-                        this.setState({
-                            fieldsReturned: this.checksFieldsReturned(cantMetadata),
-                        });
-                        this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
-                    })
-                    .catch(error => {
-                        this.setState({
-                            isGettingMetadata: false,
-                            disableScreen: true,
-                            allowPreview: false,
-                            disableCancel: false,
-                        });
-                        log.event(
-                            "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                            log.data({ datasetID, cantabularDatasetId, language }),
-                            log.error()
-                        );
-                        notifications.add({
-                            type: "warning",
-                            message: `Error occurred during dataset selection, please try again`,
-                            isDismissable: true,
-                        });
-                        console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
-                    });
+                } else {
+                    this.handleGETSuccess(nonCantDatasetMetadata);
+                }
             })
             .catch(error => {
                 this.setState({
@@ -330,7 +334,7 @@ export class CantabularMetadataController extends Component {
         }
     };
 
-    handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata) => {
+    handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
             this.setState({ disableScreen: true });
