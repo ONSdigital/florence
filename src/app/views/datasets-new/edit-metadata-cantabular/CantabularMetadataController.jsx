@@ -150,7 +150,7 @@ export class CantabularMetadataController extends Component {
             .then(dataset => {
                 const cantabularDatasetId = dataset.next.is_based_on["@id"];
                 const language = cookies.get("lang") || "en";
-                if (nonCantDatasetMetadata.collection_state.trim() === "") {
+                if (!nonCantDatasetMetadata.collection_state.trim()) {
                     datasets
                         // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
                         // should be removed when the cantabular metadata extractor returns 2021 metadata
@@ -210,27 +210,24 @@ export class CantabularMetadataController extends Component {
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         try {
             const mappedMetadata = {
-                title: collectionState === "" ? cantabularMetadata.dataset.title : dataset.title,
-                summary: collectionState === "" ? cantabularMetadata.dataset.description : dataset.description,
-                keywords:
-                    collectionState === ""
-                        ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
-                        : dataset?.keywords?.join().replace(",", ", "),
-                nationalStatistic: collectionState === "" ? cantabularMetadata.dataset.national_statistic : dataset.national_statistic,
-                licence: collectionState === "" ? cantabularMetadata.dataset.license : dataset.license,
-                relatedDatasets:
-                    collectionState === ""
-                        ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
-                        : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
-                relatedPublications:
-                    collectionState === ""
-                        ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
-                        : this.mapRelatedContentToState(dataset?.publications, dataset.id),
+                title: !collectionState ? cantabularMetadata.dataset.title : dataset.title,
+                summary: !collectionState ? cantabularMetadata.dataset.description : dataset.description,
+                keywords: !collectionState
+                    ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
+                    : dataset?.keywords?.join().replace(",", ", "),
+                nationalStatistic: !collectionState ? cantabularMetadata.dataset.national_statistic : dataset.national_statistic,
+                licence: !collectionState ? cantabularMetadata.dataset.license : dataset.license,
+                relatedDatasets: !collectionState
+                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
+                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
+                relatedPublications: !collectionState
+                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
+                    : this.mapRelatedContentToState(dataset?.publications, dataset.id),
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
-                unitOfMeasure: collectionState === "" ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
+                unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release,
-                qmi: collectionState === "" ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
+                qmi: !collectionState ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
                 edition: version.edition,
                 version: version.version,
                 versionID: version.id,
@@ -239,12 +236,12 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: collectionState === "" ? cantabularMetadata.version?.dimensions : version?.dimensions,
+                dimensions: !collectionState ? cantabularMetadata.version?.dimensions : version?.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: collectionState === "" ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
-                contactEmail: collectionState === "" ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
-                contactTelephone: collectionState === "" ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
+                contactName: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
+                contactEmail: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
+                contactTelephone: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
