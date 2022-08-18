@@ -52,6 +52,10 @@ jest.mock("../../../utilities/cookies.js", () => {
     };
 });
 
+afterEach(() => {
+    jest.clearAllMocks();
+  });
+
 const mockedCantabularExtractorResp = {
     table_query_result: {
         service: {
@@ -516,6 +520,7 @@ describe("Calling saveMetadata", () => {
 describe("Calling getCantabularMetadata", () => {
     beforeEach(() => {
         mockedNotifications = [];
+        jest.clearAllMocks();
     });
 
     const mockDatasetResp = {
@@ -551,7 +556,7 @@ describe("Calling getCantabularMetadata", () => {
         expect(component.state("disableScreen")).toBe(true);
         expect(component.state("allowPreview")).toBe(false);
         expect(component.state("disableCancel")).toBe(false);
-        expect(log.error).toHaveBeenCalled();
+        expect(log.error).toHaveBeenCalledTimes(1);
         expect(mockedNotifications.length).toEqual(1);
     });
 });
@@ -563,6 +568,11 @@ describe("Calling marshalCantabularMetadata", () => {
 });
 
 describe("Calling handleSave", () => {
+    beforeEach(() => {
+        mockedNotifications = [];
+        jest.clearAllMocks();
+    });
+
     it("sets state and does not save metadata if release date is not set", async () => {
         const mockCantabularMetadataStateNoReleaseDate = {
             ...mockCantabularMetadataState,
@@ -577,4 +587,15 @@ describe("Calling handleSave", () => {
         });
         expect(component.instance().saveMetadata).toHaveBeenCalledTimes(0);
     });
+
+    it("on getEditMetadata error: creates notification", async () => {
+        component.setState(mockCantabularMetadataState);
+        component.instance().saveMetadata = jest.fn();
+        expect(mockedNotifications.length).toBe(0);
+        datasets.getEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await component.instance().handleSave(false, false);
+        expect(log.error).toHaveBeenCalledTimes(1)
+        expect(mockedNotifications.length).toBe(1);
+    });
+
 });

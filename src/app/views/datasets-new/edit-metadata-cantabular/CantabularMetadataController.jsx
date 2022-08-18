@@ -726,8 +726,22 @@ export class CantabularMetadataController extends Component {
 
         await this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
 
-        const datasetMetadata = await datasets.getEditMetadata(datasetID, editionID, versionID);
-        this.mapMetadataToState(datasetMetadata);
+        try {
+            const datasetMetadata = await datasets.getEditMetadata(datasetID, editionID, versionID);
+            this.mapMetadataToState(datasetMetadata);
+        } catch (error) {
+            log.event(
+                "get metadata: error retrieving saved dataset metadata from controller",
+                log.data({ datasetID, editionID, versionID }),
+                log.error()
+            );
+            notifications.add({
+                type: "warning",
+                message: `An error occured when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
+                isDismissable: true,
+            });
+            console.error("get metadata: error retrieving saved dataset metadata from controller", error);
+        }
     };
 
     handleRedirectOnReject = isCancellingPublication => {
