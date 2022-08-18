@@ -54,7 +54,7 @@ jest.mock("../../../utilities/cookies.js", () => {
 
 afterEach(() => {
     jest.clearAllMocks();
-  });
+});
 
 const mockedCantabularExtractorResp = {
     table_query_result: {
@@ -594,8 +594,7 @@ describe("Calling handleSave", () => {
         expect(mockedNotifications.length).toBe(0);
         datasets.getEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().handleSave(false, false);
-        expect(log.error).toHaveBeenCalledTimes(1)
+        expect(log.error).toHaveBeenCalledTimes(1);
         expect(mockedNotifications.length).toBe(1);
     });
-
 });
