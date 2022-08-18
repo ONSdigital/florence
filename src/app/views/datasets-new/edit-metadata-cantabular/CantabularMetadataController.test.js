@@ -562,3 +562,14 @@ describe("Calling marshalCantabularMetadata", () => {
         expect(component.instance().marshalCantabularMetadata(mockedCantabularExtractorResp)).toEqual(mockedCantabularDatasetMetadata);
     });
 });
+
+describe("Calling handleSave", () => {
+    it("sets state and does not save metadata if release date is not set", async () => {
+        const mockCantabularMetadataStateNoReleaseDate = { ...mockCantabularMetadataState, metadata: { ...mockCantabularMetadataState.metadata, releaseDate: {value: "", error: ""} } }
+        component.setState(mockCantabularMetadataStateNoReleaseDate);
+        component.instance().saveMetadata = jest.fn();
+        await component.instance().handleSave(true, true)
+        expect(component.state("metadata")).toEqual({ ...mockCantabularMetadataStateNoReleaseDate.metadata, releaseDate: { value: "", error: "You must set a release date" } })
+        expect(component.instance().saveMetadata).toHaveBeenCalledTimes(0)
+    })
+})
