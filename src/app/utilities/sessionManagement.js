@@ -83,7 +83,11 @@ export default class sessionManagement {
             // Timer to start monitoring user interaction to add a final extra amount of time to their session
             this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
             // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-            this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+            const now = new Date();
+            const timerInterval = refreshExpiryTime - now.getTime();
+            if (typeof timerInterval === "number" && timerInterval <= this.timeOffsets.invasiveRenewal) {
+                this.startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, this.timeOffsets.invasiveRenewal, this.warnRefreshSoonExpire);
+            }
         }
     }
 

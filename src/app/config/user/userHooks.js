@@ -30,7 +30,7 @@ export const useGetPermissions = (authState, setShouldUpdateAccessToken) => {
 
 export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
-        if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
+        if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive && props.user.isAuthenticated) {
             const enableNewSignIn = fp.get("config.enableNewSignIn")(props);
             const authState = getAuthState(); // Get the lastest authState
             const session_expiry_time = fp.get("session_expiry_time")(authState);

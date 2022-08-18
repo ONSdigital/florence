@@ -138,8 +138,18 @@ describe("when notifications props are passed", () => {
         },
     ];
 
-    it("renders <Notifications /> component with props", () => {
-        wrapper({ location: { pathname: "" }, notifications });
+    it.only("renders <Notifications /> component with props", () => {
+        const user = {
+            isAuthenticated: true,
+        };
+        
+        const expTimes = sessionManagement.createDefaultExpireTimes(+1);
+        setAuthState({
+            session_expiry_time: expTimes.session_expiry_time,
+            refresh_expiry_time: expTimes.refresh_expiry_time,
+        });
+
+        wrapper({ location: { pathname: "" }, notifications, user });
         const element = screen.getByTestId("notifications");
         expect(element).toBeInTheDocument;
         expect(getAllByTestId(element, "123positive")).toHaveLength(1);
