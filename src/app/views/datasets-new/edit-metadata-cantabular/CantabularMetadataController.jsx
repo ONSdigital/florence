@@ -150,42 +150,38 @@ export class CantabularMetadataController extends Component {
             .then(dataset => {
                 const cantabularDatasetId = dataset.next.is_based_on["@id"];
                 const language = cookies.get("lang") || "en";
-                if (!nonCantDatasetMetadata.collection_state.trim()) {
-                    datasets
-                        // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
-                        // should be removed when the cantabular metadata extractor returns 2021 metadata
-                        .getMockCantabularMetadata()
-                        .then(cantMetadata => {
-                            this.setState({
-                                cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
-                            });
-                            this.setState({
-                                fieldsReturned: this.checksFieldsReturned(cantMetadata),
-                            });
-                            this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
-                        })
-                        .catch(error => {
-                            this.setState({
-                                isGettingMetadata: false,
-                                disableScreen: true,
-                                allowPreview: false,
-                                disableCancel: false,
-                            });
-                            log.event(
-                                "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                                log.data({ datasetID, cantabularDatasetId, language }),
-                                log.error()
-                            );
-                            notifications.add({
-                                type: "warning",
-                                message: `Error occurred during dataset selection, please try again`,
-                                isDismissable: true,
-                            });
-                            console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
+                datasets
+                    // .getCantabularMetadata(datasetID, cantabularDatasetId, language)
+                    // should be removed when the cantabular metadata extractor returns 2021 metadata
+                    .getMockCantabularMetadata()
+                    .then(cantMetadata => {
+                        this.setState({
+                            cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
                         });
-                } else {
-                    this.handleGETSuccess(nonCantDatasetMetadata);
-                }
+                        this.setState({
+                            fieldsReturned: this.checksFieldsReturned(cantMetadata),
+                        });
+                        this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
+                    })
+                    .catch(error => {
+                        this.setState({
+                            isGettingMetadata: false,
+                            disableScreen: true,
+                            allowPreview: false,
+                            disableCancel: false,
+                        });
+                        log.event(
+                            "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
+                            log.data({ datasetID, cantabularDatasetId, language }),
+                            log.error()
+                        );
+                        notifications.add({
+                            type: "warning",
+                            message: `Error occurred during dataset selection, please try again`,
+                            isDismissable: true,
+                        });
+                        console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
+                    });
             })
             .catch(error => {
                 this.setState({
@@ -352,9 +348,8 @@ export class CantabularMetadataController extends Component {
             lastEditedBy: mapped.lastEditedBy,
             versionIsPublished: mapped.versionIsPublished,
         });
-        if (!nonCantDatasetMetadata.collection_state) {
-            this.checksMandatoryFieldsReturnedByMetadataExtractor(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
-        }
+
+        this.checksMandatoryFieldsReturnedByMetadataExtractor(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
     };
 
     mapRelatedContentToState = (relatedDatasets, datasetID) => {
