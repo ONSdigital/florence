@@ -704,7 +704,42 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    handleSave = async (isSubmittingForReview, isMarkingAsReviewed) => {
+    saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
+        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
+        await this.saveMetadata(
+            this.props.params.datasetID,
+            this.props.params.editionID,
+            this.props.params.versionID,
+            body,
+            isSubmittingForReview,
+            isMarkingAsReviewed
+        );
+    };
+
+    retrieveDatasetMetadata = async () => {
+        try {
+            const datasetMetadata = await datasets.getEditMetadata(
+                this.props.params.datasetID,
+                this.props.params.editionID,
+                this.props.params.versionID
+            );
+            this.mapMetadataToState(datasetMetadata);
+        } catch (error) {
+            log.event(
+                "get metadata: error retrieving saved dataset metadata from controller",
+                log.data({ datasetID: this.props.params.datasetID, editionID: this.props.params.editionID, versionID: this.props.params.versionID }),
+                log.error()
+            );
+            notifications.add({
+                type: "warning",
+                message: `An error occured when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
+                isDismissable: true,
+            });
+            console.error("get metadata: error retrieving saved dataset metadata from controller", error);
+        }
+    };
+
+    checkMandatoryFields = () => {
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
@@ -716,31 +751,6 @@ export class CantabularMetadataController extends Component {
             };
             this.setState({ metadata: newMetadataState });
             window.scrollTo(0, 0);
-            return;
-        }
-
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
-        const versionID = this.props.params.versionID;
-        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-
-        await this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
-
-        try {
-            const datasetMetadata = await datasets.getEditMetadata(datasetID, editionID, versionID);
-            this.mapMetadataToState(datasetMetadata);
-        } catch (error) {
-            log.event(
-                "get metadata: error retrieving saved dataset metadata from controller",
-                log.data({ datasetID, editionID, versionID }),
-                log.error()
-            );
-            notifications.add({
-                type: "warning",
-                message: `An error occured when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
-                isDismissable: true,
-            });
-            console.error("get metadata: error retrieving saved dataset metadata from controller", error);
         }
     };
 
@@ -755,20 +765,32 @@ export class CantabularMetadataController extends Component {
         }
     };
 
-    handleSaveClick = () => {
-        this.handleSave(false, false);
+    handleSaveClick = async () => {
+        this.checkMandatoryFields();
+        if (this.state.metadata.releaseDate.value) {
+            await this.saveDatasetMetadata(false, false);
+            this.retrieveDatasetMetadata();
+        }
     };
 
     handleCancelClick = () => {
         this.handleRedirectOnReject(true);
     };
 
-    handleSubmitForReviewClick = () => {
-        this.handleSave(true, false);
+    handleSubmitForReviewClick = async () => {
+        this.checkMandatoryFields();
+        if (this.state.metadata.releaseDate.value) {
+            await this.saveDatasetMetadata(true, false);
+            this.retrieveDatasetMetadata();
+        }
     };
 
-    handleMarkAsReviewedClick = () => {
-        this.handleSave(false, true);
+    handleMarkAsReviewedClick = async () => {
+        this.checkMandatoryFields();
+        if (this.state.metadata.releaseDate.value) {
+            await this.saveDatasetMetadata(false, true);
+            this.retrieveDatasetMetadata();
+        }
     };
 
     renderModal = () => {
