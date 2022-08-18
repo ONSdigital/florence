@@ -537,7 +537,6 @@ describe("Calling getCantabularMetadata", () => {
         component.instance().marshalCantabularMetadata = jest.fn();
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
         await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-        expect(component.state("isReadOnly")).toBe(true);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
     });
 
@@ -565,11 +564,17 @@ describe("Calling marshalCantabularMetadata", () => {
 
 describe("Calling handleSave", () => {
     it("sets state and does not save metadata if release date is not set", async () => {
-        const mockCantabularMetadataStateNoReleaseDate = { ...mockCantabularMetadataState, metadata: { ...mockCantabularMetadataState.metadata, releaseDate: {value: "", error: ""} } }
+        const mockCantabularMetadataStateNoReleaseDate = {
+            ...mockCantabularMetadataState,
+            metadata: { ...mockCantabularMetadataState.metadata, releaseDate: { value: "", error: "" } },
+        };
         component.setState(mockCantabularMetadataStateNoReleaseDate);
         component.instance().saveMetadata = jest.fn();
-        await component.instance().handleSave(true, true)
-        expect(component.state("metadata")).toEqual({ ...mockCantabularMetadataStateNoReleaseDate.metadata, releaseDate: { value: "", error: "You must set a release date" } })
-        expect(component.instance().saveMetadata).toHaveBeenCalledTimes(0)
-    })
-})
+        await component.instance().handleSave(true, true);
+        expect(component.state("metadata")).toEqual({
+            ...mockCantabularMetadataStateNoReleaseDate.metadata,
+            releaseDate: { value: "", error: "You must set a release date" },
+        });
+        expect(component.instance().saveMetadata).toHaveBeenCalledTimes(0);
+    });
+});
