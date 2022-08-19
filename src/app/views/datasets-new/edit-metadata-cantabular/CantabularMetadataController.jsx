@@ -768,7 +768,12 @@ export class CantabularMetadataController extends Component {
     handleSaveClick = async () => {
         this.checkMandatoryFields();
         if (this.state.metadata.releaseDate.value) {
-            await this.saveDatasetMetadata(false, false);
+            try {
+                await this.saveDatasetMetadata(false, false);
+            }
+            catch {
+                return
+            }
             this.retrieveDatasetMetadata();
         }
     };
