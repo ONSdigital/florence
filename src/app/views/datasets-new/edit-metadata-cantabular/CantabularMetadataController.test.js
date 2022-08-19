@@ -533,17 +533,17 @@ describe("Calling getCantabularMetadata", () => {
     datasets.get = jest.fn(() => Promise.resolve(mockDatasetResp));
     cookies.get = jest.fn(() => "cy");
 
-    it("calls getCantabularMetadata with expected args", async () => {
-        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-        expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantabularDatasetId", "cy");
-    });
+    // it("calls getCantabularMetadata with expected args", async () => {
+    //     await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+    //     expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantabularDatasetId", "cy");
+    // });
 
-    it("sets state correctly when getCantabularMetadata returns 200", async () => {
-        component.instance().marshalCantabularMetadata = jest.fn();
-        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
-    });
+    // it("sets state correctly when getCantabularMetadata returns 200", async () => {
+    //     component.instance().marshalCantabularMetadata = jest.fn();
+    //     datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
+    //     await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+    //     expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
+    // });
 
     it("handles correctly and throws error when getCantabularMetadata returns error", async () => {
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject());
@@ -567,34 +567,57 @@ describe("Calling marshalCantabularMetadata", () => {
     });
 });
 
-describe("Calling handleSave", () => {
-    beforeEach(() => {
-        mockedNotifications = [];
-        jest.clearAllMocks();
-    });
-
-    it("sets state and does not save metadata if release date is not set", async () => {
+describe("Calling checkMandatoryFields", () => {
+    it("sets state if release date is not set", async () => {
         const mockCantabularMetadataStateNoReleaseDate = {
             ...mockCantabularMetadataState,
             metadata: { ...mockCantabularMetadataState.metadata, releaseDate: { value: "", error: "" } },
         };
         component.setState(mockCantabularMetadataStateNoReleaseDate);
-        component.instance().saveMetadata = jest.fn();
-        await component.instance().handleSave(true, true);
+        component.instance().checkMandatoryFields();
         expect(component.state("metadata")).toEqual({
             ...mockCantabularMetadataStateNoReleaseDate.metadata,
             releaseDate: { value: "", error: "You must set a release date" },
         });
-        expect(component.instance().saveMetadata).toHaveBeenCalledTimes(0);
+    });
+})
+
+describe("Calling saveDatasetMetadata", () => {
+    it("calls saveMetadata with correct args", async () => {
+        component.instance().mapMetadataToPutBody = jest.fn(() => mockedSavedNonCantDatasetMetadata)
+        component.instance().saveMetadata = jest.fn()
+        await component.instance().saveDatasetMetadata(true, false)
+        expect(component.instance().saveMetadata).toHaveBeenCalledWith("456", "789", "1", mockedSavedNonCantDatasetMetadata, true, false)
+    })
+})
+
+describe("Calling retrieveDatasetMetadata", () => {
+    beforeEach(() => {
+        mockedNotifications = [];
+        jest.clearAllMocks();
     });
 
-    it("on getEditMetadata error: creates notification", async () => {
-        component.setState(mockCantabularMetadataState);
-        component.instance().saveMetadata = jest.fn();
-        expect(mockedNotifications.length).toBe(0);
-        datasets.getEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().handleSave(false, false);
-        expect(log.error).toHaveBeenCalledTimes(1);
-        expect(mockedNotifications.length).toBe(1);
-    });
-});
+    it("calls datasets.getEditMetadata and mapMetadataToState with correct args in success case", async () => {
+        datasets.getEditMetadata.mockImplementationOnce(() => mockedSavedNonCantDatasetMetadata)
+        component.instance().mapMetadataToState = jest.fn()
+        await component.instance().retrieveDatasetMetadata()
+        expect(datasets.getEditMetadata).toHaveBeenCalledWith("456", "789", "1")
+        expect(component.instance().mapMetadataToState).toHaveBeenCalledWith(mockedSavedNonCantDatasetMetadata)
+    })
+
+    it("logs error and notification when datasets.getEditMetadata errors", async () => {
+        datasets.getEditMetadata.mockImplementationOnce(() => () => Promise.reject({ status: 500 }))
+        await component.instance().retrieveDatasetMetadata()
+        expect(mockedNotifications.length).toEqual(1)
+        expect(log.error).toHaveBeenCalledTimes(1)
+    })
+
+    it("logs error and notification when mapMetadataToState errors", async () => {
+        datasets.getEditMetadata.mockImplementationOnce(() => mockedSavedNonCantDatasetMetadata)
+        component.instance().mapMetadataToState = jest.fn(() => { throw new Error() })
+        await component.instance().retrieveDatasetMetadata()
+        expect(mockedNotifications.length).toEqual(1)
+        expect(log.error).toHaveBeenCalledTimes(1)
+    })
+})
+
