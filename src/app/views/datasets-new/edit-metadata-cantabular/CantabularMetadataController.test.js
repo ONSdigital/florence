@@ -630,17 +630,15 @@ describe("Calling handleSaveClick", () => {
 
     it("calls saveDatasetMetadata if release date is present", async () => {
         component.setState(mockCantabularMetadataState);
-        component.instance().saveDatasetMetadata = jest.fn();
+        component.instance().saveDatasetMetadata = jest.fn(() => Promise.resolve());
         await component.instance().handleSaveClick();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
     });
 
     it("does not call retrieveDatasetMetadata if saveMetadata errors", async () => {
         component.setState(mockCantabularMetadataState);
-        component.instance().saveMetadata = jest.fn(() => {
-            throw new Error();
-        });
-        component.instance().saveDatasetMetadata = jest.fn();
+        component.instance().saveMetadata = jest.fn(() => Promise.reject());
+        component.instance().saveDatasetMetadata = jest.fn(() => component.instance().saveMetadata());
         component.instance().retrieveDatasetMetadata = jest.fn();
         await component.instance().handleSaveClick();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);

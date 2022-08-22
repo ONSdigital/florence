@@ -673,6 +673,18 @@ export class CantabularMetadataController extends Component {
         return StatusInProgress;
     };
 
+    saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
+        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
+        return this.saveMetadata(
+            this.props.params.datasetID,
+            this.props.params.editionID,
+            this.props.params.versionID,
+            body,
+            isSubmittingForReview,
+            isMarkingAsReviewed
+        );
+    };
+
     saveMetadata = (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
         return datasets
@@ -702,18 +714,6 @@ export class CantabularMetadataController extends Component {
                 });
                 console.error("save metadata: error PUTting metadata to controller", error);
             });
-    };
-
-    saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
-        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-        await this.saveMetadata(
-            this.props.params.datasetID,
-            this.props.params.editionID,
-            this.props.params.versionID,
-            body,
-            isSubmittingForReview,
-            isMarkingAsReviewed
-        );
     };
 
     retrieveDatasetMetadata = async () => {
@@ -768,13 +768,7 @@ export class CantabularMetadataController extends Component {
     handleSaveClick = async () => {
         this.checkMandatoryFields();
         if (this.state.metadata.releaseDate.value) {
-            try {
-                await this.saveDatasetMetadata(false, false);
-            }
-            catch {
-                return
-            }
-            this.retrieveDatasetMetadata();
+            this.saveDatasetMetadata(false, false).then(() => this.retrieveDatasetMetadata());
         }
     };
 
