@@ -765,10 +765,10 @@ export class CantabularMetadataController extends Component {
         }
     };
 
-    handleSaveClick = async () => {
+    handleSaveClick = () => {
         this.checkMandatoryFields();
         if (this.state.metadata.releaseDate.value) {
-            this.saveDatasetMetadata(false, false).then(() => this.retrieveDatasetMetadata());
+            this.saveDatasetMetadata(false, false).then(this.retrieveDatasetMetadata);
         }
     };
 
