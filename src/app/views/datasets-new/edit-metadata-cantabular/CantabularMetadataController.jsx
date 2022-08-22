@@ -58,7 +58,10 @@ export class CantabularMetadataController extends Component {
                 relatedDatasets: [],
                 relatedPublications: [],
                 relatedMethodologies: [],
-                releaseFrequency: "",
+                releaseFrequency: {
+                    value: "",
+                    error: "",
+                },
                 edition: "",
                 version: 0,
                 versionID: "",
@@ -220,7 +223,10 @@ export class CantabularMetadataController extends Component {
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
                     : this.mapRelatedContentToState(dataset?.publications, dataset.id),
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
-                releaseFrequency: dataset.release_frequency || "",
+                releaseFrequency: {
+                    value: dataset.release_frequency || "",
+                    error: "",
+                },
                 unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release,
                 qmi: !collectionState ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
@@ -425,12 +431,21 @@ export class CantabularMetadataController extends Component {
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        const newMetadataState = { ...this.state.metadata, [fieldName]: value };
-        this.setState({
-            metadata: newMetadataState,
-            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
-        });
+        if (event.target.name === "releaseFrequency") {
+            const newMetadataState = { ...this.state.metadata, [fieldName]: { value: value, error: "" } };
+            this.setState({
+                metadata: newMetadataState,
+                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+                versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
+            });
+        } else {
+            const newMetadataState = { ...this.state.metadata, [fieldName]: value };
+            this.setState({
+                metadata: newMetadataState,
+                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+                versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
+            });
+        }
     };
 
     handleDateInputChange = event => {
@@ -636,7 +651,7 @@ export class CantabularMetadataController extends Component {
                 qmi: {
                     href: this.state.metadata.qmi,
                 },
-                release_frequency: this.state.metadata.releaseFrequency,
+                release_frequency: this.state.metadata.releaseFrequency.value,
                 contacts: [
                     {
                         name: this.state.metadata.contactName,
@@ -752,12 +767,26 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             window.scrollTo(0, 0);
         }
+        if (!this.state.metadata.releaseFrequency.value) {
+            const newReleaseFrequency = {
+                value: "",
+                error: "You must enter the release frequency",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                releaseFrequency: newReleaseFrequency,
+            };
+            this.setState({ metadata: newMetadataState });
+            window.scrollTo(0, 0);
+        }
     };
 
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         this.checkMandatoryFields();
-        if (this.state.metadata.releaseDate.value) {
-            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed).then(this.retrieveDatasetMetadata).catch((error) => error);
+        if (this.state.metadata.releaseDate.value && this.state.metadata.releaseFrequency.value) {
+            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
+                .then(this.retrieveDatasetMetadata)
+                .catch(error => error);
         }
     };
 

@@ -23,7 +23,10 @@ const propTypes = {
         relatedDatasets: PropTypes.array,
         relatedPublications: PropTypes.array,
         relatedMethodologies: PropTypes.array,
-        releaseFrequency: PropTypes.string,
+        releaseFrequency: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string,
+        }),
         edition: PropTypes.string,
         version: PropTypes.number,
         releaseDate: PropTypes.shape({
@@ -156,8 +159,9 @@ const CantabularMetadata = ({
                 name="releaseFrequency"
                 label="Release frequency"
                 onChange={handleStringInputChange}
-                value={metadata.releaseFrequency}
+                value={metadata.releaseFrequency.value}
                 disabled={disableForm || fieldsReturned.releaseFrequency}
+                error={metadata.releaseFrequency.error}
             />
 
             <h2>Notices</h2>
