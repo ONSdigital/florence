@@ -754,6 +754,13 @@ export class CantabularMetadataController extends Component {
         }
     };
 
+    saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
+        this.checkMandatoryFields();
+        if (this.state.metadata.releaseDate.value) {
+            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed).then(this.retrieveDatasetMetadata).catch((error) => error);
+        }
+    };
+
     handleRedirectOnReject = isCancellingPublication => {
         if (isCancellingPublication) {
             notifications.add({
@@ -766,30 +773,19 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSaveClick = () => {
-        this.checkMandatoryFields();
-        if (this.state.metadata.releaseDate.value) {
-            this.saveDatasetMetadata(false, false).then(this.retrieveDatasetMetadata);
-        }
+        this.saveAndRetrieveDatasetMetadata(false, false);
     };
 
     handleCancelClick = () => {
         this.handleRedirectOnReject(true);
     };
 
-    handleSubmitForReviewClick = async () => {
-        this.checkMandatoryFields();
-        if (this.state.metadata.releaseDate.value) {
-            await this.saveDatasetMetadata(true, false);
-            this.retrieveDatasetMetadata();
-        }
+    handleSubmitForReviewClick = () => {
+        this.saveAndRetrieveDatasetMetadata(true, false);
     };
 
-    handleMarkAsReviewedClick = async () => {
-        this.checkMandatoryFields();
-        if (this.state.metadata.releaseDate.value) {
-            await this.saveDatasetMetadata(false, true);
-            this.retrieveDatasetMetadata();
-        }
+    handleMarkAsReviewedClick = () => {
+        this.saveAndRetrieveDatasetMetadata(false, true);
     };
 
     renderModal = () => {

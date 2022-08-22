@@ -623,36 +623,36 @@ describe("Calling retrieveDatasetMetadata", () => {
     });
 });
 
-describe("Calling handleSaveClick", () => {
+describe("Calling saveAndRetrieveDatasetMetadata", () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it("calls saveDatasetMetadata if release date is present", async () => {
+    it("calls saveDatasetMetadata if release date is present", () => {
         component.setState(mockCantabularMetadataState);
         component.instance().saveDatasetMetadata = jest.fn(() => Promise.resolve());
-        await component.instance().handleSaveClick();
+        component.instance().saveAndRetrieveDatasetMetadata();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
     });
 
-    it("does not call retrieveDatasetMetadata if saveMetadata errors", async () => {
+    it("does not call retrieveDatasetMetadata if saveMetadata errors", () => {
         component.setState(mockCantabularMetadataState);
         component.instance().saveMetadata = jest.fn(() => Promise.reject());
         component.instance().saveDatasetMetadata = jest.fn(() => component.instance().saveMetadata());
         component.instance().retrieveDatasetMetadata = jest.fn();
-        await component.instance().handleSaveClick();
+        component.instance().saveAndRetrieveDatasetMetadata();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
         expect(component.instance().retrieveDatasetMetadata).toHaveBeenCalledTimes(0);
     });
 
-    it("does not call saveDatasetMetadata if no release date is present", async () => {
+    it("does not call saveDatasetMetadata if no release date is present", () => {
         const mockCantabularMetadataStateNoReleaseDate = {
             ...mockCantabularMetadataState,
             metadata: { ...mockCantabularMetadataState.metadata, releaseDate: { value: "", error: "" } },
         };
         component.setState(mockCantabularMetadataStateNoReleaseDate);
         component.instance().saveDatasetMetadata = jest.fn();
-        await component.instance().handleSaveClick();
+        component.instance().saveAndRetrieveDatasetMetadata();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(0);
     });
 });
