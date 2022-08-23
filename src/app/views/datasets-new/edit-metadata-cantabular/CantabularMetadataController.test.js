@@ -221,7 +221,7 @@ const mockedUnSavedNonCantabularDatasetMetadata = {
     dataset: {
         id: "567",
         methodologies: [],
-        next_release: "",
+        next_release: "1",
         release_frequency: "1",
     },
     version: {
@@ -280,13 +280,23 @@ const mockCantabularMetadataState = {
         relatedDatasets: mockedCantabularDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedCantabularDatasetMetadata.dataset.publications,
         relatedMethodologies: mockedUnSavedNonCantabularDatasetMetadata.dataset.methodologies,
-        releaseFrequency: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
+        releaseFrequency: {
+            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
+            error: ""},
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
+        nextReleaseDate: {
+            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
+            error: ""},
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
-        contactName: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
-        contactEmail: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
-        contactTelephone: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
+        contactName: {
+            value: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
+            error: ""},
+        contactEmail: {
+            value: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
+            error: ""},
+        contactTelephone: {
+            value: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
+            error: ""},
         edition: mockedUnSavedNonCantabularDatasetMetadata.version.edition,
         version: mockedUnSavedNonCantabularDatasetMetadata.version.version,
         releaseDate: { value: mockedUnSavedNonCantabularDatasetMetadata.version.release_date, error: "" },
@@ -310,13 +320,19 @@ const mockDatasetApiMetadataState = {
         relatedDatasets: mockedSavedNonCantDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedSavedNonCantDatasetMetadata.dataset.publications,
         relatedMethodologies: mockedSavedNonCantDatasetMetadata.dataset.methodologies,
-        releaseFrequency: mockedSavedNonCantDatasetMetadata.dataset.release_frequency,
+        releaseFrequency: { value: mockedSavedNonCantDatasetMetadata.dataset.release_frequency, error: "" },
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: mockedSavedNonCantDatasetMetadata.dataset.next_release,
+        nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
-        contactName: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
-        contactEmail: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
-        contactTelephone: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].telephone,
+        contactName: {
+            value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
+            error: ""},
+        contactEmail: {
+            value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
+            error: ""},
+        contactTelephone: {
+            value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].telephone,
+            error: ""},
         edition: mockedSavedNonCantDatasetMetadata.version.edition,
         version: mockedSavedNonCantDatasetMetadata.version.version,
         releaseDate: { value: mockedSavedNonCantDatasetMetadata.version.release_date, error: "" },
@@ -628,7 +644,7 @@ describe("Calling saveAndRetrieveDatasetMetadata", () => {
         jest.clearAllMocks();
     });
 
-    it("calls saveDatasetMetadata if release date is present", () => {
+    it("calls saveDatasetMetadata if all mandatory fields are present", () => {
         component.setState(mockCantabularMetadataState);
         component.instance().saveDatasetMetadata = jest.fn(() => Promise.resolve());
         component.instance().saveAndRetrieveDatasetMetadata();
