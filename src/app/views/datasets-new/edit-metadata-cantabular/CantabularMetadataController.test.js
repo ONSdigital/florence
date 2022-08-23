@@ -651,6 +651,24 @@ describe("Calling saveAndRetrieveDatasetMetadata", () => {
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
     });
 
+    it("does not call saveDatasetMetadata if one or more mandatory fields are missing", () => {
+        component.instance().saveDatasetMetadata = jest.fn();
+        const mockCantabularMetadataStateNoReleaseDate = {
+            ...mockCantabularMetadataState,
+            metadata: { ...mockCantabularMetadataState.metadata, releaseDate: { value: "", error: "" } },
+        };
+        component.setState(mockCantabularMetadataStateNoReleaseDate);
+        component.instance().saveAndRetrieveDatasetMetadata();
+        expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(0);
+        const mockCantabularMetadataStateMissingFields = {
+            ...mockCantabularMetadataState,
+            metadata: { ...mockCantabularMetadataState.metadata, releaseFrequency: { value: "", error: "" }, contactName: { value: "", error: "" } },
+        };
+        component.setState(mockCantabularMetadataStateMissingFields);
+        component.instance().saveAndRetrieveDatasetMetadata();
+        expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(0);
+    });
+
     it("does not call retrieveDatasetMetadata if saveMetadata errors", () => {
         component.setState(mockCantabularMetadataState);
         component.instance().saveMetadata = jest.fn(() => Promise.reject());
@@ -659,16 +677,5 @@ describe("Calling saveAndRetrieveDatasetMetadata", () => {
         component.instance().saveAndRetrieveDatasetMetadata();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
         expect(component.instance().retrieveDatasetMetadata).toHaveBeenCalledTimes(0);
-    });
-
-    it("does not call saveDatasetMetadata if no release date is present", () => {
-        const mockCantabularMetadataStateNoReleaseDate = {
-            ...mockCantabularMetadataState,
-            metadata: { ...mockCantabularMetadataState.metadata, releaseDate: { value: "", error: "" } },
-        };
-        component.setState(mockCantabularMetadataStateNoReleaseDate);
-        component.instance().saveDatasetMetadata = jest.fn();
-        component.instance().saveAndRetrieveDatasetMetadata();
-        expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(0);
     });
 });
