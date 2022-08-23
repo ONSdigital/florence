@@ -282,21 +282,26 @@ const mockCantabularMetadataState = {
         relatedMethodologies: mockedUnSavedNonCantabularDatasetMetadata.dataset.methodologies,
         releaseFrequency: {
             value: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
-            error: ""},
+            error: "",
+        },
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: {
             value: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
-            error: ""},
+            error: "",
+        },
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
         contactName: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
-            error: ""},
+            error: "",
+        },
         contactEmail: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
-            error: ""},
+            error: "",
+        },
         contactTelephone: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
-            error: ""},
+            error: "",
+        },
         edition: mockedUnSavedNonCantabularDatasetMetadata.version.edition,
         version: mockedUnSavedNonCantabularDatasetMetadata.version.version,
         releaseDate: { value: mockedUnSavedNonCantabularDatasetMetadata.version.release_date, error: "" },
@@ -326,13 +331,16 @@ const mockDatasetApiMetadataState = {
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
         contactName: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
-            error: ""},
+            error: "",
+        },
         contactEmail: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
-            error: ""},
+            error: "",
+        },
         contactTelephone: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].telephone,
-            error: ""},
+            error: "",
+        },
         edition: mockedSavedNonCantDatasetMetadata.version.edition,
         version: mockedSavedNonCantDatasetMetadata.version.version,
         releaseDate: { value: mockedSavedNonCantDatasetMetadata.version.release_date, error: "" },
