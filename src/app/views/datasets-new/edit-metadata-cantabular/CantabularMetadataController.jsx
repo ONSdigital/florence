@@ -52,9 +52,18 @@ export class CantabularMetadataController extends Component {
                 keywords: "",
                 nationalStatistic: false,
                 licence: "",
-                contactName: "",
-                contactEmail: "",
-                contactTelephone: "",
+                contactName: {
+                    value: "",
+                    error: "",
+                },
+                contactEmail: {
+                    value: "",
+                    error: "",
+                },
+                contactTelephone: {
+                    value: "",
+                    error: "",
+                },
                 relatedDatasets: [],
                 relatedPublications: [],
                 relatedMethodologies: [],
@@ -241,9 +250,18 @@ export class CantabularMetadataController extends Component {
                 dimensions: !collectionState ? cantabularMetadata.version?.dimensions : version?.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
-                contactEmail: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
-                contactTelephone: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
+                contactName: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
+                    error: "",
+                },
+                contactEmail: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
+                    error: "",
+                },
+                contactTelephone: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
+                    error: "",
+                },
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -431,7 +449,7 @@ export class CantabularMetadataController extends Component {
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        if (event.target.name === "releaseFrequency") {
+        if (["releaseFrequency", "contactName", "contactEmail", "contactTelephone"].includes(event.target.name)) {
             const newMetadataState = { ...this.state.metadata, [fieldName]: { value: value, error: "" } };
             this.setState({
                 metadata: newMetadataState,
@@ -654,9 +672,9 @@ export class CantabularMetadataController extends Component {
                 release_frequency: this.state.metadata.releaseFrequency.value,
                 contacts: [
                     {
-                        name: this.state.metadata.contactName,
-                        email: this.state.metadata.contactEmail,
-                        telephone: this.state.metadata.contactTelephone,
+                        name: this.state.metadata.contactName.value,
+                        email: this.state.metadata.contactEmail.value,
+                        telephone: this.state.metadata.contactTelephone.value,
                     },
                 ],
                 next_release: this.state.metadata.nextReleaseDate,
@@ -766,8 +784,44 @@ export class CantabularMetadataController extends Component {
             };
             this.setState({ metadata: newMetadataState });
             window.scrollTo(0, 0);
-        }
-        if (!this.state.metadata.releaseFrequency.value) {
+            return;
+        } else if (!this.state.metadata.contactName.value) {
+            const newContactName = {
+                value: "",
+                error: "You must enter a contact name",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactName: newContactName,
+            };
+            this.setState({ metadata: newMetadataState });
+            window.scrollTo(0, 0);
+            return;
+        } else if (!this.state.metadata.contactEmail.value) {
+            const newContactEmail = {
+                value: "",
+                error: "You must enter a contact email",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactEmail: newContactEmail,
+            };
+            this.setState({ metadata: newMetadataState });
+            window.scrollTo(0, 0);
+            return;
+        } else if (!this.state.metadata.contactTelephone.value) {
+            const newContactTelephone = {
+                value: "",
+                error: "You must enter a contact telephone number",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactTelephone: newContactTelephone,
+            };
+            this.setState({ metadata: newMetadataState });
+            window.scrollTo(0, 0);
+            return;
+        } else if (!this.state.metadata.releaseFrequency.value) {
             const newReleaseFrequency = {
                 value: "",
                 error: "You must enter the release frequency",
@@ -778,12 +832,14 @@ export class CantabularMetadataController extends Component {
             };
             this.setState({ metadata: newMetadataState });
             window.scrollTo(0, 0);
+            return;
         }
+        return true;
     };
 
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
-        this.checkMandatoryFields();
-        if (this.state.metadata.releaseDate.value && this.state.metadata.releaseFrequency.value) {
+        const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
+        if (mandatoryFieldsAreCompleted) {
             this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
                 .then(this.retrieveDatasetMetadata)
                 .catch(error => error);

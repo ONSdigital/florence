@@ -17,9 +17,18 @@ const propTypes = {
         keywords: PropTypes.string,
         nationalStatistic: PropTypes.bool,
         licence: PropTypes.string,
-        contactName: PropTypes.string,
-        contactEmail: PropTypes.string,
-        contactTelephone: PropTypes.string,
+        contactName: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string,
+        }),
+        contactEmail: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string,
+        }),
+        contactTelephone: PropTypes.shape({
+            value: PropTypes.string,
+            error: PropTypes.string,
+        }),
         relatedDatasets: PropTypes.array,
         relatedPublications: PropTypes.array,
         relatedMethodologies: PropTypes.array,
@@ -275,16 +284,18 @@ const CantabularMetadata = ({
                 name="contactName"
                 label="Contact name"
                 onChange={handleStringInputChange}
-                value={metadata.contactName}
+                value={metadata.contactName.value}
                 disabled={disableForm || fieldsReturned.contactName}
+                error={metadata.contactName.error}
             />
             <Input
                 id="contact-email"
                 name="contactEmail"
                 label="Contact email"
                 onChange={handleStringInputChange}
-                value={metadata.contactEmail}
+                value={metadata.contactEmail.value}
                 disabled={disableForm || fieldsReturned.contactEmail}
+                error={metadata.contactEmail.error}
             />
 
             <Input
@@ -292,8 +303,9 @@ const CantabularMetadata = ({
                 name="contactTelephone"
                 label="Contact telephone"
                 onChange={handleStringInputChange}
-                value={metadata.contactTelephone}
+                value={metadata.contactTelephone.value}
                 disabled={disableForm || fieldsReturned.contactTelephone}
+                error={metadata.contactTelephone.error}
             />
 
             <h2>Related links</h2>
