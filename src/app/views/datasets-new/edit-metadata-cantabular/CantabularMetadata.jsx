@@ -142,7 +142,7 @@ const CantabularMetadata = ({
             <h2>Title</h2>
             <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
 
-            <h2>Release dates</h2>
+            <h2 id="release-dates-heading">Release dates</h2>
             <Input
                 id="release-date"
                 name="releaseDate"
@@ -278,7 +278,7 @@ const CantabularMetadata = ({
                 legend={"National Statistic"}
                 disabled={disableForm || fieldsReturned.nationalStatistic}
             />
-            <h2>Contact details</h2>
+            <h2 id="contact-details-heading">Contact details</h2>
             <Input
                 id="contact-name"
                 name="contactName"

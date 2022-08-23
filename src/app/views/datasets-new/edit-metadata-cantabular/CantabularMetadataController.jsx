@@ -783,43 +783,7 @@ export class CantabularMetadataController extends Component {
                 releaseDate: newReleaseDateState,
             };
             this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
-            return;
-        } else if (!this.state.metadata.contactName.value) {
-            const newContactName = {
-                value: "",
-                error: "You must enter a contact name",
-            };
-            const newMetadataState = {
-                ...this.state.metadata,
-                contactName: newContactName,
-            };
-            this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
-            return;
-        } else if (!this.state.metadata.contactEmail.value) {
-            const newContactEmail = {
-                value: "",
-                error: "You must enter a contact email",
-            };
-            const newMetadataState = {
-                ...this.state.metadata,
-                contactEmail: newContactEmail,
-            };
-            this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
-            return;
-        } else if (!this.state.metadata.contactTelephone.value) {
-            const newContactTelephone = {
-                value: "",
-                error: "You must enter a contact telephone number",
-            };
-            const newMetadataState = {
-                ...this.state.metadata,
-                contactTelephone: newContactTelephone,
-            };
-            this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
+            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         } else if (!this.state.metadata.releaseFrequency.value) {
             const newReleaseFrequency = {
@@ -831,7 +795,43 @@ export class CantabularMetadataController extends Component {
                 releaseFrequency: newReleaseFrequency,
             };
             this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
+            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactName.value) {
+            const newContactName = {
+                value: "",
+                error: "You must enter a contact name",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactName: newContactName,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactEmail.value) {
+            const newContactEmail = {
+                value: "",
+                error: "You must enter a contact email",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactEmail: newContactEmail,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactTelephone.value) {
+            const newContactTelephone = {
+                value: "",
+                error: "You must enter a contact telephone number",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactTelephone: newContactTelephone,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
         return true;
