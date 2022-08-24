@@ -205,13 +205,8 @@ export default class datasets {
         });
     }
 
-    // static getCantabularMetadata(datasetID, cantabularDatasetId, lang) {
-    //     return http.get(`/cantabular-metadata/dataset/${datasetID}/cantabular/${cantabularDatasetId}/lang/${lang}`);
-    // }
-
-    // should be removed when the cantabular metadata extractor returns 2021 metadata
-    static getMockCantabularMetadata() {
-        return http.get(`/mock-metadata`);
+    static getCantabularMetadata(datasetID, lang) {
+        return http.get(`/cantabular-metadata/dataset/${datasetID}/lang/${lang}`);
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {

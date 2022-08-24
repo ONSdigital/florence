@@ -105,19 +105,11 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	// should be removed when the cantabular metadata extractor returns 2021 metadata 
-	mockServiceMetadataURL, err := url.Parse(cfg.MockServiceMetadataURL)
-	if err != nil {
-		log.Event(ctx, "error parsing mock metadata service URL", log.FATAL, log.Error(err))
-		return nil, err
-	}
-
-	mockServiceMetadataProxy := reverseproxy.Create(mockServiceMetadataURL, directors.Director("/mock-metadata"), nil)
 	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
-	// cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
@@ -152,9 +144,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 		router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
 		if cfg.SharedConfig.EnableCantabularJourney {
-			// router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
-			// should be removed when the cantabular metadata extractor returns 2021 metadata 
-			router.Handle("/mock-metadata",mockServiceMetadataProxy)
+			router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
 		}
 	}
 	if cfg.SharedConfig.EnableNewSignIn {
