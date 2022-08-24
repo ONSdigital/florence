@@ -547,27 +547,20 @@ describe("Calling getCantabularMetadata", () => {
         jest.clearAllMocks();
     });
 
-    const mockDatasetResp = {
-        next: {
-            is_based_on: {},
-        },
-    };
-    mockDatasetResp.next.is_based_on["@id"] = "cantabularDatasetId";
-
-    datasets.get = jest.fn(() => Promise.resolve(mockDatasetResp));
     cookies.get = jest.fn(() => "cy");
 
-    // it("calls getCantabularMetadata with expected args", async () => {
-    //     await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-    //     expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cantabularDatasetId", "cy");
-    // });
+    it("calls getCantabularMetadata with expected args", async () => {
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+        expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cy");
+    });
 
-    // it("sets state correctly when getCantabularMetadata returns 200", async () => {
-    //     component.instance().marshalCantabularMetadata = jest.fn();
-    //     datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-    //     await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-    //     expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
-    // });
+    it("sets state correctly when getCantabularMetadata returns 200", async () => {
+        component.instance().marshalCantabularMetadata = jest.fn();
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
+    });
 
     it("handles correctly and throws error when getCantabularMetadata returns error", async () => {
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject());

@@ -181,7 +181,7 @@ export class CantabularMetadataController extends Component {
                 });
                 log.event(
                     "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                    log.data({ datasetID, cantabularDatasetId, language }),
+                    log.data({ datasetID, language }),
                     log.error()
                 );
                 notifications.add({
