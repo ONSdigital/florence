@@ -163,7 +163,7 @@ export class CantabularMetadataController extends Component {
 
     checkDimensions = (datasetMetadata, cantabularMetadata) => {
         const datasetDimensions = datasetMetadata.version.dimensions.map(dimension => dimension.id);
-        const cantabularMetadataDimensions = cantabularMetadata.version.dimensions.map(dimension => dimension.id);
+        const cantabularMetadataDimensions = cantabularMetadata.version.dimensions.map(dimension => dimension.name);
         datasetDimensions.forEach(dimension => {
             if (!cantabularMetadataDimensions.includes(dimension)) {
                 notifications.add({
