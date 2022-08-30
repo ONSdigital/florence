@@ -140,9 +140,7 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantabularMetadata(datasetID, metadata).then(cantabularMetadata => {
-                    this.checkDimensions(metadata, this.state.cantabularMetadata);
-                });
+                this.getCantabularMetadata(datasetID, metadata).then(() => this.checkDimensions(metadata, this.state.cantabularMetadata));
             })
             .catch(error => {
                 this.setState({
@@ -168,20 +166,20 @@ export class CantabularMetadataController extends Component {
             if (!cantabularMetadataDimensions.includes(dimension)) {
                 notifications.add({
                     type: "neutral",
-                    message: `Error: dimension ${dimension} in Cantabular metadata but not present in recipe`,
+                    message: `Error: dimension ${dimension} in recipe but not present in Cantabular metadata`,
                     isDismissable: true,
                 });
-                console.error(`Error: dimension ${dimension} in Cantabular metadata but not present in recipe`);
+                console.error(`Error: dimension ${dimension} in recipe  but not present in Cantabular metadata`);
             }
         });
         cantabularMetadataDimensions.forEach(dimension => {
             if (!datasetDimensions.includes(dimension)) {
                 notifications.add({
                     type: "neutral",
-                    message: `Error: dimension ${dimension} in recipe but not present in Cantabular metadata`,
+                    message: `Error: dimension ${dimension} in Cantabular metadata but not present in recipe`,
                     isDismissable: true,
                 });
-                console.error(`Error: dimension ${dimension} in recipe but not present in Cantabular metadata`);
+                console.error(`Error: dimension ${dimension} in Cantabular metadata but not present in recipe`);
             }
         });
     };
