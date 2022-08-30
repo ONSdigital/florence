@@ -140,7 +140,9 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantabularMetadata(datasetID, metadata).then(() => this.checkDimensions(metadata, this.state.cantabularMetadata));
+                this.getCantabularMetadata(datasetID, metadata).then(() =>
+                    this.checkDimensions(metadata.version.dimensions, this.state.cantabularMetadata.version.dimensions)
+                );
             })
             .catch(error => {
                 this.setState({
@@ -159,29 +161,37 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    checkDimensions = (datasetMetadata, cantabularMetadata) => {
-        const datasetDimensions = datasetMetadata.version.dimensions.map(dimension => dimension.id);
-        const cantabularMetadataDimensions = cantabularMetadata.version.dimensions.map(dimension => dimension.name);
-        datasetDimensions.forEach(dimension => {
-            if (!cantabularMetadataDimensions.includes(dimension)) {
-                notifications.add({
-                    type: "neutral",
-                    message: `Error: dimension ${dimension} in recipe but not present in Cantabular metadata`,
-                    isDismissable: true,
-                });
-                console.error(`Error: dimension ${dimension} in recipe  but not present in Cantabular metadata`);
+    checkDimensions = (datasetDimensions, cantabularDimensions) => {
+        const datasetDimensionsArr = datasetDimensions.map(dimension => dimension.id);
+        const cantabularMetadataDimensionsArr = cantabularDimensions.map(dimension => dimension.name);
+        let datasetDimensionsErrs = [];
+        let cantabularDimensionsErrs = [];
+        datasetDimensionsArr.forEach(dimension => {
+            if (!cantabularMetadataDimensionsArr.includes(dimension)) {
+                datasetDimensionsErrs.push(dimension);
             }
         });
-        cantabularMetadataDimensions.forEach(dimension => {
-            if (!datasetDimensions.includes(dimension)) {
-                notifications.add({
-                    type: "neutral",
-                    message: `Error: dimension ${dimension} in Cantabular metadata but not present in recipe`,
-                    isDismissable: true,
-                });
-                console.error(`Error: dimension ${dimension} in Cantabular metadata but not present in recipe`);
+        cantabularMetadataDimensionsArr.forEach(dimension => {
+            if (!datasetDimensionsArr.includes(dimension)) {
+                cantabularDimensionsErrs.push(dimension);
             }
         });
+        if (datasetDimensionsErrs.length > 0) {
+            notifications.add({
+                type: "neutral",
+                message: `Error: dimensions ${datasetDimensionsErrs.join(", ")} present in recipe but not in Cantabular metadata`,
+                isDismissable: true,
+            });
+            console.error(`Error: dimensions ${datasetDimensionsErrs.join(", ")} present in recipe but not in Cantabular metadata`);
+        }
+        if (cantabularDimensionsErrs.length > 0) {
+            notifications.add({
+                type: "neutral",
+                message: `Error: dimensions ${cantabularDimensionsErrs.join(", ")} present in Cantabular metadata but not in recipe`,
+                isDismissable: true,
+            });
+            console.error(`Error: dimensions ${cantabularDimensionsErrs.join(", ")} present in Cantabular metadata but not in recipe`);
+        }
     };
 
     getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
