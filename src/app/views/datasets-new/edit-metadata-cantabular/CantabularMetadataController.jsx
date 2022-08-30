@@ -140,7 +140,9 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantabularMetadata(datasetID, metadata);
+                this.getCantabularMetadata(datasetID, metadata).then(cantabularMetadata => {
+                    this.checkDimensions(metadata, this.state.cantabularMetadata);
+                });
             })
             .catch(error => {
                 this.setState({
@@ -157,6 +159,31 @@ export class CantabularMetadataController extends Component {
                 });
                 console.error("get metadata: error GETting dataset metadata from controller", error);
             });
+    };
+
+    checkDimensions = (datasetMetadata, cantabularMetadata) => {
+        const datasetDimensions = datasetMetadata.version.dimensions.map(dimension => dimension.id);
+        const cantabularMetadataDimensions = cantabularMetadata.version.dimensions.map(dimension => dimension.id);
+        datasetDimensions.forEach(dimension => {
+            if (!cantabularMetadataDimensions.includes(dimension)) {
+                notifications.add({
+                    type: "neutral",
+                    message: `Error: dimension ${dimension} in Cantabular metadata but not present in recipe`,
+                    isDismissable: true,
+                });
+                console.error(`Error: dimension ${dimension} in Cantabular metadata but not present in recipe`);
+            }
+        });
+        cantabularMetadataDimensions.forEach(dimension => {
+            if (!datasetDimensions.includes(dimension)) {
+                notifications.add({
+                    type: "neutral",
+                    message: `Error: dimension ${dimension} in recipe but not present in Cantabular metadata`,
+                    isDismissable: true,
+                });
+                console.error(`Error: dimension ${dimension} in recipe but not present in Cantabular metadata`);
+            }
+        });
     };
 
     getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
