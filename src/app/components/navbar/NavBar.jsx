@@ -93,7 +93,7 @@ const NavBar = props => {
                                 </Link>
                             </li>
                         )}
-                        {!props.isNewSignIn && auth.isAdmin(props.user) && (
+                        {!props.isNewSignIn && auth.isAdminOrEditor(props.user) && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams
