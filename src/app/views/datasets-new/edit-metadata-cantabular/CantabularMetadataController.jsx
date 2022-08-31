@@ -163,7 +163,7 @@ export class CantabularMetadataController extends Component {
 
     checkDimensions = (datasetDimensions, cantabularDimensions) => {
         const datasetDimensionsArr = datasetDimensions.map(dimension => dimension.id);
-        const cantabularMetadataDimensionsArr = cantabularDimensions.map(dimension => dimension.name);
+        const cantabularMetadataDimensionsArr = cantabularDimensions.map(dimension => dimension.id);
         let datasetDimensionsErrs = [];
         let cantabularDimensionsErrs = [];
         datasetDimensionsArr.forEach(dimension => {
@@ -350,6 +350,7 @@ export class CantabularMetadataController extends Component {
             version: {
                 dimensions: cantResponse.dataset_query_result.dataset.vars.map(dimension => {
                     return {
+                        id: dimension.name,
                         name: dimension.name,
                         description: dimension.description,
                         label: dimension.label,
