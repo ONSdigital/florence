@@ -38,7 +38,6 @@ export class CantabularMetadataController extends Component {
             datasetIsInCollection: false,
             versionIsInCollection: false,
             versionIsPublished: false,
-            isReadOnly: false,
             allowPreview: false,
             disableCancel: false,
             datasetCollectionState: "",
@@ -53,13 +52,25 @@ export class CantabularMetadataController extends Component {
                 keywords: "",
                 nationalStatistic: false,
                 licence: "",
-                contactName: "",
-                contactEmail: "",
-                contactTelephone: "",
+                contactName: {
+                    value: "",
+                    error: "",
+                },
+                contactEmail: {
+                    value: "",
+                    error: "",
+                },
+                contactTelephone: {
+                    value: "",
+                    error: "",
+                },
                 relatedDatasets: [],
                 relatedPublications: [],
                 relatedMethodologies: [],
-                releaseFrequency: "",
+                releaseFrequency: {
+                    value: "",
+                    error: "",
+                },
                 edition: "",
                 version: 0,
                 versionID: "",
@@ -67,13 +78,38 @@ export class CantabularMetadataController extends Component {
                     value: "",
                     error: "",
                 },
-                nextReleaseDate: "",
+                nextReleaseDate: {
+                    value: "",
+                    error: "",
+                },
                 unitOfMeasure: "",
                 notices: [],
                 dimensions: [],
                 usageNotes: [],
                 latestChanges: [],
                 qmi: "",
+            },
+            fieldsReturned: {
+                title: false,
+                summary: false,
+                keywords: false,
+                nationalStatistic: false,
+                licence: false,
+                contactName: false,
+                contactEmail: false,
+                contactTelephone: false,
+                relatedDatasets: false,
+                relatedPublications: false,
+                relatedMethodologies: false,
+                releaseFrequency: false,
+                releaseDate: false,
+                nextReleaseDate: false,
+                unitOfMeasure: false,
+                notices: false,
+                dimensions: false,
+                usageNotes: false,
+                latestChanges: false,
+                qmi: false,
             },
             cantabularMetadata: {
                 dataset: {
@@ -116,7 +152,7 @@ export class CantabularMetadataController extends Component {
                 log.event("get metadata: error GETting dataset metadata from controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
-                    message: `An error occured when getting information about this dataset version metadata. Please try refresh the page`,
+                    message: `An error occurred when getting information about this dataset version metadata. Please try refresh the page`,
                     isDismissable: true,
                 });
                 console.error("get metadata: error GETting dataset metadata from controller", error);
@@ -124,39 +160,17 @@ export class CantabularMetadataController extends Component {
     };
 
     getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
+        const language = cookies.get("lang") || "en";
         return datasets
-            .get(datasetID)
-            .then(dataset => {
-                const cantabularDatasetId = dataset.next.is_based_on["@id"];
-                const language = cookies.get("lang") || "en";
-                datasets
-                    .getCantabularMetadata(datasetID, cantabularDatasetId, language)
-                    .then(cantMetadata => {
-                        this.setState({ isReadOnly: true });
-                        this.setState({
-                            cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
-                        });
-                        this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
-                    })
-                    .catch(error => {
-                        this.setState({
-                            isGettingMetadata: false,
-                            disableScreen: true,
-                            allowPreview: false,
-                            disableCancel: false,
-                        });
-                        log.event(
-                            "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                            log.data({ datasetID, cantabularDatasetId, language }),
-                            log.error()
-                        );
-                        notifications.add({
-                            type: "warning",
-                            message: `Error occurred during dataset selection, please try again`,
-                            isDismissable: true,
-                        });
-                        console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
-                    });
+            .getCantabularMetadata(datasetID, language)
+            .then(cantMetadata => {
+                this.setState({
+                    cantabularMetadata: this.marshalCantabularMetadata(cantMetadata),
+                });
+                this.setState({
+                    fieldsReturned: this.checksFieldsReturned(cantMetadata),
+                });
+                this.handleGETSuccess(nonCantDatasetMetadata, this.state.cantabularMetadata);
             })
             .catch(error => {
                 this.setState({
@@ -165,51 +179,73 @@ export class CantabularMetadataController extends Component {
                     allowPreview: false,
                     disableCancel: false,
                 });
-                log.event("get cantabular dataset id: error GETting cantabular dataset id", log.data({ datasetID }), log.error());
+                log.event(
+                    "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
+                    log.data({ datasetID, language }),
+                    log.error()
+                );
                 notifications.add({
                     type: "warning",
                     message: `Error occurred during dataset selection, please try again`,
                     isDismissable: true,
                 });
-                console.error("get cantabular dataset id: error GETting cantabular dataset id", error);
+                console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
             });
     };
 
-    mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata) => {
+    mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
+        const collectionState = nonCantDatasetMetadata.collection_state.trim();
         try {
             const mappedMetadata = {
-                title: cantabularMetadata.dataset.title,
-                summary: cantabularMetadata.dataset.description,
-                keywords: cantabularMetadata.dataset.keywords ? cantabularMetadata.dataset.keywords.join().replace(",", ", ") : "",
-                nationalStatistic: cantabularMetadata.dataset.national_statistic,
-                licence: cantabularMetadata.dataset.license || "",
-                relatedDatasets: cantabularMetadata.dataset.related_datasets
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset.related_datasets, this.props.params.datasetID)
-                    : [],
-                relatedPublications: cantabularMetadata.dataset.publications
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset.publications, this.props.params.datasetID)
-                    : [],
+                title: !collectionState ? cantabularMetadata.dataset.title : dataset.title,
+                summary: !collectionState ? cantabularMetadata.dataset.description : dataset.description,
+                keywords: !collectionState
+                    ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
+                    : dataset?.keywords?.join().replace(",", ", "),
+                nationalStatistic: !collectionState ? cantabularMetadata.dataset.national_statistic : dataset.national_statistic,
+                licence: !collectionState ? cantabularMetadata.dataset.license : dataset.license,
+                relatedDatasets: !collectionState
+                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
+                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
+                relatedPublications: !collectionState
+                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
+                    : this.mapRelatedContentToState(dataset?.publications, dataset.id),
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
-                releaseFrequency: cantabularMetadata.dataset.release_frequency || "",
-                unitOfMeasure: cantabularMetadata.dataset.unit_of_measure || "",
-                nextReleaseDate: dataset.next_release,
-                qmi: cantabularMetadata.dataset.qmi.href,
+                releaseFrequency: {
+                    value: dataset.release_frequency || "",
+                    error: "",
+                },
+                unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
+                nextReleaseDate: {
+                    value: dataset.next_release || "",
+                    error: "",
+                },
+                qmi: !collectionState ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
                 edition: version.edition,
                 version: version.version,
                 versionID: version.id,
                 releaseDate: {
-                    value: cantabularMetadata.version.release_date || "",
+                    value: version.release_date || "",
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: cantabularMetadata.version.dimensions ? cantabularMetadata.version.dimensions : [],
+                dimensions: !collectionState ? cantabularMetadata.version?.dimensions : version?.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: cantabularMetadata.dataset.contacts[0].name ? cantabularMetadata.dataset.contacts[0].name : "",
-                contactEmail: cantabularMetadata.dataset.contacts[0].email ? cantabularMetadata.dataset.contacts[0].email : "",
-                contactTelephone: cantabularMetadata.dataset.contacts[0].telephone ? cantabularMetadata.dataset.contacts[0].telephone : "",
+                contactName: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
+                    error: "",
+                },
+                contactEmail: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
+                    error: "",
+                },
+                contactTelephone: {
+                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
+                    error: "",
+                },
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -233,11 +269,29 @@ export class CantabularMetadataController extends Component {
         }
     };
 
+    checksFieldsReturned = cantResponse => {
+        const areMetadataFieldsReturned = {
+            title: !!cantResponse.table_query_result.service.tables[0].name,
+            summary: !!cantResponse.table_query_result.service.tables[0].description,
+            keywords: !!cantResponse.table_query_result.service.tables[0].vars.length,
+            nationalStatistic: !!cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified,
+            licence: !!cantResponse.dataset_query_result.dataset.meta.source.licence,
+            contactName: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name,
+            contactEmail: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email,
+            contactTelephone: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone,
+            relatedDatasets: !!cantResponse.table_query_result.service.tables[0].meta.related_datasets.length,
+            relatedPublications: !!cantResponse.table_query_result.service.tables[0].meta.publications.length,
+            unitOfMeasure: !!cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
+            dimensions: !!cantResponse.dataset_query_result.dataset.vars.length,
+            qmi: !!cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
+        };
+        return { ...this.state.fieldsReturned, ...areMetadataFieldsReturned };
+    };
+
     marshalCantabularMetadata = cantResponse => {
-        const [day, month, year] = cantResponse.table_query_result.service.tables[0].meta.census_releases[0].release_date.split("/");
         return {
             dataset: {
-                title: cantResponse.table_query_result.service.tables[0].name,
+                title: `${cantResponse.table_query_result.service.tables[0].name} (${cantResponse.table_query_result.service.tables[0].label})`,
                 description: cantResponse.table_query_result.service.tables[0].description,
                 keywords: cantResponse.table_query_result.service.tables[0].vars,
                 national_statistic:
@@ -246,7 +300,6 @@ export class CantabularMetadataController extends Component {
                 related_datasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets,
                 publications: cantResponse.table_query_result.service.tables[0].meta.publications,
                 unit_of_measure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
-                release_frequency: cantResponse.table_query_result.service.tables[0].meta.release_frequency,
                 qmi: {
                     href: cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
                 },
@@ -263,16 +316,26 @@ export class CantabularMetadataController extends Component {
                 dimensions: cantResponse.dataset_query_result.dataset.vars.map(dimension => {
                     return {
                         name: dimension.name,
-                        description: dimension.meta.ons_variable.variable_description,
-                        label: dimension.name,
+                        description: dimension.description,
+                        label: dimension.label,
                     };
                 }),
-                release_date: [year, month, day].join("/"),
             },
         };
     };
 
-    handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata) => {
+    checksMandatoryFieldsReturnedByMetadataExtractor = (hasTitle, hasDimensions) => {
+        if (!hasTitle || !hasDimensions) {
+            this.setState({ disableScreen: true, allowPreview: false, disableCancel: true });
+            notifications.add({
+                type: "warning",
+                message: `There has been an error sourcing one or more of the following: dataset title,dimension title, dimension description. Please correct in order to publish.`,
+                isDismissable: true,
+            });
+        }
+    };
+
+    handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
             this.setState({ disableScreen: true });
@@ -293,11 +356,13 @@ export class CantabularMetadataController extends Component {
             lastEditedBy: mapped.lastEditedBy,
             versionIsPublished: mapped.versionIsPublished,
         });
+
+        this.checksMandatoryFieldsReturnedByMetadataExtractor(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
     };
 
     mapRelatedContentToState = (relatedDatasets, datasetID) => {
         try {
-            return relatedDatasets.map((link, index) => ({
+            return relatedDatasets?.map((link, index) => ({
                 id: index,
                 description: link.description,
                 href: link.href,
@@ -315,7 +380,7 @@ export class CantabularMetadataController extends Component {
 
     mapNoticesToState = (notices, versionID) => {
         try {
-            return notices.map((notice, index) => ({
+            return notices?.map((notice, index) => ({
                 id: index,
                 type: notice.type,
                 date: notice.date,
@@ -333,7 +398,7 @@ export class CantabularMetadataController extends Component {
 
     mapUsageNotesToState = (usageNotes, versionID) => {
         try {
-            return usageNotes.map((note, index) => ({
+            return usageNotes?.map((note, index) => ({
                 id: index,
                 title: note.title,
                 note: note.note,
@@ -350,7 +415,7 @@ export class CantabularMetadataController extends Component {
 
     mapLatestChangesToState = (latestChanges, versionID) => {
         try {
-            return latestChanges.map((latestChange, index) => ({
+            return latestChanges?.map((latestChange, index) => ({
                 id: index,
                 title: latestChange.title,
                 description: latestChange.description,
@@ -368,12 +433,21 @@ export class CantabularMetadataController extends Component {
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        const newMetadataState = { ...this.state.metadata, [fieldName]: value };
-        this.setState({
-            metadata: newMetadataState,
-            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-            versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
-        });
+        if (["releaseFrequency", "contactName", "contactEmail", "contactTelephone", "nextReleaseDate"].includes(event.target.name)) {
+            const newMetadataState = { ...this.state.metadata, [fieldName]: { value: value, error: "" } };
+            this.setState({
+                metadata: newMetadataState,
+                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+                versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
+            });
+        } else {
+            const newMetadataState = { ...this.state.metadata, [fieldName]: value };
+            this.setState({
+                metadata: newMetadataState,
+                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+                versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
+            });
+        }
     };
 
     handleDateInputChange = event => {
@@ -579,15 +653,15 @@ export class CantabularMetadataController extends Component {
                 qmi: {
                     href: this.state.metadata.qmi,
                 },
-                release_frequency: this.state.metadata.releaseFrequency,
+                release_frequency: this.state.metadata.releaseFrequency.value,
                 contacts: [
                     {
-                        name: this.state.metadata.contactName,
-                        email: this.state.metadata.contactEmail,
-                        telephone: this.state.metadata.contactTelephone,
+                        name: this.state.metadata.contactName.value,
+                        email: this.state.metadata.contactEmail.value,
+                        telephone: this.state.metadata.contactTelephone.value,
                     },
                 ],
-                next_release: this.state.metadata.nextReleaseDate,
+                next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
             },
             version: {
@@ -616,6 +690,18 @@ export class CantabularMetadataController extends Component {
         return StatusInProgress;
     };
 
+    saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
+        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
+        return this.saveMetadata(
+            this.props.params.datasetID,
+            this.props.params.editionID,
+            this.props.params.versionID,
+            body,
+            isSubmittingForReview,
+            isMarkingAsReviewed
+        );
+    };
+
     saveMetadata = (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
         return datasets
@@ -640,14 +726,37 @@ export class CantabularMetadataController extends Component {
                 log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
-                    message: `An error occured when saving this dataset version metadata. Please try again`,
+                    message: `An error occurred when saving this dataset version metadata. Please try again`,
                     isDismissable: true,
                 });
                 console.error("save metadata: error PUTting metadata to controller", error);
             });
     };
 
-    handleSave = (isSubmittingForReview, isMarkingAsReviewed) => {
+    retrieveDatasetMetadata = async () => {
+        try {
+            const datasetMetadata = await datasets.getEditMetadata(
+                this.props.params.datasetID,
+                this.props.params.editionID,
+                this.props.params.versionID
+            );
+            this.mapMetadataToState(datasetMetadata);
+        } catch (error) {
+            log.event(
+                "get metadata: error retrieving saved dataset metadata from controller",
+                log.data({ datasetID: this.props.params.datasetID, editionID: this.props.params.editionID, versionID: this.props.params.versionID }),
+                log.error()
+            );
+            notifications.add({
+                type: "warning",
+                message: `An error occurred when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
+                isDismissable: true,
+            });
+            console.error("get metadata: error retrieving saved dataset metadata from controller", error);
+        }
+    };
+
+    checkMandatoryFields = () => {
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
@@ -658,16 +767,79 @@ export class CantabularMetadataController extends Component {
                 releaseDate: newReleaseDateState,
             };
             this.setState({ metadata: newMetadataState });
-            window.scrollTo(0, 0);
+            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.nextReleaseDate.value) {
+            const newNextReleaseDate = {
+                value: "",
+                error: "You must enter a next release date",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                nextReleaseDate: newNextReleaseDate,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.releaseFrequency.value) {
+            const newReleaseFrequency = {
+                value: "",
+                error: "You must enter the release frequency",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                releaseFrequency: newReleaseFrequency,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactName.value) {
+            const newContactName = {
+                value: "",
+                error: "You must enter a contact name",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactName: newContactName,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactEmail.value) {
+            const newContactEmail = {
+                value: "",
+                error: "You must enter a contact email",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactEmail: newContactEmail,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
+        } else if (!this.state.metadata.contactTelephone.value) {
+            const newContactTelephone = {
+                value: "",
+                error: "You must enter a contact telephone number",
+            };
+            const newMetadataState = {
+                ...this.state.metadata,
+                contactTelephone: newContactTelephone,
+            };
+            this.setState({ metadata: newMetadataState });
+            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
+        return true;
+    };
 
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
-        const versionID = this.props.params.versionID;
-        const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-
-        this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
+    saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
+        const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
+        if (mandatoryFieldsAreCompleted) {
+            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
+                .then(this.retrieveDatasetMetadata)
+                .catch(error => error);
+        }
     };
 
     handleRedirectOnReject = isCancellingPublication => {
@@ -682,7 +854,7 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSaveClick = () => {
-        this.handleSave(false, false);
+        this.saveAndRetrieveDatasetMetadata(false, false);
     };
 
     handleCancelClick = () => {
@@ -690,11 +862,11 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSubmitForReviewClick = () => {
-        this.handleSave(true, false);
+        this.saveAndRetrieveDatasetMetadata(true, false);
     };
 
     handleMarkAsReviewedClick = () => {
-        this.handleSave(false, true);
+        this.saveAndRetrieveDatasetMetadata(false, true);
     };
 
     renderModal = () => {
@@ -732,7 +904,7 @@ export class CantabularMetadataController extends Component {
                     collectionState={this.state.versionIsPublished ? this.state.datasetCollectionState : this.state.versionCollectionState}
                     handleSubmitForReviewClick={this.handleSubmitForReviewClick}
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
-                    isReadOnly={this.state.isReadOnly}
+                    fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
                 />
 
