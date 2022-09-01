@@ -206,7 +206,7 @@ export default class datasets {
     }
 
     static getCantabularMetadata(datasetID, lang) {
-        return http.get(`/cantabular-metadata/dataset/${datasetID}/lang/${lang}`);
+        return http.get(`/cantabular-metadata/dataset/${datasetID}/lang/${lang}`, false, false);
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {

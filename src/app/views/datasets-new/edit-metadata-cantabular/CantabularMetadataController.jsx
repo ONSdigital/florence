@@ -152,7 +152,7 @@ export class CantabularMetadataController extends Component {
                 log.event("get metadata: error GETting dataset metadata from controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
-                    message: `An error occured when getting information about this dataset version metadata. Please try refresh the page`,
+                    message: `An error occurred when getting information about this dataset version metadata. Please try refresh the page`,
                     isDismissable: true,
                 });
                 console.error("get metadata: error GETting dataset metadata from controller", error);
@@ -271,19 +271,19 @@ export class CantabularMetadataController extends Component {
 
     checksFieldsReturned = cantResponse => {
         const areMetadataFieldsReturned = {
-            title: cantResponse.table_query_result.service.tables[0].name ? true : false,
-            summary: cantResponse.table_query_result.service.tables[0].description ? true : false,
-            keywords: cantResponse.table_query_result.service.tables[0].vars.length ? true : false,
-            nationalStatistic: cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified ? true : false,
-            licence: cantResponse.dataset_query_result.dataset.meta.source.licence ? true : false,
-            contactName: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name ? true : false,
-            contactEmail: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email ? true : false,
-            contactTelephone: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone ? true : false,
-            relatedDatasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets.length ? true : false,
-            relatedPublications: cantResponse.table_query_result.service.tables[0].meta.publications.length ? true : false,
-            unitOfMeasure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit ? true : false,
-            dimensions: cantResponse.dataset_query_result.dataset.vars.length ? true : false,
-            qmi: cantResponse.dataset_query_result.dataset.meta.source.methodology_link ? true : false,
+            title: !!cantResponse.table_query_result.service.tables[0].name,
+            summary: !!cantResponse.table_query_result.service.tables[0].description,
+            keywords: !!cantResponse.table_query_result.service.tables[0].vars.length,
+            nationalStatistic: !!cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified,
+            licence: !!cantResponse.dataset_query_result.dataset.meta.source.licence,
+            contactName: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name,
+            contactEmail: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email,
+            contactTelephone: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone,
+            relatedDatasets: !!cantResponse.table_query_result.service.tables[0].meta.related_datasets.length,
+            relatedPublications: !!cantResponse.table_query_result.service.tables[0].meta.publications.length,
+            unitOfMeasure: !!cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
+            dimensions: !!cantResponse.dataset_query_result.dataset.vars.length,
+            qmi: !!cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
         };
         return { ...this.state.fieldsReturned, ...areMetadataFieldsReturned };
     };
@@ -726,7 +726,7 @@ export class CantabularMetadataController extends Component {
                 log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
                 notifications.add({
                     type: "warning",
-                    message: `An error occured when saving this dataset version metadata. Please try again`,
+                    message: `An error occurred when saving this dataset version metadata. Please try again`,
                     isDismissable: true,
                 });
                 console.error("save metadata: error PUTting metadata to controller", error);
@@ -749,7 +749,7 @@ export class CantabularMetadataController extends Component {
             );
             notifications.add({
                 type: "warning",
-                message: `An error occured when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
+                message: `An error occurred when attempting to retrieve saved dataset metadata. Please try refreshing the page`,
                 isDismissable: true,
             });
             console.error("get metadata: error retrieving saved dataset metadata from controller", error);
