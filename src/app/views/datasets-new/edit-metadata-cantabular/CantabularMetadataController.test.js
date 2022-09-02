@@ -147,11 +147,13 @@ const mockedCantabularDatasetMetadata = {
     version: {
         dimensions: [
             {
+                id: "Dimension1 Name",
                 name: "Dimension1 Name",
                 description: "Dimension1 description",
                 label: "Dimension1 Label",
             },
             {
+                id: "Dimension2 Name",
                 name: "Dimension2 Name",
                 description: "Dimension2 description",
                 label: "Dimension2 Label",
@@ -678,5 +680,47 @@ describe("Calling saveAndRetrieveDatasetMetadata", () => {
         component.instance().saveAndRetrieveDatasetMetadata();
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(1);
         expect(component.instance().retrieveDatasetMetadata).toHaveBeenCalledTimes(0);
+    });
+});
+
+describe("Calling checkDimensions", () => {
+    beforeEach(() => {
+        mockedNotifications = [];
+    });
+
+    it("doesn't trigger notification if dimensions correspond 1-1", () => {
+        const datasetDimensions = [
+            { id: "testDimensionID1", name: "testDimensionName1", description: "" },
+            { id: "testDimensionID2", name: "testDimensionName2", description: "" },
+        ];
+        const cantabularDimensions = [
+            { id: "testDimensionID1", name: "testDimensionName1", description: "" },
+            { id: "testDimensionID2", name: "testDimensionName2", description: "" },
+        ];
+        expect(mockedNotifications.length).toEqual(0);
+        component.instance().checkDimensions(datasetDimensions, cantabularDimensions);
+        expect(mockedNotifications.length).toEqual(0);
+    });
+
+    it("triggers error notification if dataset dimension is not present in Cantabular dimensions", () => {
+        const datasetDimensions = [
+            { id: "testDimensionID1", name: "testDimensionName1", description: "" },
+            { id: "testDimensionID2", name: "testDimensionName2", description: "" },
+        ];
+        const cantabularDimensions = [{ id: "testDimensionID1", name: "testDimensionName1", description: "" }];
+        expect(mockedNotifications.length).toEqual(0);
+        component.instance().checkDimensions(datasetDimensions, cantabularDimensions);
+        expect(mockedNotifications.length).toEqual(1);
+    });
+
+    it("triggers error notification if Cantabular dimension is not present in dataset dimensions", () => {
+        const datasetDimensions = [{ id: "testDimensionID1", name: "testDimensionName1", description: "" }];
+        const cantabularDimensions = [
+            { id: "testDimensionID1", name: "testDimensionName1", description: "" },
+            { id: "testDimensionID2", name: "testDimensionName2", description: "" },
+        ];
+        expect(mockedNotifications.length).toEqual(0);
+        component.instance().checkDimensions(datasetDimensions, cantabularDimensions);
+        expect(mockedNotifications.length).toEqual(1);
     });
 });

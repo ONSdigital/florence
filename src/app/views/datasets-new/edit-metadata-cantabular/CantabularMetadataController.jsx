@@ -140,7 +140,9 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantabularMetadata(datasetID, metadata);
+                this.getCantabularMetadata(datasetID, metadata).then(() =>
+                    this.checkDimensions(metadata.version.dimensions, this.state.cantabularMetadata.version.dimensions)
+                );
             })
             .catch(error => {
                 this.setState({
@@ -157,6 +159,39 @@ export class CantabularMetadataController extends Component {
                 });
                 console.error("get metadata: error GETting dataset metadata from controller", error);
             });
+    };
+
+    checkDimensions = (datasetDimensions, cantabularDimensions) => {
+        const datasetDimensionsArr = datasetDimensions.map(dimension => dimension.id);
+        const cantabularMetadataDimensionsArr = cantabularDimensions.map(dimension => dimension.id);
+        let datasetDimensionsErrs = [];
+        let cantabularDimensionsErrs = [];
+        datasetDimensionsArr.forEach(dimension => {
+            if (!cantabularMetadataDimensionsArr.includes(dimension)) {
+                datasetDimensionsErrs.push(dimension);
+            }
+        });
+        cantabularMetadataDimensionsArr.forEach(dimension => {
+            if (!datasetDimensionsArr.includes(dimension)) {
+                cantabularDimensionsErrs.push(dimension);
+            }
+        });
+        if (datasetDimensionsErrs.length > 0) {
+            notifications.add({
+                type: "neutral",
+                message: `Error: dimensions ${datasetDimensionsErrs.join(", ")} present in recipe but not in Cantabular metadata`,
+                isDismissable: true,
+            });
+            console.error(`Error: dimensions ${datasetDimensionsErrs.join(", ")} present in recipe but not in Cantabular metadata`);
+        }
+        if (cantabularDimensionsErrs.length > 0) {
+            notifications.add({
+                type: "neutral",
+                message: `Error: dimensions ${cantabularDimensionsErrs.join(", ")} present in Cantabular metadata but not in recipe`,
+                isDismissable: true,
+            });
+            console.error(`Error: dimensions ${cantabularDimensionsErrs.join(", ")} present in Cantabular metadata but not in recipe`);
+        }
     };
 
     getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
@@ -315,6 +350,7 @@ export class CantabularMetadataController extends Component {
             version: {
                 dimensions: cantResponse.dataset_query_result.dataset.vars.map(dimension => {
                     return {
+                        id: dimension.name,
                         name: dimension.name,
                         description: dimension.description,
                         label: dimension.label,
