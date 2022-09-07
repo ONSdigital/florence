@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import date from "../../../utilities/date";
 import datasets from "../../../utilities/api-clients/datasets";
+import topics from "../../../utilities/api-clients/topics";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
@@ -132,7 +133,24 @@ export class CantabularMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
+        console.log(this.getTopics());
     }
+
+    getTopics = () => {
+        let topicsArr = [];
+        topics.getRootTopics().then(rootTopics => {
+            console.log(rootTopics.items);
+            topicsArr = [...topicsArr, ...rootTopics.items];
+            console.log(topicsArr);
+            topicsArr.forEach(rootTopic => {
+                topics.getSubTopics(rootTopic.id).then(subTopics => {
+                    topicsArr = [...topicsArr, ...subTopics];
+                });
+                console.log(topicsArr);
+            });
+        });
+        return topicsArr;
+    };
 
     getMetadata = (datasetID, editionID, versionID) => {
         this.setState({ isGettingMetadata: true });

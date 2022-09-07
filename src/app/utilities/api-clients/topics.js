@@ -1,11 +1,11 @@
 import http from "../http";
 
 export default class topics {
-    static getCanonicalTopics() {
+    static getRootTopics() {
         return http.get(`/topics`, false, false);
     }
 
-    static getCanonicalSubTopics(canonicalTopicId) {
-        return http.get(`/topics/${canonicalTopicId}/subtopics`, false, false);
+    static getSubTopics(rootTopicId) {
+        return http.get(`/topics/${rootTopicId}/subtopics`, false, false);
     }
 }
