@@ -133,23 +133,18 @@ export class CantabularMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
-        console.log(this.getTopics());
+        this.getTopics();
     }
 
-    getTopics = () => {
-        let topicsArr = [];
-        topics.getRootTopics().then(rootTopics => {
-            console.log(rootTopics.items);
-            topicsArr = [...topicsArr, ...rootTopics.items];
-            console.log(topicsArr);
-            topicsArr.forEach(rootTopic => {
-                topics.getSubTopics(rootTopic.id).then(subTopics => {
-                    topicsArr = [...topicsArr, ...subTopics];
-                });
-                console.log(topicsArr);
-            });
-        });
-        return topicsArr;
+    getTopics = async () => {
+        let rootTopicsArr = await topics.getRootTopics().then(rootTopics => rootTopics.items);
+        let allSubTopics = [];
+        await Promise.all(
+            rootTopicsArr.map(rootTopic =>
+                topics.getSubTopics(rootTopic.id).then(subTopics => (allSubTopics = [...allSubTopics, ...subTopics.items]))
+            )
+        );
+        return [...rootTopicsArr, ...allSubTopics];
     };
 
     getMetadata = (datasetID, editionID, versionID) => {
