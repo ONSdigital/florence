@@ -9,6 +9,7 @@ import Input from "../../../components/Input";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
+import Select from "../../../components/Select";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -356,6 +357,29 @@ const CantabularMetadata = ({
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
                 disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
+            />
+
+            <h2 className="margin-top--1">Census topic tags</h2>
+            <Select
+                id="canonical_topics"
+                // selectedOption={}
+                label="Canonical Topics"
+                contents={[
+                    { id: "0", name: "canonical topic 1" },
+                    { id: "1", name: "canonical topic 2" },
+                ]}
+                // onChange={getCanonicalSubTopics}
+            />
+
+            <Select
+                id="canonical_sub_topics"
+                // selectedOption={}
+                label="Canonical Sub Topics"
+                contents={[
+                    { id: "0", name: "canonical sub topic 1" },
+                    { id: "1", name: "canonical sub topic 2" },
+                ]}
+                // onChange={handleStringInputChange}
             />
 
             <div className="margin-top--2">
