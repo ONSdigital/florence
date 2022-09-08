@@ -101,6 +101,8 @@ const propTypes = {
     disableCancel: PropTypes.bool,
     primaryTopicsArr: PropTypes.array.isRequired,
     secondaryTopicsArr: PropTypes.array.isRequired,
+    handleInputArrayTypeChange: PropTypes.func.isRequired,
+    removeSelectedSecondaryTopic: PropTypes.func.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -129,6 +131,8 @@ const CantabularMetadata = ({
     fieldsReturned,
     primaryTopicsArr,
     secondaryTopicsArr,
+    handleInputArrayTypeChange,
+    removeSelectedSecondaryTopic,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -373,13 +377,22 @@ const CantabularMetadata = ({
                 contents={primaryTopicsArr}
                 onChange={handleStringInputChange}
             />
-
+            <ul>
+                {metadata.secondaryTopics.map((topic, i) => (
+                    <li key={i}>
+                        {topic}
+                        <span id={topic} onClick={removeSelectedSecondaryTopic}>
+                            &times;
+                        </span>
+                    </li>
+                ))}
+            </ul>
             <Select
-                id="secondaryTopic"
+                id="secondaryTopics"
                 // selectedOption={}
                 label="Secondary Topics"
                 contents={secondaryTopicsArr.length > 0 ? secondaryTopicsArr : primaryTopicsArr}
-                // onChange={handleStringInputChange}
+                onChange={handleInputArrayTypeChange}
             />
 
             <div className="margin-top--2">

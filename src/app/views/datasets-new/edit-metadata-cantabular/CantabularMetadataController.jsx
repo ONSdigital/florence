@@ -1005,6 +1005,8 @@ export class CantabularMetadataController extends Component {
                     handleRedirectOnReject={this.handleCancelClick}
                     primaryTopicsArr={this.state.primaryTopicsArr}
                     secondaryTopicsArr={this.state.secondaryTopicsArr}
+                    handleInputArrayTypeChange={this.handleInputArrayTypeChange}
+                    removeSelectedTopic={this.removeSelectedSecondaryTopic}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
