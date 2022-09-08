@@ -366,21 +366,18 @@ const CantabularMetadata = ({
 
             <h2 className="margin-top--1">Topic tags</h2>
             <Select
-                id="primary_topics"
-                // selectedOption={}
+                id="primaryTopic"
+                selectedOption={metadata.primaryTopic ? metadata.primaryTopic : ""}
                 label="Primary Topics"
                 contents={primaryTopicsArr}
-                // onChange={getCanonicalSubTopics}
+                onChange={handleStringInputChange}
             />
 
             <Select
-                id="secondary_topics"
+                id="secondaryTopic"
                 // selectedOption={}
                 label="Secondary Topics"
-                contents={[
-                    { id: "0", name: "canonical sub topic 1" },
-                    { id: "1", name: "canonical sub topic 2" },
-                ]}
+                contents={secondaryTopicsArr.length > 0 ? secondaryTopicsArr : primaryTopicsArr}
                 // onChange={handleStringInputChange}
             />
 
