@@ -574,6 +574,24 @@ export class CantabularMetadataController extends Component {
         this.setState({ metadata: newMetadataState, dimensionsUpdated: true });
     };
 
+    handleInputArrayTypeChange = event => {
+        const fieldName = event.target.name;
+        const value = event.target.value;
+        if (fieldName == "secondaryTopics") {
+            if (!this.state.metadata[fieldName].includes(value)) {
+                const newMetadataState = { ...this.state.metadata, [fieldName]: [...this.state.metadata[fieldName], value] };
+                this.setState({
+                    metadata: newMetadataState,
+                    datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+                    secondaryTopicsArr:
+                        this.state.secondaryTopicsArr.length > 0
+                            ? this.state.secondaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic))
+                            : this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
+                });
+            }
+        }
+    };
+
     handleSimpleEditableListAdd = stateFieldName => {
         const path = `${this.props.location.pathname}/edit/${stateFieldName}/${this.state.metadata[stateFieldName].length}`;
         this.props.dispatch(push(path));
