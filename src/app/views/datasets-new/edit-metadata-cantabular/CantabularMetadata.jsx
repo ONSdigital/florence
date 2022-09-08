@@ -361,22 +361,19 @@ const CantabularMetadata = ({
                 disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
             />
 
-            <h2 className="margin-top--1">Census topic tags</h2>
+            <h2 className="margin-top--1">Topic tags</h2>
             <Select
-                id="canonical_topics"
+                id="primary_topics"
                 // selectedOption={}
-                label="Canonical Topics"
-                contents={[
-                    { id: "0", name: "canonical topic 1" },
-                    { id: "1", name: "canonical topic 2" },
-                ]}
+                label="Primary Topics"
+                contents={primaryTopicsArr}
                 // onChange={getCanonicalSubTopics}
             />
 
             <Select
-                id="canonical_sub_topics"
+                id="secondary_topics"
                 // selectedOption={}
-                label="Canonical Sub Topics"
+                label="Secondary Topics"
                 contents={[
                     { id: "0", name: "canonical sub topic 1" },
                     { id: "1", name: "canonical sub topic 2" },
