@@ -54,6 +54,7 @@ const propTypes = {
         latestChanges: PropTypes.array,
         usageNotes: PropTypes.array,
         primaryTopic: PropTypes.string,
+        secondaryTopics: PropTypes.array,
     }).isRequired,
     fieldsReturned: PropTypes.shape({
         title: PropTypes.bool,

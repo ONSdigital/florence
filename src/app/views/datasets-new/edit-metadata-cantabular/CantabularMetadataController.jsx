@@ -92,6 +92,7 @@ export class CantabularMetadataController extends Component {
                 latestChanges: [],
                 qmi: "",
                 primaryTopic: "",
+                secondaryTopics: [],
             },
             fieldsReturned: {
                 title: false,
@@ -681,7 +682,8 @@ export class CantabularMetadataController extends Component {
             fieldName === "unitOfMeasure" ||
             fieldName === "qmi" ||
             fieldName === "nextReleaseDate" ||
-            fieldName === "primaryTopic"
+            fieldName === "primaryTopic" ||
+            fieldName === "secondaryTopics"
         ) {
             return true;
         }
