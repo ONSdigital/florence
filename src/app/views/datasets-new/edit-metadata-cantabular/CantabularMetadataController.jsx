@@ -954,6 +954,18 @@ export class CantabularMetadataController extends Component {
         this.saveAndRetrieveDatasetMetadata(false, true);
     };
 
+    removeSelectedSecondaryTopic = event => {
+        let id = event.target.id;
+        const newMetadataState = {
+            ...this.state.metadata,
+            secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic != id),
+        };
+        this.setState({
+            metadata: newMetadataState,
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges("secondaryTopics"),
+        });
+    };
+
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
