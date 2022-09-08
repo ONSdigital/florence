@@ -48,6 +48,7 @@ export class CantabularMetadataController extends Component {
             datasetMetadataHasChanges: false,
             versionMetadataHasChanges: false,
             primaryTopicsArr: [],
+            secondaryTopicsArr: [],
             metadata: {
                 title: "",
                 summary: "",
@@ -502,6 +503,11 @@ export class CantabularMetadataController extends Component {
                 datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
                 versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
             });
+            if (fieldName === "primaryTopic") {
+                this.setState({
+                    secondaryTopicsArr: this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
+                });
+            }
         }
     };
 
@@ -963,6 +969,7 @@ export class CantabularMetadataController extends Component {
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
                     primaryTopicsArr={this.state.primaryTopicsArr}
+                    secondaryTopicsArr={this.state.secondaryTopicsArr}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}

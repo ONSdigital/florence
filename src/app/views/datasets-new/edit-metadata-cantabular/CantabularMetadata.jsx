@@ -99,6 +99,7 @@ const propTypes = {
     isSaving: PropTypes.bool,
     disableCancel: PropTypes.bool,
     primaryTopicsArr: PropTypes.array.isRequired,
+    secondaryTopicsArr: PropTypes.array.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -126,6 +127,7 @@ const CantabularMetadata = ({
     disableCancel,
     fieldsReturned,
     primaryTopicsArr,
+    secondaryTopicsArr,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
