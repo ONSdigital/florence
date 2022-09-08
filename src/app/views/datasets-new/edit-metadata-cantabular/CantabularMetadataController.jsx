@@ -47,6 +47,7 @@ export class CantabularMetadataController extends Component {
             dimensionsUpdated: false,
             datasetMetadataHasChanges: false,
             versionMetadataHasChanges: false,
+            primaryTopicsArr: [],
             metadata: {
                 title: "",
                 summary: "",
@@ -128,12 +129,14 @@ export class CantabularMetadataController extends Component {
         };
     }
 
-    UNSAFE_componentWillMount() {
+    async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
-        this.getTopics();
+        this.setState({
+            primaryTopicsArr: await this.getTopics(),
+        });
     }
 
     getTopics = async () => {
@@ -141,10 +144,12 @@ export class CantabularMetadataController extends Component {
         let allSubTopics = [];
         await Promise.all(
             rootTopicsArr.map(rootTopic =>
-                topics.getSubTopics(rootTopic.id).then(subTopics => (allSubTopics = [...allSubTopics, ...subTopics.items]))
+                topics.getSubTopics(rootTopic.id).then(subTopics => {
+                    allSubTopics = [...allSubTopics, ...subTopics.items];
+                })
             )
         );
-        return [...rootTopicsArr, ...allSubTopics];
+        return [...rootTopicsArr, ...allSubTopics].map(topic => ({ id: topic.id, name: topic.next.title }));
     };
 
     getMetadata = (datasetID, editionID, versionID) => {
@@ -955,6 +960,7 @@ export class CantabularMetadataController extends Component {
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
+                    primaryTopicsArr={this.state.primaryTopicsArr}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
