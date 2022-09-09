@@ -504,16 +504,6 @@ export class CantabularMetadataController extends Component {
                 datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
                 versionMetadataHasChanges: this.versionMetadataHasChanges(fieldName),
             });
-            if (fieldName === "primaryTopic") {
-                this.setState({
-                    secondaryTopicsArr:
-                        this.state.secondaryTopicsArr.length == 0
-                            ? this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic))
-                            : this.state.secondaryTopicsArr.map(topic => {
-                                  topic.id == value ? { ...topic, disabled: true } : topic;
-                              }),
-                });
-            }
         }
     };
 
