@@ -509,7 +509,8 @@ export class CantabularMetadataController extends Component {
                     secondaryTopicsArr:
                         this.state.secondaryTopicsArr.length == 0
                             ? this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic))
-                            : this.state.secondaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
+                            : this.state.secondaryTopicsArr.map(topic => {
+                                (topic.id == value ? { ...topic, disabled: true } : topic)}),
                 });
             }
         }
@@ -961,6 +962,9 @@ export class CantabularMetadataController extends Component {
             secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic != id),
         };
         this.setState({
+            secondaryTopicsArr: this.state.secondaryTopicsArr.map(secondaryTopic =>
+                secondaryTopic.id == id ? { ...secondaryTopic, disabled: false } : secondaryTopic
+            ),
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges("secondaryTopics"),
         });
@@ -1006,7 +1010,7 @@ export class CantabularMetadataController extends Component {
                     primaryTopicsArr={this.state.primaryTopicsArr}
                     secondaryTopicsArr={this.state.secondaryTopicsArr}
                     handleInputArrayTypeChange={this.handleInputArrayTypeChange}
-                    removeSelectedTopic={this.removeSelectedSecondaryTopic}
+                    removeSelectedSecondaryTopic={this.removeSelectedSecondaryTopic}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
