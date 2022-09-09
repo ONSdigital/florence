@@ -378,10 +378,10 @@ const CantabularMetadata = ({
                 defaultOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : "Select an option"}
             />
             <ul>
-                {metadata.secondaryTopics.map((topic, i) => (
-                    <li key={i}>
-                        {topic}
-                        <span id={topic} onClick={removeSelectedSecondaryTopic}>
+                {metadata.secondaryTopics.map(topic => (
+                    <li key={topic.id}>
+                        {topic.title}
+                        <span id={topic.id} onClick={removeSelectedSecondaryTopic}>
                             &times;
                         </span>
                     </li>

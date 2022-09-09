@@ -137,9 +137,7 @@ export class CantabularMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
-        this.setState({
-            primaryTopicsArr: await this.getTopics(),
-        });
+        await this.getTopics();
     }
 
     getTopics = async () => {
@@ -152,7 +150,11 @@ export class CantabularMetadataController extends Component {
                 })
             )
         );
-        return [...rootTopicsArr, ...allSubTopics].map(topic => ({ id: topic.id, name: topic.next.title }));
+        const allTopics = [...rootTopicsArr, ...allSubTopics].map(topic => ({ id: topic.id, name: topic.next.title }));
+        this.setState({
+            primaryTopicsArr: [...allTopics],
+            secondaryTopicsArr: [...allTopics],
+        });
     };
 
     getMetadata = (datasetID, editionID, versionID) => {
@@ -577,8 +579,12 @@ export class CantabularMetadataController extends Component {
                 datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
             });
         } else if (fieldName == "secondaryTopics") {
-            if (!this.state.metadata[fieldName].includes(value)) {
-                const newMetadataState = { ...this.state.metadata, [fieldName]: [...this.state.metadata[fieldName], value] };
+            if (this.state.metadata[fieldName].length === 0 || this.state.metadata[fieldName].find(secondaryTopic => secondaryTopic.id != value)) {
+                const selectedSecondaryTopic = this.state.secondaryTopicsArr.find(secondaryTopic => secondaryTopic.id == value);
+                const newMetadataState = {
+                    ...this.state.metadata,
+                    [fieldName]: [...this.state.metadata[fieldName], { id: selectedSecondaryTopic.id, title: selectedSecondaryTopic.name }],
+                };
                 this.setState({
                     metadata: newMetadataState,
                     datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
@@ -957,7 +963,7 @@ export class CantabularMetadataController extends Component {
         let id = event.target.id;
         const newMetadataState = {
             ...this.state.metadata,
-            secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic != id),
+            secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic.id != id),
         };
         this.setState({
             secondaryTopicsArr: this.state.secondaryTopicsArr.map(secondaryTopic =>
