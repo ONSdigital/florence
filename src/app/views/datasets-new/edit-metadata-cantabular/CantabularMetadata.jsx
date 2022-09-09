@@ -375,7 +375,7 @@ const CantabularMetadata = ({
                 label="Primary Topics"
                 contents={primaryTopicsArr}
                 onChange={handleTopicTagsFieldChange}
-                // selectedOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : ""}
+                defaultOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : "Select an option"}
             />
             <ul>
                 {metadata.secondaryTopics.map((topic, i) => (
