@@ -101,7 +101,7 @@ const propTypes = {
     disableCancel: PropTypes.bool,
     primaryTopicsArr: PropTypes.array.isRequired,
     secondaryTopicsArr: PropTypes.array.isRequired,
-    handleInputArrayTypeChange: PropTypes.func.isRequired,
+    handleTopicTagsFieldChange: PropTypes.func.isRequired,
     removeSelectedSecondaryTopic: PropTypes.func.isRequired,
 };
 
@@ -131,7 +131,7 @@ const CantabularMetadata = ({
     fieldsReturned,
     primaryTopicsArr,
     secondaryTopicsArr,
-    handleInputArrayTypeChange,
+    handleTopicTagsFieldChange,
     removeSelectedSecondaryTopic,
 }) => {
     return (
@@ -372,10 +372,10 @@ const CantabularMetadata = ({
             <h2 className="margin-top--1">Topic tags</h2>
             <Select
                 id="primaryTopic"
-                selectedOption={metadata.primaryTopic ? metadata.primaryTopic : ""}
                 label="Primary Topics"
                 contents={primaryTopicsArr}
-                onChange={handleStringInputChange}
+                onChange={handleTopicTagsFieldChange}
+                // selectedOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : ""}
             />
             <ul>
                 {metadata.secondaryTopics.map((topic, i) => (
@@ -389,10 +389,9 @@ const CantabularMetadata = ({
             </ul>
             <Select
                 id="secondaryTopics"
-                // selectedOption={}
                 label="Secondary Topics"
                 contents={secondaryTopicsArr.length > 0 ? secondaryTopicsArr : primaryTopicsArr}
-                onChange={handleInputArrayTypeChange}
+                onChange={handleTopicTagsFieldChange}
             />
 
             <div className="margin-top--2">

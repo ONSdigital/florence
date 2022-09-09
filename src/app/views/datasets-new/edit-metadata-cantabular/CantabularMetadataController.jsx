@@ -91,7 +91,7 @@ export class CantabularMetadataController extends Component {
                 usageNotes: [],
                 latestChanges: [],
                 qmi: "",
-                primaryTopic: "",
+                primaryTopic: {},
                 secondaryTopics: [],
             },
             fieldsReturned: {
@@ -566,10 +566,17 @@ export class CantabularMetadataController extends Component {
         this.setState({ metadata: newMetadataState, dimensionsUpdated: true });
     };
 
-    handleInputArrayTypeChange = event => {
+    handleTopicTagsFieldChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        if (fieldName == "secondaryTopics") {
+        if (fieldName == "primaryTopic") {
+            const selectedPrimaryTopic = this.state.primaryTopicsArr.find(primaryTopic => primaryTopic.id == value);
+            const newMetadataState = { ...this.state.metadata, [fieldName]: { id: selectedPrimaryTopic.id, title: selectedPrimaryTopic.name } };
+            this.setState({
+                metadata: newMetadataState,
+                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
+            });
+        } else if (fieldName == "secondaryTopics") {
             if (!this.state.metadata[fieldName].includes(value)) {
                 const newMetadataState = { ...this.state.metadata, [fieldName]: [...this.state.metadata[fieldName], value] };
                 this.setState({
@@ -1000,7 +1007,7 @@ export class CantabularMetadataController extends Component {
                     handleRedirectOnReject={this.handleCancelClick}
                     primaryTopicsArr={this.state.primaryTopicsArr}
                     secondaryTopicsArr={this.state.secondaryTopicsArr}
-                    handleInputArrayTypeChange={this.handleInputArrayTypeChange}
+                    handleTopicTagsFieldChange={this.handleTopicTagsFieldChange}
                     removeSelectedSecondaryTopic={this.removeSelectedSecondaryTopic}
                 />
 
