@@ -510,7 +510,8 @@ export class CantabularMetadataController extends Component {
                         this.state.secondaryTopicsArr.length == 0
                             ? this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic))
                             : this.state.secondaryTopicsArr.map(topic => {
-                                (topic.id == value ? { ...topic, disabled: true } : topic)}),
+                                  topic.id == value ? { ...topic, disabled: true } : topic;
+                              }),
                 });
             }
         }
