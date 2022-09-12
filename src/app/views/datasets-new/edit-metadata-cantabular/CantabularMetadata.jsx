@@ -99,8 +99,8 @@ const propTypes = {
     disableForm: PropTypes.bool.isRequired,
     isSaving: PropTypes.bool,
     disableCancel: PropTypes.bool,
-    primaryTopicsArr: PropTypes.array.isRequired,
-    secondaryTopicsArr: PropTypes.array.isRequired,
+    primaryTopicsMenuArr: PropTypes.array.isRequired,
+    secondaryTopicsMenuArr: PropTypes.array.isRequired,
     handleTopicTagsFieldChange: PropTypes.func.isRequired,
     removeSelectedSecondaryTopic: PropTypes.func.isRequired,
 };
@@ -129,8 +129,8 @@ const CantabularMetadata = ({
     allowPreview,
     disableCancel,
     fieldsReturned,
-    primaryTopicsArr,
-    secondaryTopicsArr,
+    primaryTopicsMenuArr,
+    secondaryTopicsMenuArr,
     handleTopicTagsFieldChange,
     removeSelectedSecondaryTopic,
 }) => {
@@ -373,7 +373,7 @@ const CantabularMetadata = ({
             <Select
                 id="primaryTopic"
                 label="Primary Topics"
-                contents={primaryTopicsArr}
+                contents={primaryTopicsMenuArr}
                 onChange={handleTopicTagsFieldChange}
                 defaultOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : "Select an option"}
             />
@@ -390,7 +390,7 @@ const CantabularMetadata = ({
             <Select
                 id="secondaryTopics"
                 label="Secondary Topics"
-                contents={secondaryTopicsArr.length > 0 ? secondaryTopicsArr : primaryTopicsArr}
+                contents={secondaryTopicsMenuArr.length > 0 ? secondaryTopicsMenuArr : primaryTopicsMenuArr}
                 onChange={handleTopicTagsFieldChange}
             />
 

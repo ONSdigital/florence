@@ -47,8 +47,8 @@ export class CantabularMetadataController extends Component {
             dimensionsUpdated: false,
             datasetMetadataHasChanges: false,
             versionMetadataHasChanges: false,
-            primaryTopicsArr: [],
-            secondaryTopicsArr: [],
+            primaryTopicsMenuArr: [],
+            secondaryTopicsMenuArr: [],
             metadata: {
                 title: "",
                 summary: "",
@@ -150,10 +150,23 @@ export class CantabularMetadataController extends Component {
                 })
             )
         );
-        const allTopics = [...rootTopicsArr, ...allSubTopics].map(topic => ({ id: topic.id, name: topic.next.title }));
+        const rootTopics = {
+            id: "primaryTopics",
+            name: "Primary topics",
+            isGroup: true,
+            groupOptions: rootTopicsArr.map(topic => ({ id: topic.id, name: topic.title })),
+        };
+
+        const subTopics = {
+            id: "secondaryTopics",
+            name: "Secondary topics",
+            isGroup: true,
+            groupOptions: allSubTopics.map(topic => ({ id: topic.id, name: topic.title })),
+        };
+        const allTopics = [rootTopics, subTopics];
         this.setState({
-            primaryTopicsArr: [...allTopics],
-            secondaryTopicsArr: [...allTopics],
+            primaryTopicsMenuArr: [...allTopics],
+            secondaryTopicsMenuArr: [...allTopics],
         });
     };
 
@@ -572,7 +585,10 @@ export class CantabularMetadataController extends Component {
         const fieldName = event.target.name;
         const value = event.target.value;
         if (fieldName == "primaryTopic") {
-            const selectedPrimaryTopic = this.state.primaryTopicsArr.find(primaryTopic => primaryTopic.id == value);
+            const selectedPrimaryTopic = this.state.primaryTopicsMenuArr.find(topicOptions =>
+                topicOptions.groupOptions.find(topic => topic.id == value)
+            );
+            console.log(selectedPrimaryTopic);
             const newMetadataState = { ...this.state.metadata, [fieldName]: { id: selectedPrimaryTopic.id, title: selectedPrimaryTopic.name } };
             this.setState({
                 metadata: newMetadataState,
@@ -580,7 +596,10 @@ export class CantabularMetadataController extends Component {
             });
         } else if (fieldName == "secondaryTopics") {
             if (this.state.metadata[fieldName].length === 0 || this.state.metadata[fieldName].find(secondaryTopic => secondaryTopic.id != value)) {
-                const selectedSecondaryTopic = this.state.secondaryTopicsArr.find(secondaryTopic => secondaryTopic.id == value);
+                const selectedSecondaryTopic = this.state.secondaryTopicsMenuArr.find(topicOptions =>
+                    topicOptions.groupOptions.find(topic => topic.id == value)
+                );
+                console.log(selectedSecondaryTopic);
                 const newMetadataState = {
                     ...this.state.metadata,
                     [fieldName]: [...this.state.metadata[fieldName], { id: selectedSecondaryTopic.id, title: selectedSecondaryTopic.name }],
@@ -588,10 +607,10 @@ export class CantabularMetadataController extends Component {
                 this.setState({
                     metadata: newMetadataState,
                     datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-                    secondaryTopicsArr:
-                        this.state.secondaryTopicsArr.length > 0
-                            ? this.state.secondaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic))
-                            : this.state.primaryTopicsArr.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
+                    secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicOptions => ({
+                        ...topicOptions,
+                        groupOptions: topicOptions.groupOptions.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
+                    })),
                 });
             }
         }
@@ -966,7 +985,7 @@ export class CantabularMetadataController extends Component {
             secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic.id != id),
         };
         this.setState({
-            secondaryTopicsArr: this.state.secondaryTopicsArr.map(secondaryTopic =>
+            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(secondaryTopic =>
                 secondaryTopic.id == id ? { ...secondaryTopic, disabled: false } : secondaryTopic
             ),
             metadata: newMetadataState,
@@ -1011,8 +1030,8 @@ export class CantabularMetadataController extends Component {
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
-                    primaryTopicsArr={this.state.primaryTopicsArr}
-                    secondaryTopicsArr={this.state.secondaryTopicsArr}
+                    primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
+                    secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
                     handleTopicTagsFieldChange={this.handleTopicTagsFieldChange}
                     removeSelectedSecondaryTopic={this.removeSelectedSecondaryTopic}
                 />
