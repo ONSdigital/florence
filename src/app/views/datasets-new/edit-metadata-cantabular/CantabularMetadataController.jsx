@@ -586,10 +586,7 @@ export class CantabularMetadataController extends Component {
         const value = event.target.value;
         if (fieldName == "primaryTopic") {
             let selectedPrimaryTopic;
-            this.state.primaryTopicsMenuArr.find(
-                topicOptions =>
-                    (selectedPrimaryTopic = topicOptions.groupOptions.find(topic => topic.id == value))
-            );
+            this.state.primaryTopicsMenuArr.find(topicOptions => (selectedPrimaryTopic = topicOptions.groupOptions.find(topic => topic.id == value)));
             const newMetadataState = { ...this.state.metadata, [fieldName]: { id: selectedPrimaryTopic.id, title: selectedPrimaryTopic.name } };
             this.setState({
                 metadata: newMetadataState,
@@ -598,8 +595,8 @@ export class CantabularMetadataController extends Component {
         } else if (fieldName == "secondaryTopics") {
             if (this.state.metadata[fieldName].length === 0 || this.state.metadata[fieldName].find(secondaryTopic => secondaryTopic.id != value)) {
                 let selectedSecondaryTopic;
-                this.state.secondaryTopicsMenuArr.find(topicOptions =>
-                    selectedSecondaryTopic = topicOptions.groupOptions.find(topic => topic.id == value)
+                this.state.secondaryTopicsMenuArr.find(
+                    topicOptions => (selectedSecondaryTopic = topicOptions.groupOptions.find(topic => topic.id == value))
                 );
                 const newMetadataState = {
                     ...this.state.metadata,
@@ -986,9 +983,10 @@ export class CantabularMetadataController extends Component {
             secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic.id != id),
         };
         this.setState({
-            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(secondaryTopic =>
-                secondaryTopic.id == id ? { ...secondaryTopic, disabled: false } : secondaryTopic
-            ),
+            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicOptions => ({
+                ...topicOptions,
+                groupOptions: topicOptions.groupOptions.map(topic => (topic.id == id ? { ...topic, disabled: false } : topic)),
+            })),
             metadata: newMetadataState,
             datasetMetadataHasChanges: this.datasetMetadataHasChanges("secondaryTopics"),
         });
