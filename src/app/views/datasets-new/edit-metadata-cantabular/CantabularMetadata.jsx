@@ -372,7 +372,7 @@ const CantabularMetadata = ({
             <h2 className="margin-top--1">Topic tags</h2>
             <Select
                 id="primaryTopic"
-                label="Primary Topics"
+                label="Primary Topic"
                 contents={primaryTopicsMenuArr}
                 onChange={handleTopicTagsFieldChange}
                 defaultOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : "Select an option"}

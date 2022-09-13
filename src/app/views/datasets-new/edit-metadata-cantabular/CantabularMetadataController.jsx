@@ -585,10 +585,11 @@ export class CantabularMetadataController extends Component {
         const fieldName = event.target.name;
         const value = event.target.value;
         if (fieldName == "primaryTopic") {
-            const selectedPrimaryTopic = this.state.primaryTopicsMenuArr.find(topicOptions =>
-                topicOptions.groupOptions.find(topic => topic.id == value)
+            let selectedPrimaryTopic;
+            this.state.primaryTopicsMenuArr.find(
+                topicOptions =>
+                    (selectedPrimaryTopic = topicOptions.groupOptions.find(topic => topic.id == value))
             );
-            console.log(selectedPrimaryTopic);
             const newMetadataState = { ...this.state.metadata, [fieldName]: { id: selectedPrimaryTopic.id, title: selectedPrimaryTopic.name } };
             this.setState({
                 metadata: newMetadataState,
@@ -596,10 +597,10 @@ export class CantabularMetadataController extends Component {
             });
         } else if (fieldName == "secondaryTopics") {
             if (this.state.metadata[fieldName].length === 0 || this.state.metadata[fieldName].find(secondaryTopic => secondaryTopic.id != value)) {
-                const selectedSecondaryTopic = this.state.secondaryTopicsMenuArr.find(topicOptions =>
-                    topicOptions.groupOptions.find(topic => topic.id == value)
+                let selectedSecondaryTopic;
+                this.state.secondaryTopicsMenuArr.find(topicOptions =>
+                    selectedSecondaryTopic = topicOptions.groupOptions.find(topic => topic.id == value)
                 );
-                console.log(selectedSecondaryTopic);
                 const newMetadataState = {
                     ...this.state.metadata,
                     [fieldName]: [...this.state.metadata[fieldName], { id: selectedSecondaryTopic.id, title: selectedSecondaryTopic.name }],
