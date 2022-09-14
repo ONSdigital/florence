@@ -152,16 +152,14 @@ export class CantabularMetadataController extends Component {
         );
         const rootTopics = {
             id: "primaryTopics",
-            name: "Primary topics",
-            isGroup: true,
-            groupOptions: rootTopicsArr.map(topic => ({ id: topic.id, name: topic.title })),
+            label: "Primary topics",
+            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.title })),
         };
 
         const subTopics = {
             id: "secondaryTopics",
-            name: "Secondary topics",
-            isGroup: true,
-            groupOptions: allSubTopics.map(topic => ({ id: topic.id, name: topic.title })),
+            label: "Secondary topics",
+            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.title })),
         };
         const allTopics = [rootTopics, subTopics];
         this.setState({
@@ -581,39 +579,6 @@ export class CantabularMetadataController extends Component {
         this.setState({ metadata: newMetadataState, dimensionsUpdated: true });
     };
 
-    handleTopicTagsFieldChange = event => {
-        const fieldName = event.target.name;
-        const value = event.target.value;
-        if (fieldName == "primaryTopic") {
-            let selectedPrimaryTopic;
-            this.state.primaryTopicsMenuArr.find(topicOptions => (selectedPrimaryTopic = topicOptions.groupOptions.find(topic => topic.id == value)));
-            const newMetadataState = { ...this.state.metadata, [fieldName]: { id: selectedPrimaryTopic.id, title: selectedPrimaryTopic.name } };
-            this.setState({
-                metadata: newMetadataState,
-                datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-            });
-        } else if (fieldName == "secondaryTopics") {
-            if (this.state.metadata[fieldName].length === 0 || this.state.metadata[fieldName].find(secondaryTopic => secondaryTopic.id != value)) {
-                let selectedSecondaryTopic;
-                this.state.secondaryTopicsMenuArr.find(
-                    topicOptions => (selectedSecondaryTopic = topicOptions.groupOptions.find(topic => topic.id == value))
-                );
-                const newMetadataState = {
-                    ...this.state.metadata,
-                    [fieldName]: [...this.state.metadata[fieldName], { id: selectedSecondaryTopic.id, title: selectedSecondaryTopic.name }],
-                };
-                this.setState({
-                    metadata: newMetadataState,
-                    datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
-                    secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicOptions => ({
-                        ...topicOptions,
-                        groupOptions: topicOptions.groupOptions.map(topic => (topic.id == value ? { ...topic, disabled: true } : topic)),
-                    })),
-                });
-            }
-        }
-    };
-
     handleSimpleEditableListAdd = stateFieldName => {
         const path = `${this.props.location.pathname}/edit/${stateFieldName}/${this.state.metadata[stateFieldName].length}`;
         this.props.dispatch(push(path));
@@ -976,22 +941,6 @@ export class CantabularMetadataController extends Component {
         this.saveAndRetrieveDatasetMetadata(false, true);
     };
 
-    removeSelectedSecondaryTopic = event => {
-        let id = event.target.id;
-        const newMetadataState = {
-            ...this.state.metadata,
-            secondaryTopics: this.state.metadata.secondaryTopics.filter(secondaryTopic => secondaryTopic.id != id),
-        };
-        this.setState({
-            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicOptions => ({
-                ...topicOptions,
-                groupOptions: topicOptions.groupOptions.map(topic => (topic.id == id ? { ...topic, disabled: false } : topic)),
-            })),
-            metadata: newMetadataState,
-            datasetMetadataHasChanges: this.datasetMetadataHasChanges("secondaryTopics"),
-        });
-    };
-
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
@@ -1031,8 +980,12 @@ export class CantabularMetadataController extends Component {
                     handleRedirectOnReject={this.handleCancelClick}
                     primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
-                    handleTopicTagsFieldChange={this.handleTopicTagsFieldChange}
-                    removeSelectedSecondaryTopic={this.removeSelectedSecondaryTopic}
+                    handlePrimaryTopicTagFieldChange={selectedOption => {
+                        this.setState({ metadata: { ...this.state.metadata, primaryTopic: selectedOption } });
+                    }}
+                    handleSecondaryTopicTagsFieldChange={selectedOptions => {
+                        this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
+                    }}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}

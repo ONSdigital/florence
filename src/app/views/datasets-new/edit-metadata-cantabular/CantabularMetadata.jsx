@@ -9,7 +9,7 @@ import Input from "../../../components/Input";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
-import Select from "../../../components/Select";
+import SelectTags from "../../../components/Select-tags";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -101,8 +101,8 @@ const propTypes = {
     disableCancel: PropTypes.bool,
     primaryTopicsMenuArr: PropTypes.array.isRequired,
     secondaryTopicsMenuArr: PropTypes.array.isRequired,
-    handleTopicTagsFieldChange: PropTypes.func.isRequired,
-    removeSelectedSecondaryTopic: PropTypes.func.isRequired,
+    handlePrimaryTopicTagFieldChange: PropTypes.func.isRequired,
+    handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -131,8 +131,8 @@ const CantabularMetadata = ({
     fieldsReturned,
     primaryTopicsMenuArr,
     secondaryTopicsMenuArr,
-    handleTopicTagsFieldChange,
-    removeSelectedSecondaryTopic,
+    handlePrimaryTopicTagFieldChange,
+    handleSecondaryTopicTagsFieldChange,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -370,29 +370,16 @@ const CantabularMetadata = ({
             />
 
             <h2 className="margin-top--1">Topic tags</h2>
-            <Select
-                id="primaryTopic"
-                label="Primary Topic"
-                contents={primaryTopicsMenuArr}
-                onChange={handleTopicTagsFieldChange}
-                defaultOption={Object.keys(metadata.primaryTopic).length !== 0 ? metadata.primaryTopic.title : "Select an option"}
-            />
-            <ul>
-                {metadata.secondaryTopics.map(topic => (
-                    <li key={topic.id}>
-                        {topic.title}
-                        <span id={topic.id} onClick={removeSelectedSecondaryTopic}>
-                            &times;
-                        </span>
-                    </li>
-                ))}
-            </ul>
-            <Select
-                id="secondaryTopics"
-                label="Secondary Topics"
-                contents={secondaryTopicsMenuArr.length > 0 ? secondaryTopicsMenuArr : primaryTopicsMenuArr}
-                onChange={handleTopicTagsFieldChange}
-            />
+            <SelectTags id="primaryTopic" label="Primary Topic" contents={primaryTopicsMenuArr} handleChange={handlePrimaryTopicTagFieldChange} />
+            <div className="margin-top--1">
+                <SelectTags
+                    id="secondaryTopics"
+                    label="Secondary Topics"
+                    contents={secondaryTopicsMenuArr}
+                    handleChange={handleSecondaryTopicTagsFieldChange}
+                    multipleSelection={true}
+                />
+            </div>
 
             <div className="margin-top--2">
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
