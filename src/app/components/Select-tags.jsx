@@ -25,8 +25,20 @@ class SelectTags extends Component {
         super(props);
     }
 
+    isOptionDisabled = option => {
+        option.isDisabled;
+    };
+
     render() {
-        return <Select maxMenuHeight={250} onChange={this.props.handleChange} options={this.props.contents} isMulti={this.props.multipleSelection} />;
+        return (
+            <Select
+                isOptionDisabled={this.isOptionDisabled}
+                maxMenuHeight={250}
+                onChange={this.props.handleChange}
+                options={this.props.contents}
+                isMulti={this.props.multipleSelection}
+            />
+        );
     }
 }
 

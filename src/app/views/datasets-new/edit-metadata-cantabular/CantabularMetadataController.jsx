@@ -153,13 +153,13 @@ export class CantabularMetadataController extends Component {
         const rootTopics = {
             id: "primaryTopics",
             label: "Primary topics",
-            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.title })),
+            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title, isDisabled: false })),
         };
 
         const subTopics = {
             id: "secondaryTopics",
             label: "Secondary topics",
-            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.title })),
+            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title, isDisabled: false })),
         };
         const allTopics = [rootTopics, subTopics];
         this.setState({
@@ -905,6 +905,16 @@ export class CantabularMetadataController extends Component {
         return true;
     };
 
+    handleSecondaryTopicTagsFieldChange = selectedOptions => {
+        this.setState({
+            metadata: { ...this.state.metadata, secondaryTopics: selectedOptions },
+            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicGroup => ({
+                ...topicGroup,
+                options: topicGroup.options.map(option => (selectedOptions.includes(option) ? { ...option, isDisabled: true } : option)),
+            })),
+        });
+    };
+
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
@@ -983,9 +993,7 @@ export class CantabularMetadataController extends Component {
                     handlePrimaryTopicTagFieldChange={selectedOption => {
                         this.setState({ metadata: { ...this.state.metadata, primaryTopic: selectedOption } });
                     }}
-                    handleSecondaryTopicTagsFieldChange={selectedOptions => {
-                        this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
-                    }}
+                    handleSecondaryTopicTagsFieldChange={this.handleSecondaryTopicTagsFieldChange}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
