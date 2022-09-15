@@ -905,16 +905,6 @@ export class CantabularMetadataController extends Component {
         return true;
     };
 
-    handleSecondaryTopicTagsFieldChange = selectedOptions => {
-        this.setState({
-            metadata: { ...this.state.metadata, secondaryTopics: selectedOptions },
-            secondaryTopicsMenuArr: this.state.secondaryTopicsMenuArr.map(topicGroup => ({
-                ...topicGroup,
-                options: topicGroup.options.map(option => (selectedOptions.includes(option) ? { ...option, isDisabled: true } : option)),
-            })),
-        });
-    };
-
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
@@ -993,7 +983,9 @@ export class CantabularMetadataController extends Component {
                     handlePrimaryTopicTagFieldChange={selectedOption => {
                         this.setState({ metadata: { ...this.state.metadata, primaryTopic: selectedOption } });
                     }}
-                    handleSecondaryTopicTagsFieldChange={this.handleSecondaryTopicTagsFieldChange}
+                    handleSecondaryTopicTagsFieldChange={selectedOptions => {
+                        this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
+                    }}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
