@@ -371,15 +371,13 @@ const CantabularMetadata = ({
 
             <h2 className="margin-top--1">Topic tags</h2>
             <SelectTags id="primaryTopic" label="Primary Topic" contents={primaryTopicsMenuArr} handleChange={handlePrimaryTopicTagFieldChange} />
-            <div className="margin-top--1">
-                <SelectTags
-                    id="secondaryTopics"
-                    label="Secondary Topics"
-                    contents={secondaryTopicsMenuArr}
-                    handleChange={handleSecondaryTopicTagsFieldChange}
-                    multipleSelection={true}
-                />
-            </div>
+            <SelectTags
+                id="secondaryTopics"
+                label="Secondary Topics"
+                contents={secondaryTopicsMenuArr}
+                handleChange={handleSecondaryTopicTagsFieldChange}
+                multipleSelection={true}
+            />
 
             <div className="margin-top--2">
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
