@@ -37,6 +37,7 @@ class SelectTags extends Component {
                 onChange={this.props.handleChange}
                 options={this.props.contents}
                 isMulti={this.props.multipleSelection}
+                hideSelectedOptions={false}
             />
         );
     }
