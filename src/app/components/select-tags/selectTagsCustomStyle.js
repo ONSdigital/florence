@@ -2,10 +2,10 @@ export const customStyles = {
     option: (styles, state) => ({
         ...styles,
         color: "black",
-        backgroundColor: state.isDisabled ? undefined : state.isSelected ? "#ddd" : state.isFocused ? "#ddd" : "white",
+        backgroundColor: state.isSelected ? "#ddd" : state.isFocused ? "#ddd" : "white",
         ":active": {
             ...styles[":active"],
-            backgroundColor: !state.isDisabled ? (state.isSelected ? "#ddd" : "#ddd") : undefined,
+            backgroundColor: state.isSelected ? "#ddd" : "#ddd",
         },
         padding: 20,
     }),
@@ -16,16 +16,12 @@ export const customStyles = {
         boxShadow: state.isFocused ? "0 0 0 3px #ffbf47" : "none",
         backgroundColor: "#FFFFFF",
         outlineStyle: "none",
+        bottom: "100%",
     }),
     control: styles => ({
         ...styles,
         border: "none",
         backgroundColor: "transparent",
-        outlineStyle: "none",
-    }),
-    menuList: styles => ({
-        ...styles,
-        marginBottom: "35px",
     }),
     multiValueRemove: styles => ({
         ...styles,
