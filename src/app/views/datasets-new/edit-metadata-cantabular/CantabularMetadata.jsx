@@ -9,7 +9,7 @@ import Input from "../../../components/Input";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
-import SelectTags from "../../../components/Select-tags";
+import SelectTags from "../../../components/select-tags/Select-tags";
 
 const propTypes = {
     metadata: PropTypes.shape({
