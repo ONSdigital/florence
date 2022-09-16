@@ -11,17 +11,19 @@ export const customStyles = {
     }),
     container: (styles, state) => ({
         ...styles,
+        position: "sticky",
+        zIndex: state.isFocused ? 1 : 0,
         border: "3px solid #58585B",
         borderRadius: "4px",
         boxShadow: state.isFocused ? "0 0 0 3px #ffbf47" : "none",
         backgroundColor: "#FFFFFF",
-        outlineStyle: "none",
         bottom: "100%",
     }),
     control: styles => ({
         ...styles,
         border: "none",
         backgroundColor: "transparent",
+        boxShadow: "none",
     }),
     multiValueRemove: styles => ({
         ...styles,
@@ -30,4 +32,9 @@ export const customStyles = {
             color: "#333333",
         },
     }),
+};
+
+export const labelCustomStyle = {
+    position: "relative",
+    top: "-25px",
 };

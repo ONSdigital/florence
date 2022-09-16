@@ -369,7 +369,7 @@ const CantabularMetadata = ({
                 disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
             />
 
-            <h2 className="margin-top--1">Topic tags</h2>
+            <h2 className="margin-top--1 margin-bottom--1">Topic tags</h2>
             <SelectTags id="primaryTopic" label="Primary Topic" contents={primaryTopicsMenuArr} handleChange={handlePrimaryTopicTagFieldChange} />
             <SelectTags
                 id="secondaryTopics"
