@@ -370,12 +370,20 @@ const CantabularMetadata = ({
             />
 
             <h2 className="margin-top--1 margin-bottom--1">Topic tags</h2>
-            <SelectTags id="primaryTopic" label="Primary Topic" contents={primaryTopicsMenuArr} handleChange={handlePrimaryTopicTagFieldChange} />
+            <SelectTags
+                singleDefaultValue={metadata.primaryTopic}
+                id="primaryTopic"
+                label="Primary Topic"
+                contents={primaryTopicsMenuArr}
+                handleChange={handlePrimaryTopicTagFieldChange}
+                multipleSelection={false}
+            />
             <SelectTags
                 id="secondaryTopics"
                 label="Secondary Topics"
                 contents={secondaryTopicsMenuArr}
                 handleChange={handleSecondaryTopicTagsFieldChange}
+                multiDefaultValue={metadata.secondaryTopics}
                 multipleSelection={true}
             />
 

@@ -20,6 +20,16 @@ const propTypes = {
     handleChange: PropTypes.func,
     multipleSelection: PropTypes.bool,
     error: PropTypes.string,
+    singleDefaultValue: PropTypes.shape({
+        label: PropTypes.string.isRequired,
+        value: PropTypes.string.isRequired,
+    }),
+    multiDefaultValue: PropTypes.arrayOf(
+        PropTypes.shape({
+            label: PropTypes.string.isRequired,
+            value: PropTypes.string.isRequired,
+        })
+    ),
 };
 
 class SelectTags extends Component {
@@ -43,6 +53,7 @@ class SelectTags extends Component {
                     onChange={this.props.handleChange}
                     options={this.props.contents}
                     isMulti={this.props.multipleSelection}
+                    value={this.props.multipleSelection ? this.props.multiDefaultValue : this.props.singleDefaultValue}
                     styles={customStyles}
                 />
             </div>
