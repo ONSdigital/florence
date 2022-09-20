@@ -153,13 +153,13 @@ export class CantabularMetadataController extends Component {
         const rootTopics = {
             id: "primaryTopics",
             label: "Primary topics",
-            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title, isDisabled: false })),
+            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title })),
         };
 
         const subTopics = {
             id: "secondaryTopics",
             label: "Secondary topics",
-            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title, isDisabled: false })),
+            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title })),
         };
         const allTopics = [rootTopics, subTopics];
         this.setState({
