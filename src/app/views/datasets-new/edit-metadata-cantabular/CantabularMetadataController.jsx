@@ -315,10 +315,12 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
-                primaryTopic: {
-                    value: dataset.canonical_topic ? dataset.canonical_topic.id : "",
-                    label: dataset.canonical_topic ? dataset.canonical_topic.title : "",
-                },
+                primaryTopic: dataset.canonical_topic
+                    ? {
+                          value: dataset.canonical_topic.id,
+                          label: dataset.canonical_topic.title,
+                      }
+                    : null,
                 secondaryTopics: dataset.sub_topics
                     ? dataset.sub_topics.map(secondaryTopic => ({ value: secondaryTopic.id, label: secondaryTopic.title }))
                     : [],
@@ -742,7 +744,9 @@ export class CantabularMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
-                canonical_topic: { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label },
+                canonical_topic: this.state.metadata.primaryTopic
+                    ? { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label }
+                    : null,
                 sub_topics: this.state.metadata.secondaryTopics.map(secondaryTopic => ({ id: secondaryTopic.value, title: secondaryTopic.label })),
             },
             version: {
