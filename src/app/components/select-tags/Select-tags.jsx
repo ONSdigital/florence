@@ -55,6 +55,7 @@ class SelectTags extends Component {
                     isMulti={this.props.multipleSelection}
                     value={this.props.multipleSelection ? this.props.multiDefaultValue : this.props.singleDefaultValue}
                     styles={customStyles}
+                    isClearable
                 />
             </div>
         );
