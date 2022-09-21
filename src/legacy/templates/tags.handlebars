@@ -6,12 +6,18 @@
     <div class="edit-section__content">
         <div class="edit-section__sortable-item" style="padding: 20px 10px;">
             <div class="ons-field" style="margin-bottom:21px; width:100%;">
-                <label class="ons-label" for="selectTopic" style="font-weight:bold; margin:5px 0px;">Topic</label>
-                <select id="selectTopic" name="selectTopic" onchange="getSubTopics()" class="ons-input ons-input--select"></select>
+                <label class="ons-label" for="selectPrimaryTopic" style="font-weight:bold; margin:5px 0px;">Primary Topic</label>
+                <select id="selectPrimaryTopic" name="selectPrimaryTopic" class="ons-input ons-input--select">
+                    <optgroup id="selectPrimaryTopicPrimaryTopics" label="Primary Topics"/>
+                    <optgroup id="selectPrimaryTopicSubtopics" label="Subtopics"/>
+                </select>
             </div>
             <div class="ons-field" style="margin-bottom:21px; width:100%;">
-                <label class="ons-label" for="selectSubTopic" style="font-weight:bold; margin:5px 0px;">Subtopic</label>
-                <select id="selectSubTopic" name="selectSubTopic" class="ons-input ons-input--select"></select>
+                <label class="ons-label" for="selectSubtopic" style="font-weight:bold; margin:5px 0px;">Subtopics</label>
+                <select id="selectSubtopic" name="selectSubtopic" class="ons-input ons-input--select">
+                    <optgroup id="selectSubtopicsPrimaryTopics" label="Primary Topics"/>
+                    <optgroup id="selectSubtopicsSubtopics" label="Subtopics"/>
+                </select>
             </div>
         </div>
     </div>
