@@ -49,6 +49,7 @@ export class CantabularMetadataController extends Component {
             versionMetadataHasChanges: false,
             primaryTopicsMenuArr: [],
             secondaryTopicsMenuArr: [],
+            topicsErr: "",
             metadata: {
                 title: "",
                 summary: "",
@@ -914,6 +915,10 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
+        } else if (this.state.metadata.secondaryTopics && !this.state.metadata.primaryTopic) {
+            this.setState({ topicsErr: "error message" });
+            document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
         }
         return true;
     };
@@ -999,6 +1004,7 @@ export class CantabularMetadataController extends Component {
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
                         this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
                     }}
+                    topicsErr={this.state.topicsErr}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}

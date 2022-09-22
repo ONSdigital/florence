@@ -103,6 +103,7 @@ const propTypes = {
     secondaryTopicsMenuArr: PropTypes.array.isRequired,
     handlePrimaryTopicTagFieldChange: PropTypes.func.isRequired,
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
+    topicsErr: PropTypes.string,
 };
 
 const CantabularMetadata = ({
@@ -133,6 +134,7 @@ const CantabularMetadata = ({
     secondaryTopicsMenuArr,
     handlePrimaryTopicTagFieldChange,
     handleSecondaryTopicTagsFieldChange,
+    topicsErr,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--4">
@@ -369,7 +371,10 @@ const CantabularMetadata = ({
                 disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
             />
 
-            <h2 className="margin-top--1 margin-bottom--1">Topic tags</h2>
+            <h2 className="margin-top--1 margin-bottom--1" id="topic-tags-heading">
+                Topic tags
+            </h2>
+            
             <SelectTags
                 singleDefaultValue={metadata.primaryTopic}
                 id="primaryTopic"
@@ -377,6 +382,7 @@ const CantabularMetadata = ({
                 contents={primaryTopicsMenuArr}
                 handleChange={handlePrimaryTopicTagFieldChange}
                 multipleSelection={false}
+                error={topicsErr}
             />
             <SelectTags
                 id="secondaryTopics"
