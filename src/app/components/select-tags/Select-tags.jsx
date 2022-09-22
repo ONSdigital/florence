@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import Select from "react-select";
 import PropTypes from "prop-types";
-import { customStyles, labelCustomStyle } from "./selectTagsCustomStyle";
+import { customStyles } from "./selectTagsCustomStyle";
 
 const propTypes = {
     id: PropTypes.string,
@@ -40,7 +40,7 @@ class SelectTags extends Component {
     render() {
         return (
             <div className={"form__input" + (this.props.error ? " form__input--error" : "")}>
-                <label style={labelCustomStyle} className="form__label" htmlFor={this.props.id}>
+                <label className="form__label" htmlFor={this.props.id}>
                     {this.props.label}
                 </label>
                 {this.props.error && (
@@ -54,7 +54,7 @@ class SelectTags extends Component {
                     options={this.props.contents}
                     isMulti={this.props.multipleSelection}
                     value={this.props.multipleSelection ? this.props.multiDefaultValue : this.props.singleDefaultValue}
-                    styles={customStyles}
+                    styles={customStyles(this.props.error)}
                     isClearable
                 />
             </div>

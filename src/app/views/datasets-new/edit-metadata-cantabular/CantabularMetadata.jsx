@@ -137,7 +137,7 @@ const CantabularMetadata = ({
     topicsErr,
 }) => {
     return (
-        <div className="grid__col-6 margin-bottom--4">
+        <div className="grid__col-6 margin-bottom--8">
             <div className="margin-top--2">
                 &#9664;{" "}
                 <button type="button" className="btn btn--link" onClick={handleBackButton}>
@@ -374,7 +374,7 @@ const CantabularMetadata = ({
             <h2 className="margin-top--1 margin-bottom--1" id="topic-tags-heading">
                 Topic tags
             </h2>
-            
+
             <SelectTags
                 singleDefaultValue={metadata.primaryTopic}
                 id="primaryTopic"
@@ -391,6 +391,7 @@ const CantabularMetadata = ({
                 handleChange={handleSecondaryTopicTagsFieldChange}
                 multiDefaultValue={metadata.secondaryTopics}
                 multipleSelection={true}
+                error={topicsErr}
             />
 
             <div className="margin-top--2">
