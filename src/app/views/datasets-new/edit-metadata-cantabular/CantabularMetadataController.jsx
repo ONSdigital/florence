@@ -915,7 +915,7 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
-        } else if (this.state.metadata.secondaryTopics && !this.state.metadata.primaryTopic) {
+        } else if (this.state.metadata.secondaryTopics.length > 0 && this.state.metadata.primaryTopic == null) {
             this.setState({ topicsErr: "You cannot enter a secondary topic without a primary topic" });
             document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
@@ -1003,7 +1003,7 @@ export class CantabularMetadataController extends Component {
                     }}
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
                         this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
-                        if (this.state.secondaryTopics.length === 0) {
+                        if (selectedOptions.length === 0) {
                             this.setState({ topicsErr: "" });
                         }
                     }}
