@@ -383,6 +383,7 @@ const CantabularMetadata = ({
                 handleChange={handlePrimaryTopicTagFieldChange}
                 multipleSelection={false}
                 error={topicsErr}
+                disabled={disableForm}
             />
             <SelectTags
                 id="secondaryTopics"
@@ -392,6 +393,7 @@ const CantabularMetadata = ({
                 multiDefaultValue={metadata.secondaryTopics}
                 multipleSelection={true}
                 error={topicsErr}
+                disabled={disableForm}
             />
 
             <div className="margin-top--2">

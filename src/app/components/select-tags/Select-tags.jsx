@@ -20,6 +20,7 @@ const propTypes = {
     handleChange: PropTypes.func,
     multipleSelection: PropTypes.bool,
     error: PropTypes.string,
+    disabled: PropTypes.bool,
     singleDefaultValue: PropTypes.shape({
         label: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
@@ -55,6 +56,7 @@ class SelectTags extends Component {
                     isMulti={this.props.multipleSelection}
                     value={this.props.multipleSelection ? this.props.multiDefaultValue : this.props.singleDefaultValue}
                     styles={customStyles(this.props.error)}
+                    isDisabled={this.props.disabled}
                     isClearable
                 />
             </div>
