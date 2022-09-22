@@ -1,5 +1,4 @@
 export const customStyles = error => {
-    console.log("3px solid " + (error ? "#aa354c" : "#58585B"));
     return {
         option: (styles, state) => ({
             ...styles,
