@@ -142,31 +142,45 @@ export class CantabularMetadataController extends Component {
     }
 
     getTopics = async () => {
-        let rootTopicsArr = await topics.getRootTopics().then(rootTopics => rootTopics.items);
-        let allSubTopics = [];
-        await Promise.all(
-            rootTopicsArr.map(rootTopic =>
-                topics.getSubTopics(rootTopic.id).then(subTopics => {
-                    allSubTopics = [...allSubTopics, ...subTopics.items];
-                })
-            )
-        );
-        const rootTopics = {
-            id: "primaryTopics",
-            label: "Primary topics",
-            options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title })),
-        };
+        try {
+            let rootTopicsArr = await topics.getRootTopics().then(rootTopics => rootTopics.items);
+            let allSubTopics = [];
+            await Promise.all(
+                rootTopicsArr.map(rootTopic =>
+                    topics.getSubTopics(rootTopic.id).then(subTopics => {
+                        allSubTopics = [...allSubTopics, ...subTopics.items];
+                    })
+                )
+            );
+            const rootTopics = {
+                id: "primaryTopics",
+                label: "Primary topics",
+                options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title })),
+            };
 
-        const subTopics = {
-            id: "secondaryTopics",
-            label: "Secondary topics",
-            options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title })),
-        };
-        const allTopics = [rootTopics, subTopics];
-        this.setState({
-            primaryTopicsMenuArr: [...allTopics],
-            secondaryTopicsMenuArr: [...allTopics],
-        });
+            const subTopics = {
+                id: "secondaryTopics",
+                label: "Secondary topics",
+                options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title })),
+            };
+            const allTopics = [rootTopics, subTopics];
+            this.setState({
+                primaryTopicsMenuArr: [...allTopics],
+                secondaryTopicsMenuArr: [...allTopics],
+            });
+        } catch (error) {
+            log.event(
+                "get topics: error retrieving topic list from dp-topic-api service",
+                log.data({ datasetID: this.props.params.datasetID, editionID: this.props.params.editionID, versionID: this.props.params.versionID }),
+                log.error()
+            );
+            notifications.add({
+                type: "warning",
+                message: `An error occurred when attempting to retrieve the topic list. Please try refreshing the page`,
+                isDismissable: true,
+            });
+            console.error("get topics: error retrieving topic list from dp-topic-api service", error);
+        }
     };
 
     getMetadata = (datasetID, editionID, versionID) => {
