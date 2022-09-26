@@ -28,6 +28,9 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         get: jest.fn(() => {
             return Promise.resolve();
         }),
+        getCantabularMetadata: jest.fn(() => {
+            return Promise.resolve();
+        }),
     };
 });
 
