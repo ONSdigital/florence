@@ -18,8 +18,6 @@ type Config struct {
 	HealthCheckInterval               time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout        time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
 	SharedConfig                      SharedConfig
-	// should be removed when dp-topic-api is added to the cantabular metadata dev stack
-	TopicsURL			string
 }
 
 // SharedConfig represents the configuration made available to the client-side application from the server
@@ -51,8 +49,6 @@ func Get() (*Config, error) {
 		GracefulShutdownTimeout:           10 * time.Second,
 		HealthCheckInterval:               30 * time.Second,
 		HealthCheckCriticalTimeout:        90 * time.Second,
-		// should be removed when dp-topic-api is added to the cantabular metadata dev stack
-		TopicsURL: 						   "http://localhost:25300",
 	}
 
 	return cfg, envconfig.Process("", cfg)

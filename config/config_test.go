@@ -25,8 +25,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,
 			HealthCheckCriticalTimeout: 90 * time.Second,
-			// should be removed when dp-topic-api is added to the cantabular metadata dev stack
-			TopicsURL: 						   "http://localhost:25300",
 		})
 	})
 }

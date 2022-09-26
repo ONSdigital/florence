@@ -105,15 +105,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	// should be removed when dp-topic-api is added to the cantabular metadata dev stack
-	TopicsURL, err := url.Parse(cfg.TopicsURL)
-	if err != nil {
-		log.Event(ctx, "error parsing topics API URL", log.FATAL, log.Error(err))
-		return nil, err
-	}
-    // should be removed when dp-topic-api is added to the cantabular metadata dev stack
-	topicsProxy := reverseproxy.Create(TopicsURL, directors.Director(""), nil)
-
 	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
@@ -125,8 +116,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	// bring back when dp-topic-api is added to the cantabular metadata dev stack
-	// topicsProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	topicsProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/image"), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
