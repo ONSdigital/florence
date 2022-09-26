@@ -594,7 +594,12 @@ export class CollectionDetailsController extends Component {
             const datasetID = pageID.split("/")[0].trim();
             const response = await datasets.get(datasetID);
             const type = response.next.type;
-            this.setState({ isCantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+            try {
+                await datasets.getCantabularMetadata(datasetID, "en");
+                this.setState({ isCantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+            } catch {
+                console.log("Dataset ID not present in Cantabular metadata server");
+            }
         }
     };
 

@@ -46,7 +46,12 @@ export class DatasetVersionsController extends Component {
     getDatasetType = async datasetID => {
         const response = await datasets.get(datasetID);
         const type = response.next.type;
-        this.setState({ cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+        try {
+            await datasets.getCantabularMetadata(datasetID, "en");
+            this.setState({ cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+        } catch {
+            console.log("Dataset ID not present in Cantabular metadata server");
+        }
     };
 
     getAllVersions = (datasetID, editions) => {
