@@ -187,6 +187,11 @@ const mockedSavedNonCantDatasetMetadata = {
         qmi: {
             href: "www.testData.com/methodology",
         },
+        canonical_topic: { id: "testID1", title: "Test title 1" },
+        sub_topics: [
+            { id: "testID1", title: "Test title 1" },
+            { id: "testSubtopicID1", title: "Test subtopic title 1" },
+        ],
         contacts: [
             {
                 name: "Test Name",
@@ -227,7 +232,7 @@ const mockedSavedNonCantDatasetMetadata = {
     collection_last_edited_by: "test@user.com",
 };
 
-const mockedUnSavedNonCantabularDatasetMetadata = {
+const mockedNewNonCantDatasetMetadata = {
     dataset: {
         id: "567",
         methodologies: [],
@@ -289,14 +294,14 @@ const mockCantabularMetadataState = {
         licence: mockedCantabularDatasetMetadata.dataset.license,
         relatedDatasets: mockedCantabularDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedCantabularDatasetMetadata.dataset.publications,
-        relatedMethodologies: mockedUnSavedNonCantabularDatasetMetadata.dataset.methodologies,
+        relatedMethodologies: mockedNewNonCantDatasetMetadata.dataset.methodologies,
         releaseFrequency: {
-            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
+            value: mockedNewNonCantDatasetMetadata.dataset.release_frequency,
             error: "",
         },
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: {
-            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
+            value: mockedNewNonCantDatasetMetadata.dataset.next_release,
             error: "",
         },
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
@@ -312,17 +317,19 @@ const mockCantabularMetadataState = {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
             error: "",
         },
-        edition: mockedUnSavedNonCantabularDatasetMetadata.version.edition,
-        version: mockedUnSavedNonCantabularDatasetMetadata.version.version,
-        releaseDate: { value: mockedUnSavedNonCantabularDatasetMetadata.version.release_date, error: "" },
-        notices: mockedUnSavedNonCantabularDatasetMetadata.version.alerts,
+        edition: mockedNewNonCantDatasetMetadata.version.edition,
+        version: mockedNewNonCantDatasetMetadata.version.version,
+        releaseDate: { value: mockedNewNonCantDatasetMetadata.version.release_date, error: "" },
+        notices: mockedNewNonCantDatasetMetadata.version.alerts,
         dimensions: mockedCantabularDatasetMetadata.version.dimensions,
-        usageNotes: mockedUnSavedNonCantabularDatasetMetadata.version.usage_notes,
-        latestChanges: mockedUnSavedNonCantabularDatasetMetadata.version.latest_changes,
+        usageNotes: mockedNewNonCantDatasetMetadata.version.usage_notes,
+        latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
+        primaryTopic: null,
+        secondaryTopics: [],
     },
     datasetCollectionState: "",
     versionCollectionState: "",
-    lastEditedBy: mockedUnSavedNonCantabularDatasetMetadata.collection_last_edited_by || null,
+    lastEditedBy: mockedNewNonCantDatasetMetadata.collection_last_edited_by || null,
 };
 
 const mockDatasetApiMetadataState = {
@@ -339,6 +346,11 @@ const mockDatasetApiMetadataState = {
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
+        primaryTopic: { value: "testID1", label: "Test title 1" },
+        secondaryTopics: [
+            { value: "testID1", label: "Test title 1" },
+            { value: "testSubtopicID1", label: "Test subtopic title 1" },
+        ],
         contactName: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
             error: "",
@@ -438,7 +450,7 @@ describe("Calling getMetadata", () => {
 describe("Mapping metadata to state", () => {
     it("maps cantabular metadata when the collection state is an empty string", async () => {
         component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        const returnValue = component.instance().mapMetadataToState(mockedUnSavedNonCantabularDatasetMetadata, component.state("cantabularMetadata"));
+        const returnValue = component.instance().mapMetadataToState(mockedNewNonCantDatasetMetadata, component.state("cantabularMetadata"));
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
