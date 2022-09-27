@@ -4,6 +4,7 @@ import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
 import cookies from "../../../utilities/cookies";
 import log from "../../../utilities/logging/log";
+import topics from "../../../utilities/api-clients/topics";
 
 console.error = () => {};
 
@@ -43,6 +44,13 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
             return Promise.resolve();
         }),
         getCantabularMetadata: jest.fn(),
+    };
+});
+
+jest.mock("../../../utilities/api-clients/topics", () => {
+    return {
+        getRootTopics: jest.fn(),
+        getSubTopics: jest.fn(),
     };
 });
 
@@ -722,5 +730,149 @@ describe("Calling checkDimensions", () => {
         expect(mockedNotifications.length).toEqual(0);
         component.instance().checkDimensions(datasetDimensions, cantabularDimensions);
         expect(mockedNotifications.length).toEqual(1);
+    });
+});
+
+describe("Calling getTopics", () => {
+    const mockRootTopicsResp = {
+        count: 0,
+        offset_index: 0,
+        limit: 0,
+        total_count: 1,
+        items: [
+            {
+                id: "testID1",
+                next: {
+                    id: "testID1",
+                    description: "Test description 1",
+                    title: "Test title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testID1",
+                            id: "testID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testID1/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testID1",
+                    description: "Test description 1",
+                    title: "Test title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testID1",
+                            id: "testID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testID1/subtopics",
+                        },
+                    },
+                },
+            },
+        ],
+    };
+
+    const mockSubtopicsResp = {
+        count: 0,
+        offset_index: 0,
+        limit: 0,
+        total_count: 2,
+        items: [
+            {
+                id: "testSubtopicID1",
+                next: {
+                    id: "testSubtopicID1",
+                    description: "Test subtopic description 1",
+                    title: "Test subtopic title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID1",
+                            id: "testSubtopicID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID1/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testSubtopicID1",
+                    description: "Test subtopic description 1",
+                    title: "Test subtopic title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID1",
+                            id: "testSubtopicID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID1/subtopics",
+                        },
+                    },
+                },
+            },
+            {
+                id: "testSubtopicID2",
+                next: {
+                    id: "testSubtopicID2",
+                    description: "Test subtopic description 2",
+                    title: "Test subtopic title 2",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID2",
+                            id: "testSubtopicID2",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID2/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testSubtopicID2",
+                    description: "Test subtopic description 2",
+                    title: "Test subtopic title 2",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID2",
+                            id: "testSubtopicID2",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID2/subtopics",
+                        },
+                    },
+                },
+            },
+        ],
+    };
+
+    const allMockTopics = [
+        {
+            id: "primaryTopics",
+            label: "Primary topics",
+            options: [{ value: "testID1", label: "Test title 1" }],
+        },
+        {
+            id: "secondaryTopics",
+            label: "Secondary topics",
+            options: [
+                { value: "testSubtopicID1", label: "Test subtopic title 1" },
+                { value: "testSubtopicID2", label: "Test subtopic title 2" },
+            ],
+        },
+    ];
+
+    it("sets state correctly", async () => {
+        topics.getRootTopics.mockImplementationOnce(() => Promise.resolve(mockRootTopicsResp));
+        topics.getSubTopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
+        await component.instance().getTopics();
+
+        expect(component.state("primaryTopicsMenuArr")).toEqual(allMockTopics);
+        expect(component.state("secondaryTopicsMenuArr")).toEqual(allMockTopics);
     });
 });
