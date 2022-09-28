@@ -761,6 +761,10 @@ describe("Calling checkDimensions", () => {
 });
 
 describe("Calling getTopics", () => {
+    beforeEach(() => {
+        mockedNotifications = [];
+        jest.clearAllMocks();
+    });
     const mockRootTopicsResp = {
         count: 0,
         offset_index: 0,
@@ -901,5 +905,19 @@ describe("Calling getTopics", () => {
 
         expect(component.state("primaryTopicsMenuArr")).toEqual(allMockTopics);
         expect(component.state("secondaryTopicsMenuArr")).toEqual(allMockTopics);
+    });
+    it("logs error and notification when topics.getRootTopics errors", async () => {
+        topics.getRootTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+        await component.instance().getTopics();
+
+        expect(mockedNotifications.length).toEqual(1);
+        expect(log.error).toHaveBeenCalledTimes(1);
+    });
+    it("logs error and notification when topics.getSubTopics errors", async () => {
+        topics.getSubTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+        await component.instance().getTopics();
+
+        expect(mockedNotifications.length).toEqual(1);
+        expect(log.error).toHaveBeenCalledTimes(1);
     });
 });
