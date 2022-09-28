@@ -6,6 +6,7 @@ image_resource:
   type: docker-image
   source:
     repository: onsdigital/dp-concourse-tools-node-go
+    tag: node13
 
 inputs:
   - name: florence
