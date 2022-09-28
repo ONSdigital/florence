@@ -619,6 +619,21 @@ describe("Calling checkMandatoryFields", () => {
             releaseDate: { value: "", error: "You must set a release date" },
         });
     });
+    it("raises error if there is only a secondary topics selection and no primary topic selection ", async () => {
+        const mockCantabularMetadataStateNoPrimaryTopic = {
+            ...mockCantabularMetadataState,
+            metadata: {
+                ...mockCantabularMetadataState.metadata,
+                secondaryTopics: [
+                    { value: "testSubtopicID1", label: "Test subtopic title 1" },
+                    { value: "testSubtopicID2", label: "Test subtopic title 2" },
+                ],
+            },
+        };
+        component.setState(mockCantabularMetadataStateNoPrimaryTopic);
+        component.instance().checkMandatoryFields();
+        expect(component.state("topicsErr")).toEqual("You cannot enter a secondary topic without a primary topic");
+    });
 });
 
 describe("Calling saveDatasetMetadata", () => {
