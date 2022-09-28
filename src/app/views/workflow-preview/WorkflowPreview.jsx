@@ -34,9 +34,14 @@ export class WorkflowPreview extends Component {
     };
 
     getDatasetType = datasetID => {
-        return datasets.get(datasetID).then(response => {
+        return datasets.get(datasetID).then(async response => {
             const type = response.next.type;
-            this.setState({ cantabularDataset: type === "cantabular_table" || type === "cantabular_flexible_table" });
+            try {
+                await datasets.getCantabularMetadata(datasetID, "en");
+                this.setState({ cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+            } catch {
+                console.log("Dataset ID not present in Cantabular metadata server");
+            }
         });
     };
 
