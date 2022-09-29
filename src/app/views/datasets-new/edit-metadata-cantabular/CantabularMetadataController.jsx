@@ -143,25 +143,20 @@ export class CantabularMetadataController extends Component {
 
     getTopics = async () => {
         try {
-            let rootTopicsArr = await topics.getRootTopics().then(rootTopics => rootTopics.items);
-            let allSubTopics = [];
-            await Promise.all(
-                rootTopicsArr.map(rootTopic =>
-                    topics.getSubTopics(rootTopic.id).then(subTopics => {
-                        allSubTopics = [...allSubTopics, ...subTopics.items];
-                    })
-                )
-            );
+            const extractTopicItems = ({ items }) => items;
+            let rootTopicsArr = await topics.getRootTopics().then(extractTopicItems);
+            const getSubTopics = ({ id }) => topics.getSubTopics(id).then(extractTopicItems);
+            let allSubTopics = await Promise.all(rootTopicsArr.map(getSubTopics)).then(subTopics => subTopics.flat());
+            const extractTopicOptions = ({ id, next: { title } }) => ({ value: id, label: title });
             const rootTopics = {
                 id: "primaryTopics",
                 label: "Primary topics",
-                options: rootTopicsArr.map(topic => ({ value: topic.id, label: topic.next.title })),
+                options: rootTopicsArr.map(extractTopicOptions),
             };
-
             const subTopics = {
                 id: "secondaryTopics",
                 label: "Secondary topics",
-                options: allSubTopics.map(topic => ({ value: topic.id, label: topic.next.title })),
+                options: allSubTopics.map(extractTopicOptions),
             };
             const allTopics = [rootTopics, subTopics];
             this.setState({
@@ -171,7 +166,11 @@ export class CantabularMetadataController extends Component {
         } catch (error) {
             log.event(
                 "get topics: error retrieving topic list from dp-topic-api service",
-                log.data({ datasetID: this.props.params.datasetID, editionID: this.props.params.editionID, versionID: this.props.params.versionID }),
+                log.data({
+                    datasetID: this.props.params.datasetID,
+                    editionID: this.props.params.editionID,
+                    versionID: this.props.params.versionID,
+                }),
                 log.error()
             );
             notifications.add({
@@ -336,9 +335,7 @@ export class CantabularMetadataController extends Component {
                           label: dataset.canonical_topic.title,
                       }
                     : null,
-                secondaryTopics: dataset.sub_topics
-                    ? dataset.sub_topics.map(secondaryTopic => ({ value: secondaryTopic.id, label: secondaryTopic.title }))
-                    : [],
+                secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -762,7 +759,7 @@ export class CantabularMetadataController extends Component {
                 canonical_topic: this.state.metadata.primaryTopic
                     ? { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label }
                     : null,
-                sub_topics: this.state.metadata.secondaryTopics.map(secondaryTopic => ({ id: secondaryTopic.value, title: secondaryTopic.label })),
+                sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
             },
             version: {
                 id: this.state.metadata.versionID,
@@ -1013,10 +1010,21 @@ export class CantabularMetadataController extends Component {
                     primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
                     handlePrimaryTopicTagFieldChange={selectedOption => {
-                        this.setState({ metadata: { ...this.state.metadata, primaryTopic: selectedOption }, topicsErr: "" });
+                        this.setState({
+                            metadata: {
+                                ...this.state.metadata,
+                                primaryTopic: selectedOption,
+                            },
+                            topicsErr: "",
+                        });
                     }}
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
-                        this.setState({ metadata: { ...this.state.metadata, secondaryTopics: selectedOptions } });
+                        this.setState({
+                            metadata: {
+                                ...this.state.metadata,
+                                secondaryTopics: selectedOptions,
+                            },
+                        });
                         if (selectedOptions.length === 0) {
                             this.setState({ topicsErr: "" });
                         }
