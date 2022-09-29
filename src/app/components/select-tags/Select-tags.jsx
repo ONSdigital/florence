@@ -4,8 +4,8 @@ import PropTypes from "prop-types";
 import { customStyles } from "./selectTagsCustomStyle";
 
 const propTypes = {
-    id: PropTypes.string,
-    label: PropTypes.string,
+    id: PropTypes.string.isRequired,
+    label: PropTypes.string.isRequired,
     contents: PropTypes.arrayOf(
         PropTypes.shape({
             label: PropTypes.string.isRequired,
@@ -17,10 +17,10 @@ const propTypes = {
             ),
         })
     ).isRequired,
-    handleChange: PropTypes.func,
-    multipleSelection: PropTypes.bool,
-    error: PropTypes.string,
-    disabled: PropTypes.bool,
+    handleChange: PropTypes.func.isRequired,
+    multipleSelection: PropTypes.bool.isRequired,
+    error: PropTypes.string.isRequired,
+    disabled: PropTypes.bool.isRequired,
     singleDefaultValue: PropTypes.shape({
         label: PropTypes.string.isRequired,
         value: PropTypes.string.isRequired,
