@@ -4,6 +4,7 @@ import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
 import cookies from "../../../utilities/cookies";
 import log from "../../../utilities/logging/log";
+import topics from "../../../utilities/api-clients/topics";
 
 console.error = () => {};
 
@@ -43,6 +44,13 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
             return Promise.resolve();
         }),
         getCantabularMetadata: jest.fn(),
+    };
+});
+
+jest.mock("../../../utilities/api-clients/topics", () => {
+    return {
+        getRootTopics: jest.fn(),
+        getSubTopics: jest.fn(),
     };
 });
 
@@ -179,6 +187,11 @@ const mockedSavedNonCantDatasetMetadata = {
         qmi: {
             href: "www.testData.com/methodology",
         },
+        canonical_topic: { id: "testID1", title: "Test title 1" },
+        sub_topics: [
+            { id: "testID1", title: "Test title 1" },
+            { id: "testSubtopicID1", title: "Test subtopic title 1" },
+        ],
         contacts: [
             {
                 name: "Test Name",
@@ -219,7 +232,7 @@ const mockedSavedNonCantDatasetMetadata = {
     collection_last_edited_by: "test@user.com",
 };
 
-const mockedUnSavedNonCantabularDatasetMetadata = {
+const mockedNewNonCantDatasetMetadata = {
     dataset: {
         id: "567",
         methodologies: [],
@@ -281,14 +294,14 @@ const mockCantabularMetadataState = {
         licence: mockedCantabularDatasetMetadata.dataset.license,
         relatedDatasets: mockedCantabularDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedCantabularDatasetMetadata.dataset.publications,
-        relatedMethodologies: mockedUnSavedNonCantabularDatasetMetadata.dataset.methodologies,
+        relatedMethodologies: mockedNewNonCantDatasetMetadata.dataset.methodologies,
         releaseFrequency: {
-            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.release_frequency,
+            value: mockedNewNonCantDatasetMetadata.dataset.release_frequency,
             error: "",
         },
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: {
-            value: mockedUnSavedNonCantabularDatasetMetadata.dataset.next_release,
+            value: mockedNewNonCantDatasetMetadata.dataset.next_release,
             error: "",
         },
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
@@ -304,17 +317,19 @@ const mockCantabularMetadataState = {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].telephone,
             error: "",
         },
-        edition: mockedUnSavedNonCantabularDatasetMetadata.version.edition,
-        version: mockedUnSavedNonCantabularDatasetMetadata.version.version,
-        releaseDate: { value: mockedUnSavedNonCantabularDatasetMetadata.version.release_date, error: "" },
-        notices: mockedUnSavedNonCantabularDatasetMetadata.version.alerts,
+        edition: mockedNewNonCantDatasetMetadata.version.edition,
+        version: mockedNewNonCantDatasetMetadata.version.version,
+        releaseDate: { value: mockedNewNonCantDatasetMetadata.version.release_date, error: "" },
+        notices: mockedNewNonCantDatasetMetadata.version.alerts,
         dimensions: mockedCantabularDatasetMetadata.version.dimensions,
-        usageNotes: mockedUnSavedNonCantabularDatasetMetadata.version.usage_notes,
-        latestChanges: mockedUnSavedNonCantabularDatasetMetadata.version.latest_changes,
+        usageNotes: mockedNewNonCantDatasetMetadata.version.usage_notes,
+        latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
+        primaryTopic: null,
+        secondaryTopics: [],
     },
     datasetCollectionState: "",
     versionCollectionState: "",
-    lastEditedBy: mockedUnSavedNonCantabularDatasetMetadata.collection_last_edited_by || null,
+    lastEditedBy: mockedNewNonCantDatasetMetadata.collection_last_edited_by || null,
 };
 
 const mockDatasetApiMetadataState = {
@@ -331,6 +346,11 @@ const mockDatasetApiMetadataState = {
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
+        primaryTopic: { value: "testID1", label: "Test title 1" },
+        secondaryTopics: [
+            { value: "testID1", label: "Test title 1" },
+            { value: "testSubtopicID1", label: "Test subtopic title 1" },
+        ],
         contactName: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
             error: "",
@@ -430,7 +450,7 @@ describe("Calling getMetadata", () => {
 describe("Mapping metadata to state", () => {
     it("maps cantabular metadata when the collection state is an empty string", async () => {
         component.setState({ cantabularMetadata: mockedCantabularDatasetMetadata });
-        const returnValue = component.instance().mapMetadataToState(mockedUnSavedNonCantabularDatasetMetadata, component.state("cantabularMetadata"));
+        const returnValue = component.instance().mapMetadataToState(mockedNewNonCantDatasetMetadata, component.state("cantabularMetadata"));
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
@@ -599,6 +619,21 @@ describe("Calling checkMandatoryFields", () => {
             releaseDate: { value: "", error: "You must set a release date" },
         });
     });
+    it("raises error if there is only a secondary topics selection and no primary topic selection ", async () => {
+        const mockCantabularMetadataStateNoPrimaryTopic = {
+            ...mockCantabularMetadataState,
+            metadata: {
+                ...mockCantabularMetadataState.metadata,
+                secondaryTopics: [
+                    { value: "testSubtopicID1", label: "Test subtopic title 1" },
+                    { value: "testSubtopicID2", label: "Test subtopic title 2" },
+                ],
+            },
+        };
+        component.setState(mockCantabularMetadataStateNoPrimaryTopic);
+        component.instance().checkMandatoryFields();
+        expect(component.state("topicsErr")).toEqual("You cannot enter a secondary topic without a primary topic");
+    });
 });
 
 describe("Calling saveDatasetMetadata", () => {
@@ -722,5 +757,167 @@ describe("Calling checkDimensions", () => {
         expect(mockedNotifications.length).toEqual(0);
         component.instance().checkDimensions(datasetDimensions, cantabularDimensions);
         expect(mockedNotifications.length).toEqual(1);
+    });
+});
+
+describe("Calling getTopics", () => {
+    beforeEach(() => {
+        mockedNotifications = [];
+        jest.clearAllMocks();
+    });
+    const mockRootTopicsResp = {
+        count: 0,
+        offset_index: 0,
+        limit: 0,
+        total_count: 1,
+        items: [
+            {
+                id: "testID1",
+                next: {
+                    id: "testID1",
+                    description: "Test description 1",
+                    title: "Test title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testID1",
+                            id: "testID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testID1/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testID1",
+                    description: "Test description 1",
+                    title: "Test title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testID1",
+                            id: "testID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testID1/subtopics",
+                        },
+                    },
+                },
+            },
+        ],
+    };
+
+    const mockSubtopicsResp = {
+        count: 0,
+        offset_index: 0,
+        limit: 0,
+        total_count: 2,
+        items: [
+            {
+                id: "testSubtopicID1",
+                next: {
+                    id: "testSubtopicID1",
+                    description: "Test subtopic description 1",
+                    title: "Test subtopic title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID1",
+                            id: "testSubtopicID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID1/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testSubtopicID1",
+                    description: "Test subtopic description 1",
+                    title: "Test subtopic title 1",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID1",
+                            id: "testSubtopicID1",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID1/subtopics",
+                        },
+                    },
+                },
+            },
+            {
+                id: "testSubtopicID2",
+                next: {
+                    id: "testSubtopicID2",
+                    description: "Test subtopic description 2",
+                    title: "Test subtopic title 2",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID2",
+                            id: "testSubtopicID2",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID2/subtopics",
+                        },
+                    },
+                },
+                current: {
+                    id: "testSubtopicID2",
+                    description: "Test subtopic description 2",
+                    title: "Test subtopic title 2",
+                    state: "published",
+                    links: {
+                        self: {
+                            href: "http://localhost:25300/topics/testSubtopicID2",
+                            id: "testSubtopicID2",
+                        },
+                        subtopics: {
+                            href: "http://localhost:25300/topics/testSubtopicID2/subtopics",
+                        },
+                    },
+                },
+            },
+        ],
+    };
+
+    const allMockTopics = [
+        {
+            id: "primaryTopics",
+            label: "Primary topics",
+            options: [{ value: "testID1", label: "Test title 1" }],
+        },
+        {
+            id: "secondaryTopics",
+            label: "Secondary topics",
+            options: [
+                { value: "testSubtopicID1", label: "Test subtopic title 1" },
+                { value: "testSubtopicID2", label: "Test subtopic title 2" },
+            ],
+        },
+    ];
+
+    it("sets state correctly", async () => {
+        topics.getRootTopics.mockImplementationOnce(() => Promise.resolve(mockRootTopicsResp));
+        topics.getSubTopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
+        await component.instance().getTopics();
+
+        expect(component.state("primaryTopicsMenuArr")).toEqual(allMockTopics);
+        expect(component.state("secondaryTopicsMenuArr")).toEqual(allMockTopics);
+    });
+    it("logs error and notification when topics.getRootTopics errors", async () => {
+        topics.getRootTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+        await component.instance().getTopics();
+
+        expect(mockedNotifications.length).toEqual(1);
+        expect(log.error).toHaveBeenCalledTimes(1);
+    });
+    it("logs error and notification when topics.getSubTopics errors", async () => {
+        topics.getSubTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+        await component.instance().getTopics();
+
+        expect(mockedNotifications.length).toEqual(1);
+        expect(log.error).toHaveBeenCalledTimes(1);
     });
 });

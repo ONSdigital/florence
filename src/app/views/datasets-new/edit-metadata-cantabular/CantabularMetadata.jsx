@@ -9,6 +9,7 @@ import Input from "../../../components/Input";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
+import SelectTags from "../../../components/select-tags/Select-tags";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -52,6 +53,8 @@ const propTypes = {
         qmi: PropTypes.string,
         latestChanges: PropTypes.array,
         usageNotes: PropTypes.array,
+        primaryTopic: PropTypes.string,
+        secondaryTopics: PropTypes.array,
     }).isRequired,
     fieldsReturned: PropTypes.shape({
         title: PropTypes.bool,
@@ -96,6 +99,11 @@ const propTypes = {
     disableForm: PropTypes.bool.isRequired,
     isSaving: PropTypes.bool,
     disableCancel: PropTypes.bool,
+    primaryTopicsMenuArr: PropTypes.array.isRequired,
+    secondaryTopicsMenuArr: PropTypes.array.isRequired,
+    handlePrimaryTopicTagFieldChange: PropTypes.func.isRequired,
+    handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
+    topicsErr: PropTypes.string,
 };
 
 const CantabularMetadata = ({
@@ -122,9 +130,14 @@ const CantabularMetadata = ({
     allowPreview,
     disableCancel,
     fieldsReturned,
+    primaryTopicsMenuArr,
+    secondaryTopicsMenuArr,
+    handlePrimaryTopicTagFieldChange,
+    handleSecondaryTopicTagsFieldChange,
+    topicsErr,
 }) => {
     return (
-        <div className="grid__col-6 margin-bottom--4">
+        <div className="grid__col-6 margin-bottom--8">
             <div className="margin-top--2">
                 &#9664;{" "}
                 <button type="button" className="btn btn--link" onClick={handleBackButton}>
@@ -356,6 +369,31 @@ const CantabularMetadata = ({
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
                 disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
+            />
+
+            <h2 className="margin-top--1 margin-bottom--1" id="topic-tags-heading">
+                Topic tags
+            </h2>
+
+            <SelectTags
+                singleDefaultValue={metadata.primaryTopic}
+                id="primaryTopic"
+                label="Primary Topic"
+                contents={primaryTopicsMenuArr}
+                handleChange={handlePrimaryTopicTagFieldChange}
+                multipleSelection={false}
+                error={topicsErr}
+                disabled={disableForm}
+            />
+            <SelectTags
+                id="secondaryTopics"
+                label="Secondary Topics"
+                contents={secondaryTopicsMenuArr}
+                handleChange={handleSecondaryTopicTagsFieldChange}
+                multiDefaultValue={metadata.secondaryTopics}
+                multipleSelection={true}
+                error={topicsErr}
+                disabled={disableForm}
             />
 
             <div className="margin-top--2">

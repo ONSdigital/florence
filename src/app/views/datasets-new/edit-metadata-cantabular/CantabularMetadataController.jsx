@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 import date from "../../../utilities/date";
 import datasets from "../../../utilities/api-clients/datasets";
+import topics from "../../../utilities/api-clients/topics";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
@@ -46,6 +47,9 @@ export class CantabularMetadataController extends Component {
             dimensionsUpdated: false,
             datasetMetadataHasChanges: false,
             versionMetadataHasChanges: false,
+            primaryTopicsMenuArr: [],
+            secondaryTopicsMenuArr: [],
+            topicsErr: "",
             metadata: {
                 title: "",
                 summary: "",
@@ -88,6 +92,8 @@ export class CantabularMetadataController extends Component {
                 usageNotes: [],
                 latestChanges: [],
                 qmi: "",
+                primaryTopic: {},
+                secondaryTopics: [],
             },
             fieldsReturned: {
                 title: false,
@@ -127,12 +133,54 @@ export class CantabularMetadataController extends Component {
         };
     }
 
-    UNSAFE_componentWillMount() {
+    async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
+        await this.getTopics();
     }
+
+    getTopics = async () => {
+        try {
+            const extractTopicItems = ({ items }) => items;
+            let rootTopicsArr = await topics.getRootTopics().then(extractTopicItems);
+            const getSubTopics = ({ id }) => topics.getSubTopics(id).then(extractTopicItems);
+            let allSubTopics = await Promise.all(rootTopicsArr.map(getSubTopics)).then(subTopics => subTopics.flat());
+            const extractTopicOptions = ({ id, next: { title } }) => ({ value: id, label: title });
+            const rootTopics = {
+                id: "primaryTopics",
+                label: "Primary topics",
+                options: rootTopicsArr.map(extractTopicOptions),
+            };
+            const subTopics = {
+                id: "secondaryTopics",
+                label: "Secondary topics",
+                options: allSubTopics.map(extractTopicOptions),
+            };
+            const allTopics = [rootTopics, subTopics];
+            this.setState({
+                primaryTopicsMenuArr: [...allTopics],
+                secondaryTopicsMenuArr: [...allTopics],
+            });
+        } catch (error) {
+            log.event(
+                "get topics: error retrieving topic list from dp-topic-api service",
+                log.data({
+                    datasetID: this.props.params.datasetID,
+                    editionID: this.props.params.editionID,
+                    versionID: this.props.params.versionID,
+                }),
+                log.error()
+            );
+            notifications.add({
+                type: "warning",
+                message: `An error occurred when attempting to retrieve the topic list. Please try refreshing the page`,
+                isDismissable: true,
+            });
+            console.error("get topics: error retrieving topic list from dp-topic-api service", error);
+        }
+    };
 
     getMetadata = (datasetID, editionID, versionID) => {
         this.setState({ isGettingMetadata: true });
@@ -281,6 +329,13 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
+                primaryTopic: dataset.canonical_topic
+                    ? {
+                          value: dataset.canonical_topic.id,
+                          label: dataset.canonical_topic.title,
+                      }
+                    : null,
+                secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -655,7 +710,9 @@ export class CantabularMetadataController extends Component {
             fieldName === "releaseFrequency" ||
             fieldName === "unitOfMeasure" ||
             fieldName === "qmi" ||
-            fieldName === "nextReleaseDate"
+            fieldName === "nextReleaseDate" ||
+            fieldName === "primaryTopic" ||
+            fieldName === "secondaryTopics"
         ) {
             return true;
         }
@@ -699,6 +756,10 @@ export class CantabularMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
+                canonical_topic: this.state.metadata.primaryTopic
+                    ? { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label }
+                    : null,
+                sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
             },
             version: {
                 id: this.state.metadata.versionID,
@@ -865,6 +926,10 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
+        } else if (this.state.metadata.secondaryTopics.length > 0 && this.state.metadata.primaryTopic == null) {
+            this.setState({ topicsErr: "You cannot enter a secondary topic without a primary topic" });
+            document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
+            return;
         }
         return true;
     };
@@ -942,6 +1007,29 @@ export class CantabularMetadataController extends Component {
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
+                    primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
+                    secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
+                    handlePrimaryTopicTagFieldChange={selectedOption => {
+                        this.setState({
+                            metadata: {
+                                ...this.state.metadata,
+                                primaryTopic: selectedOption,
+                            },
+                            topicsErr: "",
+                        });
+                    }}
+                    handleSecondaryTopicTagsFieldChange={selectedOptions => {
+                        this.setState({
+                            metadata: {
+                                ...this.state.metadata,
+                                secondaryTopics: selectedOptions,
+                            },
+                        });
+                        if (selectedOptions.length === 0) {
+                            this.setState({ topicsErr: "" });
+                        }
+                    }}
+                    topicsErr={this.state.topicsErr}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
