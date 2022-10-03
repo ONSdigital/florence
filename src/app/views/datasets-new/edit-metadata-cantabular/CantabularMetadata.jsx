@@ -376,7 +376,7 @@ const CantabularMetadata = ({
             </h2>
 
             <SelectTags
-                singleDefaultValue={metadata.primaryTopic}
+                singleDefaultValue={Object.keys(metadata.primaryTopic).length ? metadata.primaryTopic : null}
                 id="primaryTopic"
                 label="Primary Topic"
                 contents={primaryTopicsMenuArr}

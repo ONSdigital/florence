@@ -329,12 +329,13 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
-                primaryTopic: dataset.canonical_topic
-                    ? {
-                          value: dataset.canonical_topic.id,
-                          label: dataset.canonical_topic.title,
-                      }
-                    : null,
+                primaryTopic:
+                    "canonical_topic" in dataset
+                        ? {
+                              value: dataset.canonical_topic.id,
+                              label: dataset.canonical_topic.title,
+                          }
+                        : {},
                 secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
             };
             return {
@@ -756,9 +757,9 @@ export class CantabularMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
-                canonical_topic: this.state.metadata.primaryTopic
+                canonical_topic: Object.keys(this.state.metadata.primaryTopic).length
                     ? { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label }
-                    : null,
+                    : {},
                 sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
             },
             version: {
@@ -926,7 +927,7 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
-        } else if (this.state.metadata.secondaryTopics.length > 0 && this.state.metadata.primaryTopic == null) {
+        } else if (this.state.metadata.secondaryTopics.length > 0 && Object.keys(this.state.metadata.primaryTopic).length == 0) {
             this.setState({ topicsErr: "You cannot enter a secondary topic without a primary topic" });
             document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
@@ -1010,10 +1011,11 @@ export class CantabularMetadataController extends Component {
                     primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
                     handlePrimaryTopicTagFieldChange={selectedOption => {
+                        console.log(selectedOption);
                         this.setState({
                             metadata: {
                                 ...this.state.metadata,
-                                primaryTopic: selectedOption,
+                                primaryTopic: selectedOption || {},
                             },
                             topicsErr: "",
                         });
