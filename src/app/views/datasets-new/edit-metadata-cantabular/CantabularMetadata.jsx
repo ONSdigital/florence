@@ -101,7 +101,7 @@ const propTypes = {
     disableCancel: PropTypes.bool,
     canonicalTopicsMenuArr: PropTypes.array.isRequired,
     secondaryTopicsMenuArr: PropTypes.array.isRequired,
-    handlecanonicalTopicTagFieldChange: PropTypes.func.isRequired,
+    handleCanonicalTopicTagFieldChange: PropTypes.func.isRequired,
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
 };
@@ -132,7 +132,7 @@ const CantabularMetadata = ({
     fieldsReturned,
     canonicalTopicsMenuArr,
     secondaryTopicsMenuArr,
-    handlecanonicalTopicTagFieldChange,
+    handleCanonicalTopicTagFieldChange,
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
 }) => {
@@ -380,7 +380,7 @@ const CantabularMetadata = ({
                 id="canonicalTopic"
                 label="Canonical topic"
                 contents={canonicalTopicsMenuArr}
-                handleChange={handlecanonicalTopicTagFieldChange}
+                handleChange={handleCanonicalTopicTagFieldChange}
                 multipleSelection={false}
                 error={topicsErr}
                 disabled={disableForm}

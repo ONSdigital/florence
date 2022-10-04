@@ -1010,7 +1010,7 @@ export class CantabularMetadataController extends Component {
                     handleRedirectOnReject={this.handleCancelClick}
                     canonicalTopicsMenuArr={this.state.canonicalTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
-                    handlecanonicalTopicTagFieldChange={selectedOption => {
+                    handleCanonicalTopicTagFieldChange={selectedOption => {
                         console.log(selectedOption);
                         this.setState({
                             metadata: {
