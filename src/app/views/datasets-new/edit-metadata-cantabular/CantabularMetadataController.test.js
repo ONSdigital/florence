@@ -324,7 +324,7 @@ const mockCantabularMetadataState = {
         dimensions: mockedCantabularDatasetMetadata.version.dimensions,
         usageNotes: mockedNewNonCantDatasetMetadata.version.usage_notes,
         latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
-        primaryTopic: null,
+        primaryTopic: {},
         secondaryTopics: [],
     },
     datasetCollectionState: "",
