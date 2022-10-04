@@ -324,7 +324,7 @@ const mockCantabularMetadataState = {
         dimensions: mockedCantabularDatasetMetadata.version.dimensions,
         usageNotes: mockedNewNonCantDatasetMetadata.version.usage_notes,
         latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
-        primaryTopic: {},
+        canonicalTopic: {},
         secondaryTopics: [],
     },
     datasetCollectionState: "",
@@ -346,7 +346,7 @@ const mockDatasetApiMetadataState = {
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
-        primaryTopic: { value: "testID1", label: "Test title 1" },
+        canonicalTopic: { value: "testID1", label: "Test title 1" },
         secondaryTopics: [
             { value: "testID1", label: "Test title 1" },
             { value: "testSubtopicID1", label: "Test subtopic title 1" },
@@ -620,7 +620,7 @@ describe("Calling checkMandatoryFields", () => {
         });
     });
     it("raises error if there is only a secondary topics selection and no primary topic selection ", async () => {
-        const mockCantabularMetadataStateNoPrimaryTopic = {
+        const mockCantabularMetadataStateNoCanonicalTopic = {
             ...mockCantabularMetadataState,
             metadata: {
                 ...mockCantabularMetadataState.metadata,
@@ -630,9 +630,9 @@ describe("Calling checkMandatoryFields", () => {
                 ],
             },
         };
-        component.setState(mockCantabularMetadataStateNoPrimaryTopic);
+        component.setState(mockCantabularMetadataStateNoCanonicalTopic);
         component.instance().checkMandatoryFields();
-        expect(component.state("topicsErr")).toEqual("You cannot enter a secondary topic without a primary topic");
+        expect(component.state("topicsErr")).toEqual("You cannot enter a secondary topic without a canonical topic");
     });
 });
 
@@ -903,7 +903,7 @@ describe("Calling getTopics", () => {
         topics.getSubTopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
         await component.instance().getTopics();
 
-        expect(component.state("primaryTopicsMenuArr")).toEqual(allMockTopics);
+        expect(component.state("canonicalTopicsMenuArr")).toEqual(allMockTopics);
         expect(component.state("secondaryTopicsMenuArr")).toEqual(allMockTopics);
     });
     it("logs error and notification when topics.getRootTopics errors", async () => {

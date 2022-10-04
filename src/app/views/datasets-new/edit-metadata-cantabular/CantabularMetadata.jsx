@@ -53,7 +53,7 @@ const propTypes = {
         qmi: PropTypes.string,
         latestChanges: PropTypes.array,
         usageNotes: PropTypes.array,
-        primaryTopic: PropTypes.string,
+        canonicalTopic: PropTypes.string,
         secondaryTopics: PropTypes.array,
     }).isRequired,
     fieldsReturned: PropTypes.shape({
@@ -99,9 +99,9 @@ const propTypes = {
     disableForm: PropTypes.bool.isRequired,
     isSaving: PropTypes.bool,
     disableCancel: PropTypes.bool,
-    primaryTopicsMenuArr: PropTypes.array.isRequired,
+    canonicalTopicsMenuArr: PropTypes.array.isRequired,
     secondaryTopicsMenuArr: PropTypes.array.isRequired,
-    handlePrimaryTopicTagFieldChange: PropTypes.func.isRequired,
+    handlecanonicalTopicTagFieldChange: PropTypes.func.isRequired,
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
 };
@@ -130,9 +130,9 @@ const CantabularMetadata = ({
     allowPreview,
     disableCancel,
     fieldsReturned,
-    primaryTopicsMenuArr,
+    canonicalTopicsMenuArr,
     secondaryTopicsMenuArr,
-    handlePrimaryTopicTagFieldChange,
+    handlecanonicalTopicTagFieldChange,
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
 }) => {
@@ -376,18 +376,18 @@ const CantabularMetadata = ({
             </h2>
 
             <SelectTags
-                singleDefaultValue={Object.keys(metadata.primaryTopic).length ? metadata.primaryTopic : null}
-                id="primaryTopic"
-                label="Primary Topic"
-                contents={primaryTopicsMenuArr}
-                handleChange={handlePrimaryTopicTagFieldChange}
+                singleDefaultValue={Object.keys(metadata.canonicalTopic).length ? metadata.canonicalTopic : null}
+                id="canonicalTopic"
+                label="Canonical topic"
+                contents={canonicalTopicsMenuArr}
+                handleChange={handlecanonicalTopicTagFieldChange}
                 multipleSelection={false}
                 error={topicsErr}
                 disabled={disableForm}
             />
             <SelectTags
                 id="secondaryTopics"
-                label="Secondary Topics"
+                label="Secondary topics"
                 contents={secondaryTopicsMenuArr}
                 handleChange={handleSecondaryTopicTagsFieldChange}
                 multiDefaultValue={metadata.secondaryTopics}
