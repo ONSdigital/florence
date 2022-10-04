@@ -92,7 +92,7 @@ exports[`EditGroup matches the snapshot 1`] = `
                 <span
                   className="chip__text"
                 >
-                  test user-199
+                  test user-199 (test.user-199@ons.gov.uk)
                 </span>
                 <span
                   className="chip__remove-container"

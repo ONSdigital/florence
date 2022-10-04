@@ -180,11 +180,11 @@ function articleEditor(collectionId, data) {
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
     // tags
-    if ($("#selectTopic").val() && $("#selectSubTopic").val()) {
-      data.description.canonicalTopic = $("#selectTopic").val()[0]
-      data.description.secondaryTopics = $("#selectSubTopic").val()
+    if ($("#selectPrimaryTopic").val() && $("#selectSubtopic").val()) {
+      data.description.canonicalTopic = $("#selectPrimaryTopic").val()[0]
+      data.description.secondaryTopics = $("#selectSubtopic").val()
     }
-    else if ($("#selectTopic").val() && !$("#selectSubTopic").val()) {
+    else if ($("#selectPrimaryTopic").val() && !$("#selectSubtopic").val()) {
       sweetAlert("Cannot save this page", "A value is required for 'Subtopic' if a 'Topic' has been selected");
       return
     } 

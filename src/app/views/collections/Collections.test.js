@@ -2,9 +2,38 @@ import React from "react";
 import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
 import Collections from "./Collections";
 import userEvent from "@testing-library/user-event";
+import { setAuthState } from "../../utilities/auth";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const viewer = createMockUser("viewer@test.com", true, true, "VIEWER");
+
+// Local Storage
+var localStorageMock = (function () {
+    var store = {};
+    return {
+        getItem: function (key) {
+            return store[key];
+        },
+        setItem: function (key, value) {
+            store[key] = value.toString();
+        },
+        clear: function () {
+            store = {};
+        },
+        removeItem: function (key) {
+            delete store[key];
+        },
+    };
+})();
+
+beforeEach(() => {
+    Object.defineProperty(window, "localStorage", { value: localStorageMock, writable: true });
+    window.localStorage.setItem("ons_auth_state", {});
+});
+
+afterEach(() => {
+    window.localStorage.clear();
+});
 
 describe("Collections", () => {
     const defaultProps = {
@@ -22,6 +51,10 @@ describe("Collections", () => {
 
     describe("when there are no collections", () => {
         it("has two headings", () => {
+            setAuthState({
+                admin: true,
+                editor: true,
+            });
             render(<Collections {...defaultProps} />);
 
             expect(screen.getAllByRole("heading", { level: 1 })).toHaveLength(2);
@@ -30,6 +63,10 @@ describe("Collections", () => {
         });
 
         it("has Create Collection form", () => {
+            setAuthState({
+                admin: true,
+                editor: true,
+            });
             render(<Collections {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
@@ -113,6 +150,10 @@ describe("Collections", () => {
 
         describe("when admin user", () => {
             it("shows list of not approved collections", () => {
+                setAuthState({
+                    admin: true,
+                    editor: true,
+                });
                 render(<Collections {...propsWithCollections} />);
 
                 expect(screen.queryByText("No items to display")).not.toBeInTheDocument();
@@ -127,6 +168,10 @@ describe("Collections", () => {
             });
 
             it("dispatches push action on collection click", () => {
+                setAuthState({
+                    admin: true,
+                    editor: true,
+                });
                 render(<Collections {...propsWithCollections} />);
                 const box = screen.getByTestId("selectable-box");
 
@@ -162,6 +207,10 @@ describe("Collections", () => {
 
             it("dispatches push and updateWorkingOn actions on collection click", () => {
                 render(<Collections {...propsWithViewer} />);
+                setAuthState({
+                    admin: true,
+                    editor: true,
+                });
                 const box = screen.getByTestId("selectable-box");
 
                 expect(within(box).getAllByRole("listitem")).toHaveLength(2);

@@ -1,13 +1,31 @@
 import notifications from "../../../utilities/notifications";
 import log from "../../../utilities/logging/log";
 import date from "../../../utilities/date";
+import fp from "lodash/fp";
 
 /**
  * Methods for mapping between request responses and the application's state
  */
 
 export default class collectionMapper {
-    static collectionResponseToState(collection) {
+    static mapTeams(collection, allGroups) {
+        if (collection.teamsDetails) {
+            return collection.teamsDetails.map(team => ({
+                id: team.id.toString(),
+                name: team.name,
+            }));
+        } else {
+            if (allGroups) {
+                const groups = fp.get("teams", collection);
+                return fp.filter(g => {
+                    return fp.includes(g.id)(groups);
+                })(allGroups);
+            }
+            return [];
+        }
+    }
+
+    static collectionResponseToState(collection, allGroups = []) {
         try {
             const publishStates = this.publishState(collection);
             return {
@@ -36,12 +54,7 @@ export default class collectionMapper {
                 datasets: collection.datasets,
                 interactives: collection.interactives,
                 datasetVersions: collection.datasetVersions,
-                teams: collection.teamsDetails
-                    ? collection.teamsDetails.map(team => ({
-                          id: team.id.toString(),
-                          name: team.name,
-                      }))
-                    : [],
+                teams: collectionMapper.mapTeams(collection, allGroups),
                 deletes: collection.pendingDeletes,
             };
         } catch (error) {

@@ -8,6 +8,7 @@ import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import Modal from "../../../components/Modal";
 import ScheduleByRelease from "../schedule-by-release/ScheduleByRelease";
 import date from "../../../utilities/date";
+import auth from "../../../utilities/auth";
 
 export const EMPTY_COLLECTION = {
     name: {
@@ -56,7 +57,11 @@ const CreateNewCollection = props => {
 
     const handleTeamSelect = e => {
         if (!e) return;
-        const member = props.teams.find(team => team.id == e.target.value);
+        const member = props.teams.find(team => {
+            if (team.id === e.target.value) {
+                return true;
+            }
+        });
         setNewCollection(prevState => ({
             ...prevState,
             teams: prevState.teams.concat(member),
@@ -146,25 +151,25 @@ const CreateNewCollection = props => {
         return new Date(`${newCollection.publishDate.value} ${newCollection.publishTime.value}`).toISOString();
     };
 
+    const makeTeams = () => {
+        return newCollection.teams.map(team => {
+            // POST to group create endpoint expects: <names> in legacy, but <IDs> in new auth (isNewSignIn)
+            if (!props.isNewSignIn) {
+                return team.name;
+            }
+            return team.id;
+        });
+    };
+
     const mapStateToPostBody = () => {
-        return isEnablePermissionsAPI
-            ? {
-                  name: newCollection.name.value,
-                  type: newCollection.type,
-                  publishDate: makePublishDate(),
-                  collectionOwner: props.user.userType,
-                  releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
-              }
-            : {
-                  name: newCollection.name.value,
-                  type: newCollection.type,
-                  publishDate: makePublishDate(),
-                  teams: newCollection.teams.map(team => {
-                      return team.name;
-                  }),
-                  collectionOwner: props.user.userType,
-                  releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
-              };
+        return {
+            name: newCollection.name.value,
+            type: newCollection.type,
+            publishDate: makePublishDate(),
+            teams: makeTeams(),
+            collectionOwner: props.user.userType,
+            releaseUri: newCollection.scheduleType === "calender-entry-schedule" ? newCollection.release.uri : null,
+        };
     };
 
     const handleSubmit = e => {
@@ -221,13 +226,19 @@ const CreateNewCollection = props => {
             setIsSubmitting(false);
             return;
         }
-
         createCollectionRequest(mapStateToPostBody(), selectedTeams, isEnablePermissionsAPI);
         setNewCollection(EMPTY_COLLECTION);
         setIsSubmitting(false);
     };
 
-    const getTeamsToSelect = () => (props.teams ? props.teams.map(team => ({ ...team, disabled: newCollection.teams.includes(team) })) : []);
+    const getTeamsToSelect = () => {
+        let filteredTeams = props.teams ?? [];
+        if (auth.isAdminOrEditor(props.user)) {
+            filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: newCollection.teams.includes(team) }));
+        }
+        return filteredTeams;
+    };
 
     const releaseTypeRadioData = [
         {

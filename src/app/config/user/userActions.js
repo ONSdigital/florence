@@ -16,18 +16,25 @@ export const userLoggedOut = () => {
 };
 
 export const startRefeshAndSession = (refresh_expiry_time, session_expiry_time) => {
-    return {
-        type: types.START_REFRESH_AND_SESSION,
-        payload: {
-            sessionTimer: {
-                active: true,
-                expire: session_expiry_time,
-            },
+    let payload = {
+        sessionTimer: {
+            active: true,
+            expire: session_expiry_time,
+        },
+    };
+
+    if (refresh_expiry_time) {
+        payload = {
+            ...payload,
             refreshTimer: {
                 active: true,
                 expire: refresh_expiry_time,
             },
-        },
+        };
+    }
+    return {
+        type: types.START_REFRESH_AND_SESSION,
+        payload,
     };
 };
 
