@@ -330,7 +330,7 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 primaryTopic:
-                    "canonical_topic" in dataset
+                    "canonical_topic" in dataset && Object.keys(dataset.canonical_topic).length
                         ? {
                               value: dataset.canonical_topic.id,
                               label: dataset.canonical_topic.title,
