@@ -47,7 +47,7 @@ export class CantabularMetadataController extends Component {
             dimensionsUpdated: false,
             datasetMetadataHasChanges: false,
             versionMetadataHasChanges: false,
-            primaryTopicsMenuArr: [],
+            canonicalTopicsMenuArr: [],
             secondaryTopicsMenuArr: [],
             topicsErr: "",
             metadata: {
@@ -92,7 +92,7 @@ export class CantabularMetadataController extends Component {
                 usageNotes: [],
                 latestChanges: [],
                 qmi: "",
-                primaryTopic: {},
+                canonicalTopic: {},
                 secondaryTopics: [],
             },
             fieldsReturned: {
@@ -160,7 +160,7 @@ export class CantabularMetadataController extends Component {
             };
             const allTopics = [rootTopics, subTopics];
             this.setState({
-                primaryTopicsMenuArr: [...allTopics],
+                canonicalTopicsMenuArr: [...allTopics],
                 secondaryTopicsMenuArr: [...allTopics],
             });
         } catch (error) {
@@ -329,12 +329,13 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
-                primaryTopic: dataset.canonical_topic
-                    ? {
-                          value: dataset.canonical_topic.id,
-                          label: dataset.canonical_topic.title,
-                      }
-                    : null,
+                canonicalTopic:
+                    "canonical_topic" in dataset && Object.keys(dataset.canonical_topic).length
+                        ? {
+                              value: dataset.canonical_topic.id,
+                              label: dataset.canonical_topic.title,
+                          }
+                        : {},
                 secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
             };
             return {
@@ -711,7 +712,7 @@ export class CantabularMetadataController extends Component {
             fieldName === "unitOfMeasure" ||
             fieldName === "qmi" ||
             fieldName === "nextReleaseDate" ||
-            fieldName === "primaryTopic" ||
+            fieldName === "canonicalTopic" ||
             fieldName === "secondaryTopics"
         ) {
             return true;
@@ -756,9 +757,9 @@ export class CantabularMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
-                canonical_topic: this.state.metadata.primaryTopic
-                    ? { id: this.state.metadata.primaryTopic.value, title: this.state.metadata.primaryTopic.label }
-                    : null,
+                canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length
+                    ? { id: this.state.metadata.canonicalTopic.value, title: this.state.metadata.canonicalTopic.label }
+                    : {},
                 sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
             },
             version: {
@@ -926,8 +927,8 @@ export class CantabularMetadataController extends Component {
             this.setState({ metadata: newMetadataState });
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
-        } else if (this.state.metadata.secondaryTopics.length > 0 && this.state.metadata.primaryTopic == null) {
-            this.setState({ topicsErr: "You cannot enter a secondary topic without a primary topic" });
+        } else if (this.state.metadata.secondaryTopics.length > 0 && Object.keys(this.state.metadata.canonicalTopic).length == 0) {
+            this.setState({ topicsErr: "You cannot enter a secondary topic without a canonical topic" });
             document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
@@ -1007,13 +1008,14 @@ export class CantabularMetadataController extends Component {
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                     fieldsReturned={this.state.fieldsReturned}
                     handleRedirectOnReject={this.handleCancelClick}
-                    primaryTopicsMenuArr={this.state.primaryTopicsMenuArr}
+                    canonicalTopicsMenuArr={this.state.canonicalTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
-                    handlePrimaryTopicTagFieldChange={selectedOption => {
+                    handleCanonicalTopicTagFieldChange={selectedOption => {
+                        console.log(selectedOption);
                         this.setState({
                             metadata: {
                                 ...this.state.metadata,
-                                primaryTopic: selectedOption,
+                                canonicalTopic: selectedOption || {},
                             },
                             topicsErr: "",
                         });
