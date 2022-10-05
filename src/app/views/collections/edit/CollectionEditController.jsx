@@ -71,7 +71,7 @@ export class CollectionEditController extends Component {
     componentDidMount() {
         this.props.dispatch(fetchGroupsRequest(this.props.isNewSignIn));
 
-        if (this.props.isNewSignIn) this.props.dispatch(loadPolicyRequest(this.props.id));
+        if (this.props.isNewSignIn && this.props.isEnablePermissionsAPI) this.props.dispatch(loadPolicyRequest(this.props.id));
 
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
