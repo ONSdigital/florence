@@ -291,10 +291,10 @@ export class CantabularMetadataController extends Component {
                 licence: !collectionState ? cantabularMetadata.dataset.license : dataset.license,
                 relatedDatasets: !collectionState
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
+                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id) || [],
                 relatedPublications: !collectionState
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.publications, dataset.id),
+                    : this.mapRelatedContentToState(dataset?.publications, dataset.id) || [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: {
                     value: dataset.release_frequency || "",
