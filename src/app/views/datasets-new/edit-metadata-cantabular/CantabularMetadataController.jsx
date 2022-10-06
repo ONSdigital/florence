@@ -1011,7 +1011,6 @@ export class CantabularMetadataController extends Component {
                     canonicalTopicsMenuArr={this.state.canonicalTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
                     handleCanonicalTopicTagFieldChange={selectedOption => {
-                        console.log(selectedOption);
                         this.setState({
                             metadata: {
                                 ...this.state.metadata,
