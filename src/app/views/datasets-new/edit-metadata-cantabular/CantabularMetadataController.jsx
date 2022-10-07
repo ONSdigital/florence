@@ -781,7 +781,7 @@ export class CantabularMetadataController extends Component {
                     ? { id: this.state.metadata.canonicalTopic.value, title: this.state.metadata.canonicalTopic.label }
                     : {},
                 sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
-                survey: census ? "census" : "",
+                survey: this.state.metadata.census ? "census" : "",
             },
             version: {
                 id: this.state.metadata.versionID,
