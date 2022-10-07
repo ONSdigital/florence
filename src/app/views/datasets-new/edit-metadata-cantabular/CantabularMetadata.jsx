@@ -282,7 +282,7 @@ const CantabularMetadata = ({
             </div>
 
             <RadioGroup
-                groupName="national-statistic"
+                groupName="nationalStatistic"
                 radioData={[
                     {
                         id: "national-statistic-yes",
