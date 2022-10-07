@@ -94,6 +94,7 @@ export class CantabularMetadataController extends Component {
                 qmi: "",
                 canonicalTopic: {},
                 secondaryTopics: [],
+                census: false,
             },
             fieldsReturned: {
                 title: false,
@@ -353,6 +354,7 @@ export class CantabularMetadataController extends Component {
                           }
                         : {},
                 secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
+                census: dataset.survey ? true : false,
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -729,7 +731,8 @@ export class CantabularMetadataController extends Component {
             fieldName === "qmi" ||
             fieldName === "nextReleaseDate" ||
             fieldName === "canonicalTopic" ||
-            fieldName === "secondaryTopics"
+            fieldName === "secondaryTopics" ||
+            fieldName === "census"
         ) {
             return true;
         }
@@ -777,6 +780,7 @@ export class CantabularMetadataController extends Component {
                     ? { id: this.state.metadata.canonicalTopic.value, title: this.state.metadata.canonicalTopic.label }
                     : {},
                 sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
+                survey: census ? "census" : "",
             },
             version: {
                 id: this.state.metadata.versionID,
