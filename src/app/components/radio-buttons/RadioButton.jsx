@@ -25,11 +25,12 @@ export default class RadioButton extends Component {
 
     handleChange = event => {
         const checked = event.target.checked;
+        const name = this.props.group;
         const id = this.props.id;
         const value = this.props.value;
         const onChange = this.props.onChange;
         if (onChange) {
-            onChange({ id, checked, value });
+            onChange({ id, checked, value, name });
         }
     };
 
