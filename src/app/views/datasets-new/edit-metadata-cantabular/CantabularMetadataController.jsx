@@ -575,15 +575,16 @@ export class CantabularMetadataController extends Component {
         });
     };
 
-    handleNationalStatisticChange = event => {
+    handleRadioGroupComponentChange = event => {
+        const fieldName = event.name;
         const value = event.value === "true" ? true : false;
         const newMetadataState = {
             ...this.state.metadata,
-            nationalStatistic: value,
+            [fieldName]: value,
         };
         this.setState({
             metadata: newMetadataState,
-            datasetMetadataHasChanges: true,
+            datasetMetadataHasChanges: this.datasetMetadataHasChanges(fieldName),
         });
     };
 
@@ -1013,7 +1014,7 @@ export class CantabularMetadataController extends Component {
                     handleStringInputChange={this.handleStringInputChange}
                     handleDimensionNameChange={this.handleDimensionNameChange}
                     handleDimensionDescriptionChange={this.handleDimensionDescriptionChange}
-                    handleNationalStatisticChange={this.handleNationalStatisticChange}
+                    handleNationalStatisticChange={this.handleRadioGroupComponentChange}
                     handleSimpleEditableListAdd={this.handleSimpleEditableListAdd}
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
@@ -1052,6 +1053,7 @@ export class CantabularMetadataController extends Component {
                         }
                     }}
                     topicsErr={this.state.topicsErr}
+                    handleCensusContentChange={this.handleRadioGroupComponentChange}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
