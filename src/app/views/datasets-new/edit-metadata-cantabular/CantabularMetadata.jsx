@@ -55,6 +55,7 @@ const propTypes = {
         usageNotes: PropTypes.array,
         canonicalTopic: PropTypes.object,
         secondaryTopics: PropTypes.array,
+        census: PropTypes.bool,
     }).isRequired,
     fieldsReturned: PropTypes.shape({
         title: PropTypes.bool,
@@ -104,6 +105,7 @@ const propTypes = {
     handleCanonicalTopicTagFieldChange: PropTypes.func.isRequired,
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
+    handleCensusContentChange: PropTypes.func.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -135,6 +137,7 @@ const CantabularMetadata = ({
     handleCanonicalTopicTagFieldChange,
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
+    handleCensusContentChange,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--8">
@@ -298,6 +301,28 @@ const CantabularMetadata = ({
                 legend={"National Statistic"}
                 disabled={disableForm || fieldsReturned.nationalStatistic}
             />
+
+            <RadioGroup
+                groupName="census"
+                radioData={[
+                    {
+                        id: "census-content-yes",
+                        value: "true",
+                        label: "Yes",
+                    },
+                    {
+                        id: "census-content-no",
+                        value: "false",
+                        label: "No",
+                    },
+                ]}
+                selectedValue={metadata.census ? metadata.census.toString() : "false"}
+                onChange={handleCensusContentChange}
+                inline={true}
+                legend={"Census content"}
+                disabled={disableForm}
+            />
+
             <h2 id="contact-details-heading">Contact details</h2>
             <Input
                 id="contact-name"
