@@ -64,6 +64,54 @@ afterEach(() => {
     jest.clearAllMocks();
 });
 
+const mockedRecipeDimensions = [
+    {
+        label: "Dimension1 label",
+        links: [],
+        href: "dimension-href",
+        id: "Dimension1 Name",
+        name: "Dimension1 Name",
+        variable: "dimensionVariable",
+        number_of_options: 1,
+        is_area_type: true,
+    },
+    {
+        label: "Dimension2 label",
+        links: [],
+        href: "dimension-href",
+        id: "Dimension2 Name",
+        name: "Dimension2 Name",
+        variable: "dimensionVariable",
+        number_of_options: 3,
+        is_area_type: false,
+    },
+];
+
+const mockedCompleteDimensions = [
+    {
+        label: "Dimension1 label",
+        description: "Dimension1 description",
+        links: [],
+        href: "dimension-href",
+        id: "Dimension1 Name",
+        name: "Dimension1 Name",
+        variable: "dimensionVariable",
+        number_of_options: 1,
+        is_area_type: true,
+    },
+    {
+        label: "Dimension2 label",
+        description: "Dimension2 description",
+        links: [],
+        href: "dimension-href",
+        id: "Dimension2 Name",
+        name: "Dimension2 Name",
+        variable: "dimensionVariable",
+        number_of_options: 3,
+        is_area_type: false,
+    },
+];
+
 const mockedCantabularExtractorResp = {
     table_query_result: {
         service: {
@@ -226,6 +274,7 @@ const mockedSavedNonCantDatasetMetadata = {
                 title: "usage note title 2",
             },
         ],
+        dimensions: mockedRecipeDimensions,
     },
     collection_id: "123",
     collection_state: "inProgress",
@@ -256,6 +305,7 @@ const mockedNewNonCantDatasetMetadata = {
                 title: "usage note title 1",
             },
         ],
+        dimensions: mockedRecipeDimensions,
     },
     dimensions: [],
     collection_id: "test_collection_253275687",
@@ -278,6 +328,7 @@ const mockedCantabularDataset = {
         release_date: "",
         state: "edition-confirmed",
         version: 1,
+        dimensions: mockedCompleteDimensions,
     },
     dimensions: [],
     collection_id: "",
@@ -321,7 +372,7 @@ const mockCantabularMetadataState = {
         version: mockedNewNonCantDatasetMetadata.version.version,
         releaseDate: { value: mockedNewNonCantDatasetMetadata.version.release_date, error: "" },
         notices: mockedNewNonCantDatasetMetadata.version.alerts,
-        dimensions: mockedCantabularDatasetMetadata.version.dimensions,
+        dimensions: mockedCompleteDimensions,
         usageNotes: mockedNewNonCantDatasetMetadata.version.usage_notes,
         latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
         canonicalTopic: {},
