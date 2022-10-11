@@ -25,6 +25,7 @@ const propTypes = {
     placeholder: PropTypes.string,
     disableShowPasswordText: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool,
+    requiredFieldMessage: PropTypes.string,
 };
 
 const defaultProps = {
@@ -169,6 +170,12 @@ export default class Input extends Component {
                     </div>
                 )}
                 {this.props.helpMessage && <div className="help-msg">{this.props.helpMessage}</div>}
+                {this.props.requiredFieldMessage && !this.props.error && (
+                    <div className="help-msg">
+                        <span class="required-field">*</span>
+                        {this.props.requiredFieldMessage}
+                    </div>
+                )}
                 {this.props.fileError && (
                     <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
                         {this.props.fileError}
