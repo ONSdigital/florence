@@ -276,6 +276,15 @@ export class CantabularMetadataController extends Component {
             });
     };
 
+    integrateDimensions = (datasetVersionDimensions, cantabularMetadataDimensions) => {
+        return datasetVersionDimensions.map(versionDimension => {
+            return {
+                ...versionDimension,
+                description: cantabularMetadataDimensions.find(cantDimension => cantDimension.id == versionDimension.id).description,
+            };
+        });
+    };
+
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
@@ -291,10 +300,10 @@ export class CantabularMetadataController extends Component {
                 licence: !collectionState ? cantabularMetadata.dataset.license : dataset.license,
                 relatedDatasets: !collectionState
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id),
+                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id) || [],
                 relatedPublications: !collectionState
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.publications, dataset.id),
+                    : this.mapRelatedContentToState(dataset?.publications, dataset.id) || [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: {
                     value: dataset.release_frequency || "",
@@ -314,7 +323,9 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: !collectionState ? cantabularMetadata.version?.dimensions : version?.dimensions,
+                dimensions: cantabularMetadata
+                    ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, collectionState)
+                    : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
                 contactName: {
@@ -768,6 +779,7 @@ export class CantabularMetadataController extends Component {
                 alerts: this.state.metadata.notices,
                 usage_notes: this.state.metadata.usageNotes,
                 lastest_changes: this.state.metadata.latestChanges,
+                dimensions: [...this.state.metadata.dimensions],
             },
             dimensions: [...this.state.metadata.dimensions],
             collection_id: this.props.params.collectionID,
@@ -1011,7 +1023,6 @@ export class CantabularMetadataController extends Component {
                     canonicalTopicsMenuArr={this.state.canonicalTopicsMenuArr}
                     secondaryTopicsMenuArr={this.state.secondaryTopicsMenuArr}
                     handleCanonicalTopicTagFieldChange={selectedOption => {
-                        console.log(selectedOption);
                         this.setState({
                             metadata: {
                                 ...this.state.metadata,

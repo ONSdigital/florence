@@ -168,6 +168,7 @@ const CantabularMetadata = ({
                 value={metadata.releaseDate.value && date.format(metadata.releaseDate.value, "yyyy-mm-dd")}
                 disabled={disableForm || versionIsPublished || fieldsReturned.releaseDate}
                 error={metadata.releaseDate.error}
+                requiredFieldMessage={!metadata.releaseDate.value ? "Required field" : ""}
             />
 
             <Input
@@ -178,6 +179,7 @@ const CantabularMetadata = ({
                 value={metadata.nextReleaseDate.value}
                 error={metadata.nextReleaseDate.error}
                 disabled={disableForm || fieldsReturned.nextReleaseDate}
+                requiredFieldMessage={!metadata.nextReleaseDate.value ? "Required field" : ""}
             />
 
             <Input
@@ -188,6 +190,7 @@ const CantabularMetadata = ({
                 value={metadata.releaseFrequency.value}
                 disabled={disableForm || fieldsReturned.releaseFrequency}
                 error={metadata.releaseFrequency.error}
+                requiredFieldMessage={!metadata.releaseFrequency.value ? "Required field" : ""}
             />
 
             <h2>Notices</h2>
@@ -304,7 +307,9 @@ const CantabularMetadata = ({
                 value={metadata.contactName.value}
                 disabled={disableForm || fieldsReturned.contactName}
                 error={metadata.contactName.error}
+                requiredFieldMessage={!metadata.contactName.value ? "Required field" : ""}
             />
+
             <Input
                 id="contact-email"
                 name="contactEmail"
@@ -313,6 +318,7 @@ const CantabularMetadata = ({
                 value={metadata.contactEmail.value}
                 disabled={disableForm || fieldsReturned.contactEmail}
                 error={metadata.contactEmail.error}
+                requiredFieldMessage={!metadata.contactEmail.value ? "Required field" : ""}
             />
 
             <Input
@@ -323,6 +329,7 @@ const CantabularMetadata = ({
                 value={metadata.contactTelephone.value}
                 disabled={disableForm || fieldsReturned.contactTelephone}
                 error={metadata.contactTelephone.error}
+                requiredFieldMessage={!metadata.contactTelephone.value ? "Required field" : ""}
             />
 
             <h2>Related links</h2>
