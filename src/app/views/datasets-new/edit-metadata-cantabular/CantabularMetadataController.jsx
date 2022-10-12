@@ -276,13 +276,18 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    integrateDimensions = (datasetVersionDimensions, cantabularMetadataDimensions) => {
-        return datasetVersionDimensions.map(versionDimension => {
-            return {
-                ...versionDimension,
-                description: cantabularMetadataDimensions.find(cantDimension => cantDimension.id == versionDimension.id).description,
-            };
-        });
+    integrateDimensions = (datasetVersionDimensions, cantabularMetadataDimensions, versionID) => {
+        try {
+            return datasetVersionDimensions.map(versionDimension => {
+                return {
+                    ...versionDimension,
+                    description: cantabularMetadataDimensions.find(cantDimension => cantDimension.id == versionDimension.id).description,
+                };
+            });
+        } catch (err) {
+            log.event("Error integrating Cantabular dimensions with recipe dimensions", log.data({ versionID: versionID }), log.error(err));
+            throw new Error(`Error integrating Cantabular dimensions with recipe dimensions \n ${err}`);
+        }
     };
 
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
@@ -323,8 +328,8 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: cantabularMetadata
-                    ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, collectionState)
+                dimensions: !collectionState
+                    ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, version.version || version.id)
                     : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
