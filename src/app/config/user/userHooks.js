@@ -32,7 +32,7 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
         if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
             const enableNewSignIn = fp.get("config.enableNewSignIn")(props);
-            const authState = getAuthState(); // Get the lastest authState
+            const authState = getAuthState(); // Get the latest authState
             const session_expiry_time = fp.get("session_expiry_time")(authState);
             const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
             if (sessionManagement.isSessionExpired(session_expiry_time)) {

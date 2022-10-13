@@ -778,7 +778,7 @@ export class CantabularMetadataController extends Component {
                 release_date: this.state.metadata.releaseDate.value,
                 alerts: this.state.metadata.notices,
                 usage_notes: this.state.metadata.usageNotes,
-                lastest_changes: this.state.metadata.latestChanges,
+                latest_changes: this.state.metadata.latestChanges,
                 dimensions: [...this.state.metadata.dimensions],
             },
             dimensions: [...this.state.metadata.dimensions],
