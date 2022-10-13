@@ -128,6 +128,7 @@
     "moment": "^2.29.1",
     "minimist": "^1.2.6",
     "minimatch": "^3.0.5",
-    "react": "^17.0.2"
+    "react": "^17.0.2",
+    "@xmldom/xmldom": "^0.8.3"
   }
 }

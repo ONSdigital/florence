@@ -30,6 +30,7 @@
         "auditjs": "^4.0.37"
     },
     "resolutions": {
-        "uglify-js": "^3.13.10"
+        "uglify-js": "^3.13.10",
+        "@xmldom/xmldom": "^0.8.3"
     }
 }
