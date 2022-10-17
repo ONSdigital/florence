@@ -477,6 +477,8 @@ export class DatasetMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
+                collection_id: this.props.params.collectionID,
+                collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
             },
             version: {
                 id: this.state.metadata.versionID,
@@ -486,8 +488,6 @@ export class DatasetMetadataController extends Component {
                 latest_changes: this.state.metadata.latestChanges,
             },
             dimensions: [...this.state.metadata.dimensions],
-            collection_id: this.props.params.collectionID,
-            collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
         };
     };
 
