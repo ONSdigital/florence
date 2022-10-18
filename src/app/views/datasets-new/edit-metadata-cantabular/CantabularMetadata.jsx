@@ -53,7 +53,7 @@ const propTypes = {
         qmi: PropTypes.string,
         latestChanges: PropTypes.array,
         usageNotes: PropTypes.array,
-        canonicalTopic: PropTypes.string,
+        canonicalTopic: PropTypes.object,
         secondaryTopics: PropTypes.array,
     }).isRequired,
     fieldsReturned: PropTypes.shape({
