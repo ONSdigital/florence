@@ -49,6 +49,7 @@ export class CantabularMetadataController extends Component {
             versionMetadataHasChanges: false,
             canonicalTopicsMenuArr: [],
             secondaryTopicsMenuArr: [],
+            allTopicsArr: [],
             topicsErr: "",
             metadata: {
                 title: "",
@@ -163,6 +164,7 @@ export class CantabularMetadataController extends Component {
             this.setState({
                 canonicalTopicsMenuArr: [...allTopics],
                 secondaryTopicsMenuArr: [...allTopics],
+                allTopicsArr: [...rootTopics.options, ...subTopics.options],
             });
         } catch (error) {
             log.event(
@@ -346,13 +348,7 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
-                canonicalTopic:
-                    "canonical_topic" in dataset && Object.keys(dataset.canonical_topic).length
-                        ? {
-                              value: dataset.canonical_topic.id,
-                              label: dataset.canonical_topic.title,
-                          }
-                        : {},
+                canonicalTopic: "canonical_topic" in dataset ? allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
                 secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
                 census: dataset.survey ? true : false,
             };
@@ -777,10 +773,8 @@ export class CantabularMetadataController extends Component {
                 ],
                 next_release: this.state.metadata.nextReleaseDate.value,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
-                canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length
-                    ? { id: this.state.metadata.canonicalTopic.value, title: this.state.metadata.canonicalTopic.label }
-                    : {},
-                sub_topics: this.state.metadata.secondaryTopics.map(({ value, label }) => ({ id: value, title: label })),
+                canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length ? this.state.metadata.canonicalTopic.value : "",
+                subtopics: this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.map(({ value }) => value) : [],
                 survey: this.state.metadata.census ? "census" : "",
             },
             version: {
