@@ -50,7 +50,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
 jest.mock("../../../utilities/api-clients/topics", () => {
     return {
         getRootTopics: jest.fn(),
-        getSubTopics: jest.fn(),
+        getSubtopics: jest.fn(),
     };
 });
 
@@ -235,11 +235,8 @@ const mockedSavedNonCantDatasetMetadata = {
         qmi: {
             href: "www.testData.com/methodology",
         },
-        canonical_topic: { id: "testID1", title: "Test title 1" },
-        sub_topics: [
-            { id: "testID1", title: "Test title 1" },
-            { id: "testSubtopicID1", title: "Test subtopic title 1" },
-        ],
+        canonical_topic: "testID1",
+        subtopics: ["testID1", "testSubtopicID1"],
         contacts: [
             {
                 name: "Test Name",
@@ -461,9 +458,9 @@ beforeEach(() => {
 });
 
 describe("On mount of the dataset metadata controller screen", () => {
-    it("fetches metadata", () => {
+    it("fetches metadata", async () => {
         const getDatasetsCalls = datasets.getEditMetadata.mock.calls.length;
-        component.instance().UNSAFE_componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(datasets.getEditMetadata.mock.calls.length).toBe(getDatasetsCalls + 1);
     });
 });
@@ -505,6 +502,12 @@ describe("Mapping metadata to state", () => {
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
+        component.setState({
+            allTopicsArr: [
+                { value: "testID1", label: "Test title 1" },
+                { value: "testSubtopicID1", label: "Test subtopic title 1" },
+            ],
+        });
         const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata);
         expect(returnValue).toMatchObject(mockDatasetApiMetadataState);
     });
@@ -951,7 +954,7 @@ describe("Calling getTopics", () => {
 
     it("sets state correctly", async () => {
         topics.getRootTopics.mockImplementationOnce(() => Promise.resolve(mockRootTopicsResp));
-        topics.getSubTopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
+        topics.getSubtopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
         await component.instance().getTopics();
 
         expect(component.state("canonicalTopicsMenuArr")).toEqual(allMockTopics);
@@ -964,8 +967,8 @@ describe("Calling getTopics", () => {
         expect(mockedNotifications.length).toEqual(1);
         expect(log.error).toHaveBeenCalledTimes(1);
     });
-    it("logs error and notification when topics.getSubTopics errors", async () => {
-        topics.getSubTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+    it("logs error and notification when topics.getSubopics errors", async () => {
+        topics.getSubtopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
         await component.instance().getTopics();
 
         expect(mockedNotifications.length).toEqual(1);

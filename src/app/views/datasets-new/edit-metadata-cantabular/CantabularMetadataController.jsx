@@ -139,32 +139,32 @@ export class CantabularMetadataController extends Component {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
-        this.getMetadata(datasetID, editionID, versionID);
         await this.getTopics();
+        this.getMetadata(datasetID, editionID, versionID);
     }
 
     getTopics = async () => {
         try {
             const extractTopicItems = ({ items }) => items;
             let rootTopicsArr = await topics.getRootTopics().then(extractTopicItems);
-            const getSubTopics = ({ id }) => topics.getSubTopics(id).then(extractTopicItems);
-            let allSubTopics = await Promise.all(rootTopicsArr.map(getSubTopics)).then(subTopics => subTopics.flat());
+            const getSubtopics = ({ id }) => topics.getSubtopics(id).then(extractTopicItems);
+            let allSubtopics = await Promise.all(rootTopicsArr.map(getSubtopics)).then(subtopics => subtopics.flat());
             const extractTopicOptions = ({ id, next: { title } }) => ({ value: id, label: title });
             const rootTopics = {
                 id: "primaryTopics",
                 label: "Primary topics",
                 options: rootTopicsArr.map(extractTopicOptions),
             };
-            const subTopics = {
+            const subtopics = {
                 id: "secondaryTopics",
                 label: "Secondary topics",
-                options: allSubTopics.map(extractTopicOptions),
+                options: allSubtopics.map(extractTopicOptions),
             };
-            const allTopics = [rootTopics, subTopics];
+            const allTopics = [rootTopics, subtopics];
             this.setState({
                 canonicalTopicsMenuArr: [...allTopics],
                 secondaryTopicsMenuArr: [...allTopics],
-                allTopicsArr: [...rootTopics.options, ...subTopics.options],
+                allTopicsArr: [...rootTopics.options, ...subtopics.options],
             });
         } catch (error) {
             log.event(
@@ -348,8 +348,10 @@ export class CantabularMetadataController extends Component {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
                     error: "",
                 },
-                canonicalTopic: "canonical_topic" in dataset ? allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
-                secondaryTopics: dataset.sub_topics ? dataset.sub_topics.map(({ id, title }) => ({ value: id, label: title })) : [],
+                canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
+                secondaryTopics: dataset.subtopics
+                    ? dataset.subtopics.map(topicID => this.state.allTopicsArr.find(topic => topic.value == topicID))
+                    : [],
                 census: dataset.survey ? true : false,
             };
             return {
