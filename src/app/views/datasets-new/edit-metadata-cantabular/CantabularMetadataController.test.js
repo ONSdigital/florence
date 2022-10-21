@@ -284,6 +284,8 @@ const mockedNewNonCantDatasetMetadata = {
         methodologies: [],
         next_release: "1",
         release_frequency: "1",
+        related_content: [],
+        survey: "census",
     },
     version: {
         alerts: [],
@@ -374,6 +376,8 @@ const mockCantabularMetadataState = {
         latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
         canonicalTopic: {},
         secondaryTopics: [],
+        relatedContent: mockedNewNonCantDatasetMetadata.dataset.related_content,
+        census: mockedNewNonCantDatasetMetadata.dataset.survey ? true : false,
     },
     datasetCollectionState: "",
     versionCollectionState: "",
@@ -562,6 +566,8 @@ describe("Mapping state to put body", () => {
         expect(returnValue.dataset.id).toBe(mockedSavedNonCantDatasetMetadata.dataset.id);
         expect(returnValue.collection_id).toBe("123");
         expect(returnValue.collection_state).toBe("InProgress");
+        expect(returnValue.dataset.related_content).toBe(mockedNewNonCantDatasetMetadata.dataset.related_content);
+        expect(returnValue.dataset.survey).toBe("census");
     });
 
     it("maps state correctly", () => {

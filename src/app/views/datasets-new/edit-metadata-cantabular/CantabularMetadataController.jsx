@@ -96,6 +96,7 @@ export class CantabularMetadataController extends Component {
                 canonicalTopic: {},
                 secondaryTopics: [],
                 census: false,
+                relatedContent: [],
             },
             fieldsReturned: {
                 title: false,
@@ -353,6 +354,7 @@ export class CantabularMetadataController extends Component {
                     ? dataset.subtopics.map(topicID => this.state.allTopicsArr.find(topic => topic.value == topicID))
                     : [],
                 census: dataset.survey ? true : false,
+                relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
             };
             return {
                 metadata: { ...this.state.metadata, ...mappedMetadata },
@@ -685,6 +687,7 @@ export class CantabularMetadataController extends Component {
             case "notices": {
                 return this.mapNoticesToState(newState);
             }
+            case "relatedContent":
             case "relatedDatasets":
             case "relatedPublications":
             case "relatedMethodologies": {
@@ -731,7 +734,8 @@ export class CantabularMetadataController extends Component {
             fieldName === "nextReleaseDate" ||
             fieldName === "canonicalTopic" ||
             fieldName === "secondaryTopics" ||
-            fieldName === "census"
+            fieldName === "census" ||
+            fieldName === "relatedContent"
         ) {
             return true;
         }
@@ -778,6 +782,7 @@ export class CantabularMetadataController extends Component {
                 canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length ? this.state.metadata.canonicalTopic.value : "",
                 subtopics: this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.map(({ value }) => value) : [],
                 survey: this.state.metadata.census ? "census" : "",
+                related_content: this.state.metadata.relatedContent,
             },
             version: {
                 id: this.state.metadata.versionID,

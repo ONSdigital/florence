@@ -31,6 +31,7 @@ const propTypes = {
             error: PropTypes.string,
         }),
         relatedDatasets: PropTypes.array,
+        relatedContent: PropTypes.array,
         relatedPublications: PropTypes.array,
         relatedMethodologies: PropTypes.array,
         releaseFrequency: PropTypes.shape({
@@ -390,6 +391,16 @@ const CantabularMetadata = ({
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
                 disableActions={disableForm || fieldsReturned.relatedMethodologies}
+            />
+            <h3 className="margin-top--1">Related content</h3>
+            <SimpleEditableList
+                addText={"Add related content"}
+                fields={metadata.relatedContent}
+                editingStateFieldName="relatedContent"
+                handleAddClick={handleSimpleEditableListAdd}
+                handleEditClick={handleSimpleEditableListEdit}
+                handleDeleteClick={handleSimpleEditableListDelete}
+                disableActions={disableForm}
             />
 
             <h2 className="margin-top--1">What's changed</h2>
