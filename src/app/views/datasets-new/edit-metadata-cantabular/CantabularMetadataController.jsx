@@ -72,10 +72,7 @@ export class CantabularMetadataController extends Component {
                 relatedDatasets: [],
                 relatedPublications: [],
                 relatedMethodologies: [],
-                releaseFrequency: {
-                    value: "",
-                    error: "",
-                },
+                releaseFrequency: "",
                 edition: "",
                 version: 0,
                 versionID: "",
@@ -314,10 +311,7 @@ export class CantabularMetadataController extends Component {
                     ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
                     : this.mapRelatedContentToState(dataset?.publications, dataset.id) || [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
-                releaseFrequency: {
-                    value: dataset.release_frequency || "",
-                    error: "",
-                },
+                releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: {
                     value: dataset.next_release || "",
@@ -543,7 +537,7 @@ export class CantabularMetadataController extends Component {
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        if (["releaseFrequency", "contactName", "contactEmail", "contactTelephone", "nextReleaseDate"].includes(event.target.name)) {
+        if (["contactName", "contactEmail", "contactTelephone", "nextReleaseDate"].includes(event.target.name)) {
             const newMetadataState = { ...this.state.metadata, [fieldName]: { value: value, error: "" } };
             this.setState({
                 metadata: newMetadataState,
@@ -769,7 +763,7 @@ export class CantabularMetadataController extends Component {
                 qmi: {
                     href: this.state.metadata.qmi,
                 },
-                release_frequency: this.state.metadata.releaseFrequency.value,
+                release_frequency: this.state.metadata.releaseFrequency,
                 contacts: [
                     {
                         name: this.state.metadata.contactName.value,
@@ -898,18 +892,6 @@ export class CantabularMetadataController extends Component {
             const newMetadataState = {
                 ...this.state.metadata,
                 nextReleaseDate: newNextReleaseDate,
-            };
-            this.setState({ metadata: newMetadataState });
-            document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
-            return;
-        } else if (!this.state.metadata.releaseFrequency.value) {
-            const newReleaseFrequency = {
-                value: "",
-                error: "You must enter the release frequency",
-            };
-            const newMetadataState = {
-                ...this.state.metadata,
-                releaseFrequency: newReleaseFrequency,
             };
             this.setState({ metadata: newMetadataState });
             document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
