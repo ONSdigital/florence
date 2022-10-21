@@ -18,10 +18,7 @@ const propTypes = {
         keywords: PropTypes.string,
         nationalStatistic: PropTypes.bool,
         licence: PropTypes.string,
-        contactName: PropTypes.shape({
-            value: PropTypes.string,
-            error: PropTypes.string,
-        }),
+        contactName: PropTypes.string,
         contactEmail: PropTypes.shape({
             value: PropTypes.string,
             error: PropTypes.string,
@@ -320,10 +317,8 @@ const CantabularMetadata = ({
                 name="contactName"
                 label="Contact name"
                 onChange={handleStringInputChange}
-                value={metadata.contactName.value}
+                value={metadata.contactName}
                 disabled={disableForm || fieldsReturned.contactName}
-                error={metadata.contactName.error}
-                requiredFieldMessage={!metadata.contactName.value ? "Required field" : ""}
             />
 
             <Input

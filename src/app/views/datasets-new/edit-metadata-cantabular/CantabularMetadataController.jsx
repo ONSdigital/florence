@@ -57,10 +57,7 @@ export class CantabularMetadataController extends Component {
                 keywords: "",
                 nationalStatistic: false,
                 licence: "",
-                contactName: {
-                    value: "",
-                    error: "",
-                },
+                contactName: "",
                 contactEmail: {
                     value: "",
                     error: "",
@@ -325,10 +322,7 @@ export class CantabularMetadataController extends Component {
                     : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: {
-                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
-                    error: "",
-                },
+                contactName: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
                 contactEmail: {
                     value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
                     error: "",
@@ -531,7 +525,7 @@ export class CantabularMetadataController extends Component {
     handleStringInputChange = event => {
         const fieldName = event.target.name;
         const value = event.target.value;
-        if (["contactName", "contactEmail", "contactTelephone"].includes(event.target.name)) {
+        if (["contactEmail", "contactTelephone"].includes(event.target.name)) {
             const newMetadataState = { ...this.state.metadata, [fieldName]: { value: value, error: "" } };
             this.setState({
                 metadata: newMetadataState,
@@ -760,7 +754,7 @@ export class CantabularMetadataController extends Component {
                 release_frequency: this.state.metadata.releaseFrequency,
                 contacts: [
                     {
-                        name: this.state.metadata.contactName.value,
+                        name: this.state.metadata.contactName,
                         email: this.state.metadata.contactEmail.value,
                         telephone: this.state.metadata.contactTelephone.value,
                     },
@@ -877,18 +871,6 @@ export class CantabularMetadataController extends Component {
             };
             this.setState({ metadata: newMetadataState });
             document.getElementById("release-dates-heading").scrollIntoView({ behavior: "smooth", block: "start" });
-            return;
-        } else if (!this.state.metadata.contactName.value) {
-            const newContactName = {
-                value: "",
-                error: "You must enter a contact name",
-            };
-            const newMetadataState = {
-                ...this.state.metadata,
-                contactName: newContactName,
-            };
-            this.setState({ metadata: newMetadataState });
-            document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         } else if (!this.state.metadata.contactEmail.value) {
             const newContactEmail = {

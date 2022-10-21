@@ -349,10 +349,7 @@ const mockCantabularMetadataState = {
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
         nextReleaseDate: mockedNewNonCantDatasetMetadata.dataset.next_release,
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
-        contactName: {
-            value: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
-            error: "",
-        },
+        contactName: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
         contactEmail: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
             error: "",
@@ -397,10 +394,7 @@ const mockDatasetApiMetadataState = {
             { value: "testID1", label: "Test title 1" },
             { value: "testSubtopicID1", label: "Test subtopic title 1" },
         ],
-        contactName: {
-            value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
-            error: "",
-        },
+        contactName: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
         contactEmail: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
             error: "",
