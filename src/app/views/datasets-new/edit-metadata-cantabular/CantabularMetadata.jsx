@@ -60,16 +60,9 @@ const propTypes = {
         contactTelephone: PropTypes.bool,
         relatedDatasets: PropTypes.bool,
         relatedPublications: PropTypes.bool,
-        relatedMethodologies: PropTypes.bool,
-        releaseFrequency: PropTypes.bool,
-        releaseDate: PropTypes.bool,
-        nextReleaseDate: PropTypes.bool,
         unitOfMeasure: PropTypes.bool,
-        notices: PropTypes.bool,
         dimensions: PropTypes.bool,
         qmi: PropTypes.bool,
-        latestChanges: PropTypes.bool,
-        usageNotes: PropTypes.bool,
     }).isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleDateInputChange: PropTypes.func.isRequired,
@@ -161,7 +154,7 @@ const CantabularMetadata = ({
                 type="date"
                 onChange={handleDateInputChange}
                 value={metadata.releaseDate.value && date.format(metadata.releaseDate.value, "yyyy-mm-dd")}
-                disabled={disableForm || versionIsPublished || fieldsReturned.releaseDate}
+                disabled={disableForm || versionIsPublished}
                 error={metadata.releaseDate.error}
                 requiredFieldMessage={!metadata.releaseDate.value ? "Required field" : ""}
             />
@@ -172,7 +165,7 @@ const CantabularMetadata = ({
                 label="Next release date"
                 onChange={handleStringInputChange}
                 value={metadata.nextReleaseDate}
-                disabled={disableForm || fieldsReturned.nextReleaseDate}
+                disabled={disableForm}
             />
 
             <Input
@@ -181,7 +174,7 @@ const CantabularMetadata = ({
                 label="Release frequency"
                 onChange={handleStringInputChange}
                 value={metadata.releaseFrequency}
-                disabled={disableForm || fieldsReturned.releaseFrequency}
+                disabled={disableForm}
             />
 
             <h2>Notices</h2>
@@ -193,7 +186,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.notices}
+                disableActions={disableForm}
             />
 
             <h2 className="margin-top--1">About</h2>
@@ -265,7 +258,7 @@ const CantabularMetadata = ({
                     handleAddClick={handleSimpleEditableListAdd}
                     handleEditClick={handleSimpleEditableListEdit}
                     handleDeleteClick={handleSimpleEditableListDelete}
-                    disableActions={disableForm || fieldsReturned.usageNotes}
+                    disableActions={disableForm}
                 />
             </div>
 
@@ -375,7 +368,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.relatedMethodologies}
+                disableActions={disableForm}
             />
             <h3 className="margin-top--1">Related content</h3>
             <SimpleEditableList
@@ -396,7 +389,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || versionIsPublished || fieldsReturned.latestChanges}
+                disableActions={disableForm || versionIsPublished}
             />
 
             <h2 className="margin-top--1 margin-bottom--1" id="topic-tags-heading">
