@@ -41,10 +41,7 @@ const propTypes = {
             value: PropTypes.string,
             error: PropTypes.string,
         }),
-        nextReleaseDate: PropTypes.shape({
-            value: PropTypes.string,
-            error: PropTypes.string,
-        }),
+        nextReleaseDate: PropTypes.string,
         unitOfMeasure: PropTypes.string,
         notices: PropTypes.array,
         dimensions: PropTypes.array,
@@ -177,10 +174,8 @@ const CantabularMetadata = ({
                 name="nextReleaseDate"
                 label="Next release date"
                 onChange={handleStringInputChange}
-                value={metadata.nextReleaseDate.value}
-                error={metadata.nextReleaseDate.error}
+                value={metadata.nextReleaseDate}
                 disabled={disableForm || fieldsReturned.nextReleaseDate}
-                requiredFieldMessage={!metadata.nextReleaseDate.value ? "Required field" : ""}
             />
 
             <Input

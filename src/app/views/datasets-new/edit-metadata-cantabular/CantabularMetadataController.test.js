@@ -347,10 +347,7 @@ const mockCantabularMetadataState = {
         relatedMethodologies: mockedNewNonCantDatasetMetadata.dataset.methodologies,
         releaseFrequency: mockedNewNonCantDatasetMetadata.dataset.release_frequency,
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: {
-            value: mockedNewNonCantDatasetMetadata.dataset.next_release,
-            error: "",
-        },
+        nextReleaseDate: mockedNewNonCantDatasetMetadata.dataset.next_release,
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
         contactName: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
@@ -393,7 +390,7 @@ const mockDatasetApiMetadataState = {
         relatedMethodologies: mockedSavedNonCantDatasetMetadata.dataset.methodologies,
         releaseFrequency: mockedSavedNonCantDatasetMetadata.dataset.release_frequency,
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
+        nextReleaseDate: mockedSavedNonCantDatasetMetadata.dataset.next_release,
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
         canonicalTopic: { value: "testID1", label: "Test title 1" },
         secondaryTopics: [
