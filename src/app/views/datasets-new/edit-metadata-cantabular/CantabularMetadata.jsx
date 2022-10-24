@@ -228,6 +228,21 @@ const CantabularMetadata = ({
                             onChange={handleDimensionDescriptionChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                         />
+                        <h3>Quality statement</h3>
+                        <Input
+                            id={`dimension-quality-statement-text-${dimension.id}`}
+                            label="Text"
+                            value={dimension.quality_statement_text ? dimension.quality_statement_text : ""}
+                            onChange={handleDimensionNameChange}
+                            disabled={true}
+                        />
+                        <Input
+                            id={`dimension-quality-statement-url-${dimension.id}`}
+                            label="URL"
+                            value={dimension.quality_statement_url ? dimension.quality_statement_url : ""}
+                            onChange={handleDimensionNameChange}
+                            disabled={true}
+                        />
                     </div>
                 );
             })}
