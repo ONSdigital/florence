@@ -174,7 +174,7 @@ const mockedCantabularExtractorResp = {
                     meta: {
                         ONS_Variable: {
                             quality_statement_text: "quality statement text 1",
-                            quality_statement_url: "quality statement url 1",
+                            quality_summary_url: "quality statement url 1",
                         },
                     },
                 },
@@ -185,7 +185,7 @@ const mockedCantabularExtractorResp = {
                     meta: {
                         ONS_Variable: {
                             quality_statement_text: "quality statement text 2",
-                            quality_statement_url: "quality statement url 2",
+                            quality_summary_url: "quality statement url 2",
                         },
                     },
                 },

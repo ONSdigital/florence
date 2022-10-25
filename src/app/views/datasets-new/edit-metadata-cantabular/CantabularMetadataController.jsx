@@ -409,7 +409,7 @@ export class CantabularMetadataController extends Component {
                         description: dimension.description,
                         label: dimension.label,
                         quality_statement_text: dimension.meta.ONS_Variable.quality_statement_text,
-                        quality_statement_url: dimension.meta.ONS_Variable.quality_statement_url,
+                        quality_statement_url: dimension.meta.ONS_Variable.quality_summary_url,
                     };
                 }),
             },
