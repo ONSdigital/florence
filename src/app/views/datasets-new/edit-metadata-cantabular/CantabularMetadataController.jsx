@@ -267,9 +267,14 @@ export class CantabularMetadataController extends Component {
     integrateDimensions = (datasetVersionDimensions, cantabularMetadataDimensions, versionID) => {
         try {
             return datasetVersionDimensions.map(versionDimension => {
+                let cantabularDimension = cantabularMetadataDimensions.find(cantDimension => cantDimension.id == versionDimension.id);
                 return {
                     ...versionDimension,
-                    description: cantabularMetadataDimensions.find(cantDimension => cantDimension.id == versionDimension.id).description,
+                    description: cantabularDimension.description,
+                    quality_statement_text: cantabularDimension.quality_statement_text,
+                    quality_statement_url: cantabularDimension.quality_statement_url,
+                    name: cantabularDimension.name,
+                    label: cantabularDimension.label,
                 };
             });
         } catch (err) {
