@@ -89,7 +89,7 @@ const mockedRecipeDimensions = [
 
 const mockedCompleteDimensions = [
     {
-        label: "Dimension1 label",
+        label: "Dimension1 Label",
         description: "Dimension1 description",
         links: [],
         href: "dimension-href",
@@ -98,9 +98,11 @@ const mockedCompleteDimensions = [
         variable: "dimensionVariable",
         number_of_options: 1,
         is_area_type: true,
+        quality_statement_text: "quality statement text 1",
+        quality_statement_url: "quality statement url 1",
     },
     {
-        label: "Dimension2 label",
+        label: "Dimension2 Label",
         description: "Dimension2 description",
         links: [],
         href: "dimension-href",
@@ -109,6 +111,8 @@ const mockedCompleteDimensions = [
         variable: "dimensionVariable",
         number_of_options: 3,
         is_area_type: false,
+        quality_statement_text: "quality statement text 2",
+        quality_statement_url: "quality statement url 2",
     },
 ];
 
@@ -167,11 +171,23 @@ const mockedCantabularExtractorResp = {
                     name: "Dimension1 Name",
                     description: "Dimension1 description",
                     label: "Dimension1 Label",
+                    meta: {
+                        ONS_Variable: {
+                            quality_statement_text: "quality statement text 1",
+                            quality_summary_url: "quality statement url 1",
+                        },
+                    },
                 },
                 {
                     name: "Dimension2 Name",
                     description: "Dimension2 description",
                     label: "Dimension2 Label",
+                    meta: {
+                        ONS_Variable: {
+                            quality_statement_text: "quality statement text 2",
+                            quality_summary_url: "quality statement url 2",
+                        },
+                    },
                 },
             ],
         },
@@ -207,12 +223,16 @@ const mockedCantabularDatasetMetadata = {
                 name: "Dimension1 Name",
                 description: "Dimension1 description",
                 label: "Dimension1 Label",
+                quality_statement_text: "quality statement text 1",
+                quality_statement_url: "quality statement url 1",
             },
             {
                 id: "Dimension2 Name",
                 name: "Dimension2 Name",
                 description: "Dimension2 description",
                 label: "Dimension2 Label",
+                quality_statement_text: "quality statement text 2",
+                quality_statement_url: "quality statement url 2",
             },
         ],
     },

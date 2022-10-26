@@ -210,7 +210,7 @@ const CantabularMetadata = ({
             />
 
             <h2>Dimensions</h2>
-            {metadata.dimensions.map(dimension => {
+            {metadata.dimensions.map((dimension, i) => {
                 return (
                     <div key={`dimension-${dimension.id}`}>
                         <Input
@@ -227,7 +227,24 @@ const CantabularMetadata = ({
                             value={dimension.description}
                             onChange={handleDimensionDescriptionChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
+                            inline={true}
                         />
+                        <h3>Quality statement</h3>
+                        <Input
+                            id={`dimension-quality-statement-text-${dimension.id}`}
+                            label="Text"
+                            value={dimension.quality_statement_text ? dimension.quality_statement_text : ""}
+                            onChange={handleDimensionNameChange}
+                            disabled={true}
+                        />
+                        <Input
+                            id={`dimension-quality-statement-url-${dimension.id}`}
+                            label="URL"
+                            value={dimension.quality_statement_url ? dimension.quality_statement_url : ""}
+                            onChange={handleDimensionNameChange}
+                            disabled={true}
+                        />
+                        {i < metadata.dimensions.length - 1 && <hr class="margin-bottom--1 element-divider" />}
                     </div>
                 );
             })}
