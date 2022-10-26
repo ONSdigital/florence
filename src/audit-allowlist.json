@@ -42,7 +42,7 @@
         },
         {
             "id" : "CVE-2022-37598",
-            "reason" : "Uglify-js@3.17.4 (latest version) does not fix the vulnerability"
+            "reason" : "Uglify-js@3.17.4 (latest version) does not fix the vulnerability. It requires upgrading when a fix is released. See https://trello.com/c/eXXr4ago/1294-upgrade-uglify-js-package"
         }
     ]
 }
