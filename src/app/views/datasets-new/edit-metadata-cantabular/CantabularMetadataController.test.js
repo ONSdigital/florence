@@ -50,7 +50,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
 jest.mock("../../../utilities/api-clients/topics", () => {
     return {
         getRootTopics: jest.fn(),
-        getSubTopics: jest.fn(),
+        getSubtopics: jest.fn(),
     };
 });
 
@@ -89,7 +89,7 @@ const mockedRecipeDimensions = [
 
 const mockedCompleteDimensions = [
     {
-        label: "Dimension1 label",
+        label: "Dimension1 Label",
         description: "Dimension1 description",
         links: [],
         href: "dimension-href",
@@ -98,9 +98,11 @@ const mockedCompleteDimensions = [
         variable: "dimensionVariable",
         number_of_options: 1,
         is_area_type: true,
+        quality_statement_text: "quality statement text 1",
+        quality_statement_url: "quality statement url 1",
     },
     {
-        label: "Dimension2 label",
+        label: "Dimension2 Label",
         description: "Dimension2 description",
         links: [],
         href: "dimension-href",
@@ -109,6 +111,8 @@ const mockedCompleteDimensions = [
         variable: "dimensionVariable",
         number_of_options: 3,
         is_area_type: false,
+        quality_statement_text: "quality statement text 2",
+        quality_statement_url: "quality statement url 2",
     },
 ];
 
@@ -167,11 +171,23 @@ const mockedCantabularExtractorResp = {
                     name: "Dimension1 Name",
                     description: "Dimension1 description",
                     label: "Dimension1 Label",
+                    meta: {
+                        ONS_Variable: {
+                            quality_statement_text: "quality statement text 1",
+                            quality_summary_url: "quality statement url 1",
+                        },
+                    },
                 },
                 {
                     name: "Dimension2 Name",
                     description: "Dimension2 description",
                     label: "Dimension2 Label",
+                    meta: {
+                        ONS_Variable: {
+                            quality_statement_text: "quality statement text 2",
+                            quality_summary_url: "quality statement url 2",
+                        },
+                    },
                 },
             ],
         },
@@ -207,12 +223,16 @@ const mockedCantabularDatasetMetadata = {
                 name: "Dimension1 Name",
                 description: "Dimension1 description",
                 label: "Dimension1 Label",
+                quality_statement_text: "quality statement text 1",
+                quality_statement_url: "quality statement url 1",
             },
             {
                 id: "Dimension2 Name",
                 name: "Dimension2 Name",
                 description: "Dimension2 description",
                 label: "Dimension2 Label",
+                quality_statement_text: "quality statement text 2",
+                quality_statement_url: "quality statement url 2",
             },
         ],
     },
@@ -235,11 +255,8 @@ const mockedSavedNonCantDatasetMetadata = {
         qmi: {
             href: "www.testData.com/methodology",
         },
-        canonical_topic: { id: "testID1", title: "Test title 1" },
-        sub_topics: [
-            { id: "testID1", title: "Test title 1" },
-            { id: "testSubtopicID1", title: "Test subtopic title 1" },
-        ],
+        canonical_topic: "testID1",
+        subtopics: ["testID1", "testSubtopicID1"],
         contacts: [
             {
                 name: "Test Name",
@@ -287,6 +304,8 @@ const mockedNewNonCantDatasetMetadata = {
         methodologies: [],
         next_release: "1",
         release_frequency: "1",
+        related_content: [],
+        survey: "census",
     },
     version: {
         alerts: [],
@@ -346,20 +365,11 @@ const mockCantabularMetadataState = {
         relatedDatasets: mockedCantabularDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedCantabularDatasetMetadata.dataset.publications,
         relatedMethodologies: mockedNewNonCantDatasetMetadata.dataset.methodologies,
-        releaseFrequency: {
-            value: mockedNewNonCantDatasetMetadata.dataset.release_frequency,
-            error: "",
-        },
+        releaseFrequency: mockedNewNonCantDatasetMetadata.dataset.release_frequency,
         unitOfMeasure: mockedCantabularDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: {
-            value: mockedNewNonCantDatasetMetadata.dataset.next_release,
-            error: "",
-        },
+        nextReleaseDate: mockedNewNonCantDatasetMetadata.dataset.next_release,
         qmi: mockedCantabularDatasetMetadata.dataset.qmi.href,
-        contactName: {
-            value: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
-            error: "",
-        },
+        contactName: mockedCantabularDatasetMetadata.dataset.contacts[0].name,
         contactEmail: {
             value: mockedCantabularDatasetMetadata.dataset.contacts[0].email,
             error: "",
@@ -377,6 +387,8 @@ const mockCantabularMetadataState = {
         latestChanges: mockedNewNonCantDatasetMetadata.version.latest_changes,
         canonicalTopic: {},
         secondaryTopics: [],
+        relatedContent: mockedNewNonCantDatasetMetadata.dataset.related_content,
+        census: mockedNewNonCantDatasetMetadata.dataset.survey ? true : false,
     },
     datasetCollectionState: "",
     versionCollectionState: "",
@@ -393,19 +405,16 @@ const mockDatasetApiMetadataState = {
         relatedDatasets: mockedSavedNonCantDatasetMetadata.dataset.related_datasets,
         relatedPublications: mockedSavedNonCantDatasetMetadata.dataset.publications,
         relatedMethodologies: mockedSavedNonCantDatasetMetadata.dataset.methodologies,
-        releaseFrequency: { value: mockedSavedNonCantDatasetMetadata.dataset.release_frequency, error: "" },
+        releaseFrequency: mockedSavedNonCantDatasetMetadata.dataset.release_frequency,
         unitOfMeasure: mockedSavedNonCantDatasetMetadata.dataset.unit_of_measure,
-        nextReleaseDate: { value: mockedSavedNonCantDatasetMetadata.dataset.next_release, error: "" },
+        nextReleaseDate: mockedSavedNonCantDatasetMetadata.dataset.next_release,
         qmi: mockedSavedNonCantDatasetMetadata.dataset.qmi?.href,
         canonicalTopic: { value: "testID1", label: "Test title 1" },
         secondaryTopics: [
             { value: "testID1", label: "Test title 1" },
             { value: "testSubtopicID1", label: "Test subtopic title 1" },
         ],
-        contactName: {
-            value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
-            error: "",
-        },
+        contactName: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].name,
         contactEmail: {
             value: mockedSavedNonCantDatasetMetadata.dataset.contacts[0].email,
             error: "",
@@ -461,9 +470,9 @@ beforeEach(() => {
 });
 
 describe("On mount of the dataset metadata controller screen", () => {
-    it("fetches metadata", () => {
+    it("fetches metadata", async () => {
         const getDatasetsCalls = datasets.getEditMetadata.mock.calls.length;
-        component.instance().UNSAFE_componentWillMount();
+        await component.instance().UNSAFE_componentWillMount();
         expect(datasets.getEditMetadata.mock.calls.length).toBe(getDatasetsCalls + 1);
     });
 });
@@ -505,6 +514,12 @@ describe("Mapping metadata to state", () => {
         expect(returnValue).toMatchObject(mockCantabularMetadataState);
     });
     it("maps dataset-API metadata when the collection state is not an empty string", () => {
+        component.setState({
+            allTopicsArr: [
+                { value: "testID1", label: "Test title 1" },
+                { value: "testSubtopicID1", label: "Test subtopic title 1" },
+            ],
+        });
         const returnValue = component.instance().mapMetadataToState(mockedSavedNonCantDatasetMetadata);
         expect(returnValue).toMatchObject(mockDatasetApiMetadataState);
     });
@@ -559,6 +574,8 @@ describe("Mapping state to put body", () => {
         expect(returnValue.dataset.id).toBe(mockedSavedNonCantDatasetMetadata.dataset.id);
         expect(returnValue.collection_id).toBe("123");
         expect(returnValue.collection_state).toBe("InProgress");
+        expect(returnValue.dataset.related_content).toBe(mockedNewNonCantDatasetMetadata.dataset.related_content);
+        expect(returnValue.dataset.survey).toBe("census");
     });
 
     it("maps state correctly", () => {
@@ -751,7 +768,7 @@ describe("Calling saveAndRetrieveDatasetMetadata", () => {
         expect(component.instance().saveDatasetMetadata).toHaveBeenCalledTimes(0);
         const mockCantabularMetadataStateMissingFields = {
             ...mockCantabularMetadataState,
-            metadata: { ...mockCantabularMetadataState.metadata, releaseFrequency: { value: "", error: "" }, contactName: { value: "", error: "" } },
+            metadata: { ...mockCantabularMetadataState.metadata, contactEmail: { value: "", error: "" }, contactTelephone: { value: "", error: "" } },
         };
         component.setState(mockCantabularMetadataStateMissingFields);
         component.instance().saveAndRetrieveDatasetMetadata();
@@ -951,7 +968,7 @@ describe("Calling getTopics", () => {
 
     it("sets state correctly", async () => {
         topics.getRootTopics.mockImplementationOnce(() => Promise.resolve(mockRootTopicsResp));
-        topics.getSubTopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
+        topics.getSubtopics.mockImplementationOnce(() => Promise.resolve(mockSubtopicsResp));
         await component.instance().getTopics();
 
         expect(component.state("canonicalTopicsMenuArr")).toEqual(allMockTopics);
@@ -964,8 +981,8 @@ describe("Calling getTopics", () => {
         expect(mockedNotifications.length).toEqual(1);
         expect(log.error).toHaveBeenCalledTimes(1);
     });
-    it("logs error and notification when topics.getSubTopics errors", async () => {
-        topics.getSubTopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
+    it("logs error and notification when topics.getSubopics errors", async () => {
+        topics.getSubtopics.mockImplementationOnce(() => () => Promise.reject({ status: 500 }));
         await component.instance().getTopics();
 
         expect(mockedNotifications.length).toEqual(1);
