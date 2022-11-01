@@ -122,7 +122,7 @@ const mockedCantabularExtractorResp = {
             tables: [
                 {
                     name: "Cantabular metadata",
-                    label: "",
+                    label: "Cantabular dataset label",
                     description: "Cantabular metadata description",
                     vars: ["Dimension1", "Dimension2"],
                     meta: {
@@ -196,7 +196,7 @@ const mockedCantabularExtractorResp = {
 
 const mockedCantabularDatasetMetadata = {
     dataset: {
-        title: `Cantabular metadata (${mockedCantabularExtractorResp.table_query_result.service.tables[0].label})`,
+        title: mockedCantabularExtractorResp.table_query_result.service.tables[0].label,
         description: "Cantabular metadata description",
         keywords: ["Dimension1", "Dimension2"],
         national_statistic: true,
