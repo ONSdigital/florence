@@ -380,7 +380,7 @@ export class CantabularMetadataController extends Component {
     marshalCantabularMetadata = cantResponse => {
         return {
             dataset: {
-                title: `${cantResponse.table_query_result.service.tables[0].name} (${cantResponse.table_query_result.service.tables[0].label})`,
+                title: cantResponse.table_query_result.service.tables[0].label,
                 description: cantResponse.table_query_result.service.tables[0].description,
                 keywords: cantResponse.table_query_result.service.tables[0].vars,
                 national_statistic:
