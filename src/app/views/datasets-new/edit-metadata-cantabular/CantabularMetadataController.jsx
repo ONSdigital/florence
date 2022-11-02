@@ -198,7 +198,55 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    checkCantabularMetadataUpdate = () => {};
+    checkCantabularMetadataUpdate = (datasetMetadata, cantabularMetadata) => {
+        const datasetMetadataCantabularFields = {
+            dataset: {
+                title: "title" in datasetMetadata.dataset ? datasetMetadata.dataset.title : "",
+                description: "description" in datasetMetadata.dataset ? datasetMetadata.dataset.description : "",
+                keywords: "keywords" in datasetMetadata.dataset ? datasetMetadata.dataset.keywords : [],
+                national_statistic: "national_statistic" in datasetMetadata.dataset ? datasetMetadata.dataset.national_statistic : false,
+                license: "license" in datasetMetadata.dataset ? datasetMetadata.dataset.license : "",
+                related_datasets: "related_datasets" in datasetMetadata.dataset ? datasetMetadata.dataset.related_datasets : [],
+                publications: "publications" in datasetMetadata.dataset ? datasetMetadata.dataset.publications : [],
+                unit_of_measure: "unit_of_measure" in datasetMetadata.dataset ? datasetMetadata.dataset.unit_of_measure : "",
+                qmi: "qmi" in datasetMetadata.dataset ? { href: datasetMetadata.dataset.qmi.href } : { href: "" },
+                contacts:
+                    "contacts" in datasetMetadata.dataset
+                        ? datasetMetadata.dataset.contacts.map(contact => ({
+                              name: "name" in contact ? contact.name : "",
+                              email: "email" in contact ? contact.email : "",
+                              telephone: "telephone" in contact ? contact.telephone : "",
+                              website: "website" in contact ? contact.website : "",
+                          }))
+                        : [
+                              {
+                                  name: "",
+                                  email: "",
+                                  telephone: "",
+                                  website: "",
+                              },
+                          ],
+            },
+            version: {
+                dimensions:
+                    "dimensions" in datasetMetadata.version
+                        ? datasetMetadata.version.dimensions.map(dimension => ({
+                              id: "id" in dimension ? dimension.id : "",
+                              name: "name" in dimension ? dimension.name : "",
+                              description: "description" in dimension ? dimension.description : "",
+                              label: "label" in dimension ? dimension.label : "",
+                              quality_statement_text: "quality_statement_text" in dimension ? dimension.quality_statement_text : "",
+                              quality_statement_url: "quality_statement_url" in dimension ? dimension.quality_statement_url : "",
+                          }))
+                        : [],
+            },
+        };
+        if (JSON.stringify(datasetMetadataCantabularFields) != JSON.stringify(cantabularMetadata)) {
+            this.setState({
+                isCantabularMetadataUpdated: true,
+            });
+        }
+    };
 
     checkDimensions = (datasetDimensions, cantabularDimensions) => {
         const datasetDimensionsArr = datasetDimensions.map(dimension => dimension.id);
@@ -432,6 +480,9 @@ export class CantabularMetadataController extends Component {
 
     handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
+        if (mapped.datasetCollectionState === "inProgress") {
+            this.checkCantabularMetadataUpdate(nonCantDatasetMetadata, cantabularMetadata);
+        }
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
             this.setState({ disableScreen: true });
             notifications.add({
@@ -1004,6 +1055,7 @@ export class CantabularMetadataController extends Component {
                     }}
                     topicsErr={this.state.topicsErr}
                     handleCensusContentChange={this.handleRadioGroupComponentChange}
+                    isCantabularMetadataUpdated={this.state.isCantabularMetadataUpdated}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
