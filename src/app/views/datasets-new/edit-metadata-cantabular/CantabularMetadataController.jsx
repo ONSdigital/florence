@@ -51,6 +51,7 @@ export class CantabularMetadataController extends Component {
             secondaryTopicsMenuArr: [],
             allTopicsArr: [],
             topicsErr: "",
+            isCantabularMetadataUpdated: false,
             metadata: {
                 title: "",
                 summary: "",
@@ -196,6 +197,8 @@ export class CantabularMetadataController extends Component {
                 console.error("get metadata: error GETting dataset metadata from controller", error);
             });
     };
+
+    checkCantabularMetadataUpdate = () => {};
 
     checkDimensions = (datasetDimensions, cantabularDimensions) => {
         const datasetDimensionsArr = datasetDimensions.map(dimension => dimension.id);

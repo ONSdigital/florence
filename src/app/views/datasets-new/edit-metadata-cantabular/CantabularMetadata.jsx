@@ -91,6 +91,7 @@ const propTypes = {
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
     handleCensusContentChange: PropTypes.func.isRequired,
+    isCantabularMetadataUpdated: PropTypes.bool.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -123,6 +124,7 @@ const CantabularMetadata = ({
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
     handleCensusContentChange,
+    isCantabularMetadataUpdated,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--8">
@@ -142,6 +144,8 @@ const CantabularMetadata = ({
             <p className="margin-bottom--1 font-size--18">
                 <span className="font-weight--600">Version</span>: {metadata.version ? metadata.version : "loading..."}
             </p>
+
+            {isCantabularMetadataUpdated && <p className="margin-bottom--1 font-size--18">Cantabular metadata has changed !!!</p>}
 
             <h2>Title</h2>
             <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
