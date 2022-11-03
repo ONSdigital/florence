@@ -94,20 +94,14 @@ export class CantabularMetadataController extends Component {
                 title: false,
                 summary: false,
                 keywords: false,
-                nationalStatistic: false,
-                licence: false,
                 contactName: false,
                 contactEmail: false,
                 contactTelephone: false,
-                relatedDatasets: false,
-                relatedPublications: false,
                 unitOfMeasure: false,
                 dimensions: false,
-                qmi: false,
             },
             cantabularMetadata: {
                 dataset: {
-                    qmi: {},
                     contacts: [
                         {
                             name: "",
@@ -204,26 +198,21 @@ export class CantabularMetadataController extends Component {
                 title: "title" in datasetMetadata.dataset ? datasetMetadata.dataset.title : "",
                 description: "description" in datasetMetadata.dataset ? datasetMetadata.dataset.description : "",
                 keywords: "keywords" in datasetMetadata.dataset ? datasetMetadata.dataset.keywords : [],
-                national_statistic: "national_statistic" in datasetMetadata.dataset ? datasetMetadata.dataset.national_statistic : false,
-                license: "license" in datasetMetadata.dataset ? datasetMetadata.dataset.license : "",
-                related_datasets: "related_datasets" in datasetMetadata.dataset ? datasetMetadata.dataset.related_datasets : [],
-                publications: "publications" in datasetMetadata.dataset ? datasetMetadata.dataset.publications : [],
                 unit_of_measure: "unit_of_measure" in datasetMetadata.dataset ? datasetMetadata.dataset.unit_of_measure : "",
-                qmi: "qmi" in datasetMetadata.dataset ? { href: datasetMetadata.dataset.qmi.href } : { href: "" },
                 contacts:
                     "contacts" in datasetMetadata.dataset
-                        ? datasetMetadata.dataset.contacts.map(contact => ({
-                              name: "name" in contact ? contact.name : "",
-                              email: "email" in contact ? contact.email : "",
-                              telephone: "telephone" in contact ? contact.telephone : "",
-                              website: "website" in contact ? contact.website : "",
-                          }))
+                        ? [
+                              {
+                                  name: datasetMetadata.dataset.contacts?.[0].name || "",
+                                  email: datasetMetadata.dataset.contacts?.[0].email || "",
+                                  telephone: datasetMetadata.dataset.contacts?.[0].telephone || "",
+                              },
+                          ]
                         : [
                               {
                                   name: "",
                                   email: "",
                                   telephone: "",
-                                  website: "",
                               },
                           ],
             },
@@ -345,19 +334,15 @@ export class CantabularMetadataController extends Component {
                 keywords: !collectionState
                     ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
                     : dataset?.keywords?.join().replace(",", ", "),
-                nationalStatistic: !collectionState ? cantabularMetadata.dataset.national_statistic : dataset.national_statistic,
-                licence: !collectionState ? cantabularMetadata.dataset.license : dataset.license,
-                relatedDatasets: !collectionState
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.related_datasets, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.related_datasets, dataset.id) || [],
-                relatedPublications: !collectionState
-                    ? this.mapRelatedContentToState(cantabularMetadata.dataset?.publications, this.props.params.datasetID)
-                    : this.mapRelatedContentToState(dataset?.publications, dataset.id) || [],
+                nationalStatistic: dataset.national_statistic ? dataset.national_statistic : false,
+                licence: dataset.license ? dataset.license : "",
+                relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets, dataset.id) : [],
+                relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications, dataset.id) : [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
                 unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release || "",
-                qmi: !collectionState ? cantabularMetadata.dataset.qmi.href : dataset.qmi?.href,
+                qmi: dataset.qmi?.href || "",
                 edition: version.edition,
                 version: version.version,
                 versionID: version.id,
@@ -371,13 +356,13 @@ export class CantabularMetadataController extends Component {
                     : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: !collectionState ? cantabularMetadata.dataset.contacts[0]?.name : dataset.contacts[0]?.name,
+                contactName: !collectionState ? cantabularMetadata.dataset.contacts?.[0].name : dataset.contacts?.[0].name,
                 contactEmail: {
-                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.email : dataset.contacts[0]?.email,
+                    value: !collectionState ? cantabularMetadata.dataset.contacts?.[0].email : dataset.contacts?.[0].email,
                     error: "",
                 },
                 contactTelephone: {
-                    value: !collectionState ? cantabularMetadata.dataset.contacts[0]?.telephone : dataset.contacts[0]?.telephone,
+                    value: !collectionState ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
                 canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
@@ -414,16 +399,11 @@ export class CantabularMetadataController extends Component {
             title: !!cantResponse.table_query_result.service.tables[0].name,
             summary: !!cantResponse.table_query_result.service.tables[0].description,
             keywords: !!cantResponse.table_query_result.service.tables[0].vars.length,
-            nationalStatistic: !!cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified,
-            licence: !!cantResponse.dataset_query_result.dataset.meta.source.licence,
             contactName: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name,
             contactEmail: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email,
             contactTelephone: !!cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone,
-            relatedDatasets: !!cantResponse.table_query_result.service.tables[0].meta.related_datasets.length,
-            relatedPublications: !!cantResponse.table_query_result.service.tables[0].meta.publications.length,
             unitOfMeasure: !!cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
             dimensions: !!cantResponse.dataset_query_result.dataset.vars.length,
-            qmi: !!cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
         };
         return { ...this.state.fieldsReturned, ...areMetadataFieldsReturned };
     };
@@ -434,21 +414,12 @@ export class CantabularMetadataController extends Component {
                 title: cantResponse.table_query_result.service.tables[0].label,
                 description: cantResponse.table_query_result.service.tables[0].description,
                 keywords: cantResponse.table_query_result.service.tables[0].vars,
-                national_statistic:
-                    cantResponse.dataset_query_result.dataset.meta.source.national_statistic_certified.toUpperCase() === "Y" ? true : false,
-                license: cantResponse.dataset_query_result.dataset.meta.source.licence,
-                related_datasets: cantResponse.table_query_result.service.tables[0].meta.related_datasets,
-                publications: cantResponse.table_query_result.service.tables[0].meta.publications,
                 unit_of_measure: cantResponse.table_query_result.service.tables[0].meta.statistical_unit.statistical_unit,
-                qmi: {
-                    href: cantResponse.dataset_query_result.dataset.meta.source.methodology_link,
-                },
                 contacts: [
                     {
                         name: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_name,
                         email: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_email,
                         telephone: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_phone,
-                        website: cantResponse.dataset_query_result.dataset.meta.source.contact.contact_website,
                     },
                 ],
             },

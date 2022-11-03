@@ -53,16 +53,11 @@ const propTypes = {
         title: PropTypes.bool,
         summary: PropTypes.bool,
         keywords: PropTypes.bool,
-        nationalStatistic: PropTypes.bool,
-        licence: PropTypes.bool,
         contactName: PropTypes.bool,
         contactEmail: PropTypes.bool,
         contactTelephone: PropTypes.bool,
-        relatedDatasets: PropTypes.bool,
-        relatedPublications: PropTypes.bool,
         unitOfMeasure: PropTypes.bool,
         dimensions: PropTypes.bool,
-        qmi: PropTypes.bool,
     }).isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleDateInputChange: PropTypes.func.isRequired,
@@ -262,13 +257,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.keywords}
             />
 
-            <Input
-                id="licence"
-                label="Licence"
-                onChange={handleStringInputChange}
-                value={metadata.licence}
-                disabled={disableForm || fieldsReturned.licence}
-            />
+            <Input id="licence" label="Licence" onChange={handleStringInputChange} value={metadata.licence} disabled={disableForm} />
 
             <h3>Usage notes</h3>
             <div className="margin-bottom--1">
@@ -301,7 +290,7 @@ const CantabularMetadata = ({
                 onChange={handleNationalStatisticChange}
                 inline={true}
                 legend={"National Statistic"}
-                disabled={disableForm || fieldsReturned.nationalStatistic}
+                disabled={disableForm}
             />
 
             <RadioGroup
@@ -366,7 +355,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.relatedDatasets}
+                disableActions={disableForm}
             />
 
             <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
@@ -377,10 +366,10 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.relatedPublications}
+                disableActions={disableForm}
             />
             <h3 className="margin-top--1">Quality and methodology information</h3>
-            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm || fieldsReturned.qmi} />
+            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm} />
             <h3>Methodologies</h3>
             <SimpleEditableList
                 addText={"Add a methodology"}
