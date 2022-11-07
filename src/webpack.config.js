@@ -50,16 +50,20 @@ module.exports = {
             {
                 test: /\.scss$/i,
                 use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
-        },
-        {
-            test: /\.(jpg|jpeg|png|gif|mp3|svg)$/i,
-            use: [{
-                loader: 'url-loader',
-                options: { limit: 100000,},
             },
-            ],
-        },
-    ]},
+            {
+                test: /\.(sass|less|css)$/,
+                use: ["style-loader", "css-loader", 'sass-loader'],
+            },
+            {
+                test: /\.(jpg|jpeg|png|gif|mp3|svg)$/i,
+                use: [{
+                    loader: 'url-loader',
+                    options: { limit: 100000,},
+                },
+                ],
+            },
+        ]},
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
