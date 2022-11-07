@@ -94,7 +94,7 @@
     "auditjs": "^4.0.37",
     "axios": "^0.26.1",
     "dateformat": "^2.0.0",
-    "dp-table-builder-ui": "file:../../dp-table-builder-ui",
+    "dp-table-builder-ui": "^1.1.2",
     "install": "^0.8.7",
     "is-empty-object": "^1.1.1",
     "jest-snapshot": "^27.4.2",
