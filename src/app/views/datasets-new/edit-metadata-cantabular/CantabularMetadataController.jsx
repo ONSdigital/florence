@@ -51,7 +51,11 @@ export class CantabularMetadataController extends Component {
             secondaryTopicsMenuArr: [],
             allTopicsArr: [],
             topicsErr: "",
-            isCantabularMetadataUpdated: false,
+            cantabularMetadataPopoutState: {
+                showUpdateCantabularMetadataPopout: false,
+                refreshCantabularMetadata: false,
+                showRevertChangesButton: false,
+            },
             metadata: {
                 title: "",
                 summary: "",
@@ -232,7 +236,7 @@ export class CantabularMetadataController extends Component {
         };
         if (JSON.stringify(datasetMetadataCantabularFields) != JSON.stringify(cantabularMetadata)) {
             this.setState({
-                isCantabularMetadataUpdated: true,
+                cantabularMetadataPopoutState: { showUpdateCantabularMetadataPopout: true },
             });
         }
     };
@@ -329,18 +333,28 @@ export class CantabularMetadataController extends Component {
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         try {
             const mappedMetadata = {
-                title: !collectionState ? cantabularMetadata.dataset.title : dataset.title,
-                summary: !collectionState ? cantabularMetadata.dataset.description : dataset.description,
-                keywords: !collectionState
-                    ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
-                    : dataset?.keywords?.join().replace(",", ", "),
+                title:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? cantabularMetadata.dataset.title
+                        : dataset.title,
+                summary:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? cantabularMetadata.dataset.description
+                        : dataset.description,
+                keywords:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
+                        : dataset?.keywords?.join().replace(",", ", "),
                 nationalStatistic: dataset.national_statistic ? dataset.national_statistic : false,
                 licence: dataset.license ? dataset.license : "",
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets, dataset.id) : [],
                 relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications, dataset.id) : [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
-                unitOfMeasure: !collectionState ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
+                unitOfMeasure:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? cantabularMetadata.dataset.unit_of_measure
+                        : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release || "",
                 qmi: dataset.qmi?.href || "",
                 edition: version.edition,
@@ -351,18 +365,28 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions: !collectionState
-                    ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, version.version || version.id)
-                    : version.dimensions,
+                dimensions:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, version.version || version.id)
+                        : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName: !collectionState ? cantabularMetadata.dataset.contacts?.[0].name : dataset.contacts?.[0].name,
+                contactName:
+                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                        ? cantabularMetadata.dataset.contacts?.[0].name
+                        : dataset.contacts?.[0].name,
                 contactEmail: {
-                    value: !collectionState ? cantabularMetadata.dataset.contacts?.[0].email : dataset.contacts?.[0].email,
+                    value:
+                        !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                            ? cantabularMetadata.dataset.contacts?.[0].email
+                            : dataset.contacts?.[0].email,
                     error: "",
                 },
                 contactTelephone: {
-                    value: !collectionState ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
+                    value:
+                        !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
+                            ? cantabularMetadata.dataset.contacts?.[0].telephone
+                            : dataset.contacts?.[0].telephone,
                     error: "",
                 },
                 canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
@@ -451,7 +475,7 @@ export class CantabularMetadataController extends Component {
 
     handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
-        if (mapped.datasetCollectionState === "inProgress") {
+        if (mapped.datasetCollectionState === "inProgress" && !this.state.cantabularMetadataPopoutState.refreshCantabularMetadata) {
             this.checkCantabularMetadataUpdate(nonCantDatasetMetadata, cantabularMetadata);
         }
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
@@ -464,6 +488,15 @@ export class CantabularMetadataController extends Component {
         }
         const isCreated = mapped.state === "created";
         this.setState({ allowPreview: !isCreated, disableCancel: !isCreated });
+        if (this.state.cantabularMetadataPopoutState.refreshCantabularMetadata) {
+            this.setState({
+                cantabularMetadataPopoutState: {
+                    refreshCantabularMetadata: false,
+                    showUpdateCantabularMetadataPopout: false,
+                    showRevertChangesButton: true,
+                },
+            });
+        }
         this.setState({
             metadata: mapped.metadata,
             datasetIsInCollection: mapped.collection,
@@ -932,6 +965,13 @@ export class CantabularMetadataController extends Component {
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
+            this.setState({
+                cantabularMetadataPopoutState: {
+                    refreshCantabularMetadata: false,
+                    showUpdateCantabularMetadataPopout: false,
+                    showRevertChangesButton: false,
+                },
+            });
             this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
                 .then(this.retrieveDatasetMetadata)
                 .catch(error => error);
@@ -963,6 +1003,26 @@ export class CantabularMetadataController extends Component {
 
     handleMarkAsReviewedClick = () => {
         this.saveAndRetrieveDatasetMetadata(false, true);
+    };
+
+    handleCantabularMetadataUpdate = () => {
+        this.setState({
+            cantabularMetadataPopoutState: {
+                refreshCantabularMetadata: true,
+            },
+        });
+        this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
+    };
+
+    handleRevertChangesButton = () => {
+        this.setState({
+            cantabularMetadataPopoutState: {
+                refreshCantabularMetadata: false,
+                showUpdateCantabularMetadataPopout: false,
+                showRevertChangesButton: false,
+            },
+        });
+        this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
     };
 
     renderModal = () => {
@@ -1026,7 +1086,13 @@ export class CantabularMetadataController extends Component {
                     }}
                     topicsErr={this.state.topicsErr}
                     handleCensusContentChange={this.handleRadioGroupComponentChange}
-                    isCantabularMetadataUpdated={this.state.isCantabularMetadataUpdated}
+                    showUpdateCantabularMetadataPopout={this.state.cantabularMetadataPopoutState.showUpdateCantabularMetadataPopout}
+                    handleCantabularMetadataUpdate={this.handleCantabularMetadataUpdate}
+                    hideUpdateCantabularMetadataPopout={() =>
+                        this.setState({ cantabularMetadataPopoutState: { showUpdateCantabularMetadataPopout: false } })
+                    }
+                    showRevertChangesButton={this.state.cantabularMetadataPopoutState.showRevertChangesButton}
+                    handleRevertChangesButton={this.handleRevertChangesButton}
                 />
 
                 {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}

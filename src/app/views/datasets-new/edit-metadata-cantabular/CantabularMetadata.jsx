@@ -10,6 +10,7 @@ import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 import SelectTags from "../../../components/select-tags/Select-tags";
+import Popouts from "../../../components/popouts/Popouts";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -86,7 +87,11 @@ const propTypes = {
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
     handleCensusContentChange: PropTypes.func.isRequired,
-    isCantabularMetadataUpdated: PropTypes.bool.isRequired,
+    showUpdateCantabularMetadataPopout: PropTypes.bool.isRequired,
+    handleCantabularMetadataUpdate: PropTypes.func.isRequired,
+    hideUpdateCantabularMetadataPopout: PropTypes.func.isRequired,
+    showRevertChangesButton: PropTypes.bool.isRequired,
+    handleRevertChangesButton: PropTypes.func.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -119,7 +124,11 @@ const CantabularMetadata = ({
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
     handleCensusContentChange,
-    isCantabularMetadataUpdated,
+    showUpdateCantabularMetadataPopout,
+    handleCantabularMetadataUpdate,
+    hideUpdateCantabularMetadataPopout,
+    showRevertChangesButton,
+    handleRevertChangesButton,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--8">
@@ -140,7 +149,20 @@ const CantabularMetadata = ({
                 <span className="font-weight--600">Version</span>: {metadata.version ? metadata.version : "loading..."}
             </p>
 
-            {isCantabularMetadataUpdated && <p className="margin-bottom--1 font-size--18">Cantabular metadata has changed !!!</p>}
+            {showUpdateCantabularMetadataPopout && (
+                <Popouts
+                    popouts={[
+                        {
+                            id: "updateCantabularMetadataPopout",
+                            title: "This dataset has new changes. Would you like to import the latest version ?",
+                            buttons: [
+                                { text: "View changes first", style: ["primary"], onClick: handleCantabularMetadataUpdate },
+                                { text: "No", style: ["invert-primary"], onClick: hideUpdateCantabularMetadataPopout },
+                            ],
+                        },
+                    ]}
+                />
+            )}
 
             <h2>Title</h2>
             <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
@@ -431,6 +453,12 @@ const CantabularMetadata = ({
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
                     Save
                 </button>
+                {showRevertChangesButton && (
+                    <button disabled={disableForm} type="button" className="btn btn--warning margin-right--1" onClick={handleRevertChangesButton}>
+                        Revert to original
+                    </button>
+                )}
+
                 <SaveAndReviewActions
                     disabled={disableForm}
                     reviewState={collectionState}
@@ -440,7 +468,7 @@ const CantabularMetadata = ({
                     onSubmit={handleSubmitForReviewClick}
                     onApprove={handleMarkAsReviewedClick}
                 />
-                <button disabled={disableCancel} type="button" className="btn btn--primary margin-right--1" onClick={handleRedirectOnReject}>
+                <button disabled={disableCancel} type="button" className="btn btn--invert-primary margin-right--1" onClick={handleRedirectOnReject}>
                     Cancel
                 </button>
                 {allowPreview ? (
