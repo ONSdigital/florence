@@ -87,10 +87,9 @@ const propTypes = {
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
     handleCensusContentChange: PropTypes.func.isRequired,
-    showUpdateCantabularMetadataPopout: PropTypes.bool.isRequired,
+    refreshCantabularMetadataState: PropTypes.object.isRequired,
     handleCantabularMetadataUpdate: PropTypes.func.isRequired,
     hideUpdateCantabularMetadataPopout: PropTypes.func.isRequired,
-    showRevertChangesButton: PropTypes.bool.isRequired,
     handleRevertChangesButton: PropTypes.func.isRequired,
 };
 
@@ -124,10 +123,9 @@ const CantabularMetadata = ({
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
     handleCensusContentChange,
-    showUpdateCantabularMetadataPopout,
+    refreshCantabularMetadataState,
     handleCantabularMetadataUpdate,
     hideUpdateCantabularMetadataPopout,
-    showRevertChangesButton,
     handleRevertChangesButton,
 }) => {
     return (
@@ -149,7 +147,7 @@ const CantabularMetadata = ({
                 <span className="font-weight--600">Version</span>: {metadata.version ? metadata.version : "loading..."}
             </p>
 
-            {showUpdateCantabularMetadataPopout && (
+            {refreshCantabularMetadataState.showUpdateCantabularMetadataPopout && (
                 <Popouts
                     popouts={[
                         {
@@ -453,7 +451,7 @@ const CantabularMetadata = ({
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
                     Save
                 </button>
-                {showRevertChangesButton && (
+                {refreshCantabularMetadataState.showRevertChangesButton && (
                     <button disabled={disableForm} type="button" className="btn btn--warning margin-right--1" onClick={handleRevertChangesButton}>
                         Revert to original
                     </button>

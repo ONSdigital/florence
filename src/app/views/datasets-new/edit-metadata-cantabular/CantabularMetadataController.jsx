@@ -51,10 +51,11 @@ export class CantabularMetadataController extends Component {
             secondaryTopicsMenuArr: [],
             allTopicsArr: [],
             topicsErr: "",
-            cantabularMetadataPopoutState: {
+            refreshCantabularMetadataState: {
                 showUpdateCantabularMetadataPopout: false,
                 refreshCantabularMetadata: false,
                 showRevertChangesButton: false,
+                isRevertChangesClicked: false,
             },
             metadata: {
                 title: "",
@@ -236,7 +237,7 @@ export class CantabularMetadataController extends Component {
         };
         if (JSON.stringify(datasetMetadataCantabularFields) != JSON.stringify(cantabularMetadata)) {
             this.setState({
-                cantabularMetadataPopoutState: { showUpdateCantabularMetadataPopout: true },
+                refreshCantabularMetadataState: { showUpdateCantabularMetadataPopout: true },
             });
         }
     };
@@ -331,30 +332,21 @@ export class CantabularMetadataController extends Component {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
+        const useCantabularMetadata = !collectionState || this.state.refreshCantabularMetadataState.refreshCantabularMetadata;
         try {
             const mappedMetadata = {
-                title:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? cantabularMetadata.dataset.title
-                        : dataset.title,
-                summary:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? cantabularMetadata.dataset.description
-                        : dataset.description,
-                keywords:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
-                        : dataset?.keywords?.join().replace(",", ", "),
+                title: useCantabularMetadata ? cantabularMetadata.dataset.title : dataset.title,
+                summary: useCantabularMetadata ? cantabularMetadata.dataset.description : dataset.description,
+                keywords: useCantabularMetadata
+                    ? cantabularMetadata.dataset?.keywords?.join().replace(",", ", ")
+                    : dataset?.keywords?.join().replace(",", ", "),
                 nationalStatistic: dataset.national_statistic ? dataset.national_statistic : false,
                 licence: dataset.license ? dataset.license : "",
                 relatedDatasets: dataset.related_datasets ? this.mapRelatedContentToState(dataset.related_datasets, dataset.id) : [],
                 relatedPublications: dataset.publications ? this.mapRelatedContentToState(dataset.publications, dataset.id) : [],
                 relatedMethodologies: dataset.methodologies ? this.mapRelatedContentToState(dataset.methodologies, dataset.id) : [],
                 releaseFrequency: dataset.release_frequency || "",
-                unitOfMeasure:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? cantabularMetadata.dataset.unit_of_measure
-                        : dataset.unit_of_measure,
+                unitOfMeasure: useCantabularMetadata ? cantabularMetadata.dataset.unit_of_measure : dataset.unit_of_measure,
                 nextReleaseDate: dataset.next_release || "",
                 qmi: dataset.qmi?.href || "",
                 edition: version.edition,
@@ -365,28 +357,18 @@ export class CantabularMetadataController extends Component {
                     error: "",
                 },
                 notices: version.alerts ? this.mapNoticesToState(version.alerts, version.version || version.id) : [],
-                dimensions:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, version.version || version.id)
-                        : version.dimensions,
+                dimensions: useCantabularMetadata
+                    ? this.integrateDimensions(version.dimensions, cantabularMetadata.version.dimensions, version.version || version.id)
+                    : version.dimensions,
                 usageNotes: version.usage_notes ? this.mapUsageNotesToState(version.usage_notes, version.version || version.id) : [],
                 latestChanges: version.latest_changes ? this.mapLatestChangesToState(version.latest_changes, version.version || version.id) : [],
-                contactName:
-                    !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                        ? cantabularMetadata.dataset.contacts?.[0].name
-                        : dataset.contacts?.[0].name,
+                contactName: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].name : dataset.contacts?.[0].name,
                 contactEmail: {
-                    value:
-                        !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                            ? cantabularMetadata.dataset.contacts?.[0].email
-                            : dataset.contacts?.[0].email,
+                    value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].email : dataset.contacts?.[0].email,
                     error: "",
                 },
                 contactTelephone: {
-                    value:
-                        !collectionState || this.state.cantabularMetadataPopoutState.refreshCantabularMetadata
-                            ? cantabularMetadata.dataset.contacts?.[0].telephone
-                            : dataset.contacts?.[0].telephone,
+                    value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
                 canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
@@ -475,7 +457,11 @@ export class CantabularMetadataController extends Component {
 
     handleGETSuccess = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const mapped = this.mapMetadataToState(nonCantDatasetMetadata, cantabularMetadata);
-        if (mapped.datasetCollectionState === "inProgress" && !this.state.cantabularMetadataPopoutState.refreshCantabularMetadata) {
+        if (
+            mapped.datasetCollectionState === "inProgress" &&
+            !this.state.refreshCantabularMetadataState.refreshCantabularMetadata &&
+            !this.state.refreshCantabularMetadataState.isRevertChangesClicked
+        ) {
             this.checkCantabularMetadataUpdate(nonCantDatasetMetadata, cantabularMetadata);
         }
         if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
@@ -488,9 +474,9 @@ export class CantabularMetadataController extends Component {
         }
         const isCreated = mapped.state === "created";
         this.setState({ allowPreview: !isCreated, disableCancel: !isCreated });
-        if (this.state.cantabularMetadataPopoutState.refreshCantabularMetadata) {
+        if (this.state.refreshCantabularMetadataState.refreshCantabularMetadata) {
             this.setState({
-                cantabularMetadataPopoutState: {
+                refreshCantabularMetadataState: {
                     refreshCantabularMetadata: false,
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: true,
@@ -966,7 +952,7 @@ export class CantabularMetadataController extends Component {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
             this.setState({
-                cantabularMetadataPopoutState: {
+                refreshCantabularMetadataState: {
                     refreshCantabularMetadata: false,
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: false,
@@ -1007,7 +993,7 @@ export class CantabularMetadataController extends Component {
 
     handleCantabularMetadataUpdate = () => {
         this.setState({
-            cantabularMetadataPopoutState: {
+            refreshCantabularMetadataState: {
                 refreshCantabularMetadata: true,
             },
         });
@@ -1016,10 +1002,11 @@ export class CantabularMetadataController extends Component {
 
     handleRevertChangesButton = () => {
         this.setState({
-            cantabularMetadataPopoutState: {
+            refreshCantabularMetadataState: {
                 refreshCantabularMetadata: false,
                 showUpdateCantabularMetadataPopout: false,
                 showRevertChangesButton: false,
+                isRevertChangesClicked: true,
             },
         });
         this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
@@ -1086,12 +1073,11 @@ export class CantabularMetadataController extends Component {
                     }}
                     topicsErr={this.state.topicsErr}
                     handleCensusContentChange={this.handleRadioGroupComponentChange}
-                    showUpdateCantabularMetadataPopout={this.state.cantabularMetadataPopoutState.showUpdateCantabularMetadataPopout}
+                    refreshCantabularMetadataState={this.state.refreshCantabularMetadataState}
                     handleCantabularMetadataUpdate={this.handleCantabularMetadataUpdate}
                     hideUpdateCantabularMetadataPopout={() =>
-                        this.setState({ cantabularMetadataPopoutState: { showUpdateCantabularMetadataPopout: false } })
+                        this.setState({ refreshCantabularMetadataState: { showUpdateCantabularMetadataPopout: false } })
                     }
-                    showRevertChangesButton={this.state.cantabularMetadataPopoutState.showRevertChangesButton}
                     handleRevertChangesButton={this.handleRevertChangesButton}
                 />
 
