@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
+import _ from "lodash";
 
 import date from "../../../utilities/date";
 import datasets from "../../../utilities/api-clients/datasets";
@@ -56,6 +57,7 @@ export class CantabularMetadataController extends Component {
                 refreshCantabularMetadata: false,
                 showRevertChangesButton: false,
                 isRevertChangesClicked: false,
+                cantabularMetadataUpdatedFields: {},
             },
             metadata: {
                 title: "",
@@ -235,11 +237,78 @@ export class CantabularMetadataController extends Component {
                         : [],
             },
         };
-        if (JSON.stringify(datasetMetadataCantabularFields) != JSON.stringify(cantabularMetadata)) {
+        if (!_.isEqual(datasetMetadataCantabularFields, cantabularMetadata)) {
+            let cantabularMetadataObjFieldsDiff = this.getObjectDiff(datasetMetadataCantabularFields, cantabularMetadata);
+            this.mapUpdatedFieldsToState(cantabularMetadataObjFieldsDiff);
             this.setState({
                 refreshCantabularMetadataState: { showUpdateCantabularMetadataPopout: true },
             });
         }
+    };
+
+    mapUpdatedFieldsToState = obj => {
+        let cantabularMetadataFlatFieldList = ["title", "description", "keywords", "unit_of_measure"];
+        Object.keys(obj).forEach(key => {
+            if (cantabularMetadataFlatFieldList.includes(key)) {
+                this.setState({
+                    refreshCantabularMetadataState: {
+                        cantabularMetadataUpdatedFields: {
+                            ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
+                            [key]: true,
+                        },
+                    },
+                });
+            } else if (key === "contacts") {
+                Object.keys(obj[key][0]).forEach(contact => {
+                    let contactDetails = `contact${contact.charAt(0).toUpperCase() + contact.slice(1)}`;
+                    this.setState({
+                        refreshCantabularMetadataState: {
+                            cantabularMetadataUpdatedFields: {
+                                ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
+                                [contactDetails]: true,
+                            },
+                        },
+                    });
+                });
+            } else if (key === "dimensions") {
+                obj[key].forEach(dimensionObj => {
+                    for (const key in dimensionObj) {
+                        if (dimensionObj.hasOwnProperty(key) && key !== "id") {
+                            dimensionObj[key] = true;
+                        }
+                    }
+                });
+                this.setState({
+                    refreshCantabularMetadataState: {
+                        cantabularMetadataUpdatedFields: {
+                            ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
+                            dimensions: [...obj[key]],
+                        },
+                    },
+                });
+            }
+            if (typeof obj[key] === "object" && obj[key] !== null) {
+                this.mapUpdatedFieldsToState(obj[key]);
+            }
+        });
+    };
+
+    getObjectDiff = (object, base) => {
+        function changes(object, base) {
+            return _.transform(object, function (result, value, key) {
+                if (!_.isEqual(value, base[key])) {
+                    if (key === "dimensions") {
+                        result[key] = _.isObject(value) && _.isObject(base[key]) ? changes(value, base[key]) : value;
+                        base[key].forEach((dimension, i) => {
+                            result[key][i]["id"] = dimension.id;
+                        });
+                    } else {
+                        result[key] = _.isObject(value) && _.isObject(base[key]) ? changes(value, base[key]) : value;
+                    }
+                }
+            });
+        }
+        return changes(object, base);
     };
 
     checkDimensions = (datasetDimensions, cantabularDimensions) => {
