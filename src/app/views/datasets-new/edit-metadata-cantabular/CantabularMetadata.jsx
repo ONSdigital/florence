@@ -154,8 +154,8 @@ const CantabularMetadata = ({
                             id: "updateCantabularMetadataPopout",
                             title: "This dataset has new changes. Would you like to import the latest version ?",
                             buttons: [
-                                { text: "View changes first", style: ["primary"], onClick: handleCantabularMetadataUpdate },
-                                { text: "No", style: ["invert-primary"], onClick: hideUpdateCantabularMetadataPopout },
+                                { text: "View changes first", style: "primary", onClick: handleCantabularMetadataUpdate },
+                                { text: "No", style: "invert-primary", onClick: hideUpdateCantabularMetadataPopout },
                             ],
                         },
                     ]}
@@ -163,7 +163,16 @@ const CantabularMetadata = ({
             )}
 
             <h2>Title</h2>
-            <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
+            <Input
+                id="title"
+                value={metadata.title}
+                onChange={handleStringInputChange}
+                disabled={disableForm || fieldsReturned.title}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.title
+                }
+            />
 
             <h2 id="release-dates-heading">Release dates</h2>
             <Input
@@ -216,6 +225,10 @@ const CantabularMetadata = ({
                 value={metadata.summary}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.summary}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.description
+                }
             />
 
             <Input
@@ -226,8 +239,14 @@ const CantabularMetadata = ({
                 value={metadata.unitOfMeasure}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.unitOfMeasure}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.unit_of_measure
+                }
             />
-
+            {/* TODO: map through the refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions array, 
+match the id with the metadata dimension id dispplayed on the form, add and pass down to the highlightField prop the refreshCantabularMetadataState.highlightCantabularMetadataChanges state and the boolean value of the matching/applicable field name available in the matching refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions[i] object
+     */}
             <h2>Dimensions</h2>
             {metadata.dimensions.map((dimension, i) => {
                 return (
@@ -275,6 +294,10 @@ const CantabularMetadata = ({
                 value={metadata.keywords}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.keywords}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.keywords
+                }
             />
 
             <Input id="licence" label="Licence" onChange={handleStringInputChange} value={metadata.licence} disabled={disableForm} />
@@ -342,6 +365,10 @@ const CantabularMetadata = ({
                 onChange={handleStringInputChange}
                 value={metadata.contactName}
                 disabled={disableForm || fieldsReturned.contactName}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactName
+                }
             />
 
             <Input
@@ -353,6 +380,10 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.contactEmail}
                 error={metadata.contactEmail.error}
                 requiredFieldMessage={!metadata.contactEmail.value ? "Required field" : ""}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactEmail
+                }
             />
 
             <Input
@@ -364,6 +395,10 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.contactTelephone}
                 error={metadata.contactTelephone.error}
                 requiredFieldMessage={!metadata.contactTelephone.value ? "Required field" : ""}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactTelephone
+                }
             />
 
             <h2>Related links</h2>

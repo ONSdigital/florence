@@ -57,6 +57,7 @@ export class CantabularMetadataController extends Component {
                 refreshCantabularMetadata: false,
                 showRevertChangesButton: false,
                 isRevertChangesClicked: false,
+                highlightCantabularMetadataChanges: false,
                 cantabularMetadataUpdatedFields: {},
             },
             metadata: {
@@ -241,7 +242,7 @@ export class CantabularMetadataController extends Component {
             let cantabularMetadataObjFieldsDiff = this.getObjectDiff(datasetMetadataCantabularFields, cantabularMetadata);
             this.mapUpdatedFieldsToState(cantabularMetadataObjFieldsDiff);
             this.setState({
-                refreshCantabularMetadataState: { showUpdateCantabularMetadataPopout: true },
+                refreshCantabularMetadataState: { ...this.state.refreshCantabularMetadataState, showUpdateCantabularMetadataPopout: true },
             });
         }
     };
@@ -252,6 +253,7 @@ export class CantabularMetadataController extends Component {
             if (cantabularMetadataFlatFieldList.includes(key)) {
                 this.setState({
                     refreshCantabularMetadataState: {
+                        ...this.state.refreshCantabularMetadataState,
                         cantabularMetadataUpdatedFields: {
                             ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
                             [key]: true,
@@ -263,6 +265,7 @@ export class CantabularMetadataController extends Component {
                     let contactDetails = `contact${contact.charAt(0).toUpperCase() + contact.slice(1)}`;
                     this.setState({
                         refreshCantabularMetadataState: {
+                            ...this.state.refreshCantabularMetadataState,
                             cantabularMetadataUpdatedFields: {
                                 ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
                                 [contactDetails]: true,
@@ -280,6 +283,7 @@ export class CantabularMetadataController extends Component {
                 });
                 this.setState({
                     refreshCantabularMetadataState: {
+                        ...this.state.refreshCantabularMetadataState,
                         cantabularMetadataUpdatedFields: {
                             ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
                             dimensions: [...obj[key]],
@@ -546,6 +550,7 @@ export class CantabularMetadataController extends Component {
         if (this.state.refreshCantabularMetadataState.refreshCantabularMetadata) {
             this.setState({
                 refreshCantabularMetadataState: {
+                    ...this.state.refreshCantabularMetadataState,
                     refreshCantabularMetadata: false,
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: true,
@@ -1022,6 +1027,7 @@ export class CantabularMetadataController extends Component {
         if (mandatoryFieldsAreCompleted) {
             this.setState({
                 refreshCantabularMetadataState: {
+                    ...this.state.refreshCantabularMetadataState,
                     refreshCantabularMetadata: false,
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: false,
@@ -1063,7 +1069,9 @@ export class CantabularMetadataController extends Component {
     handleCantabularMetadataUpdate = () => {
         this.setState({
             refreshCantabularMetadataState: {
+                ...this.state.refreshCantabularMetadataState,
                 refreshCantabularMetadata: true,
+                highlightCantabularMetadataChanges: true,
             },
         });
         this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
@@ -1072,10 +1080,12 @@ export class CantabularMetadataController extends Component {
     handleRevertChangesButton = () => {
         this.setState({
             refreshCantabularMetadataState: {
+                ...this.state.refreshCantabularMetadataState,
                 refreshCantabularMetadata: false,
                 showUpdateCantabularMetadataPopout: false,
                 showRevertChangesButton: false,
                 isRevertChangesClicked: true,
+                highlightCantabularMetadataChanges: false,
             },
         });
         this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
@@ -1145,7 +1155,12 @@ export class CantabularMetadataController extends Component {
                     refreshCantabularMetadataState={this.state.refreshCantabularMetadataState}
                     handleCantabularMetadataUpdate={this.handleCantabularMetadataUpdate}
                     hideUpdateCantabularMetadataPopout={() =>
-                        this.setState({ refreshCantabularMetadataState: { showUpdateCantabularMetadataPopout: false } })
+                        this.setState({
+                            refreshCantabularMetadataState: {
+                                ...this.state.refreshCantabularMetadataState,
+                                showUpdateCantabularMetadataPopout: false,
+                            },
+                        })
                     }
                     handleRevertChangesButton={this.handleRevertChangesButton}
                 />

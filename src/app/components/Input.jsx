@@ -26,6 +26,7 @@ const propTypes = {
     disableShowPasswordText: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool,
     requiredFieldMessage: PropTypes.string,
+    highlightField: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -98,6 +99,7 @@ export default class Input extends Component {
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline && this.props.label}
                         value={this.props.value}
+                        // style={{ backgroundColor: this.props.highlightField ? "red" : "" }} ==> It would be better update the .input class
                     />
                 );
             case "clear":
@@ -119,6 +121,7 @@ export default class Input extends Component {
                             min={this.props.min}
                             max={this.props.max}
                             autoComplete={!this.props.allowAutoComplete && "new-password"}
+                            // style={{ backgroundColor: this.props.highlightField ? "red" : "" }} ==> It would be better update the .input class
                         />
                         <span onClick={this.props.onClearValue}>x</span>
                     </span>
