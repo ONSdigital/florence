@@ -248,7 +248,18 @@ export class CantabularMetadataController extends Component {
     };
 
     mapUpdatedFieldsToState = obj => {
-        let cantabularMetadataFlatFieldList = ["title", "description", "keywords", "unit_of_measure"];
+        let cantabularMetadataFlatFieldList = ["title", "keywords", "unit_of_measure"];
+        if (obj?.dataset?.description) {
+            this.setState({
+                refreshCantabularMetadataState: {
+                    ...this.state.refreshCantabularMetadataState,
+                    cantabularMetadataUpdatedFields: {
+                        ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
+                        description: true,
+                    },
+                },
+            });
+        }
         Object.keys(obj).forEach(key => {
             if (cantabularMetadataFlatFieldList.includes(key)) {
                 this.setState({
