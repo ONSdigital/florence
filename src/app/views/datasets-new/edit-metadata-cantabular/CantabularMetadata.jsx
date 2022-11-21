@@ -244,11 +244,12 @@ const CantabularMetadata = ({
                     refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.unit_of_measure
                 }
             />
-            {/* TODO: map through the refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions array, 
-match the id with the metadata dimension id dispplayed on the form, add and pass down to the highlightField prop the refreshCantabularMetadataState.highlightCantabularMetadataChanges state and the boolean value of the matching/applicable field name available in the matching refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions[i] object
-     */}
+
             <h2>Dimensions</h2>
             {metadata.dimensions.map((dimension, i) => {
+                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dimensions.find(
+                    updatedDimensionObj => updatedDimensionObj.id === dimension.id
+                );
                 return (
                     <div key={`dimension-${dimension.id}`}>
                         <Input
@@ -257,6 +258,7 @@ match the id with the metadata dimension id dispplayed on the form, add and pass
                             value={dimension.label ? dimension.label : dimension.name}
                             onChange={handleDimensionNameChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
+                            highlightField={refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.label}
                         />
                         <Input
                             id={`dimension-description-${dimension.id}`}
@@ -266,6 +268,7 @@ match the id with the metadata dimension id dispplayed on the form, add and pass
                             onChange={handleDimensionDescriptionChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                             inline={true}
+                            highlightField={refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.description}
                         />
                         <h3>Quality statement</h3>
                         <Input
@@ -274,6 +277,9 @@ match the id with the metadata dimension id dispplayed on the form, add and pass
                             value={dimension.quality_statement_text ? dimension.quality_statement_text : ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.quality_statement_text
+                            }
                         />
                         <Input
                             id={`dimension-quality-statement-url-${dimension.id}`}
@@ -281,6 +287,9 @@ match the id with the metadata dimension id dispplayed on the form, add and pass
                             value={dimension.quality_statement_url ? dimension.quality_statement_url : ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.quality_statement_url
+                            }
                         />
                         {i < metadata.dimensions.length - 1 && <hr class="margin-bottom--1 element-divider" />}
                     </div>
