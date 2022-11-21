@@ -82,6 +82,9 @@ export default class Input extends Component {
         if (this.props.type === "checkbox") {
             inputClasses += " checkbox__input visually-hidden";
         }
+        if (this.props.highlightField) {
+            inputClasses += " input--changeBackgroundColor";
+        }
         return inputClasses;
     }
 
@@ -91,7 +94,7 @@ export default class Input extends Component {
                 return (
                     <textarea
                         id={this.props.id}
-                        className="input input__textarea"
+                        className={`input input__textarea ${this.props.highlightField ? "input__textarea--changeBackgroundColor" : ""}`}
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
@@ -99,7 +102,6 @@ export default class Input extends Component {
                         autoFocus={this.props.isFocused}
                         placeholder={this.props.inline && this.props.label}
                         value={this.props.value}
-                        // style={{ backgroundColor: this.props.highlightField ? "red" : "" }} ==> It would be better update the .input class
                     />
                 );
             case "clear":
@@ -121,7 +123,6 @@ export default class Input extends Component {
                             min={this.props.min}
                             max={this.props.max}
                             autoComplete={!this.props.allowAutoComplete && "new-password"}
-                            // style={{ backgroundColor: this.props.highlightField ? "red" : "" }} ==> It would be better update the .input class
                         />
                         <span onClick={this.props.onClearValue}>x</span>
                     </span>
