@@ -314,9 +314,7 @@ export class CantabularMetadataController extends Component {
                 if (!_.isEqual(value, base[key])) {
                     if (key === "dimensions") {
                         result[key] = _.isObject(value) && _.isObject(base[key]) ? changes(value, base[key]) : value;
-                        base[key].forEach((dimension, i) => {
-                            result[key][i]["id"] = dimension.id;
-                        });
+                        result[key].map((_, i) => (result[key][i]["id"] = base[key][i].id));
                     } else {
                         result[key] = _.isObject(value) && _.isObject(base[key]) ? changes(value, base[key]) : value;
                     }
