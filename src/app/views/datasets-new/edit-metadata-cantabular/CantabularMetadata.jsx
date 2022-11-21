@@ -274,7 +274,7 @@ const CantabularMetadata = ({
                         <Input
                             id={`dimension-quality-statement-text-${dimension.id}`}
                             label="Text"
-                            value={dimension.quality_statement_text ? dimension.quality_statement_text : ""}
+                            value={dimension.quality_statement_text || ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
                             highlightField={
@@ -284,7 +284,7 @@ const CantabularMetadata = ({
                         <Input
                             id={`dimension-quality-statement-url-${dimension.id}`}
                             label="URL"
-                            value={dimension.quality_statement_url ? dimension.quality_statement_url : ""}
+                            value={dimension.quality_statement_url || ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
                             highlightField={
