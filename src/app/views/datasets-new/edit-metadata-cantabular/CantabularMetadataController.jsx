@@ -1040,6 +1040,7 @@ export class CantabularMetadataController extends Component {
                     refreshCantabularMetadata: false,
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: false,
+                    highlightCantabularMetadataChanges: false,
                 },
             });
             this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
