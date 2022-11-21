@@ -247,7 +247,7 @@ const CantabularMetadata = ({
 
             <h2>Dimensions</h2>
             {metadata.dimensions.map((dimension, i) => {
-                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dimensions.find(
+                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions?.find(
                     updatedDimensionObj => updatedDimensionObj?.id === dimension?.id
                 );
                 return (
