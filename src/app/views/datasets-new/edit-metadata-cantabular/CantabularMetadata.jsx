@@ -170,7 +170,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.title}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.title
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("title")
                 }
             />
 
@@ -227,7 +227,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.summary}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.description
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("description")
                 }
             />
 
@@ -241,13 +241,13 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.unitOfMeasure}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.unit_of_measure
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("unit_of_measure")
                 }
             />
 
             <h2>Dimensions</h2>
             {metadata.dimensions.map((dimension, i) => {
-                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields.dimensions?.find(
+                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.version?.dimensions?.find(
                     updatedDimensionObj => updatedDimensionObj?.id === dimension?.id
                 );
                 return (
@@ -258,7 +258,9 @@ const CantabularMetadata = ({
                             value={dimension.label ? dimension.label : dimension.name}
                             onChange={handleDimensionNameChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
-                            highlightField={refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.label}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.hasOwnProperty("label")
+                            }
                         />
                         <Input
                             id={`dimension-description-${dimension.id}`}
@@ -268,7 +270,10 @@ const CantabularMetadata = ({
                             onChange={handleDimensionDescriptionChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                             inline={true}
-                            highlightField={refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.description}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("description")
+                            }
                         />
                         <h3>Quality statement</h3>
                         <Input
@@ -278,7 +283,8 @@ const CantabularMetadata = ({
                             onChange={handleDimensionNameChange}
                             disabled={true}
                             highlightField={
-                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.quality_statement_text
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("quality_statement_text")
                             }
                         />
                         <Input
@@ -288,7 +294,8 @@ const CantabularMetadata = ({
                             onChange={handleDimensionNameChange}
                             disabled={true}
                             highlightField={
-                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.quality_statement_url
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("quality_statement_url")
                             }
                         />
                         {i < metadata.dimensions.length - 1 && <hr class="margin-bottom--1 element-divider" />}
@@ -305,7 +312,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.keywords}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.keywords
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("keywords")
                 }
             />
 
@@ -376,7 +383,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.contactName}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactName
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("name")
                 }
             />
 
@@ -391,7 +398,7 @@ const CantabularMetadata = ({
                 requiredFieldMessage={!metadata.contactEmail.value ? "Required field" : ""}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactEmail
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("email")
                 }
             />
 
@@ -406,7 +413,7 @@ const CantabularMetadata = ({
                 requiredFieldMessage={!metadata.contactTelephone.value ? "Required field" : ""}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.contactTelephone
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("telephone")
                 }
             />
 

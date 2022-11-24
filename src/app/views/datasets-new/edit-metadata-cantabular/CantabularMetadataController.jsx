@@ -240,72 +240,14 @@ export class CantabularMetadataController extends Component {
         };
         if (!_.isEqual(datasetMetadataCantabularFields, cantabularMetadata)) {
             let cantabularMetadataObjFieldsDiff = this.getObjectDiff(datasetMetadataCantabularFields, cantabularMetadata);
-            this.mapUpdatedFieldsToState(cantabularMetadataObjFieldsDiff);
-            this.setState({
-                refreshCantabularMetadataState: { ...this.state.refreshCantabularMetadataState, showUpdateCantabularMetadataPopout: true },
-            });
-        }
-    };
-
-    mapUpdatedFieldsToState = obj => {
-        let cantabularMetadataFlatFieldList = ["title", "keywords", "unit_of_measure"];
-        if (obj?.dataset?.description) {
             this.setState({
                 refreshCantabularMetadataState: {
                     ...this.state.refreshCantabularMetadataState,
-                    cantabularMetadataUpdatedFields: {
-                        ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
-                        description: true,
-                    },
+                    showUpdateCantabularMetadataPopout: true,
+                    cantabularMetadataUpdatedFields: { ...cantabularMetadataObjFieldsDiff },
                 },
             });
         }
-        Object.keys(obj).forEach(key => {
-            if (cantabularMetadataFlatFieldList.includes(key)) {
-                this.setState({
-                    refreshCantabularMetadataState: {
-                        ...this.state.refreshCantabularMetadataState,
-                        cantabularMetadataUpdatedFields: {
-                            ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
-                            [key]: true,
-                        },
-                    },
-                });
-            } else if (key === "contacts") {
-                Object.keys(obj[key][0]).forEach(contact => {
-                    let contactDetails = `contact${contact.charAt(0).toUpperCase() + contact.slice(1)}`;
-                    this.setState({
-                        refreshCantabularMetadataState: {
-                            ...this.state.refreshCantabularMetadataState,
-                            cantabularMetadataUpdatedFields: {
-                                ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
-                                [contactDetails]: true,
-                            },
-                        },
-                    });
-                });
-            } else if (key === "dimensions") {
-                obj[key].forEach(dimensionObj => {
-                    for (const key in dimensionObj) {
-                        if (dimensionObj.hasOwnProperty(key) && key !== "id") {
-                            dimensionObj[key] = true;
-                        }
-                    }
-                });
-                this.setState({
-                    refreshCantabularMetadataState: {
-                        ...this.state.refreshCantabularMetadataState,
-                        cantabularMetadataUpdatedFields: {
-                            ...this.state.refreshCantabularMetadataState.cantabularMetadataUpdatedFields,
-                            dimensions: [...obj[key]],
-                        },
-                    },
-                });
-            }
-            if (typeof obj[key] === "object" && obj[key] !== null) {
-                this.mapUpdatedFieldsToState(obj[key]);
-            }
-        });
     };
 
     getObjectDiff = (object, base) => {

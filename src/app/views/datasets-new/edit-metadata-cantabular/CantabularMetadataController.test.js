@@ -988,3 +988,103 @@ describe("Calling getTopics", () => {
         expect(log.error).toHaveBeenCalledTimes(1);
     });
 });
+
+describe("Calling getObjectDiff", () => {
+    const testObj1 = {
+        dataset: {
+            title: "Legal partnership status - test",
+            description: "test",
+            keywords: ["ltla", "legal_partnership_status"],
+            unit_of_measure: "Person",
+            contacts: [
+                {
+                    name: "Michael Roskams",
+                    email: "Census.Customer.Services@ons.gov.uk - test",
+                    telephone: "+44 3000 682750",
+                },
+            ],
+        },
+        version: {
+            dimensions: [
+                {
+                    id: "ltla",
+                    name: "ltla",
+                    description:
+                        "As of 2022 there are 309 lower tier local authorities in England, comprising non-metropolitan districts (181), unitary authorities (59), metropolitan districts (36) and London boroughs (33, including City of London). There are 22 lower tier local authorities in Wales, comprising 22 unitary authorities",
+                    label: "Lower Tier Local Authorities",
+                    quality_statement_text: "test-quality_statement_text",
+                    quality_statement_url: "test-quality_statement_url",
+                },
+                {
+                    id: "legal_partnership_status",
+                    name: "legal_partnership_status",
+                    description:
+                        'Classifies a person according to their legal marital or registered civil partnership status on Census Day 21 March 2021.\n\nIt is the same as the 2011 census variable "Marital status" but has been updated for Census 2021 to reflect the revised Civil Partnership Act that came into force in 2019.\n\nIn Census 2021 results, "single" refers only to someone who has never been married or in a registered civil partnership.',
+                    label: "Marital and civil partnership status (12 categories)",
+                    quality_statement_text: "This really won't do at all. Very Poor. See me.",
+                    quality_statement_url: "http://example.com",
+                },
+            ],
+        },
+    };
+
+    const testObj2 = {
+        dataset: {
+            title: "Legal partnership status",
+            description:
+                "This dataset provides Census 2021 estimates that classify usual residents in England and Wales by their legal partnership status. The estimates are at Census Day, 21 March 2021.",
+            keywords: ["ltla", "legal_partnership_status"],
+            unit_of_measure: "Person",
+            contacts: [
+                {
+                    name: "Michael Roskams",
+                    email: "Census.Customer.Services@ons.gov.uk",
+                    telephone: "+44 3000 682750",
+                },
+            ],
+        },
+        version: {
+            dimensions: [
+                {
+                    id: "ltla",
+                    name: "ltla",
+                    description:
+                        "As of 2022 there are 309 lower tier local authorities in England, comprising non-metropolitan districts (181), unitary authorities (59), metropolitan districts (36) and London boroughs (33, including City of London). There are 22 lower tier local authorities in Wales, comprising 22 unitary authorities",
+                    label: "Lower Tier Local Authorities",
+                    quality_statement_text: "",
+                    quality_statement_url: "",
+                },
+                {
+                    id: "legal_partnership_status",
+                    name: "legal_partnership_status",
+                    description:
+                        'Classifies a person according to their legal marital or registered civil partnership status on Census Day 21 March 2021.\n\nIt is the same as the 2011 census variable "Marital status" but has been updated for Census 2021 to reflect the revised Civil Partnership Act that came into force in 2019.\n\nIn Census 2021 results, "single" refers only to someone who has never been married or in a registered civil partnership.',
+                    label: "Marital and civil partnership status (12 categories)",
+                    quality_statement_text: "This really won't do at all. Very Poor. See me.",
+                    quality_statement_url: "http://example.com",
+                },
+            ],
+        },
+    };
+    const cantabularMetadataObjFieldsDiff = {
+        dataset: {
+            description: "test",
+            title: "Legal partnership status - test",
+            contacts: [{ email: "Census.Customer.Services@ons.gov.uk - test" }],
+        },
+        version: {
+            dimensions: [
+                {
+                    quality_statement_text: "test-quality_statement_text",
+                    quality_statement_url: "test-quality_statement_url",
+                    id: "ltla",
+                },
+            ],
+        },
+    };
+
+    it("returns the differnces between 2 objects", () => {
+        const returnedObject = component.instance().getObjectDiff(testObj1, testObj2);
+        expect(returnedObject).toMatchObject(cantabularMetadataObjFieldsDiff);
+    });
+});
