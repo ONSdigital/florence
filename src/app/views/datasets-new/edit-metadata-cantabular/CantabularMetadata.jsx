@@ -170,7 +170,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.title}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("title")
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("title")
                 }
             />
 
@@ -227,7 +227,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.summary}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("description")
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("description")
                 }
             />
 
@@ -241,7 +241,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.unitOfMeasure}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("unit_of_measure")
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("unit_of_measure")
                 }
             />
 
@@ -312,7 +312,7 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.keywords}
                 highlightField={
                     refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
-                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset.hasOwnProperty("keywords")
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("keywords")
                 }
             />
 
