@@ -10,6 +10,7 @@ import RadioGroup from "../../../components/radio-buttons/RadioGroup";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 import SelectTags from "../../../components/select-tags/Select-tags";
+import Popouts from "../../../components/popouts/Popouts";
 
 const propTypes = {
     metadata: PropTypes.shape({
@@ -53,16 +54,11 @@ const propTypes = {
         title: PropTypes.bool,
         summary: PropTypes.bool,
         keywords: PropTypes.bool,
-        nationalStatistic: PropTypes.bool,
-        licence: PropTypes.bool,
         contactName: PropTypes.bool,
         contactEmail: PropTypes.bool,
         contactTelephone: PropTypes.bool,
-        relatedDatasets: PropTypes.bool,
-        relatedPublications: PropTypes.bool,
         unitOfMeasure: PropTypes.bool,
         dimensions: PropTypes.bool,
-        qmi: PropTypes.bool,
     }).isRequired,
     handleBackButton: PropTypes.func.isRequired,
     handleDateInputChange: PropTypes.func.isRequired,
@@ -91,6 +87,10 @@ const propTypes = {
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
     topicsErr: PropTypes.string,
     handleCensusContentChange: PropTypes.func.isRequired,
+    refreshCantabularMetadataState: PropTypes.object.isRequired,
+    handleCantabularMetadataUpdate: PropTypes.func.isRequired,
+    hideUpdateCantabularMetadataPopout: PropTypes.func.isRequired,
+    handleRevertChangesButton: PropTypes.func.isRequired,
 };
 
 const CantabularMetadata = ({
@@ -123,6 +123,10 @@ const CantabularMetadata = ({
     handleSecondaryTopicTagsFieldChange,
     topicsErr,
     handleCensusContentChange,
+    refreshCantabularMetadataState,
+    handleCantabularMetadataUpdate,
+    hideUpdateCantabularMetadataPopout,
+    handleRevertChangesButton,
 }) => {
     return (
         <div className="grid__col-6 margin-bottom--8">
@@ -143,8 +147,32 @@ const CantabularMetadata = ({
                 <span className="font-weight--600">Version</span>: {metadata.version ? metadata.version : "loading..."}
             </p>
 
+            {refreshCantabularMetadataState.showUpdateCantabularMetadataPopout && (
+                <Popouts
+                    popouts={[
+                        {
+                            id: "updateCantabularMetadataPopout",
+                            title: "This dataset has new changes. Would you like to import the latest version ?",
+                            buttons: [
+                                { text: "View changes first", style: "primary", onClick: handleCantabularMetadataUpdate },
+                                { text: "No", style: "invert-primary", onClick: hideUpdateCantabularMetadataPopout },
+                            ],
+                        },
+                    ]}
+                />
+            )}
+
             <h2>Title</h2>
-            <Input id="title" value={metadata.title} onChange={handleStringInputChange} disabled={disableForm || fieldsReturned.title} />
+            <Input
+                id="title"
+                value={metadata.title}
+                onChange={handleStringInputChange}
+                disabled={disableForm || fieldsReturned.title}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("title")
+                }
+            />
 
             <h2 id="release-dates-heading">Release dates</h2>
             <Input
@@ -197,6 +225,10 @@ const CantabularMetadata = ({
                 value={metadata.summary}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.summary}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("description")
+                }
             />
 
             <Input
@@ -207,10 +239,17 @@ const CantabularMetadata = ({
                 value={metadata.unitOfMeasure}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.unitOfMeasure}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("unit_of_measure")
+                }
             />
 
             <h2>Dimensions</h2>
             {metadata.dimensions.map((dimension, i) => {
+                let getUpdatedDimensionObj = refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.version?.dimensions?.find(
+                    updatedDimensionObj => updatedDimensionObj?.id === dimension?.id
+                );
                 return (
                     <div key={`dimension-${dimension.id}`}>
                         <Input
@@ -219,6 +258,9 @@ const CantabularMetadata = ({
                             value={dimension.label ? dimension.label : dimension.name}
                             onChange={handleDimensionNameChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges && getUpdatedDimensionObj?.hasOwnProperty("label")
+                            }
                         />
                         <Input
                             id={`dimension-description-${dimension.id}`}
@@ -228,21 +270,33 @@ const CantabularMetadata = ({
                             onChange={handleDimensionDescriptionChange}
                             disabled={disableForm || versionIsPublished || fieldsReturned.dimensions}
                             inline={true}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("description")
+                            }
                         />
                         <h3>Quality statement</h3>
                         <Input
                             id={`dimension-quality-statement-text-${dimension.id}`}
                             label="Text"
-                            value={dimension.quality_statement_text ? dimension.quality_statement_text : ""}
+                            value={dimension.quality_statement_text || ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("quality_statement_text")
+                            }
                         />
                         <Input
                             id={`dimension-quality-statement-url-${dimension.id}`}
                             label="URL"
-                            value={dimension.quality_statement_url ? dimension.quality_statement_url : ""}
+                            value={dimension.quality_statement_url || ""}
                             onChange={handleDimensionNameChange}
                             disabled={true}
+                            highlightField={
+                                refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                                getUpdatedDimensionObj?.hasOwnProperty("quality_statement_url")
+                            }
                         />
                         {i < metadata.dimensions.length - 1 && <hr class="margin-bottom--1 element-divider" />}
                     </div>
@@ -256,15 +310,13 @@ const CantabularMetadata = ({
                 value={metadata.keywords}
                 onChange={handleStringInputChange}
                 disabled={disableForm || fieldsReturned.keywords}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.hasOwnProperty("keywords")
+                }
             />
 
-            <Input
-                id="licence"
-                label="Licence"
-                onChange={handleStringInputChange}
-                value={metadata.licence}
-                disabled={disableForm || fieldsReturned.licence}
-            />
+            <Input id="licence" label="Licence" onChange={handleStringInputChange} value={metadata.licence} disabled={disableForm} />
 
             <h3>Usage notes</h3>
             <div className="margin-bottom--1">
@@ -297,7 +349,7 @@ const CantabularMetadata = ({
                 onChange={handleNationalStatisticChange}
                 inline={true}
                 legend={"National Statistic"}
-                disabled={disableForm || fieldsReturned.nationalStatistic}
+                disabled={disableForm}
             />
 
             <RadioGroup
@@ -329,6 +381,10 @@ const CantabularMetadata = ({
                 onChange={handleStringInputChange}
                 value={metadata.contactName}
                 disabled={disableForm || fieldsReturned.contactName}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("name")
+                }
             />
 
             <Input
@@ -340,6 +396,10 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.contactEmail}
                 error={metadata.contactEmail.error}
                 requiredFieldMessage={!metadata.contactEmail.value ? "Required field" : ""}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("email")
+                }
             />
 
             <Input
@@ -351,6 +411,10 @@ const CantabularMetadata = ({
                 disabled={disableForm || fieldsReturned.contactTelephone}
                 error={metadata.contactTelephone.error}
                 requiredFieldMessage={!metadata.contactTelephone.value ? "Required field" : ""}
+                highlightField={
+                    refreshCantabularMetadataState.highlightCantabularMetadataChanges &&
+                    refreshCantabularMetadataState.cantabularMetadataUpdatedFields?.dataset?.contacts?.[0].hasOwnProperty("telephone")
+                }
             />
 
             <h2>Related links</h2>
@@ -362,7 +426,7 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.relatedDatasets}
+                disableActions={disableForm}
             />
 
             <h3 className="margin-top--1">Bulletins, articles and compendia</h3>
@@ -373,10 +437,10 @@ const CantabularMetadata = ({
                 handleAddClick={handleSimpleEditableListAdd}
                 handleEditClick={handleSimpleEditableListEdit}
                 handleDeleteClick={handleSimpleEditableListDelete}
-                disableActions={disableForm || fieldsReturned.relatedPublications}
+                disableActions={disableForm}
             />
             <h3 className="margin-top--1">Quality and methodology information</h3>
-            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm || fieldsReturned.qmi} />
+            <Input id="qmi" label="QMI URL" onChange={handleStringInputChange} value={metadata.qmi} disabled={disableForm} />
             <h3>Methodologies</h3>
             <SimpleEditableList
                 addText={"Add a methodology"}
@@ -438,6 +502,12 @@ const CantabularMetadata = ({
                 <button type="button" className="btn btn--primary margin-right--1" onClick={handleSave} disabled={disableForm}>
                     Save
                 </button>
+                {refreshCantabularMetadataState.showRevertChangesButton && (
+                    <button disabled={disableForm} type="button" className="btn btn--warning margin-right--1" onClick={handleRevertChangesButton}>
+                        Revert to original
+                    </button>
+                )}
+
                 <SaveAndReviewActions
                     disabled={disableForm}
                     reviewState={collectionState}
@@ -447,7 +517,7 @@ const CantabularMetadata = ({
                     onSubmit={handleSubmitForReviewClick}
                     onApprove={handleMarkAsReviewedClick}
                 />
-                <button disabled={disableCancel} type="button" className="btn btn--primary margin-right--1" onClick={handleRedirectOnReject}>
+                <button disabled={disableCancel} type="button" className="btn btn--invert-primary margin-right--1" onClick={handleRedirectOnReject}>
                     Cancel
                 </button>
                 {allowPreview ? (

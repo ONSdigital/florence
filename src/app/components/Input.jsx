@@ -26,6 +26,7 @@ const propTypes = {
     disableShowPasswordText: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool,
     requiredFieldMessage: PropTypes.string,
+    highlightField: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -81,6 +82,9 @@ export default class Input extends Component {
         if (this.props.type === "checkbox") {
             inputClasses += " checkbox__input visually-hidden";
         }
+        if (this.props.highlightField) {
+            inputClasses += " input--changeBackgroundColor";
+        }
         return inputClasses;
     }
 
@@ -90,7 +94,7 @@ export default class Input extends Component {
                 return (
                     <textarea
                         id={this.props.id}
-                        className="input input__textarea"
+                        className={`input input__textarea${this.props.highlightField ? " input__textarea--changeBackgroundColor" : ""}`}
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}

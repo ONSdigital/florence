@@ -24,6 +24,13 @@
 
     }
 
+    &--changeBackgroundColor {
+        &:disabled {
+            background-color: $light-pink !important;
+        }
+
+    }
+
     &--show-hide {
         padding-right: $gutter * 3;
     }
@@ -31,6 +38,13 @@
     &__textarea {
         height: auto;
         min-height: ($lineheight * 5);
+
+        &--changeBackgroundColor {
+            &:disabled {
+                background-color: $light-pink !important;
+            }
+
+        }
     }
 
 }
@@ -125,10 +139,10 @@
         padding: ($lineheight * 0.5) $gutter;
         margin-bottom: $lineheight;
 
-    &__label {
-        font-weight: 600;
+        &__label {
+            font-weight: 600;
+        }
     }
-  }
 }
 
 .radio {
@@ -223,16 +237,16 @@
             cursor: default;
         }
 
-        &:disabled + label:before {
+        &:disabled+label:before {
             border-color: $nappa;
             background-color: $quill-grey;
         }
 
-        &:checked + label:after {
+        &:checked+label:after {
             opacity: 1;
         }
 
-        + label {
+        +label {
             &:before {
                 content: "";
                 border: 3px solid $scarpa-flow;
