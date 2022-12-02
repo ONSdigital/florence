@@ -107,37 +107,53 @@ export default function InteractivesForm(props) {
     }, [interactive]);
 
     useEffect(() => {
+        function setInteractiveStatus() {
+            const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
+            const isReviewed = interactiveFromCollection && interactiveFromCollection.state === "Reviewed";
+            if (editMode && isReviewed) {
+                collections
+                    .setInteractiveStatusToComplete(collectionId, interactive.id)
+                    .then(() => {
+                        browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                    })
+                    .catch(e => {
+                        notifications.add({
+                            type: "warning",
+                            message: e.body ? e.body.message : e.message,
+                            autoDismiss: 5000,
+                        });
+                    });
+            } else {
+                collections
+                    .addInteractive(collectionId, interactive.id)
+                    .then(() => props.router.push(`${rootPath}/collections/${collectionId}`))
+                    .catch(e => {
+                        notifications.add({
+                            type: "warning",
+                            message: e.body ? e.body.message : e.message,
+                            autoDismiss: 5000,
+                        });
+                    });
+            }
+        }
         if (successMessage.success) {
             if (successMessage.type === "update") {
                 props.router.push(`${rootPath}/collections/${collectionId}`);
             }
             if (interactive.id) {
-                const interactiveFromCollection = collection.interactives.find(elements => elements.id === interactive.id);
-                const isReviewed = interactiveFromCollection && interactiveFromCollection.state === "Reviewed";
-                if (editMode && isReviewed) {
-                    collections
-                        .setInteractiveStatusToComplete(collectionId, interactive.id)
-                        .then(() => {
-                            browserHistory.push(`${rootPath}/interactives?collection=${collectionId}`);
+                // if collection is not set, then fetch and evaluate
+                if (!collection.interactive) {
+                    const fetchCollection = async () => {
+                        return await collections.get(collectionId);
+                    };
+                    fetchCollection()
+                        .then(data => {
+                            setCollection(data);
+                            setInteractiveStatus();
                         })
-                        .catch(e => {
-                            notifications.add({
-                                type: "warning",
-                                message: e.body ? e.body.message : e.message,
-                                autoDismiss: 5000,
-                            });
-                        });
+                        .catch(console.error);
                 } else {
-                    collections
-                        .addInteractive(collectionId, interactive.id)
-                        .then(() => props.router.push(`${rootPath}/collections/${collectionId}`))
-                        .catch(e => {
-                            notifications.add({
-                                type: "warning",
-                                message: e.body ? e.body.message : e.message,
-                                autoDismiss: 5000,
-                            });
-                        });
+                    setInteractiveStatus();
                 }
             }
         }
