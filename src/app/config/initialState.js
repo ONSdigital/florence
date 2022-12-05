@@ -12,6 +12,7 @@ export const initialState = {
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableNewInteractives: false,
+        enableCantabularJourney: false,
     },
     global: {
         workingOn: null,
@@ -63,5 +64,9 @@ export const initialState = {
     interactives: {
         all: [],
     },
-    previewLanguage: "en",
+    policy: {
+        data: null,
+        loading: false,
+        updating: false,
+    },
 };

@@ -67,7 +67,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                 }
 
                 if (status === 401) {
-                    if (config.enableNewInteractives) {
+                    if (config.enableNewSignIn) {
                         // Attempt to get a new refresh the access_token
                         const authState = getAuthState();
                         const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));

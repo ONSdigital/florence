@@ -1,3 +1,24 @@
+// Session Management
+// Warning: for testing only
+function __TEST_TIMERS(name, match, i) {
+    const minutes = 60 * 1000;
+    if (name === match) {
+        const now = new Date();
+        // interval will be less than a minute
+        const interval = now.setTime(now.getTime() + -57 * minutes);
+        console.debug("[TEST] Updating " + name + " interval of " + new Date(interval));
+        return new Date(interval);
+    }
+    return i;
+}
+
+function timeOffsets() {
+    return {
+        passiveRenewal: 300000,
+        invasiveRenewal: 120000,
+    };
+}
+
 // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
 // used to get a new session token. The session token is what gives the user access to the system and has a very
 // short life. If the user is active then we extend their session. The refresh token has a long life but also
@@ -5,56 +26,63 @@
 // need to sign back in manually
 function setSessionExpiryTime(sessionExpiryTime, refreshExpiryTime) {
     if (sessionExpiryTime != null) {
-        sessionStorage.setItem("session_expiry_time", sessionExpiryTime);
+        updateAuthState({ session_expiry_time: sessionExpiryTime });
     }
     if (refreshExpiryTime != null) {
-        sessionStorage.setItem("refresh_expiry_time", refreshExpiryTime);
+        updateAuthState({ refresh_expiry_time: refreshExpiryTime });
     }
     initialiseSessionExpiryTimers();
 }
 
 function removeTimers() {
-    sessionStorage.removeItem("session_expiry_time");
-    sessionStorage.removeItem("refresh_expiry_time");
+    removeAuthItem("session_expiry_time");
+    removeAuthItem("refresh_expiry_time");
+
     this.removeInteractionMonitoring();
     this.removeWarnings();
-    for (const [key, value] of Object.entries(Florence.sessionManagement.timers)) {
+    for (const [key, value] of Object.entries(Florence.sessionManagement().timers)) {
         clearTimeout(this.timers[key]);
     }
     this.timers = {};
 }
 
 function initialiseSessionExpiryTimers() {
-    const sessionExpiryTime = sessionStorage.getItem("session_expiry_time");
-    const refreshExpiryTime = sessionStorage.getItem("refresh_expiry_time");
+    const authState = getAuthState();
+    let sessionExpiryTime;
+    let refreshExpiryTime;
+    if (Florence.globalVars.config.enableNewSignIn) {
+        sessionExpiryTime = new Date(authState.session_expiry_time);
+        refreshExpiryTime = new Date(authState.refresh_expiry_time);
+    } else {
+        sessionExpiryTime = new Date(authState.session_expiry_time);
+        refreshExpiryTime = new Date(authState.refresh_expiry_time); // TODO
+    }
+    
     if (sessionExpiryTime != null) {
         // Timer to start monitoring user interaction to add additional time to their session
-        startExpiryTimer("sessionTimerPassive", sessionExpiryTime, 300000, monitorInteraction);
-        // Timer to tell the user their session is about to expire unless they interact with the page
-        startExpiryTimer("sessionTimerInvasive", sessionExpiryTime, 120000, warnSessionSoonExpire);
+        startExpiryTimer("sessionTimerPassive", sessionExpiryTime, timeOffsets().passiveRenewal, monitorInteraction);
     }
     if (refreshExpiryTime != null) {
         // Timer to start monitoring user interaction to add a final extra amount of time to their session
-        startExpiryTimer("refreshTimerPassive", refreshExpiryTime, 300000, monitorInteraction);
+        startExpiryTimer("refreshTimerPassive", refreshExpiryTime, timeOffsets().passiveRenewal, monitorInteraction);
         // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-        startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, 120000, warnRefreshSoonExpire);
+        startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, timeOffsets().invasiveRenewal, warnRefreshSoonExpire);
     }
 }
 
 function startExpiryTimer(name, expiryTime, offsetInMilliseconds, callback) {
-    if (expiryTime != null) {
-        // Convert API time to usable JS Date object
-        const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
-        const expireTimeInUTCDate = new Date(expireTimeInUTCString);
+    if (expiryTime) {
         // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
         const now = new Date();
         const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
         const nowInUTC = new Date(nowUTCInMS);
         // Get the time difference between now and the expiry time minus the timer offset
-        const timerInterval = expireTimeInUTCDate - offsetInMilliseconds - nowInUTC;
+        let timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
+
         if (Florence.sessionManagement.timers[name] != null) {
             clearTimeout(Florence.sessionManagement.timers[name]);
         }
+        console.debug("[FLORENCE] Interval for " + name + " set to " + timerInterval);
         Florence.sessionManagement.timers[name] = setTimeout(callback, timerInterval);
     }
 }
@@ -71,17 +99,7 @@ function removeInteractionMonitoring() {
     });
 }
 
-function warnSessionSoonExpire() {
-    removeInteractionMonitoring();
-    sweetAlert({
-        type: "warning",
-        title: "Your session will end in 1 minute",
-        text: "This is because you have been inactive. If you want to continue using Florence you must stay signed in. If not, you will be signed out and will need to sign in again.",
-        confirmButtonText: "Stay signed in"
-    }, function () {
-        refreshSession();
-    });
-}
+
 
 function warnRefreshSoonExpire() {
     removeInteractionMonitoring();
@@ -115,14 +133,110 @@ function refreshSession() {
             confirmButtonText: "Ok"
         })
     };
-    fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}}).then(response => {
-        response = response.json()
-        if (response.expirationTime != null) {
-            setSessionExpiryTime(response.expirationTime);
+    if (Florence.globalVars.config.enableNewSignIn) {
+        // If enableNewSignIn then update the session timers
+        fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}}).then(response => {
+            response = response.json()
+            if (response.expirationTime != null) {
+                const authState = getAuthState();
+                const refresh_expiry_time = new Date(authState.refresh_expiry_time);
+                const expirationTime = convertUTCToJSDate(res.expirationTime);
+                setSessionExpiryTime(expirationTime, refresh_expiry_time);
+            } else {
+                renewError();
+            }
+        }).catch(error => {
+            renewError(error);
+        });
+    } else {
+        // console.debug("[FLORENCE] Renewing session with default expiry timers");
+        // const expireTimes = createDefaultExpireTimes(12);
+        // setSessionExpiryTime(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
+    }
+}
+
+function createDefaultExpireTimes(hours) {
+    // TODO this is used up until enableNewSignIn goes live then remove this
+    const now = new Date();
+    const expiry = now.setHours(now.getHours() + hours);
+    return {
+        session_expiry_time: new Date(expiry),
+        refresh_expiry_time: new Date(expiry),
+    };
+}
+
+function convertUTCToJSDate(expiryTime) {
+    // Convert API time to usable JS Date object
+    if (expiryTime) {
+        const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
+        return new Date(expireTimeInUTCString);
+    }
+    return null;
+}
+
+function renewSession() {
+    const res = fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}})
+        .then(function(res) {
+            return res.json();
+        })
+        .catch(function(err) {
+            console.error(err);
+        });
+        return res;
+}
+
+/**
+ *  @param sessionExpiryTime must be in js date format (not UTC from server)
+ *  @returns true if session has expired
+ *  */
+function isSessionExpired(sessionExpiryTime, ) {
+    const now = new Date();
+    let nowInUTC;
+    if (!Florence.globalVars.config.enableNewSignIn) {
+        nowInUTC = now;
+    } else {
+        const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
+        nowInUTC = new Date(nowUTCInMS);
+    }
+    // Get the time difference between now and the expiry time minus the timer offset
+    const timerInterval = new Date(sessionExpiryTime) - nowInUTC;
+    let diffInSeconds = Math.round(timerInterval / 1000);
+    if (isNaN(diffInSeconds)) throw new Error("[FLORENCE] encounted an error checking time interval: diffInSeconds is NaN");
+    if (!diffInSeconds) throw new Error("[FLORENCE] encounted an error checking time interval, interval is undefined");
+    if (diffInSeconds <= 0) {
+        return true;
+    }
+    return false;
+}
+
+function initialiseSessionOrUpdateTimers() {
+    const authState = getAuthState();
+    const session_expiry_time = authState.session_expiry_time;
+    const refresh_expiry_time = new Date(authState.refresh_expiry_time);
+    if (isSessionExpired(session_expiry_time)) {
+        if (Florence.globalVars.config.enableNewSignIn) {
+            console.debug("[FLORENCE] Timers / enableNewSignIn: requesting a new access_token");
+            renewSession()
+                .then(res => {
+                    if (res) {
+                        console.debug("[FLORENCE] Updating access_token & session timer: ", res)
+                        // update the authState, start the session timer with the next session response value
+                        // & restart the refresh timer with the existing refresh value.
+                        const expirationTime = convertUTCToJSDate(res.expirationTime);
+                        setSessionExpiryTime(expirationTime, refresh_expiry_time);
+                    }
+                })
+                .catch(err => console.error("[FLORENCE]: ", err));
         } else {
-            renewError();
+            console.debug("[FLORENCE] Timers: extending session & refresh timers");
+            // If we are not behind the enableNewSignIn then just extend the session & refresh for 12 hours
+            const expireTimes = createDefaultExpireTimes(12);
+            setSessionExpiryTime(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
         }
-    }).catch(error => {
-        renewError(error);
-    });
+    } else {
+        console.debug("[FLORENCE] Timers: maintaining existing session & restarting timers");
+        // The user has refreshed the page but the session is not expired, so just restart the timers
+        // for both refresh & session.
+        initialiseSessionExpiryTimers();
+    }
 }

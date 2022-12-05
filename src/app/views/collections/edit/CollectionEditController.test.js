@@ -47,6 +47,7 @@ const defaultProps = {
     publishType: "manual",
     isNewSignIn: false,
     isEnablePermissionsAPI: false,
+    policy: null,
 };
 
 const propsWithScheduleDetails = {
@@ -57,6 +58,12 @@ const propsWithScheduleDetails = {
 
 const propsWithTeams = {
     ...defaultProps,
+    teams: [{ id: "2", name: "Team 2" }],
+};
+
+const propsWithNewSigninAndWithTeams = {
+    ...defaultProps,
+    isNewSignIn: true,
     teams: [{ id: "2", name: "Team 2" }],
 };
 
@@ -305,6 +312,33 @@ describe("Data sent as request body on save", () => {
         expect(request.teams).toEqual(expect.arrayContaining([addedTeam.name]));
     });
 
+    it("teams contains the IDs that an isNewSignin-enabled API expects", () => {
+        const componentWithTeams = shallow(<CollectionEditController {...propsWithNewSigninAndWithTeams} allTeams={fetchedAllTeams} />);
+        const addedTeam = { id: "10", name: "Team Ten" };
+        componentWithTeams.instance().handleAddTeam(addedTeam.id);
+
+        const state = {
+            isSavingEdits: true,
+            isFetchingAllTeams: false,
+            name: { value: "Test collection Boo", errorMsg: "" },
+            allTeams: [
+                { id: "1", name: "Team 1", members: [Array] },
+                { id: "2", name: "Team 2", members: [] },
+                { id: "3", name: "Team 3", members: [Array] },
+            ],
+            updatedTeamsList: [{ id: "10", name: "Team Ten", members: [Array] }],
+            addedTeams: new Map([addedTeam]),
+            removedTeams: new Map([{ id: "1", name: "Team 1", members: [Array] }]),
+            publishType: "manual",
+            publishDate: { value: "", errorMsg: "" },
+            publishTime: { value: "09:30", errorMsg: "" },
+        };
+
+        const request = componentWithTeams.instance().mapEditsToAPIRequestBody(state);
+
+        expect(request.teams).toEqual(expect.arrayContaining([addedTeam.id]));
+    });
+
     it("publish date matches the value the API expects", () => {
         scheduledComponent.setState({
             publishDate: {
@@ -480,6 +514,9 @@ describe("The mapPropsToState function", () => {
                 enablePermissionsAPI: false,
                 enableNewSignIn: false,
             },
+            policy: {
+                data: null,
+            },
         };
         const expectProps = {
             publishType: "scheduled",
@@ -487,6 +524,7 @@ describe("The mapPropsToState function", () => {
             teams: ["Team 2", "Team 3"],
             isEnablePermissionsAPI: false,
             isNewSignIn: false,
+            policy: null,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });
@@ -504,6 +542,13 @@ describe("The mapPropsToState function", () => {
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
                 ],
+            },
+            config: {
+                enablePermissionsAPI: false,
+                enableNewSignIn: false,
+            },
+            policy: {
+                data: null,
             },
         };
         const expectProps = {

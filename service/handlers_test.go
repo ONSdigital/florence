@@ -3,12 +3,13 @@ package service
 import (
 	"bytes"
 	"errors"
-	"github.com/gorilla/mux"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"github.com/gorilla/mux"
 
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
@@ -214,11 +215,12 @@ func TestIndexFile(t *testing.T) {
 	Convey("Environment variables are set", t, func() {
 		cfg := &config.Config{
 			SharedConfig: config.SharedConfig{
-				EnableDatasetImport:   true,
-				EnableNewSignIn:       true,
-				EnableNewUpload:       true,
-				EnableNewInteractives: true,
-				EnablePermissionsAPI:  true,
+				EnableDatasetImport:     true,
+				EnableNewSignIn:         true,
+				EnableNewUpload:         true,
+				EnableNewInteractives:   true,
+				EnablePermissionsAPI:    true,
+				EnableCantabularJourney: true,
 			},
 		}
 		getAsset = func(path string) ([]byte, error) {
@@ -237,7 +239,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enableNewInteractives":true,"enablePermissionsAPI":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enableNewInteractives":true,"enablePermissionsAPI":true,"enableCantabularJourney":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -266,7 +268,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
 
 		})
 
@@ -277,7 +279,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
 		})
 
 	})

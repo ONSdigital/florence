@@ -163,6 +163,11 @@ export default class user {
         return http.delete("/tokens/self", true, true);
     }
 
+    // This is a temporary fix for 925: Login fails after going from new login to old login
+    static deleteCookies() {
+        return http.delete("/cookies");
+    }
+
     static getOldUserType(user) {
         // TAKEN FROM OLD FLORENCE
         if (user.admin) {
@@ -202,10 +207,20 @@ export default class user {
         function clearCookies() {
             const accessTokenCookieRemoved = cookies.remove("access_token");
             if (!accessTokenCookieRemoved) {
+                if (!config.enableNewSignIn) {
+                    user.deleteCookies()
+                        .then(function () {
+                            console.debug("[FLORENCE] Deleted HTTP Cookies");
+                        })
+                        .catch(err => console.error(err));
+                }
                 console.warn(`Error trying to remove 'access_token' cookie`);
             }
             if (cookies.get("collection")) {
                 cookies.remove("collection");
+            }
+            if (cookies.get("id_token")) {
+                cookies.remove("id_token");
             }
             removeAuthState();
             store.dispatch(userLoggedOut());

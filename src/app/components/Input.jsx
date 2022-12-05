@@ -25,6 +25,8 @@ const propTypes = {
     placeholder: PropTypes.string,
     disableShowPasswordText: PropTypes.bool,
     reverseLabelOrder: PropTypes.bool,
+    requiredFieldMessage: PropTypes.string,
+    highlightField: PropTypes.bool,
 };
 
 const defaultProps = {
@@ -80,6 +82,9 @@ export default class Input extends Component {
         if (this.props.type === "checkbox") {
             inputClasses += " checkbox__input visually-hidden";
         }
+        if (this.props.highlightField) {
+            inputClasses += " input--changeBackgroundColor";
+        }
         return inputClasses;
     }
 
@@ -89,7 +94,7 @@ export default class Input extends Component {
                 return (
                     <textarea
                         id={this.props.id}
-                        className="input input__textarea"
+                        className={`input input__textarea${this.props.highlightField ? " input__textarea--changeBackgroundColor" : ""}`}
                         name={this.props.name || this.props.id}
                         disabled={this.props.disabled}
                         onChange={this.props.onChange}
@@ -169,6 +174,12 @@ export default class Input extends Component {
                     </div>
                 )}
                 {this.props.helpMessage && <div className="help-msg">{this.props.helpMessage}</div>}
+                {this.props.requiredFieldMessage && !this.props.error && (
+                    <div className="help-msg">
+                        <span class="required-field">*</span>
+                        {this.props.requiredFieldMessage}
+                    </div>
+                )}
                 {this.props.fileError && (
                     <div id={`input-error-${this.props.id}`} data-testid={this.props.id} className="error-msg" role="alert">
                         {this.props.fileError}

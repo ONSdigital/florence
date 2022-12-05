@@ -141,7 +141,7 @@ export const updateGroupMembersRequest = (id, body) => dispatch => {
     teams
         .updateGroupMembers(id, body)
         .then(response => {
-            dispatch(actions.updateGroupMembersSuccess(response));
+            dispatch(actions.updateGroupMembersSuccess(response.users));
         })
         .catch(error => {
             if (error) {

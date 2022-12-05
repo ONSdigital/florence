@@ -5,7 +5,6 @@ import PropTypes from "prop-types";
 import dateFormat from "dateformat";
 import CollectionEdit from "./CollectionEdit";
 import url from "../../../utilities/url";
-import teams from "../../../utilities/api-clients/teams";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
 import {
@@ -13,15 +12,16 @@ import {
     loadCollectionsSuccess,
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
+    updatePolicy,
 } from "../../../config/actions";
-import { loadGroupsSuccess } from "../../../config/groups/actions";
 import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading } from "../../../config/selectors";
+import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
+import { loadPolicyRequest } from "../../../config/thunks";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -37,6 +37,7 @@ const propTypes = {
     publishDate: PropTypes.string,
     activeCollection: PropTypes.object,
     collections: PropTypes.array,
+    policy: PropTypes.object,
 };
 
 export class CollectionEditController extends Component {
@@ -50,7 +51,6 @@ export class CollectionEditController extends Component {
                 value: props.name,
                 errorMsg: "",
             },
-            allTeams: props.allTeams,
             updatedTeamsList: null,
             addedTeams: new Map(), // used to lookup on save to validate whether the teams have changed
             removedTeams: new Map(), // used to lookup on save to validate whether the teams have changed
@@ -63,11 +63,16 @@ export class CollectionEditController extends Component {
                 value: "09:30",
                 errorMsg: "",
             },
+            policy: null,
+            allTeams: props.allTeams,
         };
     }
 
     componentDidMount() {
         this.props.dispatch(fetchGroupsRequest(this.props.isNewSignIn));
+
+        if (this.props.isNewSignIn && this.props.isEnablePermissionsAPI) this.props.dispatch(loadPolicyRequest(this.props.id));
+
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
                 publishDate: {
@@ -79,6 +84,13 @@ export class CollectionEditController extends Component {
                     errorMsg: "",
                 },
             });
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        // Typical usage (don't forget to compare props):
+        if (this.props.allTeams !== prevProps.allTeams) {
+            this.setState({ allTeams: this.availableTeams(this.props.allTeams, this.props.policy) });
         }
     }
 
@@ -274,11 +286,22 @@ export class CollectionEditController extends Component {
                     }
                     return collectionMapper.collectionResponseToState(activeCollection);
                 });
+                if (this.props.isEnablePermissionsAPI) {
+                    this.props.dispatch(updatePolicy(this.props.id, this.state.policy));
+                }
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));
                 this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
                 this.props.dispatch(loadCollectionsSuccess(allCollections));
                 this.props.dispatch(push(url.resolve("../")));
+
+                const notification = {
+                    type: "positive",
+                    message: `Collection updated successfully`,
+                    isDismissable: true,
+                    autoDismiss: 4000,
+                };
+                notifications.add(notification);
             })
             .catch(error => {
                 this.setState({
@@ -355,11 +378,7 @@ export class CollectionEditController extends Component {
     };
 
     teamsHaveChanged(state) {
-        if (state.addedTeams.size > 0 || state.removedTeams.size > 0) {
-            return true;
-        }
-
-        return false;
+        return state.addedTeams.size > 0 || state.removedTeams.size > 0;
     }
 
     publishDateHasChanged(state) {
@@ -406,6 +425,18 @@ export class CollectionEditController extends Component {
         return body;
     }
 
+    availableTeams = (teams, policy) => {
+        if (teams?.length === 0) return [];
+
+        const selectedGroups = policy?.entities.map(entity => entity.split("/")[1]) || [];
+        return selectedGroups.length === 0
+            ? teams
+            : teams.map(team => ({
+                  ...team,
+                  disabled: selectedGroups.includes(team.id),
+              }));
+    };
+
     render() {
         return (
             <CollectionEdit
@@ -429,7 +460,7 @@ export class CollectionEditController extends Component {
                 publishTime={this.state.publishTime.value}
                 publishTimeErrorMsg={this.state.publishTime.errorMsg}
                 teams={this.state.updatedTeamsList || this.props.teams || []}
-                allTeams={this.state.isFetchingAllTeams ? [] : this.state.allTeams}
+                allTeams={this.props.allTeams}
                 isFetchingAllTeams={this.state.isFetchingAllTeams}
                 isSavingEdits={this.state.isSavingEdits}
             />
@@ -450,6 +481,8 @@ export function mapStateToProps(state) {
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
         loadingTeams: getGroupsLoading(state.state),
+        user: state.user,
+        policy: getCollectionAccessPolicy(state.state),
     };
 }
 

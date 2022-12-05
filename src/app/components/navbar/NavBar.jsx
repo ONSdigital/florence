@@ -86,17 +86,14 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-                        <li className="global-nav__item">
-                            <a className="global-nav__link" href="/florence/reports">
-                                Reports
-                            </a>
-                        </li>
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
-                                Users and access
-                            </Link>
-                        </li>
-                        {!props.isNewSignIn && (
+                        {auth.isAdminOrEditor(props.user) && (
+                            <li className="global-nav__item">
+                                <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                    Users and access
+                                </Link>
+                            </li>
+                        )}
+                        {!props.isNewSignIn && auth.isAdminOrEditor(props.user) && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
                                     Teams

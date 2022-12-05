@@ -95,6 +95,7 @@ export default class EditMetadatItem extends Component {
                 );
             }
             case "relatedDatasets":
+            case "relatedContent":
             case "relatedPublications":
             case "relatedMethodologies": {
                 return (
