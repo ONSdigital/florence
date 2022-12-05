@@ -19,6 +19,10 @@
         {
             "id" : "sonatype-2017-0717",
             "reason" : "We are using the latest react 17 (17.0.2) - require major upgrade"
+        },
+        {
+            "id" : "CVE-2022-38900",
+            "reason" : "decode-uri-component is a dependency of css, of which we are using the latest version."
         }
     ]
 }
