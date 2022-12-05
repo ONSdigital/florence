@@ -506,6 +506,7 @@ export class CantabularMetadataController extends Component {
                     showUpdateCantabularMetadataPopout: false,
                     showRevertChangesButton: true,
                 },
+                allowPreview: false,
             });
         }
         this.setState({
