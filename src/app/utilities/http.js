@@ -63,4 +63,16 @@ export default class http {
     static head(uri, body, willRetry) {
         return request("HEAD", uri, willRetry, body);
     }
+
+    /**
+     * @param uri - URI that the request is being sent to
+     * @param body - body contents of request
+     * @param willRetry - boolean flag whether to retry request on failure
+     * @param {boolean} callerHandles401 - Flag to decide whether caller or global handler is to handle 401 responses
+     *
+     * @returns {Promise} which returns the response body in JSON format
+     */
+    static patch(uri, body, willRetry, callerHandles401) {
+        return request("PATCH", uri, willRetry, undefined, body, callerHandles401);
+    }
 }

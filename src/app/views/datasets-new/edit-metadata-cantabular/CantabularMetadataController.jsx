@@ -27,6 +27,7 @@ const propTypes = {
     }),
     children: PropTypes.element,
     dispatch: PropTypes.func.isRequired,
+    userEmail: PropTypes.string.isRequired,
 };
 
 export class CantabularMetadataController extends Component {
@@ -849,6 +850,54 @@ export class CantabularMetadataController extends Component {
         };
     };
 
+    mapVersionMetadataToPatchBody = () => {
+        let patches = [
+            { path: "/alerts", value: this.state.metadata.notices },
+            { path: "/latest_changes", value: this.state.metadata.latestChanges },
+            { path: "/release_date", value: this.state.metadata.releaseDate.value },
+            { path: "/usage_notes", value: this.state.metadata.usageNotes },
+        ];
+        return patches.map(patch => ({ ...patch, op: "replace" }));
+    };
+
+    mapDatasetMetadataToPatchBody = () => {
+        let patches = [
+            {
+                path: "/release_frequency",
+                value: this.state.metadata.releaseFrequency,
+            },
+            { path: "/license", value: this.state.metadata.licence },
+            { path: "/survey", value: this.state.metadata.census ? "census" : "" },
+            { path: "/next_release", value: this.state.metadata.nextReleaseDate },
+            {
+                path: "/canonical_topic",
+                value: Object.keys(this.state.metadata.canonicalTopic).length ? this.state.metadata.canonicalTopic.value : "",
+            },
+            { path: "/related_datasets", value: this.state.metadata.relatedDatasets },
+            { path: "/publications", value: this.state.metadata.relatedPublications },
+            {
+                path: "/methodologies",
+                value: this.state.metadata.relatedMethodologies,
+            },
+            { path: "/related_content", value: this.state.metadata.relatedContent },
+            {
+                path: "/qmi",
+                value: {
+                    href: this.state.metadata.qmi,
+                },
+            },
+            {
+                path: "/subtopics",
+                value: this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.map(({ value }) => value) : [],
+            },
+            {
+                path: "national_statistic",
+                value: this.state.metadata.nationalStatistic,
+            },
+        ];
+        return patches.map(patch => ({ ...patch, op: "replace" }));
+    };
+
     mapCollectionState = (isSubmittingForReview, isMarkingAsReviewed) => {
         const StatusInProgress = "InProgress";
         const StatusComplete = "Complete";
@@ -902,6 +951,39 @@ export class CantabularMetadataController extends Component {
                     isDismissable: true,
                 });
                 console.error("save metadata: error PUTting metadata to controller", error);
+            });
+    };
+
+    editManuallyEnteredFields = (datasetID, editionID, versionID, isMarkingAsReviewed) => {
+        this.setState({ isSaving: true });
+        return datasets
+            .patchVersionMetadata(datasetID, editionID, versionID, this.mapVersionMetadataToPatchBody())
+            .then(() => {
+                datasets.patchDatasetMetadata(datasetID, this.mapDatasetMetadataToPatchBody()).then(() => {
+                    this.setState(() => {
+                        return { isSaving: false, allowPreview: true };
+                    });
+
+                    notifications.add({
+                        type: "positive",
+                        message: `${this.state.metadata.title} update saved!`,
+                        isDismissable: true,
+                    });
+
+                    if (isMarkingAsReviewed) {
+                        this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                    }
+                });
+            })
+            .catch(error => {
+                this.setState({ isSaving: false, allowPreview: false, disableCancel: false });
+                log.event("save metadata: error PATCHing metadata", log.data({ datasetID, editionID, versionID }), log.error());
+                notifications.add({
+                    type: "warning",
+                    message: `An error occurred when saving this dataset version metadata. Please try again`,
+                    isDismissable: true,
+                });
+                console.error("save metadata: error PATCHing metadata", error);
             });
     };
 
@@ -973,7 +1055,14 @@ export class CantabularMetadataController extends Component {
         return true;
     };
 
-    saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
+    datasetIsUnderReview = () => {
+        if (!this.state.versionIsPublished && this.props.userEmail !== this.state.lastEditedBy && this.state.versionCollectionState === "complete") {
+            return true;
+        }
+        return false;
+    };
+
+    saveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
             this.setState({
@@ -985,9 +1074,7 @@ export class CantabularMetadataController extends Component {
                     highlightCantabularMetadataChanges: false,
                 },
             });
-            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed)
-                .then(this.retrieveDatasetMetadata)
-                .catch(error => error);
+            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed).catch(error => error);
         }
     };
 
@@ -1003,7 +1090,15 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSaveClick = () => {
-        this.saveAndRetrieveDatasetMetadata(false, false);
+        if (this.datasetIsUnderReview()) {
+            this.editManuallyEnteredFields(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, false).then(() => {
+                this.retrieveDatasetMetadata();
+            });
+        } else {
+            this.saveDatasetMetadata(false, false).then(() => {
+                this.retrieveDatasetMetadata();
+            });
+        }
     };
 
     handleCancelClick = () => {
@@ -1011,11 +1106,15 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSubmitForReviewClick = () => {
-        this.saveAndRetrieveDatasetMetadata(true, false);
+        this.saveDatasetMetadata(true, false).then(() => {
+            this.retrieveDatasetMetadata();
+        });
     };
 
     handleMarkAsReviewedClick = () => {
-        this.saveAndRetrieveDatasetMetadata(false, true);
+        this.editManuallyEnteredFields(his.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, true).then(() => {
+            this.retrieveDatasetMetadata();
+        });
     };
 
     handleCantabularMetadataUpdate = () => {
@@ -1125,4 +1224,10 @@ export class CantabularMetadataController extends Component {
 
 CantabularMetadataController.propTypes = propTypes;
 
-export default CantabularMetadataController;
+function mapStateToProps(state) {
+    return {
+        userEmail: state.user.email,
+    };
+}
+
+export default connect(mapStateToProps)(CantabularMetadataController);

@@ -228,4 +228,18 @@ export default class datasets {
             return response;
         });
     }
+
+    static patchVersionMetadata(datasetID, editionID, versionID, body) {
+        return http
+            .patch(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}`, body, true)
+            .then(response => {
+                return response;
+            });
+    }
+
+    static patchDatasetMetadata(datasetID, body) {
+        return http.patch(`${publishingDatasetControllerURL}/datasets/${datasetID}`, body, true).then(response => {
+            return response;
+        });
+    }
 }
