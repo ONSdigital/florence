@@ -28,7 +28,6 @@ const propTypes = {
     }),
     children: PropTypes.element,
     dispatch: PropTypes.func.isRequired,
-    userEmail: PropTypes.string.isRequired,
 };
 
 export class CantabularMetadataController extends Component {
@@ -918,8 +917,6 @@ export class CantabularMetadataController extends Component {
         return datasets
             .putEditMetadata(datasetID, editionID, versionID, body)
             .then(() => {
-                console.log("test4");
-
                 this.setState({ isSaving: false, allowPreview: true, disableCancel: true });
 
                 notifications.add({
@@ -1053,13 +1050,6 @@ export class CantabularMetadataController extends Component {
         return true;
     };
 
-    datasetIsUnderReview = () => {
-        if (!this.state.versionIsPublished && this.props.userEmail !== this.state.lastEditedBy && this.state.versionCollectionState === "complete") {
-            return true;
-        }
-        return false;
-    };
-
     handleRedirectOnReject = isCancellingPublication => {
         if (isCancellingPublication) {
             notifications.add({
@@ -1072,14 +1062,11 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSaveClick = () => {
-        if (this.datasetIsUnderReview()) {
-            console.log("test1");
+        if (!this.state.versionIsPublished && this.state.versionCollectionState === "complete") {
             this.editManuallyEnteredFields(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, false).then(() => {
                 this.retrieveDatasetMetadata();
             });
         } else {
-            console.log("test2");
-
             this.saveDatasetMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, false, false).then(() => {
                 this.retrieveDatasetMetadata();
             });
@@ -1153,7 +1140,6 @@ export class CantabularMetadataController extends Component {
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSave={this.handleSaveClick}
-                    userEmail={this.props.userEmail}
                     allowPreview={this.state.allowPreview}
                     disableCancel={this.state.disableCancel}
                     isSaving={this.state.isSaving}
@@ -1210,10 +1196,4 @@ export class CantabularMetadataController extends Component {
 
 CantabularMetadataController.propTypes = propTypes;
 
-function mapStateToProps(state) {
-    return {
-        userEmail: state.user.email,
-    };
-}
-
-export default connect(mapStateToProps)(CantabularMetadataController);
+export default CantabularMetadataController;
