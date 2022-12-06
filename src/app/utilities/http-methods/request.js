@@ -49,7 +49,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
             },
         };
 
-        if (method === "POST" || method === "PUT") {
+        if (method === "POST" || method === "PUT" || method === "PATCH") {
             fetchConfig.body = JSON.stringify(body || {});
         }
 
@@ -171,7 +171,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     return;
                 }
 
-                if (!responseIsJSON && method !== "POST" && method !== "PUT") {
+                if (!responseIsJSON && method !== "POST" && method !== "PUT" && method !== "PATCH") {
                     log.event(
                         `Received request response for method that didn't have the 'application/json' header`,
                         log.warn(),
@@ -189,7 +189,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             console.error("Error trying to parse request body as text: ", error);
                             log.event("Error trying to parse request body as text", log.error(error));
 
-                            if (method === "POST" || method === "PUT") {
+                            if (method === "POST" || method === "PUT" || method === "PATCH") {
                                 resolve();
                                 return;
                             }
@@ -212,7 +212,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                     } catch (error) {
                         // We're not necessarily relying on a response with these methods
                         // so we should still resolve the promise, just with no response body
-                        if (method === "POST" || method === "PUT") {
+                        if (method === "POST" || method === "PUT" || method === "PATCH") {
                             resolve();
                             return;
                         }
