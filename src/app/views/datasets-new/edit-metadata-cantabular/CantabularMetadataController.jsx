@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { push } from "react-router-redux";
+import { connect } from "react-redux";
 import PropTypes from "prop-types";
 import _ from "lodash";
 
@@ -911,26 +912,15 @@ export class CantabularMetadataController extends Component {
         return StatusInProgress;
     };
 
-    saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
+    saveDatasetMetadata = (datasetID, editionID, versionID, isSubmittingForReview, isMarkingAsReviewed) => {
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
-        return this.saveMetadata(
-            this.props.params.datasetID,
-            this.props.params.editionID,
-            this.props.params.versionID,
-            body,
-            isSubmittingForReview,
-            isMarkingAsReviewed
-        );
-    };
-
-    saveMetadata = (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
         return datasets
             .putEditMetadata(datasetID, editionID, versionID, body)
             .then(() => {
-                this.setState(() => {
-                    return { isSaving: false, allowPreview: true, disableCancel: true };
-                });
+                console.log("test4");
+
+                this.setState({ isSaving: false, allowPreview: true, disableCancel: true });
 
                 notifications.add({
                     type: "positive",
@@ -954,15 +944,23 @@ export class CantabularMetadataController extends Component {
             });
     };
 
-    editManuallyEnteredFields = (datasetID, editionID, versionID, isMarkingAsReviewed) => {
+    editManuallyEnteredFields = async (datasetID, editionID, versionID, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
+        const versionPatchBody = {
+            patches: this.mapVersionMetadataToPatchBody(),
+            collection_id: this.props.params.collectionID,
+            collection_state: this.state.versionCollectionState,
+        };
+        const datasetPatchBody = {
+            patches: this.mapDatasetMetadataToPatchBody(),
+            collection_id: this.props.params.collectionID,
+            collection_state: this.state.datasetCollectionState,
+        };
         return datasets
-            .patchVersionMetadata(datasetID, editionID, versionID, this.mapVersionMetadataToPatchBody())
+            .patchVersionMetadata(datasetID, editionID, versionID, versionPatchBody)
             .then(() => {
-                datasets.patchDatasetMetadata(datasetID, this.mapDatasetMetadataToPatchBody()).then(() => {
-                    this.setState(() => {
-                        return { isSaving: false, allowPreview: true };
-                    });
+                datasets.patchDatasetMetadata(datasetID, datasetPatchBody).then(() => {
+                    this.setState({ isSaving: false, allowPreview: true });
 
                     notifications.add({
                         type: "positive",
@@ -1062,22 +1060,6 @@ export class CantabularMetadataController extends Component {
         return false;
     };
 
-    saveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
-        const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
-        if (mandatoryFieldsAreCompleted) {
-            this.setState({
-                refreshCantabularMetadataState: {
-                    ...this.state.refreshCantabularMetadataState,
-                    refreshCantabularMetadata: false,
-                    showUpdateCantabularMetadataPopout: false,
-                    showRevertChangesButton: false,
-                    highlightCantabularMetadataChanges: false,
-                },
-            });
-            this.saveDatasetMetadata(isSubmittingForReview, isMarkingAsReviewed).catch(error => error);
-        }
-    };
-
     handleRedirectOnReject = isCancellingPublication => {
         if (isCancellingPublication) {
             notifications.add({
@@ -1091,11 +1073,14 @@ export class CantabularMetadataController extends Component {
 
     handleSaveClick = () => {
         if (this.datasetIsUnderReview()) {
+            console.log("test1");
             this.editManuallyEnteredFields(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, false).then(() => {
                 this.retrieveDatasetMetadata();
             });
         } else {
-            this.saveDatasetMetadata(false, false).then(() => {
+            console.log("test2");
+
+            this.saveDatasetMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, false, false).then(() => {
                 this.retrieveDatasetMetadata();
             });
         }
@@ -1106,13 +1091,13 @@ export class CantabularMetadataController extends Component {
     };
 
     handleSubmitForReviewClick = () => {
-        this.saveDatasetMetadata(true, false).then(() => {
+        this.saveDatasetMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, true, false).then(() => {
             this.retrieveDatasetMetadata();
         });
     };
 
     handleMarkAsReviewedClick = () => {
-        this.editManuallyEnteredFields(his.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, true).then(() => {
+        this.editManuallyEnteredFields(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID, true).then(() => {
             this.retrieveDatasetMetadata();
         });
     };
@@ -1168,6 +1153,7 @@ export class CantabularMetadataController extends Component {
                     handleSimpleEditableListDelete={this.handleSimpleEditableListDelete}
                     handleSimpleEditableListEdit={this.handleSimpleEditableListEdit}
                     handleSave={this.handleSaveClick}
+                    userEmail={this.props.userEmail}
                     allowPreview={this.state.allowPreview}
                     disableCancel={this.state.disableCancel}
                     isSaving={this.state.isSaving}
