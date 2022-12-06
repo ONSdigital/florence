@@ -232,6 +232,7 @@ const mockedCantabularDatasetMetadata = {
 
 const mockedSavedNonCantDatasetMetadata = {
     dataset: {
+        state: "associated",
         id: "456",
         methodologies: [],
         next_release: "",
@@ -562,6 +563,22 @@ describe("Allowing preview functionality", () => {
 
     it("enables preview if saving edits successful", async () => {
         await component.instance().saveMetadata();
+        expect(component.state("allowPreview")).toBe(true);
+    });
+    it("disables preview when the user checks the updated cantabular metadata ", () => {
+        component.setState({
+            refreshCantabularMetadataState: { refreshCantabularMetadata: true, isRevertChangesClicked: false },
+            fieldsReturned: { title: true, dimensions: true },
+        });
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
+        expect(component.state("allowPreview")).toBe(false);
+    });
+    it("enables preview if the user reverts the incoming cantabular metadata to the original one", () => {
+        component.setState({
+            refreshCantabularMetadataState: { refreshCantabularMetadata: false, isRevertChangesClicked: true },
+            fieldsReturned: { title: true, dimensions: true },
+        });
+        component.instance().handleGETSuccess(mockedSavedNonCantDatasetMetadata, mockedCantabularDatasetMetadata);
         expect(component.state("allowPreview")).toBe(true);
     });
 });
