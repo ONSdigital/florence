@@ -85,21 +85,23 @@ export class WorkflowPreview extends Component {
                         <h1 className="margin-top--1 margin-bottom--1">Preview</h1>
                     </div>
                 </div>
-                <div className="preview--half preview--borders">
+                <div className={`preview${!this.props.enableCantabularJourney && !this.state.cantabularDataset ? "--half" : ""} preview--borders`}>
                     <Iframe path={this.getPreviewIframeURL(this.props.location.pathname)} />
                 </div>
-                <div className="grid grid--justify-center">
-                    <div className="grid__col-6">
-                        <div className="margin-top--1 margin-bottom--1">
-                            <Link
-                                className="btn btn--positive margin-right--1"
-                                to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}
-                            >
-                                Continue
-                            </Link>
+                {!this.props.enableCantabularJourney && !this.state.cantabularDataset && (
+                    <div className="grid grid--justify-center">
+                        <div className="grid__col-6">
+                            <div className="margin-top--1 margin-bottom--1">
+                                <Link
+                                    className="btn btn--positive margin-right--1"
+                                    to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}
+                                >
+                                    Continue
+                                </Link>
+                            </div>
                         </div>
                     </div>
-                </div>
+                )}
             </div>
         );
     }
