@@ -51,7 +51,8 @@ export class CantabularMetadataController extends Component {
             canonicalTopicsMenuArr: [],
             secondaryTopicsMenuArr: [],
             allTopicsArr: [],
-            topicsErr: "",
+            canonicalTopicErr: "",
+            secondaryTopicErr: "",
             refreshCantabularMetadataState: {
                 showUpdateCantabularMetadataPopout: false,
                 refreshCantabularMetadata: false,
@@ -352,11 +353,17 @@ export class CantabularMetadataController extends Component {
         }
     };
 
-    findTopics = (allTopics, selectedTopicIDs) => {
+    findTopics = (allTopics, selectedTopicIDs, isCanonicalTopic) => {
         return selectedTopicIDs.map(topicID => {
             const selectedTopic = allTopics.find(topic => topic.value == topicID);
-            if (!selectedTopic) {
-                this.setState({ topicsErr: `Topic ID ${topicID} in dataset metadata but not present in topic api. Please reselect topics` });
+            if (!selectedTopic && isCanonicalTopic) {
+                this.setState({
+                    canonicalTopicErr: `Topic ID ${topicID} present in dataset metadata but not in topic api. Please reselect topics`,
+                });
+            } else if (!selectedTopic && !isCanonicalTopic) {
+                this.setState({
+                    secondaryTopicErr: `Topic ID ${topicID} present in dataset metadata but not in topic api. Please reselect topics`,
+                });
             }
             return selectedTopic;
         });
@@ -367,6 +374,7 @@ export class CantabularMetadataController extends Component {
         const version = nonCantDatasetMetadata.version;
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         const useCantabularMetadata = !collectionState || this.state.refreshCantabularMetadataState.refreshCantabularMetadata;
+        const selectedCanonicalTopic = this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true);
         try {
             const mappedMetadata = {
                 title: useCantabularMetadata ? cantabularMetadata.dataset.title : dataset.title,
@@ -405,8 +413,8 @@ export class CantabularMetadataController extends Component {
                     value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
-                canonicalTopic: "canonical_topic" in dataset ? this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic])[0] : {},
-                secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics) : [],
+                canonicalTopic: "canonical_topic" in dataset && selectedCanonicalTopic[0] ? selectedCanonicalTopic[0] : {},
+                secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics, false) : [],
                 census: dataset.survey ? true : false,
                 relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
             };
@@ -975,13 +983,15 @@ export class CantabularMetadataController extends Component {
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         } else if (this.state.metadata.secondaryTopics.length > 0 && Object.keys(this.state.metadata.canonicalTopic).length == 0) {
-            this.setState({ topicsErr: "You cannot enter a secondary topic without a canonical topic" });
+            this.setState({
+                canonicalTopicErr: "You cannot enter a secondary topic without a canonical topic",
+                secondaryTopicErr: "You cannot enter a secondary topic without a canonical topic",
+            });
             document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
         return true;
     };
-
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
@@ -1097,7 +1107,7 @@ export class CantabularMetadataController extends Component {
                                 ...this.state.metadata,
                                 canonicalTopic: selectedOption || {},
                             },
-                            topicsErr: "",
+                            canonicalTopicErr: "",
                         });
                     }}
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
@@ -1108,10 +1118,13 @@ export class CantabularMetadataController extends Component {
                             },
                         });
                         if (selectedOptions.length === 0) {
-                            this.setState({ topicsErr: "" });
+                            this.setState({ canonicalTopicErr: "", secondaryTopicErr: "" });
+                        } else {
+                            this.setState({ secondaryTopicErr: "" });
                         }
                     }}
-                    topicsErr={this.state.topicsErr}
+                    canonicalTopicErr={this.state.canonicalTopicErr}
+                    secondaryTopicErr={this.state.secondaryTopicErr}
                     handleCensusContentChange={this.handleRadioGroupComponentChange}
                     refreshCantabularMetadataState={this.state.refreshCantabularMetadataState}
                     handleCantabularMetadataUpdate={this.handleCantabularMetadataUpdate}

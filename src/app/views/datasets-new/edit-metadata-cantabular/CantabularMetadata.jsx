@@ -85,7 +85,8 @@ const propTypes = {
     secondaryTopicsMenuArr: PropTypes.array.isRequired,
     handleCanonicalTopicTagFieldChange: PropTypes.func.isRequired,
     handleSecondaryTopicTagsFieldChange: PropTypes.func.isRequired,
-    topicsErr: PropTypes.string,
+    canonicalTopicErr: PropTypes.string,
+    secondaryTopicErr: PropTypes.string,
     handleCensusContentChange: PropTypes.func.isRequired,
     refreshCantabularMetadataState: PropTypes.object.isRequired,
     handleCantabularMetadataUpdate: PropTypes.func.isRequired,
@@ -121,7 +122,8 @@ const CantabularMetadata = ({
     secondaryTopicsMenuArr,
     handleCanonicalTopicTagFieldChange,
     handleSecondaryTopicTagsFieldChange,
-    topicsErr,
+    canonicalTopicErr,
+    secondaryTopicErr,
     handleCensusContentChange,
     refreshCantabularMetadataState,
     handleCantabularMetadataUpdate,
@@ -484,7 +486,7 @@ const CantabularMetadata = ({
                 contents={canonicalTopicsMenuArr}
                 handleChange={handleCanonicalTopicTagFieldChange}
                 multipleSelection={false}
-                error={topicsErr}
+                error={canonicalTopicErr}
                 disabled={disableForm}
             />
             <SelectTags
@@ -494,7 +496,7 @@ const CantabularMetadata = ({
                 handleChange={handleSecondaryTopicTagsFieldChange}
                 multiDefaultValue={metadata.secondaryTopics}
                 multipleSelection={true}
-                error={topicsErr}
+                error={secondaryTopicErr}
                 disabled={disableForm}
             />
 
