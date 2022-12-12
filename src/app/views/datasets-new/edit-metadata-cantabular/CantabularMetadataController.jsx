@@ -352,6 +352,16 @@ export class CantabularMetadataController extends Component {
         }
     };
 
+    findTopics = (allTopics, selectedTopicIDs) => {
+        return selectedTopicIDs.map(topicID => {
+            const selectedTopic = allTopics.find(topic => topic.value == topicID);
+            if (!selectedTopic) {
+                this.setState({ topicsErr: `Topic ID ${topicID} in dataset metadata but not present in topic api. Please reselect topics` });
+            }
+            return selectedTopic;
+        });
+    };
+
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
@@ -395,10 +405,8 @@ export class CantabularMetadataController extends Component {
                     value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
-                canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
-                secondaryTopics: dataset.subtopics
-                    ? dataset.subtopics.map(topicID => this.state.allTopicsArr.find(topic => topic.value == topicID))
-                    : [],
+                canonicalTopic: "canonical_topic" in dataset ? this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic])[0] : {},
+                secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics) : [],
                 census: dataset.survey ? true : false,
                 relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
             };
