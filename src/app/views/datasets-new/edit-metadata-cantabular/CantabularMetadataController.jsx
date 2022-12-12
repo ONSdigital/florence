@@ -374,7 +374,7 @@ export class CantabularMetadataController extends Component {
         const version = nonCantDatasetMetadata.version;
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         const useCantabularMetadata = !collectionState || this.state.refreshCantabularMetadataState.refreshCantabularMetadata;
-        const selectedCanonicalTopic = this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true);
+        const selectedCanonicalTopic = "canonical_topic" in dataset && this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true);
         try {
             const mappedMetadata = {
                 title: useCantabularMetadata ? cantabularMetadata.dataset.title : dataset.title,
@@ -413,7 +413,7 @@ export class CantabularMetadataController extends Component {
                     value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
-                canonicalTopic: "canonical_topic" in dataset && selectedCanonicalTopic[0] ? selectedCanonicalTopic[0] : {},
+                canonicalTopic: selectedCanonicalTopic[0] ? selectedCanonicalTopic[0] : {},
                 secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics, false) : [],
                 census: dataset.survey ? true : false,
                 relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
@@ -823,6 +823,8 @@ export class CantabularMetadataController extends Component {
     };
 
     mapMetadataToPutBody = (isSubmittingForReview, isMarkingAsReviewed) => {
+        const secondaryTopicsArr =
+            this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.filter(item => item != undefined) : [];
         return {
             dataset: {
                 id: this.props.params.datasetID,
@@ -848,7 +850,13 @@ export class CantabularMetadataController extends Component {
                 next_release: this.state.metadata.nextReleaseDate,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
                 canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length ? this.state.metadata.canonicalTopic.value : "",
-                subtopics: this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.map(({ value }) => value) : [],
+                subtopics:
+                    secondaryTopicsArr.length > 0
+                        ? secondaryTopicsArr.map(({ value }) => {
+                              this.setState({ secondaryTopicErr: "" });
+                              return value;
+                          })
+                        : [],
                 survey: this.state.metadata.census ? "census" : "",
                 related_content: this.state.metadata.relatedContent,
             },
@@ -1109,6 +1117,9 @@ export class CantabularMetadataController extends Component {
                             },
                             canonicalTopicErr: "",
                         });
+                        if (Object.keys(selectedOption).length && this.state.metadata.secondaryTopics.length > 0) {
+                            this.setState({ secondaryTopicErr: "" });
+                        }
                     }}
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
                         this.setState({
