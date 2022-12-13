@@ -354,7 +354,8 @@ export class CantabularMetadataController extends Component {
     };
 
     findTopics = (allTopics, selectedTopicIDs, isCanonicalTopic) => {
-        return selectedTopicIDs.map(topicID => {
+        let topicsArr = [];
+        selectedTopicIDs.forEach(topicID => {
             const selectedTopic = allTopics.find(topic => topic.value == topicID);
             if (!selectedTopic && isCanonicalTopic) {
                 this.setState({
@@ -364,9 +365,11 @@ export class CantabularMetadataController extends Component {
                 this.setState({
                     secondaryTopicErr: `Topic ID ${topicID} present in dataset metadata but not in topic api. Please reselect topics`,
                 });
+            } else {
+                topicsArr.push(selectedTopic);
             }
-            return selectedTopic;
         });
+        return topicsArr;
     };
 
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
@@ -374,7 +377,6 @@ export class CantabularMetadataController extends Component {
         const version = nonCantDatasetMetadata.version;
         const collectionState = nonCantDatasetMetadata.collection_state.trim();
         const useCantabularMetadata = !collectionState || this.state.refreshCantabularMetadataState.refreshCantabularMetadata;
-        const selectedCanonicalTopic = "canonical_topic" in dataset && this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true);
         try {
             const mappedMetadata = {
                 title: useCantabularMetadata ? cantabularMetadata.dataset.title : dataset.title,
@@ -413,7 +415,10 @@ export class CantabularMetadataController extends Component {
                     value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
-                canonicalTopic: selectedCanonicalTopic[0] ? selectedCanonicalTopic[0] : {},
+                canonicalTopic:
+                    dataset?.canonical_topic && this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true).length
+                        ? this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true)[0]
+                        : {},
                 secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics, false) : [],
                 census: dataset.survey ? true : false,
                 relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
@@ -823,8 +828,6 @@ export class CantabularMetadataController extends Component {
     };
 
     mapMetadataToPutBody = (isSubmittingForReview, isMarkingAsReviewed) => {
-        const secondaryTopicsArr =
-            this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.filter(item => item != undefined) : [];
         return {
             dataset: {
                 id: this.props.params.datasetID,
@@ -850,13 +853,7 @@ export class CantabularMetadataController extends Component {
                 next_release: this.state.metadata.nextReleaseDate,
                 unit_of_measure: this.state.metadata.unitOfMeasure,
                 canonical_topic: Object.keys(this.state.metadata.canonicalTopic).length ? this.state.metadata.canonicalTopic.value : "",
-                subtopics:
-                    secondaryTopicsArr.length > 0
-                        ? secondaryTopicsArr.map(({ value }) => {
-                              this.setState({ secondaryTopicErr: "" });
-                              return value;
-                          })
-                        : [],
+                subtopics: this.state.metadata.secondaryTopics.length > 0 ? this.state.metadata.secondaryTopics.map(({ value }) => value) : [],
                 survey: this.state.metadata.census ? "census" : "",
                 related_content: this.state.metadata.relatedContent,
             },
@@ -954,6 +951,10 @@ export class CantabularMetadataController extends Component {
     };
 
     checkMandatoryFields = () => {
+        this.setState({
+            canonicalTopicErr: "",
+            secondaryTopicErr: "",
+        });
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
