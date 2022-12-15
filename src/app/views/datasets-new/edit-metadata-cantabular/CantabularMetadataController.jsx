@@ -600,9 +600,9 @@ export class CantabularMetadataController extends Component {
         try {
             return latestChanges?.map((latestChange, index) => ({
                 id: index,
-                title: latestChange.title,
+                title: latestChange.title || latestChange.name,
                 description: latestChange.description,
-                simpleListHeading: latestChange.title,
+                simpleListHeading: latestChange.title || latestChange.name,
                 simpleListDescription: latestChange.description,
             }));
         } catch (error) {
@@ -862,7 +862,10 @@ export class CantabularMetadataController extends Component {
                 release_date: this.state.metadata.releaseDate.value,
                 alerts: this.state.metadata.notices,
                 usage_notes: this.state.metadata.usageNotes,
-                latest_changes: this.state.metadata.latestChanges,
+                latest_changes:
+                    this.state.metadata.latestChanges.length > 0
+                        ? this.state.metadata.latestChanges.map(latestChange => ({ ...latestChange, name: latestChange.title }))
+                        : [],
                 dimensions: [...this.state.metadata.dimensions],
             },
             dimensions: [...this.state.metadata.dimensions],
