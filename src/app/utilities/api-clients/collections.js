@@ -168,7 +168,7 @@ export default class collections {
     }
 
     static setInteractiveStatusToComplete(collectionID, interactiveID) {
-        const body = { state: "Completed" };
+        const body = { state: "Complete" };
         return http.put(`/zebedee/collections/${collectionID}/interactives/${interactiveID}`, body, true).then(response => {
             return response;
         });
