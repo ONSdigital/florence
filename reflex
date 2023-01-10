@@ -1,3 +1,3 @@
-# Watch all files ending in .go, excluding files in `.go` directory or files
+# Watch all files ending in .go, excluding files in `.go` or `assets` directory or files
 # ending in `_test.go` & run `make debug` when any matching file is changed
--s -r \.go$ -R ^\.go/ -R _test\.go$ make debug-run
+-s -r \.go$ -R ^\.go/ -R ^assets/ -R _test\.go$ make debug-run

@@ -28,7 +28,7 @@ debug: generate-go-debug
 	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} $(BINPATH)/florence
 
 .PHONY: debug-run
-debug-run:
+debug-run: generate-go-debug
 	HUMAN_LOG=1 BIND_ADDR=${BIND_ADDR} go run -tags 'debug' -race $(LDFLAGS) main.go
 
 .PHONY: ensure-main-min-css
