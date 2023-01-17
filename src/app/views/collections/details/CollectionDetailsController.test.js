@@ -519,6 +519,30 @@ describe("Clicking 'edit' for a page", () => {
         expect(cantabularEditClickComponent.state("isCantabularDataset")).toBe(true);
         expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
     });
+    it("routes to the cantabular edit metadata form if the dataset type is a cantabular_multivariate_table", async () => {
+        const cantabularProps = {
+            ...defaultProps,
+            ...props,
+            enableCantabularJourney: true,
+        };
+        const cantabularEditClickComponent = shallow(<CollectionDetailsController {...cantabularProps} />);
+        const mockedDatasetType = { next: { type: "cantabular_multivariate_table" } };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+        const versionURL = await cantabularEditClickComponent.instance().handleCollectionPageEditClick(
+            {
+                type: "dataset_version",
+                datasetID: "cpi",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com",
+            },
+            "complete"
+        );
+        expect(cantabularEditClickComponent.state("isCantabularDataset")).toBe(true);
+        expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
+    });
 });
 
 describe("Edit Homepage functionality", () => {
