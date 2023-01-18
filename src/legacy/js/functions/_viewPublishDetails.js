@@ -1,3 +1,5 @@
+const { load } = require("js-yaml");
+
 function viewPublishDetails(collections) {
 
     var manual = '[manual collection]';
@@ -7,58 +9,31 @@ function viewPublishDetails(collections) {
         collectionDetails: [],
         pendingDeletes: []
     };
-    var pageDataRequests = []; // list of promises - one for each ajax request to load page data.
-    var onlyOne = 0;
 
-    $.each(collections, function (i, collectionId) {
-        onlyOne += 1;
-        pageDataRequests.push(
-            getCollectionDetails(collectionId,
-                success = function (response) {
-                    if (result.date === manual) {
-                        result.collectionDetails.push({
-                            id: response.id,
-                            name: response.name,
-                            pageDetails: response.reviewed,
-                            datasets: response.datasets,
-                            datasetVersions: response.datasetVersions,
-                            pageType: 'manual',
-                            pendingDeletes: response.pendingDeletes,
-                            interactives: response.interactives
-                        });
-                    } else {
-                        result.collectionDetails.push({
-                            id: response.id,
-                            name: response.name,
-                            pageDetails: response.reviewed,
-                            datasets: response.datasets,
-                            datasetVersions: response.datasetVersions,
-                            interactives: response.interactives
-                        });
-                    }
-                },
-                error = function () {
-                    result.collectionDetails.push({
-                        id: getCollectionIDWithoutUUID(collectionId),
-                        error: true,
-                        pageType: result.date === manual ? "manual" : ""
-                    })
-                }
-            )
-        );
-    });
+    $.each(collections, function(i, collection){
+        if (collection.date === manual) {
+            result.collectionDetails.push({
+                id: collection.id,
+                name: collection.name,
+                pageType: 'manual',
+                showFilesButton: true
+            })
+        } else {
+            result.collectionDetails.push({
+                id: collection.id, 
+                name: collection.name,
+                showFilesButton: true
+            })
+        }
+    })
 
-    if (onlyOne < 2) {
-        result.subtitle = 'The following collection has been approved';
-    } else {
+    if (collections.length > 1) {
         result.subtitle = 'The following collections have been approved';
+    } else {
+        result.subtitle = 'The following collection has been approved';
     }
 
-    Promise.allSettled(pageDataRequests).then(() => {
-        displayPublishDetailsPanel()
-    }).catch(err => {
-        handleApiError(err);
-    })
+    displayPublishDetailsPanel()
 
     function displayPublishDetailsPanel() {
         var publishDetails = templates.publishDetails(result);
@@ -97,6 +72,36 @@ function viewPublishDetails(collections) {
             window.location = `/florence/collections/${collection}/preview`
         });
 
+        $('.btn-collection-view-files').click(function () {
+            showLoadingText($(this))
+            var collectionID = $(this).attr("data-collection-id");
+            getCollectionDetails(collectionID,
+                success = function (response) {
+                    result.collectionDetails.find(function(collection) {
+                        if (collection.id == collectionID) {
+                            collection.pageDetails = response.reviewed;
+                            collection.dataset = response.datasets;
+                            collection.datasetVersions = response.datasetVersions;
+                            collection.pendingDeletes = response.pendingDeletes;
+                            collection.interactives = response.interactives;
+                            collection.isActive = true;  
+                            collection.showFilesButton = false;
+                        } else {
+                            collection.isActive = false; 
+                        }
+                    })
+                    displayPublishDetailsPanel()
+                },
+                error = function () {
+                    result.collectionDetails.push({
+                        id: getCollectionIDWithoutUUID(collectionId),
+                        error: true,
+                        pageType: result.date === manual ? "manual" : ""
+                    })
+                }
+            )
+        });
+
         //page-list
         $('.page__item:not(.delete-child)').click(function () {
             $('.page-list li').removeClass('selected');
@@ -123,6 +128,12 @@ function viewPublishDetails(collections) {
 
             hidePanel(hidePanelOptions);
         });
+    }
+
+    function showLoadingText(button) {
+        loadFilesLoadingText = button.parent().find('.btn-collection-view-files-loading');
+        loadFilesLoadingText.show()
+        button.hide();
     }
 
     // return collection id without unique identifier on the end
