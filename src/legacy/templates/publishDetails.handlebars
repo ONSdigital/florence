@@ -38,40 +38,32 @@
                                     {{#each pageDetails}}
                                         <li class="page-list__item"><span class="page__item page__item--{{type}}"
                                                 data-path="{{uri}}">{{description.title}}{{#if description.edition}}
-                                            : {{description.edition}}{{/if}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                            : {{description.edition}}{{/if}}<br/>
+                                            {{uri}}</span>                         
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if datasets}}
                                     {{#each datasets}}
                                         <li class="page-list__item"><span class="page__item page__item--dataset"
-                                                                        data-path="{{uri}}">{{title}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                                                        data-path="{{uri}}">{{title}}<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if datasetVersions}}
                                     {{#each datasetVersions}}
                                         <li class="page-list__item"><span class="page__item page__item--dataset_version"
-                                                                        data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                                                        data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if interactives}}
                                     {{#each interactives}}
                                         <li class="page-list__item">
-                                            <span class="page__item page__item--interactive" data-path="{{uri}}">{{title}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                            <span class="page__item page__item--interactive" data-path="{{uri}}">{{title}}<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}
