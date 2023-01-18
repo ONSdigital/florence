@@ -108,9 +108,6 @@ function viewPublishDetails(collections) {
             $('.page__buttons').hide();
             $('.page__children').hide();
 
-            // $(this).parent('li').addClass('selected');
-            // $(this).next('.page__buttons').show();
-
             var $this = $(this),
                 $buttons = $this.next('.page__buttons'),
                 $childrenPages = $buttons.length > 0 ? $buttons.next('.page__children') : $this.next('.page__children');
