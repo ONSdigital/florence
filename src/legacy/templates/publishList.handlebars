@@ -8,8 +8,8 @@
         </thead>
         <tbody>
         {{#each this}}
-            <tr data-collections="{{this.ids}}">
-                <td>{{this.date}}</td>
+            <tr class="publish-list__item" data-publish-date="{{this.date}}">
+                <td>{{this.formattedDate}}</td>
             </tr>
         {{/each}}
         </tbody>
