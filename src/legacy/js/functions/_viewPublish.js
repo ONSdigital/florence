@@ -32,33 +32,27 @@ function viewPublish() {
             .value();
 
         for (var key in collectionsByDate) {
-            var response = [];
             if (key === manual) {
                 var formattedDate = manual;
             } else {
                 var formattedDate = StringUtils.formatIsoFull(key);
-            }
-            $(collectionsByDate[key]).each(function (n) {
-                var id = collectionsByDate[key][n].id;
-                response.push(id);
-            });
-            result.push({date: formattedDate, ids: response});
+            } 
+            result.push({date: key, formattedDate: formattedDate});
         }
 
         var publishList = templates.publishList(result);
         $('.section').html(publishList);
 
         $('.js-selectable-table tbody tr').click(function () {
-            var collections = $(this).attr('data-collections').split(',');
+            var date = $(this).attr('data-publish-date');
             Florence.collectionToPublish.publishDate = $(this).find('td').html();
-            viewPublishDetails(collections);
+            viewPublishDetails(collectionsByDate[date]);
 
             var showPanelOptions = {
                 html: false,
                 moveCenteredPanel: true
             };
             showPanel($(this), showPanelOptions);
-            // $('.panel--centred').animate({marginLeft: "0%"}, 800);
         });
     }
 }
