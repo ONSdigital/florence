@@ -39,30 +39,32 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
 
     var url = url + '&recursive=' + recursive;
 
+    viewCollections(collectionId);
+    
     // Update content
-    isUpdatingModal.add();
-    $.ajax({
-        url: url,
-        dataType: 'json',
-        contentType: 'application/json',
-        type: 'POST',
-        success: function () {
-            isUpdatingModal.remove();
-            if (redirect) {
-                createWorkspace(redirect, collectionId, 'edit');
-                return;
-            } else {
-                // Remove selection from 'working on: collection' tab
-                $('.js-nav-item--collection').hide();
-                $('.js-nav-item').removeClass('selected');
-                $('.js-nav-item--collections').addClass('selected');
+    // isUpdatingModal.add();
+    // $.ajax({
+    //     url: url,
+    //     dataType: 'json',
+    //     contentType: 'application/json',
+    //     type: 'POST',
+    //     success: function () {
+    //         isUpdatingModal.remove();
+    //         if (redirect) {
+    //             createWorkspace(redirect, collectionId, 'edit');
+    //             return;
+    //         } else {
+    //             // Remove selection from 'working on: collection' tab
+    //             $('.js-nav-item--collection').hide();
+    //             $('.js-nav-item').removeClass('selected');
+    //             $('.js-nav-item--collections').addClass('selected');
 
-                viewCollections(collectionId);
-            }
-        },
-        error: function (response) {
-            isUpdatingModal.remove();
-            handleApiError(response);
-        }
-    });
+    //             viewCollections(collectionId);
+    //         }
+    //     },
+    //     error: function (response) {
+    //         isUpdatingModal.remove();
+    //         handleApiError(response);
+    //     }
+    // });
 }

@@ -27,7 +27,7 @@ import collectionMapper from "../mapper/collectionMapper";
 import Modal from "../../../components/Modal";
 import RestoreContent from "../restore-content/RestoreContent";
 import url from "../../../utilities/url";
-import auth from "../../../utilities/auth";
+import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
 import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
 import CollectionEditController from "../edit/CollectionEditController";
@@ -84,7 +84,7 @@ export class CollectionDetailsController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        if (!auth.canViewCollectionsDetails(this.props.user)) {
+        if (!auth.canViewCollectionsDetails(this.props.user) && !auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
             this.props.dispatch(push(`${this.props.rootPath}/collections`));
             return;
         }
