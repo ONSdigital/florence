@@ -648,10 +648,10 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
-                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
-                        <p>
-                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
+                        <p className="margin-bottom--1">
+                            It appears as though as an error has occurred whilst submitting your dataset to publishing.
                         </p>
+                        <p>Please retry uploading your dataset. If the error persists, raise a support request via slack</p>
                     </div>
                 );
             }
@@ -662,10 +662,8 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
-                        <p className="margin-bottom--1">Your dataset has failed to upload</p>
-                        <p>
-                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
-                        </p>
+                        <p className="margin-bottom--1">Your dataset has failed to upload.</p>
+                        <p>Please retry uploading your dataset. If the error persists, raise a support request via slack</p>
                     </div>
                 );
             }
