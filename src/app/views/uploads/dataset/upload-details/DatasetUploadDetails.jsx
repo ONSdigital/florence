@@ -540,17 +540,7 @@ class DatasetUploadController extends Component {
         return (
             <div>
                 <p className="margin-bottom--2">Your files are being processed.</p>
-                <h2 className="margin-bottom--1">What happens now?</h2>
-                <ul className="list margin-bottom--2">
-                    <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
-                        submitted or if you have any questions.
-                    </li>
-                    <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is
-                        complete.
-                    </li>
-                </ul>
+                <p>Large files may take a while to process, this page will update once the files are uploaded.</p>
             </div>
         );
     }
@@ -559,16 +549,6 @@ class DatasetUploadController extends Component {
         return (
             <div>
                 <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
-                <h2 className="margin-bottom--1">What happens now?</h2>
-                <ul className="list margin-bottom--2">
-                    <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
-                        submitted or if you have any questions.
-                    </li>
-                    <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata.
-                    </li>
-                </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions
                     {this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0 && (
