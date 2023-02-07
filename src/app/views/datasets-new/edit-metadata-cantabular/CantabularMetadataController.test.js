@@ -716,7 +716,8 @@ describe("Calling checkMandatoryFields", () => {
         };
         component.setState(mockCantabularMetadataStateNoCanonicalTopic);
         component.instance().checkMandatoryFields();
-        expect(component.state("topicsErr")).toEqual("You cannot enter a secondary topic without a canonical topic");
+        expect(component.state("canonicalTopicErr")).toEqual("You cannot enter a secondary topic without a canonical topic");
+        expect(component.state("secondaryTopicErr")).toEqual("You cannot enter a secondary topic without a canonical topic");
     });
 });
 

@@ -51,7 +51,8 @@ export class CantabularMetadataController extends Component {
             canonicalTopicsMenuArr: [],
             secondaryTopicsMenuArr: [],
             allTopicsArr: [],
-            topicsErr: "",
+            canonicalTopicErr: "",
+            secondaryTopicErr: "",
             refreshCantabularMetadataState: {
                 showUpdateCantabularMetadataPopout: false,
                 refreshCantabularMetadata: false,
@@ -352,6 +353,25 @@ export class CantabularMetadataController extends Component {
         }
     };
 
+    findTopics = (allTopics, selectedTopicIDs, isCanonicalTopic) => {
+        let topicsArr = [];
+        selectedTopicIDs.forEach(topicID => {
+            const selectedTopic = allTopics.find(topic => topic.value == topicID);
+            if (!selectedTopic && isCanonicalTopic) {
+                this.setState({
+                    canonicalTopicErr: `Topic ID ${topicID} present in dataset metadata but not in topic api. Please reselect topics`,
+                });
+            } else if (!selectedTopic && !isCanonicalTopic) {
+                this.setState({
+                    secondaryTopicErr: `Topic ID ${topicID} present in dataset metadata but not in topic api. Please reselect topics`,
+                });
+            } else {
+                topicsArr.push(selectedTopic);
+            }
+        });
+        return topicsArr;
+    };
+
     mapMetadataToState = (nonCantDatasetMetadata, cantabularMetadata = null) => {
         const dataset = nonCantDatasetMetadata.dataset;
         const version = nonCantDatasetMetadata.version;
@@ -395,10 +415,11 @@ export class CantabularMetadataController extends Component {
                     value: useCantabularMetadata ? cantabularMetadata.dataset.contacts?.[0].telephone : dataset.contacts?.[0].telephone,
                     error: "",
                 },
-                canonicalTopic: "canonical_topic" in dataset ? this.state.allTopicsArr.find(topic => topic.value == dataset.canonical_topic) : {},
-                secondaryTopics: dataset.subtopics
-                    ? dataset.subtopics.map(topicID => this.state.allTopicsArr.find(topic => topic.value == topicID))
-                    : [],
+                canonicalTopic:
+                    dataset?.canonical_topic && this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true).length
+                        ? this.findTopics(this.state.allTopicsArr, [dataset.canonical_topic], true)[0]
+                        : {},
+                secondaryTopics: dataset.subtopics ? this.findTopics(this.state.allTopicsArr, dataset.subtopics, false) : [],
                 census: dataset.survey ? true : false,
                 relatedContent: dataset.related_content ? this.mapRelatedContentToState(dataset.related_content, dataset.id) : [],
             };
@@ -579,9 +600,9 @@ export class CantabularMetadataController extends Component {
         try {
             return latestChanges?.map((latestChange, index) => ({
                 id: index,
-                title: latestChange.title,
+                title: latestChange.title || latestChange.name,
                 description: latestChange.description,
-                simpleListHeading: latestChange.title,
+                simpleListHeading: latestChange.title || latestChange.name,
                 simpleListDescription: latestChange.description,
             }));
         } catch (error) {
@@ -841,7 +862,10 @@ export class CantabularMetadataController extends Component {
                 release_date: this.state.metadata.releaseDate.value,
                 alerts: this.state.metadata.notices,
                 usage_notes: this.state.metadata.usageNotes,
-                latest_changes: this.state.metadata.latestChanges,
+                latest_changes:
+                    this.state.metadata.latestChanges.length > 0
+                        ? this.state.metadata.latestChanges.map(latestChange => ({ ...latestChange, name: latestChange.title }))
+                        : [],
                 dimensions: [...this.state.metadata.dimensions],
             },
             dimensions: [...this.state.metadata.dimensions],
@@ -930,6 +954,10 @@ export class CantabularMetadataController extends Component {
     };
 
     checkMandatoryFields = () => {
+        this.setState({
+            canonicalTopicErr: "",
+            secondaryTopicErr: "",
+        });
         if (!this.state.metadata.releaseDate.value) {
             const newReleaseDateState = {
                 value: "",
@@ -967,13 +995,15 @@ export class CantabularMetadataController extends Component {
             document.getElementById("contact-details-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         } else if (this.state.metadata.secondaryTopics.length > 0 && Object.keys(this.state.metadata.canonicalTopic).length == 0) {
-            this.setState({ topicsErr: "You cannot enter a secondary topic without a canonical topic" });
+            this.setState({
+                canonicalTopicErr: "You cannot enter a secondary topic without a canonical topic",
+                secondaryTopicErr: "You cannot enter a secondary topic without a canonical topic",
+            });
             document.getElementById("topic-tags-heading").scrollIntoView({ behavior: "smooth", block: "start" });
             return;
         }
         return true;
     };
-
     saveAndRetrieveDatasetMetadata = (isSubmittingForReview, isMarkingAsReviewed) => {
         const mandatoryFieldsAreCompleted = this.checkMandatoryFields();
         if (mandatoryFieldsAreCompleted) {
@@ -1089,8 +1119,11 @@ export class CantabularMetadataController extends Component {
                                 ...this.state.metadata,
                                 canonicalTopic: selectedOption || {},
                             },
-                            topicsErr: "",
+                            canonicalTopicErr: "",
                         });
+                        if (Object.keys(selectedOption).length && this.state.metadata.secondaryTopics.length > 0) {
+                            this.setState({ secondaryTopicErr: "" });
+                        }
                     }}
                     handleSecondaryTopicTagsFieldChange={selectedOptions => {
                         this.setState({
@@ -1100,10 +1133,13 @@ export class CantabularMetadataController extends Component {
                             },
                         });
                         if (selectedOptions.length === 0) {
-                            this.setState({ topicsErr: "" });
+                            this.setState({ canonicalTopicErr: "", secondaryTopicErr: "" });
+                        } else {
+                            this.setState({ secondaryTopicErr: "" });
                         }
                     }}
-                    topicsErr={this.state.topicsErr}
+                    canonicalTopicErr={this.state.canonicalTopicErr}
+                    secondaryTopicErr={this.state.secondaryTopicErr}
                     handleCensusContentChange={this.handleRadioGroupComponentChange}
                     refreshCantabularMetadataState={this.state.refreshCantabularMetadataState}
                     handleCantabularMetadataUpdate={this.handleCantabularMetadataUpdate}

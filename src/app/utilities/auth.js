@@ -53,6 +53,7 @@ export function setAuthState(userData = {}) {
     // Store the user type in localStorage. Used in old Florence
     // where views can depend on user type. e.g. Browse tree
     localStorage.setItem("userType", user.getOldUserType(userData) || "");
+    localStorage.setItem("userRole", user.getUserRole(userData.admin, userData.editor) || "");
 }
 
 export function updateAuthState(data = {}) {

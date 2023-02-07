@@ -100,6 +100,7 @@
     "install": "^0.8.7",
     "is-empty-object": "^1.1.1",
     "jest-snapshot": "^27.4.2",
+    "json5": "^2.2.2",
     "localforage": "^1.5.0",
     "minimongo": "^6.9.0",
     "moment": "^2.29.1",
