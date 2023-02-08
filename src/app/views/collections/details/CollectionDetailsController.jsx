@@ -85,12 +85,13 @@ export class CollectionDetailsController extends Component {
 
     UNSAFE_componentWillMount() {
         if (this.props.collectionID) {
-            if (!auth.canViewCollectionsDetails(this.props.user) && !auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
+            if (auth.canViewCollectionsDetails(this.props.user) || auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
+                this.fetchActiveCollection(this.props.collectionID);
+                this.setState({ drawerIsVisible: true });
+            } else {
                 this.props.dispatch(push(`${this.props.rootPath}/collections`));
                 return;
             }
-            this.fetchActiveCollection(this.props.collectionID);
-            this.setState({ drawerIsVisible: true });
         } else {
             this.removeActiveCollectionGlobally();
         }

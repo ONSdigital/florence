@@ -611,22 +611,44 @@ describe("Dataset import functionality", () => {
 });
 
 describe("When the component mounts with a collection id", () => {
-    const props = {
-        ...defaultProps,
-        collectionID: "test-collection-12345",
-        user: {
-            userType: "ADMIN",
-        },
-    };
+    it("and the logged in user is admin then view collection.", () => {      
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            user: {
+                userType: "ADMIN",
+            },
+        };
 
-    it("with an admin user, fetchs the collection", () => {        
+        auth.canViewCollectionsDetails.mockImplementationOnce(() => Promise.resolve({ ...props.user.userType === "ADMIN" }));
         const component = shallow(<CollectionDetailsController {...props} />);
-        console.log(component)
     });
-    it("with an admin user from state, fetch collection,", () => {
 
+    it("and the user in state is admin then view collection", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+        };
+
+        const userFromState = getUserTypeFromAuthState.mockImplementationOnce(() => Promise.resolve({             
+            user: {
+              userType: "ADMIN",
+            }, 
+        }));
+
+        auth.canViewCollectionsDetails.mockImplementationOnce(() => Promise.resolve({ ...userFromState === "ADMIN" }));
+        const component = shallow(<CollectionDetailsController {...props} />);
     });
-    it("without an admin user from either, redirect to collections", () => {
 
+    it("and the user is a viewer then redirect to collections", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            user: {
+                userType: "VIEWER",
+            },
+        };  
+        
+        const component = shallow(<CollectionDetailsController {...props} />);
     });
 });
