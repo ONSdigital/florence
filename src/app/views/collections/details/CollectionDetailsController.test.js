@@ -6,6 +6,7 @@ import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
 import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
 import datasets from "../../../utilities/api-clients/datasets";
+import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 
 console.error = () => {};
 
@@ -43,6 +44,17 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         }),
         getCantabularMetadata: jest.fn(() => {
             return Promise.resolve();
+        }),
+    };
+});
+
+jest.mock("../../../utilities/auth", () => {
+    return {
+        canViewCollectionsDetails: jest.fn(() => {
+            return Promise.resolve();
+        }),
+        getUserTypeFromAuthState: jest.fn(() => {
+            return Promise.resolve()
         }),
     };
 });
@@ -595,5 +607,26 @@ describe("Dataset import functionality", () => {
         const component = shallow(<CollectionDetailsController {...props} />);
 
         expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(true);
+    });
+});
+
+describe("When the component mounts with a collection id", () => {
+    const props = {
+        ...defaultProps,
+        collectionID: "test-collection-12345",
+        user: {
+            userType: "ADMIN",
+        },
+    };
+
+    it("with an admin user, fetchs the collection", () => {        
+        const component = shallow(<CollectionDetailsController {...props} />);
+        console.log(component)
+    });
+    it("with an admin user from state, fetch collection,", () => {
+
+    });
+    it("without an admin user from either, redirect to collections", () => {
+
     });
 });

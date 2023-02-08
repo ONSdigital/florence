@@ -84,16 +84,14 @@ export class CollectionDetailsController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        if (!auth.canViewCollectionsDetails(this.props.user) && !auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
-            this.props.dispatch(push(`${this.props.rootPath}/collections`));
-            return;
-        }
         if (this.props.collectionID) {
+            if (!auth.canViewCollectionsDetails(this.props.user) && !auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
+                this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                return;
+            }
             this.fetchActiveCollection(this.props.collectionID);
             this.setState({ drawerIsVisible: true });
-        }
-
-        if (!this.props.collectionID) {
+        } else {
             this.removeActiveCollectionGlobally();
         }
     }
