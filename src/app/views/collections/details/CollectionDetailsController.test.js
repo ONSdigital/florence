@@ -6,7 +6,6 @@ import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
 import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
 import datasets from "../../../utilities/api-clients/datasets";
-import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 
 console.error = () => {};
 
@@ -48,16 +47,33 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     };
 });
 
-jest.mock("../../../utilities/auth", () => {
+const localStorageMock = (function () {
+    let store = {};
+  
     return {
-        canViewCollectionsDetails: jest.fn(() => {
-            return Promise.resolve();
-        }),
-        getUserTypeFromAuthState: jest.fn(() => {
-            return Promise.resolve()
-        }),
+      getItem(key) {
+        return store[key];
+      },
+  
+      setItem(key, value) {
+        store[key] = value;
+      },
+  
+      clear() {
+        store = {};
+      },
+  
+      removeItem(key) {
+        delete store[key];
+      },
+  
+      getAll() {
+        return store;
+      },
     };
-});
+  })();
+  
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 function setLocation(href) {
     jsdom.reconfigure({
@@ -611,7 +627,11 @@ describe("Dataset import functionality", () => {
 });
 
 describe("When the component mounts with a collection id", () => {
-    it("and the logged in user is admin then view collection.", () => {      
+    beforeEach(() => {
+        window.localStorage.clear();
+      });
+      
+    it("and the logged in user is an admin then view collection details.", () => {      
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
@@ -620,35 +640,45 @@ describe("When the component mounts with a collection id", () => {
             },
         };
 
-        auth.canViewCollectionsDetails.mockImplementationOnce(() => Promise.resolve({ ...props.user.userType === "ADMIN" }));
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
         const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter + 1);
+        expect(component.state("drawerIsVisible")).toBe(true);
     });
 
-    it("and the user in state is admin then view collection", () => {
+    it("and the user in state is an admin then view collection details.", () => {
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
         };
 
-        const userFromState = getUserTypeFromAuthState.mockImplementationOnce(() => Promise.resolve({             
-            user: {
-              userType: "ADMIN",
-            }, 
+        window.localStorage.setItem("ons_auth_state", JSON.stringify({
+            "email": "test@ons.gov.uk",
+            "admin": true,
+            "editor": true
         }));
 
-        auth.canViewCollectionsDetails.mockImplementationOnce(() => Promise.resolve({ ...userFromState === "ADMIN" }));
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
         const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter + 1);
+        expect(component.state("drawerIsVisible")).toBe(true);
     });
 
-    it("and the user is a viewer then redirect to collections", () => {
+    it("and the user is a viewer then view collections", () => {
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
             user: {
                 userType: "VIEWER",
             },
-        };  
-        
+        };
+
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
         const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
+        expect(component.state("drawerIsVisible")).toBe(false);
     });
 });
