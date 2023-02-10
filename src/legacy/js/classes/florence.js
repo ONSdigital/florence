@@ -62,6 +62,9 @@ Florence.Authentication = {
     },
     userType: function() {
         return localStorage.getItem("userType");
+    },
+    isAdmin: function() {
+        return localStorage.getItem("userRole") === "ADMIN";
     }
 };
 
