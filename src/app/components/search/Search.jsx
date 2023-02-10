@@ -4,12 +4,11 @@ import { useInput } from "../../hooks/useInput";
 import Magnifier from "../../icons/Magnifier";
 
 const Search = ({ saveSearch }) => {
-    const [search, setSearch] = useInput("");
-
-    const handleSubmit = e => {
-        e.preventDefault();
-        saveSearch(search.value);
+    const handleOnChange = value => {
+        saveSearch(value);
     };
+
+    const [search, setSearch] = useInput("", handleOnChange);
 
     const handleRest = () => {
         setSearch("");
@@ -17,7 +16,7 @@ const Search = ({ saveSearch }) => {
     };
 
     return (
-        <form className="search__form--inline padding--bottom--1" onSubmit={handleSubmit} role="search">
+        <form className="search__form--inline padding--bottom--1" role="search">
             <div className="search__input-group">
                 <Magnifier classes="search__icon-magnifier" viewBox="0 0 28 28" />
                 <label htmlFor="search_input" className="visually-hidden">
@@ -31,9 +30,6 @@ const Search = ({ saveSearch }) => {
                     </button>
                 )}
             </div>
-            <button className="btn btn--positive" type="submit">
-                Search
-            </button>
         </form>
     );
 };
