@@ -10,7 +10,7 @@ const Search = ({ saveSearch }) => {
 
     const [search, setSearch] = useInput("", handleOnChange);
 
-    const handleRest = () => {
+    const handleReset = () => {
         setSearch("");
         saveSearch("");
     };
@@ -25,7 +25,7 @@ const Search = ({ saveSearch }) => {
                 <input id="search_input" name="search" placeholder="Search for a collection name" {...search} />
 
                 {search.value && (
-                    <button type="reset" onClick={handleRest} className="btn__close">
+                    <button type="reset" onClick={handleReset} className="btn__close">
                         &times;
                     </button>
                 )}
