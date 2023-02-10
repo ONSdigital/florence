@@ -29,7 +29,7 @@ describe("Search", () => {
         userEvent.paste(searchInput, "Boo");
         expect(searchInput).toHaveValue("Boo");
 
-        userEvent.click(screen.getByRole("button", { name: "Search" }));
+        //userEvent.click(screen.getByRole("button", { name: "Search" }));
 
         expect(defaultProps.saveSearch).toHaveBeenCalledWith("Boo");
     });
