@@ -689,7 +689,7 @@ describe("When the component mounts with a collection id", () => {
                 userType: "ADMIN",
             },
         };
-
+        collections.get.mockImplementationOnce(() => Promise.resolve({ id: "test-collection-12345" }));
         const callsCounter = collections.get.mock.calls.length;
         expect(collections.get.mock.calls.length).toBe(callsCounter);
         const component = shallow(<CollectionDetailsController {...props} />);
@@ -708,7 +708,7 @@ describe("When the component mounts with a collection id", () => {
             "admin": true,
             "editor": true
         }));
-
+        collections.get.mockImplementationOnce(() => Promise.resolve({ id: "test-collection-12345" }));
         const callsCounter = collections.get.mock.calls.length;
         expect(collections.get.mock.calls.length).toBe(callsCounter);
         const component = shallow(<CollectionDetailsController {...props} />);
