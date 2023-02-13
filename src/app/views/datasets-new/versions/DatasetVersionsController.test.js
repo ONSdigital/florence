@@ -159,6 +159,23 @@ describe("Maps dataset versions to state ", () => {
             details: ["Release date: 15 March 2021"],
         });
     });
+    it("maps the dataset versions to state for a cantabular_multivariate_table dataset", async () => {
+        const mockedDatasetType = {
+            next: {
+                type: "cantabular_multivariate_table",
+            },
+        };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+        await component.instance().getDatasetType(mockedDataset.id);
+        const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+        expect(component.state("cantabularDataset")).toBe(true);
+        expect(mapped[1]).toMatchObject({
+            id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
+            title: "Version: 1 (published)",
+            url: "florence/collections/12345/datasets/6789/versions/1/cantabular",
+            details: ["Release date: 15 March 2021"],
+        });
+    });
     it("maps the dataset versions to state for a non cantabular dataset", async () => {
         const mockedDatasetType = {
             next: {

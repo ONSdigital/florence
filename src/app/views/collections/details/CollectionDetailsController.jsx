@@ -27,7 +27,7 @@ import collectionMapper from "../mapper/collectionMapper";
 import Modal from "../../../components/Modal";
 import RestoreContent from "../restore-content/RestoreContent";
 import url from "../../../utilities/url";
-import auth from "../../../utilities/auth";
+import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
 import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
 import CollectionEditController from "../edit/CollectionEditController";
@@ -84,16 +84,15 @@ export class CollectionDetailsController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        if (!auth.canViewCollectionsDetails(this.props.user)) {
-            this.props.dispatch(push(`${this.props.rootPath}/collections`));
-            return;
-        }
         if (this.props.collectionID) {
-            this.fetchActiveCollection(this.props.collectionID);
-            this.setState({ drawerIsVisible: true });
-        }
-
-        if (!this.props.collectionID) {
+            if (auth.canViewCollectionsDetails(this.props.user) || auth.canViewCollectionsDetails(getUserTypeFromAuthState())) {
+                this.fetchActiveCollection(this.props.collectionID);
+                this.setState({ drawerIsVisible: true });
+            } else {
+                this.props.dispatch(push(`${this.props.rootPath}/collections`));
+                return;
+            }
+        } else {
             this.removeActiveCollectionGlobally();
         }
     }
@@ -596,7 +595,10 @@ export class CollectionDetailsController extends Component {
             const type = response.next.type;
             try {
                 await datasets.getCantabularMetadata(datasetID, "en");
-                this.setState({ isCantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" });
+                this.setState({
+                    isCantabularDataset:
+                        type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table",
+                });
             } catch {
                 console.log("Dataset ID not present in Cantabular metadata server");
             }

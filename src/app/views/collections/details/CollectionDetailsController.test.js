@@ -47,6 +47,34 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
     };
 });
 
+const localStorageMock = (function () {
+    let store = {};
+  
+    return {
+      getItem(key) {
+        return store[key];
+      },
+  
+      setItem(key, value) {
+        store[key] = value;
+      },
+  
+      clear() {
+        store = {};
+      },
+  
+      removeItem(key) {
+        delete store[key];
+      },
+  
+      getAll() {
+        return store;
+      },
+    };
+  })();
+  
+Object.defineProperty(window, "localStorage", { value: localStorageMock });
+
 function setLocation(href) {
     jsdom.reconfigure({
         url: href,
@@ -519,6 +547,30 @@ describe("Clicking 'edit' for a page", () => {
         expect(cantabularEditClickComponent.state("isCantabularDataset")).toBe(true);
         expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
     });
+    it("routes to the cantabular edit metadata form if the dataset type is a cantabular_multivariate_table", async () => {
+        const cantabularProps = {
+            ...defaultProps,
+            ...props,
+            enableCantabularJourney: true,
+        };
+        const cantabularEditClickComponent = shallow(<CollectionDetailsController {...cantabularProps} />);
+        const mockedDatasetType = { next: { type: "cantabular_multivariate_table" } };
+        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+        const versionURL = await cantabularEditClickComponent.instance().handleCollectionPageEditClick(
+            {
+                type: "dataset_version",
+                datasetID: "cpi",
+                id: "cpi/editions/current/versions/2",
+                uri: "/datasets/cpi/editions/current/versions/2",
+                edition: "current",
+                version: "2",
+                lastEditedBy: "test.user@email.com",
+            },
+            "complete"
+        );
+        expect(cantabularEditClickComponent.state("isCantabularDataset")).toBe(true);
+        expect(versionURL).toBe("/florence/collections/my-collection-12345/datasets/cpi/editions/current/versions/2/cantabular");
+    });
 });
 
 describe("Edit Homepage functionality", () => {
@@ -571,5 +623,62 @@ describe("Dataset import functionality", () => {
         const component = shallow(<CollectionDetailsController {...props} />);
 
         expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(true);
+    });
+});
+
+describe("When the component mounts with a collection id", () => {
+    beforeEach(() => {
+        window.localStorage.clear();
+      });
+      
+    it("and the logged in user is an admin then view collection details.", () => {      
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            user: {
+                userType: "ADMIN",
+            },
+        };
+
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
+        const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter + 1);
+        expect(component.state("drawerIsVisible")).toBe(true);
+    });
+
+    it("and the user in state is an admin then view collection details.", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+        };
+
+        window.localStorage.setItem("ons_auth_state", JSON.stringify({
+            "email": "test@ons.gov.uk",
+            "admin": true,
+            "editor": true
+        }));
+
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
+        const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter + 1);
+        expect(component.state("drawerIsVisible")).toBe(true);
+    });
+
+    it("and the user is a viewer then view collections", () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            user: {
+                userType: "VIEWER",
+            },
+        };
+
+        const callsCounter = collections.get.mock.calls.length;
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
+        const component = shallow(<CollectionDetailsController {...props} />);
+        expect(collections.get.mock.calls.length).toBe(callsCounter);
+        expect(component.state("drawerIsVisible")).toBe(false);
     });
 });
