@@ -5,6 +5,7 @@ import { createMockUser } from "../../utilities/tests/test-utils";
 import NavBar from "./NavBar";
 
 const notLoggedUser = createMockUser();
+const authenticatedEditor = createMockUser("user@test.com", true, true, "EDITOR");
 const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");
 const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER");
 
@@ -116,14 +117,26 @@ describe("NavBar", () => {
         });
     });
 
+    describe("when user is authenticated as Editor", () => {
+        it("should not display Users and access", () => {
+            const component = shallow(<NavBar {...defaultProps} user={authenticatedEditor} />);
+            expect(component.find("Link[to='/florence/users']").exists()).toBe(false);
+        });
+    });
+
     describe("when user is authenticated as Viewer", () => {
-        it("should only ender navigation with accessible links", () => {
+        it("should only render navigation with accessible links", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedViewer} />);
 
             expect(component.hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(2);
             expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
             expect(component.find(Link).getElements()[1].props.children).toBe("Sign out");
+        });
+
+        it("should not display Users and access", () => {
+            const component = shallow(<NavBar {...defaultProps} user={authenticatedViewer} />);
+            expect(component.find("Link[to='/florence/users']").exists()).toBe(false);
         });
 
         describe("when on collections url", () => {
