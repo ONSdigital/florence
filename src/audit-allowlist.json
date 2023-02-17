@@ -43,6 +43,10 @@
         {
             "id" : "CVE-2022-38900",
             "reason" : "decode-uri-component is a dependency of css, of which we are using the latest version."
+        },
+        {
+            "id" : "sonatype-2023-0962",
+            "reason" : "core-js@2.6.12 is a dependency of the table-builder-ui library , of which we are using the latest version. It requires upgrading core-js to 3.28.0. See https://trello.com/c/KNIkvvRc/1429-florence-audit-failurecore-js2612"
         }
     ]
 }
