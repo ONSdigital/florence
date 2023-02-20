@@ -11,20 +11,12 @@ function viewPublishDetails(collections) {
     };
 
     $.each(collections, function(i, collection){
-        if (collection.date === manual) {
-            result.collectionDetails.push({
-                id: collection.id,
-                name: collection.name,
-                pageType: 'manual',
-                showFilesButton: true
-            })
-        } else {
-            result.collectionDetails.push({
-                id: collection.id, 
-                name: collection.name,
-                showFilesButton: true
-            })
-        }
+        result.collectionDetails.push({
+            id: collection.id, 
+            name: collection.name,
+            pageType: collection.date === manual ? "manual" : "",
+            showFilesButton: true
+       })
     })
 
     if (collections.length > 1) {
