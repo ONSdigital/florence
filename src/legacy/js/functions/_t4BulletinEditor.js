@@ -126,6 +126,9 @@ function bulletinEditor(collectionId, data) {
 
     function save(onSave) {
 
+        // tags
+        validateAndSaveTags(data);
+
         Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
         // charts

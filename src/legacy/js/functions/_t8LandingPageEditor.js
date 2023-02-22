@@ -121,6 +121,8 @@ function datasetLandingEditor(collectionId, data) {
 
   function save(onSave) {
 
+    validateAndSaveTags(data);
+
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
     // Datasets are uploaded. Save metadata
