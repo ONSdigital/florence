@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 import datasets from "../../../utilities/api-clients/datasets";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
+import log from "../../../utilities/logging/log";
 
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 
@@ -30,29 +31,43 @@ export class DatasetVersionsController extends Component {
             datasetTitle: "",
             editionTitle: "",
             versions: [],
-            cantabularDataset: false,
         };
     }
 
     async UNSAFE_componentWillMount() {
         const datasetID = this.props.params.datasetID;
         const editionID = this.props.params.editionID;
+        await this.getAllVersions(datasetID, editionID);
         if (this.props.enableCantabularJourney) {
             await this.getDatasetType(datasetID);
         }
-        this.getAllVersions(datasetID, editionID);
     }
 
     getDatasetType = async datasetID => {
-        const response = await datasets.get(datasetID);
-        const type = response.next.type;
         try {
-            await datasets.getCantabularMetadata(datasetID, "en");
+            const response = await datasets.get(datasetID);
+            const type = response.next.type;
+            if (type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table") {
+                this.setState({
+                    ...this.state,
+                    versions: this.state.versions.map(version => ({
+                        ...version,
+                        url: `${version.url}${!version.url.includes("cantabular") ? "/cantabular" : ""}`,
+                    })),
+                });
+            }
+        } catch (error) {
             this.setState({
-                cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table",
+                ...this.state,
+                versions: this.state.versions.map(version => ({ ...version, disabled: true })),
             });
-        } catch {
-            console.log("Dataset ID not present in Cantabular metadata server");
+            log.event("get dataset: something went wrong when trying to retrieve the dataset", log.data({ datasetID }), log.error());
+            notifications.add({
+                type: "warning",
+                message: "Something went wrong when trying to retrieve the dataset type.",
+                isDismissable: true,
+            });
+            console.error("Something went wrong when trying to retrieve the dataset type.", error);
         }
     };
 
@@ -136,7 +151,7 @@ export class DatasetVersionsController extends Component {
                 return {
                     id: version.id,
                     title: version.title,
-                    url: `${path}${this.state.cantabularDataset ? "/cantabular" : ""}`,
+                    url: path,
                     version: version.version,
                     details: [`Release date: ${version.release_date || "Not yet set"}`],
                 };
