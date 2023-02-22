@@ -14,8 +14,8 @@ function viewPublishDetails(collections) {
         id: collection.id,
         name: collection.name,
         pageType: collection.publishDate === manual ? "manual" : "",
-        showFilesButton: true
-    })
+        showFilesButton: true,
+    });
   });
 
   if (collections.length > 1) {
