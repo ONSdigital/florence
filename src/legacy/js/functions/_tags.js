@@ -125,7 +125,7 @@ async function getAllTopics(){
 }
 
 function validateAndSaveTags(data) {
-    if ($("#selectPrimaryTopic").length === 0 && $("#selectSubtopic").length ===0) {
+    if ($("#selectPrimaryTopic").length === 0 && $("#selectSubtopic").length === 0) {
         return 
     }
 
