@@ -33,6 +33,13 @@ export default class collectionValidation {
             };
         }
 
+        if (collections && collections.some(c => c.id.split("-")[0] === name.replace(/\s+/g, ""))) {
+            response = {
+                isValid: false,
+                errorMsg: "A collection with this ID already exists. Please choose a different name.",
+            };
+        }
+
         return response;
     }
 

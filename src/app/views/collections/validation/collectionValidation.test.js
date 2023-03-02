@@ -2,7 +2,7 @@ import collectionValidation from "./collectionValidation";
 import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
-    const collections = [{ name: "Foo" }, { name: "Boo" }];
+    const collections = [{ name: "Foo" }, { name: "Boo" }, {id:"test-123abc", name:"test2"}];
 
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
@@ -41,6 +41,11 @@ describe("Validating the collection name", () => {
     it("returns false and error message if the collection name difference with wite space only", () => {
         expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(errCodes.UNIQ_NAME_ERROR);
         expect(collectionValidation.name("Foo ", collections).isValid).toBe(false);
+    });
+
+    it("returns false isValid and an error message if the collection id prefix is already taken", () => {
+        expect(collectionValidation.name("test", collections).errorMsg).toBe("A collection with this ID already exists. Please choose a different name.");
+        expect(collectionValidation.name("test", collections).isValid).toBe(false);
     });
 });
 
