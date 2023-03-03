@@ -2,12 +2,15 @@ import React from "react";
 import { DatasetVersionsController } from "./DatasetVersionsController";
 import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
+import log from "../../../utilities/logging/log";
 
 console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
         event: function () {},
+        data: function () {},
+        error: jest.fn(),
     };
 });
 
@@ -26,9 +29,6 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
             return Promise.resolve(mockedResponse);
         }),
         get: jest.fn(() => {
-            return Promise.resolve();
-        }),
-        getCantabularMetadata: jest.fn(() => {
             return Promise.resolve();
         }),
     };
@@ -125,78 +125,125 @@ test("Mapping response to state", () => {
 });
 
 describe("Maps dataset versions to state ", () => {
-    it("maps the dataset versions to state for a cantabular_flexible_table dataset", async () => {
-        const mockedDatasetType = {
-            next: {
-                type: "cantabular_flexible_table",
-            },
-        };
-        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
-        await component.instance().getDatasetType(mockedDataset.id);
-        const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
-        expect(component.state("cantabularDataset")).toBe(true);
-        expect(mapped[0]).toMatchObject({
-            id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
-            title: "Version: 2 (published)",
-            url: "florence/collections/12345/datasets/6789/versions/2/cantabular",
-            details: ["Release date: Not yet set"],
+    describe("When the cantabular journey is enabled", () => {
+        beforeEach(() => {
+            jest.clearAllMocks();
+            mockNotifications = [];
+            component.setProps({ enableCantabularJourney: true });
+        });
+
+        it("maps the dataset versions to state for a cantabular_flexible_table dataset", async () => {
+            const mockedDatasetType = {
+                next: {
+                    type: "cantabular_flexible_table",
+                },
+            };
+            component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+            datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+            await component.instance().getAllVersions(mockedDataset.id);
+            await component.instance().getDatasetType(mockedDataset.id);
+            expect(log.error).toHaveBeenCalledTimes(0);
+            expect(mockNotifications.length).toEqual(0);
+            expect(component.state("versions")[1]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
+                title: "Version: 2 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/2/cantabular",
+                details: ["Release date: Not yet set"],
+            });
+        });
+        it("maps the dataset versions to state for a cantabular_table dataset", async () => {
+            const mockedDatasetType = {
+                next: {
+                    type: "cantabular_table",
+                },
+            };
+            component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+            datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+            await component.instance().getAllVersions(mockedDataset.id);
+            await component.instance().getDatasetType(mockedDataset.id);
+            expect(log.error).toHaveBeenCalledTimes(0);
+            expect(mockNotifications.length).toEqual(0);
+            expect(component.state("versions")[2]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
+                title: "Version: 1 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/1/cantabular",
+                details: ["Release date: 15 March 2021"],
+            });
+        });
+        it("maps the dataset versions to state for a cantabular_multivariate_table dataset", async () => {
+            const mockedDatasetType = {
+                next: {
+                    type: "cantabular_multivariate_table",
+                },
+            };
+            component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+            datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+            await component.instance().getAllVersions(mockedDataset.id);
+            await component.instance().getDatasetType(mockedDataset.id);
+            expect(log.error).toHaveBeenCalledTimes(0);
+            expect(mockNotifications.length).toEqual(0);
+            expect(component.state("versions")[2]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
+                title: "Version: 1 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/1/cantabular",
+                details: ["Release date: 15 March 2021"],
+            });
+        });
+        it("maps the dataset versions to state for a non cantabular dataset", async () => {
+            const mockedDatasetType = {
+                next: {
+                    type: "test_type",
+                },
+            };
+            component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+            datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
+            await component.instance().getAllVersions(mockedDataset.id);
+            await component.instance().getDatasetType(mockedDataset.id);
+            expect(component.state("versions")[1]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
+                title: "Version: 2 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/2",
+                details: ["Release date: Not yet set"],
+            });
+            expect(component.state("versions")[2]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
+                title: "Version: 1 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/1",
+                details: ["Release date: 15 March 2021"],
+            });
+        });
+        it("handles the error returned by the dataset api when trying to retrieve the dataset type", async () => {
+            console.error = jest.fn();
+            datasets.get.mockImplementationOnce(() => Promise.reject({}));
+            await component.instance().getDatasetType(mockedDataset.id);
+            expect(log.error).toHaveBeenCalledTimes(1);
+            expect(mockNotifications.length).toEqual(1);
+            expect(mockNotifications[0].message).toBe("Something went wrong when trying to retrieve the dataset type.");
+            expect(console.error).toHaveBeenCalledWith("Something went wrong when trying to retrieve the dataset type.", {});
         });
     });
-    it("maps the dataset versions to state for a cantabular_table dataset", async () => {
-        const mockedDatasetType = {
-            next: {
-                type: "cantabular_table",
-            },
-        };
-        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
-        await component.instance().getDatasetType(mockedDataset.id);
-        const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
-        expect(component.state("cantabularDataset")).toBe(true);
-        expect(mapped[1]).toMatchObject({
-            id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
-            title: "Version: 1 (published)",
-            url: "florence/collections/12345/datasets/6789/versions/1/cantabular",
-            details: ["Release date: 15 March 2021"],
+    describe("When the cantabular journey is disabled ", () => {
+        afterEach(() => {
+            jest.clearAllMocks();
         });
-    });
-    it("maps the dataset versions to state for a cantabular_multivariate_table dataset", async () => {
-        const mockedDatasetType = {
-            next: {
-                type: "cantabular_multivariate_table",
-            },
-        };
-        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
-        await component.instance().getDatasetType(mockedDataset.id);
-        const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
-        expect(component.state("cantabularDataset")).toBe(true);
-        expect(mapped[1]).toMatchObject({
-            id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
-            title: "Version: 1 (published)",
-            url: "florence/collections/12345/datasets/6789/versions/1/cantabular",
-            details: ["Release date: 15 March 2021"],
-        });
-    });
-    it("maps the dataset versions to state for a non cantabular dataset", async () => {
-        const mockedDatasetType = {
-            next: {
-                type: "test_type",
-            },
-        };
-        datasets.get.mockImplementationOnce(() => Promise.resolve(mockedDatasetType));
-        await component.instance().getDatasetType(mockedDataset.id);
-        const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
-        expect(component.state("cantabularDataset")).toBe(false);
-        expect(mapped[0]).toMatchObject({
-            id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
-            title: "Version: 2 (published)",
-            url: "florence/collections/12345/datasets/6789/versions/2",
-            details: ["Release date: Not yet set"],
-        });
-        expect(mapped[1]).toMatchObject({
-            id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
-            title: "Version: 1 (published)",
-            url: "florence/collections/12345/datasets/6789/versions/1",
-            details: ["Release date: 15 March 2021"],
+
+        it("maps the dataset versions to state and doesn't call the getDatasetType function", async () => {
+            component.setProps({ enableCantabularJourney: false });
+            component.instance().getDatasetType = jest.fn();
+            const mapped = component.instance().mapDatasetVersionsToState(mockedResponse.versions);
+            expect(component.instance().getDatasetType).toHaveBeenCalledTimes(0);
+            expect(mapped[0]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e980000",
+                title: "Version: 2 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/2",
+                details: ["Release date: Not yet set"],
+            });
+            expect(mapped[1]).toMatchObject({
+                id: "6b59a885-f4ca-4b78-9b89-4e9a8e939d55",
+                title: "Version: 1 (published)",
+                url: "florence/collections/12345/datasets/6789/versions/1",
+                details: ["Release date: 15 March 2021"],
+            });
         });
     });
 });

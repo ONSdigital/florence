@@ -6,6 +6,7 @@ import PropTypes from "prop-types";
 
 import url from "../../utilities/url";
 import notifications from "../../utilities/notifications";
+import log from "../../utilities/logging/log";
 
 import Iframe from "../../components/iframe/Iframe";
 import datasets from "../../utilities/api-clients/datasets";
@@ -24,28 +25,36 @@ const propTypes = {
 export class WorkflowPreview extends Component {
     constructor(props) {
         super(props);
-        this.state = { cantabularDataset: false };
+        this.state = { cantabularDataset: false, errorGettingDatasetType: false };
     }
 
     handleBackButton = async () => {
-        await this.getDatasetType(this.props.params.datasetID);
-        const previousUrl = `${url.resolve("../")}${this.props.enableCantabularJourney && this.state.cantabularDataset ? "/cantabular" : ""}`;
-        this.props.dispatch(push(previousUrl));
+        if (this.props.enableCantabularJourney) {
+            await this.getDatasetType(this.props.params.datasetID);
+        }
+        if (!this.state.errorGettingDatasetType) {
+            const previousUrl = `${url.resolve("../")}${this.props.enableCantabularJourney && this.state.cantabularDataset ? "/cantabular" : ""}`;
+            this.props.dispatch(push(previousUrl));
+        }
     };
 
-    getDatasetType = datasetID => {
-        return datasets.get(datasetID).then(async response => {
+    getDatasetType = async datasetID => {
+        try {
+            const response = await datasets.get(datasetID);
             const type = response.next.type;
-            try {
-                await datasets.getCantabularMetadata(datasetID, "en");
-                this.setState({
-                    cantabularDataset:
-                        type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table",
-                });
-            } catch {
-                console.log("Dataset ID not present in Cantabular metadata server");
-            }
-        });
+            this.setState({
+                cantabularDataset: type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table",
+            });
+        } catch (error) {
+            this.setState({ errorGettingDatasetType: true });
+            log.event("get dataset: something went wrong when trying to retrieve the dataset", log.data({ datasetID }), log.error());
+            notifications.add({
+                type: "warning",
+                message: "Something went wrong when trying to retrieve the dataset type.",
+                isDismissable: true,
+            });
+            console.error("Something went wrong when trying to retrieve the dataset type.", error);
+        }
     };
 
     // getPreviewIframeURL returns the url for the content to be reviewed when the url is

@@ -80,6 +80,7 @@ export class CollectionDetailsController extends Component {
             drawerIsAnimatable: false,
             drawerIsVisible: false,
             isCantabularDataset: false,
+            errorGettingDatasetType: false,
         };
     }
 
@@ -320,7 +321,9 @@ export class CollectionDetailsController extends Component {
     };
 
     handleCollectionPageEditClick = async (page, state) => {
-        await this.getDatasetType(page.id);
+        if (this.props.enableCantabularJourney) {
+            await this.getDatasetType(page.id);
+        }
         if (page.type === "interactive") {
             const newURL = url.resolve(`/interactives/edit/${page.id}?collection=${this.props.activeCollection.id}`);
             this.props.dispatch(push(newURL));
@@ -351,7 +354,9 @@ export class CollectionDetailsController extends Component {
             return newURL;
         }
         if (page.type === "dataset_version") {
-            const path = `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`;
+            const collectionDetailsPath = `/collections/${this.props.activeCollection.id}`;
+            const datasetVersionPath = `/collections/${this.props.activeCollection.id}/datasets/${page.datasetID}/editions/${page.edition}/versions/${page.version}`;
+            const path = this.state.errorGettingDatasetType && this.props.enableCantabularJourney ? collectionDetailsPath : datasetVersionPath;
             const newURL = url.resolve(this.props.enableCantabularJourney && this.state.isCantabularDataset ? `${path}/cantabular` : path);
             const version = this.props.activeCollection[state].find(collectionPage => {
                 if (collectionPage.type !== "dataset_version") {
@@ -591,16 +596,22 @@ export class CollectionDetailsController extends Component {
     getDatasetType = async pageID => {
         if (pageID && pageID.includes("/")) {
             const datasetID = pageID.split("/")[0].trim();
-            const response = await datasets.get(datasetID);
-            const type = response.next.type;
             try {
-                await datasets.getCantabularMetadata(datasetID, "en");
+                const response = await datasets.get(datasetID);
+                const type = response.next.type;
                 this.setState({
                     isCantabularDataset:
                         type === "cantabular_flexible_table" || type === "cantabular_table" || type === "cantabular_multivariate_table",
                 });
-            } catch {
-                console.log("Dataset ID not present in Cantabular metadata server");
+            } catch (error) {
+                this.setState({ errorGettingDatasetType: true });
+                log.event("get dataset: something went wrong when trying to retrieve the dataset", log.data({ datasetID }), log.error());
+                notifications.add({
+                    type: "warning",
+                    message: "Something went wrong when trying to retrieve the dataset type.",
+                    isDismissable: true,
+                });
+                console.error("Something went wrong when trying to retrieve the dataset type.", error);
             }
         }
     };

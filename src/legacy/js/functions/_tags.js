@@ -123,3 +123,18 @@ async function getAllTopics(){
         $('#selectSubtopicsSubtopics').append(newOption)
     })
 }
+
+function validateAndSaveTags(data) {
+    if ($("#selectPrimaryTopic").length === 0 && $("#selectSubtopic").length === 0) {
+        return 
+    }
+
+    if ($("#selectPrimaryTopic").val() && $("#selectSubtopic").val()) {
+        data.description.canonicalTopic = $("#selectPrimaryTopic").val()[0]
+        data.description.secondaryTopics = $("#selectSubtopic").val()
+    }
+    else if ($("#selectPrimaryTopic").val() && !$("#selectSubtopic").val()) {
+        sweetAlert("Cannot save this page", "A value is required for 'Subtopic' if a 'Topic' has been selected");
+        return
+    } 
+}

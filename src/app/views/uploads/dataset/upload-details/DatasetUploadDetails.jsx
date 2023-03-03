@@ -540,17 +540,7 @@ class DatasetUploadController extends Component {
         return (
             <div>
                 <p className="margin-bottom--2">Your files are being processed.</p>
-                <h2 className="margin-bottom--1">What happens now?</h2>
-                <ul className="list margin-bottom--2">
-                    <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
-                        submitted or if you have any questions.
-                    </li>
-                    <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata when the upload is
-                        complete.
-                    </li>
-                </ul>
+                <p>Large files may take a while to process, this page will update once the files are uploaded.</p>
             </div>
         );
     }
@@ -559,16 +549,6 @@ class DatasetUploadController extends Component {
         return (
             <div>
                 <p className="margin-bottom--2">Your files have been processed and are available to the publishing team.</p>
-                <h2 className="margin-bottom--1">What happens now?</h2>
-                <ul className="list margin-bottom--2">
-                    <li className="list__item">
-                        Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing</a> to let them know your files have been
-                        submitted or if you have any questions.
-                    </li>
-                    <li className="list__item">
-                        The publishing team can prepare the dataset landing page which includes the files and associated metadata.
-                    </li>
-                </ul>
                 <h2 className="margin-bottom--1">
                     Dimensions
                     {this.state.activeDataset.dimensions && this.state.activeDataset.dimensions.length > 0 && (
@@ -648,10 +628,10 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
-                        <p className="margin-bottom--1">It appears as though as an error has occurred whilst submitting your dataset to publishing</p>
-                        <p>
-                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
+                        <p className="margin-bottom--1">
+                            It appears as though as an error has occurred whilst submitting your dataset to publishing.
                         </p>
+                        <p>Please retry uploading your dataset. If the error persists, raise a support request via slack</p>
                     </div>
                 );
             }
@@ -662,10 +642,8 @@ class DatasetUploadController extends Component {
                             &#9664; <Link to={url.resolve("../")}>Return</Link>
                         </div>
                         <h1 className="margin-top--1">An error has occurred</h1>
-                        <p className="margin-bottom--1">Your dataset has failed to upload</p>
-                        <p>
-                            Please <a href="mailto:publishing.support.team@ons.gov.uk">contact publishing support</a> and inform them of this error
-                        </p>
+                        <p className="margin-bottom--1">Your dataset has failed to upload.</p>
+                        <p>Please retry uploading your dataset. If the error persists, raise a support request via slack</p>
                     </div>
                 );
             }

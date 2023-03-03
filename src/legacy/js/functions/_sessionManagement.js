@@ -65,8 +65,6 @@ function initialiseSessionExpiryTimers() {
     if (refreshExpiryTime != null) {
         // Timer to start monitoring user interaction to add a final extra amount of time to their session
         startExpiryTimer("refreshTimerPassive", refreshExpiryTime, timeOffsets().passiveRenewal, monitorInteraction);
-        // Timer to notify user they are on their last two minutes of using Florence and will need to sign out and back in
-        startExpiryTimer("refreshTimerInvasive", refreshExpiryTime, timeOffsets().invasiveRenewal, warnRefreshSoonExpire);
     }
 }
 
@@ -103,15 +101,6 @@ function removeInteractionMonitoring() {
 
 function warnRefreshSoonExpire() {
     removeInteractionMonitoring();
-    sweetAlert({
-        type: "warning",
-        title: "Sorry, you need to sign back in again",
-        text: "This is because you have been signed in for the maximum amount of time possible. Please save your work and sign back in to continue using Florence.",
-        confirmButtonText: "Ok"
-    }, function () {
-        // One final refresh before it expires to give the user as much time as possible to save their work
-        refreshSession();
-    });
 }
 
 function removeWarnings() {
@@ -126,12 +115,6 @@ function refreshSession() {
         if (error != null) {
             console.error(error);
         }
-        sweetAlert({
-            type: "warning",
-            title: "An unexpected error has occurred when extending the users session",
-            text: "Please sign out and back in",
-            confirmButtonText: "Ok"
-        })
     };
     if (Florence.globalVars.config.enableNewSignIn) {
         // If enableNewSignIn then update the session timers

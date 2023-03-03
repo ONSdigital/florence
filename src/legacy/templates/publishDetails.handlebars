@@ -6,11 +6,11 @@
 
     <div class="slider__content slider__content--fullwidth">
         {{#each collectionDetails}}
-            <div class="accordion js-accordion">
-                <div class="accordion__title js-accordion__title">
+            <div class="accordion js-accordion {{#if isActive}}active{{/if}}">
+                <div class="accordion__title js-accordion__title {{#if isActive}}active{{/if}}">
                     <h3 class="collection-name" data-id="{{id}}">{{#if name}}{{name}}{{else}}{{id}}{{/if}}</h3>
                 </div>
-                <div class="accordion__content accordion__content--padded disable-animation js-accordion__content">
+                <div class="accordion__content accordion__content--padded disable-animation js-accordion__content {{#if isActive}}active{{/if}}">
                     {{#if pageType}}
                             <button class="btn btn--positive margin-top--1 margin-bottom--0 margin-right--0 btn-collection-publish">Publish collection</button>
                     {{/if}}
@@ -22,48 +22,48 @@
                         There's no need to raise a support ticket, the collection is now ready for publish.
                         </p>
                     {{else}}
-                        
+
+                    <h4>Approved pages in this collection</h4>
+                    {{#if showFilesButton}}
+                        <p>
+                            <a class="btn-collection-view-files" href="javascript:void(0)" data-collection-id="{{id}}">View pages in collection</a>
+                            <span class="btn-collection-view-files-loading" style="display:none">
+                                Loading... this could take a while for large collections especially collections containing timeseries
+                            </span>
+                        </p>
+                    {{/if}}
                         {{#if_any pageDetails datasets datasetVersions interactives}}
-                            <h4>Approved pages in this collection</h4>
                             <ul class="page-list">
                                 {{#if pageDetails}}
                                     {{#each pageDetails}}
                                         <li class="page-list__item"><span class="page__item page__item--{{type}}"
                                                 data-path="{{uri}}">{{description.title}}{{#if description.edition}}
-                                            : {{description.edition}}{{/if}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                            : {{description.edition}}{{/if}}<br/>
+                                            {{uri}}</span>                         
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if datasets}}
                                     {{#each datasets}}
                                         <li class="page-list__item"><span class="page__item page__item--dataset"
-                                                                        data-path="{{uri}}">{{title}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                                                        data-path="{{uri}}">{{title}}<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if datasetVersions}}
                                     {{#each datasetVersions}}
                                         <li class="page-list__item"><span class="page__item page__item--dataset_version"
-                                                                        data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                                                        data-path="{{uri}}">{{title}}: {{edition}} (version {{version}})<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}
                                 {{#if interactives}}
                                     {{#each interactives}}
                                         <li class="page-list__item">
-                                            <span class="page__item page__item--interactive" data-path="{{uri}}">{{title}}</span>
-                                            <div class="page__buttons page__buttons--list">
-                                                <button class="btn btn--warning btn--disabled btn-page-delete">Remove from this publish</button>
-                                            </div>
+                                            <span class="page__item page__item--interactive" data-path="{{uri}}">{{title}}<br/>
+                                            {{uri}}</span>
                                         </li>
                                     {{/each}}
                                 {{/if}}

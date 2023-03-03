@@ -180,9 +180,11 @@ export class CantabularMetadataController extends Component {
             .getEditMetadata(datasetID, editionID, versionID)
             .then(metadata => {
                 this.setState({ isGettingMetadata: false });
-                this.getCantabularMetadata(datasetID, metadata).then(() =>
-                    this.checkDimensions(metadata.version.dimensions, this.state.cantabularMetadata.version.dimensions)
-                );
+                this.getCantabularMetadata(datasetID, metadata).then(response => {
+                    if (response) {
+                        this.checkDimensions(metadata.version.dimensions, this.state.cantabularMetadata.version.dimensions);
+                    }
+                });
             })
             .catch(error => {
                 this.setState({
@@ -320,17 +322,47 @@ export class CantabularMetadataController extends Component {
                     allowPreview: false,
                     disableCancel: false,
                 });
-                log.event(
-                    "get cantabular metadata: error GETting cantabular metadata from cantabular metadata server",
-                    log.data({ datasetID, language }),
-                    log.error()
-                );
-                notifications.add({
-                    type: "warning",
-                    message: `Error occurred during dataset selection, please try again`,
-                    isDismissable: true,
-                });
-                console.error("get cantabular metadata: error GETting cantabular metadata from cantabular metadata server", error);
+                const { status } = error.error.response;
+                switch (status) {
+                    case 502: {
+                        log.event(
+                            "get cantabular metadata: can't connect with the cantabular metadata extractor service",
+                            log.data({ datasetID, language }),
+                            log.error()
+                        );
+                        notifications.add({
+                            type: "warning",
+                            message: `Error connecting with the service.`,
+                            isDismissable: true,
+                        });
+                        console.error("get cantabular metadata: can't connect with the cantabular metadata extractor service", error);
+                        break;
+                    }
+                    case 403: {
+                        log.event("get cantabular metadata: unauthorised request", log.data({ datasetID, language }), log.error());
+                        notifications.add({
+                            type: "warning",
+                            message: `You don’t have authorisation to view this page.`,
+                            isDismissable: true,
+                        });
+                        console.error("get cantabular metadata: unauthorised request", error);
+                        break;
+                    }
+                    default: {
+                        log.event(
+                            "get cantabular metadata: something went wrong when trying to retrieve the cantabular dataset metadata",
+                            log.data({ datasetID, language }),
+                            log.error()
+                        );
+                        notifications.add({
+                            type: "warning",
+                            message: `Error with the service, please try again.`,
+                            isDismissable: true,
+                        });
+                        console.error("get cantabular metadata: something went wrong when trying to retrieve the cantabular dataset metadata", error);
+                        break;
+                    }
+                }
             });
     };
 

@@ -656,22 +656,26 @@ describe("Calling getCantabularMetadata", () => {
     cookies.get = jest.fn(() => "cy");
 
     it("calls getCantabularMetadata with expected args", async () => {
-        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve());
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve(mockedCantabularExtractorResp));
         await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
         expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cy");
     });
 
-    it("sets state correctly when getCantabularMetadata returns 200", async () => {
-        component.instance().marshalCantabularMetadata = jest.fn();
-        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve({ status: 200 }));
-        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalled();
-    });
-
-    it("handles correctly and throws error when getCantabularMetadata returns error", async () => {
-        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject());
+    it("sets state correctly when getCantabularMetadata returns a valid respose body", async () => {
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve(mockedCantabularExtractorResp));
         component.instance().marshalCantabularMetadata = jest.fn();
         component.instance().handleGETSuccess = jest.fn();
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(1);
+        expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(1);
+    });
+
+    it("handles correctly and throws error when getCantabularMetadata returns a 502 error", async () => {
+        const errorObject = { error: { response: { status: 502 } } };
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject(errorObject));
+        component.instance().marshalCantabularMetadata = jest.fn();
+        component.instance().handleGETSuccess = jest.fn();
+        console.error = jest.fn();
         await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
         expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(0);
         expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(0);
@@ -681,6 +685,50 @@ describe("Calling getCantabularMetadata", () => {
         expect(component.state("disableCancel")).toBe(false);
         expect(log.error).toHaveBeenCalledTimes(1);
         expect(mockedNotifications.length).toEqual(1);
+        expect(mockedNotifications[0].message).toBe("Error connecting with the service.");
+        expect(console.error).toHaveBeenCalledWith(
+            "get cantabular metadata: can't connect with the cantabular metadata extractor service",
+            errorObject
+        );
+    });
+    it("handles correctly and throws error when getCantabularMetadata returns a 403 error", async () => {
+        const errorObject = { error: { response: { status: 403 } } };
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject(errorObject));
+        component.instance().marshalCantabularMetadata = jest.fn();
+        component.instance().handleGETSuccess = jest.fn();
+        console.error = jest.fn();
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(0);
+        expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(0);
+        expect(component.state("isGettingMetadata")).toBe(false);
+        expect(component.state("disableScreen")).toBe(true);
+        expect(component.state("allowPreview")).toBe(false);
+        expect(component.state("disableCancel")).toBe(false);
+        expect(log.error).toHaveBeenCalledTimes(1);
+        expect(mockedNotifications.length).toEqual(1);
+        expect(mockedNotifications[0].message).toBe("You don’t have authorisation to view this page.");
+        expect(console.error).toHaveBeenCalledWith("get cantabular metadata: unauthorised request", errorObject);
+    });
+    it("handles correctly and throws error when getCantabularMetadata returns any other errors but a 403 or a 502 error", async () => {
+        const errorObject = { error: { response: { status: 400 } } };
+        datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.reject(errorObject));
+        component.instance().marshalCantabularMetadata = jest.fn();
+        component.instance().handleGETSuccess = jest.fn();
+        console.error = jest.fn();
+        await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
+        expect(component.instance().marshalCantabularMetadata).toHaveBeenCalledTimes(0);
+        expect(component.instance().handleGETSuccess).toHaveBeenCalledTimes(0);
+        expect(component.state("isGettingMetadata")).toBe(false);
+        expect(component.state("disableScreen")).toBe(true);
+        expect(component.state("allowPreview")).toBe(false);
+        expect(component.state("disableCancel")).toBe(false);
+        expect(log.error).toHaveBeenCalledTimes(1);
+        expect(mockedNotifications.length).toEqual(1);
+        expect(mockedNotifications[0].message).toBe("Error with the service, please try again.");
+        expect(console.error).toHaveBeenCalledWith(
+            "get cantabular metadata: something went wrong when trying to retrieve the cantabular dataset metadata",
+            errorObject
+        );
     });
 });
 
