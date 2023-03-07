@@ -44,14 +44,9 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false isValid and an error message if the collection id prefix is already taken", () => {
-        expect(collectionValidation.name("test", collections).errorMsg).toBe(
-            "A collection with this ID already exists. Please choose a different name."
-        );
+        expect(collectionValidation.name("test", collections).errorMsg).toBe(errCodes.UNIQ_ID_ERROR,);
         expect(collectionValidation.name("test", collections).isValid).toBe(false);
-
-        expect(collectionValidation.name("alpha beta", collections).errorMsg).toBe(
-            "A collection with this ID already exists. Please choose a different name."
-        );
+        expect(collectionValidation.name("alpha beta", collections).errorMsg).toBe(errCodes.UNIQ_ID_ERROR,);
         expect(collectionValidation.name("alpha beta", collections).isValid).toBe(false);
     });
 });
