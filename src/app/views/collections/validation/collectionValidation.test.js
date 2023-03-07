@@ -2,7 +2,7 @@ import collectionValidation from "./collectionValidation";
 import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
-    const collections = [{id: "Fooo-123", name: "Foo" }, {id: "Booo-abc", name: "Boo" }, { id: "test-123abc", name: "test2" }];
+    const collections = [{id: "Fooo-123", name: "Foo" }, {id: "Booo-abc", name: "Boo" }, { id: "test-123abc", name: "test2" }, { id: "alphabeta-123abc", name: "alpha" }];
 
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
@@ -48,6 +48,11 @@ describe("Validating the collection name", () => {
             "A collection with this ID already exists. Please choose a different name."
         );
         expect(collectionValidation.name("test", collections).isValid).toBe(false);
+
+        expect(collectionValidation.name("alpha beta", collections).errorMsg).toBe(
+            "A collection with this ID already exists. Please choose a different name."
+        );
+        expect(collectionValidation.name("alpha beta", collections).isValid).toBe(false);
     });
 });
 
