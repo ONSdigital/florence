@@ -11,7 +11,7 @@ const Search = ({ saveSearch }) => {
     const [search, setSearch] = useInput("", handleOnChange);
 
     const handleReset = () => {
-        setSearch("");
+        setSearch();
         saveSearch("");
     };
 
