@@ -80,7 +80,7 @@ describe("CreateNewCollection", () => {
         it("validates collection name to be unique", () => {
             const props = {
                 ...defaultProps,
-                collections: [{ name: "My Test" }, { name: "My Test - 1" }],
+                collections: [{ id:"MyTest-123", name: "My Test" }, { id:"MyTest-1-123", name: "My Test - 1" }],
             };
             render(<CreateNewCollection {...props} />);
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
