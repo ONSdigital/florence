@@ -465,6 +465,8 @@ export class CantabularMetadataController extends Component {
                 lastEditedBy: nonCantDatasetMetadata.collection_last_edited_by || null,
                 versionIsPublished: version.state === "published",
                 state: dataset.state,
+                collectionState: collectionState,
+                versionEtag: version.e_tag || "",
             };
         } catch (error) {
             log.event("error mapping metadata to to state", log.data({ datasetID: dataset.id, versionID: version.id }), log.error(error));
@@ -570,6 +572,8 @@ export class CantabularMetadataController extends Component {
             datasetState: mapped.state,
             lastEditedBy: mapped.lastEditedBy,
             versionIsPublished: mapped.versionIsPublished,
+            collectionState: mapped.collectionState,
+            versionEtag: mapped.versionEtag,
         });
 
         this.checksMandatoryFieldsReturnedByMetadataExtractor(this.state.fieldsReturned.title, this.state.fieldsReturned.dimensions);
@@ -899,6 +903,7 @@ export class CantabularMetadataController extends Component {
                         ? this.state.metadata.latestChanges.map(latestChange => ({ ...latestChange, name: latestChange.title }))
                         : [],
                 dimensions: [...this.state.metadata.dimensions],
+                e_tag: this.state.versionEtag,
             },
             dimensions: [...this.state.metadata.dimensions],
             collection_id: this.props.params.collectionID,
@@ -933,33 +938,63 @@ export class CantabularMetadataController extends Component {
 
     saveMetadata = (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
-        return datasets
-            .putEditMetadata(datasetID, editionID, versionID, body)
-            .then(() => {
-                this.setState(() => {
-                    return { isSaving: false, allowPreview: true, disableCancel: true };
-                });
+        if (this.state.collectionState === "") {
+            return datasets
+                .putEditMetadata(datasetID, editionID, versionID, body)
+                .then(() => {
+                    this.setState(() => {
+                        return { isSaving: false, allowPreview: true, disableCancel: true };
+                    });
 
-                notifications.add({
-                    type: "positive",
-                    message: `${this.state.metadata.title} saved!`,
-                    isDismissable: true,
-                });
+                    notifications.add({
+                        type: "positive",
+                        message: `${this.state.metadata.title} saved!`,
+                        isDismissable: true,
+                    });
 
-                if (isMarkingAsReviewed || isSubmittingForReview) {
-                    this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
-                }
-            })
-            .catch(error => {
-                this.setState({ isSaving: false, allowPreview: false, disableCancel: false });
-                log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
-                notifications.add({
-                    type: "warning",
-                    message: `An error occurred when saving this dataset version metadata. Please try again`,
-                    isDismissable: true,
+                    if (isMarkingAsReviewed || isSubmittingForReview) {
+                        this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                    }
+                })
+                .catch(error => {
+                    this.setState({ isSaving: false, allowPreview: false, disableCancel: false });
+                    log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
+                    notifications.add({
+                        type: "warning",
+                        message: `An error occurred when saving this dataset version metadata. Please try again`,
+                        isDismissable: true,
+                    });
+                    console.error("save metadata: error PUTting metadata to controller", error);
                 });
-                console.error("save metadata: error PUTting metadata to controller", error);
-            });
+        } else {
+            return datasets
+                .putMetadata(datasetID, editionID, versionID, body)
+                .then(() => {
+                    this.setState(() => {
+                        return { isSaving: false, allowPreview: true, disableCancel: true };
+                    });
+
+                    notifications.add({
+                        type: "positive",
+                        message: `${this.state.metadata.title} saved!`,
+                        isDismissable: true,
+                    });
+
+                    if (isMarkingAsReviewed || isSubmittingForReview) {
+                        this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                    }
+                })
+                .catch(error => {
+                    this.setState({ isSaving: false, allowPreview: false, disableCancel: false });
+                    log.event("save metadata: error PUTting metadata to controller", log.data({ datasetID, editionID, versionID }), log.error());
+                    notifications.add({
+                        type: "warning",
+                        message: `An error occurred when saving this dataset version metadata. Please try again`,
+                        isDismissable: true,
+                    });
+                    console.error("save metadata: error PUTting metadata to controller", error);
+                });
+        }
     };
 
     retrieveDatasetMetadata = async () => {
@@ -969,7 +1004,18 @@ export class CantabularMetadataController extends Component {
                 this.props.params.editionID,
                 this.props.params.versionID
             );
-            this.mapMetadataToState(datasetMetadata);
+            const mapped = this.mapMetadataToState(datasetMetadata);
+            this.setState({
+                metadata: mapped.metadata,
+                datasetIsInCollection: mapped.collection,
+                datasetCollectionState: mapped.datasetCollectionState,
+                versionCollectionState: mapped.versionCollectionState,
+                datasetState: mapped.state,
+                lastEditedBy: mapped.lastEditedBy,
+                versionIsPublished: mapped.versionIsPublished,
+                collectionState: mapped.collectionState,
+                versionEtag: mapped.versionEtag,
+            });
         } catch (error) {
             log.event(
                 "get metadata: error retrieving saved dataset metadata from controller",
