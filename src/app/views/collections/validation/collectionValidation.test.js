@@ -2,7 +2,7 @@ import collectionValidation from "./collectionValidation";
 import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
-    const collections = [{id: "Fooo-123", name: "Foo" }, {id: "Booo-abc", name: "Boo" }, { id: "test-123abc", name: "test2" }, { id: "alphabeta-123abc", name: "alpha" }];
+    const collections = [{id: "Foo-123", name: "Foo" }, {id: "Boo-123", name: "Boo" }, { id: "test-123", name: "test2" }, { id: "alphabeta-123", name: "alpha" }];
 
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
@@ -29,7 +29,7 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false isValid and an error message if the collection name is already taken", () => {
-        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(errCodes.UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("Foo", collections).isValid).toBe(false);
     });
 
@@ -39,14 +39,14 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false and error message if the collection name difference with wite space only", () => {
-        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(errCodes.UNIQ_NAME_ERROR);
+        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("Foo ", collections).isValid).toBe(false);
     });
 
     it("returns false isValid and an error message if the collection id prefix is already taken", () => {
-        expect(collectionValidation.name("test", collections).errorMsg).toBe(errCodes.UNIQ_ID_ERROR,);
+        expect(collectionValidation.name("test", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("test", collections).isValid).toBe(false);
-        expect(collectionValidation.name("alpha beta", collections).errorMsg).toBe(errCodes.UNIQ_ID_ERROR,);
+        expect(collectionValidation.name("alpha beta", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("alpha beta", collections).isValid).toBe(false);
     });
 });

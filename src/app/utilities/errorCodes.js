@@ -16,8 +16,7 @@ export const errCodes = {
     GET_USERS_UNEXPECTED_ERROR:
         "An unexpected error's occurred whilst trying to get users. You may only be able to see previously loaded information.",
     GET_USERS_NETWORK_ERROR: "There's been a network error whilst trying to get users. You may only be able to see previously loaded information.",
-    UNIQ_NAME_ERROR: "A collection with this name already exists.",
-    UNIQ_ID_ERROR: "A collection with this ID already exists. Please choose a different name.",
+    UNIQ_ID_NAME_ERROR: "A collection with this name/ID already exists. Please choose a different name.",
     GET_USERS_RESPONSE_ERROR: "An error has occurred whilst trying to get users. You may only be able to see previously loaded information.",
     GET_GROUPS_NOT_FOUND: "An error has occurred whilst trying to get teams. You may only be able to see previously loaded information.",
     GET_USERS_UNEXPECTED_FILTER_ERROR: "An error has occurred whilst trying to get users. Please contact an administrator",

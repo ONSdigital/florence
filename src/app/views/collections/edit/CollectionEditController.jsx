@@ -356,7 +356,7 @@ export class CollectionEditController extends Component {
                         this.setState(state => ({
                             name: {
                                 value: state.name.value,
-                                errorMsg: errCodes.UNIQ_NAME_ERROR,
+                                errorMsg: errCodes.UNIQ_ID_NAME_ERROR,
                             },
                         }));
                         break;
