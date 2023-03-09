@@ -88,7 +88,7 @@ describe("Collections", () => {
         it("has Search", () => {
             render(<Collections {...defaultProps} />);
 
-            expect(screen.getByRole("button", { name: "Search" })).toBeInTheDocument();
+            expect(screen.getByLabelText("Search collections")).toHaveValue("");
         });
 
         it("shows empty collection list table with heading and sort buttons", () => {
