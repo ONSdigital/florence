@@ -74,10 +74,11 @@
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
     "audit": "npx auditjs ossi --whitelist ./audit-allowlist.json --quiet",
+    "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
+    "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
     "watch-refactored": "export NODE_ENV=development && npx webpack -w & npm run prettier-watch",
     "legacy:watch": "cd legacy && npm run watch",
-    "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "build-refactored": "npm run prettier-cli; node ./node_modules/webpack/bin/webpack.js --mode=production",
     "build-refactored:dev": "node ./node_modules/webpack/bin/webpack.js -d",
     "test": "export NODE_ENV=testing TZ='Europe/London' && jest",
