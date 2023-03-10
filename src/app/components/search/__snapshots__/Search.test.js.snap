@@ -3,7 +3,6 @@
 exports[`Search matches the snapshot 1`] = `
 <form
   className="search__form--inline padding--bottom--1"
-  onSubmit={[Function]}
   role="search"
 >
   <div
@@ -35,11 +34,5 @@ exports[`Search matches the snapshot 1`] = `
     />
     
   </div>
-  <button
-    className="btn btn--positive"
-    type="submit"
-  >
-    Search
-  </button>
 </form>
 `;
