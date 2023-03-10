@@ -40,6 +40,7 @@ jest.mock("../../../utilities/api-clients/datasets", () => {
         putEditMetadata: jest.fn(() => {
             return Promise.resolve();
         }),
+        putMetadata: jest.fn(),
         get: jest.fn(() => {
             return Promise.resolve();
         }),
@@ -555,13 +556,16 @@ describe("Allowing preview functionality", () => {
         expect(component.state("allowPreview")).toBe(false);
     });
 
-    it("disables preview if saving edits fails", async () => {
-        datasets.putEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+    it("disables preview if saving edits fails - collection state is 'inProgress' ", async () => {
+        component.setState({ collectionState: "inProgress" });
+        datasets.putMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().saveMetadata();
         expect(component.state("allowPreview")).toBe(false);
     });
 
-    it("enables preview if saving edits successful", async () => {
+    it("enables preview if saving edits successful - collection state is an empty string", async () => {
+        component.setState({ collectionState: "" });
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata();
         expect(component.state("allowPreview")).toBe(true);
     });
@@ -609,38 +613,62 @@ describe("Calling saveMetadata", () => {
         dispatchedActions = [];
     });
 
-    it("updates isSaving state to show it's fetching data for all datasets", () => {
+    it("updates isSaving state to show it's fetching data for all datasets - collection state is 'inProgress'", () => {
+        component.setState({ collectionState: "inProgress" });
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
         expect(component.state("isSaving")).toBe(false);
-
         component.instance().saveMetadata();
         expect(component.state("isSaving")).toBe(true);
     });
 
-    it("updates isSaving state to show it has fetched data for all datasets", async () => {
+    it("updates isSaving state to show it has fetched data for all datasets - collection state is an empty string", async () => {
+        component.setState({ collectionState: "" });
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata();
         expect(component.state("isSaving")).toBe(false);
     });
 
-    it("updates isSaving state correctly on failure to fetch data for all datasets", async () => {
-        datasets.putEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+    it("updates isSaving state correctly on failure to fetch data for all datasets - collection state is 'inProgress'", async () => {
+        component.setState({ collectionState: "inProgress" });
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata();
         expect(component.state("isSaving")).toBe(false);
     });
 
     it("on error: creates notification", async () => {
+        component.setState({ collectionState: "inProgress" });
         expect(mockedNotifications.length).toBe(0);
-        datasets.putEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        datasets.putMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
         await component.instance().saveMetadata();
         expect(mockedNotifications.length).toBe(1);
     });
 
-    it("on success: creates notifcation", async () => {
+    it("on success: creates notification when the collection state is an empty empty string", async () => {
+        component.setState({ collectionState: "" });
         expect(mockedNotifications.length).toBe(0);
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata();
         expect(mockedNotifications.length).toBe(1);
     });
 
-    it("on success: redirects if state is 'complete' or 'reviewed'", async () => {
+    it("on success: creates notification when the collection state is 'inProgress' ", async () => {
+        component.setState({ collectionState: "inProgress" });
+        expect(mockedNotifications.length).toBe(0);
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().saveMetadata();
+        expect(mockedNotifications.length).toBe(1);
+    });
+
+    it("on success: redirects if state is 'complete'", async () => {
+        component.setState({ collectionState: "complete" });
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().saveMetadata(datasetID, editionID, versionID, {}, true, false);
+        expect(dispatchedActions[0].payload.method).toBe("push");
+        expect(dispatchedActions[0].payload.args[0]).toBe("/florence/collections/123");
+    });
+    it("on success: redirects if state is 'reviewed'", async () => {
+        component.setState({ collectionState: "reviewed" });
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata(datasetID, editionID, versionID, {}, true, false);
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("/florence/collections/123");
