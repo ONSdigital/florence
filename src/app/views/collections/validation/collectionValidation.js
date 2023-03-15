@@ -26,7 +26,10 @@ export default class collectionValidation {
             };
         }
 
-        if (collections && (collections.some(c => c.name === name.trim()) || collections.some(c => c.id.split("-")[0] === name.replace(/\s+/g, "")))) {
+        name = name.trim()
+        name = name.replace(/\s+/g, "")
+
+        if (collections && collections.some(c => c.name === name || c.id.split("-")[0] === name)) {
             response = {
                 isValid: false,
                 errorMsg: errCodes.UNIQ_ID_NAME_ERROR,
