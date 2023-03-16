@@ -941,7 +941,9 @@ export class CantabularMetadataController extends Component {
         if (this.state.collectionState === "") {
             return datasets
                 .putEditMetadata(datasetID, editionID, versionID, body)
-                .then(() => {
+                .then(async () => {
+                    await this.sleep(3000);
+                    await this.retrieveDatasetMetadata();
                     this.setState(() => {
                         return { isSaving: false, allowPreview: true, disableCancel: true };
                     });
@@ -1098,6 +1100,12 @@ export class CantabularMetadataController extends Component {
                 .then(this.retrieveDatasetMetadata)
                 .catch(error => error);
         }
+    };
+
+    sleep = async milliseconds => {
+        await new Promise(resolve => {
+            return setTimeout(resolve, milliseconds);
+        });
     };
 
     handleRedirectOnReject = isCancellingPublication => {
