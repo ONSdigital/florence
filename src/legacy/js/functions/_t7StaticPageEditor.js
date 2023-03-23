@@ -82,6 +82,8 @@ function staticPageEditor(collectionId, data) {
   });
 
   function save(onSave) {
+    validateAndSaveTags(data);
+
     // Sections
     data.markdown = [$('#content-markdown').val()];
     // Files are uploaded. Save metadata
