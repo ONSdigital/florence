@@ -121,6 +121,7 @@ export class CantabularMetadataController extends Component {
                 },
                 version: {},
             },
+            retrieveMetadata: false,
         };
     }
 
@@ -129,7 +130,7 @@ export class CantabularMetadataController extends Component {
         const editionID = this.props.params.editionID;
         const versionID = this.props.params.versionID;
         await this.getTopics();
-        this.getMetadata(datasetID, editionID, versionID);
+        await this.getMetadata(datasetID, editionID, versionID);
     }
 
     getTopics = async () => {
@@ -936,16 +937,14 @@ export class CantabularMetadataController extends Component {
         );
     };
 
-    saveMetadata = (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
+    saveMetadata = async (datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed) => {
         this.setState({ isSaving: true });
         if (this.state.collectionState === "") {
             return datasets
                 .putEditMetadata(datasetID, editionID, versionID, body)
-                .then(async () => {
-                    await this.sleep(3000);
-                    await this.retrieveDatasetMetadata();
+                .then(() => {
                     this.setState(() => {
-                        return { isSaving: false, allowPreview: true, disableCancel: true };
+                        return { isSaving: false, allowPreview: true, disableCancel: true, retrieveMetadata: true };
                     });
 
                     notifications.add({
@@ -969,6 +968,17 @@ export class CantabularMetadataController extends Component {
                     console.error("save metadata: error PUTting metadata to controller", error);
                 });
         } else {
+            // this retrieveDatasetMetadata is a one time call due to the PutDatasetVersionInCollection call
+            // in which zebedee on first save makes a call to the putVersion endpoint
+            // to update the collection state and ID when the dataset and version are associated for the first time to a collection
+            // changing this way, once again the version_etag
+            if (this.state.retrieveMetadata) {
+                await this.retrieveDatasetMetadata();
+                body.version_etag = this.state.versionEtag;
+                this.setState(() => {
+                    return { retrieveMetadata: false };
+                });
+            }
             return datasets
                 .putMetadata(datasetID, editionID, versionID, body)
                 .then(() => {
@@ -1100,12 +1110,6 @@ export class CantabularMetadataController extends Component {
                 .then(this.retrieveDatasetMetadata)
                 .catch(error => error);
         }
-    };
-
-    sleep = async milliseconds => {
-        await new Promise(resolve => {
-            return setTimeout(resolve, milliseconds);
-        });
     };
 
     handleRedirectOnReject = isCancellingPublication => {
