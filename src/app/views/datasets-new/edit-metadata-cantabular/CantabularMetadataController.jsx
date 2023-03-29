@@ -466,7 +466,7 @@ export class CantabularMetadataController extends Component {
                 versionIsPublished: version.state === "published",
                 state: dataset.state,
                 collectionState: collectionState,
-                versionEtag: version.e_tag || "",
+                versionEtag: nonCantDatasetMetadata.version_etag || "",
             };
         } catch (error) {
             log.event("error mapping metadata to to state", log.data({ datasetID: dataset.id, versionID: version.id }), log.error(error));
@@ -903,11 +903,11 @@ export class CantabularMetadataController extends Component {
                         ? this.state.metadata.latestChanges.map(latestChange => ({ ...latestChange, name: latestChange.title }))
                         : [],
                 dimensions: [...this.state.metadata.dimensions],
-                e_tag: this.state.versionEtag,
             },
             dimensions: [...this.state.metadata.dimensions],
             collection_id: this.props.params.collectionID,
             collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
+            version_etag: this.state.versionEtag,
         };
     };
 
