@@ -968,8 +968,12 @@ export class CantabularMetadataController extends Component {
                 });
         } else {
             // always retrieve the metadata before the putMetadata endpoint is called to make sure that the latest versionEtag is passed down in the payload
-            await this.retrieveDatasetMetadata();
-            body.version_etag = this.state.versionEtag;
+            const datasetMetadata = await datasets.getEditMetadata(
+                this.props.params.datasetID,
+                this.props.params.editionID,
+                this.props.params.versionID
+            );
+            body.version_etag = datasetMetadata.version_etag;
             return datasets
                 .putMetadata(datasetID, editionID, versionID, body)
                 .then(() => {
@@ -1007,18 +1011,7 @@ export class CantabularMetadataController extends Component {
                 this.props.params.editionID,
                 this.props.params.versionID
             );
-            const mapped = this.mapMetadataToState(datasetMetadata);
-            this.setState({
-                metadata: mapped.metadata,
-                datasetIsInCollection: mapped.collection,
-                datasetCollectionState: mapped.datasetCollectionState,
-                versionCollectionState: mapped.versionCollectionState,
-                datasetState: mapped.state,
-                lastEditedBy: mapped.lastEditedBy,
-                versionIsPublished: mapped.versionIsPublished,
-                collectionState: mapped.collectionState,
-                versionEtag: mapped.versionEtag,
-            });
+            this.mapMetadataToState(datasetMetadata);
         } catch (error) {
             log.event(
                 "get metadata: error retrieving saved dataset metadata from controller",
