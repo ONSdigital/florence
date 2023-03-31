@@ -213,31 +213,31 @@ export class CantabularMetadataController extends Component {
                 contacts:
                     "contacts" in datasetMetadata.dataset
                         ? [
-                            {
-                                name: datasetMetadata.dataset.contacts?.[0].name || "",
-                                email: datasetMetadata.dataset.contacts?.[0].email || "",
-                                telephone: datasetMetadata.dataset.contacts?.[0].telephone || "",
-                            },
-                        ]
+                              {
+                                  name: datasetMetadata.dataset.contacts?.[0].name || "",
+                                  email: datasetMetadata.dataset.contacts?.[0].email || "",
+                                  telephone: datasetMetadata.dataset.contacts?.[0].telephone || "",
+                              },
+                          ]
                         : [
-                            {
-                                name: "",
-                                email: "",
-                                telephone: "",
-                            },
-                        ],
+                              {
+                                  name: "",
+                                  email: "",
+                                  telephone: "",
+                              },
+                          ],
             },
             version: {
                 dimensions:
                     "dimensions" in datasetMetadata.version
                         ? datasetMetadata.version.dimensions.map(dimension => ({
-                            id: "id" in dimension ? dimension.id : "",
-                            name: "name" in dimension ? dimension.name : "",
-                            description: "description" in dimension ? dimension.description : "",
-                            label: "label" in dimension ? dimension.label : "",
-                            quality_statement_text: "quality_statement_text" in dimension ? dimension.quality_statement_text : "",
-                            quality_statement_url: "quality_statement_url" in dimension ? dimension.quality_statement_url : "",
-                        }))
+                              id: "id" in dimension ? dimension.id : "",
+                              name: "name" in dimension ? dimension.name : "",
+                              description: "description" in dimension ? dimension.description : "",
+                              label: "label" in dimension ? dimension.label : "",
+                              quality_statement_text: "quality_statement_text" in dimension ? dimension.quality_statement_text : "",
+                              quality_statement_url: "quality_statement_url" in dimension ? dimension.quality_statement_url : "",
+                          }))
                         : [],
             },
         };

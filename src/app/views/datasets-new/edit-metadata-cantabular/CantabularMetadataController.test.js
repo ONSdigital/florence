@@ -6,19 +6,19 @@ import cookies from "../../../utilities/cookies";
 import log from "../../../utilities/logging/log";
 import topics from "../../../utilities/api-clients/topics";
 
-console.error = () => { };
+console.error = () => {};
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function () { },
-        data: function () { },
+        event: function () {},
+        data: function () {},
         error: jest.fn(),
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function () { },
+        add: function () {},
         eventTypes: {},
     };
 });
@@ -28,7 +28,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockedNotifications.push(notification);
         }),
-        remove: () => { },
+        remove: () => {},
     };
 });
 
