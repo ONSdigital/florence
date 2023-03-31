@@ -121,7 +121,6 @@ export class CantabularMetadataController extends Component {
                 },
                 version: {},
             },
-            retrieveMetadata: false,
         };
     }
 
@@ -214,31 +213,31 @@ export class CantabularMetadataController extends Component {
                 contacts:
                     "contacts" in datasetMetadata.dataset
                         ? [
-                              {
-                                  name: datasetMetadata.dataset.contacts?.[0].name || "",
-                                  email: datasetMetadata.dataset.contacts?.[0].email || "",
-                                  telephone: datasetMetadata.dataset.contacts?.[0].telephone || "",
-                              },
-                          ]
+                            {
+                                name: datasetMetadata.dataset.contacts?.[0].name || "",
+                                email: datasetMetadata.dataset.contacts?.[0].email || "",
+                                telephone: datasetMetadata.dataset.contacts?.[0].telephone || "",
+                            },
+                        ]
                         : [
-                              {
-                                  name: "",
-                                  email: "",
-                                  telephone: "",
-                              },
-                          ],
+                            {
+                                name: "",
+                                email: "",
+                                telephone: "",
+                            },
+                        ],
             },
             version: {
                 dimensions:
                     "dimensions" in datasetMetadata.version
                         ? datasetMetadata.version.dimensions.map(dimension => ({
-                              id: "id" in dimension ? dimension.id : "",
-                              name: "name" in dimension ? dimension.name : "",
-                              description: "description" in dimension ? dimension.description : "",
-                              label: "label" in dimension ? dimension.label : "",
-                              quality_statement_text: "quality_statement_text" in dimension ? dimension.quality_statement_text : "",
-                              quality_statement_url: "quality_statement_url" in dimension ? dimension.quality_statement_url : "",
-                          }))
+                            id: "id" in dimension ? dimension.id : "",
+                            name: "name" in dimension ? dimension.name : "",
+                            description: "description" in dimension ? dimension.description : "",
+                            label: "label" in dimension ? dimension.label : "",
+                            quality_statement_text: "quality_statement_text" in dimension ? dimension.quality_statement_text : "",
+                            quality_statement_url: "quality_statement_url" in dimension ? dimension.quality_statement_url : "",
+                        }))
                         : [],
             },
         };
@@ -944,7 +943,7 @@ export class CantabularMetadataController extends Component {
                 .putEditMetadata(datasetID, editionID, versionID, body)
                 .then(() => {
                     this.setState(() => {
-                        return { isSaving: false, allowPreview: true, disableCancel: true, retrieveMetadata: true };
+                        return { isSaving: false, allowPreview: true, disableCancel: true };
                     });
 
                     notifications.add({
@@ -968,17 +967,9 @@ export class CantabularMetadataController extends Component {
                     console.error("save metadata: error PUTting metadata to controller", error);
                 });
         } else {
-            // this retrieveDatasetMetadata is a one time call due to the PutDatasetVersionInCollection call
-            // in which zebedee on first save makes a call to the putVersion endpoint
-            // to update the collection state and ID when the dataset and version are associated for the first time to a collection
-            // changing this way, once again the version_etag
-            if (this.state.retrieveMetadata) {
-                await this.retrieveDatasetMetadata();
-                body.version_etag = this.state.versionEtag;
-                this.setState(() => {
-                    return { retrieveMetadata: false };
-                });
-            }
+            // always retrieve the metadata before the putMetadata endpoint is called to make sure that the latest versionEtag is passed down in the payload
+            await this.retrieveDatasetMetadata();
+            body.version_etag = this.state.versionEtag;
             return datasets
                 .putMetadata(datasetID, editionID, versionID, body)
                 .then(() => {
