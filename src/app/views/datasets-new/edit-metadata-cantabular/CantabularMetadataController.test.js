@@ -6,19 +6,19 @@ import cookies from "../../../utilities/cookies";
 import log from "../../../utilities/logging/log";
 import topics from "../../../utilities/api-clients/topics";
 
-console.error = () => {};
+console.error = () => { };
 
 jest.mock("../../../utilities/logging/log", () => {
     return {
-        event: function () {},
-        data: function () {},
+        event: function () { },
+        data: function () { },
         error: jest.fn(),
     };
 });
 
 jest.mock("../../../utilities/log", () => {
     return {
-        add: function () {},
+        add: function () { },
         eventTypes: {},
     };
 });
@@ -28,7 +28,7 @@ jest.mock("../../../utilities/notifications", () => {
         add: jest.fn(notification => {
             mockedNotifications.push(notification);
         }),
-        remove: () => {},
+        remove: () => { },
     };
 });
 
@@ -557,9 +557,9 @@ describe("Allowing preview functionality", () => {
     });
 
     it("disables preview if saving edits fails - collection state is 'inProgress' ", async () => {
-        component.setState({ collectionState: "inProgress" });
+        component.setState({ collectionState: "inProgress", versionEtag: "latest_eTag" });
         datasets.putMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().saveMetadata();
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, false);
         expect(component.state("allowPreview")).toBe(false);
     });
 
@@ -614,36 +614,45 @@ describe("Calling saveMetadata", () => {
     });
 
     it("updates isSaving state to show it's fetching data for all datasets - collection state is 'inProgress'", () => {
-        component.setState({ collectionState: "inProgress" });
+        component.setState({ collectionState: "inProgress", versionEtag: "latest_eTag" });
         datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
         expect(component.state("isSaving")).toBe(false);
-        component.instance().saveMetadata();
+        component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, false);
         expect(component.state("isSaving")).toBe(true);
     });
 
     it("updates isSaving state to show it has fetched data for all datasets - collection state is an empty string", async () => {
         component.setState({ collectionState: "" });
         datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
+        datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
         await component.instance().saveMetadata();
+        expect(datasets.putEditMetadata).toHaveBeenCalledTimes(1);
+        expect(datasets.putMetadata).toHaveBeenCalledTimes(0);
         expect(component.state("isSaving")).toBe(false);
     });
 
     it("updates isSaving state correctly on failure to fetch data for all datasets - collection state is 'inProgress'", async () => {
-        component.setState({ collectionState: "inProgress" });
+        component.setState({ collectionState: "inProgress", versionEtag: "latest_eTag" });
         datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
-        await component.instance().saveMetadata();
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, false);
         expect(component.state("isSaving")).toBe(false);
+        expect(datasets.putMetadata).toHaveBeenCalledTimes(1);
+        expect(datasets.putEditMetadata).toHaveBeenCalledTimes(0);
     });
 
     it("on error: creates notification", async () => {
-        component.setState({ collectionState: "inProgress" });
+        component.setState({ collectionState: "inProgress", versionEtag: "latest_eTag" });
         expect(mockedNotifications.length).toBe(0);
         datasets.putMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
-        await component.instance().saveMetadata();
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.reject({ status: 500 }));
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, false);
         expect(mockedNotifications.length).toBe(1);
+        expect(datasets.putMetadata).toHaveBeenCalledTimes(1);
+        expect(datasets.putEditMetadata).toHaveBeenCalledTimes(0);
     });
 
-    it("on success: creates notification when the collection state is an empty empty string", async () => {
+    it("on success: creates notification when the collection state is an empty string", async () => {
         component.setState({ collectionState: "" });
         expect(mockedNotifications.length).toBe(0);
         datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
@@ -652,26 +661,32 @@ describe("Calling saveMetadata", () => {
     });
 
     it("on success: creates notification when the collection state is 'inProgress' ", async () => {
-        component.setState({ collectionState: "inProgress" });
+        component.setState({ collectionState: "inProgress", versionEtag: "latest_eTag" });
         expect(mockedNotifications.length).toBe(0);
         datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
-        await component.instance().saveMetadata();
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, false);
         expect(mockedNotifications.length).toBe(1);
     });
 
     it("on success: redirects if state is 'complete'", async () => {
-        component.setState({ collectionState: "complete" });
+        component.setState({ collectionState: "complete", versionEtag: "latest_eTag" });
         datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
-        await component.instance().saveMetadata(datasetID, editionID, versionID, {}, true, false);
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, true, false);
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("/florence/collections/123");
+        expect(datasets.putMetadata).toHaveBeenCalledTimes(1);
+        expect(datasets.putEditMetadata).toHaveBeenCalledTimes(0);
     });
     it("on success: redirects if state is 'reviewed'", async () => {
-        component.setState({ collectionState: "reviewed" });
+        component.setState({ collectionState: "reviewed", versionEtag: "latest_eTag" });
         datasets.putMetadata.mockImplementationOnce(() => Promise.resolve());
-        await component.instance().saveMetadata(datasetID, editionID, versionID, {}, true, false);
+        datasets.putEditMetadata.mockImplementationOnce(() => Promise.resolve());
+        await component.instance().saveMetadata(datasetID, editionID, versionID, { version_etag: "previous_eTag" }, false, true);
         expect(dispatchedActions[0].payload.method).toBe("push");
         expect(dispatchedActions[0].payload.args[0]).toBe("/florence/collections/123");
+        expect(datasets.putMetadata).toHaveBeenCalledTimes(1);
+        expect(datasets.putEditMetadata).toHaveBeenCalledTimes(0);
     });
 });
 
