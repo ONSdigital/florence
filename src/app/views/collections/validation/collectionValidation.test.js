@@ -2,7 +2,7 @@ import collectionValidation from "./collectionValidation";
 import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
-    const collections = [{id: "Foo-123", name: "Foo" }, {id: "Boo-123", name: "Boo" }, { id: "test-123", name: "test2" }, { id: "alphabeta-123", name: "alpha" }];
+    const collections = [{id: "Foo-123", name: "Foo Test" }, {id: "Boo-123", name: "Boo" }, { id: "test-123", name: "test2" }, { id: "alphabeta-123", name: "alpha" }];
 
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
@@ -29,8 +29,8 @@ describe("Validating the collection name", () => {
     });
 
     it("returns false isValid and an error message if the collection name is already taken", () => {
-        expect(collectionValidation.name("Foo", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
-        expect(collectionValidation.name("Foo", collections).isValid).toBe(false);
+        expect(collectionValidation.name("Foo Test", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
+        expect(collectionValidation.name("Foo Test", collections).isValid).toBe(false);
     });
 
     it("returns true and no error message if the collection name isn't in collections array", () => {
@@ -38,9 +38,9 @@ describe("Validating the collection name", () => {
         expect(collectionValidation.name("Bar", collections).isValid).toBe(true);
     });
 
-    it("returns false and error message if the collection name difference with wite space only", () => {
-        expect(collectionValidation.name("Foo ", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
-        expect(collectionValidation.name("Foo ", collections).isValid).toBe(false);
+    it("returns false and error message if the collection name difference with white space only", () => {
+        expect(collectionValidation.name("Foo Test ", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
+        expect(collectionValidation.name("Foo Test ", collections).isValid).toBe(false);
     });
 
     it("returns false isValid and an error message if the collection id prefix is already taken", () => {
