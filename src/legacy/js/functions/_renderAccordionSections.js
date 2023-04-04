@@ -241,6 +241,7 @@
         var html = templates.workEditT7Landing(templateData);
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
+        tags(templateData)
         accordion();
         staticLandingPageEditor(collectionId, pageData);
     }
@@ -275,6 +276,7 @@
             loadImagesList(collectionId, pageData);
         }
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
+        tags(templateData)
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         addFile(collectionId, pageData, 'downloads', 'file');
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
@@ -286,6 +288,7 @@
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
+        tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
@@ -298,6 +301,7 @@
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
+        tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
         accordion();
         foiEditor(collectionId, pageData);
@@ -307,6 +311,7 @@
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
+        tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
         accordion();
         adHocEditor(collectionId, pageData);
@@ -345,6 +350,7 @@
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
+        tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
         addFile(collectionId, pageData, 'pdfDownloads', 'pdfFile');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
