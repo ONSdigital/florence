@@ -2,7 +2,12 @@ import collectionValidation from "./collectionValidation";
 import { errCodes } from "../../../utilities/errorCodes";
 
 describe("Validating the collection name", () => {
-    const collections = [{id: "Foo-123", name: "Foo Test" }, {id: "Boo-123", name: "Boo" }, { id: "test-123", name: "test2" }, { id: "alphabeta-123", name: "alpha" }];
+    const collections = [
+        { id: "FooTest-123", name: "Foo Test" },
+        { id: "Boo-123", name: "Boo" },
+        { id: "test-123", name: "test2" },
+        { id: "alphabeta-123", name: "alpha" },
+    ];
 
     it("returns 'false' if the collection name is missing", () => {
         expect(collectionValidation.name("").isValid).toBe(false);
