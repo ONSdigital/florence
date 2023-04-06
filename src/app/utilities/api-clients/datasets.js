@@ -217,6 +217,10 @@ export default class datasets {
             });
     }
 
+    static putMetadata(datasetID, editionID, versionID, body) {
+        return http.put(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions/${versionID}/metadata`, body, true);
+    }
+
     static getVersionsList(datasetID, editionID) {
         return http.get(`${publishingDatasetControllerURL}/datasets/${datasetID}/editions/${editionID}/versions`).then(response => {
             return response;
