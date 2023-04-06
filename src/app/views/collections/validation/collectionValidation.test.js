@@ -36,6 +36,7 @@ describe("Validating the collection name", () => {
     it("returns false isValid and an error message if the collection name is already taken", () => {
         expect(collectionValidation.name("Foo Test", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("Foo Test", collections).isValid).toBe(false);
+        expect(collectionValidation.name("alpha", collections).errorMsg).toBe(errCodes.UNIQ_ID_NAME_ERROR);
         expect(collectionValidation.name("alpha", collections).isValid).toBe(false);
     });
 
