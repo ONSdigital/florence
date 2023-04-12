@@ -74,13 +74,22 @@ The following environment variables are available when running the Go server.
 | IMPORT_API_URL               | http://localhost:21800            | URL that the [dataset import API](https://github.com/ONSdigital/dp-import-api) can be accessed on                                        |
 | RECIPE_API_URL               | http://localhost:22300            | URL that the [dataset recipes API](https://github.com/ONSdigital/dp-recipe-api) can be accessed on                                       |
 | DATASET_API_URL              | http://localhost:22000            | URL that the [dataset API](https://github.com/ONSdigital/dp-dataset-api) can be accessed on                                              |
-| TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        | |
+| TABLE_RENDERER_URL           | http://localhost:23300            | The URL that dp-table-renderer can be accessed on                                                                                        |
 | DATASET_CONTROLLER_URL       | http://localhost:24000            | Dataset controller url                                                                                                                   |
-| ENABLE_DATASET_IMPORT        | true                              | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
-| GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds
+| GRACEFUL_SHUTDOWN_TIMEOUT    | 10s                               | The graceful shutdown timeout in seconds                                                                                                 |
 | HEALTHCHECK_INTERVAL         | 30s                               | The period of time between health checks                                                                                                 |
 | HEALTHCHECK_CRITICAL_TIMEOUT | 90s                               | The period of time after which failing checks will result in critical global check status                                                |
 
+The following envrionment variables are available when running the Go server and within the React application:
+
+| Environment variable      | Default | Description                                                                                                                              |
+|---------------------------|---------|------------------------------------------------------------------------------------------------------------------------------------------|
+| ENABLE_DATASET_IMPORT     | true    | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)  |
+| ENABLE_NEW_SIGN_IN        | false   | Enables the new sign in using the identity API (rather than zebedee)                                                                     |
+| ENABLE_NEW_UPLOAD         | false   | Enables the image upload functionality via static files service                                                                          |
+| ENABLE_NEW_INTERACTIVES   | false   | Enables the new interactives functionality                                                                                               |
+| ENABLE_PERMISSION_API     | false   |                                                                                                                                          |
+| ENABLE_CANTABULAR_JOURNEY | false   | Enables the cantabular journey                                                                                                           |
 
 For example:
 ```
