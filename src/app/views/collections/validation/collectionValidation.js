@@ -27,7 +27,7 @@ export default class collectionValidation {
         }
 
         let nameTrimmed = name.trim();
-        let nameReplaced = name.replace(/\s+/g, "");
+        let nameReplaced = name.replace(/\s+/g, "").toLowerCase();
 
         if (collections && collections.some(c => c.name === nameTrimmed || c.id.split("-")[0] === nameReplaced)) {
             response = {
