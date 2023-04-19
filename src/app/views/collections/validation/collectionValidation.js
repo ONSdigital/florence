@@ -27,9 +27,9 @@ export default class collectionValidation {
         }
 
         let nameTrimmed = name.trim();
-        let nameReplaced = name.replace(/\s+/g, "").toLowerCase();
+        let nameSanitised = name.replace(/\s+/g, "").toLowerCase();
 
-        if (collections && collections.some(c => c.name === nameTrimmed || c.id.split("-")[0] === nameReplaced)) {
+        if (collections && collections.some(c => c.name === nameTrimmed || c.id.split("-")[0] === nameSanitised)) {
             response = {
                 isValid: false,
                 errorMsg: errCodes.UNIQ_ID_NAME_ERROR,
