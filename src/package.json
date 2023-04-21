@@ -105,7 +105,7 @@
     "localforage": "^1.5.0",
     "minimongo": "^6.9.0",
     "moment": "^2.29.1",
-    "node-fetch": "^3.2.0",
+    "node-fetch": "^3.2.10",
     "onchange": "^6.1.0",
     "path": "^0.12.7",
     "react": "^17.0.2",
