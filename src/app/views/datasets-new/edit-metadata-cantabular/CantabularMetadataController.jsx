@@ -303,7 +303,7 @@ export class CantabularMetadataController extends Component {
     };
 
     getCantabularMetadata = (datasetID, nonCantDatasetMetadata) => {
-        const language = cookies.get("lang") || "en";
+        const language = "en";
         return datasets
             .getCantabularMetadata(datasetID, language)
             .then(cantMetadata => {
