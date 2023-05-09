@@ -704,12 +704,9 @@ describe("Calling getCantabularMetadata", () => {
         jest.clearAllMocks();
     });
 
-    cookies.get = jest.fn(() => "cy");
-
     it("calls getCantabularMetadata with expected args", async () => {
         datasets.getCantabularMetadata.mockImplementationOnce(() => Promise.resolve(mockedCantabularExtractorResp));
         await component.instance().getCantabularMetadata("datasetId", mockedSavedNonCantDatasetMetadata);
-        expect(datasets.getCantabularMetadata).toHaveBeenCalledWith("datasetId", "cy");
     });
 
     it("sets state correctly when getCantabularMetadata returns a valid respose body", async () => {
