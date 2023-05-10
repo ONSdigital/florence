@@ -1,32 +1,8 @@
 {
     "ignore": [
         {
-            "id" : "CVE-2022-21944",
-            "reason": "fb-watchman@2.0.1 is the latest version"
-        },
-        {
             "id" : "CVE-2021-23446",
             "reason" : "It requires upgrading handsontable to 10.0.0+ but it breaks table builder. See https://trello.com/c/fIZ6RyXD/1029-upgrade-handsontable"
-        },
-        {
-            "id" : "sonatype-2020-1025",
-            "reason" : "It requires upgrading handsontable to 10.0.0+ but it breaks table builder. See https://trello.com/c/fIZ6RyXD/1029-upgrade-handsontable"
-        },
-        {
-            "id" : "CVE-2021-23362",
-            "reason" : "hosted-git-info@2.8.9 is a dependency of auditjs for which we use the latest version"
-        },
-        {
-            "id" : "sonatype-2017-0717",
-            "reason" : "We are using the latest react 17 (17.0.2) - require major upgrade"
-        },
-        {
-            "id" : "sonatype-2022-3677",
-            "reason" : "Latest node-fetch@3.2.6 does not fix the vulnerability"
-        },
-        {
-            "id": "CVE-2022-2596",
-            "reason": "Several libraries appear locked to node-fetch@2 & cannot bump to node-fetch@3.2.10"
         },
         {
             "id" : "CVE-2022-24785",
@@ -37,16 +13,8 @@
             "reason" : "Moment.js"
         },
         {
-            "id" : "sonatype-2017-0422",
-            "reason" : "Moment.js"
-        },
-        {
-            "id" : "CVE-2022-38900",
-            "reason" : "decode-uri-component is a dependency of css, of which we are using the latest version."
-        },
-        {
-            "id" : "sonatype-2023-0962",
-            "reason" : "core-js@2.6.12 is a dependency of the table-builder-ui library , of which we are using the latest version. It requires upgrading core-js to 3.28.0. See https://trello.com/c/KNIkvvRc/1429-florence-audit-failurecore-js2612"
+            "id" : "CVE-2017-18214",
+            "reason": "moment@2.18.1 is a dependency of handsontable which we can't upgrade"
         }
     ]
 }
