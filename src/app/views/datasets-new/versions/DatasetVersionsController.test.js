@@ -71,6 +71,9 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/12345/datasets/6789",
     },
+    params: {
+        datasetID: "1234",
+    },
     routeParams: {
         datasetID: "1234",
     },
