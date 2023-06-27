@@ -2,9 +2,10 @@ package steps
 
 import (
 	"context"
+	"net/http"
+
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
-	"net/http"
 )
 
 type Publisher struct {
@@ -18,10 +19,10 @@ func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
 }
 
 func generateAuthCookies() []*http.Cookie {
-	return []*http.Cookie {
+	return []*http.Cookie{
 		GenerateCookie("access_token", "fakeAuthorizationToken", "", "/", true),
 		GenerateCookie("id_token", "fakeIDToken", "", "/", false),
-		GenerateCookie("refresh_token","fakeRefreshToken", "", "/tokens/self", true),
+		GenerateCookie("refresh_token", "fakeRefreshToken", "", "/tokens/self", true),
 	}
 }
 
@@ -80,7 +81,7 @@ func (p *Publisher) signOut() error {
 
 func (p *Publisher) readResponseCookies() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		cookies, err := network.GetAllCookies().Do(ctx)
+		cookies, err := network.GetCookies().Do(ctx)
 		if err != nil {
 			return err
 		}
@@ -91,22 +92,22 @@ func (p *Publisher) readResponseCookies() chromedp.Action {
 
 func (p *Publisher) setAuthCookies() {
 	p.cookies = append(p.cookies, &network.Cookie{
-		Name:         "access_token",
-		Value:        "fakeAuthorizationToken",
-		Domain:       "localhost",
-		Path:         "/",
+		Name:   "access_token",
+		Value:  "fakeAuthorizationToken",
+		Domain: "localhost",
+		Path:   "/",
 	})
 	p.cookies = append(p.cookies, &network.Cookie{
-		Name:         "id_token",
-		Value:        "fakeIDToken",
-		Domain:       "localhost",
-		Path:         "/",
+		Name:   "id_token",
+		Value:  "fakeIDToken",
+		Domain: "localhost",
+		Path:   "/",
 	})
 	p.cookies = append(p.cookies, &network.Cookie{
-		Name:         "refresh_token",
-		Value:        "fakeRefreshToken",
-		Domain:       "localhost",
-		Path:         "/",
+		Name:   "refresh_token",
+		Value:  "fakeRefreshToken",
+		Domain: "localhost",
+		Path:   "/",
 	})
 }
 
@@ -131,4 +132,3 @@ func (p *Publisher) setChromeCtx(ctx context.Context) {
 func (p *Publisher) setFakeApi(fakeApi *FakeApi) {
 	p.fakeApi = fakeApi
 }
-

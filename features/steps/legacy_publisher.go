@@ -3,9 +3,10 @@ package steps
 import (
 	"context"
 	"fmt"
+	"net/http"
+
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
-	"net/http"
 )
 
 type LegacyPublisher struct {
@@ -54,7 +55,7 @@ func (p *LegacyPublisher) signIn(username string) error {
 
 func (p *LegacyPublisher) assignUserCookies() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		cookies, err := network.GetAllCookies().Do(ctx)
+		cookies, err := network.GetCookies().Do(ctx)
 		if err != nil {
 			return err
 		}
@@ -79,10 +80,10 @@ func (p *LegacyPublisher) signOut() error {
 
 func (p *LegacyPublisher) setAuthCookies() {
 	p.cookies = append(p.cookies, &network.Cookie{
-		Name:         "X-Florence-Token",
-		Value:        "fakeFlorenceToken",
-		Domain:       "localhost",
-		Path:         "/",
+		Name:   "X-Florence-Token",
+		Value:  "fakeFlorenceToken",
+		Domain: "localhost",
+		Path:   "/",
 	})
 }
 
