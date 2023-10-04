@@ -7,13 +7,13 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.254.1
-	github.com/ONSdigital/dp-component-test v0.9.2
+	github.com/ONSdigital/dp-component-test v0.9.0
 	github.com/ONSdigital/dp-cookies v0.4.0
 	github.com/ONSdigital/dp-healthcheck v1.6.1
 	github.com/ONSdigital/dp-net/v2 v2.11.0
 	github.com/ONSdigital/log.go v1.1.0
-	github.com/chromedp/cdproto v0.0.0-20230914224007-a15a36ccbc2e
-	github.com/chromedp/chromedp v0.9.2
+	github.com/chromedp/cdproto v0.0.0-20211126220118-81fa0469ad77
+	github.com/chromedp/chromedp v0.7.6
 	github.com/cucumber/godog v0.13.0
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/websocket v1.5.0
