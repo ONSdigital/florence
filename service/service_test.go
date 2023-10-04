@@ -12,8 +12,7 @@ import (
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
-	"github.com/ONSdigital/florence/service"
-	"github.com/ONSdigital/florence/service/mock"
+	service "github.com/ONSdigital/florence/service"
 	serviceMock "github.com/ONSdigital/florence/service/mock"
 	"github.com/gorilla/mux"
 	"github.com/pkg/errors"
@@ -36,14 +35,8 @@ var funcDoGetHealthcheckErr = func(cfg *config.Config, buildTime string, gitComm
 	return nil, errHealthcheck
 }
 
-var funcDoGetHTTPServerNil = func(bindAddr string, router http.Handler) service.HTTPServer {
-	return nil
-}
-
 func TestRun(t *testing.T) {
-
 	Convey("Having a set of mocked dependencies", t, func() {
-
 		cfg, err := config.Get()
 		So(err, ShouldBeNil)
 
@@ -107,7 +100,6 @@ func TestRun(t *testing.T) {
 		})
 
 		Convey("Given that Checkers cannot be registered", func() {
-
 			errAddheckFail := errors.New("Error(s) registering checkers for healthcheck")
 			hcMockAddFail := &serviceMock.HealthCheckerMock{
 				AddCheckFunc: func(name string, checker healthcheck.Checker) error { return errAddheckFail },
@@ -153,7 +145,7 @@ func TestRun(t *testing.T) {
 
 			Convey("And the following route should have been added", func() {
 				So(funcHasRoute(s.Router, "GET", "/health", match), ShouldBeTrue)
-				So(match.Handler, ShouldEqual, s.HealthCheck.Handler)
+				So(hcMock.Handler, ShouldHaveSameTypeAs, s.HealthCheck.Handler)
 			})
 
 			Convey("The checkers are registered and the healthcheck and http server started", func() {
@@ -168,7 +160,6 @@ func TestRun(t *testing.T) {
 		})
 
 		Convey("Given that all dependencies are successfully initialised but the http server fails", func() {
-
 			initMock := &serviceMock.InitialiserMock{
 				DoGetHealthClientFunc: funcDoGetHealthClientOk,
 				DoGetHealthCheckFunc:  funcDoGetHealthcheckOk,
@@ -190,9 +181,7 @@ func TestRun(t *testing.T) {
 }
 
 func TestClose(t *testing.T) {
-
 	Convey("Having a correctly initialised service", t, func() {
-
 		cfg, err := config.Get()
 		So(err, ShouldBeNil)
 
@@ -256,7 +245,7 @@ func TestClose(t *testing.T) {
 
 		Convey("If service times out while shutting down, the Close operation fails with the expected error", func() {
 			cfg.GracefulShutdownTimeout = 100 * time.Millisecond
-			timeoutServerMock := &mock.HTTPServerMock{
+			timeoutServerMock := &serviceMock.HTTPServerMock{
 				ListenAndServeFunc: func() error { return nil },
 				ShutdownFunc: func(ctx context.Context) error {
 					time.Sleep(200 * time.Millisecond)
