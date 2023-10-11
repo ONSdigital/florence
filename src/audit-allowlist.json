@@ -15,6 +15,10 @@
         {
             "id" : "CVE-2017-18214",
             "reason": "moment@2.18.1 is a dependency of handsontable which we can't upgrade"
+        },
+        {
+            "id" : "CVE-2022-25883",
+            "reason": "Semver"
         }
     ]
 }
