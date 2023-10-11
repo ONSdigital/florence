@@ -4,7 +4,6 @@ import { useInput } from "../../hooks/useInput";
 import { Link } from "react-router";
 import filter from "lodash/filter";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
-import BackButton from "../../components/back-button";
 import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
@@ -30,8 +29,8 @@ const UsersList = props => {
     const users = showActiveUsers ? mapUsers(active, rootPath) : mapUsers(suspended, rootPath);
     const getFilteredUsers = useCallback(() => {
         const str = search.value.toLowerCase();
-        return filter(users, user => (user.forename + " " + user.lastname).toLowerCase().includes(str) || user.email.toLowerCase().includes(str));
-    }, [search.value]);
+        return filter(users, user => `${user.forename} ${user.lastname}`.toLowerCase().includes(str) || user.email.toLowerCase().includes(str));
+    }, [search.value, showActiveUsers]);
 
     return (
         <div className="grid grid--justify-space-around">
@@ -59,7 +58,7 @@ const UsersList = props => {
                                     <label htmlFor="search" className="visually-hidden">
                                         Search users by name or email
                                     </label>
-                                    <input role="search" name="search" placeholder="Search users by name" {...search} />
+                                    <input id="search" type="search" role="search" name="search" placeholder="Search users by name" {...search} />
                                 </div>
                             </div>
                             <div className="grid__col-md-4">
