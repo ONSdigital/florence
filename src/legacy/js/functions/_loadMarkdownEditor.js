@@ -17,6 +17,7 @@ function loadMarkdownEditor(content, onSave, pageData, notEmpty) {
     $('#wmd-input').focus();
 
     markdownEditor();
+    initReplaceInvalidChars()
 
     var markdown = $('#wmd-input').val();
 
