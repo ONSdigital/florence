@@ -7,7 +7,6 @@ function replaceInvalidChars(str) {
 
 function initReplaceInvalidChars() {
     $('input[type=text], textarea').on('input', function(e) {
-        console.log("fired. bound to", e)
         var sanitised = replaceInvalidChars($(e.target).val())
         $(e.target).val(sanitised)
 });
