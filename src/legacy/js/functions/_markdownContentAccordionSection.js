@@ -33,6 +33,8 @@ function refreshMarkdownContentAccordionSection(collectionId, data, field, idFie
 
 function initialiseMarkdownContentAccordionSection(collectionId, data, field, idField) {
 
+    initReplaceInvalidChars()
+
     // for each entry in the list
     function debugLogAccordionSection() {
         for (var i = 0; i < data[field].length; i++) {
