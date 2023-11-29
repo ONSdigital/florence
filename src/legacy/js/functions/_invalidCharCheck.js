@@ -1,7 +1,7 @@
-// replace "Start of Text" (U+0002)
-var UNICODE_CHARS_TO_REPLACE = /\u{0002}/gu
-
 function replaceInvalidChars(str) {
+    // replace "Start of Text" (U+0002)
+    var UNICODE_CHARS_TO_REPLACE = /\u{0002}/gu
+
     return str.replace(UNICODE_CHARS_TO_REPLACE,' ');
 }
 
