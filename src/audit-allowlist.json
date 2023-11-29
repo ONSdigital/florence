@@ -19,6 +19,10 @@
         {
             "id": "CVE-2023-45133",
             "reason": "indirect dependency of a few babel packages. should be looked at as a speerate ticket. see: https://trello.com/c/alXeUZpI/1918-fix-dependency-issues-with-babel-traverse"
+        },
+        {
+            "id": "CVE-2023-45857",
+            "reason": "axios is only used by interactives and will be removed soon. see: https://trello.com/c/zub5ECee/1916-remove-interactive-api-code-config-from-florence-and-dp-configs"
         }
     ]
 }
