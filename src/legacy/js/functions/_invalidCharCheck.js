@@ -9,7 +9,7 @@ function initReplaceInvalidChars() {
     $('input[type=text], textarea').on('input', function(e) {
         var sanitised = replaceInvalidChars($(e.target).val())
         $(e.target).val(sanitised)
-});
+    });
 }
 
 
