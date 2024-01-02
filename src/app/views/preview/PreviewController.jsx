@@ -60,11 +60,9 @@ export class PreviewController extends Component {
             .then(async collection => {
                 let pages = [];
                 const nonDatasetPages = await this.mapPages([...collection.inProgress, ...collection.complete, ...collection.reviewed]);
-                const interactivesPages = await this.mapInteractivesToPages([...collection.interactives]);
                 if (this.props.enableDatasetImport) {
                     const datasetPages = [...collection.datasetVersions, ...collection.datasets];
                     pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
-                    pages = pages.concat(interactivesPages);
                     this.props.dispatch(
                         addPreviewCollection({
                             collectionID,
@@ -74,7 +72,6 @@ export class PreviewController extends Component {
                     );
                 } else {
                     pages = nonDatasetPages;
-                    pages = pages.concat(interactivesPages);
                     this.props.dispatch(
                         addPreviewCollection({
                             collectionID,
@@ -127,22 +124,6 @@ export class PreviewController extends Component {
                 mappedPages.push(pages[i]);
             }
         }
-        return mappedPages;
-    };
-
-    mapInteractivesToPages = async interactives => {
-        const mappedPages = [];
-        interactives.forEach(interactive => {
-            const { files, title, uri } = interactive;
-            mappedPages.push({
-                type: "interactive",
-                uri,
-                description: {
-                    title,
-                },
-                files,
-            });
-        });
         return mappedPages;
     };
 
