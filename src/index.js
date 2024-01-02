@@ -171,11 +171,6 @@ const Index = () => {
                             <Route path="delete" component={userIsAuthenticated(TeamsController)} />
                         </Route>
                     </Route>
-                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives`} exact component={userIsAuthenticated(InteractivesIndex)}/>}
-                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/create`} exact component={userIsAuthenticated(InteractivesForm)}/>}
-                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/edit/:interactiveId`} exact component={userIsAuthenticated(InteractivesForm)}/>}
-                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/show/:interactiveId`} exact component={userIsAuthenticated(InteractivesShow)}/>}
-                    {config.enableNewInteractives && <Route path={`${rootPath}/interactives/delete/:interactiveId`} exact component={userIsAuthenticated(InteractivesDelete)}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))}/>}
