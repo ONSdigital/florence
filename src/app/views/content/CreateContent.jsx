@@ -43,12 +43,6 @@ export class CreateContent extends Component {
                     url: url.resolve("../") + "/homepage",
                     enabled: true,
                 },
-                {
-                    title: "Interactives",
-                    id: "interactives",
-                    url: url.resolve("../../../") + `/interactives?collection=${this.props.params.collectionID}`,
-                    enabled: config.enableNewInteractives,
-                },
             ],
             filteredContentTypes: [],
             searchTerm: "",
