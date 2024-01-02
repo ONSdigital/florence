@@ -146,7 +146,6 @@ NavBar.propTypes = {
     config: PropTypes.shape({
         enableDatasetImport: PropTypes.bool,
         enableNewSignIn: PropTypes.bool,
-        enableNewInteractives: PropTypes.bool,
     }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({

@@ -12,7 +12,6 @@ const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER"
 const defaultProps = {
     config: {
         enableDatasetImport: false,
-        enableNewInteractives: false,
     },
     user: notLoggedUser,
     rootPath: "/florence",
