@@ -324,11 +324,6 @@ export class CollectionDetailsController extends Component {
         if (this.props.enableCantabularJourney) {
             await this.getDatasetType(page.id);
         }
-        if (page.type === "interactive") {
-            const newURL = url.resolve(`/interactives/edit/${page.id}?collection=${this.props.activeCollection.id}`);
-            this.props.dispatch(push(newURL));
-            return newURL;
-        }
 
         if (page.type === "dataset_details") {
             // This is a horrible hack to get the latest version url.
@@ -452,9 +447,6 @@ export class CollectionDetailsController extends Component {
             }
             if (deletedPage.type === "dataset_version") {
                 return collections.removeDatasetVersion(collectionID, deletedPage.datasetID, deletedPage.edition, deletedPage.version);
-            }
-            if (deletedPage.type === "interactive") {
-                return collections.removeInteractive(collectionID, deletedPage.id);
             }
             if (this.props.enableDatasetImport) {
                 return collections.deletePageIncludingDatasetImport(collectionID, deletedPage.uri);
