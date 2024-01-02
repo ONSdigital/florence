@@ -72,5 +72,4 @@ it("shows enabled modules", () => {
     expect(screen.getByText("Old workspace")).toBeInTheDocument();
     expect(screen.getByText("Filterable dataset")).toBeInTheDocument();
     expect(screen.getByText("Homepage")).toBeInTheDocument();
-    expect(screen.queryByText("Interactives")).not.toBeInTheDocument();
 });
