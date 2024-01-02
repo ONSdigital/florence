@@ -218,7 +218,6 @@ func TestIndexFile(t *testing.T) {
 				EnableDatasetImport:     true,
 				EnableNewSignIn:         true,
 				EnableNewUpload:         true,
-				EnableNewInteractives:   true,
 				EnablePermissionsAPI:    true,
 				EnableCantabularJourney: true,
 			},
@@ -239,7 +238,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enableNewInteractives":true,"enablePermissionsAPI":true,"enableCantabularJourney":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":true,"enableNewSignIn":true,"enableNewUpload":true,"enablePermissionsAPI":true,"enableCantabularJourney":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -268,7 +267,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
 
 		})
 
@@ -279,7 +278,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enableNewInteractives":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"enableDatasetImport":false,"enableNewSignIn":false,"enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false}`), ShouldBeTrue)
 		})
 
 	})
