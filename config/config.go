@@ -25,7 +25,6 @@ type SharedConfig struct {
 	EnableDatasetImport     bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
 	EnableNewSignIn         bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
 	EnableNewUpload         bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnableNewInteractives   bool `envconfig:"ENABLE_NEW_INTERACTIVES" json:"enableNewInteractives"`
 	EnablePermissionsAPI    bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 	EnableCantabularJourney bool `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
 }
@@ -45,7 +44,7 @@ func Get() (*Config, error) {
 		FrontendRouterURL:          "http://localhost:20000",
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
-		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnableNewInteractives: false, EnablePermissionsAPI: false, EnableCantabularJourney: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
