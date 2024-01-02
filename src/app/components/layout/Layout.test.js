@@ -9,7 +9,6 @@ import thunkMiddleware from "redux-thunk";
 import { history, store } from "../../config/store";
 import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
-import interactives from "../../reducers/interactives";
 import taxonomies from "../../reducers/taxonomies";
 
 import Layout from "./Layout";
@@ -78,7 +77,6 @@ function createTestStore(config = {}) {
         combineReducers({
             state: reducer,
             user: userReducer,
-            interactives,
             taxonomies,
             routing: routerReducer,
         }),
