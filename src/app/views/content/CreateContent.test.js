@@ -34,12 +34,6 @@ const contentTypes = [
         url: url.resolve("../") + "/homepage",
         enabled: true,
     },
-    {
-        title: "Interactives",
-        id: "interactives",
-        url: url.resolve("../../../") + `/interactives`,
-        enabled: false, // from setupJest.js
-    },
 ];
 
 const defaultProps = {
