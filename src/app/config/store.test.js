@@ -249,9 +249,7 @@ describe("Store", () => {
             expect(store.getState().state.config.enableNewSignIn).toEqual(false);
             expect(store.getState().state.config.enablePermissionsAPI).toEqual(false);
 
-            store.dispatch(
-                actions.setConfig({ enableDatasetImport: true, enableNewSignIn: true, enablePermissionsAPI: true })
-            );
+            store.dispatch(actions.setConfig({ enableDatasetImport: true, enableNewSignIn: true, enablePermissionsAPI: true }));
 
             expect(store.getState().state.config.enableDatasetImport).toEqual(true);
             expect(store.getState().state.config.enableNewSignIn).toEqual(true);
