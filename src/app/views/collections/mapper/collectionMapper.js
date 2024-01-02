@@ -52,7 +52,6 @@ export default class collectionMapper {
                 complete: collection.complete,
                 reviewed: collection.reviewed,
                 datasets: collection.datasets,
-                interactives: collection.interactives,
                 datasetVersions: collection.datasetVersions,
                 teams: collectionMapper.mapTeams(collection, allGroups),
                 deletes: collection.pendingDeletes,
@@ -117,11 +116,10 @@ export default class collectionMapper {
                 reviewed: mapPageToState(collection.reviewed),
             };
             const collectionWithDatasetsAndPages = this.datasetsToCollectionState(collectionWithPages);
-            const collectionWithInteractivesAndDatasetsAndPages = this.interactivesToCollectionState(collectionWithDatasetsAndPages);
             return {
-                ...collectionWithInteractivesAndDatasetsAndPages,
-                canBeDeleted: this.collectionCanBeDeleted(collectionWithInteractivesAndDatasetsAndPages),
-                canBeApproved: this.collectionCanBeApproved(collectionWithInteractivesAndDatasetsAndPages),
+                ...collectionWithDatasetsAndPages,
+                canBeDeleted: this.collectionCanBeDeleted(collectionWithDatasetsAndPages),
+                canBeApproved: this.collectionCanBeApproved(collectionWithDatasetsAndPages),
             };
         } catch (error) {
             log.event("Error mapping collection GET response to Florence's state", log.error(error));
@@ -191,47 +189,6 @@ export default class collectionMapper {
         } catch (error) {
             log.event("Error mapping collection datasets response to Florence's state", log.error(error));
             console.error("Error mapping collection datasets response to Florence's state", error);
-            return null;
-        }
-    }
-
-    static interactivesToCollectionState(collection) {
-        try {
-            const mapInteractive = interactive => ({
-                title: interactive.title,
-                type: "interactive",
-                id: interactive.id,
-                uri: `/interactive/${interactive.id}`,
-                lastEditedBy: interactive.lastEditedBy,
-                lastEditedAt: interactive.lastEditedAt,
-            });
-
-            const mapInteractives = () => {
-                let inProgress = collection.inProgress || [];
-                let complete = collection.complete || [];
-                let reviewed = collection.reviewed || [];
-
-                if (collection.interactives) {
-                    collection.interactives.forEach(interactive => {
-                        if (interactive.state === "InProgress") {
-                            inProgress.push(mapInteractive(interactive));
-                        }
-                        if (interactive.state === "Complete") {
-                            complete.push(mapInteractive(interactive));
-                        }
-                        if (interactive.state === "Reviewed") {
-                            reviewed.push(mapInteractive(interactive));
-                        }
-                    });
-                }
-
-                return { inProgress, complete, reviewed };
-            };
-
-            return { ...collection, ...mapInteractives() };
-        } catch (error) {
-            log.event("Error mapping collection interactives response to Florence's state", log.error(error));
-            console.error("Error mapping collection interactives response to Florence's state", error);
             return null;
         }
     }
