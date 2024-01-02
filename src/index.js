@@ -13,7 +13,6 @@ import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
 import TeamsController from "./app/views/teams/TeamsController";
-import {InteractivesIndex, InteractivesForm, InteractivesDelete, InteractivesShow} from "./app/views/interactives";
 import CreateTeam from "./app/views/teams/team-create/CreateTeam"
 import SelectADataset from "./app/views/datasets-new/DatasetsController";
 import DatasetEditionsController from "./app/views/datasets-new/editions/DatasetEditionsController";
