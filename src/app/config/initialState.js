@@ -60,9 +60,6 @@ export const initialState = {
     preview: {
         selectedPage: null,
     },
-    interactives: {
-        all: [],
-    },
     policy: {
         data: null,
         loading: false,
