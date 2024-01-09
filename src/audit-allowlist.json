@@ -19,10 +19,6 @@
         {
             "id": "CVE-2023-45133",
             "reason": "indirect dependency of a few babel packages. should be looked at as a seperate ticket. see: https://trello.com/c/alXeUZpI/1918-fix-dependency-issues-with-babel-traverse"
-        },
-        {
-            "id" : "CVE-2022-25883",
-            "reason": "Semver"
         }
     ]
 }
