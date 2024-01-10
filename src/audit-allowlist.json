@@ -23,6 +23,10 @@
         {
             "id": "CVE-2023-45857",
             "reason": "axios is only used by interactives and will be removed soon. see: https://trello.com/c/zub5ECee/1916-remove-interactive-api-code-config-from-florence-and-dp-configs"
+        },
+        {
+            "id" : "CVE-2022-25883",
+            "reason": "Semver"
         }
     ]
 }
