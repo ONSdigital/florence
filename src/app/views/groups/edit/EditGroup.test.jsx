@@ -132,7 +132,7 @@ describe("EditGroup", () => {
 
             userEvent.click(screen.getByRole("button", { name: "Save changes" }));
 
-            expect(props.updateGroup).toHaveBeenCalledWith("0", { name: "Foo", precedence: 10 });
+            expect(props.updateGroup).toHaveBeenCalledWith("0", { name: "Foo" });
         });
     });
 });

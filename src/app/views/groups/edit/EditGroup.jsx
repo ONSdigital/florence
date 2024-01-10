@@ -87,7 +87,7 @@ const EditGroup = props => {
 
         if (hasErrors || values.name === "") return;
 
-        updateGroup(id, { name: values.name, precedence: 10 });
+        updateGroup(id, { name: values.name });
         if (hasUpdatedMembers) {
             updateGroupMembers(
                 id,
