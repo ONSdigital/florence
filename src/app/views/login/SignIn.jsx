@@ -279,13 +279,13 @@ export class LoginController extends Component {
 
     passwordChangeSuccess = response => {
         if (response) {
-            console.debug("[FLORENCE] passwordChangeSuccess: ", resp);
+            console.debug("[FLORENCE] passwordChangeSuccess: ", response);
             // TODO convert to UTC
-            sessionManagement.setSessionExpiryTime(response.body.expirationTime, response.body.refreshTokenExpirationTime);
+            sessionManagement.setSessionExpiryTime(response.expirationTime, response.refreshTokenExpirationTime);
+            this.setState({
+                status: status.SUBMITTED_PASSWORD_CHANGE,
+            });
         }
-        this.setState({
-            status: status.SUBMITTED_PASSWORD_CHANGE,
-        });
     };
 
     passwordChangeFail = error => {
