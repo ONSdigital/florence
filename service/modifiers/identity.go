@@ -6,7 +6,6 @@ import (
 	"time"
 
 	dprequest "github.com/ONSdigital/dp-net/v2/request"
-	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/log.go/log"
 )
 
