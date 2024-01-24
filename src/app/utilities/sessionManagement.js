@@ -202,11 +202,16 @@ export default class sessionManagement {
      *  @returns true if session has expired
      *  */
     static isSessionExpired(sessionExpiryTime) {
+        if (sessionExpiryTime == null) {
+            return true;
+        }
         const now = new Date();
         const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
         const nowInUTC = new Date(nowUTCInMS);
+
         // Get the time difference between now and the expiry time minus the timer offset
         const timerInterval = new Date(sessionExpiryTime) - nowInUTC;
+
         let diffInSeconds = Math.round(timerInterval / 1000);
         if (isNaN(diffInSeconds)) {
             throw new Error("encounted an error checking time interval: diffInSeconds is NaN");

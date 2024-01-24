@@ -138,4 +138,10 @@ describe("#isSessionExpired()", () => {
         const expected = false;
         expect(actual).toEqual(expected);
     });
+    it("should return true if session time does not exist", () => {
+        const sessionExpiryTime = null;
+        const actual = sessionManagement.isSessionExpired(sessionExpiryTime);
+        const expected = true;
+        expect(actual).toEqual(expected);
+    });
 });
