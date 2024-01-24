@@ -1,11 +1,12 @@
 package modifiers
 
 import (
-	dprequest "github.com/ONSdigital/dp-net/v2/request"
-	"github.com/ONSdigital/log.go/log"
 	"net/http"
 	"regexp"
 	"time"
+
+	dprequest "github.com/ONSdigital/dp-net/v2/request"
+	"github.com/ONSdigital/log.go/log"
 )
 
 type Permission struct {
