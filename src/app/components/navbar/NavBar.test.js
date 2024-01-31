@@ -30,7 +30,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Users and access", "Teams", "Sign out"];
+const NavbarItems = ["Collections", "Users and access", "Preview teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
