@@ -164,12 +164,14 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
-                    <Route path={`${rootPath}/teams`} component={userIsAuthenticated(userIsAdminOrEditor(TeamsController))}>
-                        <Route path=":team" component={userIsAuthenticated(TeamsController)}>
-                            <Route path="edit" component={userIsAuthenticated(TeamsController)} />
-                            <Route path="delete" component={userIsAuthenticated(TeamsController)} />
+                    {!config.enableNewSignIn && (
+                        <Route path={`${rootPath}/teams`} component={userIsAuthenticated(userIsAdminOrEditor(TeamsController))}>
+                            <Route path=":team" component={userIsAuthenticated(TeamsController)}>
+                                <Route path="edit" component={userIsAuthenticated(TeamsController)} />
+                                <Route path="delete" component={userIsAuthenticated(TeamsController)} />
+                            </Route>
                         </Route>
-                    </Route>
+                    )}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdmin(EditUser))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))}/>}
