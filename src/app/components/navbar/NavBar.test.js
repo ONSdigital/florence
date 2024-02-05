@@ -30,7 +30,7 @@ const withPreviewNavProps = {
     },
 };
 
-const NavbarItems = ["Collections", "Users and access", "Preview teams", "Sign out"];
+const ExpectedAuthenicatedNavbarItems = ["Collections", "Users and access", "Preview teams", "Sign out"];
 
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
@@ -49,8 +49,8 @@ describe("NavBar", () => {
             const nav = component.find(Link);
 
             expect(component.hasClass("global-nav__list")).toBe(true);
-            expect(component.find(Link)).toHaveLength(NavbarItems.length);
-            nav.forEach((n, i) => expect(n.getElement().props.children).toBe(NavbarItems[i]));
+            expect(component.find(Link)).toHaveLength(ExpectedAuthenicatedNavbarItems.length);
+            nav.forEach((n, i) => expect(n.getElement().props.children).toBe(ExpectedAuthenicatedNavbarItems[i]));
         });
 
         it("should not render Sign in link", () => {
