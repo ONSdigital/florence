@@ -48,9 +48,9 @@ function viewController(view) {
         else if (view === 'teams') {
             if (Florence.globalVars.config.enableNewSignIn) {
                 window.location.pathname = "/florence/groups";
-                return;
+            } else {
+                window.location.pathname = "/florence/teams";
             }
-            window.location.pathname = "/florence/teams";
         }
         else if (view === 'login') {
             window.location.pathname = "/florence/login";
