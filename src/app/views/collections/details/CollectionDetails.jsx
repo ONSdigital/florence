@@ -8,6 +8,7 @@ import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import Page from "../../../components/page/Page";
 import date from "../../../utilities/date";
+import user from "../../../utilities/api-clients/user.js";
 
 export const pagePropTypes = {
     lastEdit: PropTypes.shape({
@@ -72,6 +73,7 @@ const propTypes = {
     type: PropTypes.string,
     publishDate: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
+    isNewSignIn: PropTypes.bool,
 };
 
 export class CollectionDetails extends Component {
@@ -85,6 +87,15 @@ export class CollectionDetails extends Component {
 
     renderLastEditText(page) {
         const { lastEdit } = page;
+        if (this.props.isNewSignIn) {
+            user.getUserEmail(lastEdit.email)
+                .then(response => {
+                    return response;
+                })
+                .then(data => {
+                    lastEdit.email = data.email;
+                });
+        }
         try {
             if (page.lastEditedBy) {
                 if (page.lastEditedAt) {

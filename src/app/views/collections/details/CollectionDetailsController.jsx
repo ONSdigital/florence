@@ -176,6 +176,7 @@ export class CollectionDetailsController extends Component {
                     return;
                 }
                 const mappedCollection = collectionMapper.collectionResponseToState(collection, this.props.groups);
+                // Have some stuff going on here?
                 const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
 
                 // If we have no data in state yet for the collection then use this opportunity to add it.
@@ -648,6 +649,7 @@ export class CollectionDetailsController extends Component {
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
                 isApprovingCollection={this.props.isUpdating}
+                isNewSignIn={this.props.isNewSignIn}
             />
         );
     }

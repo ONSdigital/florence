@@ -94,8 +94,8 @@ export default class user {
     static createNewUser(body) {
         return http.post(`/users`, body);
     }
-    // TODO: new auth work
-    static getUser(id) {
+
+    static getUserEmail(id) {
         return http.get(`/users/${id}`);
     }
 
