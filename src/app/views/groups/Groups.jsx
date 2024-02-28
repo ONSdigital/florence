@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { useInput } from "../../hooks/useInput";
 import url from "../../utilities/url";
+import date from "../../utilities/date";
 import Input from "../../components/Input";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import BackButton from "../../components/back-button";
@@ -39,9 +40,9 @@ const Groups = props => {
                         <span className="margin-top--2" style={{ height: "28px", fontSize: "21px", fontWeight: "400", fontFamily: "Roboto Slab" }}>
                             Teams report
                         </span>
-                        <Link to="" className="btn btn--positive" download>
+                        <a class="btn btn--positive" download={`${date.format(Date.now(), "yyyymmdd-HHMM")}-groups-report`} href="/groups-report">
                             Export teams report
-                        </Link>
+                        </a>
                     </div>
                 </div>
                 <SimpleSelectableList rows={search.value ? getFilteredGroups() : groups} showLoadingState={isLoading} />
