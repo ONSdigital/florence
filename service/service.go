@@ -154,6 +154,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/users/{uri:.*}", identityAPIProxy)
 		router.Handle("/groups/{uri:.*}", identityAPIProxy)
 		router.Handle("/groups", identityAPIProxy)
+		router.Handle("/groups-report", identityAPIProxy)
 		router.Handle("/password-reset", identityAPIProxy)
 		router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
 	}
