@@ -36,7 +36,9 @@ const Groups = props => {
                         </div>
                     </div>
                     <div className="grid__col-2 grid--align-end">
-                        <span className="margin-top--2">Teams report</span>
+                        <span className="margin-top--2" style={{ height: "28px", fontSize: "21px", fontWeight: "400", fontFamily: "Roboto Slab" }}>
+                            Teams report
+                        </span>
                         <Link to="" className="btn btn--positive" download>
                             Export teams report
                         </Link>
