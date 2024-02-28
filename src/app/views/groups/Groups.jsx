@@ -22,15 +22,25 @@ const Groups = props => {
 
     return (
         <div className="grid grid--justify-space-around">
-            <div className="grid__col-11 grid__col-md-9">
-                <span className="margin-top--1">
-                    <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
-                    <Link className="margin-left--1" to={url.resolve("./groups/create")}>
-                        Create a new team
-                    </Link>
-                </span>
-                <div className="grid__col-6">
-                    <Input id="search-content-types" placeholder="Search teams by name" {...search} />
+            <div className="grid__col-9 grid__col-md-9">
+                <div className="grid margin-bottom--1">
+                    <div className="grid__col-10">
+                        <span className="margin-top--1">
+                            <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
+                            <Link className="margin-left--1" to={url.resolve("./groups/create")}>
+                                Create a new team
+                            </Link>
+                        </span>
+                        <div className="grid__col-7">
+                            <Input id="search-content-types" placeholder="Search teams by name" {...search} />
+                        </div>
+                    </div>
+                    <div className="grid__col-2 grid--align-end">
+                        <span className="margin-top--2">Teams report</span>
+                        <Link to="" className="btn btn--positive" download>
+                            Export teams report
+                        </Link>
+                    </div>
                 </div>
                 <SimpleSelectableList rows={search.value ? getFilteredGroups() : groups} showLoadingState={isLoading} />
             </div>
