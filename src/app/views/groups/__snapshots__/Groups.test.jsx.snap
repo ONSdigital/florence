@@ -5,47 +5,79 @@ exports[`Groups matches the snapshot with empty props 1`] = `
   className="grid grid--justify-space-around"
 >
   <div
-    className="grid__col-11 grid__col-md-9"
+    className="grid__col-9 grid__col-md-9"
   >
-    <span
-      className="margin-top--1"
-    >
-      <h1
-        className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
-      >
-        Preview teams
-      </h1>
-      <a
-        className="margin-left--1"
-        onClick={[Function]}
-        style={Object {}}
-      >
-        Create a new team
-      </a>
-    </span>
     <div
-      className="grid__col-6"
+      className="grid margin-bottom--1"
     >
       <div
-        className="form__input"
+        className="grid__col-10"
       >
-        <label
-          className="form__label"
-          htmlFor="search-content-types"
-        />
-        <input
-          autoComplete="new-password"
-          autoFocus={false}
-          className="input"
-          disabled={false}
-          id="search-content-types"
-          name="search-content-types"
-          onChange={[Function]}
-          onFocus={[Function]}
-          placeholder="Search teams by name"
-          type="text"
-          value=""
-        />
+        <span
+          className="margin-top--1"
+        >
+          <h1
+            className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
+          >
+            Preview teams
+          </h1>
+          <a
+            className="margin-left--1"
+            onClick={[Function]}
+            style={Object {}}
+          >
+            Create a new team
+          </a>
+        </span>
+        <div
+          className="grid__col-7"
+        >
+          <div
+            className="form__input"
+          >
+            <label
+              className="form__label"
+              htmlFor="search-content-types"
+            />
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="search-content-types"
+              name="search-content-types"
+              onChange={[Function]}
+              onFocus={[Function]}
+              placeholder="Search teams by name"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="grid__col-2 grid--align-end"
+      >
+        <span
+          className="margin-top--2"
+          style={
+            Object {
+              "fontFamily": "Roboto Slab",
+              "fontSize": "21px",
+              "fontWeight": "400",
+              "height": "28px",
+            }
+          }
+        >
+          Teams report
+        </span>
+        <a
+          class="btn btn--positive"
+          download="20171006-1445-groups-report"
+          href="/groups-report"
+        >
+          Export teams report
+        </a>
       </div>
     </div>
     <ul
@@ -66,47 +98,79 @@ exports[`Groups matches the snapshot with groups props 1`] = `
   className="grid grid--justify-space-around"
 >
   <div
-    className="grid__col-11 grid__col-md-9"
+    className="grid__col-9 grid__col-md-9"
   >
-    <span
-      className="margin-top--1"
-    >
-      <h1
-        className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
-      >
-        Preview teams
-      </h1>
-      <a
-        className="margin-left--1"
-        onClick={[Function]}
-        style={Object {}}
-      >
-        Create a new team
-      </a>
-    </span>
     <div
-      className="grid__col-6"
+      className="grid margin-bottom--1"
     >
       <div
-        className="form__input"
+        className="grid__col-10"
       >
-        <label
-          className="form__label"
-          htmlFor="search-content-types"
-        />
-        <input
-          autoComplete="new-password"
-          autoFocus={false}
-          className="input"
-          disabled={false}
-          id="search-content-types"
-          name="search-content-types"
-          onChange={[Function]}
-          onFocus={[Function]}
-          placeholder="Search teams by name"
-          type="text"
-          value=""
-        />
+        <span
+          className="margin-top--1"
+        >
+          <h1
+            className="inline-block margin-top--0 margin-bottom--0 padding-right--1"
+          >
+            Preview teams
+          </h1>
+          <a
+            className="margin-left--1"
+            onClick={[Function]}
+            style={Object {}}
+          >
+            Create a new team
+          </a>
+        </span>
+        <div
+          className="grid__col-7"
+        >
+          <div
+            className="form__input"
+          >
+            <label
+              className="form__label"
+              htmlFor="search-content-types"
+            />
+            <input
+              autoComplete="new-password"
+              autoFocus={false}
+              className="input"
+              disabled={false}
+              id="search-content-types"
+              name="search-content-types"
+              onChange={[Function]}
+              onFocus={[Function]}
+              placeholder="Search teams by name"
+              type="text"
+              value=""
+            />
+          </div>
+        </div>
+      </div>
+      <div
+        className="grid__col-2 grid--align-end"
+      >
+        <span
+          className="margin-top--2"
+          style={
+            Object {
+              "fontFamily": "Roboto Slab",
+              "fontSize": "21px",
+              "fontWeight": "400",
+              "height": "28px",
+            }
+          }
+        >
+          Teams report
+        </span>
+        <a
+          class="btn btn--positive"
+          download="20171006-1445-groups-report"
+          href="/groups-report"
+        >
+          Export teams report
+        </a>
       </div>
     </div>
     <ul
