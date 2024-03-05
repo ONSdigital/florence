@@ -100,15 +100,6 @@ export default class collectionMapper {
                             uri: page.uri,
                             type: page.type,
                         };
-                        // if (this.props.isNewSignIn) {
-                        //     user.getUserEmail(updatedPage.lastEdit.email)
-                        //         .then(response => {
-                        //             return response;
-                        //         })
-                        //         .then(data => {
-                        //             updatedPage.lastEdit.email = data.email;
-                        //         });
-                        // }
                     } catch (error) {
                         log.event("Error mapping a page to Florence's state", log.error(error));
                         console.error("Error mapping a page to Florence's state", error);

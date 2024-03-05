@@ -31,6 +31,7 @@ import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
 import CollectionDetails, { pagePropTypes, deletedPagePropTypes } from "./CollectionDetails";
 import CollectionEditController from "../edit/CollectionEditController";
+import user from "../../../utilities/api-clients/user.js";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -176,8 +177,19 @@ export class CollectionDetailsController extends Component {
                     return;
                 }
                 const mappedCollection = collectionMapper.collectionResponseToState(collection, this.props.groups);
-                // Have some stuff going on here?
-                const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
+                let collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
+
+                if (this.props.isNewSignIn) {
+                    if (collectionWithPages.inProgress.length > 0) {
+                        collectionWithPages.inProgress = this.updateLastEdit(collectionWithPages.inProgress);
+                    }
+                    if (collectionWithPages.complete.length > 0) {
+                        collectionWithPages.complete = this.updateLastEdit(collectionWithPages.complete);
+                    }
+                    if (collectionWithPages.reviewed.length > 0) {
+                        collectionWithPages.reviewed = this.updateLastEdit(collectionWithPages.reviewed);
+                    }
+                }
 
                 // If we have no data in state yet for the collection then use this opportunity to add it.
                 // We are most likely to see this on page load if it's directly to a collection details screen
@@ -185,8 +197,9 @@ export class CollectionDetailsController extends Component {
                 if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
                     this.props.dispatch(updateActiveCollection(mappedCollection));
                 }
-
+                console.log(this.props)
                 this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
+                console.log(this.props)
                 this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
                 this.setState({ isFetchingCollectionDetails: false });
             })
@@ -205,6 +218,16 @@ export class CollectionDetailsController extends Component {
         this.props.dispatch(updateActiveCollection(collection));
         this.props.dispatch(updateWorkingOn(collection.id, collection.name));
         cookies.add("collection", collection.id, null);
+    }
+
+    updateLastEdit(collection) {
+        collection.forEach(page => {
+            user.getUserEmail(page.lastEdit.email).then(response => {
+                page.lastEdit.email = response.email;
+                console.log(page)
+            });
+        });
+        return collection;
     }
 
     removeActiveCollectionGlobally() {
