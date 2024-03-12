@@ -42,12 +42,6 @@ jest.mock("../../../utilities/api-clients/collections", () => ({
     }),
 }));
 
-jest.mock("../../../utilities/api-clients/user.js", () => ({
-    getUserEmail: jest.fn(() => {
-        return Promise.resolve({});
-    }),
-}));
-
 jest.mock("../../../utilities/api-clients/datasets", () => {
     return {
         getLatestVersionURL: jest.fn(() => {
@@ -740,8 +734,8 @@ describe("When the component mounts with a collection id", () => {
         expect(collections.get.mock.calls.length).toBe(callsCounter);
         expect(component.state("drawerIsVisible")).toBe(false);
     });
-
-    it("and sec auth is enabled then get user email", () => {
+    
+    it("and sec auth is enabled then call user.getUserEmail", async () => {
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
@@ -783,13 +777,72 @@ describe("When the component mounts with a collection id", () => {
             })
         );
 
-        user.getUserEmail.mockImplementationOnce(() => Promise.resolve({ email: "test-sec-auth-email" }));
+        user.getUserEmail = jest.fn(() => {});
+        user.getUserEmail.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
 
         const callsCounter = user.getUserEmail.mock.calls.length;
         expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
 
         const component = shallow(<CollectionDetailsController {...props} />);
 
+        await component.update();
         expect(user.getUserEmail.mock.calls.length).toBe(callsCounter + 1);
+
+        console.log(component.instance().props);
+    });
+
+    it("and sec auth is not enabled then do not call user.getUserEmail", async () => {
+        const props = {
+            ...defaultProps,
+            collectionID: "test-collection-12345",
+            user: {
+                userType: "ADMIN",
+            },
+        };
+
+        collections.get.mockImplementationOnce(() =>
+            Promise.resolve({
+                id: "test-collection-12345",
+                inProgress: [
+                    {
+                        description: {
+                            title: "Test",
+                            edition: "2024",
+                            language: "ENGLISH",
+                        },
+                        events: [
+                            {
+                                date: "2024-02-12T10:43:34.309Z",
+                                type: "EDITED",
+                                email: "test.user@email.com",
+                            },
+                        ],
+                    },
+                ],
+                complete: [],
+                reviewed: [],
+                approvalStatus: "NOT_STARTED",
+                events: [
+                    {
+                        date: "2024-02-12T10:43:10.803Z",
+                        type: "CREATED",
+                        email: "test.user@email.com",
+                    },
+                ],
+            })
+        );
+
+        user.getUserEmail = jest.fn(() => {});
+        user.getUserEmail.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
+
+        const callsCounter = user.getUserEmail.mock.calls.length;
+        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
+
+        const component = shallow(<CollectionDetailsController {...props} />);
+
+        await component.update();
+        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
+
+        console.log(component.instance().props);
     });
 });

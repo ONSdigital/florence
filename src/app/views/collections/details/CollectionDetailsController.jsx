@@ -181,7 +181,11 @@ export class CollectionDetailsController extends Component {
 
                 if (this.props.isNewSignIn) {
                     if (collectionWithPages.inProgress.length > 0) {
+                        console.log("after isNewSignIn before updateLastEdit");
+                        console.log(collectionWithPages.inProgress);
                         collectionWithPages.inProgress = this.updateLastEdit(collectionWithPages.inProgress);
+                        console.log("after isNewSignIn afrer updateLateEdit");
+                        console.log(collectionWithPages.inProgress);
                     }
                     if (collectionWithPages.complete.length > 0) {
                         collectionWithPages.complete = this.updateLastEdit(collectionWithPages.complete);
@@ -197,10 +201,12 @@ export class CollectionDetailsController extends Component {
                 if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
                     this.props.dispatch(updateActiveCollection(mappedCollection));
                 }
-                console.log(this.props)
+                console.log("Before dispatch");
+                console.log(this.props);
                 this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
-                console.log(this.props)
                 this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
+                console.log("After dispatch");
+                console.log(this.props);
                 this.setState({ isFetchingCollectionDetails: false });
             })
             .catch(error => {
@@ -221,10 +227,12 @@ export class CollectionDetailsController extends Component {
     }
 
     updateLastEdit(collection) {
+        console.log("Inside updateLastEdit");
         collection.forEach(page => {
+            console.log("Inside updateLastEdit forEach");
             user.getUserEmail(page.lastEdit.email).then(response => {
+                console.log("Inside updateLastEdit forEach .then");
                 page.lastEdit.email = response.email;
-                console.log(page)
             });
         });
         return collection;
