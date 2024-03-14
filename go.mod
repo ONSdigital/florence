@@ -2,8 +2,6 @@ module github.com/ONSdigital/florence
 
 go 1.21
 
-toolchain go1.21.2
-
 // to fix: [CVE-2023-32731]
 replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
 
