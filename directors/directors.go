@@ -75,7 +75,7 @@ func setHeaders(req *http.Request) {
 
 	if req.URL.Path == "/groups-report" {
 		if err := headers.SetAccept(req, "text/csv"); err != nil {
-			log.Event(req.Context(), "unable to set refresh token header", log.Error(err), log.ERROR)
+			log.Event(req.Context(), "unable to set accept header", log.Error(err), log.ERROR)
 		}
 	}
 
