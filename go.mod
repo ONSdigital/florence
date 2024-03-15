@@ -2,8 +2,8 @@ module github.com/ONSdigital/florence
 
 go 1.21
 
-// to fix: [CVE-2024-24786]
-replace google.golang.org/grpc => google.golang.org/grpc v1.62.1
+// to fix: [CVE-2023-32731]
+replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
 
 // to fix [CVE-2023-48795] CWE-354: Improper Validation of Integrity Check Value
 replace golang.org/x/crypto => golang.org/x/crypto v0.17.0
@@ -68,7 +68,7 @@ require (
 	go.mongodb.org/mongo-driver v1.12.1 // indirect
 	golang.org/x/crypto v0.18.0 // indirect
 	golang.org/x/net v0.20.0 // indirect
-	golang.org/x/sync v0.6.0 // indirect
+	golang.org/x/sync v0.3.0 // indirect
 	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
