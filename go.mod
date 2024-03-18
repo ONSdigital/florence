@@ -8,6 +8,9 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
 // to fix [CVE-2023-48795] CWE-354: Improper Validation of Integrity Check Value
 replace golang.org/x/crypto => golang.org/x/crypto v0.17.0
 
+// To fix: [CVE-2024-24786] CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop')
+replace google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
+
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.260.0
 	github.com/ONSdigital/dp-component-test v0.9.0
