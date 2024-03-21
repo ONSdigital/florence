@@ -18,11 +18,11 @@ import (
 //
 // For example, if the `pathPrefix` is `/api` then a request is made to:
 //
-// 	"POST /api/v1/tokens"
+//	"POST /api/v1/tokens"
 //
 // will be proxied to:
 //
-// 	"POST /v1/tokens"
+//	"POST /v1/tokens"
 func Director(pathPrefix string) func(req *http.Request) {
 	return func(req *http.Request) {
 		setHeaders(req)
@@ -72,4 +72,11 @@ func setHeaders(req *http.Request) {
 			log.Event(req.Context(), "unable to set refresh token header", log.Error(err), log.ERROR)
 		}
 	}
+
+	if req.URL.Path == "/groups-report" {
+		if err := headers.SetAccept(req, "text/csv"); err != nil {
+			log.Event(req.Context(), "unable to set accept header", log.Error(err), log.ERROR)
+		}
+	}
+
 }

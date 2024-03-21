@@ -1,6 +1,6 @@
 module github.com/ONSdigital/florence
 
-go 1.20
+go 1.21
 
 // to fix: [CVE-2023-32731]
 replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
@@ -8,8 +8,11 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
 // to fix [CVE-2023-48795] CWE-354: Improper Validation of Integrity Check Value
 replace golang.org/x/crypto => golang.org/x/crypto v0.17.0
 
+// To fix: [CVE-2024-24786] CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop')
+replace google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
+
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.254.1
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.260.0
 	github.com/ONSdigital/dp-component-test v0.9.0
 	github.com/ONSdigital/dp-cookies v0.4.0
 	github.com/ONSdigital/dp-healthcheck v1.6.1
@@ -66,10 +69,10 @@ require (
 	github.com/xdg-go/stringprep v1.0.4 // indirect
 	github.com/youmark/pkcs8 v0.0.0-20201027041543-1326539a0a0a // indirect
 	go.mongodb.org/mongo-driver v1.12.1 // indirect
-	golang.org/x/crypto v0.17.0 // indirect
-	golang.org/x/net v0.17.0 // indirect
+	golang.org/x/crypto v0.18.0 // indirect
+	golang.org/x/net v0.20.0 // indirect
 	golang.org/x/sync v0.3.0 // indirect
-	golang.org/x/sys v0.15.0 // indirect
+	golang.org/x/sys v0.16.0 // indirect
 	golang.org/x/text v0.14.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
