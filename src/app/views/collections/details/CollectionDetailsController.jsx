@@ -177,7 +177,7 @@ export class CollectionDetailsController extends Component {
                     return;
                 }
                 const mappedCollection = collectionMapper.collectionResponseToState(collection, this.props.groups);
-                let collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
+                const collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
 
                 // If we have no data in state yet for the collection then use this opportunity to add it.
                 // We are most likely to see this on page load if it's directly to a collection details screen
@@ -185,6 +185,7 @@ export class CollectionDetailsController extends Component {
                 if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
                     this.props.dispatch(updateActiveCollection(mappedCollection));
                 }
+                
                 this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
                 this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
                 this.setState({ isFetchingCollectionDetails: false });
