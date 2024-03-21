@@ -179,34 +179,14 @@ export class CollectionDetailsController extends Component {
                 const mappedCollection = collectionMapper.collectionResponseToState(collection, this.props.groups);
                 let collectionWithPages = collectionMapper.pagesToCollectionState(mappedCollection);
 
-                if (this.props.isNewSignIn) {
-                    if (collectionWithPages.inProgress.length > 0) {
-                        console.log("after isNewSignIn before updateLastEdit");
-                        console.log(collectionWithPages.inProgress);
-                        collectionWithPages.inProgress = this.updateLastEdit(collectionWithPages.inProgress);
-                        console.log("after isNewSignIn afrer updateLateEdit");
-                        console.log(collectionWithPages.inProgress);
-                    }
-                    if (collectionWithPages.complete.length > 0) {
-                        collectionWithPages.complete = this.updateLastEdit(collectionWithPages.complete);
-                    }
-                    if (collectionWithPages.reviewed.length > 0) {
-                        collectionWithPages.reviewed = this.updateLastEdit(collectionWithPages.reviewed);
-                    }
-                }
-
                 // If we have no data in state yet for the collection then use this opportunity to add it.
                 // We are most likely to see this on page load if it's directly to a collection details screen
                 // otherwise we should have the some basic data which has come from the array of all collections
                 if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
                     this.props.dispatch(updateActiveCollection(mappedCollection));
                 }
-                console.log("Before dispatch");
-                console.log(this.props);
                 this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
                 this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
-                console.log("After dispatch");
-                console.log(this.props);
                 this.setState({ isFetchingCollectionDetails: false });
             })
             .catch(error => {
@@ -224,18 +204,6 @@ export class CollectionDetailsController extends Component {
         this.props.dispatch(updateActiveCollection(collection));
         this.props.dispatch(updateWorkingOn(collection.id, collection.name));
         cookies.add("collection", collection.id, null);
-    }
-
-    updateLastEdit(collection) {
-        console.log("Inside updateLastEdit");
-        collection.forEach(page => {
-            console.log("Inside updateLastEdit forEach");
-            user.getUserEmail(page.lastEdit.email).then(response => {
-                console.log("Inside updateLastEdit forEach .then");
-                page.lastEdit.email = response.email;
-            });
-        });
-        return collection;
     }
 
     removeActiveCollectionGlobally() {
@@ -337,7 +305,27 @@ export class CollectionDetailsController extends Component {
         }
     };
 
-    handleCollectionPageClick = uri => {
+    handleCollectionPageClick = async (page, state) => {
+        const uri = page.uri;
+        if (this.props.isNewSignIn) {
+            const updateEmailInActiveCollection = {
+                ...this.props.activeCollection,
+            };
+            await user.getUserEmail(page.lastEdit.email).then(response => {
+                const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
+                    if (collectionPage.uri == uri) {
+                        collectionPage.lastEdit.email = response.email;
+                        return collectionPage;
+                    } else {
+                        return collectionPage;
+                    }
+                });
+                updateEmailInActiveCollection[state] = newActiveCollection;
+            });
+
+            this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
+        }
+
         if (uri === this.props.activePageURI) {
             return;
         }
@@ -348,7 +336,6 @@ export class CollectionDetailsController extends Component {
         }
 
         this.props.dispatch(push(newURL));
-
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     };
 

@@ -353,21 +353,21 @@ describe("Selecting a page in a collection", () => {
 
     setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
 
-    it("routes to the page's ID", () => {
+    it("routes to the page's ID", async () => {
         expect(newURL).not.toBe("/florence/collections/test-sau39393uyqha8aw8y3n3#test-page-1");
-        const newURL = component.instance().handleCollectionPageClick("test-page-1");
+        const newURL = await component.instance().handleCollectionPageClick({ uri: "test-page-1" });
         expect(newURL).toBe("/florence/collections/test-sau39393uyqha8aw8y3n3#test-page-1");
     });
 
-    it("going from one page to another updates the route with the new page's ID", () => {
+    it("going from one page to another updates the route with the new page's ID", async () => {
         component.setProps({ activePageURI: "test-page-1", collectionID: "test-sau39393uyqha8aw8y3n3" });
-        const newURL = component.instance().handleCollectionPageClick("test-page-2");
+        const newURL = await component.instance().handleCollectionPageClick({ uri: "test-page-2" });
         expect(newURL).toBe("/florence/collections/test-sau39393uyqha8aw8y3n3#test-page-2");
     });
 
-    it("doesn't do anything if the same page is clicked", () => {
+    it("doesn't do anything if the same page is clicked", async () => {
         component.setProps({ activePageURI: "test-page-2" });
-        const newURL = component.instance().handleCollectionPageClick("test-page-2");
+        const newURL = await component.instance().handleCollectionPageClick({ uri: "test-page-2" });
         expect(newURL).toBe(undefined);
     });
 });
@@ -734,7 +734,7 @@ describe("When the component mounts with a collection id", () => {
         expect(collections.get.mock.calls.length).toBe(callsCounter);
         expect(component.state("drawerIsVisible")).toBe(false);
     });
-    
+
     it("and sec auth is enabled then call user.getUserEmail", async () => {
         const props = {
             ...defaultProps,
@@ -743,6 +743,23 @@ describe("When the component mounts with a collection id", () => {
                 userType: "ADMIN",
             },
             isNewSignIn: true,
+            activeCollection: {
+                ...defaultProps.collections[0],
+                inProgress: [
+                    {
+                        lastEdit: { email: "test.user@email.com", date: "2024-02-12T10:43:34.309Z" },
+                        title: "Test",
+                        uri: "test/test",
+                    },
+                ],
+            },
+        };
+
+        const page = {
+            lastEdit: {
+                email: "test.sec@ons.gov.uk",
+            },
+            uri: "test/test",
         };
 
         collections.get.mockImplementationOnce(() =>
@@ -752,28 +769,19 @@ describe("When the component mounts with a collection id", () => {
                     {
                         description: {
                             title: "Test",
-                            edition: "2024",
-                            language: "ENGLISH",
                         },
                         events: [
                             {
                                 date: "2024-02-12T10:43:34.309Z",
-                                type: "EDITED",
                                 email: "test.user@email.com",
                             },
                         ],
+                        uri: "test/test",
                     },
                 ],
                 complete: [],
                 reviewed: [],
                 approvalStatus: "NOT_STARTED",
-                events: [
-                    {
-                        date: "2024-02-12T10:43:10.803Z",
-                        type: "CREATED",
-                        email: "test.user@email.com",
-                    },
-                ],
             })
         );
 
@@ -786,9 +794,12 @@ describe("When the component mounts with a collection id", () => {
         const component = shallow(<CollectionDetailsController {...props} />);
 
         await component.update();
-        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter + 1);
+        await component.instance().handleCollectionPageClick(page, "inProgress");
+        await component.update();
 
-        console.log(component.instance().props);
+        expect(dispatchedActions[0].collection.inProgress[0].lastEdit.email).toBe("test.user@email.com");
+        expect(dispatchedActions[2].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+        expect(dispatchedActions[2].collection.inProgress[0].lastEdit.email).toBe("test-sec-auth-email");
     });
 
     it("and sec auth is not enabled then do not call user.getUserEmail", async () => {
@@ -798,6 +809,24 @@ describe("When the component mounts with a collection id", () => {
             user: {
                 userType: "ADMIN",
             },
+            isNewSignIn: false,
+            activeCollection: {
+                ...defaultProps.collections[0],
+                inProgress: [
+                    {
+                        lastEdit: { email: "test.user@email.com", date: "2024-02-12T10:43:34.309Z" },
+                        title: "Test",
+                        uri: "test/test",
+                    },
+                ],
+            },
+        };
+
+        const page = {
+            lastEdit: {
+                email: "test.sec@ons.gov.uk",
+            },
+            uri: "test/test",
         };
 
         collections.get.mockImplementationOnce(() =>
@@ -807,28 +836,19 @@ describe("When the component mounts with a collection id", () => {
                     {
                         description: {
                             title: "Test",
-                            edition: "2024",
-                            language: "ENGLISH",
                         },
                         events: [
                             {
                                 date: "2024-02-12T10:43:34.309Z",
-                                type: "EDITED",
                                 email: "test.user@email.com",
                             },
                         ],
+                        uri: "test/test",
                     },
                 ],
                 complete: [],
                 reviewed: [],
                 approvalStatus: "NOT_STARTED",
-                events: [
-                    {
-                        date: "2024-02-12T10:43:10.803Z",
-                        type: "CREATED",
-                        email: "test.user@email.com",
-                    },
-                ],
             })
         );
 
@@ -841,8 +861,10 @@ describe("When the component mounts with a collection id", () => {
         const component = shallow(<CollectionDetailsController {...props} />);
 
         await component.update();
-        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
+        await component.instance().handleCollectionPageClick(page, "inProgress");
+        await component.update();
 
-        console.log(component.instance().props);
+        expect(dispatchedActions[0].collection.inProgress[0].lastEdit.email).toBe("test.user@email.com");
+        expect(dispatchedActions[2].type).not.toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
     });
 });
