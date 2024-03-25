@@ -185,7 +185,7 @@ export class CollectionDetailsController extends Component {
                 if (!this.props.activeCollection || objectIsEmpty(this.props.activeCollection)) {
                     this.props.dispatch(updateActiveCollection(mappedCollection));
                 }
-                
+
                 this.props.dispatch(updatePagesInActiveCollection(collectionWithPages));
                 this.props.dispatch(updateTeamsInActiveCollection(mappedCollection.teams));
                 this.setState({ isFetchingCollectionDetails: false });
@@ -312,7 +312,7 @@ export class CollectionDetailsController extends Component {
             const updateEmailInActiveCollection = {
                 ...this.props.activeCollection,
             };
-            await user.getUserEmail(page.lastEdit.email).then(response => {
+            await user.getUser(page.lastEdit.email).then(response => {
                 const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
                     if (collectionPage.uri == uri) {
                         collectionPage.lastEdit.email = response.email;
@@ -322,8 +322,9 @@ export class CollectionDetailsController extends Component {
                     }
                 });
                 updateEmailInActiveCollection[state] = newActiveCollection;
-            });
-
+            }).catch(error => {
+                console.error(`Error grabbing user details, uuid: '${page.lastEdit.email}'`, error);
+            });;
             this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
         }
 

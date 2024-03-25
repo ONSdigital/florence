@@ -735,7 +735,7 @@ describe("When the component mounts with a collection id", () => {
         expect(component.state("drawerIsVisible")).toBe(false);
     });
 
-    it("and sec auth is enabled then call user.getUserEmail", async () => {
+    it("and sec auth is enabled then call user.getUser", async () => {
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
@@ -785,11 +785,11 @@ describe("When the component mounts with a collection id", () => {
             })
         );
 
-        user.getUserEmail = jest.fn(() => {});
-        user.getUserEmail.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
+        user.getUser = jest.fn(() => {});
+        user.getUser.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
 
-        const callsCounter = user.getUserEmail.mock.calls.length;
-        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
+        const callsCounter = user.getUser.mock.calls.length;
+        expect(user.getUser.mock.calls.length).toBe(callsCounter);
 
         const component = shallow(<CollectionDetailsController {...props} />);
 
@@ -802,7 +802,7 @@ describe("When the component mounts with a collection id", () => {
         expect(dispatchedActions[2].collection.inProgress[0].lastEdit.email).toBe("test-sec-auth-email");
     });
 
-    it("and sec auth is not enabled then do not call user.getUserEmail", async () => {
+    it("and sec auth is not enabled then do not call user.getUser", async () => {
         const props = {
             ...defaultProps,
             collectionID: "test-collection-12345",
@@ -852,11 +852,11 @@ describe("When the component mounts with a collection id", () => {
             })
         );
 
-        user.getUserEmail = jest.fn(() => {});
-        user.getUserEmail.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
+        user.getUser = jest.fn(() => {});
+        user.getUser.mockImplementation(() => Promise.resolve({ email: "test-sec-auth-email" }));
 
-        const callsCounter = user.getUserEmail.mock.calls.length;
-        expect(user.getUserEmail.mock.calls.length).toBe(callsCounter);
+        const callsCounter = user.getUser.mock.calls.length;
+        expect(user.getUser.mock.calls.length).toBe(callsCounter);
 
         const component = shallow(<CollectionDetailsController {...props} />);
 

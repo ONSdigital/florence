@@ -95,7 +95,7 @@ export default class user {
         return http.post(`/users`, body);
     }
 
-    static getUserEmail(id) {
+    static getUser(id) {
         return http.get(`/users/${id}`);
     }
 
