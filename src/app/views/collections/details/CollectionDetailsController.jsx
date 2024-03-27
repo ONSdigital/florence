@@ -71,6 +71,7 @@ export class CollectionDetailsController extends Component {
 
         this.state = {
             isFetchingCollectionDetails: false,
+            isFetchingUserDetails: false,
             isEditingCollection: false,
             isRestoringContent: false,
             isCancellingDelete: {
@@ -308,26 +309,6 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionPageClick = async (page, state) => {
         const uri = page.uri;
-        if (this.props.isNewSignIn) {
-            const updateEmailInActiveCollection = {
-                ...this.props.activeCollection,
-            };
-            await user.getUser(page.lastEdit.email).then(response => {
-                const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
-                    if (collectionPage.uri == uri) {
-                        collectionPage.lastEdit.email = response.email;
-                        return collectionPage;
-                    } else {
-                        return collectionPage;
-                    }
-                });
-                updateEmailInActiveCollection[state] = newActiveCollection;
-            }).catch(error => {
-                console.error(`Error grabbing user details, uuid: '${page.lastEdit.email}'`, error);
-            });;
-            this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
-        }
-
         if (uri === this.props.activePageURI) {
             return;
         }
@@ -338,6 +319,33 @@ export class CollectionDetailsController extends Component {
         }
 
         this.props.dispatch(push(newURL));
+
+        if (this.props.isNewSignIn) {
+            this.setState({ isFetchingUserDetails: true });
+            const updateEmailInActiveCollection = {
+                ...this.props.activeCollection,
+            };
+            await user
+                .getUser(page.lastEdit.email)
+                .then(response => {
+                    const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
+                        if (collectionPage.uri == uri) {
+                            collectionPage.lastEdit.email = response.email;
+                            return collectionPage;
+                        } else {
+                            return collectionPage;
+                        }
+                    });
+                    updateEmailInActiveCollection[state] = newActiveCollection;
+                })
+                .catch(error => {
+                    console.error(`Error grabbing user details, uuid: '${page.lastEdit.email}'`, error);
+                    log.event("Error grabbing user details", log.data(page.lastEdit.email), log.error());
+                });
+            this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
+            this.setState({ isFetchingUserDetails: false });
+        }
+
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     };
 
@@ -667,6 +675,7 @@ export class CollectionDetailsController extends Component {
                 onCancelPageDeleteClick={this.handleCancelPageDeleteClick}
                 isLoadingNameAndDate={false}
                 isLoadingDetails={this.state.isFetchingCollectionDetails}
+                isLoadingLastEdit={this.state.isFetchingUserDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
                 isApprovingCollection={this.props.isUpdating}
                 isNewSignIn={this.props.isNewSignIn}
