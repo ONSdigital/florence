@@ -796,10 +796,10 @@ describe("When the component mounts with a collection id", () => {
         await component.update();
         await component.instance().handleCollectionPageClick(page, "inProgress");
         await component.update();
-
+        
         expect(dispatchedActions[0].collection.inProgress[0].lastEdit.email).toBe("test.user@email.com");
-        expect(dispatchedActions[2].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
-        expect(dispatchedActions[2].collection.inProgress[0].lastEdit.email).toBe("test-sec-auth-email");
+        expect(dispatchedActions[3].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
+        expect(dispatchedActions[3].collection.inProgress[0].lastEdit.email).toBe("test-sec-auth-email");
     });
 
     it("and sec auth is not enabled then do not call user.getUser", async () => {
