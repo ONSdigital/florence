@@ -48,6 +48,7 @@ const propTypes = {
     onApproveCollectionClick: PropTypes.func.isRequired,
     isLoadingNameAndDate: PropTypes.bool,
     isLoadingDetails: PropTypes.bool,
+    isLoadingLastEdit: PropTypes.bool,
     isCancellingDelete: PropTypes.shape({
         value: PropTypes.bool.isRequired,
         uri: PropTypes.string.isRequired,
@@ -72,6 +73,7 @@ const propTypes = {
     type: PropTypes.string,
     publishDate: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
+    isNewSignIn: PropTypes.bool,
 };
 
 export class CollectionDetails extends Component {
@@ -86,6 +88,11 @@ export class CollectionDetails extends Component {
     renderLastEditText(page) {
         const { lastEdit } = page;
         try {
+            if (this.props.isLoadingLastEdit) {
+                const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
+                return `Last edit: Loading... (${formattedDate})`;
+            }
+
             if (page.lastEditedBy) {
                 if (page.lastEditedAt) {
                     const formattedDate = date.format(new Date(page.lastEditedAt), "ddd d mmm yyyy - HH:MM:ss");
@@ -124,7 +131,7 @@ export class CollectionDetails extends Component {
         const pageID = page.uri;
         const isActivePage = pageID && this.props.activePageURI === pageID;
         const handlePageClick = () => {
-            this.props.onPageClick(pageID);
+            this.props.onPageClick(page, state);
         };
         const handleEditClick = () => {
             this.props.onEditPageClick(page, state);
