@@ -796,7 +796,7 @@ describe("When the component mounts with a collection id", () => {
         await component.update();
         await component.instance().handleCollectionPageClick(page, "inProgress");
         await component.update();
-        
+
         expect(dispatchedActions[0].collection.inProgress[0].lastEdit.email).toBe("test.user@email.com");
         expect(dispatchedActions[3].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
         expect(dispatchedActions[3].collection.inProgress[0].lastEdit.email).toBe("test-sec-auth-email");

@@ -325,8 +325,9 @@ export class CollectionDetailsController extends Component {
             const updateEmailInActiveCollection = {
                 ...this.props.activeCollection,
             };
+            const email = page.lastEdit.email ? page.lastEdit.email : page.lastEditedBy;
             await user
-                .getUser(page.lastEdit.email)
+                .getUser(email)
                 .then(response => {
                     const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
                         if (collectionPage.uri == uri) {
