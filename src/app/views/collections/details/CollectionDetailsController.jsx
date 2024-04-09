@@ -325,14 +325,19 @@ export class CollectionDetailsController extends Component {
             const updateEmailInActiveCollection = {
                 ...this.props.activeCollection,
             };
-            const email = page.lastEdit.email ? page.lastEdit.email : page.lastEditedBy;
+            const email = page.lastEditedBy ? page.lastEditedBy : page.lastEdit.email;
             await user
                 .getUser(email)
                 .then(response => {
                     const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
                         if (collectionPage.uri == uri) {
-                            collectionPage.lastEdit.email = response.email;
-                            return collectionPage;
+                            if (collectionPage.lastEditedBy) {
+                                collectionPage.lastEditedBy = response.email;
+                                return collectionPage;
+                            } else if (collectionPage.lastEdit) {
+                                collectionPage.lastEdit.email = response.email;
+                                return collectionPage;
+                            }
                         } else {
                             return collectionPage;
                         }
@@ -340,8 +345,8 @@ export class CollectionDetailsController extends Component {
                     updateEmailInActiveCollection[state] = newActiveCollection;
                 })
                 .catch(error => {
-                    console.error(`Error grabbing user details, uuid: '${page.lastEdit.email}'`, error);
-                    log.event("Error grabbing user details", log.data(page.lastEdit.email), log.error());
+                    console.error(`Error grabbing user details, uuid: '${email}'`, error);
+                    log.event("Error grabbing user details", log.data(email), log.error());
                 });
             this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
             this.setState({ isFetchingUserDetails: false });

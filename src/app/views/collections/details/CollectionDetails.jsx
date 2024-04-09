@@ -87,10 +87,20 @@ export class CollectionDetails extends Component {
 
     renderLastEditText(page) {
         const { lastEdit } = page;
+        console.log(page);
         try {
             if (this.props.isLoadingLastEdit) {
-                const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
-                return `Last edit: Loading... (${formattedDate})`;
+                if (page.lastEditedBy) {
+                    if (page.lastEditedAt) {
+                        const formattedDate = date.format(new Date(page.lastEditedAt), "ddd d mmm yyyy - HH:MM:ss");
+                        return `Last edit: Loading... (${formattedDate})`;
+                    } else {
+                        return `Last edit: Loading...`;
+                    }
+                } else {
+                    const formattedDate = date.format(new Date(page.date), "ddd d mmm yyyy - HH:MM:ss");
+                    return `Last edit: Loading... (${formattedDate})`;
+                }
             }
 
             if (page.lastEditedBy) {
