@@ -87,7 +87,6 @@ export class CollectionDetails extends Component {
 
     renderLastEditText(page) {
         const { lastEdit } = page;
-        console.log(page);
         try {
             if (this.props.isLoadingLastEdit) {
                 if (page.lastEditedBy) {
