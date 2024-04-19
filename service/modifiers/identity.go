@@ -37,12 +37,13 @@ func IdentityResponseModifier(r *http.Response) error {
 }
 
 func setAuthCookies(r *http.Response) {
+	domain := r.Request.Header.Get("X-Forwarded-Host")
 	if r.Header.Get("Authorization") != "" {
 		cookieUser := &http.Cookie{
 			Name:     dprequest.FlorenceCookieKey,
 			Value:    r.Header.Get("Authorization"),
 			Path:     "/",
-			Domain:   "",
+			Domain:   domain,
 			HttpOnly: true,
 			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
@@ -56,7 +57,7 @@ func setAuthCookies(r *http.Response) {
 			Name:     "id_token",
 			Value:    r.Header.Get("Id"),
 			Path:     "/",
-			Domain:   "",
+			Domain:   domain,
 			HttpOnly: false,
 			Secure:   true,
 			SameSite: http.SameSiteLaxMode,
@@ -70,7 +71,7 @@ func setAuthCookies(r *http.Response) {
 			Name:     "refresh_token",
 			Value:    r.Header.Get("Refresh"),
 			Path:     "/tokens/self",
-			Domain:   "",
+			Domain:   domain,
 			HttpOnly: true,
 			Secure:   true,
 			SameSite: http.SameSiteStrictMode,
