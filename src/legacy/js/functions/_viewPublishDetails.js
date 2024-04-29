@@ -1,5 +1,3 @@
-const { load } = require("js-yaml");
-
 function viewPublishDetails(collections) {
   var manual = "[manual collection]";
   var result = {
