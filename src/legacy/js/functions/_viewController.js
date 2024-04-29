@@ -61,6 +61,9 @@ function viewController(view) {
         else if (view === 'reports') {
             viewReports();
         }
+        else if (view === 'security') {
+            window.location.pathname = "/florence/security";
+        }
         else {
             // viewController('collections');
             window.location.pathname = "/florence";

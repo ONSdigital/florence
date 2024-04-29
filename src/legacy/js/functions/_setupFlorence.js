@@ -244,6 +244,9 @@ function setupFlorence() {
         } else if (menuItem.hasClass("js-nav-item--reports")) {
             window.history.pushState({}, "", "/florence/reports");
             viewController('reports');
+        } else if (menuItem.hasClass("js-nav-item--security")) {
+            window.history.pushState({}, "", "/florence/security");
+            viewController('security');
         } else if (menuItem.hasClass("js-nav-item--login")) {
             viewController('login');
         } else if (menuItem.hasClass("js-nav-item--logout")) {
