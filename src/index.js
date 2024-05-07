@@ -227,7 +227,7 @@ const Index = () => {
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
-                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated(userIsAdmin(Groups)) : null} />
+                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated((Groups)) : null} />
                     {config.enableNewSignIn && <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(userIsAdmin(EditGroup))}/>}
