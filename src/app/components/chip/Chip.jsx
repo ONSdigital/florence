@@ -12,6 +12,7 @@ const propTypes = {
     style: PropTypes.oneOf(["standard", "green", "blue", "red"]),
     text: PropTypes.string.isRequired,
     testId: PropTypes.string,
+    readOnly: PropTypes.bool,
 };
 
 const Chip = props => {
@@ -71,7 +72,7 @@ const Chip = props => {
         <span data-testid={props.testId} className={chipClasses}>
             {props.icon && icon}
             {text}
-            {props.removeFunc && (
+            {!props.readOnly && props.removeFunc && (
                 <span className="chip__remove-container">
                     <button aria-label="remove" className="chip__remove" onClick={handleOnClick} />
                 </span>

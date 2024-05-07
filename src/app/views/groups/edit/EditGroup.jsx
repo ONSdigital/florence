@@ -145,7 +145,7 @@ const EditGroup = props => {
                                 />
                             )}
                             {loadingMembers && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
-                            {groupMembers && <Members members={groupMembers} handleRemove={handleRemove} />}
+                            {groupMembers && <Members members={groupMembers} handleRemove={handleRemove} readOnly={!isAdmin} />}
                             {isAdmin && !specialGroup && <DeletePanel id={id} />}
                         </div>
                         {isAdmin && (

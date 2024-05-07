@@ -29,12 +29,10 @@ const Groups = props => {
                     <div className="grid__col-10">
                         <span className="margin-top--1">
                             <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
-                            {isAdmin ? (
+                            {isAdmin && (
                                 <Link className="margin-left--1" to={url.resolve("./groups/create")}>
                                     Create a new team
                                 </Link>
-                            ) : (
-                                ""
                             )}
                         </span>
                         <div className="grid__col-7">
@@ -42,7 +40,7 @@ const Groups = props => {
                         </div>
                     </div>
                     <div className="grid__col-2 grid--align-end">
-                        {isAdmin ? (
+                        {isAdmin && (
                             <span>
                                 <span
                                     className="margin-top--2"
@@ -58,8 +56,6 @@ const Groups = props => {
                                     Export teams report
                                 </a>{" "}
                             </span>
-                        ) : (
-                            ""
                         )}
                     </div>
                 </div>

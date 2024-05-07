@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import Chip from "../../../components/chip/Chip";
 import Loader from "../../../components/loader";
 
-const Members = ({ id, members, handleRemove, loading }) => {
+const Members = ({ id, members, handleRemove, readOnly, loading }) => {
     if (!members) return null;
     return (
         <div data-testid="members" className="simple-table__scroll margin-bottom--1">
@@ -20,6 +20,7 @@ const Members = ({ id, members, handleRemove, loading }) => {
                         style="standard"
                         text={`${member.forename} ${member.lastname} (${member.email})`}
                         removeFunc={handleRemove}
+                        readOnly={readOnly}
                     />
                 ))}
             </div>
@@ -40,6 +41,7 @@ Members.propTypes = {
         })
     ).isRequired,
     handleRemove: PropTypes.func.isRequired,
+    readOnly: PropTypes.bool,
 };
 
 export default Members;
