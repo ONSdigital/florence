@@ -230,7 +230,7 @@ const Index = () => {
                     <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated((Groups)) : null} />
                     {config.enableNewSignIn && <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(userIsAdmin(EditGroup))}/>}
+                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)}/>}
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
