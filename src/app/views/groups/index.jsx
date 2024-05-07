@@ -8,6 +8,7 @@ function mapStateToProps(state) {
         groups: getMappedSortedGroups(state.state),
         isNewSignIn: getEnableNewSignIn(state.state),
         isLoading: getGroupsLoading(state.state),
+        loggedInUser: state.user,
     };
 }
 
