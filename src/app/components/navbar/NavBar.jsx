@@ -102,13 +102,17 @@ const NavBar = props => {
                         )}
                     </>
                 )}
-                {auth.isAdmin(props.user) && props.isNewSignIn && (
+                {auth.isAdminOrEditor(props.user) && props.isNewSignIn && (
                     <>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                 Preview teams
                             </Link>
                         </li>
+                    </>
+                )}
+                {auth.isAdmin(props.user) && props.isNewSignIn && (
+                    <>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
                                 Security
