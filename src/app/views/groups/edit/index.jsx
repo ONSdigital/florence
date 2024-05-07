@@ -21,6 +21,7 @@ function mapStateToProps(state) {
         loadingMembers: getGroupMembersLoading(state.state),
         members: getGroupMembers(state.state),
         loadingUsers: getUsersLoading(state.state),
+        loggedInUser: state.user,
     };
 }
 
