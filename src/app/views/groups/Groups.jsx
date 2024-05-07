@@ -12,6 +12,7 @@ import BackButton from "../../components/back-button";
 const Groups = props => {
     const { groups, isLoading, loadTeams, isNewSignIn } = props;
     const [search, setSearch] = useInput("");
+    const isAdmin = props.loggedInUser.isAdmin || false;
 
     useEffect(() => {
         loadTeams(isNewSignIn);
@@ -28,21 +29,38 @@ const Groups = props => {
                     <div className="grid__col-10">
                         <span className="margin-top--1">
                             <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
-                            <Link className="margin-left--1" to={url.resolve("./groups/create")}>
-                                Create a new team
-                            </Link>
+                            {isAdmin ? (
+                                <Link className="margin-left--1" to={url.resolve("./groups/create")}>
+                                    Create a new team
+                                </Link>
+                            ) : (
+                                ""
+                            )}
                         </span>
                         <div className="grid__col-7">
                             <Input id="search-content-types" placeholder="Search teams by name" {...search} />
                         </div>
                     </div>
                     <div className="grid__col-2 grid--align-end">
-                        <span className="margin-top--2" style={{ height: "28px", fontSize: "21px", fontWeight: "400", fontFamily: "Roboto Slab" }}>
-                            Teams report
-                        </span>
-                        <a class="btn btn--positive" download={`${date.format(Date.now(), "yyyymmdd-HHMM")}-groups-report`} href="/groups-report">
-                            Export teams report
-                        </a>
+                        {isAdmin ? (
+                            <span>
+                                <span
+                                    className="margin-top--2"
+                                    style={{ height: "28px", fontSize: "21px", fontWeight: "400", fontFamily: "Roboto Slab" }}
+                                >
+                                    Teams report
+                                </span>
+                                <a
+                                    class="btn btn--positive"
+                                    download={`${date.format(Date.now(), "yyyymmdd-HHMM")}-groups-report`}
+                                    href="/groups-report"
+                                >
+                                    Export teams report
+                                </a>{" "}
+                            </span>
+                        ) : (
+                            ""
+                        )}
                     </div>
                 </div>
                 <SimpleSelectableList rows={search.value ? getFilteredGroups() : groups} showLoadingState={isLoading} />
