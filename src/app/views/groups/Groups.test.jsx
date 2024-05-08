@@ -1,16 +1,18 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
-import { render, screen } from "../../utilities/tests/test-utils";
+import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
 import Groups from "./Groups";
 import "@testing-library/jest-dom/extend-expect";
 import { mappedSortedGroups } from "../../utilities/tests/mockData";
 
+const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const defaultProps = {
     groups: [],
     loadTeams: jest.fn(),
     isNewSignIn: true,
     isLoading: false,
+    loggedInUser: admin,
 };
 
 describe("Groups", () => {

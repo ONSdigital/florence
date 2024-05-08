@@ -4,7 +4,7 @@ import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom/extend-expect";
-import { render, screen } from "../../../utilities/tests/test-utils";
+import { render, screen, createMockUser } from "../../../utilities/tests/test-utils";
 import { group, specialGroup } from "../../../utilities/tests/mockData";
 import EditGroup from "./EditGroup";
 
@@ -40,6 +40,8 @@ const users = [
         status_notes: "",
     },
 ];
+
+const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const props = {
     group: group,
     loading: false,
@@ -65,6 +67,7 @@ const props = {
     loadingMembers: jest.fn(),
     loadMembers: jest.fn(),
     loadUsers: jest.fn(),
+    loggedInUser: admin,
     updateGroup: jest.fn(),
     updateGroupMembers: jest.fn(),
 };
