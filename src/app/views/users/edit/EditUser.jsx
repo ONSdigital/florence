@@ -85,6 +85,8 @@ export const EditUser = props => {
         setValues(values => ({ ...values, active: e.id === "active" }));
     };
 
+    const isAdmin = props.loggedInUser.isAdmin || false;
+
     if (loading) return <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />;
 
     if (!user) return <h1>No user found.</h1>;
@@ -99,58 +101,64 @@ export const EditUser = props => {
                             <h1 className="margin-top--1 margin-bottom--1">{`${user.forename} ${user.lastname}`}</h1>
                             <p>{user.email}</p>
                             {hasErrors && <FormValidationErrors errors={errors} />}
-                            <Input
-                                error={errors?.forename}
-                                id="forename"
-                                label="First name"
-                                name="forename"
-                                type="text"
-                                value={values?.forename ? values.forename : ""}
-                                onChange={handleChange}
-                            />
-                            <Input
-                                error={errors?.lastname}
-                                id="lastname"
-                                label="Last name"
-                                name="lastname"
-                                type="text"
-                                value={values?.lastname ? values.lastname : ""}
-                                onChange={handleChange}
-                            />
+                            {isAdmin && (
+                                <>
+                                    <Input
+                                        error={errors?.forename}
+                                        id="forename"
+                                        label="First name"
+                                        name="forename"
+                                        type="text"
+                                        value={values?.forename ? values.forename : ""}
+                                        onChange={handleChange}
+                                    />
+                                    <Input
+                                        error={errors?.lastname}
+                                        id="lastname"
+                                        label="Last name"
+                                        name="lastname"
+                                        type="text"
+                                        value={values?.lastname ? values.lastname : ""}
+                                        onChange={handleChange}
+                                    />
+                                </>
+                            )}
                             <h2 className="margin-top--1">Team Member</h2>
                             {userGroups && userGroups.length > 0 ? (
                                 <UserGroupsList groups={userGroups} />
                             ) : (
-                                <p>User is not a member of a team. Please add them to a team.</p>
+                                <p>{`User is not a member of a team.${isAdmin ? " Please add them to a team." : ""}`}</p>
                             )}
                         </div>
-                        <div className="grid__col-md-5">
-                            <div className="form-group margin-top--1 margin-bottom--1">
-                                <RadioGroup
-                                    groupName="active"
-                                    inline
-                                    legend="User Access"
-                                    radioData={USER_ACCESS_OPTIONS}
-                                    selectedValue={values?.active ? "active" : "suspended"}
-                                    onChange={handleAccessChange}
-                                />
-                                <Input
-                                    id="status_notes"
-                                    label="Notes"
-                                    name="status_notes"
-                                    type="textarea"
-                                    value={values?.status_notes}
-                                    onChange={handleChange}
-                                />
-                                <p>
-                                    Add the reason for changing the users' access. For example, they have left or no longer need access to Florence.
-                                    Do not include any personal information.
-                                </p>
+                        {isAdmin && (
+                            <div className="grid__col-md-5">
+                                <div className="form-group margin-top--1 margin-bottom--1">
+                                    <RadioGroup
+                                        groupName="active"
+                                        inline
+                                        legend="User Access"
+                                        radioData={USER_ACCESS_OPTIONS}
+                                        selectedValue={values?.active ? "active" : "suspended"}
+                                        onChange={handleAccessChange}
+                                    />
+                                    <Input
+                                        id="status_notes"
+                                        label="Notes"
+                                        name="status_notes"
+                                        type="textarea"
+                                        value={values?.status_notes}
+                                        onChange={handleChange}
+                                    />
+                                    <p>
+                                        Add the reason for changing the users' access. For example, they have left or no longer need access to
+                                        Florence. Do not include any personal information.
+                                    </p>
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </div>
                 </div>
-                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                {isAdmin && <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />}
             </div>
         </form>
     );

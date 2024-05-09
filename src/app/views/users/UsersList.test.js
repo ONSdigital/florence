@@ -5,6 +5,7 @@ import UsersList from "./UsersList";
 import { user } from "../../utilities/tests/mockData";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
+const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const props = {
     active: [],
     suspended: [],
@@ -83,5 +84,17 @@ describe("UserList", () => {
         expect(screen.getByLabelText("Show active users", { pressed: false })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: true })).toBeInTheDocument();
         expect(screen.getByText(/nothing to show/i)).toBeInTheDocument();
+    });
+
+    it("doesn't show the create new user button if user is not an admin", () => {
+        const newProps = {
+            ...props,
+            loggedInUser: editor,
+        };
+        render(<UsersList {...newProps} />);
+
+        expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
+        expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
+        expect(screen.queryByRole("link", { name: "Create new user" })).not.toBeInTheDocument();
     });
 });

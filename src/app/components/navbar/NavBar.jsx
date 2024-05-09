@@ -86,7 +86,7 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-                        {auth.isAdmin(props.user) && (
+                        {auth.isAdminOrEditor(props.user) && (
                             <li className="global-nav__item">
                                 <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
                                     Users and access
