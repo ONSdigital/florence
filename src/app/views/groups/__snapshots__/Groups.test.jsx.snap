@@ -58,29 +58,27 @@ exports[`Groups matches the snapshot with empty props 1`] = `
       <div
         className="grid__col-2 grid--align-end"
       >
-        <span>
-          <span
-            className="margin-top--2"
-            style={
-              Object {
-                "fontFamily": "Roboto Slab",
-                "fontSize": "21px",
-                "fontWeight": "400",
-                "height": "28px",
-              }
+        <span
+          className="margin-top--2"
+          style={
+            Object {
+              "fontFamily": "Roboto Slab",
+              "fontSize": "21px",
+              "fontWeight": "400",
+              "height": "28px",
             }
-          >
-            Teams report
-          </span>
-          <a
-            class="btn btn--positive"
-            download="20171006-1445-groups-report"
-            href="/groups-report"
-          >
-            Export teams report
-          </a>
-           
+          }
+        >
+          Teams report
         </span>
+        <a
+          class="btn btn--positive"
+          download="20171006-1445-groups-report"
+          href="/groups-report"
+        >
+          Export teams report
+        </a>
+         
       </div>
     </div>
     <ul
@@ -154,29 +152,27 @@ exports[`Groups matches the snapshot with groups props 1`] = `
       <div
         className="grid__col-2 grid--align-end"
       >
-        <span>
-          <span
-            className="margin-top--2"
-            style={
-              Object {
-                "fontFamily": "Roboto Slab",
-                "fontSize": "21px",
-                "fontWeight": "400",
-                "height": "28px",
-              }
+        <span
+          className="margin-top--2"
+          style={
+            Object {
+              "fontFamily": "Roboto Slab",
+              "fontSize": "21px",
+              "fontWeight": "400",
+              "height": "28px",
             }
-          >
-            Teams report
-          </span>
-          <a
-            class="btn btn--positive"
-            download="20171006-1445-groups-report"
-            href="/groups-report"
-          >
-            Export teams report
-          </a>
-           
+          }
+        >
+          Teams report
         </span>
+        <a
+          class="btn btn--positive"
+          download="20171006-1445-groups-report"
+          href="/groups-report"
+        >
+          Export teams report
+        </a>
+         
       </div>
     </div>
     <ul
