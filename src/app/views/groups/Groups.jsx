@@ -41,7 +41,7 @@ const Groups = props => {
                     </div>
                     <div className="grid__col-2 grid--align-end">
                         {isAdmin && (
-                            <span>
+                            <>
                                 <span
                                     className="margin-top--2"
                                     style={{ height: "28px", fontSize: "21px", fontWeight: "400", fontFamily: "Roboto Slab" }}
@@ -55,7 +55,7 @@ const Groups = props => {
                                 >
                                     Export teams report
                                 </a>{" "}
-                            </span>
+                            </>
                         )}
                     </div>
                 </div>
