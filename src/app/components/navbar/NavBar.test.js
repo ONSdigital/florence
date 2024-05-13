@@ -117,9 +117,9 @@ describe("NavBar", () => {
     });
 
     describe("when user is authenticated as Editor", () => {
-        it("should not display Users and access", () => {
+        it("should display Users and access", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedEditor} />);
-            expect(component.find("Link[to='/florence/users']").exists()).toBe(false);
+            expect(component.find("Link[to='/florence/users']").exists()).toBe(true);
         });
     });
 

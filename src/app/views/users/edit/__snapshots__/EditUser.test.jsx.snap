@@ -220,3 +220,54 @@ exports[`EditUser matches the snapshot 1`] = `
   </div>
 </form>
 `;
+
+exports[`EditUser without admin permissions matches the snapshot 1`] = `
+<form
+  className="form form-with-sticky-footer"
+>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-11 grid__col-md-9"
+    >
+      <div
+        className="margin-top--2"
+      >
+        ◀ 
+        <a
+          onClick={[Function]}
+          role="link"
+          style={Object {}}
+        >
+          Back
+        </a>
+      </div>
+      <div
+        className="grid grid--justify-space-between"
+      >
+        <div
+          className="grid__col-md-6"
+        >
+          <h1
+            className="margin-top--1 margin-bottom--1"
+          >
+            test user-1498
+          </h1>
+          <p>
+            test.user-1498@ons.gov.uk
+          </p>
+          <h2
+            className="margin-top--1"
+          >
+            Team Member
+          </h2>
+          <p>
+            User is not a member of a team.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+`;

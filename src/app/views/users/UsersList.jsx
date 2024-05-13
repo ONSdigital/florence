@@ -7,6 +7,7 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
+import auth from "../../utilities/auth";
 
 const mapUsers = (users, rootPath) => {
     return users.map(user => ({
@@ -39,11 +40,13 @@ const UsersList = props => {
                     <div className="grid__col">
                         <h1>Users</h1>
                     </div>
-                    <div className="grid__col">
-                        <Link role="link" className="margin-left--1" href={`${rootPath}/users/create`}>
-                            Create new user
-                        </Link>
-                    </div>
+                    {auth.isAdmin(props.loggedInUser) && (
+                        <div className="grid__col">
+                            <Link role="link" className="margin-left--1" href={`${rootPath}/users/create`}>
+                                Create new user
+                            </Link>
+                        </div>
+                    )}
                 </div>
                 {loading ? (
                     <div className="grid grid--justify-center grid--align-center">

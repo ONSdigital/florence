@@ -8,6 +8,7 @@ const mapStateToProps = state => ({
     user: getUser(state.state),
     loading: getUserLoading(state.state),
     userGroups: getUserGroups(state.state),
+    loggedInUser: state.user,
 });
 
 const mapDispatchToProps = dispatch => ({

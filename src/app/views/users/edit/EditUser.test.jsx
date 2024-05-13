@@ -5,6 +5,10 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom/extend-expect";
 import EditUser from "./EditUser";
 import { groups, user } from "../../../utilities/tests/mockData";
+import { createMockUser } from "../../../utilities/tests/test-utils";
+
+const admin = createMockUser("admin@test.com", true, true, "ADMIN");
+const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 
 const props = {
     loading: false,
@@ -16,6 +20,7 @@ const props = {
     loadUser: jest.fn(),
     loadUserGroups: jest.fn(),
     router: { setRouteLeaveHook: jest.fn() },
+    loggedInUser: admin,
 };
 const setRouteLeaveHook = jest.fn();
 
@@ -120,6 +125,66 @@ describe("EditUser", () => {
     it("shows groups user belongs to", () => {
         const newProps = {
             ...props,
+            userGroups: groups,
+        };
+
+        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+
+        expect(screen.getByText(/my test group description/i)).toBeInTheDocument();
+        expect(screen.getByText(/my first test group description/i)).toBeInTheDocument();
+        expect(screen.getByText(/admins group description/i)).toBeInTheDocument();
+    });
+});
+
+describe("EditUser without admin permissions", () => {
+    const editorProps = {
+        ...props,
+        loggedInUser: editor,
+    };
+
+    it("matches the snapshot", () => {
+        const tree = renderer.create(
+            <EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+        );
+        expect(tree.toJSON()).toMatchSnapshot();
+    });
+
+    it("fetches user details on load", () => {
+        render(<EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        expect(editorProps.loadUser).toBeCalledWith("test.user-1498@ons.gov.uk");
+        expect(editorProps.loadUserGroups).toBeCalled();
+    });
+
+    it("shows the form with user data and no admin fields", () => {
+        render(<EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+
+        expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
+        expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("test user-1498");
+        expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
+
+        expect(screen.queryByLabelText(/First name/i)).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/Last name/i)).not.toBeInTheDocument();
+
+        expect(screen.queryByRole("group", { name: /User Access/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole("radio", { name: /Active/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole("radio", { name: /Suspended/i })).not.toBeInTheDocument();
+        expect(screen.queryByLabelText(/Notes/i)).not.toBeInTheDocument();
+
+        expect(screen.queryByRole("button", { name: /Save changes/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: /Cancel/i })).not.toBeInTheDocument();
+        expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
+    });
+    it("shows loader when fetching user data", () => {
+        const newProps = {
+            ...editorProps,
+            loading: true,
+        };
+        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        expect(screen.getByTestId("loader")).toBeInTheDocument();
+    });
+    it("shows groups user belongs to", () => {
+        const newProps = {
+            ...editorProps,
             userGroups: groups,
         };
 

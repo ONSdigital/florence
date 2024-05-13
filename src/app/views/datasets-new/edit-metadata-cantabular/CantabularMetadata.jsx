@@ -350,7 +350,7 @@ const CantabularMetadata = ({
                 selectedValue={metadata.nationalStatistic ? metadata.nationalStatistic.toString() : "false"}
                 onChange={handleNationalStatisticChange}
                 inline={true}
-                legend={"National Statistic"}
+                legend={"Accredited official statistic"}
                 disabled={disableForm}
             />
 
