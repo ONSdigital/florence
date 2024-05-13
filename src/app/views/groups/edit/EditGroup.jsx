@@ -175,7 +175,7 @@ const EditGroup = props => {
                         )}
                     </div>
                 </div>
-                <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />
+                {isAdmin && <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />}
             </div>
         </div>
     );
