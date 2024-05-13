@@ -255,3 +255,85 @@ exports[`EditGroup matches the snapshot 1`] = `
   </div>
 </div>
 `;
+
+exports[`EditGroup without admin permissions matches the snapshot 1`] = `
+<div
+  className="form form-with-sticky-footer"
+>
+  <div
+    className="grid grid--justify-space-around"
+  >
+    <div
+      className="grid__col-11 grid__col-md-9"
+    >
+      <div
+        className="margin-top--2"
+      >
+        ◀ 
+        <a
+          onClick={[Function]}
+          role="link"
+          style={Object {}}
+        >
+          Back
+        </a>
+      </div>
+      <h1
+        className="margin-top--1 margin-bottom--1"
+      >
+        Boo is fine
+      </h1>
+      <div
+        className="grid grid--justify-space-between"
+      >
+        <div
+          className="grid__col-md-6 margin-top--half"
+        >
+          <div
+            className="grid grid--align-center grid--align-self-center grid--full-height"
+            data-testid="loader"
+          >
+            <div
+              className="loader loader--large loader--dark"
+            />
+          </div>
+          <div
+            className="simple-table__scroll margin-bottom--1"
+            data-testid="members"
+          >
+            <h2>
+              Members
+            </h2>
+            <div
+              className="chip__container chip__container--gap-10 "
+            >
+              <span
+                className="chip"
+              >
+                <svg
+                  aria-label="Person icon"
+                  className="chip__icon"
+                  fill="none"
+                  role="img"
+                  viewBox="0 0 15 15"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M6.667 7.5a3.332 3.332 0 1 0 0-6.667 3.332 3.332 0 1 0 0 6.667Zm0 1.667C4.442 9.167 0 10.283 0 12.5v1.667h13.333V12.5c0-2.217-4.441-3.333-6.666-3.333Z"
+                    fill="#707071"
+                  />
+                </svg>
+                <span
+                  className="chip__text"
+                >
+                  test user-199 (test.user-199@ons.gov.uk)
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;

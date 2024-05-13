@@ -42,6 +42,7 @@ const users = [
 ];
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
+const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const props = {
     group: group,
     loading: false,
@@ -137,5 +138,30 @@ describe("EditGroup", () => {
 
             expect(props.updateGroup).toHaveBeenCalledWith("0", { name: "Foo" });
         });
+    });
+});
+
+describe("EditGroup without admin permissions", () => {
+    const editorProps = {
+        ...props,
+        loggedInUser: editor,
+    };
+
+    it("matches the snapshot", () => {
+        const tree = renderer.create(
+            <EditGroup.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+        );
+        expect(tree.toJSON()).toMatchSnapshot();
+    });
+
+    it("shows group details and no admin options", () => {
+        render(<EditGroup.WrappedComponent {...editorProps} />);
+        expect(screen.getByRole("heading", { level: 1, name: "Boo is fine" })).toBeInTheDocument();
+        expect(editorProps.loadMembers).toBeCalled();
+
+        expect(screen.queryByRole("input", { name: /Name/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: /Save changes/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole("button", { name: /Cancel/i })).not.toBeInTheDocument();
+        expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
     });
 });

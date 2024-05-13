@@ -7,6 +7,7 @@ import "@testing-library/jest-dom/extend-expect";
 import { mappedSortedGroups } from "../../utilities/tests/mockData";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
+const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const defaultProps = {
     groups: [],
     loadTeams: jest.fn(),
@@ -70,5 +71,17 @@ describe("Groups", () => {
         expect(screen.queryByText(/Hello Group/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/Test/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/This team has 5 members/i)).not.toBeInTheDocument();
+    });
+
+    it("doesn't show the create new team button and teams report button if user is not an admin", () => {
+        const newProps = {
+            ...defaultProps,
+            loggedInUser: editor,
+        };
+        render(<Groups {...newProps} />);
+
+        expect(screen.queryByRole("link", { name: "Create new team" })).not.toBeInTheDocument();
+        expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
+        expect(screen.queryByRole("button", { name: "Export teams report" })).not.toBeInTheDocument();
     });
 });
