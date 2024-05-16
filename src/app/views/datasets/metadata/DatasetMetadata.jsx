@@ -902,7 +902,7 @@ export class DatasetMetadata extends Component {
                                         isChecked={this.state.isNationalStat}
                                         onChange={this.handleToggleChange}
                                         disabled={this.state.isReadOnly || this.state.isSavingData}
-                                        label="Accredited official statistic"
+                                        label="Accredited official statistics"
                                         id="national-statistic"
                                     />
                                 </div>
