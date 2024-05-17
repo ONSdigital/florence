@@ -18,7 +18,7 @@ const Layout = props => {
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
     const [shouldUpdateAccessToken, setShouldUpdateAccessToken] = useState(false);
     // Get Permissions
-    const userPermissions = useGetPermissions(authState, setShouldUpdateAccessToken);
+    const userPermissions = useGetPermissions(props, authState, setShouldUpdateAccessToken);
     // Check timers & update if required
     useUpdateTimers(props, sessionTimerIsActive, dispatch);
     // Update store with permissions
