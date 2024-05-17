@@ -10,7 +10,7 @@ const nonAuthRoutes = ["/florence/login", "/florence/forgotten-password", "/flor
 export const useGetPermissions = (props, authState, setShouldUpdateAccessToken) => {
     const [userState, setUserState] = useState();
     useEffect(() => {
-        if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
+        if (!nonAuthRoutes.includes(props.location.pathname)) {
             if (!authState) {
                 user.getPermissions().then(userData => {
                     // TODO this needs to be removed when we get a correct 401 status back from zebedee.
