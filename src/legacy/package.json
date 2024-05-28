@@ -28,9 +28,5 @@
     },
     "devDependencies": {
         "auditjs": "^4.0.37"
-    },
-    "overrides": {
-        "micromatch": "^4.0.6",
-        "braces": "^3.0.3"
     }
 }
