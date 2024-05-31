@@ -87,7 +87,7 @@ export default class user {
 
     // TODO: new auth work
     static getUsers() {
-        return http.get(`/users`);
+        return http.get(`/users?sort=forename:asc`);
     }
 
     // TODO: new auth work
