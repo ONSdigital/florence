@@ -58,7 +58,7 @@ export default class teams {
     }
 
     static getGroups() {
-        return http.get(`/groups`).then(response => {
+        return http.get(`/groups?sort=name:asc`).then(response => {
             return response;
         });
     }
