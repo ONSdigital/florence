@@ -59,7 +59,6 @@ export default class teams {
 
     static getGroups() {
         return http.get(`/groups`).then(response => {
-            console.log("getGroups >>", response);
             return response;
         });
     }
@@ -90,7 +89,6 @@ export default class teams {
 
     static getGroupMembers(id) {
         return http.get(`/groups/${id}/members?sort=forename:asc`).then(response => {
-            console.log("getGroupMembers >>", response);
             return response;
         });
     }
