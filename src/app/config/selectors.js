@@ -83,12 +83,7 @@ export const getUserGroups = state => state.user.groups;
 export const getIsRemovingAllTokens = state => state.users.isRemovingAllTokens;
 export const getIsDeletingGroup = state => state.groups.isDeleting;
 
-export const getSortedGroups = createSelector(getGroups, groups => {
-    if (!groups) return [];
-    return groups.sort((a, b) => new Date(b.creation_date) - new Date(a.creation_date));
-});
-
-export const getMappedSortedGroups = createSelector(getSortedGroups, rootPath, (groups, rootPath) => {
+export const getMappedSortedGroups = createSelector(getGroups, rootPath, (groups, rootPath) => {
     if (!groups) return [];
     return groups.map(group => ({
         ...group,
