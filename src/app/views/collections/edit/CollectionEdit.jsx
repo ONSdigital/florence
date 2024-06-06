@@ -113,7 +113,7 @@ class CollectionEdit extends Component {
         let filteredTeams = this.props.allTeams ?? [];
         if (auth.isAdminOrEditor(this.props.user)) {
             filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
-            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.activeCollection.teams.includes(team) }));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.activeCollection.teams.some(e => e.id === team.id) }));
         }
         return filteredTeams;
     };
