@@ -4,7 +4,7 @@
 
     &__item {
         border-bottom: $iron-dark solid 1px;
-        padding: $lineheight 0;
+        padding: ($lineheight / 2) 0;
         display: flex;
         justify-content: space-between;
         gap: 1rem;
@@ -69,10 +69,10 @@
     }
 
     &__title {
-        font-size: 24.5px;
+        font-size: 21px;
         font-family: "Roboto Slab", serif;
         font-weight: 400;
-        line-height: 36px;
+        line-height: 28px;
 
         &--disabled {
             color: $dusty-grey;
