@@ -66,7 +66,7 @@ const UsersList = props => {
                             </div>
                             <div className="grid__col-md-4">
                                 <div className="btn-group">
-                                    <div className="form__label inline">Show</div>
+                                    <div className="form__label inline">Show:</div>
                                     <label htmlFor="active" className="visually-hidden">
                                         Show active users
                                     </label>
