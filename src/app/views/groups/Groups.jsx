@@ -30,7 +30,7 @@ const Groups = props => {
                         <span className="margin-top--1">
                             <h1 className="inline-block margin-top--0 margin-bottom--0 padding-right--1">Preview teams</h1>
                             {isAdmin && (
-                                <Link className="margin-left--1" to={url.resolve("./groups/create")}>
+                                <Link className="margin-left--1 font-size--18" to={url.resolve("./groups/create")}>
                                     Create a new team
                                 </Link>
                             )}
