@@ -30,7 +30,6 @@ const propTypes = {
     teams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
         })
     ),
     publishType: PropTypes.string.isRequired,
