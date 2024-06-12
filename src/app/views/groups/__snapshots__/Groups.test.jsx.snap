@@ -22,7 +22,7 @@ exports[`Groups matches the snapshot with empty props 1`] = `
             Preview teams
           </h1>
           <a
-            className="margin-left--1"
+            className="margin-left--1 font-size--18"
             onClick={[Function]}
             style={Object {}}
           >
@@ -116,7 +116,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
             Preview teams
           </h1>
           <a
-            className="margin-left--1"
+            className="margin-left--1 font-size--18"
             onClick={[Function]}
             style={Object {}}
           >
