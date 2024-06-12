@@ -14,8 +14,6 @@ const propTypes = {
     }).isRequired,
 };
 
-const config = window.getEnv();
-
 export class CreateContent extends Component {
     constructor(props) {
         super(props);
