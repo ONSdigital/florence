@@ -9,10 +9,9 @@ import fp from "lodash/fp";
 
 export default class collectionMapper {
     static mapTeams(collection, allGroups) {
-        if (collection.teamsDetails) {
-            return collection.teamsDetails.map(team => ({
-                id: team.id.toString(),
-                name: team.name,
+        if (collection.teams) {
+            return collection.teams.map(value => ({
+                id: value, // teams is an array and the 'id' is set as the value
             }));
         } else {
             if (allGroups) {
