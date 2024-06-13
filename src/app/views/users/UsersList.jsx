@@ -64,7 +64,7 @@ const UsersList = props => {
                                     <input id="search" type="search" role="search" name="search" placeholder="Search users by name" {...search} />
                                 </div>
                             </div>
-                            <div className="grid__col-md-4">
+                            <div className="grid__col-md-4" style={{ alignItems: "flex-end" }}>
                                 <div className="btn-group">
                                     <div className="form__label inline">Show:</div>
                                     <label htmlFor="active" className="visually-hidden">
