@@ -28,13 +28,11 @@ const propTypes = {
     teams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
         })
     ),
     allTeams: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            name: PropTypes.string.isRequired,
         })
     ),
     publishType: PropTypes.string.isRequired,
@@ -113,9 +111,18 @@ class CollectionEdit extends Component {
         let filteredTeams = this.props.allTeams ?? [];
         if (auth.isAdminOrEditor(this.props.user)) {
             filteredTeams = filteredTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
-            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.activeCollection.teams.includes(team) }));
+            filteredTeams = filteredTeams.map(team => ({ ...team, disabled: this.props.teams.some(e => e.id === team.id) }));
         }
         return filteredTeams;
+    };
+
+    getSelectedTeams = () => {
+        let selectedTeams = this.props.allTeams ?? [];
+        if (auth.isAdminOrEditor(this.props.user)) {
+            selectedTeams = selectedTeams.filter(team => !(team.id == "role-admin" || team.id == "role-publisher"));
+            selectedTeams = selectedTeams.filter(team => this.props.teams.some(e => e.id === team.id));
+        }
+        return selectedTeams;
     };
 
     render() {
@@ -148,12 +155,14 @@ class CollectionEdit extends Component {
                                 id="collection-edit-teams"
                                 label="Select a team(s) that can view this collection"
                                 contents={this.getTeamsToSelect()}
-                                defaultOption={this.props.isFetchingAllTeams ? "Loading teams..." : "Select an option"}
+                                defaultOption={this.props.allTeams.length === 0 ? "Loading teams..." : "Select an option"}
                                 selectedOption="default-option"
                                 onChange={this.handleTeamSelection}
                             />
-                            {this.props.teams.length ? <SelectedItemList items={this.props.teams} handleRemoveItem={this.handleTeamRemove} /> : null}
-                            {/* <SelectedItemList disabled={this.props.isSavingEdits} items={this.props.teams} handleRemoveItem={this.onRemoveTeam} /> */}
+
+                            {this.props.teams.length ? (
+                                <SelectedItemList items={this.getSelectedTeams()} handleRemoveItem={this.handleTeamRemove} />
+                            ) : null}
                             <RadioGroup
                                 groupName="collection-edit-type"
                                 radioData={this.publishTypeRadioButtons}

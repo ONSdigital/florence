@@ -223,39 +223,17 @@ describe("collectionMapper", () => {
             expect(resultOfScheduledCollection.isForcedManualType).toBe(false);
         });
 
-        it("excludes basic teams data", () => {
-            const resultWithBasicTeams = collectionMapper.collectionResponseToState({
-                ...collectionData,
-                teams: ["team1", "team3"],
-            });
-            expect(resultWithBasicTeams.teams).toEqual([]);
-        });
-
-        it("includes extra teams details, when available", () => {
+        it("includes teams id, when available", () => {
             const resultWithTeamsDetails = collectionMapper.collectionResponseToState({
                 ...collectionData,
-                teams: ["team1", "team3"],
-                teamsDetails: [
-                    {
-                        id: 26,
-                        name: "team1",
-                        members: [],
-                    },
-                    {
-                        id: 29,
-                        name: "team3",
-                        members: [],
-                    },
-                ],
+                teams: ["team1", "id-1234"],
             });
             expect(resultWithTeamsDetails.teams).toEqual([
                 {
-                    id: "26",
-                    name: "team1",
+                    id: "team1",
                 },
                 {
-                    id: "29",
-                    name: "team3",
+                    id: "id-1234",
                 },
             ]);
         });
