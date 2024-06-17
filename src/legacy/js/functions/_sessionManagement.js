@@ -73,9 +73,9 @@ function startExpiryTimer(name, expiryTime, offsetInMilliseconds, callback) {
         // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
         const now = new Date();
         const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
-        const nowInUTC = new Date(nowUTCInMS);
+        const expiryInMS = expiryTime.getTime() + expiryTime.getTimezoneOffset() * 60000
         // Get the time difference between now and the expiry time minus the timer offset
-        let timerInterval = expiryTime - offsetInMilliseconds - nowInUTC;
+        let timerInterval = expiryInMS - offsetInMilliseconds - nowUTCInMS;
 
         if (Florence.sessionManagement.timers[name] != null) {
             clearTimeout(Florence.sessionManagement.timers[name]);
