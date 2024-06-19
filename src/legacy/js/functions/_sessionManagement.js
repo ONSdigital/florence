@@ -72,11 +72,10 @@ function startExpiryTimer(name, expiryTime, offsetInMilliseconds, callback) {
     if (expiryTime) {
         // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
         const now = new Date();
-        const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
-        const expiryInMS = expiryTime.getTime() + expiryTime.getTimezoneOffset() * 60000
-        // Get the time difference between now and the expiry time minus the timer offset
-        let timerInterval = expiryInMS - offsetInMilliseconds - nowUTCInMS;
-
+        let timerInterval = expiryTime - now.getTime() - offsetInMilliseconds;
+        if (isNaN(timerInterval)) {
+            console.error(`[FLORENCE] time interval for ${name} is not a valid date format.`);
+        }
         if (Florence.sessionManagement.timers[name] != null) {
             clearTimeout(Florence.sessionManagement.timers[name]);
         }
@@ -119,11 +118,12 @@ function refreshSession() {
     if (Florence.globalVars.config.enableNewSignIn) {
         // If enableNewSignIn then update the session timers
         fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}}).then(response => {
-            response = response.json()
-            if (response.expirationTime != null) {
+            return response.json()
+        }).then(data => {
+            if (data.expirationTime != null) {
                 const authState = getAuthState();
                 const refresh_expiry_time = new Date(authState.refresh_expiry_time);
-                const expirationTime = convertUTCToJSDate(res.expirationTime);
+                const expirationTime = convertUTCToJSDate(data.expirationTime);
                 setSessionExpiryTime(expirationTime, refresh_expiry_time);
             } else {
                 renewError();
@@ -151,8 +151,7 @@ function createDefaultExpireTimes(hours) {
 function convertUTCToJSDate(expiryTime) {
     // Convert API time to usable JS Date object
     if (expiryTime) {
-        const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "");
-        return new Date(expireTimeInUTCString);
+        return new Date(expiryTime);
     }
     return null;
 }
@@ -172,14 +171,13 @@ function renewSession() {
  *  @param sessionExpiryTime must be in js date format (not UTC from server)
  *  @returns true if session has expired
  *  */
-function isSessionExpired(sessionExpiryTime, ) {
+function isSessionExpired(sessionExpiryTime) {
     const now = new Date();
     let nowInUTC;
     if (!Florence.globalVars.config.enableNewSignIn) {
         nowInUTC = now;
     } else {
-        const nowUTCInMS = now.getTime() + now.getTimezoneOffset() * 60000;
-        nowInUTC = new Date(nowUTCInMS);
+        nowInUTC = now.getTime()
     }
     // Get the time difference between now and the expiry time minus the timer offset
     const timerInterval = new Date(sessionExpiryTime) - nowInUTC;
