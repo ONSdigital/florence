@@ -51,11 +51,11 @@ export class ScheduleByRelease extends Component {
         releases
             .getUpcoming(null, null, this.state.releasesPerPage)
             .then(upcomingReleases => {
-                const tableData = this.mapReleasesToTableRows(upcomingReleases.result.results);
+                const tableData = this.mapReleasesToTableRows(upcomingReleases.releases);
                 this.setState({
                     isFetchingReleases: false,
-                    numberOfReleases: upcomingReleases.result.numberOfResults,
-                    numberOfPages: upcomingReleases.result.paginator ? upcomingReleases.result.paginator.numberOfPages : 1,
+                    numberOfReleases: upcomingReleases.breakdown.total, //  upcomingReleases.result.numberOfResults,
+                    numberOfPages: Math.ceil(upcomingReleases.breakdown.total / 10), // upcomingReleases.result.paginator ? upcomingReleases.result.paginator.numberOfPages : 1,
                     currentPage: 1,
                     tableData,
                 });
@@ -84,6 +84,9 @@ export class ScheduleByRelease extends Component {
     }
 
     mapReleasesToTableRows(releases) {
+        if (!releases) {
+            return [];
+        }
         const rows = releases
             .filter(release => {
                 if (release.description.published) {
@@ -132,11 +135,11 @@ export class ScheduleByRelease extends Component {
         releases
             .getUpcoming(null, query, this.state.releasesPerPage)
             .then(searchedReleases => {
-                const tableData = this.mapReleasesToTableRows(searchedReleases.result.results);
+                const tableData = this.mapReleasesToTableRows(searchedReleases.releases);
                 this.setState({
                     isFetchingSearchedReleases: false,
-                    numberOfReleases: searchedReleases.result.numberOfResults || 0,
-                    numberOfPages: searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
+                    numberOfReleases: searchedReleases.breakdown.total, // searchedReleases.result.numberOfResults || 0,
+                    numberOfPages: Math.ceil(searchedReleases.breakdown.total / 10), // searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
                     currentPage: 1,
                     searchQuery: query, // just incase a request takes ages this means the state is true about what query is actually being shown
                     tableData,
@@ -173,7 +176,7 @@ export class ScheduleByRelease extends Component {
                 this.setState(state => ({
                     isFetchingExtraReleases: false,
                     currentPage: state.currentPage + 1,
-                    tableData: [...state.tableData, ...this.mapReleasesToTableRows(upcomingReleases.result.results)],
+                    tableData: [...state.tableData, ...this.mapReleasesToTableRows(upcomingReleases.releases)],
                 }));
             })
             .catch(error => {
