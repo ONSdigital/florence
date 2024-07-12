@@ -13,6 +13,8 @@ import (
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/log.go/log"
 	"github.com/gorilla/mux"
+
+	dphandlers "github.com/ONSdigital/dp-net/v2/handlers"
 )
 
 // generated files constants
@@ -187,4 +189,28 @@ func DeleteHttpCookie() http.HandlerFunc {
 		http.SetCookie(w, c)
 		w.WriteHeader(http.StatusAccepted)
 	}
+}
+
+func ReleaseData(api SearchAPI) http.HandlerFunc {
+	return dphandlers.ControllerHandler(func(w http.ResponseWriter, r *http.Request, lang, collectionID, accessToken string) {
+		ctx := r.Context()
+		params := r.URL.Query()
+
+		releases, err := api.GetReleases(ctx, accessToken, collectionID, lang, params)
+		if err != nil {
+			log.Event(ctx, "error getting releases", log.ERROR, log.Error(err))
+			return
+		}
+
+		data, err := json.Marshal(releases)
+		if err != nil {
+			log.Event(ctx, "error marshalling releases", log.ERROR, log.Error(err))
+			return
+		}
+
+		if _, err = w.Write(data); err != nil {
+			log.Event(ctx, "error writing response", log.ERROR, log.Error(err))
+			return
+		}
+	})
 }
