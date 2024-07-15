@@ -16,35 +16,33 @@ jest.mock("../../../utilities/date", () => ({
 jest.mock("../../../utilities/api-clients/releases", () => ({
     getUpcoming: jest.fn(() => {
         return Promise.resolve({
-            result: {
-                results: [
-                    {
-                        uri: "/releases/my-release",
-                        description: {
-                            title: "My release",
-                            releaseDate: "2018-05-17T09:30:54.928Z",
-                            finalised: true,
-                        },
+            releases: [
+                {
+                    uri: "/releases/my-release",
+                    description: {
+                        title: "My release",
+                        releaseDate: "2018-05-17T09:30:54.928Z",
+                        finalised: true,
                     },
-                    {
-                        uri: "/releases/my-second-release",
-                        description: {
-                            title: "My second release",
-                            releaseDate: "2018-05-20T09:30:54.928Z",
-                            finalised: true,
-                        },
+                },
+                {
+                    uri: "/releases/my-second-release",
+                    description: {
+                        title: "My second release",
+                        releaseDate: "2018-05-20T09:30:54.928Z",
+                        finalised: true,
                     },
-                    {
-                        uri: "/releases/my-third-release",
-                        description: {
-                            title: "My third release",
-                            releaseDate: "2018-05-21T09:30:54.928Z",
-                            finalised: true,
-                        },
+                },
+                {
+                    uri: "/releases/my-third-release",
+                    description: {
+                        title: "My third release",
+                        releaseDate: "2018-05-21T09:30:54.928Z",
+                        finalised: true,
                     },
-                ],
-                numberOfResults: 3,
-            },
+                },
+            ],
+            breakdown: { total: 3 },
         });
     }),
 }));
@@ -196,12 +194,9 @@ describe("Searching releases", () => {
     it("updates the 'number of pages' state", async () => {
         releases.getUpcoming.mockImplementationOnce(() =>
             Promise.resolve({
-                result: {
-                    results: [],
-                    numberOfResults: 50,
-                    paginator: {
-                        numberOfPages: 5,
-                    },
+                releases: [],
+                breakdown: {
+                    total: 50,
                 },
             })
         );
@@ -256,37 +251,34 @@ describe("Loading more releases", () => {
         // Update the mocked response for all of the following tests in the 'Loading more releases'
         releases.getUpcoming.mockImplementation(() =>
             Promise.resolve({
-                result: {
-                    results: [
-                        {
-                            uri: "/releases/my-fourth-release",
-                            description: {
-                                title: "My fourth release",
-                                releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true,
-                            },
+                releases: [
+                    {
+                        uri: "/releases/my-fourth-release",
+                        description: {
+                            title: "My fourth release",
+                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            finalised: true,
                         },
-                        {
-                            uri: "/releases/my-fifth-release",
-                            description: {
-                                title: "My fifth release",
-                                releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true,
-                            },
-                        },
-                        {
-                            uri: "/releases/my-sixth-release",
-                            description: {
-                                title: "My sixth release",
-                                releaseDate: "2018-05-17T09:30:54.928Z",
-                                finalised: true,
-                            },
-                        },
-                    ],
-                    numberOfResults: 6,
-                    paginator: {
-                        numberOfPages: 2,
                     },
+                    {
+                        uri: "/releases/my-fifth-release",
+                        description: {
+                            title: "My fifth release",
+                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            finalised: true,
+                        },
+                    },
+                    {
+                        uri: "/releases/my-sixth-release",
+                        description: {
+                            title: "My sixth release",
+                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            finalised: true,
+                        },
+                    },
+                ],
+                breakdown: {
+                    total: 2,
                 },
             })
         );
