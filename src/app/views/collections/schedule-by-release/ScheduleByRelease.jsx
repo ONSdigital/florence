@@ -54,8 +54,8 @@ export class ScheduleByRelease extends Component {
                 const tableData = this.mapReleasesToTableRows(upcomingReleases.releases);
                 this.setState({
                     isFetchingReleases: false,
-                    numberOfReleases: upcomingReleases.breakdown.total, //  upcomingReleases.result.numberOfResults,
-                    numberOfPages: Math.ceil(upcomingReleases.breakdown.total / 10), // upcomingReleases.result.paginator ? upcomingReleases.result.paginator.numberOfPages : 1,
+                    numberOfReleases: upcomingReleases.breakdown.total,
+                    numberOfPages: Math.ceil(upcomingReleases.breakdown.total / this.state.releasesPerPage),
                     currentPage: 1,
                     tableData,
                 });
@@ -138,8 +138,8 @@ export class ScheduleByRelease extends Component {
                 const tableData = this.mapReleasesToTableRows(searchedReleases.releases);
                 this.setState({
                     isFetchingSearchedReleases: false,
-                    numberOfReleases: searchedReleases.breakdown.total, // searchedReleases.result.numberOfResults || 0,
-                    numberOfPages: Math.ceil(searchedReleases.breakdown.total / 10), // searchedReleases.result.paginator ? searchedReleases.result.paginator.numberOfPages : 1,
+                    numberOfReleases: searchedReleases.breakdown.total || 0,
+                    numberOfPages: Math.ceil(searchedReleases.breakdown.total / this.state.releasesPerPage),
                     currentPage: 1,
                     searchQuery: query, // just incase a request takes ages this means the state is true about what query is actually being shown
                     tableData,

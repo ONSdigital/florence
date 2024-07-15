@@ -5,7 +5,7 @@ export default class releases {
         const parameters = [];
 
         if (pageNumber) {
-            parameters.push("page=" + pageNumber);
+            parameters.push("offset=" + (pageNumber - 1) * size);
         }
 
         if (query) {
@@ -13,7 +13,7 @@ export default class releases {
         }
 
         if (size) {
-            parameters.push("size=" + size);
+            parameters.push("limit=" + size);
         }
         const URL = "/releasecalendar/data?release-type=type-upcoming&" + parameters.join("&");
         return http.get(URL);
