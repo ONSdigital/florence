@@ -74,8 +74,9 @@ func TestRun(t *testing.T) {
 
 		funcDoGetHealthClientOk := func(name string, url string) *health.Client {
 			return &health.Client{
-				URL:  url,
-				Name: name,
+				URL:    url,
+				Name:   name,
+				Client: service.NewMockHTTPClient(&http.Response{}, nil),
 			}
 		}
 
