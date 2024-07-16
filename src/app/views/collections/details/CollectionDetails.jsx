@@ -97,7 +97,7 @@ export class CollectionDetails extends Component {
                         return `Last edit: Loading...`;
                     }
                 } else {
-                    const formattedDate = date.format(new Date(page.date), "ddd d mmm yyyy - HH:MM:ss");
+                    const formattedDate = date.format(new Date(lastEdit.date), "ddd d mmm yyyy - HH:MM:ss");
                     return `Last edit: Loading... (${formattedDate})`;
                 }
             }
