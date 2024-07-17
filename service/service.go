@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
@@ -47,7 +46,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	}
 
 	// Get health client for api router
-	svc.healthClient = serviceList.GetHealthClient("api-router", fmt.Sprintf("%s/%s", cfg.APIRouterURL, cfg.APIRouterVersion))
+	svc.healthClient = serviceList.GetHealthClient("api-router", cfg.APIRouterURL)
 
 	// Get healthcheck with checkers
 	svc.HealthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
