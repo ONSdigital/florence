@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
-	sitesearch "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
 	"github.com/ONSdigital/dp-net/v2/handlers/reverseproxy"
 	"github.com/ONSdigital/florence/assets"
 	"github.com/ONSdigital/florence/config"
@@ -50,9 +49,6 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// Get health client for api router
 	svc.healthClient = serviceList.GetHealthClient("api-router", fmt.Sprintf("%s/%s", cfg.APIRouterURL, cfg.APIRouterVersion))
 
-	// Get search API client
-	SearchAPI := sitesearch.NewWithHealthClient(svc.healthClient)
-
 	// Get healthcheck with checkers
 	svc.HealthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
@@ -64,7 +60,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	}
 
 	// Create Router and HTTP Server
-	svc.Router, err = svc.createRouter(ctx, cfg, SearchAPI)
+	svc.Router, err = svc.createRouter(ctx, cfg)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +80,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 // createRouter creates a Router with the necessary reverse proxies for services that florence needs to call,
 // and handlers legacy index files.
 // CMD API calls (recipe, import and dataset APIs) are proxied through the API router.
-func (svc *Service) createRouter(ctx context.Context, cfg *config.Config, sc SearchAPI) (router *mux.Router, err error) {
+func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *mux.Router, err error) {
 
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
 	if err != nil {
@@ -184,7 +180,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config, sc Sea
 
 	// API and Frontend Routers
 	router.Handle("/api/{uri:.*}", apiRouterProxy)
-	router.HandleFunc("/releasecalendar/data", ReleaseData(sc))
 	router.Handle("/{uri:.*}", frontendRouterProxy)
 	return router, nil
 }

@@ -15,7 +15,7 @@ export default class releases {
         if (size) {
             parameters.push("limit=" + size);
         }
-        const URL = "/releasecalendar/data?release-type=type-upcoming&" + parameters.join("&");
+        const URL = "/api/v1/search/releases?release-type=type-upcoming&" + parameters.join("&");
         return http.get(URL);
     }
 }

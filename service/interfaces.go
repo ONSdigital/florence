@@ -3,10 +3,9 @@ package service
 import (
 	"context"
 	"net/http"
-	"net/url"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
-	search "github.com/ONSdigital/dp-api-clients-go/v2/site-search"
+
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 )
@@ -34,9 +33,4 @@ type HealthChecker interface {
 	Start(ctx context.Context)
 	Stop()
 	AddCheck(name string, checker healthcheck.Checker) (err error)
-}
-
-// SearchAPI is an interface to the Search API for searching the Release (Calendars)
-type SearchAPI interface {
-	GetReleases(ctx context.Context, userAccessToken, collectionID, lang string, query url.Values) (search.ReleaseResponse, error)
 }
