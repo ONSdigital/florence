@@ -188,6 +188,35 @@ describe("Mapping releases response to table", () => {
 
         expect(component.instance().mapReleasesToTableRows(releasesWithHTMLTags)[0].returnValue.title).toBe("My tagged release");
     });
+
+    it("handles blank dates", () => {
+        const releasesWithBlankDates = [
+            {
+                uri: "/releases/my-release-with-blank-date",
+                description: {
+                    title: "My release with blank date",
+                    release_date: "",
+                    finalised: true,
+                },
+            },
+        ];
+
+        expect(component.instance().mapReleasesToTableRows(releasesWithBlankDates)[0].columnValues[1]).toBe("");
+    });
+
+    it("handles no dates", () => {
+        const releasesWithoutReleaseDate = [
+            {
+                uri: "/releases/my-release-without-date",
+                description: {
+                    title: "My release without date",
+                    finalised: true,
+                },
+            },
+        ];
+
+        expect(component.instance().mapReleasesToTableRows(releasesWithoutReleaseDate)[0].returnValue.releaseDate).toBe("");
+    });
 });
 
 describe("Searching releases", () => {
