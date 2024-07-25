@@ -104,10 +104,10 @@ export class ScheduleByRelease extends Component {
 
                 return {
                     id: release.uri,
-                    columnValues: [title, date.format(release.description.releaseDate, "dddd, dd/mm/yyyy h:MMTT")],
+                    columnValues: [title, date.format(release.description.release_date, "dddd, dd/mm/yyyy h:MMTT")],
                     returnValue: {
                         uri: release.uri,
-                        releaseDate: release.description.releaseDate,
+                        releaseDate: release.description.release_date,
                         title,
                         isProvisional: !release.description.finalised,
                     },
