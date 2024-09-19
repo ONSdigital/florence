@@ -136,7 +136,12 @@ export class CantabularMetadataController extends Component {
         try {
             const extractTopicItems = ({ items }) => items;
             let rootTopicsArr = await topics.getRootTopics().then(extractTopicItems);
-            const getSubtopics = ({ id }) => topics.getSubtopics(id).then(extractTopicItems);
+            const getSubtopics = ({ id, next: { subtopics_ids } }) => {
+                if (subtopics_ids.length > 0) {
+                    return topics.getSubtopics(id).then(extractTopicItems);
+                }
+                return [];
+            };
             let allSubtopics = await Promise.all(rootTopicsArr.map(getSubtopics)).then(subtopics => subtopics.flat());
             const extractTopicOptions = ({ id, next: { title } }) => ({ value: id, label: title });
             const rootTopics = {
