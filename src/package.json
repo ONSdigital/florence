@@ -125,6 +125,7 @@
     "uuid": "^3.4.0"
   },
   "overrides": {
+    "path-to-regexp": ">=8.0.0",
     "semver": ">=7.5.4"
   }
 }
