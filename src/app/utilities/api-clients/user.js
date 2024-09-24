@@ -205,16 +205,16 @@ export default class user {
 
     static logOut() {
         function clearCookies() {
-            const accessTokenCookieRemoved = cookies.remove("access_token");
-            if (!accessTokenCookieRemoved) {
-                if (!config.enableNewSignIn) {
+            if (!config.enableNewSignIn) {
+                const accessTokenCookieRemoved = cookies.remove("access_token");
+                if (!accessTokenCookieRemoved) {
+                    console.warn(`Error trying to remove 'access_token' cookie`);
                     user.deleteCookies()
                         .then(function () {
                             console.debug("[FLORENCE] Deleted HTTP Cookies");
                         })
                         .catch(err => console.error(err));
                 }
-                console.warn(`Error trying to remove 'access_token' cookie`);
             }
             if (cookies.get("collection")) {
                 cookies.remove("collection");
