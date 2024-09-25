@@ -81,10 +81,13 @@ func setAuthCookies(r *http.Response) {
 	}
 }
 func deleteAuthCookies(r *http.Response) {
+	domain := r.Request.Header.Get("X-Forwarded-Host")
+
 	// Expires all auth related tokens by replacing them
 	cookieUser := &http.Cookie{
 		Name:     "access_token",
 		Value:    "",
+		Domain:   domain,
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
@@ -96,6 +99,7 @@ func deleteAuthCookies(r *http.Response) {
 		Name:     "refresh_token",
 		Value:    "",
 		Path:     "/tokens/self",
+		Domain:   domain,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	}
@@ -106,6 +110,7 @@ func deleteAuthCookies(r *http.Response) {
 		Name:     "id_token",
 		Value:    "",
 		Path:     "/",
+		Domain:   domain,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	}
