@@ -232,10 +232,10 @@ export default class user {
             user.expireSession()
                 .catch(error => {
                     if (error.status === 400) {
-                        console.warning("Error occurred sending DELETE to /tokens/self - InvalidToken");
+                        console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
                         log.event("error on sign out sending delete to /tokens/self failed with an invalid token", log.error(error));
                     } else {
-                        console.warning("Error occurred sending DELETE to /tokens/self");
+                        console.warn("Error occurred sending DELETE to /tokens/self");
                         log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
                     }
                     clearCookies();

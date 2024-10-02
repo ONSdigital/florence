@@ -10,9 +10,9 @@ async function logout(currentPath) {
             }
         })
         if (res.status === 400) {
-            console.warning("Error occurred sending DELETE to /tokens/self - InvalidToken");
+            console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
         } else if (res.status !== 204) {
-            console.warning("Error occurred sending DELETE to /tokens/self");
+            console.warn("Error occurred sending DELETE to /tokens/self");
         }
     } else {
         delete_cookie('access_token');
