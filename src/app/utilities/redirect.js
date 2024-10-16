@@ -18,9 +18,12 @@ export default function redirectToMainScreen(screen) {
     }
 
     if (
-        screen.startsWith(`${rootPath}/teams`) ||
-        screen.startsWith(`${rootPath}/datasets`) ||
         screen.startsWith(`${rootPath}/collections`) ||
+        screen.startsWith(`${rootPath}/datasets`) ||
+        screen.startsWith(`${rootPath}/groups`) ||
+        screen.startsWith(`${rootPath}/security`) ||
+        screen.startsWith(`${rootPath}/teams`) ||
+        screen.startsWith(`${rootPath}/uploads`) ||
         screen.startsWith(`${rootPath}/users`)
     ) {
         browserHistory.push(screen);
