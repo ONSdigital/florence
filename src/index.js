@@ -231,6 +231,11 @@ const Index = () => {
                     {config.enableNewSignIn && <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)}/>}
+                    {/* legacy paths, stops the "not found" view from showing when loading */}
+                    <Route path={`${rootPath}/publishing-queue`} component={<></>} />
+                    <Route path={`${rootPath}/reports`} component={<></>} />
+                    <Route path={`${rootPath}/workspace`} component={<></>} />
+                    
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
