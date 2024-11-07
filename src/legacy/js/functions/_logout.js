@@ -10,14 +10,13 @@ async function logout(currentPath) {
             }
         })
         if (res.status === 400) {
-            sweetAlert("An error occurred during sign out 'InvalidToken', please contact a system administrator");
-            console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
+            console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
         } else if (res.status !== 204) {
-            sweetAlert("Unexpected error occurred during sign out");
-            console.error("Error occurred sending DELETE to /tokens/self");
+            console.warn("Error occurred sending DELETE to /tokens/self");
         }
+    } else {
+        delete_cookie('access_token');
     }
-    delete_cookie('access_token');
     delete_cookie('collection');
     removeAuthState();
 

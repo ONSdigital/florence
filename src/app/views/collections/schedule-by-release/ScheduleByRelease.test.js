@@ -21,7 +21,7 @@ jest.mock("../../../utilities/api-clients/releases", () => ({
                     uri: "/releases/my-release",
                     description: {
                         title: "My release",
-                        releaseDate: "2018-05-17T09:30:54.928Z",
+                        release_date: "2018-05-17T09:30:54.928Z",
                         finalised: true,
                     },
                 },
@@ -29,7 +29,7 @@ jest.mock("../../../utilities/api-clients/releases", () => ({
                     uri: "/releases/my-second-release",
                     description: {
                         title: "My second release",
-                        releaseDate: "2018-05-20T09:30:54.928Z",
+                        release_date: "2018-05-20T09:30:54.928Z",
                         finalised: true,
                     },
                 },
@@ -37,7 +37,7 @@ jest.mock("../../../utilities/api-clients/releases", () => ({
                     uri: "/releases/my-third-release",
                     description: {
                         title: "My third release",
-                        releaseDate: "2018-05-21T09:30:54.928Z",
+                        release_date: "2018-05-21T09:30:54.928Z",
                         finalised: true,
                     },
                 },
@@ -59,7 +59,7 @@ const mockedReleases = [
         uri: "/releases/my-release",
         description: {
             title: "My release",
-            releaseDate: "2018-05-17T09:30:54.928Z",
+            release_date: "2018-05-17T09:30:54.928Z",
             finalised: true,
         },
     },
@@ -67,7 +67,7 @@ const mockedReleases = [
         uri: "/releases/my-second-release",
         description: {
             title: "My second release",
-            releaseDate: "2018-05-20T09:30:54.928Z",
+            release_date: "2018-05-20T09:30:54.928Z",
             finalised: true,
         },
     },
@@ -75,7 +75,7 @@ const mockedReleases = [
         uri: "/releases/my-third-release",
         description: {
             title: "My third release",
-            releaseDate: "2018-05-21T09:30:54.928Z",
+            release_date: "2018-05-21T09:30:54.928Z",
             finalised: true,
         },
     },
@@ -188,6 +188,20 @@ describe("Mapping releases response to table", () => {
 
         expect(component.instance().mapReleasesToTableRows(releasesWithHTMLTags)[0].returnValue.title).toBe("My tagged release");
     });
+
+    it("handles no dates", () => {
+        const releasesWithoutReleaseDate = [
+            {
+                uri: "/releases/my-release-without-date",
+                description: {
+                    title: "My release without date",
+                    finalised: true,
+                },
+            },
+        ];
+
+        expect(component.instance().mapReleasesToTableRows(releasesWithoutReleaseDate)[0].columnValues[1]).toBe("");
+    });
 });
 
 describe("Searching releases", () => {
@@ -256,7 +270,7 @@ describe("Loading more releases", () => {
                         uri: "/releases/my-fourth-release",
                         description: {
                             title: "My fourth release",
-                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            release_date: "2018-05-17T09:30:54.928Z",
                             finalised: true,
                         },
                     },
@@ -264,7 +278,7 @@ describe("Loading more releases", () => {
                         uri: "/releases/my-fifth-release",
                         description: {
                             title: "My fifth release",
-                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            release_date: "2018-05-17T09:30:54.928Z",
                             finalised: true,
                         },
                     },
@@ -272,7 +286,7 @@ describe("Loading more releases", () => {
                         uri: "/releases/my-sixth-release",
                         description: {
                             title: "My sixth release",
-                            releaseDate: "2018-05-17T09:30:54.928Z",
+                            release_date: "2018-05-17T09:30:54.928Z",
                             finalised: true,
                         },
                     },

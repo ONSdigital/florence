@@ -968,6 +968,7 @@ describe("Calling getTopics", () => {
                             href: "http://localhost:25300/topics/testID1/subtopics",
                         },
                     },
+                    subtopics_ids: ["testSubtopicID1", "testSubtopicID2"],
                 },
                 current: {
                     id: "testID1",
@@ -983,6 +984,7 @@ describe("Calling getTopics", () => {
                             href: "http://localhost:25300/topics/testID1/subtopics",
                         },
                     },
+                    subtopics_ids: ["testSubtopicID1", "testSubtopicID2"],
                 },
             },
         ],

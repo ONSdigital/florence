@@ -51,6 +51,7 @@ function formatResponse(response){
     response.items.forEach((item, i) => {
         result.push ({
             "id" : item.current.id, 
+            "subtopics_ids": item.current.subtopics_ids,
             "title" : item.current.title
         })
     })
@@ -87,11 +88,15 @@ async function getAllTopics(){
     // Get subtopics and format into something more readable.
     let subtopics = []
     for (const i in topics) {
-        const subtopicsAPIResult = await getSubTopics(topics[i].id)
-        subtopics.push(formatResponse(subtopicsAPIResult))
-        subtopics[i].forEach(function(subtopic){
-            subtopic.title = topics[i].title + " - " + subtopic.title
-        })
+        if(topics[i].subtopics_ids.length > 0){
+            const subtopicsAPIResult = await getSubTopics(topics[i].id)
+            const subtopicsFormattedResult = formatResponse(subtopicsAPIResult)
+            const subtopicsWithParentTopicTitle = subtopicsFormattedResult.map(function(subtopic){
+                subtopic.title = topics[i].title + " - " + subtopic.title
+                return subtopic
+            })
+            subtopics.push(subtopicsWithParentTopicTitle)
+        }
     }
     subtopics = subtopics.flat()
 

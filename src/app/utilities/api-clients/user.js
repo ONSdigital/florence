@@ -205,16 +205,16 @@ export default class user {
 
     static logOut() {
         function clearCookies() {
-            const accessTokenCookieRemoved = cookies.remove("access_token");
-            if (!accessTokenCookieRemoved) {
-                if (!config.enableNewSignIn) {
+            if (!config.enableNewSignIn) {
+                const accessTokenCookieRemoved = cookies.remove("access_token");
+                if (!accessTokenCookieRemoved) {
+                    console.warn(`Error trying to remove 'access_token' cookie`);
                     user.deleteCookies()
                         .then(function () {
                             console.debug("[FLORENCE] Deleted HTTP Cookies");
                         })
                         .catch(err => console.error(err));
                 }
-                console.warn(`Error trying to remove 'access_token' cookie`);
             }
             if (cookies.get("collection")) {
                 cookies.remove("collection");
@@ -232,24 +232,10 @@ export default class user {
             user.expireSession()
                 .catch(error => {
                     if (error.status === 400) {
-                        const notification = {
-                            type: "warning",
-                            message: "An error occurred during sign out 'InvalidToken', please contact a system administrator",
-                            isDismissable: true,
-                            autoDismiss: 20000,
-                        };
-                        notifications.add(notification);
-                        console.error("Error occurred sending DELETE to /tokens/self - InvalidToken");
+                        console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
                         log.event("error on sign out sending delete to /tokens/self failed with an invalid token", log.error(error));
                     } else {
-                        const notification = {
-                            type: "warning",
-                            message: "Unexpected error occurred during sign out",
-                            isDismissable: true,
-                            autoDismiss: 20000,
-                        };
-                        notifications.add(notification);
-                        console.error("Error occurred sending DELETE to /tokens/self");
+                        console.warn("Error occurred sending DELETE to /tokens/self");
                         log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
                     }
                     clearCookies();
