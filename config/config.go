@@ -14,6 +14,7 @@ type Config struct {
 	FrontendRouterURL          string        `envconfig:"ROUTER_URL"`
 	DatasetControllerURL       string        `envconfig:"DATASET_CONTROLLER_URL"`
 	TableRendererURL           string        `envconfig:"TABLE_RENDERER_URL"`
+	DataAdminURL               string        `envconfig:"DATA_ADMIN_URL"`
 	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
@@ -44,6 +45,7 @@ func Get() (*Config, error) {
 		FrontendRouterURL:          "http://localhost:20000",
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
+		DataAdminURL:               "http://localhost:29400",
 		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,

@@ -105,10 +105,17 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
+	dataAdminURL, err := url.Parse(cfg.DataAdminURL)
+	if err != nil {
+		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
+		return nil, err
+	}
+
 	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
+	dataAdminProxy := reverseproxy.Create(dataAdminURL, directors.Director("/data-admin"), nil)
 	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
@@ -176,6 +183,8 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler(svc.version))
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
+
+	router.Handle("/data-admin", dataAdminProxy)
 
 	// API and Frontend Routers
 	router.Handle("/api/{uri:.*}", apiRouterProxy)
