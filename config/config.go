@@ -28,6 +28,7 @@ type SharedConfig struct {
 	EnableNewUpload         bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
 	EnablePermissionsAPI    bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 	EnableCantabularJourney bool `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
+	EnableDataAdmin         bool `envconfig:"ENABLE_DATA_ADMIN" json:"enableDataAdmin"`
 }
 
 var cfg *Config
@@ -46,7 +47,7 @@ func Get() (*Config, error) {
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
 		DataAdminURL:               "http://localhost:29400",
-		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false},
+		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false, EnableDataAdmin: true},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,

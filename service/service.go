@@ -184,7 +184,9 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.HandleFunc("/florence/websocket", websocketHandler(svc.version))
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
 
-	router.Handle("/data-admin", dataAdminProxy)
+	if cfg.SharedConfig.EnableDataAdmin {
+		router.Handle("/data-admin", dataAdminProxy)
+	}
 
 	// API and Frontend Routers
 	router.Handle("/api/{uri:.*}", apiRouterProxy)
