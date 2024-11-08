@@ -107,7 +107,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	dataAdminURL, err := url.Parse(cfg.DataAdminURL)
 	if err != nil {
-		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
+		log.Event(ctx, "error parsing data admin URL", log.FATAL, log.Error(err))
 		return nil, err
 	}
 
