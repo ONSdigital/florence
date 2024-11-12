@@ -46,7 +46,7 @@ func Get() (*Config, error) {
 		FrontendRouterURL:          "http://localhost:20000",
 		DatasetControllerURL:       "http://localhost:24000",
 		TableRendererURL:           "http://localhost:23300",
-		DataAdminURL:               "http://localhost:29400",
+		DataAdminURL:               "http://localhost:29400/data-admin",
 		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false, EnableDataAdmin: true},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
