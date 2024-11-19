@@ -6,7 +6,6 @@ import LoginForm from "./SignInForm";
 import notifications from "../../utilities/notifications";
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
-import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
@@ -14,6 +13,7 @@ import sessionManagement from "../../utilities/sessionManagement";
 import { status } from "../../constants/Authentication";
 import { updateAuthState, setAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
+import handleRedirect from "../../utilities/redirect";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -172,7 +172,7 @@ export class LoginController extends Component {
             .then(userType => {
                 setAuthState(userType);
                 user.setUserState(userType);
-                redirectToMainScreen(this.props.location.query.redirect);
+                handleRedirect(this.props.location.query.redirect);
             })
             .catch(error => {
                 notifications.add({

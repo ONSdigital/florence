@@ -7,29 +7,38 @@ import { store } from "../config/store";
  * @param {string} - The path of the view that we want to redirect to
  */
 
-export default function redirectToMainScreen(screen) {
+export default function handleRedirect(redirectPath) {
     const rootPath = store.getState().state.rootPath;
 
-    if (!screen) {
+    if (redirectPath.startsWith(rootPath) || !redirectPath) {
+        internalRedirect(redirectPath);
+        return;
+    }
+}
+
+function internalRedirect(redirectPath) {
+    const rootPath = store.getState().state.rootPath;
+
+    if (!redirectPath) {
         browserHistory.push(`${rootPath}/collections`);
         return;
     }
 
     if (
-        screen.startsWith(`${rootPath}/collections`) ||
-        screen.startsWith(`${rootPath}/datasets`) ||
-        screen.startsWith(`${rootPath}/groups`) ||
-        screen.startsWith(`${rootPath}/security`) ||
-        screen.startsWith(`${rootPath}/teams`) ||
-        screen.startsWith(`${rootPath}/uploads`) ||
-        screen.startsWith(`${rootPath}/users`)
+        redirectPath.startsWith(`${rootPath}/collections`) ||
+        redirectPath.startsWith(`${rootPath}/datasets`) ||
+        redirectPath.startsWith(`${rootPath}/groups`) ||
+        redirectPath.startsWith(`${rootPath}/security`) ||
+        redirectPath.startsWith(`${rootPath}/teams`) ||
+        redirectPath.startsWith(`${rootPath}/uploads`) ||
+        redirectPath.startsWith(`${rootPath}/users`)
     ) {
-        browserHistory.push(screen);
+        browserHistory.push(redirectPath);
         return;
     }
 
-    if (screen === `${rootPath}/publishing-queue` || screen === `${rootPath}/reports` || screen === `${rootPath}/workspace`) {
-        window.location.href = screen;
+    if (redirectPath === `${rootPath}/publishing-queue` || redirectPath === `${rootPath}/reports` || redirectPath === `${rootPath}/workspace`) {
+        window.location.href = redirectPath;
         return;
     }
 

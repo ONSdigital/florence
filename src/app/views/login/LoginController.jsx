@@ -12,10 +12,10 @@ import http from "../../utilities/http";
 import { errCodes } from "../../utilities/errorCodes";
 import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
-import redirectToMainScreen from "../../utilities/redirect";
 import log from "../../utilities/logging/log";
 import sessionManagement from "../../utilities/sessionManagement";
 import { updateAuthState } from "../../utilities/auth";
+import handleRedirect from "../../utilities/redirect";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -63,7 +63,7 @@ export class LoginController extends Component {
                 user.getPermissions()
                     .then(userType => {
                         user.setUserState(userType);
-                        redirectToMainScreen(this.props.location.query.redirect);
+                        handleRedirect(this.props.location.query.redirect);
                     })
                     .catch(error => {
                         this.setState({ isSubmitting: false });
