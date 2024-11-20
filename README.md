@@ -6,7 +6,27 @@ The publishing platform used for the [ONS website](https://www.ons.gov.uk).
 
 ## Getting started
 
-To run Florence you must have [Golang](https://golang.org/) installed on a UNIX machine.
+To run Florence you must have:
+
+1. [Golang](https://golang.org/) installed:
+
+   ```shell
+   brew install go
+   ```
+
+1. [nvm](https://github.com/nvm-sh/nvm) installed:
+
+   ```shell
+   brew install nvm
+   ```
+
+   :warning: Make sure to follow the instructions provided at the end of the install to configure up your shell profile.
+
+1. The node version specified in [`.nvmrc`](./.nvmrc) installed through nvm:
+
+   ```shell
+   nvm install
+   ```
 
 Once you have installed those dependencies and cloned this repo you need to run the following:
 
@@ -68,7 +88,7 @@ There are other ONS digital applications that you'll need to run to allow Floren
 - Update JS, CSS and other source file changes
 
    ```shell
-   make node-modules 
+   make node-modules
    ```
 
 ### Configuration

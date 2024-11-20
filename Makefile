@@ -1,5 +1,11 @@
 BIND_ADDR ?= :8081
 BINPATH ?= build
+NVM_SOURCE_PATH ?= $(HOME)/.nvm/nvm.sh
+
+ifneq ("$(wildcard $(NVM_SOURCE_PATH))","")
+	NVM_EXEC = source $(NVM_SOURCE_PATH) && nvm exec --
+endif
+NPM = $(NVM_EXEC) npm
 
 BUILD_TIME=$(shell date +%s)
 GIT_COMMIT=$(shell git rev-parse HEAD)
@@ -10,8 +16,8 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 .PHONY: audit
 audit: node-modules
 	go list -m all | nancy sleuth
-	cd src; npm run audit
-	cd src/legacy; npm run audit
+	cd src; $(NPM) run audit
+	cd src/legacy; $(NPM) run audit
 
 .PHONY: build
 build: node-modules generate-go-prod
@@ -59,27 +65,27 @@ test-go:
 
 .PHONY: test-npm
 test-npm: node-modules-react
-	cd src; npm run test
+	cd src; $(NPM) run test
 
 .PHONY: test-pretty
 test-pretty: node-modules-react
-	cd src; npm run prettier-test
+	cd src; $(NPM) run prettier-test
 
 .PHONY: node-modules
 node-modules: node-modules-react node-modules-legacy
 
 .PHONY: node-modules-react
 node-modules-react:
-	cd src; npm install --unsafe-perm --legacy-peer-deps
+	cd src; $(NPM) install --unsafe-perm --legacy-peer-deps
 
 .PHONY: node-modules-legacy
 node-modules-legacy:
-	cd src/legacy; npm install --unsafe-perm --legacy-peer-deps
+	cd src/legacy; $(NPM) install --unsafe-perm --legacy-peer-deps
 
 .PHONY: watch-src
 watch-src:
 	make node-modules
-	cd src; npm run watch
+	cd src; $(NPM) run watch
 
 .PHONY: clean
 clean:
