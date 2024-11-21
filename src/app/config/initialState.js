@@ -1,4 +1,5 @@
 export const initialState = {
+    externalRedirects: ["/data-admin", "/wagtail"],
     collections: {
         all: [],
         active: null,

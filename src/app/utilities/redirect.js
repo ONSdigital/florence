@@ -8,12 +8,19 @@ import { store } from "../config/store";
  */
 
 export default function handleRedirect(redirectPath) {
-    const rootPath = store.getState().state.rootPath;
-
-    if (redirectPath.startsWith(rootPath) || !redirectPath) {
-        internalRedirect(redirectPath);
+    if (!redirectPath) {
+        internalRedirect();
         return;
     }
+
+    const allowedExternalRedirects = store.getState().state.allowedRedirects;
+
+    if (allowedExternalRedirects.some(path => redirectPath.startsWith(path))) {
+        externalRedirect(redirectPath);
+        return;
+    }
+
+    internalRedirect(redirectPath);
 }
 
 function internalRedirect(redirectPath) {
@@ -43,4 +50,9 @@ function internalRedirect(redirectPath) {
     }
 
     browserHistory.push(`${rootPath}/collections`);
+}
+
+function externalRedirect(redirectPath) {
+    window.location.pathname = redirectPath;
+    return;
 }
