@@ -57,11 +57,13 @@ import UploadTest from "./app/views/upload-test/UploadTest";
 import "./scss/main.scss";
 import Security from "./app/views/security";
 import EditGroup from "./app/views/groups/edit"
+import RedirectView from "./app/components/redirect-view";
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
 const rootPath = store.getState().state.rootPath;
+const allowedExternalRedirects = store.getState().state.allowedRedirects
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
@@ -232,10 +234,17 @@ const Index = () => {
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
                     {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)}/>}
                     {/* legacy paths, stops the "not found" view from showing when loading */}
-                    <Route path={`${rootPath}/publishing-queue`} component={<></>} />
-                    <Route path={`${rootPath}/reports`} component={<></>} />
-                    <Route path={`${rootPath}/workspace`} component={<></>} />
-                    
+                    <Route path={`${rootPath}/publishing-queue`} />
+                    <Route path={`${rootPath}/reports`} />
+                    <Route path={`${rootPath}/workspace`} />
+
+                    {allowedExternalRedirects.map(redirect => (
+                        <React.Fragment key={redirect}>
+                            <Route path={redirect} component={RedirectView} />
+                            <Route path={`${redirect}/*`} component={RedirectView} />
+                        </React.Fragment>
+                    ))}
+
                     <Route path="*" component={NotFound} />
                 </Route>
             </Router>
