@@ -1,6 +1,5 @@
 import { browserHistory } from "react-router";
 import { store } from "../config/store";
-
 /**
  * Redirects to one of the main views in Florence - chooses whether it needs to redirect to old Florence or route within the new application
  *
@@ -9,15 +8,13 @@ import { store } from "../config/store";
 
 export default function handleRedirect(redirectPath) {
     if (!redirectPath) {
-        internalRedirect();
-        return;
+        return internalRedirect();
     }
 
-    const allowedExternalRedirects = store.getState().state.allowedRedirects;
-
-    if (allowedExternalRedirects.some(path => redirectPath.startsWith(path))) {
-        externalRedirect(redirectPath);
-        return;
+    const config = window.getEnv();
+    const allowedExternalPaths = config.allowedExternalPaths;
+    if (allowedExternalPaths.some(path => redirectPath.startsWith(path))) {
+        return externalRedirect(redirectPath);
     }
 
     internalRedirect(redirectPath);

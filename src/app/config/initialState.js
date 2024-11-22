@@ -1,5 +1,4 @@
 export const initialState = {
-    externalRedirects: ["/data-admin", "/wagtail"],
     collections: {
         all: [],
         active: null,
@@ -8,6 +7,7 @@ export const initialState = {
         isUpdating: false,
     },
     config: {
+        allowedExternalPaths: [],
         enableDatasetImport: false,
         enableNewSignIn: false,
         enableNewUpload: false,

@@ -63,7 +63,7 @@ const config = window.getEnv();
 store.dispatch(setConfig(config));
 
 const rootPath = store.getState().state.rootPath;
-const allowedExternalRedirects = store.getState().state.allowedRedirects
+const allowedExternalRedirects = config.allowedExternalPaths;
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {
