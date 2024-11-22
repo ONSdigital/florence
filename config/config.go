@@ -23,12 +23,13 @@ type Config struct {
 
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
-	EnableDatasetImport     bool `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
-	EnableNewSignIn         bool `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
-	EnableNewUpload         bool `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnablePermissionsAPI    bool `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
-	EnableCantabularJourney bool `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
-	EnableDataAdmin         bool `envconfig:"ENABLE_DATA_ADMIN" json:"enableDataAdmin"`
+	AllowedExternalPaths    []string `envconfig:"ALLOWED_EXTERNAL_PATHS" json:"allowedExternalPaths"`
+	EnableDatasetImport     bool     `envconfig:"ENABLE_DATASET_IMPORT" json:"enableDatasetImport"`
+	EnableNewSignIn         bool     `envconfig:"ENABLE_NEW_SIGN_IN" json:"enableNewSignIn"`
+	EnableNewUpload         bool     `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
+	EnablePermissionsAPI    bool     `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
+	EnableCantabularJourney bool     `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
+	EnableDataAdmin         bool     `envconfig:"ENABLE_DATA_ADMIN" json:"enableDataAdmin"`
 }
 
 var cfg *Config
@@ -40,14 +41,22 @@ func Get() (*Config, error) {
 	}
 
 	cfg = &Config{
-		BindAddr:                   ":8080",
-		APIRouterURL:               "http://localhost:23200",
-		APIRouterVersion:           "v1",
-		FrontendRouterURL:          "http://localhost:20000",
-		DatasetControllerURL:       "http://localhost:24000",
-		TableRendererURL:           "http://localhost:23300",
-		DataAdminURL:               "http://localhost:29400/data-admin",
-		SharedConfig:               SharedConfig{EnableDatasetImport: true, EnableNewSignIn: false, EnableNewUpload: false, EnablePermissionsAPI: false, EnableCantabularJourney: false, EnableDataAdmin: true},
+		BindAddr:             ":8080",
+		APIRouterURL:         "http://localhost:23200",
+		APIRouterVersion:     "v1",
+		FrontendRouterURL:    "http://localhost:20000",
+		DatasetControllerURL: "http://localhost:24000",
+		TableRendererURL:     "http://localhost:23300",
+		DataAdminURL:         "http://localhost:29400/data-admin",
+		SharedConfig: SharedConfig{
+			AllowedExternalPaths:    []string{},
+			EnableDatasetImport:     true,
+			EnableNewSignIn:         false,
+			EnableNewUpload:         false,
+			EnablePermissionsAPI:    false,
+			EnableCantabularJourney: false,
+			EnableDataAdmin:         true,
+		},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,
 		HealthCheckCriticalTimeout: 90 * time.Second,
