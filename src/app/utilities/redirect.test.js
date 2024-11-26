@@ -14,7 +14,8 @@ jest.mock("../config/store", () => ({
     },
 }));
 
-describe("handleRedirect", () => {
+describe("given call to handleRedirect", () => {
+    const defaultPath = "/florence/collections";
     beforeEach(() => {
         jest.clearAllMocks();
         window.getEnv = jest.fn().mockReturnValue({
@@ -25,12 +26,12 @@ describe("handleRedirect", () => {
         });
     });
 
-    it("should call internalRedirect if redirectPath is not provided", () => {
+    it("when no redirect parameter provided then the default /florence/collections path is returned", () => {
         handleRedirect();
-        expect(browserHistory.push).toHaveBeenCalledWith("/florence/collections");
+        expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
     });
 
-    it("should call externalRedirect if redirectPath is in allowedExternalPaths", () => {
+    it("when the redirect parameter is in allowedExternalPaths then the given external path is returned", () => {
         const redirectPath = "/external/path";
         delete window.location;
         window.location = { pathname: "" };
@@ -38,15 +39,21 @@ describe("handleRedirect", () => {
         expect(window.location.pathname).toBe(redirectPath);
     });
 
-    it("should call internalRedirect if redirectPath is not in allowedExternalPaths", () => {
-        const redirectPath = "/florence/collections";
+    it("when the redirect parameter is an unknown external path then the default /florence/collections path is returned", () => {
+        const redirectPath = "/test/path";
+        handleRedirect(redirectPath);
+        expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
+    });
+
+    it("when the redirect parameter has a known internal path then the given internal path is returned", () => {
+        const redirectPath = "/florence/users";
         handleRedirect(redirectPath);
         expect(browserHistory.push).toHaveBeenCalledWith(redirectPath);
     });
 
-    it("should call internalRedirect if redirectPath is not in allowedExternalPaths and known internal path", () => {
-        const redirectPath = "/florence/datasets";
+    it("when the redirect parameter has a unknown internal path then the default /florence/collections path is returned", () => {
+        const redirectPath = "/florence/badpath";
         handleRedirect(redirectPath);
-        expect(browserHistory.push).toHaveBeenCalledWith(redirectPath);
+        expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
     });
 });
