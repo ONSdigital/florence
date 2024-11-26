@@ -113,7 +113,7 @@ The following envrionment variables are available when running the Go server and
 
 | Environment variable      | Default | Description
 |---------------------------|---------|------------
-| ALLOWED_EXTERNAL_PATHS    | []string| Permitted external paths from Florence e.g. /data-admin
+| ALLOWED_EXTERNAL_PATHS    | []string| Permitted external primary path and subpath from Florence e.g. primary path `/data-admin` allows `/data-admin/*`
 | ENABLE_DATASET_IMPORT     | true    | Displays the screens to allow filterable datasets to be imported through Florence (note: it requires the whole CMD stack to be running)
 | ENABLE_NEW_SIGN_IN        | false   | Enables the new sign in using the identity API (rather than zebedee)
 | ENABLE_NEW_UPLOAD         | false   | Enables the image upload functionality via static files service
