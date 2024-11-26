@@ -17,7 +17,7 @@ export default function handleRedirect(redirectPath) {
         return externalRedirect(redirectPath);
     }
 
-    internalRedirect(redirectPath);
+    return internalRedirect(redirectPath);
 }
 
 function internalRedirect(redirectPath) {
@@ -47,6 +47,7 @@ function internalRedirect(redirectPath) {
     }
 
     browserHistory.push(`${rootPath}/collections`);
+    return;
 }
 
 function externalRedirect(redirectPath) {
