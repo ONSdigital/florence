@@ -6,7 +6,7 @@ import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
-import auth, {getAuthState, getUserTypeFromAuthState} from "./app/utilities/auth";
+import auth, { getAuthState, getUserTypeFromAuthState } from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
@@ -110,7 +110,7 @@ const hasRedirect = () => {
         };
         notifications.add(notification);
     }
-    return config.enableNewSignIn ? SignInController : LoginController;
+    return SignInController;
 };
 
 const logoutUser = async () => {
@@ -167,7 +167,7 @@ const Index = () => {
                                                 component={userIsAuthenticated(EditMetadataItem)}
                                             />
                                         </Route>
-                                        <Route path={`versions/:versionID/cantabular`} component={ userIsAuthenticated(CantabularMetadataController)}>
+                                        <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
                                             <Route
                                                 path={`edit/:metadataField/:metadataItemID`}
                                                 component={userIsAuthenticated(EditMetadataItem)}
@@ -180,18 +180,10 @@ const Index = () => {
                             </Route>
                         </Route>
                     )}
-                    {!config.enableNewSignIn && (
-                        <Route path={`${rootPath}/teams`} component={userIsAuthenticated(userIsAdminOrEditor(TeamsController))}>
-                            <Route path=":team" component={userIsAuthenticated(TeamsController)}>
-                                <Route path="edit" component={userIsAuthenticated(TeamsController)} />
-                                <Route path="delete" component={userIsAuthenticated(TeamsController)} />
-                            </Route>
-                        </Route>
-                    )}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))}/>}
-                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(config.enableNewSignIn ? UsersList : UsersController))}>
+                    <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))} />
+                    <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))} />
+                    <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))} />
+                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersList))}>
                         <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
                             <Route
                                 path="change-password"
@@ -242,12 +234,12 @@ const Index = () => {
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
                     <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
-                    <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
-                    <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
-                    <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated((Groups)) : null} />
-                    {config.enableNewSignIn && <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))}/>}
-                    {config.enableNewSignIn && <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)}/>}
+                    <Route path={`${rootPath}/forgotten-password`} component={ForgottenPasswordController} />
+                    <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
+                    <Route path={`${rootPath}/groups`} component={userIsAuthenticated((Groups))} />
+                    <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))} />
+                    <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))} />
+                    <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)} />
                     {/* legacy paths, stops the "not found" view from showing when loading */}
                     <Route path={`${rootPath}/publishing-queue`} />
                     <Route path={`${rootPath}/reports`} />
