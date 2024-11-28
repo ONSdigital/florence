@@ -8,7 +8,6 @@ import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
 import auth, { getAuthState, getUserTypeFromAuthState } from "./app/utilities/auth";
 import Layout from "./app/components/layout";
-import LoginController from "./app/views/login/LoginController";
 import SignInController from "./app/views/login/SignIn";
 import ForgottenPasswordController from "./app/views/new-password/forgottenPasswordController";
 import Collections from "./app/views/collections";
