@@ -121,7 +121,7 @@ const NavBar = props => {
                     </>
                 )}
                 <li className="global-nav__item">
-                    <Link to={url.resolve("/login")} onClick={() => user.logOut()} className="global-nav__link">
+                    <Link to={url.resolve("/logout")} className="global-nav__link">
                         Sign out
                     </Link>
                 </li>
