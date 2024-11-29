@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
@@ -59,6 +59,10 @@ import Security from "./app/views/security";
 import EditGroup from "./app/views/groups/edit"
 import RedirectView from "./app/components/redirect-view";
 
+import { browserHistory } from "react-router";
+import user from "./app/utilities/api-clients/user";
+import handleRedirect from "./app/utilities/redirect";
+
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
@@ -109,11 +113,27 @@ const hasRedirect = () => {
     return config.enableNewSignIn ? SignInController : LoginController;
 };
 
+const logoutUser = async () => {
+    try {
+        const redirect = new URLSearchParams(window.location.search).get("redirect");
+        user.logOut();
+        if (redirect) {
+            handleRedirect(redirect);
+        } else {
+            browserHistory.push(`${rootPath}/login`);
+        }
+    } catch (error) {
+        console.error("Error during logout:", error);
+        browserHistory.push(`${rootPath}/login`);
+    }
+};
+
 const Index = () => {
     return (
         <Provider store={store}>
             <Router history={history}>
                 <Route component={Layout}>
+                    <Route path={`/:uri*/logout`} onEnter={logoutUser} component={RedirectView}/>
                     <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
                     <Route path={`${rootPath}/collections`} component={userIsAuthenticated(Collections)}>
                         <Route path=":collectionID" component={userIsAuthenticated(Collections)}>
