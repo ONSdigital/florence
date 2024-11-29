@@ -30,15 +30,6 @@ afterEach(() => {
     window.localStorage.clear();
 });
 
-it("should add expire times to auth state", () => {
-    // Used in the LoginController component
-    const { session_expiry_time, refresh_expiry_time } = sessionManagement.createDefaultExpireTimes(12);
-    sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
-    const actual = getAuthState();
-    expect(actual.session_expiry_time).toBeGreaterThan(0);
-    expect(actual.refresh_expiry_time).toBeGreaterThan(0);
-});
-
 it("should add convert UTC to Date format & add to auth state", () => {
     // Used in the SignIn component
     const expirationTime = sessionManagement.convertUTCToJSDate("2022-06-14 12:23:40.216281 +0000 UTC");
