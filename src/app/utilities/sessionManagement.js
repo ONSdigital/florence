@@ -61,28 +61,14 @@ export default class sessionManagement {
 
     static startSessionTimer(sessionExpiryTime) {
         updateAuthState({ session_expiry_time: sessionExpiryTime });
-        if (config.enableNewSignIn) {
-            // Timer to start monitoring user interaction to add additional time to their session
-            this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-        } else {
-            // Display a popup passiveRenewal ms before manual refresh expire interval.
-            this.startExpiryTimer(
-                "warnManaulSessionTimerExpiry",
-                sessionExpiryTime,
-                this.timeOffsets.passiveRenewal,
-                this.warnManaulRefreshTimerExpiry
-            );
-            // Logout the user on invasiveRenewal expire interval.
-            this.startExpiryTimer("endManaulSessionTimerExpiry", sessionExpiryTime, this.timeOffsets.invasiveRenewal, this.endManualSession);
-        }
+        // Timer to start monitoring user interaction to add additional time to their session
+        this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
     }
 
     static startRefreshTimer(refreshExpiryTime) {
-        if (config.enableNewSignIn) {
-            updateAuthState({ refresh_expiry_time: refreshExpiryTime });
-            // Timer to start monitoring user interaction to add a final extra amount of time to their session
-            this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
-        }
+        updateAuthState({ refresh_expiry_time: refreshExpiryTime });
+        // Timer to start monitoring user interaction to add a final extra amount of time to their session
+        this.startExpiryTimer("refreshTimerPassive", refreshExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
     }
 
     static initialiseSessionExpiryTimers = (sessionExpiryTime, refreshExpiryTime) => {
@@ -173,28 +159,20 @@ export default class sessionManagement {
             }
         };
         const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
-        if (config.enableNewSignIn) {
-            user.renewSession()
-                .then(response => {
-                    if (response) {
-                        console.log("[FLORENCE] Updating session timer via API");
-                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
-                        sessionManagement.startSessionTimer(expirationTime);
-                        store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
-                    } else {
-                        renewError();
-                    }
-                })
-                .catch(error => {
-                    renewError(error);
-                });
-        } else {
-            // refresh sessions manually for current / legacy
-            console.log("[FLORENCE] Updating session timer manually");
-            const expireTimes = sessionManagement.createDefaultExpireTimes(12);
-            sessionManagement.startSessionTimer(expireTimes.session_expiry_time);
-            store.dispatch(startRefeshAndSession(null, expireTimes.session_expiry_time));
-        }
+        user.renewSession()
+            .then(response => {
+                if (response) {
+                    console.log("[FLORENCE] Updating session timer via API");
+                    const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
+                    sessionManagement.startSessionTimer(expirationTime);
+                    store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+                } else {
+                    renewError();
+                }
+            })
+            .catch(error => {
+                renewError(error);
+            });
     };
 
     /**
