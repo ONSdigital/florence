@@ -22,7 +22,6 @@ import CreateDatasetTaxonomyController from "./app/views/datasets-new/create/Cre
 import CreateCantabularDatasetController from "./app/views/datasets-new/create/CreateCantabularDatasetController";
 import CreateVersionController from "./app/views/datasets-new/create/CreateVersionController";
 import CreateEditionController from "./app/views/datasets-new/create/CreateEditionController";
-import UsersController from "./app/views/users/UsersController";
 import UserDetailsController from "./app/views/users/details/UserDetailsController";
 import DatasetsController from "./app/views/datasets/DatasetsController";
 import DatasetUploadsController from "./app/views/uploads/dataset/DatasetUploadsController";
