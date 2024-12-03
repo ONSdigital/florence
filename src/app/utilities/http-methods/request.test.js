@@ -14,6 +14,20 @@ jest.mock("../logging/log", () => {
         warn: jest.fn(() => {}),
     };
 });
+jest.mock("../../utilities/api-clients/user", () => {
+    class user {}
+    user.renewSession = () => {
+        return new Promise((resolve, reject) => {
+            resolve({ expirationTime: mockSessionExpiryTime });
+        });
+    };
+    user.logOut = () => {
+        return new Promise((resolve, reject) => {
+            resolve();
+        });
+    };
+    return user;
+});
 console.error = jest.fn();
 
 beforeEach(() => {
