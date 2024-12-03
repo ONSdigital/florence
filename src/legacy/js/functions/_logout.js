@@ -2,21 +2,18 @@
  * Logout the current user and return to the login screen.
  */
 async function logout(currentPath) {
-    if (Florence.globalVars.config.enableNewSignIn) {
-        const res = await fetch('/tokens/self', {
-            method: 'DELETE',
-            headers: {
-                "Content-Type": "application/json",
-            }
-        })
-        if (res.status === 400) {
-            console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
-        } else if (res.status !== 204) {
-            console.warn("Error occurred sending DELETE to /tokens/self");
+    const res = await fetch('/tokens/self', {
+        method: 'DELETE',
+        headers: {
+            "Content-Type": "application/json",
         }
-    } else {
-        delete_cookie('access_token');
+    })
+    if (res.status === 400) {
+        console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
+    } else if (res.status !== 204) {
+        console.warn("Error occurred sending DELETE to /tokens/self");
     }
+
     delete_cookie('collection');
     removeAuthState();
 
