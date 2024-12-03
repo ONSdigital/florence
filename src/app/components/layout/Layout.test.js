@@ -148,7 +148,6 @@ describe("when notifications props are passed", () => {
 });
 
 it("should start the session timer if there is an expired access token & the session state is false", async () => {
-    store.dispatch(setConfig({ enableNewSignIn: true }));
     const expTimes = sessionManagement.createDefaultExpireTimes(-1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
@@ -176,7 +175,7 @@ it("should start the session timer if there is an expired access token & the ses
             expire: "",
         },
     };
-    await wrapper({ location: { pathname: "" }, notifications: [], user, config: { enableNewSignIn: true } });
+    await wrapper({ location: { pathname: "" }, notifications: [], user });
     authState = getAuthState();
     // We expect that the mocked user.renewSession() returns a new expire value that is stored in the auth state & local storage
     const expected = authState.session_expiry_time;
