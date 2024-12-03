@@ -115,13 +115,8 @@ const hasRedirect = () => {
 
 const logoutUser = async () => {
     try {
-        const redirect = new URLSearchParams(window.location.search).get("redirect");
         user.logOut();
-        if (redirect) {
-            handleRedirect(redirect);
-        } else {
-            browserHistory.push(`${rootPath}/login`);
-        }
+        browserHistory.push(`${rootPath}/login`);
     } catch (error) {
         console.error("Error during logout:", error);
         browserHistory.push(`${rootPath}/login`);
@@ -133,7 +128,6 @@ const Index = () => {
         <Provider store={store}>
             <Router history={history}>
                 <Route component={Layout}>
-                    <Route path={`/:uri*/logout`} onEnter={logoutUser} component={RedirectView}/>
                     <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
                     <Route path={`${rootPath}/collections`} component={userIsAuthenticated(Collections)}>
                         <Route path=":collectionID" component={userIsAuthenticated(Collections)}>
@@ -247,6 +241,7 @@ const Index = () => {
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={hasRedirect()} />
+                    <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
                     <Route path={`${rootPath}/forgotten-password`} component={config.enableNewSignIn ? ForgottenPasswordController : null} />
                     <Route path={`${rootPath}/password-reset`} component={config.enableNewSignIn ? SetForgottenPasswordController : null} />
                     <Route path={`${rootPath}/groups`} component={config.enableNewSignIn ? userIsAuthenticated((Groups)) : null} />
