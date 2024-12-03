@@ -19,52 +19,44 @@ export default class user {
         if (window.getEnv != null) {
             config = window.getEnv();
         }
-        if (config.enableNewSignIn) {
-            let queryString = "";
-            Object.keys(params).map(key => {
-                queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
-            });
-            try {
-                return await http.get(`/users${queryString}`);
-            } catch (error) {
-                if (error.status) {
-                    if (error.status >= 400 && error.status < 500) {
-                        switch (error.status) {
-                            case 400: {
-                                const notification = {
-                                    type: "warning",
-                                    message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
-                                    autoDismiss: 5000,
-                                };
-                                notifications.add(notification);
-                                break;
-                            }
-                            case 404: {
-                                const notification = {
-                                    type: "warning",
-                                    message: errCodes.GET_USERS_NOT_FOUND,
-                                    autoDismiss: 5000,
-                                };
-                                notifications.add(notification);
-                                break;
-                            }
-                            default: {
-                                const notification = {
-                                    type: "warning",
-                                    message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                                    isDismissable: true,
-                                };
-                                notifications.add(notification);
-                                break;
-                            }
+
+        let queryString = "";
+        Object.keys(params).map(key => {
+            queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
+        });
+        try {
+            return await http.get(`/users${queryString}`);
+        } catch (error) {
+            if (error.status) {
+                if (error.status >= 400 && error.status < 500) {
+                    switch (error.status) {
+                        case 400: {
+                            const notification = {
+                                type: "warning",
+                                message: errCodes.GET_USERS_UNEXPECTED_FILTER_ERROR,
+                                autoDismiss: 5000,
+                            };
+                            notifications.add(notification);
+                            break;
                         }
-                    } else {
-                        const notification = {
-                            type: "warning",
-                            message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
-                            isDismissable: true,
-                        };
-                        notifications.add(notification);
+                        case 404: {
+                            const notification = {
+                                type: "warning",
+                                message: errCodes.GET_USERS_NOT_FOUND,
+                                autoDismiss: 5000,
+                            };
+                            notifications.add(notification);
+                            break;
+                        }
+                        default: {
+                            const notification = {
+                                type: "warning",
+                                message: errorCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                                isDismissable: true,
+                            };
+                            notifications.add(notification);
+                            break;
+                        }
                     }
                 } else {
                     const notification = {
@@ -74,10 +66,15 @@ export default class user {
                     };
                     notifications.add(notification);
                 }
-                return error;
+            } else {
+                const notification = {
+                    type: "warning",
+                    message: errCodes.GET_USERS_UNEXPECTED_ERROR_SHORT,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
             }
-        } else {
-            return http.get(`/zebedee/users`);
+            return error;
         }
     };
 
@@ -205,17 +202,6 @@ export default class user {
 
     static logOut() {
         function clearCookies() {
-            if (!config.enableNewSignIn) {
-                const accessTokenCookieRemoved = cookies.remove("access_token");
-                if (!accessTokenCookieRemoved) {
-                    console.warn(`Error trying to remove 'access_token' cookie`);
-                    user.deleteCookies()
-                        .then(function () {
-                            console.debug("[FLORENCE] Deleted HTTP Cookies");
-                        })
-                        .catch(err => console.error(err));
-                }
-            }
             if (cookies.get("collection")) {
                 cookies.remove("collection");
             }
@@ -227,26 +213,21 @@ export default class user {
             store.dispatch(reset());
         }
 
-        const config = window.getEnv();
-        if (config.enableNewSignIn) {
-            user.expireSession()
-                .catch(error => {
-                    if (error.status === 400) {
-                        console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
-                        log.event("error on sign out sending delete to /tokens/self failed with an invalid token", log.error(error));
-                    } else {
-                        console.warn("Error occurred sending DELETE to /tokens/self");
-                        log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
-                    }
-                    clearCookies();
-                })
-                .finally(() => {
-                    clearCookies();
-                    sessionManagement.removeTimers();
-                });
-        } else {
-            clearCookies();
-        }
+        user.expireSession()
+            .catch(error => {
+                if (error.status === 400) {
+                    console.warn("Error occurred sending DELETE to /tokens/self - InvalidToken");
+                    log.event("error on sign out sending delete to /tokens/self failed with an invalid token", log.error(error));
+                } else {
+                    console.warn("Error occurred sending DELETE to /tokens/self");
+                    log.event("error on sign out sending delete to /tokens/self failed with an unexpected error", log.error(error));
+                }
+                clearCookies();
+            })
+            .finally(() => {
+                clearCookies();
+                sessionManagement.removeTimers();
+            });
     }
 
     static updatePassword(body) {
