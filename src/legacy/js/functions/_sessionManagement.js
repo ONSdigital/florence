@@ -48,16 +48,9 @@ function removeTimers() {
 
 function initialiseSessionExpiryTimers() {
     const authState = getAuthState();
-    let sessionExpiryTime;
-    let refreshExpiryTime;
-    if (Florence.globalVars.config.enableNewSignIn) {
-        sessionExpiryTime = new Date(authState.session_expiry_time);
-        refreshExpiryTime = new Date(authState.refresh_expiry_time);
-    } else {
-        sessionExpiryTime = new Date(authState.session_expiry_time);
-        refreshExpiryTime = new Date(authState.refresh_expiry_time); // TODO
-    }
-    
+    let sessionExpiryTime = new Date(authState.session_expiry_time);
+    let refreshExpiryTime = new Date(authState.refresh_expiry_time);
+
     if (sessionExpiryTime != null) {
         // Timer to start monitoring user interaction to add additional time to their session
         startExpiryTimer("sessionTimerPassive", sessionExpiryTime, timeOffsets().passiveRenewal, monitorInteraction);
@@ -115,27 +108,21 @@ function refreshSession() {
             console.error(error);
         }
     };
-    if (Florence.globalVars.config.enableNewSignIn) {
-        // If enableNewSignIn then update the session timers
-        fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}}).then(response => {
-            return response.json()
-        }).then(data => {
-            if (data.expirationTime != null) {
-                const authState = getAuthState();
-                const refresh_expiry_time = new Date(authState.refresh_expiry_time);
-                const expirationTime = convertUTCToJSDate(data.expirationTime);
-                setSessionExpiryTime(expirationTime, refresh_expiry_time);
-            } else {
-                renewError();
-            }
-        }).catch(error => {
-            renewError(error);
-        });
-    } else {
-        // console.debug("[FLORENCE] Renewing session with default expiry timers");
-        // const expireTimes = createDefaultExpireTimes(12);
-        // setSessionExpiryTime(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
-    }
+    fetch("/tokens/self", { method: "PUT", headers: { "Content-Type": "application/json" } }).then(response => {
+        return response.json()
+    }).then(data => {
+        if (data.expirationTime != null) {
+            const authState = getAuthState();
+            const refresh_expiry_time = new Date(authState.refresh_expiry_time);
+            const expirationTime = convertUTCToJSDate(data.expirationTime);
+            setSessionExpiryTime(expirationTime, refresh_expiry_time);
+        } else {
+            renewError();
+        }
+    }).catch(error => {
+        renewError(error);
+    });
+
 }
 
 function createDefaultExpireTimes(hours) {
@@ -157,14 +144,14 @@ function convertUTCToJSDate(expiryTime) {
 }
 
 function renewSession() {
-    const res = fetch("/tokens/self", {method: "PUT", headers: {"Content-Type": "application/json"}})
-        .then(function(res) {
+    const res = fetch("/tokens/self", { method: "PUT", headers: { "Content-Type": "application/json" } })
+        .then(function (res) {
             return res.json();
         })
-        .catch(function(err) {
+        .catch(function (err) {
             console.error(err);
         });
-        return res;
+    return res;
 }
 
 /**
@@ -173,12 +160,7 @@ function renewSession() {
  *  */
 function isSessionExpired(sessionExpiryTime) {
     const now = new Date();
-    let nowInUTC;
-    if (!Florence.globalVars.config.enableNewSignIn) {
-        nowInUTC = now;
-    } else {
-        nowInUTC = now.getTime()
-    }
+    const nowInUTC = now.getTime()
     // Get the time difference between now and the expiry time minus the timer offset
     const timerInterval = new Date(sessionExpiryTime) - nowInUTC;
     let diffInSeconds = Math.round(timerInterval / 1000);
@@ -195,25 +177,18 @@ function initialiseSessionOrUpdateTimers() {
     const session_expiry_time = authState.session_expiry_time;
     const refresh_expiry_time = new Date(authState.refresh_expiry_time);
     if (isSessionExpired(session_expiry_time)) {
-        if (Florence.globalVars.config.enableNewSignIn) {
-            console.debug("[FLORENCE] Timers / enableNewSignIn: requesting a new access_token");
-            renewSession()
-                .then(res => {
-                    if (res) {
-                        console.debug("[FLORENCE] Updating access_token & session timer: ", res)
-                        // update the authState, start the session timer with the next session response value
-                        // & restart the refresh timer with the existing refresh value.
-                        const expirationTime = convertUTCToJSDate(res.expirationTime);
-                        setSessionExpiryTime(expirationTime, refresh_expiry_time);
-                    }
-                })
-                .catch(err => console.error("[FLORENCE]: ", err));
-        } else {
-            console.debug("[FLORENCE] Timers: extending session & refresh timers");
-            // If we are not behind the enableNewSignIn then just extend the session & refresh for 12 hours
-            const expireTimes = createDefaultExpireTimes(12);
-            setSessionExpiryTime(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
-        }
+        console.debug("[FLORENCE] Timers / enableNewSignIn: requesting a new access_token");
+        renewSession()
+            .then(res => {
+                if (res) {
+                    console.debug("[FLORENCE] Updating access_token & session timer: ", res)
+                    // update the authState, start the session timer with the next session response value
+                    // & restart the refresh timer with the existing refresh value.
+                    const expirationTime = convertUTCToJSDate(res.expirationTime);
+                    setSessionExpiryTime(expirationTime, refresh_expiry_time);
+                }
+            })
+            .catch(err => console.error("[FLORENCE]: ", err));
     } else {
         console.debug("[FLORENCE] Timers: maintaining existing session & restarting timers");
         // The user has refreshed the page but the session is not expired, so just restart the timers
