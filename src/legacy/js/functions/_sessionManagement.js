@@ -125,16 +125,6 @@ function refreshSession() {
 
 }
 
-function createDefaultExpireTimes(hours) {
-    // TODO this is used up until enableNewSignIn goes live then remove this
-    const now = new Date();
-    const expiry = now.setHours(now.getHours() + hours);
-    return {
-        session_expiry_time: new Date(expiry),
-        refresh_expiry_time: new Date(expiry),
-    };
-}
-
 function convertUTCToJSDate(expiryTime) {
     // Convert API time to usable JS Date object
     if (expiryTime) {
@@ -177,7 +167,7 @@ function initialiseSessionOrUpdateTimers() {
     const session_expiry_time = authState.session_expiry_time;
     const refresh_expiry_time = new Date(authState.refresh_expiry_time);
     if (isSessionExpired(session_expiry_time)) {
-        console.debug("[FLORENCE] Timers / enableNewSignIn: requesting a new access_token");
+        console.debug("[FLORENCE] Timers : requesting a new access_token");
         renewSession()
             .then(res => {
                 if (res) {
