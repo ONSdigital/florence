@@ -8,7 +8,7 @@ function viewController(view) {
         }
         else if (view === 'datasets') {
             window.location.pathname = "/florence/uploads/data";
-        } 
+        }
         else if (view === 'workspace') {
             /*
                 Example of a correct URL:
@@ -18,10 +18,10 @@ function viewController(view) {
             const collectionID = getQueryVariable("collection");
             const pageURI = getQueryVariable("uri");
             window.history.replaceState({}, "Florence", "/florence/workspace");
-            
+
             if (!collectionID) {
-                console.warn("Unable to get either page URI or collection ID from the path", {pageURI, collectionID});
-                
+                console.warn("Unable to get either page URI or collection ID from the path", { pageURI, collectionID });
+
                 window.location.pathname = "/florence/collections";
                 return;
             }
@@ -46,11 +46,7 @@ function viewController(view) {
             window.location.pathname = "/florence/users";
         }
         else if (view === 'teams') {
-            if (Florence.globalVars.config.enableNewSignIn) {
-                window.location.pathname = "/florence/groups";
-            } else {
-                window.location.pathname = "/florence/teams";
-            }
+            window.location.pathname = "/florence/groups";
         }
         else if (view === 'login') {
             window.location.pathname = "/florence/login";
