@@ -137,7 +137,7 @@ function setupFlorence() {
     Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
-    Florence.globalVars.config = config || { enableDatasetImport: false, enableNewSignIn: false, enableNewUpload: false, enablePermissionsAPI: false };
+    Florence.globalVars.config = config || { enableDatasetImport: false, enableNewUpload: false, enablePermissionsAPI: false };
  
     // load main florence template
     var florence = templates.florence;
@@ -147,16 +147,12 @@ function setupFlorence() {
     // ---------------------------------------------------
     // Auth / Timers
     // ---------------------------------------------------
-    // Florence.globalVars.config.enableNewSignIn
-
     Florence.sessionManagement = {
         timers: {}
     };
     // Check local state to get ons_auth_state and the expiry times within &
     // if access token has expired (based on time in auth state object then refresh it
-    if (Florence.globalVars.config.enableNewSignIn) {
-        initialiseSessionOrUpdateTimers();
-    }
+    initialiseSessionOrUpdateTimers();
     // ---------------------------------------------------
 
     var adminMenu = $('.js-nav');
@@ -306,12 +302,6 @@ function setupFlorence() {
     // ----------------------------------------------
     // Initiate zebedee session (AUTH)
     // ----------------------------------------------
-    var pingTimer;
-    if (!Florence.globalVars.config.enableNewSignIn) {
-        pingTimer = setTimeout(function () {
-            doPing();
-        }, 10000);
-    }
     
 
     // Alert user if ping states that their session is going to log out (log out if it's run out too)
