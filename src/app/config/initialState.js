@@ -9,7 +9,6 @@ export const initialState = {
     config: {
         allowedExternalPaths: [],
         enableDatasetImport: false,
-        enableNewSignIn: false,
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableCantabularJourney: false,
