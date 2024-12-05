@@ -16,7 +16,7 @@ const mockedGetElement = () => ({
         top: 0
     }),
     scrollTop: 0,
-    scrollIntoView: () => {}
+    scrollIntoView: () => { }
 });
 Object.defineProperty(document, 'getElementById', {
     value: mockedGetElement,
@@ -24,7 +24,5 @@ Object.defineProperty(document, 'getElementById', {
 
 Object.defineProperty(window, 'getEnv', {
     writable: true,
-    value: jest.fn().mockImplementation(() => ({
-        enableNewSignIn: false,
-    })),
+    value: jest.fn().mockImplementation(() => { }),
 });
