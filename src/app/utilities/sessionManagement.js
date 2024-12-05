@@ -31,16 +31,6 @@ export default class sessionManagement {
         invasiveRenewal: 120000,
     };
 
-    static createDefaultExpireTimes(hours) {
-        // TODO this is used up until enableNewSignIn goes live then remove this
-        const now = new Date();
-        const expiry = now.setHours(now.getHours() + hours);
-        return {
-            session_expiry_time: new Date(expiry),
-            refresh_expiry_time: new Date(expiry),
-        };
-    }
-
     // There are two tokens, Session and Refresh that manage the users access. Refresh is a long life token that can be
     // used to get a new session token. The session token is what gives the user access to the system and has a very
     // short life. If the user is active then we extend their session. The refresh token has a long life but also

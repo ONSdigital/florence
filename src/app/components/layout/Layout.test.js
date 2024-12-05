@@ -38,8 +38,17 @@ var localStorageMock = (function () {
     };
 })();
 
+function createDefaultExpireTimes(hours) {
+    const now = new Date();
+    const expiry = now.setHours(now.getHours() + hours);
+    return {
+        session_expiry_time: new Date(expiry),
+        refresh_expiry_time: new Date(expiry),
+    };
+}
+
 function createSession() {
-    const mockTimers = sessionManagement.createDefaultExpireTimes(1);
+    const mockTimers = createDefaultExpireTimes(1);
     return new Date(mockTimers.session_expiry_time).toISOString().replace(/Z/, " +0000 UTC");
 }
 // Mocks
@@ -116,7 +125,7 @@ function wrapper(props = {}) {
 function addSessionTimersToAuthState() {}
 
 it("renders <NavBar /> component", () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(+1);
+    const expTimes = createDefaultExpireTimes(+1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -148,7 +157,7 @@ describe("when notifications props are passed", () => {
 });
 
 it("should start the session timer if there is an expired access token & the session state is false", async () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(-1);
+    const expTimes = createDefaultExpireTimes(-1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -193,7 +202,7 @@ it("should start the session timer if there is an expired access token & the ses
 });
 
 it("should start the session timer if the access token is not expired & the session state is false", async () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(1);
+    const expTimes = createDefaultExpireTimes(1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -236,7 +245,7 @@ it("should start the session timer if the access token is not expired & the sess
 });
 
 it("should do nothing if the token is not expired & session state is true", async () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(1);
+    const expTimes = createDefaultExpireTimes(1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
