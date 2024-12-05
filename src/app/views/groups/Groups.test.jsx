@@ -11,7 +11,6 @@ const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const defaultProps = {
     groups: [],
     loadTeams: jest.fn(),
-    isNewSignIn: true,
     isLoading: false,
     loggedInUser: admin,
 };
@@ -30,7 +29,7 @@ describe("Groups", () => {
 
     it("requests all teams on load", () => {
         render(<Groups {...defaultProps} />);
-        expect(defaultProps.loadTeams).toHaveBeenCalledWith(true);
+        expect(defaultProps.loadTeams).toHaveBeenCalled();
     });
 
     it("shows, message if no teams found", () => {

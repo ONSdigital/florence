@@ -15,7 +15,6 @@ const defaultProps = {
         userType: "ADMIN",
     },
     isEnablePermissionsAPI: false,
-    isNewSignIn: false,
 };
 
 describe("CreateNewCollection", () => {
@@ -215,35 +214,9 @@ describe("CreateNewCollection", () => {
             );
         });
 
-        it("returned team names when creating collection", () => {
+        it("returned team IDs when creating collection", () => {
             const props = {
                 ...defaultProps,
-                teams: [
-                    { id: "t1", name: "Team1" },
-                    { id: "t2", name: "Team2" },
-                ],
-                createCollectionRequest: jest.fn(),
-            };
-
-            render(<CreateNewCollection {...props} />);
-
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
-            userEvent.click(screen.getByLabelText("Manual publish"));
-            userEvent.selectOptions(screen.getByRole("combobox"), "t1"); // select team
-
-            userEvent.click(screen.getByText("Create collection"));
-
-            expect(props.createCollectionRequest).toBeCalledWith(
-                { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual", teams: ["Team1"] },
-                [{ id: "t1", name: "Team1" }],
-                false
-            );
-        });
-
-        it("returned team IDs when isNewSignIn and creating collection", () => {
-            const props = {
-                ...defaultProps,
-                isNewSignIn: true,
                 teams: [
                     { id: "t1", name: "Team1" },
                     { id: "t2", name: "Team2" },
@@ -263,32 +236,6 @@ describe("CreateNewCollection", () => {
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual", teams: ["t1"] },
                 [{ id: "t1", name: "Team1" }],
                 false
-            );
-        });
-
-        it("passed teams in separate array when creating collection", () => {
-            const props = {
-                ...defaultProps,
-                teams: [
-                    { id: "1", name: "Team1" },
-                    { id: "2", name: "Team2" },
-                ],
-                isEnablePermissionsAPI: true,
-                createCollectionRequest: jest.fn(),
-            };
-
-            render(<CreateNewCollection {...props} />);
-
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
-            userEvent.click(screen.getByLabelText("Manual publish"));
-            userEvent.selectOptions(screen.getByRole("combobox"), "1"); // select
-
-            userEvent.click(screen.getByText("Create collection"));
-
-            expect(props.createCollectionRequest).toBeCalledWith(
-                { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, teams: ["Team1"], type: "manual" },
-                [{ id: "1", name: "Team1" }],
-                true
             );
         });
     });

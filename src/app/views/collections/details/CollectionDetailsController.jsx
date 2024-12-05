@@ -324,7 +324,7 @@ export class CollectionDetailsController extends Component {
         const updateEmailInActiveCollection = {
             ...this.props.activeCollection,
         };
-        const email = page.lastEditedBy ? page.lastEditedBy : page.lastEdit.email;
+        const email = page.lastEditedBy ? page.lastEditedBy : page.lastEdit?.email;
         await user
             .getUser(email)
             .then(response => {

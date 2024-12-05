@@ -30,8 +30,6 @@ const withPreviewNavProps = {
     },
 };
 
-const ExpectedAuthenicatedNavbarItems = ["Collections", "Users and access", "Preview teams", "Sign out"];
-
 describe("NavBar", () => {
     describe("when user is not authenticated", () => {
         it("should render only one link to Sign in", () => {
@@ -44,15 +42,6 @@ describe("NavBar", () => {
     });
 
     describe("when user is authenticated as Admin", () => {
-        it("should render navigation with links", () => {
-            const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
-            const nav = component.find(Link);
-
-            expect(component.hasClass("global-nav__list")).toBe(true);
-            expect(component.find(Link)).toHaveLength(ExpectedAuthenicatedNavbarItems.length);
-            nav.forEach((n, i) => expect(n.getElement().props.children).toBe(ExpectedAuthenicatedNavbarItems[i]));
-        });
-
         it("should not render Sign in link", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
             expect(component.hasClass("sign-in")).toBe(false);
@@ -63,20 +52,14 @@ describe("NavBar", () => {
             expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
         });
 
-        describe("when enableNewSignIn feature flag is enabled", () => {
-            it("Preview teams option should be present", () => {
-                const props = {
-                    ...defaultProps,
-                    isNewSignIn: true,
-                };
-                const component = shallow(<NavBar {...props} user={authenticatedUser} />);
-                expect(component.find(Link)).toHaveLength(5);
-                expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
-                expect(component.find(Link).getElements()[1].props.children).toBe("Users and access");
-                expect(component.find(Link).getElements()[2].props.children).toBe("Preview teams");
-                expect(component.find(Link).getElements()[3].props.children).toBe("Security");
-                expect(component.find(Link).getElements()[4].props.children).toBe("Sign out");
-            });
+        it("preview teams and security option should be present", () => {
+            const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
+            expect(component.find(Link)).toHaveLength(5);
+            expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
+            expect(component.find(Link).getElements()[1].props.children).toBe("Users and access");
+            expect(component.find(Link).getElements()[2].props.children).toBe("Preview teams");
+            expect(component.find(Link).getElements()[3].props.children).toBe("Security");
+            expect(component.find(Link).getElements()[4].props.children).toBe("Sign out");
         });
 
         describe("when enabled dataset import", () => {

@@ -742,7 +742,6 @@ describe("When the component mounts with a collection id", () => {
             user: {
                 userType: "ADMIN",
             },
-            isNewSignIn: true,
             activeCollection: {
                 ...defaultProps.collections[0],
                 inProgress: [
@@ -809,7 +808,6 @@ describe("When the component mounts with a collection id", () => {
             user: {
                 userType: "ADMIN",
             },
-            isNewSignIn: false,
             activeCollection: {
                 ...defaultProps.collections[0],
                 inProgress: [
