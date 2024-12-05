@@ -49,7 +49,6 @@ export const getGroupsByCollectionID = (id, allCollections, allGroups) => {
     })(allGroups);
 };
 
-export const getEnableNewSignIn = state => state.config.enableNewSignIn;
 export const getEnablePermissionsAPI = state => state.config.enablePermissionsAPI;
 export const getNotifications = state => state.notifications;
 

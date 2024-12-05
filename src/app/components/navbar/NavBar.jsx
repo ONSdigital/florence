@@ -93,16 +93,9 @@ const NavBar = props => {
                                 </Link>
                             </li>
                         )}
-                        {!props.isNewSignIn && auth.isAdminOrEditor(props.user) && (
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/teams`} activeClassName="selected" className="global-nav__link">
-                                    Preview teams
-                                </Link>
-                            </li>
-                        )}
                     </>
                 )}
-                {auth.isAdminOrEditor(props.user) && props.isNewSignIn && (
+                {auth.isAdminOrEditor(props.user) && (
                     <>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
@@ -111,7 +104,7 @@ const NavBar = props => {
                         </li>
                     </>
                 )}
-                {auth.isAdmin(props.user) && props.isNewSignIn && (
+                {auth.isAdmin(props.user) && (
                     <>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
@@ -149,7 +142,6 @@ const NavBar = props => {
 NavBar.propTypes = {
     config: PropTypes.shape({
         enableDatasetImport: PropTypes.bool,
-        enableNewSignIn: PropTypes.bool,
     }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({

@@ -73,68 +73,23 @@ export const fetchGroupMembersRequest = id => dispatch => {
         });
 };
 
-export const fetchGroupsRequest = isNewSignIn => dispatch => {
+export const fetchGroupsRequest = () => dispatch => {
     dispatch(actions.loadGroupsProgress());
-    isNewSignIn
-        ? teams
-              .getGroups()
-              .then(response => {
-                  dispatch(actions.loadGroupsSuccess(response.groups));
-              })
-              .catch(error => {
-                  dispatch(actions.loadGroupsFailure());
-                  notifications.add({
-                      type: "warning",
-                      isDismissable: true,
-                      autoDismiss: 15000,
-                      message: error.status === 400 ? errCodes.GET_GROUPS_NOT_FOUND : errCodes.GET_GROUPS_UNEXPECTED_ERROR_SHORT,
-                  });
-                  console.error(error);
-              })
-        : teams
-              .getAll()
-              .then(response => {
-                  return dispatch(actions.loadGroupsSuccess(response));
-              })
-              .catch(error => {
-                  dispatch(actions.loadGroupsFailure());
-                  switch (error.status) {
-                      case 401: {
-                          // This is handled by the request function, so do nothing here
-                          break;
-                      }
-                      case "RESPONSE_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message:
-                                  "There's been a network error whilst trying to get teams. You may only be able to see previously loaded information and not be able to edit any team members.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                      case "UNEXPECTED_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message:
-                                  "An unexpected error's occurred whilst trying to get teams. You may only be able to see previously loaded information and won't be able to edit any team members.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                      case "FETCH_ERR": {
-                          const notification = {
-                              type: "warning",
-                              message: "There's been a network error whilst trying to get teams. Try refresh the page.",
-                              isDismissable: true,
-                          };
-                          notifications.add(notification);
-                          break;
-                      }
-                  }
-                  console.error("Error fetching all teams:\n", error);
-              });
+    teams
+        .getGroups()
+        .then(response => {
+            dispatch(actions.loadGroupsSuccess(response.groups));
+        })
+        .catch(error => {
+            dispatch(actions.loadGroupsFailure());
+            notifications.add({
+                type: "warning",
+                isDismissable: true,
+                autoDismiss: 15000,
+                message: error.status === 400 ? errCodes.GET_GROUPS_NOT_FOUND : errCodes.GET_GROUPS_UNEXPECTED_ERROR_SHORT,
+            });
+            console.error(error);
+        });
 };
 
 export const updateGroupMembersRequest = (id, body) => dispatch => {

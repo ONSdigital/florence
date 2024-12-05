@@ -23,11 +23,11 @@ function AddGroupsToUser(props) {
     useEffect(() => {
         if (id) {
             loadUser(id);
-            loadGroups(isNewSignIn);
+            loadGroups();
         }
     }, [id]);
 
-    const { isNewSignIn, loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
+    const { loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
     const [isSubmitting, setIsSubmitting] = useState(isAdding);
     const [search, setSearch] = useInput("");
     const [userGroups, setUserGroups] = useState([]);

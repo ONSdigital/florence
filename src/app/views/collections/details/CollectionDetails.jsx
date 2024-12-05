@@ -73,7 +73,6 @@ const propTypes = {
     type: PropTypes.string,
     publishDate: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
-    isNewSignIn: PropTypes.bool,
 };
 
 export class CollectionDetails extends Component {

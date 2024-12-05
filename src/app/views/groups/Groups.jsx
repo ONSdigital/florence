@@ -10,12 +10,12 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 import BackButton from "../../components/back-button";
 
 const Groups = props => {
-    const { groups, isLoading, loadTeams, isNewSignIn } = props;
+    const { groups, isLoading, loadTeams } = props;
     const [search, setSearch] = useInput("");
     const isAdmin = props.loggedInUser.isAdmin || false;
 
     useEffect(() => {
-        loadTeams(isNewSignIn);
+        loadTeams();
     }, []);
 
     const getFilteredGroups = useCallback(() => {
@@ -68,7 +68,6 @@ const Groups = props => {
 Groups.propTypes = {
     groups: PropTypes.array.isRequired,
     loadTeams: PropTypes.func.isRequired,
-    isNewSignIn: PropTypes.bool.isRequired,
     isLoading: PropTypes.bool.isRequired,
 };
 export default Groups;

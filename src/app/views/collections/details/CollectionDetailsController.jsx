@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-import { getCollections, getEnableNewSignIn, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
+import { getCollections, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
 import { approveCollectionRequest } from "../../../config/thunks";
 import {
     loadCollectionsSuccess,
@@ -320,37 +320,35 @@ export class CollectionDetailsController extends Component {
 
         this.props.dispatch(push(newURL));
 
-        if (this.props.isNewSignIn) {
-            this.setState({ isFetchingUserDetails: true });
-            const updateEmailInActiveCollection = {
-                ...this.props.activeCollection,
-            };
-            const email = page.lastEditedBy ? page.lastEditedBy : page.lastEdit.email;
-            await user
-                .getUser(email)
-                .then(response => {
-                    const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
-                        if (collectionPage.uri == uri) {
-                            if (collectionPage.lastEditedBy) {
-                                collectionPage.lastEditedBy = response.email;
-                                return collectionPage;
-                            } else if (collectionPage.lastEdit) {
-                                collectionPage.lastEdit.email = response.email;
-                                return collectionPage;
-                            }
-                        } else {
+        this.setState({ isFetchingUserDetails: true });
+        const updateEmailInActiveCollection = {
+            ...this.props.activeCollection,
+        };
+        const email = page.lastEditedBy ? page.lastEditedBy : page.lastEdit.email;
+        await user
+            .getUser(email)
+            .then(response => {
+                const newActiveCollection = updateEmailInActiveCollection[state].map(collectionPage => {
+                    if (collectionPage.uri == uri) {
+                        if (collectionPage.lastEditedBy) {
+                            collectionPage.lastEditedBy = response.email;
+                            return collectionPage;
+                        } else if (collectionPage.lastEdit) {
+                            collectionPage.lastEdit.email = response.email;
                             return collectionPage;
                         }
-                    });
-                    updateEmailInActiveCollection[state] = newActiveCollection;
-                })
-                .catch(error => {
-                    console.error(`Error grabbing user details, uuid: '${email}'`, error);
-                    log.event("Error grabbing user details", log.data(email), log.error());
+                    } else {
+                        return collectionPage;
+                    }
                 });
-            this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
-            this.setState({ isFetchingUserDetails: false });
-        }
+                updateEmailInActiveCollection[state] = newActiveCollection;
+            })
+            .catch(error => {
+                console.error(`Error grabbing user details, uuid: '${email}'`, error);
+                log.event("Error grabbing user details", log.data(email), log.error());
+            });
+        this.props.dispatch(updatePagesInActiveCollection(updateEmailInActiveCollection));
+        this.setState({ isFetchingUserDetails: false });
 
         return newURL; //using 'return' so that we can test the correct new URL has been generated
     };
@@ -684,7 +682,6 @@ export class CollectionDetailsController extends Component {
                 isLoadingLastEdit={this.state.isFetchingUserDetails}
                 isCancellingDelete={this.state.isCancellingDelete}
                 isApprovingCollection={this.props.isUpdating}
-                isNewSignIn={this.props.isNewSignIn}
             />
         );
     }
@@ -724,7 +721,6 @@ CollectionDetailsController.propTypes = propTypes;
 
 export function mapStateToProps(state) {
     return {
-        isNewSignIn: getEnableNewSignIn(state.state),
         user: state.user,
         collections: getCollections(state.state),
         activeCollection: state.state.collections.active,

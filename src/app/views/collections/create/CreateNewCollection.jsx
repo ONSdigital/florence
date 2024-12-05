@@ -44,7 +44,7 @@ const CreateNewCollection = props => {
     const [showScheduleByRelease, setShowScheduleByRelease] = useState(false);
 
     useEffect(() => {
-        props.loadTeams(props.isNewSignIn);
+        props.loadTeams();
     }, []);
 
     const handleCollectionNameChange = e => {
@@ -153,10 +153,6 @@ const CreateNewCollection = props => {
 
     const makeTeams = () => {
         return newCollection.teams.map(team => {
-            // POST to group create endpoint expects: <names> in legacy, but <IDs> in new auth (isNewSignIn)
-            if (!props.isNewSignIn) {
-                return team.name;
-            }
             return team.id;
         });
     };

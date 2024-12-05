@@ -19,7 +19,7 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnableNewSignIn, getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
+import { getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
 import { loadPolicyRequest } from "../../../config/thunks";
 
@@ -68,9 +68,9 @@ export class CollectionEditController extends Component {
     }
 
     componentDidMount() {
-        this.props.dispatch(fetchGroupsRequest(this.props.isNewSignIn));
+        this.props.dispatch(fetchGroupsRequest());
 
-        if (this.props.isNewSignIn && this.props.isEnablePermissionsAPI) this.props.dispatch(loadPolicyRequest(this.props.id));
+        if (this.props.isEnablePermissionsAPI) this.props.dispatch(loadPolicyRequest(this.props.id));
 
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
@@ -410,7 +410,7 @@ export class CollectionEditController extends Component {
             // Switch the teams array of objects back to an array of strings.
             // Basically, we read from teamsDetails but write to teams, so not to
             // break what Zebedee is expecting but still be able to use the team IDs
-            body.teams = this.props.isNewSignIn ? state.updatedTeamsList.map(team => team.id) : state.updatedTeamsList.map(team => team.name);
+            body.teams = state.updatedTeamsList.map(team => team.id);
         }
 
         if (state.publishType !== this.props.publishType) {
@@ -476,7 +476,6 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
-        isNewSignIn: getEnableNewSignIn(state.state),
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
         loadingTeams: getGroupsLoading(state.state),
