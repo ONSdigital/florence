@@ -27,7 +27,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
 				EnableDatasetImport:     true,
-				EnableNewSignIn:         false,
 				EnableNewUpload:         false,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,
