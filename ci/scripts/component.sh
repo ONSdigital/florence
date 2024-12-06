@@ -3,5 +3,5 @@
 cwd=$(pwd)
 
 pushd $cwd/florence
-    echo "component test placeholder"
+  make test-component
 popd

@@ -2,22 +2,21 @@ package steps
 
 import (
 	"context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
 	"github.com/ONSdigital/florence/service/mock"
-	initialiser "github.com/ONSdigital/florence/service/mock"
 	dplog "github.com/ONSdigital/log.go/log"
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
-	"github.com/maxcnunes/httpfake"
-	"log"
-	"net/http"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
 type Chrome struct {
@@ -36,7 +35,6 @@ type Component struct {
 	chrome       Chrome
 	SignedInUser string
 	user         User
-	fakeRequest  *httpfake.Request
 }
 
 func NewFlorenceComponent() (*Component, error) {
@@ -58,7 +56,7 @@ func NewFlorenceComponent() (*Component, error) {
 
 	cfg.APIRouterURL = c.FakeApi.fakeHttp.ResolveURL("")
 
-	initFunctions := &initialiser.InitialiserMock{
+	initFunctions := &mock.InitialiserMock{
 		DoGetHTTPServerFunc:   c.DoGetHTTPServer,
 		DoGetHealthCheckFunc:  DoGetHealthcheckOk,
 		DoGetHealthClientFunc: DoGetHealthClient,
@@ -66,11 +64,7 @@ func NewFlorenceComponent() (*Component, error) {
 
 	serviceList := service.NewServiceList(initFunctions)
 
-	if cfg.SharedConfig.EnableNewSignIn == false {
-		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
-	} else {
-		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
-	}
+	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
 
 	c.runApplication(cfg, serviceList, signals)
 
@@ -119,13 +113,7 @@ func (c *Component) Reset() *Component {
 	log.Print("re-starting chrome ...")
 
 	c.chrome.ctx = ctx
-
-	cfg, _ := config.Get()
-	if cfg.SharedConfig.EnableNewSignIn == false {
-		c.user = NewLegacyPublisher(c.FakeApi, c.chrome.ctx)
-	} else {
-		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
-	}
+	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
 
 	return c
 }

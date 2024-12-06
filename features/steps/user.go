@@ -2,18 +2,19 @@ package steps
 
 import (
 	"context"
+	"net/http"
+	"time"
+
 	"github.com/chromedp/cdproto/cdp"
 	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 	"github.com/pkg/errors"
-	"net/http"
-	"time"
 )
 
 type User interface {
 	signIn(username string) error
 	isSignedIn() bool
-	signOut() error
+	signOut()
 	resetUser(fakeApi *FakeApi, ctx context.Context)
 	setChromeCtx(ctx context.Context)
 	setFakeApi(fakeApi *FakeApi)
