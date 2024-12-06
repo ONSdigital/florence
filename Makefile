@@ -93,5 +93,5 @@ clean:
 
 
 .PHONY: test-component
-test-component:
+test-component: node-modules generate-go-prod
 	go test -cover -coverpkg=github.com/ONSdigital/florence/... -component
