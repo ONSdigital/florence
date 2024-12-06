@@ -5,11 +5,16 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: golang
-    tag: 1.21.7
+    repository: onsdigital/dp-concourse-tools-node-go
+    tag: 1.21.7-bullseye-node-20
 
 inputs:
   - name: florence
+    path: florence
+
+caches:
+  - path: go/
+  - path: florence/node_modules
 
 run:
   path: florence/ci/scripts/component.sh
