@@ -16,7 +16,7 @@ var elementMap = map[string]string{
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I sign in as "([^"]*)" user "([^"]*)"$`, c.iSignInAs)
 	ctx.Step(`^I create a new collection called "([^"]*)" for manual publishing$`, c.iCreateANewCollectionCalledForManualPublishing)
-	ctx.Step(`^I should be presented with a editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
+	ctx.Step(`^I should be presented with an editable collection titled "([^"]*)"$`, c.iShouldBePresentedWithAEditableCollectionTitled)
 	ctx.Step(`^the collection publishing schedule should be "([^"]*)"$`, c.theCollectionShouldBe)
 	ctx.Step(`^a collection with these details should be created:$`, c.theseCollectionCreationDetailsShouldHaveBeenSent)
 	ctx.Step(`^I should see the "([^"]*)" element$`, c.iShouldSeeTheElement)
