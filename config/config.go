@@ -55,7 +55,7 @@ func Get() (*Config, error) {
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
 			EnableDatasetImport:     true,
-			EnableNewSignIn:         false,
+			EnableNewSignIn:         true,
 			EnableNewUpload:         false,
 			EnablePermissionsAPI:    false,
 			EnableCantabularJourney: false,
