@@ -14,6 +14,7 @@ import taxonomies from "../../reducers/taxonomies";
 import Layout from "./Layout";
 import { getAuthState, setAuthState } from "../../utilities/auth";
 import sessionManagement from "../../utilities/sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
 import { startRefeshAndSession } from "../../config/user/userActions";
 import { setConfig } from "../../config/actions";
 
@@ -39,7 +40,7 @@ var localStorageMock = (function () {
 })();
 
 function createSession() {
-    const mockTimers = sessionManagement.createDefaultExpireTimes(1);
+    const mockTimers = SessionManagement.createDefaultExpireTimes(1);
     return new Date(mockTimers.session_expiry_time).toISOString().replace(/Z/, " +0000 UTC");
 }
 // Mocks
@@ -68,7 +69,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-    sessionManagement.timers = {};
+    SessionManagement.timers = {};
     window.localStorage.clear();
 });
 
@@ -116,7 +117,7 @@ function wrapper(props = {}) {
 function addSessionTimersToAuthState() {}
 
 it("renders <NavBar /> component", () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(+1);
+    const expTimes = SessionManagement.createDefaultExpireTimes(+1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -149,7 +150,7 @@ describe("when notifications props are passed", () => {
 
 it("should start the session timer if there is an expired access token & the session state is false", async () => {
     store.dispatch(setConfig({ enableNewSignIn: true }));
-    const expTimes = sessionManagement.createDefaultExpireTimes(-1);
+    const expTimes = SessionManagement.createDefaultExpireTimes(-1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -180,7 +181,7 @@ it("should start the session timer if there is an expired access token & the ses
     authState = getAuthState();
     // We expect that the mocked user.renewSession() returns a new expire value that is stored in the auth state & local storage
     const expected = authState.session_expiry_time;
-    const actual = sessionManagement.convertUTCToJSDate(mockSessionExpiryTime);
+    const actual = SessionManagement.convertUTCToJSDate(mockSessionExpiryTime);
     expect(actual).toEqual(new Date(expected));
     // refresh should not be updated
     const expectedrefresh = authState.refresh_expiry_time;
@@ -194,7 +195,7 @@ it("should start the session timer if there is an expired access token & the ses
 });
 
 it("should start the session timer if the access token is not expired & the session state is false", async () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(1);
+    const expTimes = SessionManagement.createDefaultExpireTimes(1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
@@ -237,7 +238,7 @@ it("should start the session timer if the access token is not expired & the sess
 });
 
 it("should do nothing if the token is not expired & session state is true", async () => {
-    const expTimes = sessionManagement.createDefaultExpireTimes(1);
+    const expTimes = SessionManagement.createDefaultExpireTimes(1);
     // Add a session timer that is expired by 1 hour
     setAuthState({
         session_expiry_time: expTimes.session_expiry_time,
