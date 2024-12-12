@@ -16,7 +16,13 @@
     "globals": {
       "window": true
     },
-    "testURL": "http://localhost"
+    "testURL": "http://localhost",
+    "transform": {
+      "^.+\\.(js|jsx)$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "../node_modules/(?!(dis-authorisation-client-js)/)"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
