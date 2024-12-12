@@ -14,6 +14,7 @@ import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import log from "../../utilities/logging/log";
 import sessionManagement from "../../utilities/sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
 import { updateAuthState } from "../../utilities/auth";
 import handleRedirect from "../../utilities/redirect";
 
@@ -57,8 +58,10 @@ export class LoginController extends Component {
             .then(accessToken => {
                 cookies.add("access_token", accessToken);
                 // Session
-                const { session_expiry_time, refresh_expiry_time } = sessionManagement.createDefaultExpireTimes(12);
-                sessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
+                const { session_expiry_time, refresh_expiry_time } = SessionManagement.createDefaultExpireTimes(12);
+                SessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
+                updateAuthState({ session_expiry_time: session_expiry_time });
+                updateAuthState({ refresh_expiry_time: refresh_expiry_time });
                 // Get perms
                 user.getPermissions()
                     .then(userType => {

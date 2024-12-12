@@ -9,6 +9,7 @@ import { store } from "../../config/store";
 import { getAuthState } from "../auth";
 import fp from "lodash/fp";
 import sessionManagement from "../sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
 import { startRefeshAndSession } from "../../config/user/userActions";
 
 const config = window.getEnv();
@@ -75,8 +76,8 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
                             .then(res => {
                                 // update the authState, start the session timer with the next session response value
                                 // & restart the refresh timer with the existing refresh value.
-                                const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
-                                sessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
+                                const expirationTime = SessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
+                                SessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
                                 store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
                                 // Retry the resource request with new access_token
                                 tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);

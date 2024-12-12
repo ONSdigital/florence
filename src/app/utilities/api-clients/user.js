@@ -6,6 +6,8 @@ import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
 import sessionManagement from "../sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
+import { removePopouts } from "../../config/actions";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
 import { removeAuthState, setAuthState } from "../auth";
 
@@ -242,7 +244,8 @@ export default class user {
                 })
                 .finally(() => {
                     clearCookies();
-                    sessionManagement.removeTimers();
+                    SessionManagement.removeTimers();
+                    store.dispatch(removePopouts(["session-expire-soon", "refresh-expire-soon"]));
                 });
         } else {
             clearCookies();
