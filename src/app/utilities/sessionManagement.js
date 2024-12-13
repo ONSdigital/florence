@@ -32,7 +32,7 @@ export default class sessionManagement {
     };
 
     static createDefaultExpireTimes(hours) {
-        // TODO this is used up until enableNewSignIn goes live then remove this
+        console.log("[sessionManagement] Creating default expire times for", hours, "hours");
         const now = new Date();
         const expiry = now.setHours(now.getHours() + hours);
         return {
@@ -47,10 +47,12 @@ export default class sessionManagement {
     // expires and can't be renewed. So we extend it one last timse and let the user know they will be kicked out and
     // need to sign back in manually
     static setSessionExpiryTime = (sessionExpiryTime, refreshExpiryTime) => {
+        console.log("[sessionManagement] Setting session expiry time:", sessionExpiryTime, "and refresh expiry time:", refreshExpiryTime);
         this.initialiseSessionExpiryTimers(sessionExpiryTime, refreshExpiryTime);
     };
 
     static removeTimers = () => {
+        console.log("[sessionManagement] Removing all timers");
         this.removeInteractionMonitoring();
         this.removeWarnings();
         for (const [key] of Object.entries(this.timers)) {
@@ -60,12 +62,15 @@ export default class sessionManagement {
     };
 
     static startSessionTimer(sessionExpiryTime) {
+        console.log("[sessionManagement] Starting session timer with expiry time:", sessionExpiryTime);
         updateAuthState({ session_expiry_time: sessionExpiryTime });
         if (config.enableNewSignIn) {
+            console.log("[sessionManagement] New sign-in enabled, starting passive session timer");
             // Timer to start monitoring user interaction to add additional time to their session
             this.startExpiryTimer("sessionTimerPassive", sessionExpiryTime, this.timeOffsets.passiveRenewal, this.monitorInteraction);
         } else {
             // Display a popup passiveRenewal ms before manual refresh expire interval.
+            console.log("[sessionManagement] New sign-in not enabled, starting manual session timers");
             this.startExpiryTimer(
                 "warnManaulSessionTimerExpiry",
                 sessionExpiryTime,
@@ -78,6 +83,7 @@ export default class sessionManagement {
     }
 
     static startRefreshTimer(refreshExpiryTime) {
+        console.log("[sessionManagement] Starting refresh timer with expiry time:", refreshExpiryTime);
         if (config.enableNewSignIn) {
             updateAuthState({ refresh_expiry_time: refreshExpiryTime });
             // Timer to start monitoring user interaction to add a final extra amount of time to their session
@@ -86,16 +92,19 @@ export default class sessionManagement {
     }
 
     static initialiseSessionExpiryTimers = (sessionExpiryTime, refreshExpiryTime) => {
+        console.log("[sessionManagement] Initialising session expiry timers");
         if (sessionExpiryTime) {
+            console.log("[sessionManagement] Session expiry time provided:", sessionExpiryTime);
             sessionManagement.startSessionTimer(sessionExpiryTime);
         }
         if (refreshExpiryTime) {
+            console.log("[sessionManagement] Refresh expiry time provided:", refreshExpiryTime);
             sessionManagement.startRefreshTimer(refreshExpiryTime);
         }
     };
 
     static convertUTCToJSDate(expiryTime) {
-        // Convert API time to usable JS Date object
+        console.log("[sessionManagement] Converting UTC expiry time to JS Date:", expiryTime);
         if (expiryTime) {
             const expireTimeInUTCString = expiryTime.replace(" +0000 UTC", "Z");
             return new Date(expireTimeInUTCString);
@@ -103,10 +112,9 @@ export default class sessionManagement {
         return null;
     }
 
-    /** If expiryTime is UTC use convertUTCToJSDate */
     static startExpiryTimer = (name, expiryTime, offsetInMilliseconds, callback) => {
+        console.log("[sessionManagement] Starting expiry timer:", name, "with expiry time:", expiryTime, "and offset:", offsetInMilliseconds);
         if (expiryTime) {
-            // Convert 'now' into UTC (new Date() returns local time (could be different country or just BST))
             const now = new Date();
             let timerInterval = expiryTime - now.getTime() - offsetInMilliseconds;
             if (isNaN(timerInterval)) {
@@ -115,28 +123,33 @@ export default class sessionManagement {
             if (this.timers[name] != null) {
                 clearTimeout(this.timers[name]);
             }
+            console.log("[FLORENCE] Interval for " + name + " set to " + timerInterval);
             console.debug("[FLORENCE] Interval for " + name + " set to " + timerInterval);
             this.timers[name] = setTimeout(callback, timerInterval);
         }
     };
 
     static monitorInteraction = () => {
+        console.log("[sessionManagement] Monitoring user interaction");
         this.eventsToMonitor.forEach(name => {
             document.addEventListener(name, this.refreshSession);
         });
     };
 
     static removeInteractionMonitoring = () => {
+        console.log("[sessionManagement] Removing interaction monitoring");
         this.eventsToMonitor.forEach(name => {
             document.removeEventListener(name, this.refreshSession);
         });
     };
 
     static warnRefreshSoonExpire = () => {
+        console.log("[sessionManagement] Warning: refresh token will expire soon");
         this.removeInteractionMonitoring();
     };
 
     static warnManaulRefreshTimerExpiry = () => {
+        console.log("[sessionManagement] Warning: manual refresh timer will expire soon");
         const popoutOptions = {
             id: "manual-refresh-expire-soon",
             title: "You will be signed out soon",
@@ -155,19 +168,21 @@ export default class sessionManagement {
     };
 
     static endManualSession = () => {
-        console.info("[FLORENCE] Timer has expired so logging out user");
+        console.info("[sessionManagement] Ending manual session");
         user.logOut();
     };
 
     static removeWarnings = () => {
+        console.log("[sessionManagement] Removing warnings");
         store.dispatch(removePopouts(["session-expire-soon", "refresh-expire-soon"])); // Todo all
     };
 
     static refreshSession = () => {
+        console.log("[sessionManagement] Refreshing session");
         this.removeInteractionMonitoring();
         this.removeWarnings();
         const renewError = error => {
-            console.error("[FLORENCE] an unexpected error has occurred when extending the users session");
+            console.error("[sessionManagement] An unexpected error occurred when extending the user's session");
             if (error != null) {
                 console.error(error);
             }
@@ -177,7 +192,7 @@ export default class sessionManagement {
             user.renewSession()
                 .then(response => {
                     if (response) {
-                        console.log("[FLORENCE] Updating session timer via API");
+                        console.log("[sessionManagement] Updating session timer via API");
                         const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("expirationTime")(response));
                         sessionManagement.startSessionTimer(expirationTime);
                         store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
@@ -190,7 +205,7 @@ export default class sessionManagement {
                 });
         } else {
             // refresh sessions manually for current / legacy
-            console.log("[FLORENCE] Updating session timer manually");
+            console.log("[sessionManagement] Updating session timer manually");
             const expireTimes = sessionManagement.createDefaultExpireTimes(12);
             sessionManagement.startSessionTimer(expireTimes.session_expiry_time);
             store.dispatch(startRefeshAndSession(null, expireTimes.session_expiry_time));
@@ -202,6 +217,7 @@ export default class sessionManagement {
      *  @returns true if session has expired
      *  */
     static isSessionExpired(sessionExpiryTime) {
+        console.log("[sessionManagement] Checking if session has expired for expiry time:", sessionExpiryTime);
         if (sessionExpiryTime == null) {
             return true;
         }
@@ -214,7 +230,7 @@ export default class sessionManagement {
 
         let diffInSeconds = Math.round(timerInterval / 1000);
         if (isNaN(diffInSeconds)) {
-            throw new Error("encounted an error checking time interval: diffInSeconds is NaN");
+            throw new Error("encountered an error checking time interval: diffInSeconds is NaN");
         }
         if (diffInSeconds <= 0) {
             return true;
