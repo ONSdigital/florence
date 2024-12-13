@@ -5,8 +5,8 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: onsdigital/dp-concourse-tools-node-go
-    tag: 1.21.7-bullseye-node-20
+    repository: onsdigital/dp-concourse-tools-chrome-go
+    tag: 1.23.1-bullseye-googlechromestablelatest
 
 inputs:
   - name: florence
