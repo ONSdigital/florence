@@ -58,10 +58,12 @@ import "./scss/main.scss";
 import Security from "./app/views/security";
 import EditGroup from "./app/views/groups/edit"
 import RedirectView from "./app/components/redirect-view";
-
+import SessionManagement from "dis-authorisation-client-js";
 import { browserHistory } from "react-router";
 import user from "./app/utilities/api-clients/user";
 import handleRedirect from "./app/utilities/redirect";
+import fp from 'lodash/fp.js';
+import { startRefeshAndSession } from "./app/config/user/userActions";
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
@@ -122,6 +124,16 @@ const logoutUser = async () => {
         browserHistory.push(`${rootPath}/login`);
     }
 };
+
+
+const sessionConfig = {
+    onRenewSuccess: expirationTime => {
+        const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
+        store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+    },
+};
+
+SessionManagement.init(sessionConfig);
 
 const Index = () => {
     return (

@@ -10,7 +10,7 @@ import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
 import sessionManagement from "../../utilities/sessionManagement";
-import SessionManagement from "dis-authorisation-client-js";
+import SessionManagement, { convertUTCToJSDate } from "dis-authorisation-client-js";
 import { status } from "../../constants/Authentication";
 import { updateAuthState, setAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
@@ -72,8 +72,8 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
-                        let expirationTime = SessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
-                        let refreshTokenExpirationTime = SessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
+                        let expirationTime = convertUTCToJSDate(fp.get("body.expirationTime")(response));
+                        let refreshTokenExpirationTime = convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
                         // Subtract 14 minutes from expirationTime
                         // expirationTime = new Date(expirationTime.getTime() - 14 * 60 * 1000);
                         // Subtract 11 hours and 58 minutes from refreshTokenExpirationTime

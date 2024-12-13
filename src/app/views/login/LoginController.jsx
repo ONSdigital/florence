@@ -58,7 +58,7 @@ export class LoginController extends Component {
             .then(accessToken => {
                 cookies.add("access_token", accessToken);
                 // Session
-                const { session_expiry_time, refresh_expiry_time } = SessionManagement.createDefaultExpireTimes(12);
+                const { session_expiry_time, refresh_expiry_time } = createDefaultExpireTimes(12);
                 SessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
                 updateAuthState({ session_expiry_time: session_expiry_time });
                 updateAuthState({ refresh_expiry_time: refresh_expiry_time });

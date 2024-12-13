@@ -2,7 +2,7 @@ import user from "../../utilities/api-clients/user";
 import { useEffect, useState } from "react";
 import { startRefeshAndSession } from "../../config/user/userActions";
 import sessionManagement from "../../utilities/sessionManagement";
-import SessionManagement from "dis-authorisation-client-js";
+import SessionManagement, { createDefaultExpireTimes, isSessionExpired, convertUTCToJSDate } from "dis-authorisation-client-js";
 import { getAuthState, updateAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 import { store } from "../../config/store";
@@ -32,18 +32,6 @@ export const useGetPermissions = (props, authState, setShouldUpdateAccessToken) 
     return userState;
 };
 
-const renewSessionSuccess = expirationTime => {
-    const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
-    console.log("[STORAGE] expirationTime: ", expirationTime);
-    console.log("[STORAGE] refresh_expiry_time: ", refresh_expiry_time);
-    store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
-};
-const config = {
-    onRenewSuccess: renewSessionSuccess,
-};
-
-SessionManagement.init(config);
-
 export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
         if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
@@ -51,14 +39,14 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
             const authState = getAuthState(); // Get the latest authState
             const session_expiry_time = fp.get("session_expiry_time")(authState);
             const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
-            if (SessionManagement.isSessionExpired(session_expiry_time)) {
+            if (isSessionExpired(session_expiry_time)) {
                 if (enableNewSignIn) {
                     console.debug("Timers / enableNewSignIn: requesting a new access_token");
                     user.renewSession()
                         .then(res => {
                             // update the authState, start the session timer with the nest session response value
                             // & restart the refresh timer with the existing refresh value.
-                            const expirationTime = SessionManagement.convertUTCToJSDate(fp.get("expirationTime")(res));
+                            const expirationTime = convertUTCToJSDate(fp.get("expirationTime")(res));
                             SessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
                             updateAuthState({ session_expiry_time: expirationTime });
                             updateAuthState({ refresh_expiry_time: refresh_expiry_time });
@@ -68,7 +56,7 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
                 } else {
                     console.debug("[FLORENCE] Timers: extending session & refresh timers");
                     // If we are not behind the enableNewSignIn then just extend the session & refresh for 12 hours
-                    const expireTimes = SessionManagement.createDefaultExpireTimes(12);
+                    const expireTimes = createDefaultExpireTimes(12);
                     SessionManagement.initialiseSessionExpiryTimers(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
                     updateAuthState({ session_expiry_time: expireTimes.session_expiry_time });
                     updateAuthState({ refresh_expiry_time: expireTimes.refresh_expiry_time });
