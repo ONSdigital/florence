@@ -30,7 +30,6 @@ function internalRedirect(redirectPath) {
 
     if (
         redirectPath.startsWith(`${rootPath}/collections`) ||
-        redirectPath.startsWith(`${rootPath}/datasets`) ||
         redirectPath.startsWith(`${rootPath}/groups`) ||
         redirectPath.startsWith(`${rootPath}/security`) ||
         redirectPath.startsWith(`${rootPath}/teams`) ||
