@@ -26,7 +26,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			EnableWagtailProxy:   false,
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
-				EnableDatasetImport:     true,
 				EnableNewUpload:         false,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,

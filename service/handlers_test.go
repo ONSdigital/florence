@@ -219,7 +219,6 @@ func TestIndexFile(t *testing.T) {
 					"/test/path",
 					"/another/test/path",
 				},
-				EnableDatasetImport:     true,
 				EnableNewUpload:         true,
 				EnablePermissionsAPI:    true,
 				EnableCantabularJourney: true,
