@@ -23,18 +23,14 @@ import CreateCantabularDatasetController from "./app/views/datasets-new/create/C
 import CreateVersionController from "./app/views/datasets-new/create/CreateVersionController";
 import CreateEditionController from "./app/views/datasets-new/create/CreateEditionController";
 import UserDetailsController from "./app/views/users/details/UserDetailsController";
-import DatasetsController from "./app/views/datasets/DatasetsController";
 import DatasetUploadsController from "./app/views/uploads/dataset/DatasetUploadsController";
 import DatasetUploadDetails from "./app/views/uploads/dataset/upload-details/DatasetUploadDetails";
 import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/DatasetUploadMetadata";
-import DatasetMetadata from "./app/views/datasets/metadata/DatasetMetadata";
-import VersionMetadata from "./app/views/datasets/metadata/VersionMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController";
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 import Logs from "./app/views/logs/Logs";
 import SelectableTest from "./SelectableTest";
-import VersionPreviewController from "./app/views/datasets/preview/VersionPreviewController";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
@@ -198,29 +194,6 @@ const Index = () => {
                                     <Route path=":jobID">
                                         <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails))} />
                                         <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata))} />
-                                    </Route>
-                                </Route>
-                            </Route>
-                            <Route path={`${rootPath}/datasets`}>
-                                <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetsController))} />
-                                <Route path=":datasetID">
-                                    <IndexRedirect to={`${rootPath}/datasets`} />
-                                    <Route path="preview" component={userIsAuthenticated(userIsAdminOrEditor(WorkflowPreview))} />
-                                    <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetMetadata))} />
-                                    <Route path="editions/:edition/versions/:version">
-                                        <IndexRedirect to="metadata" />
-                                        <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(VersionMetadata))} />
-                                        <Route
-                                            path="preview"
-                                            component={userIsAuthenticated(userIsAdminOrEditor(VersionPreviewController))}
-                                        />
-                                    </Route>
-                                    <Route path="instances">
-                                        <IndexRedirect to={`${rootPath}/datasets`} />
-                                        <Route
-                                            path=":instanceID/metadata"
-                                            component={userIsAuthenticated(userIsAdminOrEditor(VersionMetadata))}
-                                        />
                                     </Route>
                                 </Route>
                             </Route>
