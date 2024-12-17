@@ -139,40 +139,38 @@ const Index = () => {
                     <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
                     <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
                     <Route path={`${rootPath}/collections/:collectionID/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateContent))} />
-                    {config.enableDatasetImport === true && (
-                        <Route component={CollectionRoutesWrapper}>
-                            <Route path={`${rootPath}/collections/:collectionID/datasets`}>
-                                <IndexRoute component={userIsAuthenticated(SelectADataset)} />
-                                <Route path="create">
-                                    <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
-                                    <Route path=":datasetID/:recipeID" component={userIsAuthenticated(CreateCantabularDatasetController)} />
-                                    <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
-                                </Route>
-                                <Route path=":datasetID">
-                                    <IndexRoute component={userIsAuthenticated(DatasetEditionsController)} />
-                                    <Route path={`editions`} component={userIsAuthenticated(CreateEditionController)} />
-                                    <Route path="editions/:editionID">
-                                        <Route path={`instances`} component={userIsAuthenticated(CreateVersionController)} />
-                                        <IndexRoute component={userIsAuthenticated(DatasetVersionsController)} />
-                                        <Route path={`versions/:versionID`} component={userIsAuthenticated(DatasetMetadataController)}>
-                                            <Route
-                                                path={`edit/:metadataField/:metadataItemID`}
-                                                component={userIsAuthenticated(EditMetadataItem)}
-                                            />
-                                        </Route>
-                                        <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
-                                            <Route
-                                                path={`edit/:metadataField/:metadataItemID`}
-                                                component={userIsAuthenticated(EditMetadataItem)}
-                                            />
-                                        </Route>
-                                        <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
-                                    </Route>
-                                </Route>
-                                <Route path="datasets/create" component={userIsAuthenticated(Collections)} />
+                    <Route component={CollectionRoutesWrapper}>
+                        <Route path={`${rootPath}/collections/:collectionID/datasets`}>
+                            <IndexRoute component={userIsAuthenticated(SelectADataset)} />
+                            <Route path="create">
+                                <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
+                                <Route path=":datasetID/:recipeID" component={userIsAuthenticated(CreateCantabularDatasetController)} />
+                                <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
                             </Route>
+                            <Route path=":datasetID">
+                                <IndexRoute component={userIsAuthenticated(DatasetEditionsController)} />
+                                <Route path={`editions`} component={userIsAuthenticated(CreateEditionController)} />
+                                <Route path="editions/:editionID">
+                                    <Route path={`instances`} component={userIsAuthenticated(CreateVersionController)} />
+                                    <IndexRoute component={userIsAuthenticated(DatasetVersionsController)} />
+                                    <Route path={`versions/:versionID`} component={userIsAuthenticated(DatasetMetadataController)}>
+                                        <Route
+                                            path={`edit/:metadataField/:metadataItemID`}
+                                            component={userIsAuthenticated(EditMetadataItem)}
+                                        />
+                                    </Route>
+                                    <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
+                                        <Route
+                                            path={`edit/:metadataField/:metadataItemID`}
+                                            component={userIsAuthenticated(EditMetadataItem)}
+                                        />
+                                    </Route>
+                                    <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
+                                </Route>
+                            </Route>
+                            <Route path="datasets/create" component={userIsAuthenticated(Collections)} />
                         </Route>
-                    )}
+                    </Route>
                     <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))} />
                     <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))} />
                     <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))} />
@@ -185,20 +183,18 @@ const Index = () => {
                             <Route path="confirm-delete" component={userIsAuthenticated(userIsAdminOrEditor(ConfirmUserDeleteController))} />
                         </Route>
                     </Route>
-                    {config.enableDatasetImport === true && (
-                        <Route>
-                            <Route path={`${rootPath}/uploads`}>
-                                <IndexRedirect to="data" />
-                                <Route path="data">
-                                    <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadsController))} />
-                                    <Route path=":jobID">
-                                        <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails))} />
-                                        <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata))} />
-                                    </Route>
+                    <Route>
+                        <Route path={`${rootPath}/uploads`}>
+                            <IndexRedirect to="data" />
+                            <Route path="data">
+                                <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadsController))} />
+                                <Route path=":jobID">
+                                    <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails))} />
+                                    <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata))} />
                                 </Route>
                             </Route>
                         </Route>
-                    )}
+                    </Route>
                     <Route path={`${rootPath}/upload-test`} component={config.enableNewUpload ? userIsAuthenticated(UploadTest) : null} />
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />

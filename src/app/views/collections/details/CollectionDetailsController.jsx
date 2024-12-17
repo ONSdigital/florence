@@ -6,7 +6,6 @@ import objectIsEmpty from "is-empty-object";
 import { getCollections, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
 import { approveCollectionRequest } from "../../../config/thunks";
 import {
-    loadCollectionsSuccess,
     deleteCollection,
     emptyActiveCollection,
     emptyWorkingOn,
@@ -36,7 +35,6 @@ import user from "../../../utilities/api-clients/user.js";
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     rootPath: PropTypes.string.isRequired,
-    enableDatasetImport: PropTypes.bool,
     user: PropTypes.object.isRequired,
     collectionID: PropTypes.string,
     collections: PropTypes.array,
@@ -481,9 +479,6 @@ export class CollectionDetailsController extends Component {
             if (deletedPage.type === "dataset_version") {
                 return collections.removeDatasetVersion(collectionID, deletedPage.datasetID, deletedPage.edition, deletedPage.version);
             }
-            if (this.props.enableDatasetImport) {
-                return collections.deletePageIncludingDatasetImport(collectionID, deletedPage.uri);
-            }
             return collections.deletePage(collectionID, deletedPage.uri);
         };
 
@@ -662,7 +657,6 @@ export class CollectionDetailsController extends Component {
         return (
             <CollectionDetails
                 {...this.props.activeCollection}
-                enableDatasetImport={this.props.enableDatasetImport}
                 activePageURI={this.props.activePageURI}
                 inProgress={collectionMapper.pagesExcludingPendingDeletedPages(
                     this.props.activeCollection["inProgress"],
@@ -726,7 +720,6 @@ export function mapStateToProps(state) {
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
         activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
-        enableDatasetImport: state.state.config.enableDatasetImport,
         isUpdating: getIsUpdatingCollection(state.state),
         enableCantabularJourney: state.state.config.enableCantabularJourney,
         groups: getGroups(state.state),

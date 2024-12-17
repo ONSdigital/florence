@@ -10,9 +10,6 @@ const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");
 const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER");
 
 const defaultProps = {
-    config: {
-        enableDatasetImport: false,
-    },
     user: notLoggedUser,
     rootPath: "/florence",
     location: {},
@@ -47,34 +44,15 @@ describe("NavBar", () => {
             expect(component.hasClass("sign-in")).toBe(false);
         });
 
-        it("should not display Datasets", () => {
+        it("datasets, preview teams, and security option should be present", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
-            expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(false);
-        });
-
-        it("preview teams and security option should be present", () => {
-            const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
-            expect(component.find(Link)).toHaveLength(5);
+            expect(component.find(Link)).toHaveLength(6);
             expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
-            expect(component.find(Link).getElements()[1].props.children).toBe("Users and access");
-            expect(component.find(Link).getElements()[2].props.children).toBe("Preview teams");
-            expect(component.find(Link).getElements()[3].props.children).toBe("Security");
-            expect(component.find(Link).getElements()[4].props.children).toBe("Sign out");
-        });
-
-        describe("when enabled dataset import", () => {
-            it("should display Datasets", () => {
-                const props = {
-                    ...defaultProps,
-                    user: authenticatedUser,
-                    config: {
-                        ...defaultProps.config,
-                        enableDatasetImport: true,
-                    },
-                };
-                const component = shallow(<NavBar {...props} />);
-                expect(component.find("Link[to='/florence/uploads/data']").exists()).toBe(true);
-            });
+            expect(component.find(Link).getElements()[1].props.children).toBe("Datasets");
+            expect(component.find(Link).getElements()[2].props.children).toBe("Users and access");
+            expect(component.find(Link).getElements()[3].props.children).toBe("Preview teams");
+            expect(component.find(Link).getElements()[4].props.children).toBe("Security");
+            expect(component.find(Link).getElements()[5].props.children).toBe("Sign out");
         });
 
         describe("when on collections", () => {

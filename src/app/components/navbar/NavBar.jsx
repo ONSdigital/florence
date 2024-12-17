@@ -74,13 +74,11 @@ const NavBar = props => {
                 </li>
                 {auth.isAdminOrEditor(props.user) && (
                     <>
-                        {props.config.enableDatasetImport && (
-                            <li className="global-nav__item">
-                                <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
-                                    Datasets
-                                </Link>
-                            </li>
-                        )}
+                        <li className="global-nav__item">
+                            <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                                Datasets
+                            </Link>
+                        </li>
                         <li className="global-nav__item">
                             <a className="global-nav__link" href="/florence/publishing-queue">
                                 Publishing queue
@@ -140,9 +138,6 @@ const NavBar = props => {
 };
 
 NavBar.propTypes = {
-    config: PropTypes.shape({
-        enableDatasetImport: PropTypes.bool,
-    }),
     user: PropTypes.object.isRequired,
     workingOn: PropTypes.shape({
         id: PropTypes.string.isRequired,

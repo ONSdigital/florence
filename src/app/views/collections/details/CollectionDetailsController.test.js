@@ -1,7 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
 import { CollectionDetailsController, mapStateToProps } from "./CollectionDetailsController";
-import CollectionDetails from "./CollectionDetails";
 import collections from "../../../utilities/api-clients/collections";
 import notifications from "../../../utilities/notifications";
 import { UPDATE_PAGES_IN_ACTIVE_COLLECTION, UPDATE_ACTIVE_COLLECTION } from "../../../config/constants";
@@ -94,7 +93,6 @@ const defaultProps = {
         dispatchedActions.push(action);
     },
     rootPath: "/florence",
-    enableDatasetImport: false,
     routes: [{}],
     collectionID: undefined,
     activePageURI: undefined,
@@ -403,9 +401,7 @@ describe("Map state to props function", () => {
                 ],
             },
             rootPath: "/florence",
-            config: {
-                enableDatasetImport: false,
-            },
+            config: {},
         },
         routing: {
             locationBeforeTransitions: {
@@ -643,36 +639,6 @@ describe("Edit Homepage functionality", () => {
             },
         };
         const component = shallow(<CollectionDetailsController {...props} />);
-    });
-});
-
-describe("Dataset import functionality", () => {
-    it("disabled in collection details when disabled in global config", () => {
-        const props = {
-            ...defaultProps,
-            collectionID: "test-collection-12345",
-            activeCollection: {
-                id: "test-collection-12345",
-            },
-            enableDatasetImport: false,
-        };
-        const component = shallow(<CollectionDetailsController {...props} />);
-
-        expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(false);
-    });
-
-    it("enabled in collection details when enabled in global config", () => {
-        const props = {
-            ...defaultProps,
-            collectionID: "test-collection-12345",
-            activeCollection: {
-                id: "test-collection-12345",
-            },
-            enableDatasetImport: true,
-        };
-        const component = shallow(<CollectionDetailsController {...props} />);
-
-        expect(component.find(CollectionDetails).props().enableDatasetImport).toBe(true);
     });
 });
 

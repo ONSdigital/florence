@@ -245,12 +245,10 @@ describe("Store", () => {
                 })
             );
 
-            expect(store.getState().state.config.enableDatasetImport).toEqual(false);
             expect(store.getState().state.config.enablePermissionsAPI).toEqual(false);
 
-            store.dispatch(actions.setConfig({ enableDatasetImport: true, enablePermissionsAPI: true }));
+            store.dispatch(actions.setConfig({ enablePermissionsAPI: true }));
 
-            expect(store.getState().state.config.enableDatasetImport).toEqual(true);
             expect(store.getState().state.config.enablePermissionsAPI).toEqual(true);
         });
     });
@@ -326,9 +324,6 @@ describe("Store", () => {
                         all: users,
                         active: users[0],
                     },
-                    config: {
-                        enableDatasetImport: true,
-                    },
                     groups: {
                         active: {},
                         all: groups,
@@ -349,7 +344,6 @@ describe("Store", () => {
         expect(selectors.getGroups(store.getState().state).length).toEqual(groups.length);
         expect(selectors.getNotifications(store.getState().state).length).toEqual(notifications.length);
         expect(store.getState().state.popouts.length).toEqual(popouts.length);
-        expect(store.getState().state.config.enableDatasetImport).toEqual(true);
 
         store.dispatch(actions.reset());
 
@@ -362,6 +356,5 @@ describe("Store", () => {
         // should do no changes
         expect(selectors.getNotifications(store.getState().state).length).toEqual(notifications.length);
         expect(store.getState().state.popouts.length).toEqual(2);
-        expect(store.getState().state.config.enableDatasetImport).toEqual(true);
     });
 });

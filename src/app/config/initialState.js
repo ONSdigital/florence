@@ -8,7 +8,6 @@ export const initialState = {
     },
     config: {
         allowedExternalPaths: [],
-        enableDatasetImport: false,
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableCantabularJourney: false,

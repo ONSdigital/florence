@@ -4,7 +4,6 @@ import { Link } from "react-router";
 import { connect } from "react-redux";
 import { push } from "react-router-redux";
 
-import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import Page from "../../../components/page/Page";
 import date from "../../../utilities/date";
@@ -38,7 +37,6 @@ const propTypes = {
     id: PropTypes.string.isRequired,
     activePageURI: PropTypes.string,
     name: PropTypes.string,
-    enableDatasetImport: PropTypes.bool,
     onClose: PropTypes.func.isRequired,
     onPageClick: PropTypes.func.isRequired,
     onEditPageClick: PropTypes.func.isRequired,

@@ -19,7 +19,6 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string,
     }),
-    enableDatasetImport: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
@@ -60,26 +59,15 @@ export class PreviewController extends Component {
             .then(async collection => {
                 let pages = [];
                 const nonDatasetPages = await this.mapPages([...collection.inProgress, ...collection.complete, ...collection.reviewed]);
-                if (this.props.enableDatasetImport) {
-                    const datasetPages = [...collection.datasetVersions, ...collection.datasets];
-                    pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
-                    this.props.dispatch(
-                        addPreviewCollection({
-                            collectionID,
-                            name: collection.name,
-                            pages,
-                        })
-                    );
-                } else {
-                    pages = nonDatasetPages;
-                    this.props.dispatch(
-                        addPreviewCollection({
-                            collectionID,
-                            name: collection.name,
-                            pages,
-                        })
-                    );
-                }
+                const datasetPages = [...collection.datasetVersions, ...collection.datasets];
+                pages = nonDatasetPages.concat(this.mapDatasetPages(datasetPages));
+                this.props.dispatch(
+                    addPreviewCollection({
+                        collectionID,
+                        name: collection.name,
+                        pages,
+                    })
+                );
                 if (!this.props.workingOn || !this.props.workingOn.name) {
                     this.props.dispatch(updateWorkingOn(collectionID, collection.name));
                 }
@@ -182,7 +170,6 @@ export function mapStateToProps(state) {
         selectedPageUri: state.state.preview.selectedPage,
         workingOn: state.state.global.workingOn,
         rootPath: state.state.rootPath,
-        enableDatasetImport: state.state.config.enableDatasetImport,
         previewLanguage: getPreviewLanguage(state.state),
     };
 }
