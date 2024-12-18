@@ -52,7 +52,7 @@ func Get() (*Config, error) {
 		EnableWagtailProxy:   false,
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
-			EnableNewUpload:         true,
+			EnableNewUpload:         false,
 			EnablePermissionsAPI:    false,
 			EnableCantabularJourney: false,
 			EnableDataAdmin:         true,
