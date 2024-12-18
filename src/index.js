@@ -168,7 +168,6 @@ const Index = () => {
                                     <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
                                 </Route>
                             </Route>
-                            <Route path="datasets/create" component={userIsAuthenticated(Collections)} />
                         </Route>
                     </Route>
                     <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))} />
