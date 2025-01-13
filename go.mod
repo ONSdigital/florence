@@ -2,12 +2,6 @@ module github.com/ONSdigital/florence
 
 go 1.21
 
-// to fix: [CVE-2023-32731]
-replace google.golang.org/grpc => google.golang.org/grpc v1.58.2
-
-// To fix: [CVE-2024-24786] CWE-835: Loop with Unreachable Exit Condition ('Infinite Loop')
-replace google.golang.org/protobuf => google.golang.org/protobuf v1.33.0
-
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.260.0
 	github.com/ONSdigital/dp-component-test v0.9.0
@@ -27,6 +21,7 @@ require (
 	github.com/pkg/errors v0.9.1
 	github.com/smartystreets/goconvey v1.8.1
 	github.com/stretchr/testify v1.8.4
+	google.golang.org/protobuf v1.33.0
 )
 
 require (
