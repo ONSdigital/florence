@@ -60,8 +60,6 @@ export class LoginController extends Component {
                 // Session
                 const { session_expiry_time, refresh_expiry_time } = createDefaultExpireTimes(12);
                 SessionManagement.setSessionExpiryTime(session_expiry_time, refresh_expiry_time);
-                updateAuthState({ session_expiry_time: session_expiry_time });
-                updateAuthState({ refresh_expiry_time: refresh_expiry_time });
                 // Get perms
                 user.getPermissions()
                     .then(userType => {

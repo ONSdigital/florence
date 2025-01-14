@@ -69,16 +69,13 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
 
                 if (status === 401) {
                     if (config.enableNewSignIn) {
-                        // Attempt to get a new refresh the access_token
-                        const authState = getAuthState();
-                        const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
+                        // Attempt to get a new refresh the access_toke
                         user.renewSession()
                             .then(res => {
                                 // update the authState, start the session timer with the next session response value
                                 // & restart the refresh timer with the existing refresh value.
                                 const expirationTime = convertUTCToJSDate(fp.get("expirationTime")(res));
                                 SessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
-                                store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
                                 // Retry the resource request with new access_token
                                 tryFetch(resolve, reject, URI, willRetry, body, returnResponseHeaders);
                             })

@@ -127,9 +127,11 @@ const logoutUser = async () => {
 
 
 const sessionConfig = {
-    onRenewSuccess: expirationTime => {
-        const refresh_expiry_time = fp.get("refresh_expiry_time")(getAuthState());
-        store.dispatch(startRefeshAndSession(refresh_expiry_time, expirationTime));
+    onRenewSuccess: (sessionExpiryTime, refreshExpiryTime) => {
+        store.dispatch(startRefeshAndSession(refreshExpiryTime, sessionExpiryTime));
+    },
+    onSessionValid: (sessionExpiryTime, refreshExpiryTime) => {
+        store.dispatch(startRefeshAndSession(refreshExpiryTime, sessionExpiryTime));
     },
 };
 

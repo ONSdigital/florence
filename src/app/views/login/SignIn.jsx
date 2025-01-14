@@ -75,13 +75,11 @@ export class LoginController extends Component {
                         let expirationTime = convertUTCToJSDate(fp.get("body.expirationTime")(response));
                         let refreshTokenExpirationTime = convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
                         // Subtract 14 minutes from expirationTime
-                        // expirationTime = new Date(expirationTime.getTime() - 14 * 60 * 1000);
+                        // expirationTime = new Date(expirationTime.getTime() - 10 * 60 * 1000);
                         // Subtract 11 hours and 58 minutes from refreshTokenExpirationTime
                         // const timeToSubtract = (11 * 60 + 58) * 60 * 1000; // 11 hours and 58 minutes in milliseconds
                         // refreshTokenExpirationTime = new Date(refreshTokenExpirationTime.getTime() - timeToSubtract);
                         SessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
-                        updateAuthState({ session_expiry_time: expirationTime });
-                        updateAuthState({ refresh_expiry_time: refreshTokenExpirationTime });
                     }
                     this.setState(
                         {
@@ -290,8 +288,6 @@ export class LoginController extends Component {
             console.debug("[FLORENCE] passwordChangeSuccess: ", response);
             // TODO convert to UTC
             SessionManagement.setSessionExpiryTime(response.expirationTime, response.refreshTokenExpirationTime);
-            updateAuthState({ session_expiry_time: response.expirationTime });
-            updateAuthState({ refresh_expiry_time: response.refreshTokenExpirationTime });
             this.setState({
                 status: status.SUBMITTED_PASSWORD_CHANGE,
             });

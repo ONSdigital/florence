@@ -36,10 +36,7 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
         if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
             const enableNewSignIn = fp.get("config.enableNewSignIn")(props);
-            const authState = getAuthState(); // Get the latest authState
-            const session_expiry_time = fp.get("session_expiry_time")(authState);
-            const refresh_expiry_time = new Date(fp.get("refresh_expiry_time")(authState));
-            if (isSessionExpired(session_expiry_time)) {
+            if (isSessionExpired()) {
                 if (enableNewSignIn) {
                     console.debug("Timers / enableNewSignIn: requesting a new access_token");
                     user.renewSession()
@@ -47,10 +44,7 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
                             // update the authState, start the session timer with the nest session response value
                             // & restart the refresh timer with the existing refresh value.
                             const expirationTime = convertUTCToJSDate(fp.get("expirationTime")(res));
-                            SessionManagement.initialiseSessionExpiryTimers(expirationTime, refresh_expiry_time);
-                            updateAuthState({ session_expiry_time: expirationTime });
-                            updateAuthState({ refresh_expiry_time: refresh_expiry_time });
-                            dispatch(startRefeshAndSession(fp.get("refresh_expiry_time")(authState), expirationTime));
+                            SessionManagement.initialiseSessionExpiryTimers(expirationTime, null);
                         })
                         .catch(err => console.error(err));
                 } else {
@@ -58,27 +52,18 @@ export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
                     // If we are not behind the enableNewSignIn then just extend the session & refresh for 12 hours
                     const expireTimes = createDefaultExpireTimes(12);
                     SessionManagement.initialiseSessionExpiryTimers(expireTimes.session_expiry_time, expireTimes.refresh_expiry_time);
-                    updateAuthState({ session_expiry_time: expireTimes.session_expiry_time });
-                    updateAuthState({ refresh_expiry_time: expireTimes.refresh_expiry_time });
                 }
             } else {
                 if (enableNewSignIn) {
                     console.debug("[FLORENCE] Timers: starting timers");
                     // The user has refreshed the page but the session is not expired, so just restart the timers
                     // for both refresh & session.
-                    const session_expiry_time = fp.get("session_expiry_time")(authState);
-                    SessionManagement.initialiseSessionExpiryTimers(new Date(session_expiry_time), refresh_expiry_time);
-                    updateAuthState({ session_expiry_time: session_expiry_time });
-                    updateAuthState({ refresh_expiry_time: refresh_expiry_time });
-                    dispatch(startRefeshAndSession(fp.get("refresh_expiry_time")(authState), session_expiry_time));
+                    SessionManagement.initialiseSessionExpiryTimers();
                 } else {
                     console.debug("[FLORENCE] Timers: starting timers");
                     // The user has refreshed the page but the session is not expired, so just restart the timers
                     // for both refresh & session.
-                    const session_expiry_time = fp.get("session_expiry_time")(authState);
-                    SessionManagement.initialiseSessionExpiryTimers(new Date(session_expiry_time), null);
-                    updateAuthState({ session_expiry_time: session_expiry_time });
-                    dispatch(startRefeshAndSession(null, session_expiry_time));
+                    SessionManagement.initialiseSessionExpiryTimers();
                 }
             }
         }
