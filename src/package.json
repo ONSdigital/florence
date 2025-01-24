@@ -97,6 +97,7 @@
     "acorn": "^8.4.1",
     "auditjs": "^4.0.37",
     "dateformat": "^2.0.0",
+    "dis-authorisation-client-js": "^0.2.0",
     "dp-table-builder-ui": "^1.1.2",
     "is-empty-object": "^1.1.1",
     "jest-snapshot": "^27.4.2",
