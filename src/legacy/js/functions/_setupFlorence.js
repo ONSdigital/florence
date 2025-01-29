@@ -1,4 +1,4 @@
-function setupFlorence() {
+async function setupFlorence() {
     websocket.open();
     log.add(log.eventTypes.appInitialised);
 
@@ -147,12 +147,30 @@ function setupFlorence() {
     // ---------------------------------------------------
     // Auth / Timers
     // ---------------------------------------------------
-    Florence.sessionManagement = {
-        timers: {}
-    };
-    // Check local state to get ons_auth_state and the expiry times within &
-    // if access token has expired (based on time in auth state object then refresh it
-    initialiseSessionOrUpdateTimers();
+    const { default: SessionManagement, isSessionExpired } = window.disAuthClient;
+    SessionManagement.init();
+
+    const isValid = await isSessionExpired()
+    if (isValid) {
+        console.debug("[FLORENCE] Timers : requesting a new access_token");
+        renewSession()
+            .then(res => {
+                if (res) {
+                    console.debug("[FLORENCE] Updating access_token & session timer: ", res)
+                    // update the authState, start the session timer with the next session response value
+                    // & restart the refresh timer with the existing refresh value.
+                    const expirationTime = res.expirationTime;
+                    SessionManagement.setSessionExpiryTime(expirationTime);
+                }
+            })
+            .catch(err => console.error("[FLORENCE]: ", err));
+    } else {
+        console.debug("[FLORENCE] Timers: maintaining existing session & restarting timers");
+        // The user has refreshed the page but the session is not expired, so just restart the timers
+        // for both refresh & session.
+        SessionManagement.setSessionExpiryTime();
+    }
+
     // ---------------------------------------------------
 
     var adminMenu = $('.js-nav');
@@ -437,4 +455,15 @@ function setupFlorence() {
     //     }
     //     trimInputWhitespace($(this));
     // });
+}
+
+function renewSession() {
+    const res = fetch("/tokens/self", { method: "PUT", headers: { "Content-Type": "application/json" } })
+        .then(function (res) {
+            return res.json();
+        })
+        .catch(function (err) {
+            console.error(err);
+        });
+    return res;
 }
