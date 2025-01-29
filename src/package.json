@@ -16,7 +16,10 @@
     "globals": {
       "window": true
     },
-    "testURL": "http://localhost"
+    "testURL": "http://localhost",
+    "transformIgnorePatterns": [
+      "../node_modules/(?!(dis-authorisation-client-js)/)"
+    ]
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",
