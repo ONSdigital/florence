@@ -52,15 +52,28 @@ import Security from "./app/views/security";
 import EditGroup from "./app/views/groups/edit"
 import RedirectView from "./app/components/redirect-view";
 
+import SessionManagement from "dis-authorisation-client-js";
+import { startRefeshAndSession } from "./app/config/user/userActions";
+
 import { browserHistory } from "react-router";
 import user from "./app/utilities/api-clients/user";
-import handleRedirect from "./app/utilities/redirect";
 
 const config = window.getEnv();
 store.dispatch(setConfig(config));
 
 const rootPath = store.getState().state.rootPath;
 const allowedExternalRedirects = config.allowedExternalPaths;
+
+const sessionConfig = {
+    onRenewSuccess: (sessionExpiryTime, refreshExpiryTime) => {
+        store.dispatch(startRefeshAndSession(refreshExpiryTime, sessionExpiryTime));
+    },
+    onSessionValid: (sessionExpiryTime, refreshExpiryTime) => {
+        store.dispatch(startRefeshAndSession(refreshExpiryTime, sessionExpiryTime));
+    },
+};
+
+SessionManagement.init(sessionConfig);
 
 const userIsAuthenticated = connectedReduxRedirect({
     authenticatedSelector: state => {

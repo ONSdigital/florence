@@ -5,7 +5,7 @@ import { userLoggedIn, userLoggedOut } from "../../config/user/userActions";
 import cookies from "../cookies";
 import notifications from "../notifications";
 import log from "../logging/log";
-import sessionManagement from "../sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
 import { removeAuthState, setAuthState } from "../auth";
 
@@ -226,7 +226,7 @@ export default class user {
             })
             .finally(() => {
                 clearCookies();
-                sessionManagement.removeTimers();
+                SessionManagement.removeTimers();
             });
     }
 

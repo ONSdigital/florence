@@ -9,9 +9,9 @@ import user from "../../utilities/api-clients/user";
 import log from "../../utilities/logging/log";
 import ChangePasswordController from "../new-password/changePasswordController";
 import ChangePasswordConfirmed from "../new-password/changePasswordConfirmed";
-import sessionManagement from "../../utilities/sessionManagement";
+import SessionManagement from "dis-authorisation-client-js";
 import { status } from "../../constants/Authentication";
-import { updateAuthState, setAuthState } from "../../utilities/auth";
+import { setAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 import handleRedirect from "../../utilities/redirect";
 
@@ -71,9 +71,9 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
-                        const expirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.expirationTime")(response));
-                        const refreshTokenExpirationTime = sessionManagement.convertUTCToJSDate(fp.get("body.refreshTokenExpirationTime")(response));
-                        sessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
+                        const expirationTime = fp.get("body.expirationTime")(response);
+                        const refreshTokenExpirationTime = fp.get("body.refreshTokenExpirationTime")(response);
+                        SessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
                     }
                     this.setState(
                         {
@@ -281,7 +281,7 @@ export class LoginController extends Component {
         if (response) {
             console.debug("[FLORENCE] passwordChangeSuccess: ", response);
             // TODO convert to UTC
-            sessionManagement.setSessionExpiryTime(response.expirationTime, response.refreshTokenExpirationTime);
+            SessionManagement.setSessionExpiryTime(response.expirationTime, response.refreshTokenExpirationTime);
             this.setState({
                 status: status.SUBMITTED_PASSWORD_CHANGE,
             });
