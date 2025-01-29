@@ -8,11 +8,14 @@ module.exports = {
     devtool: isProduction ? false :'source-map',
     entry: {
         app: ['./index.js'],
-        tablebuilder: './tablebuilder/tablebuilder.js'
+        tablebuilder: './tablebuilder/tablebuilder.js',
+        disAuthClient: 'dis-authorisation-client-js'
     },
     output: {
         path: path.resolve(__dirname, '../dist'),
         filename: 'js/[name].bundle.js',
+        library: 'disAuthClient',
+        libraryTarget: 'window',
     },
     resolve: {
         fallback: {
