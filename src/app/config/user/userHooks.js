@@ -30,23 +30,27 @@ export const useGetPermissions = (props, authState, setShouldUpdateAccessToken) 
 
 export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
     useEffect(() => {
-        if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
-            if (isSessionExpired()) {
-                console.debug("Timers : requesting a new access_token");
-                user.renewSession()
-                    .then(res => {
-                        // update the authState, start the session timer with the nest session response value
-                        // & restart the refresh timer with the existing refresh value.
-                        const expirationTime = fp.get("expirationTime")(res);
-                        SessionManagement.initialiseSessionExpiryTimers(expirationTime);
-                    })
-                    .catch(err => console.error(err));
-            } else {
-                console.debug("[FLORENCE] Timers: starting timers");
-                // The user has refreshed the page but the session is not expired, so just restart the timers
-                // for both refresh & session.
-                SessionManagement.initialiseSessionExpiryTimers();
+        const updateTimers = async () => {
+            if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
+                if (await isSessionExpired()) {
+                    console.debug("[FLORENCE] Timers : requesting a new access_token");
+                    user.renewSession()
+                        .then(res => {
+                            // update the authState, start the session timer with the new session response value
+                            // & restart the refresh timer with the existing refresh value.
+                            const expirationTime = fp.get("expirationTime")(res);
+                            SessionManagement.initialiseSessionExpiryTimers(expirationTime);
+                        })
+                        .catch(err => console.error(err));
+                } else {
+                    console.debug("[FLORENCE] Timers: starting timers");
+                    // The user has refreshed the page but the session is not expired, so just restart the timers
+                    // for both refresh & session.
+                    SessionManagement.initialiseSessionExpiryTimers();
+                }
             }
-        }
+        };
+
+        updateTimers();
     }, [sessionTimerIsActive]);
 };
