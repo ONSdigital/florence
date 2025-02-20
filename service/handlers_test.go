@@ -242,7 +242,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":["/test/path","/another/test/path"],"apiRouterVersion":'v1',"enableNewUpload":true,"enablePermissionsAPI":true,"enableCantabularJourney":true,"enableDataAdmin":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":["/test/path","/another/test/path"],"apiRouterVersion":"v1","enableNewUpload":true,"enablePermissionsAPI":true,"enableCantabularJourney":true,"enableDataAdmin":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -271,7 +271,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":'v1',"enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
 
 		})
 
@@ -282,7 +282,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":'v1',"enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
 		})
 
 	})
