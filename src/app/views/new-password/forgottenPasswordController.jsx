@@ -10,6 +10,8 @@ const propTypes = {
     // dispatch: PropTypes.func.isRequired, // not used, can we remove?
 };
 
+const API_PROXY_PATH = `/api/${window.getEnv().apiRouterVersion}`;
+
 export class ForgottenPasswordController extends Component {
     constructor(props) {
         super(props);
@@ -102,7 +104,7 @@ export class ForgottenPasswordController extends Component {
     }
 
     postResetPassword(body) {
-        return http.post("/password-reset", body, true, true);
+        return http.post(`${API_PROXY_PATH}/password-reset`, body, true, true);
     }
 
     requestEmailChange(email) {
