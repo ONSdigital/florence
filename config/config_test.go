@@ -29,6 +29,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 				EnableNewUpload:         false,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,
+				APIRouterVersion:        "v1",
 			},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,

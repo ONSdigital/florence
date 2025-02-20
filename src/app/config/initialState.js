@@ -8,6 +8,7 @@ export const initialState = {
     },
     config: {
         allowedExternalPaths: [],
+        apiRouterVersion: "v1",
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableCantabularJourney: false,

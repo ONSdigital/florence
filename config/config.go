@@ -26,6 +26,7 @@ type Config struct {
 // SharedConfig represents the configuration made available to the client-side application from the server
 type SharedConfig struct {
 	AllowedExternalPaths    []string `envconfig:"ALLOWED_EXTERNAL_PATHS" json:"allowedExternalPaths"`
+	APIRouterVersion        string   `envconfig:"API_ROUTER_VERSION" json:"apiRouterVersion"`
 	EnableNewUpload         bool     `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
 	EnablePermissionsAPI    bool     `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 	EnableCantabularJourney bool     `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
@@ -52,6 +53,7 @@ func Get() (*Config, error) {
 		EnableWagtailProxy:   false,
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
+			APIRouterVersion:        "v1",
 			EnableNewUpload:         false,
 			EnablePermissionsAPI:    false,
 			EnableCantabularJourney: false,
