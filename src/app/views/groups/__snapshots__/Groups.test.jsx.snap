@@ -74,7 +74,7 @@ exports[`Groups matches the snapshot with empty props 1`] = `
         <a
           class="btn btn--positive"
           download="20171006-1445-groups-report"
-          href="/groups-report"
+          href="/api/v1/groups-report"
         >
           Export teams report
         </a>
@@ -168,7 +168,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         <a
           class="btn btn--positive"
           download="20171006-1445-groups-report"
-          href="/groups-report"
+          href="/api/v1/groups-report"
         >
           Export teams report
         </a>

@@ -26,10 +26,10 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			EnableWagtailProxy:   false,
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
+				APIRouterVersion:        "v1",
 				EnableNewUpload:         false,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,
-				APIRouterVersion:        "v1",
 			},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,

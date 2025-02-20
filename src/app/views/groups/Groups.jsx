@@ -13,6 +13,7 @@ const Groups = props => {
     const { groups, isLoading, loadTeams } = props;
     const [search, setSearch] = useInput("");
     const isAdmin = props.loggedInUser.isAdmin || false;
+    const API_PROXY_PATH = `/api/${window.getEnv().apiRouterVersion}`;
 
     useEffect(() => {
         loadTeams();
@@ -51,7 +52,7 @@ const Groups = props => {
                                 <a
                                     class="btn btn--positive"
                                     download={`${date.format(Date.now(), "yyyymmdd-HHMM")}-groups-report`}
-                                    href="/groups-report"
+                                    href={`${API_PROXY_PATH}/groups-report`}
                                 >
                                     Export teams report
                                 </a>{" "}

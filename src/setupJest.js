@@ -24,5 +24,7 @@ Object.defineProperty(document, 'getElementById', {
 
 Object.defineProperty(window, 'getEnv', {
     writable: true,
-    value: jest.fn().mockImplementation(() => { }),
+    value: jest.fn().mockImplementation(() => ({
+        apiRouterVersion: "v1",
+    })),
 });
