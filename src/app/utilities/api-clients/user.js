@@ -142,12 +142,12 @@ export default class user {
     }
 
     static signIn(body) {
-        return http.post("/tokens", body, true, true, true);
+        return http.post(`${API_PROXY_PATH}/tokens`, body, true, true, true);
     }
 
     // TODO: new auth work
     static deleteTokens() {
-        return http.delete("/tokens");
+        return http.delete(`${API_PROXY_PATH}/tokens`);
     }
 
     static setForgottenPassword(body) {
@@ -155,11 +155,11 @@ export default class user {
     }
 
     static renewSession(body) {
-        return http.put("/tokens/self", body, true, false);
+        return http.put(`${API_PROXY_PATH}/tokens/self`, body, true, false);
     }
 
     static expireSession() {
-        return http.delete("/tokens/self", true, true);
+        return http.delete(`${API_PROXY_PATH}/tokens/self`, true, true);
     }
 
     // This is a temporary fix for 925: Login fails after going from new login to old login
