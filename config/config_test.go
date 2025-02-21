@@ -17,7 +17,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 		So(configuration, ShouldResemble, &Config{
 			BindAddr:             ":8080",
 			APIRouterURL:         "http://localhost:23200",
-			APIRouterVersion:     "v1",
 			FrontendRouterURL:    "http://localhost:20000",
 			DatasetControllerURL: "http://localhost:24000",
 			TableRendererURL:     "http://localhost:23300",

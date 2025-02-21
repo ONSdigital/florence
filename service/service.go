@@ -123,18 +123,18 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
 	dataAdminProxy := reverseproxy.Create(dataAdminURL, directors.Director("/data-admin"), nil)
 	wagtailProxy := reverseproxy.Create(wagtailURL, directors.Director("/wagtail"), nil)
-	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
-	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/import"), nil)
-	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/dataset"), nil)
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	topicsProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, "/image"), nil)
-	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
+	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
+	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
+	topicsProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
+	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/image"), nil)
+	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
+	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
+	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	// End of deprecated proxies
 
 	router = mux.NewRouter()
