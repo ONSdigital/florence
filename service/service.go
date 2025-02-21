@@ -118,7 +118,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	}
 
 	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
-	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier)
+	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier(cfg.SharedConfig.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
 	dataAdminProxy := reverseproxy.Create(dataAdminURL, directors.Director("/data-admin"), nil)
@@ -135,7 +135,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
 	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), nil)
-	identityAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.APIRouterVersion, ""), modifiers.IdentityResponseModifier)
 	// End of deprecated proxies
 
 	router = mux.NewRouter()
@@ -159,17 +158,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	if cfg.SharedConfig.EnableCantabularJourney {
 		router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
 	}
-
-	// auth endpoints
-	router.Handle("/tokens", identityAPIProxy)
-	router.Handle("/tokens/{uri:.*}", identityAPIProxy)
-	router.Handle("/users", identityAPIProxy)
-	router.Handle("/users/{uri:.*}", identityAPIProxy)
-	router.Handle("/groups/{uri:.*}", identityAPIProxy)
-	router.Handle("/groups", identityAPIProxy)
-	router.Handle("/groups-report", identityAPIProxy)
-	router.Handle("/password-reset", identityAPIProxy)
-	router.Handle("/password-reset/{uri:.*}", identityAPIProxy)
 
 	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)

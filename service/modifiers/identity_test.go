@@ -12,7 +12,7 @@ import (
 )
 
 func TestIdentityResponseModifier(t *testing.T) {
-
+	const apiRouterVersion = "v1"
 	Convey("Given a response that was successful and all headers are present, all 'set-cookie' headers should"+
 		" be set", t, func() {
 		initialHeaders := http.Header{
@@ -27,11 +27,11 @@ func TestIdentityResponseModifier(t *testing.T) {
 			Request: &http.Request{
 				Method: http.MethodPut,
 				URL: &url.URL{
-					Path: "/tokens/self",
+					Path: "/api/v1/tokens/self",
 				},
 			},
 		}
-		err := modifiers.IdentityResponseModifier(inBoundResponse)
+		err := modifiers.IdentityResponseModifier(apiRouterVersion)(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		var refreshTokenHeader string
 		var idTokenHeader string
@@ -51,7 +51,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 		So(err, ShouldBeNil)
 		So(userAuthTokenHeader, ShouldEqual, "access_token=foo; Path=/; HttpOnly; Secure; SameSite=Strict")
 		So(idTokenHeader, ShouldEqual, "id_token=bar; Path=/; Secure; SameSite=Lax")
-		So(refreshTokenHeader, ShouldEqual, "refresh_token=baz; Path=/tokens/self; HttpOnly; Secure; SameSite=Strict")
+		So(refreshTokenHeader, ShouldEqual, "refresh_token=baz; Path=/api/v1/tokens/self; HttpOnly; Secure; SameSite=Strict")
 	})
 	Convey("Given a response that was unsuccessful do not set the set-cookie headers", t, func() {
 		initialHeaders := http.Header{
@@ -66,11 +66,11 @@ func TestIdentityResponseModifier(t *testing.T) {
 			Request: &http.Request{
 				Method: http.MethodPut,
 				URL: &url.URL{
-					Path: "/tokens/self",
+					Path: "/api/v1/tokens/self",
 				},
 			},
 		}
-		err := modifiers.IdentityResponseModifier(inBoundResponse)
+		err := modifiers.IdentityResponseModifier(apiRouterVersion)(inBoundResponse)
 		cookieValues := inBoundResponse.Header.Values("Set-Cookie")
 		So(err, ShouldBeNil)
 		So(cookieValues, ShouldBeNil)

@@ -1,6 +1,7 @@
 package modifiers
 
 import (
+	"fmt"
 	"net/http"
 	"regexp"
 	"time"
@@ -17,26 +18,30 @@ type Permission struct {
 
 // Edits the response before proxying it back.
 // If Auth tokens are present then set them as cookies
-func IdentityResponseModifier(r *http.Response) error {
-	if r.Request.Method == http.MethodDelete {
-		// regex, may be /v1/tokens/self where value after 'v' could be any positive integer
-		tokenSelfPathRegex := "^/v\\d+/tokens/self$"
-		matched, err := regexp.MatchString(tokenSelfPathRegex, r.Request.URL.Path)
-		if err != nil {
-			log.Event(r.Request.Context(), "failed to run regex on request path", log.Error(err), log.ERROR)
-		}
-		if matched {
-			// Attempt to delete cookies even if the response upstream was a fail
-			deleteAuthCookies(r)
-		}
-	} else if r.StatusCode >= http.StatusOK && r.StatusCode < http.StatusMultipleChoices {
-		setAuthCookies(r)
-	}
+func IdentityResponseModifier(apiRouterVersion string) func(r *http.Response) error {
+	refreshTokenPath := fmt.Sprintf("/api/%s/tokens/self", apiRouterVersion)
 
-	return nil
+	return func(r *http.Response) error {
+		if r.Request.Method == http.MethodDelete {
+			// regex, may be /v1/tokens/self where value after 'v' could be any positive integer
+			tokenSelfPathRegex := "^/v\\d+/tokens/self$"
+			matched, err := regexp.MatchString(tokenSelfPathRegex, r.Request.URL.Path)
+			if err != nil {
+				log.Event(r.Request.Context(), "failed to run regex on request path", log.Error(err), log.ERROR)
+			}
+			if matched {
+				// Attempt to delete cookies even if the response upstream was a fail
+				deleteAuthCookies(r, refreshTokenPath)
+			}
+		} else if r.StatusCode >= http.StatusOK && r.StatusCode < http.StatusMultipleChoices {
+			setAuthCookies(r, refreshTokenPath)
+		}
+
+		return nil
+	}
 }
 
-func setAuthCookies(r *http.Response) {
+func setAuthCookies(r *http.Response, refreshTokenPath string) {
 	domain := r.Request.Header.Get("X-Forwarded-Host")
 	if r.Header.Get("Authorization") != "" {
 		cookieUser := &http.Cookie{
@@ -70,7 +75,7 @@ func setAuthCookies(r *http.Response) {
 		cookieRefresh := &http.Cookie{
 			Name:     "refresh_token",
 			Value:    r.Header.Get("Refresh"),
-			Path:     "/tokens/self",
+			Path:     refreshTokenPath,
 			Domain:   domain,
 			HttpOnly: true,
 			Secure:   true,
@@ -80,7 +85,7 @@ func setAuthCookies(r *http.Response) {
 		r.Header.Add("Set-Cookie", refreshTokenCookie)
 	}
 }
-func deleteAuthCookies(r *http.Response) {
+func deleteAuthCookies(r *http.Response, refreshTokenPath string) {
 	domain := r.Request.Header.Get("X-Forwarded-Host")
 
 	// Expires all auth related tokens by replacing them
@@ -98,7 +103,7 @@ func deleteAuthCookies(r *http.Response) {
 	cookieId := &http.Cookie{
 		Name:     "refresh_token",
 		Value:    "",
-		Path:     "/tokens/self",
+		Path:     refreshTokenPath,
 		Domain:   domain,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
