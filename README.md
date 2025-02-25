@@ -97,6 +97,7 @@ The following environment variables are available when running the Go server.
 
 | Environment variable         | Default                           | Description
 |------------------------------|-----------------------------------|------------
+| API_ROUTER_URL               | <http://localhost:23200> | The URL of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)  
 | BIND_ADDR                    | :8080                             | Host and port to bind to. **Note**: running `make debug` will run Florence on `:8081`
 | ROUTER_URL                   | http://localhost:20000            | URL that the [frontend router](https://github.com/ONSdigital/dp-frontend-router) can be accessed on
 | ZEBEDEE_URL                  | http://localhost:8082             | URL that [Zebedee](https://github.com/ONSdigital/zebedee) can be accessed on
@@ -116,6 +117,7 @@ The following envrionment variables are available when running the Go server and
 | Environment variable      | Default | Description
 |---------------------------|---------|------------
 | ALLOWED_EXTERNAL_PATHS    | []string| Permitted external primary path and subpath from Florence e.g. primary path `/data-admin` allows `/data-admin/*`
+| API_ROUTER_VERSION        | v1      | The version of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)
 | ENABLE_NEW_UPLOAD         | false   | Enables the image upload functionality via static files service
 | ENABLE_PERMISSION_API     | false   |
 | ENABLE_CANTABULAR_JOURNEY | false   | Enables the cantabular journey
