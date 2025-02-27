@@ -25,6 +25,12 @@ export default class notifications {
             return;
         }
 
+        const { notifications = [] } = store.getState().state || {};
+        const isDuplicate = notifications.some(n => n.message === notification.message);
+        if (isDuplicate) {
+            return;
+        }
+
         const config = {
             type: notification.type || "neutral",
             message: notification.message || "",
