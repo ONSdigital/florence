@@ -126,3 +126,17 @@ fit("Does not add duplicate notifications", () => {
 
     mockNotificationsState = [];
 });
+
+test("Remove notification by ID works as expected", () => {
+    const mockNotification = {
+        message: "Remove me",
+    };
+
+    const id = notifications.add(mockNotification);
+    expect(mockNotificationsState.length).toBe(1);
+
+    notifications.remove(id);
+    expect(mockNotificationsState.length).toBe(0);
+
+    mockNotificationsState = [];
+});
