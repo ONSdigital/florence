@@ -78,7 +78,7 @@ test("Button to dismiss notification is added to config correctly and included b
             isDismissable: false,
         },
         {
-            message: "Message 2",
+            message: "Message 3",
             isDismissable: true,
         },
     ];
@@ -111,6 +111,18 @@ test("Click 'dismiss' button removes that notfication from state", () => {
     }, 1000);
 
     jest.runAllTimers();
+
+    mockNotificationsState = [];
+});
+
+fit("Does not add duplicate notifications", () => {
+    const mockNotification = {
+        message: "Duplicate message",
+    };
+
+    notifications.add(mockNotification);
+    notifications.add(mockNotification);
+    expect(mockNotificationsState.length).toBe(1);
 
     mockNotificationsState = [];
 });
