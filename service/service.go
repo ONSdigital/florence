@@ -111,18 +111,11 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		return nil, err
 	}
 
-	wagtailURL, err := url.Parse(cfg.WagtailURL)
-	if err != nil {
-		log.Event(ctx, "error parsing wagtail URL", log.FATAL, log.Error(err))
-		return nil, err
-	}
-
 	frontendRouterProxy := reverseproxy.Create(frontendRouterURL, directors.Director(""), nil)
 	apiRouterProxy := reverseproxy.Create(apiRouterURL, directors.Director("/api"), modifiers.IdentityResponseModifier(cfg.SharedConfig.APIRouterVersion))
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
 	dataAdminProxy := reverseproxy.Create(dataAdminURL, directors.Director("/data-admin"), nil)
-	wagtailProxy := reverseproxy.Create(wagtailURL, directors.Director("/wagtail"), nil)
 	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
@@ -177,10 +170,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	if cfg.SharedConfig.EnableDataAdmin {
 		router.Handle("/data-admin{uri:.*}", dataAdminProxy)
-	}
-
-	if cfg.EnableWagtailProxy {
-		router.Handle("/wagtail{uri:.*}", wagtailProxy)
 	}
 
 	// API and Frontend Routers

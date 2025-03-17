@@ -17,8 +17,6 @@ type Config struct {
 	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
 	HealthCheckCriticalTimeout time.Duration `envconfig:"HEALTHCHECK_CRITICAL_TIMEOUT"`
-	WagtailURL                 string        `envconfig:"WAGTAIL_URL"`
-	EnableWagtailProxy         bool          `envconfig:"ENABLE_WAGTAIL_PROXY"`
 	SharedConfig               SharedConfig
 }
 
@@ -47,8 +45,6 @@ func Get() (*Config, error) {
 		DatasetControllerURL: "http://localhost:24000",
 		TableRendererURL:     "http://localhost:23300",
 		DataAdminURL:         "http://localhost:29400/data-admin",
-		WagtailURL:           "http://localhost:8000/wagtail",
-		EnableWagtailProxy:   false,
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
 			APIRouterVersion:        "v1",

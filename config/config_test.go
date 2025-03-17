@@ -21,8 +21,6 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			DatasetControllerURL: "http://localhost:24000",
 			TableRendererURL:     "http://localhost:23300",
 			DataAdminURL:         "http://localhost:29400/data-admin",
-			WagtailURL:           "http://localhost:8000/wagtail",
-			EnableWagtailProxy:   false,
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
 				APIRouterVersion:        "v1",
