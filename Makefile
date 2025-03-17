@@ -21,7 +21,7 @@ audit-go:
 	go list -m all | nancy sleuth
 
 .PHONY: audit-js
-audit-js: node_modules
+audit-js: node-modules
 	cd src; $(NPM) run audit
 	cd src/legacy; $(NPM) run audit
 
