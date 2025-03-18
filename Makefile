@@ -21,8 +21,14 @@ audit-go:
 	go list -m all | nancy sleuth
 
 .PHONY: audit-js
-audit-js: node-modules
+audit-js: audit-js-react audit-js-legacy
+
+.PHONY: audit-js-react
+audit-js-react: node-modules-react
 	cd src; $(NPM) run audit
+
+.PHONY: audit-js-legacy
+audit-js-legacy: node-modules-legacy
 	cd src/legacy; $(NPM) run audit
 
 .PHONY: build
