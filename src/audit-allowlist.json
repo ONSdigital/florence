@@ -17,10 +17,6 @@
             "reason": "moment@2.18.1 is a dependency of handsontable which we can't upgrade"
         },
         {
-            "id": "CVE-2023-45133",
-            "reason": "indirect dependency of a few babel packages. should be looked at as a seperate ticket. see: https://trello.com/c/alXeUZpI/1918-fix-dependency-issues-with-babel-traverse"
-        },
-        {
             "id": "CVE-2024-4067",
             "reason": "Micromatch, dependency of jest. should be looked at as a seperate ticket. context: https://github.com/micromatch/micromatch/issues/243"
         },
