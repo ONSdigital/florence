@@ -1,4 +1,4 @@
-import handleRedirect from "./redirect";
+import redirect from "./redirect";
 import { browserHistory } from "react-router";
 import { store } from "../config/store";
 
@@ -27,7 +27,7 @@ describe("given call to handleRedirect", () => {
     });
 
     it("when no redirect parameter provided then the default /florence/collections path is returned", () => {
-        handleRedirect();
+        redirect.handle();
         expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
     });
 
@@ -35,25 +35,25 @@ describe("given call to handleRedirect", () => {
         const redirectPath = "/external/path";
         delete window.location;
         window.location = { pathname: "" };
-        handleRedirect(redirectPath);
+        redirect.handle(redirectPath);
         expect(window.location.pathname).toBe(redirectPath);
     });
 
     it("when the redirect parameter is an unknown external path then the default /florence/collections path is returned", () => {
         const redirectPath = "/test/path";
-        handleRedirect(redirectPath);
+        redirect.handle(redirectPath);
         expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
     });
 
     it("when the redirect parameter has a known internal path then the given internal path is returned", () => {
         const redirectPath = "/florence/users";
-        handleRedirect(redirectPath);
+        redirect.handle(redirectPath);
         expect(browserHistory.push).toHaveBeenCalledWith(redirectPath);
     });
 
     it("when the redirect parameter has a unknown internal path then the default /florence/collections path is returned", () => {
         const redirectPath = "/florence/badpath";
-        handleRedirect(redirectPath);
+        redirect.handle(redirectPath);
         expect(browserHistory.push).toHaveBeenCalledWith(defaultPath);
     });
 });
