@@ -13,7 +13,7 @@ import SessionManagement from "dis-authorisation-client-js";
 import { status } from "../../constants/Authentication";
 import { setAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
-import handleRedirect from "../../utilities/redirect";
+import redirect from "../../utilities/redirect";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
@@ -172,7 +172,8 @@ export class LoginController extends Component {
             .then(userType => {
                 setAuthState(userType);
                 user.setUserState(userType);
-                handleRedirect(this.props.location.query.redirect);
+                const redirectPath = redirect.getPath(this.props.location.query);
+                redirect.handle(redirectPath);
             })
             .catch(error => {
                 notifications.add({

@@ -1,23 +1,54 @@
 import { browserHistory } from "react-router";
 import { store } from "../config/store";
-/**
- * Redirects to one of the main views in Florence - chooses whether it needs to redirect to old Florence or route within the new application
- *
- * @param {string} - The path of the view that we want to redirect to
- */
 
-export default function handleRedirect(redirectPath) {
-    if (!redirectPath) {
-        return internalRedirect();
+export default class redirect {
+    /**
+     * handle - chooses whether to redirect internally within Florence or to an external path
+     *
+     * @param {string} string path of the redirect
+     *
+     * @returns {action} performs either an internal or external redirect
+     */
+    static handle(redirectPath) {
+        if (!redirectPath) {
+            return internalRedirect();
+        }
+
+        const config = window.getEnv();
+        const allowedExternalPaths = config.allowedExternalPaths;
+        if (allowedExternalPaths.some(path => redirectPath.startsWith(path))) {
+            return externalRedirect(redirectPath);
+        }
+
+        return internalRedirect(redirectPath);
     }
 
-    const config = window.getEnv();
-    const allowedExternalPaths = config.allowedExternalPaths;
-    if (allowedExternalPaths.some(path => redirectPath.startsWith(path))) {
-        return externalRedirect(redirectPath);
-    }
+    /**
+     * getPath returns the redirect path from the query string with the key 'redirect' or 'next'
+     *
+     * @param {object} query string object
+     *
+     * @returns {string} redirect path
+     */
+    static getPath(queryStr) {
+        if (!queryStr) {
+            return "";
+        }
 
-    return internalRedirect(redirectPath);
+        if (queryStr.redirect && queryStr.next) {
+            return "";
+        }
+
+        if (queryStr.redirect) {
+            return queryStr.redirect;
+        }
+
+        if (queryStr.next) {
+            return queryStr.next;
+        }
+
+        return "";
+    }
 }
 
 function internalRedirect(redirectPath) {

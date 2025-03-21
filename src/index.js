@@ -39,8 +39,6 @@ import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionR
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
 import NotFound from "./app/components/not-found";
-import { errCodes } from "./app/utilities/errorCodes";
-import notifications from "./app/utilities/notifications";
 import UsersList from "./app/views/users";
 import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
@@ -104,20 +102,6 @@ const userIsAdmin = connectedReduxRedirect({
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
 });
-
-const hasRedirect = () => {
-    const redirect = new URLSearchParams(window.location.search).get('redirect');
-    if (redirect) {
-        const notification = {
-            type: "neutral",
-            message: errCodes.SESSION_EXPIRED,
-            isDismissable: true,
-            autoDismiss: 20000,
-        };
-        notifications.add(notification);
-    }
-    return SignInController;
-};
 
 const logoutUser = async () => {
     try {
@@ -210,7 +194,7 @@ const Index = () => {
                     <Route path={`${rootPath}/upload-test`} component={config.enableNewUpload ? userIsAuthenticated(UploadTest) : null} />
                     <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
-                    <Route path={`${rootPath}/login`} component={hasRedirect()} />
+                    <Route path={`${rootPath}/login`} component={SignInController} />
                     <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
                     <Route path={`${rootPath}/forgotten-password`} component={ForgottenPasswordController} />
                     <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
