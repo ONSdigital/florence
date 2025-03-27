@@ -39,14 +39,18 @@ export class LoginController extends Component {
         };
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.isAuthenticated) {
-            if (this.props.location.query.redirect) {
-                this.props.dispatch(push(`${this.props.location.query.redirect}`));
-            } else {
-                this.props.dispatch(push(`${this.props.rootPath}/collections`));
-            }
+    componentDidUpdate(prevProps) {
+        const { isAuthenticated, location, rootPath, dispatch } = this.props;
+        const defaultPath = `${rootPath}/collections`;
+
+        if (!isAuthenticated || isAuthenticated === prevProps.isAuthenticated) {
+            return;
         }
+
+        const { redirect, next } = location.query || {};
+        const redirectPath = redirect && next ? defaultPath : redirect || next || defaultPath;
+
+        dispatch(push(redirectPath));
     }
 
     shouldComponentUpdate(nextProps, nextState) {
