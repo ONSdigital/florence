@@ -1,5 +1,7 @@
 FROM golang:1.23.4-bullseye AS base
 
+RUN git config --global --add safe.directory /go
+
 ENV GOCACHE=/go/.go/cache GOPATH=/go/.go/path TZ=Europe/London
 
 RUN GOBIN=/bin go install github.com/cespare/reflex@latest
