@@ -1,0 +1,1 @@
+CVE-2025-22872  # a vulnerability related to improperly validating the syntactic correctness of input, specifically in a Go module's CGO-related builds using the Apple version of ld on Darwin.
