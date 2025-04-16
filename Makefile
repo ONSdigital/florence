@@ -69,10 +69,10 @@ lint:
 	exit
 
 .PHONY: test
-test: test-npm test-pretty node-modules generate-go-prod test-go
+test: test-npm test-pretty node-modules test-go
 
 .PHONY: test-go
-test-go:
+test-go: generate-go-prod
 	go test -race -cover ./...
 
 .PHONY: test-npm
