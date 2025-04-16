@@ -63,7 +63,7 @@ func (p *Publisher) signOut() {
 
 func (p *Publisher) readResponseCookies() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		cookies, err := network.GetAllCookies().Do(ctx)
+		cookies, err := network.GetCookies().Do(ctx)
 		if err != nil {
 			return err
 		}
