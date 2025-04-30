@@ -11,12 +11,6 @@ export default function reducer(state = initialState, action = {}) {
             return Object.assign({}, state, {
                 taxonomies: action.taxonomies,
             });
-        case types.INTERACTIVE_ERROR:
-            return Object.assign({}, state, {
-                errors: {
-                    msg: action.error.response,
-                },
-            });
         default:
             return state;
     }
