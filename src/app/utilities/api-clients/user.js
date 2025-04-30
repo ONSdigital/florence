@@ -8,8 +8,7 @@ import log from "../logging/log";
 import SessionManagement from "dis-authorisation-client-js";
 import { errCodes as errorCodes, errCodes } from "../errorCodes";
 import { removeAuthState, setAuthState } from "../auth";
-
-const API_PROXY_PATH = `/api/${window.getEnv().apiRouterVersion}`;
+import { API_PROXY } from "./constants";
 
 export default class user {
     static get(email) {
@@ -27,7 +26,7 @@ export default class user {
             queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;
         });
         try {
-            return await http.get(`${API_PROXY_PATH}/users${queryString}`);
+            return await http.get(`${API_PROXY.VERSIONED_PATH}/users${queryString}`);
         } catch (error) {
             if (error.status) {
                 if (error.status >= 400 && error.status < 500) {
@@ -81,34 +80,34 @@ export default class user {
     };
 
     static create(body) {
-        return http.post(`${API_PROXY_PATH}/users`, body);
+        return http.post(`${API_PROXY.VERSIONED_PATH}/users`, body);
     }
 
     // TODO: new auth work
     static getUsers() {
-        return http.get(`${API_PROXY_PATH}/users?sort=forename:asc`);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/users?sort=forename:asc`);
     }
 
     // TODO: new auth work
     static createNewUser(body) {
-        return http.post(`${API_PROXY_PATH}/users`, body);
+        return http.post(`${API_PROXY.VERSIONED_PATH}/users`, body);
     }
 
     static getUser(id) {
-        return http.get(`${API_PROXY_PATH}/users/${id}`);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/users/${id}`);
     }
 
     // TODO: new auth work
     static updateUser(id, body) {
-        return http.put(`${API_PROXY_PATH}/users/${id}`, body);
+        return http.put(`${API_PROXY.VERSIONED_PATH}/users/${id}`, body);
     }
 
     static getUserGroups(id) {
-        return http.get(`${API_PROXY_PATH}/users/${id}/groups`);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/users/${id}/groups`);
     }
 
     static remove(email) {
-        return http.delete(`${API_PROXY_PATH}/users?email=" + ${email}`);
+        return http.delete(`${API_PROXY.VERSIONED_PATH}/users?email=" + ${email}`);
     }
 
     static setPassword(body) {
@@ -142,24 +141,24 @@ export default class user {
     }
 
     static signIn(body) {
-        return http.post(`${API_PROXY_PATH}/tokens`, body, true, true, true);
+        return http.post(`${API_PROXY.VERSIONED_PATH}/tokens`, body, true, true, true);
     }
 
     // TODO: new auth work
     static deleteTokens() {
-        return http.delete(`${API_PROXY_PATH}/tokens`);
+        return http.delete(`${API_PROXY.VERSIONED_PATH}/tokens`);
     }
 
     static setForgottenPassword(body) {
-        return http.put(`${API_PROXY_PATH}/users/self/password`, body, true, true);
+        return http.put(`${API_PROXY.VERSIONED_PATH}/users/self/password`, body, true, true);
     }
 
     static renewSession(body) {
-        return http.put(`${API_PROXY_PATH}/tokens/self`, body, true, false);
+        return http.put(`${API_PROXY.VERSIONED_PATH}/tokens/self`, body, true, false);
     }
 
     static expireSession() {
-        return http.delete(`${API_PROXY_PATH}/tokens/self`, true, true);
+        return http.delete(`${API_PROXY.VERSIONED_PATH}/tokens/self`, true, true);
     }
 
     // This is a temporary fix for 925: Login fails after going from new login to old login
