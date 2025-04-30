@@ -3,7 +3,7 @@
  * @param templateData
  */
 
- async function tags(templateData) {
+async function tags(templateData) {
     var html = templates.tags()
     $('#tags').replaceWith(html);
 
@@ -61,7 +61,7 @@ function formatResponse(response){
 
 async function getTopics(){
     const result = await $.ajax({
-        url: "/topics",
+        url: `${API_PROXY.VERSIONED_PATH}/topics`,
         dataType: 'json',
         crossDomain: true,
     });
@@ -71,7 +71,7 @@ async function getTopics(){
 
 async function getSubTopics(topicID){ 
     const result = await $.ajax({
-        url: "/topics/" + topicID + "/subtopics",
+        url: `${API_PROXY.VERSIONED_PATH}/topics/${topicID}/subtopics`,
         dataType: 'json',
         crossDomain: true,
     });
