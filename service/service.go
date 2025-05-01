@@ -123,7 +123,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
-	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/image"), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	// End of deprecated proxies
@@ -149,7 +148,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
 	}
 
-	router.Handle("/image/{uri:.*}", imageAPIProxy)
 	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 

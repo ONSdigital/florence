@@ -1,6 +1,7 @@
 import http from "../http";
+import { API_PROXY } from "./constants";
 
-const imageAPIURL = "/image";
+const imageAPIURL = `${API_PROXY.VERSIONED_PATH}`;
 
 export default class image {
     static create = body => {
