@@ -275,7 +275,7 @@ class DatasetUploadController extends Component {
                 this.setState({ isUploading: false });
                 const aliasName = file.resumableObj.opts.query.aliasName;
                 const UPLOAD_FETCH_PATH_ENDPOINT = this.props.enableNewUpload
-                    ? `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`
+                    ? `${API_PROXY.VERSIONED_PATH}/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`
                     : `/upload/${file.uniqueIdentifier}`;
 
                 http.get(UPLOAD_FETCH_PATH_ENDPOINT)

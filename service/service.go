@@ -125,7 +125,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	imageAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/image"), nil)
 	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
-	filesAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	// End of deprecated proxies
 
@@ -135,7 +134,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	if cfg.SharedConfig.EnableNewUpload {
 		router.Handle("/upload-new", uploadServiceAPIProxy)
-		router.Handle("/files{uri:.*}", filesAPIProxy)
 		router.Handle("/downloads-new{uri:.*}", downloadServiceProxy)
 	}
 

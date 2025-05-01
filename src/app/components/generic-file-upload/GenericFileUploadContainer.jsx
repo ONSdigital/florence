@@ -63,7 +63,9 @@ const GenericFileUploadContainer = ({
                 }
             });
             r.on("fileSuccess", file => {
-                const PATH_TO_FILE_IN_FILES_API = `/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`;
+                const PATH_TO_FILE_IN_FILES_API = `${API_PROXY.VERSIONED_PATH}/files/${encodeURIComponent(
+                    `${r.opts.query.path}/${file.relativePath}`
+                )}`;
                 onSuccess(PATH_TO_FILE_IN_FILES_API);
             });
         });
