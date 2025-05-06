@@ -1,3 +1,4 @@
+import { API_PROXY } from "../../utilities/api-clients/constants";
 import http from "../../utilities/http";
 
 import Resumable from "resumeablejs";
@@ -7,7 +8,7 @@ const FIVE_MEGABYTES = 5 * 1024 * 1024;
 export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
-        target: "/upload",
+        target: `${API_PROXY.VERSIONED_PATH}/upload`,
         chunkSize: FIVE_MEGABYTES,
         query: {
             aliasName: "",
@@ -36,7 +37,7 @@ export function bindFileUploadInput(inputID, updateState, onSuccess, onError) {
 export function bindGenericFileUploadInput(inputID, resumableOptions, updateState, onSuccess, onError) {
     const input = document.getElementById(inputID);
     const r = new Resumable({
-        target: "/upload-new",
+        target: `${API_PROXY.VERSIONED_PATH}/upload-new`,
         chunkSize: FIVE_MEGABYTES,
         query: {
             aliasName: "",
@@ -100,7 +101,7 @@ function handleErrorAndUpdateComponentState(file, updateState, onError) {
 
 function handleSuccessGetFileUploadedFileInfoAndUpdateComponentState(file, updateState, onSuccess) {
     const aliasName = file.resumableObj.opts.query.aliasName;
-    http.get(`/upload/${file.uniqueIdentifier}`)
+    http.get(`${API_PROXY.VERSIONED_PATH}/upload/${file.uniqueIdentifier}`)
         .then(response => {
             const fileUpload = {
                 aliasName: aliasName,

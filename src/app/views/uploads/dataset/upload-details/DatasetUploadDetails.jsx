@@ -206,7 +206,7 @@ class DatasetUploadController extends Component {
             const UPLOAD_ENDPOINT = this.props.enableNewUpload ? "/upload-new" : "/upload";
             const FIVE_MEGABYTES = 5 * 1024 * 1024;
             const r = new Resumable({
-                target: `${UPLOAD_ENDPOINT}`,
+                target: `${API_PROXY.VERSIONED_PATH}${UPLOAD_ENDPOINT}`,
                 method: "POST",
                 chunkSize: FIVE_MEGABYTES,
                 query: {
@@ -276,7 +276,7 @@ class DatasetUploadController extends Component {
                 const aliasName = file.resumableObj.opts.query.aliasName;
                 const UPLOAD_FETCH_PATH_ENDPOINT = this.props.enableNewUpload
                     ? `${API_PROXY.VERSIONED_PATH}/files/${encodeURIComponent(`${r.opts.query.path}/${file.relativePath}`)}`
-                    : `/upload/${file.uniqueIdentifier}`;
+                    : `${API_PROXY.VERSIONED_PATH}/upload/${file.uniqueIdentifier}`;
 
                 http.get(UPLOAD_FETCH_PATH_ENDPOINT)
                     .then(response => {

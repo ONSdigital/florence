@@ -123,21 +123,11 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
-	uploadServiceAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
-	downloadServiceProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	// End of deprecated proxies
 
 	router = mux.NewRouter()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
-
-	if cfg.SharedConfig.EnableNewUpload {
-		router.Handle("/upload-new", uploadServiceAPIProxy)
-		router.Handle("/downloads-new{uri:.*}", downloadServiceProxy)
-	}
-
-	router.Handle("/upload", uploadServiceAPIProxy)
-	router.Handle("/upload/{id}", uploadServiceAPIProxy)
 
 	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)

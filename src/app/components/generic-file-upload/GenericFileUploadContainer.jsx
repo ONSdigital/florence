@@ -31,7 +31,7 @@ const GenericFileUploadContainer = ({
     const initialiseDefaultResumableConfiguration = () => {
         document.querySelectorAll('input[type="file"]').forEach(input => {
             const r = new Resumable({
-                target: "/upload-new",
+                target: `${API_PROXY.VERSIONED_PATH}/upload-new`,
                 uploadMethod: "POST",
                 chunkSize: FIVE_MEGABYTES,
                 query: {},
