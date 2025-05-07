@@ -2,7 +2,7 @@ function publish(collectionId) {
 
   // Open the file for editing
   $.ajax({
-    url: "/zebedee/publish/" + collectionId,
+    url: `${API_PROXY.VERSIONED_PATH}/publish/${collectionId}`,
     dataType: 'json',
     contentType: 'application/json',
     crossDomain: true,
@@ -34,7 +34,7 @@ function unlock(collectionId) {
 
   // Open the file for editing
   $.ajax({
-    url: "/zebedee/unlock/" + collectionId,
+    url: `${API_PROXY.VERSIONED_PATH}/unlock/${collectionId}`,
     dataType: 'json',
     contentType: 'application/json',
     crossDomain: true,

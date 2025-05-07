@@ -151,7 +151,7 @@ export class PreviewController extends Component {
     }
 
     fetchCollection(collectionID) {
-        return http.get(`/zebedee/collectionDetails/${collectionID}`, true, true);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/collectionDetails/${collectionID}`, true, true);
     }
 
     render() {

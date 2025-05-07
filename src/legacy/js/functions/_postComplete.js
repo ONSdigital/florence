@@ -31,13 +31,15 @@ function completeContent(collectionId, path, recursive, redirectToPath) {
         safePath = '';          // edge case for home
     }
 
+    let url = `${API_PROXY.VERSIONED_PATH}/complete/${collectionId}?uri=${safePath}`
+
     if (Florence.globalVars.welsh) {
-        var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+        url = url + "/data_cy.json";
     } else {
-        var url = "/zebedee/complete/" + collectionId + "?uri=" + safePath + "/data.json";
+        url = url + "/data.json";
     }
 
-    var url = url + '&recursive=' + recursive;
+    url = url + '&recursive=' + recursive;
 
     // Update content
     isUpdatingModal.add();

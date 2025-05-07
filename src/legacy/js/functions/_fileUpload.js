@@ -57,7 +57,7 @@ function uploadFile(collectionId, data, field, idField, lastIndex, downloadExten
 
         if (formdata) {
             $.ajax({
-                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safeUriUpload}`,
                 type: 'POST',
                 data: formdata,
                 cache: false,

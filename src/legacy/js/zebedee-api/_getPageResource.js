@@ -1,7 +1,7 @@
 function getPageResource(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   return $.ajax({
-    url: "/zebedee/resource/" + collectionId + "?uri=" + safePath,
+    url: `${API_PROXY.VERSIONED_PATH}/resource/${collectionId}?uri=${safePath}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {

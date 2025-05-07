@@ -210,7 +210,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 checkDest += "/data.json";
             }
             $.ajax({
-                url: "/zebedee/checkcollectionsforuri?uri=" + checkDest,
+                url: `${API_PROXY.VERSIONED_PATH}/checkcollectionsforuri?uri=${checkDest}`,
                 type: 'GET',
                 contentType: 'application/json',
                 cache: false,

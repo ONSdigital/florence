@@ -71,7 +71,7 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
                 // in the database
 
                 $.ajax({
-                    url: "/zebedee/page/" + collectionId + "?uri=" + safeNewUri + "/data.json",
+                    url: `${API_PROXY.VERSIONED_PATH}/page/${collectionId}?uri=${safeNewUri}/data.json`,
                     dataType: 'json',
                     contentType: 'application/json',
                     type: 'POST',

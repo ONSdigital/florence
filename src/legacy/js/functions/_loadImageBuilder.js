@@ -217,7 +217,7 @@ function loadImageBuilder(pageData, onSave, image) {
   }
 
   function renderImage(imageUri) {
-    var iframeMarkup = '<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="' + '/zebedee/resource/' + Florence.collection.id + '?uri=' + imageUri + '"></iframe>';
+    var iframeMarkup = `<iframe id="preview-frame" frameBorder ="0" scrolling = "yes" src="${API_PROXY.VERSIONED_PATH}/resource/${Florence.collection.id}?uri=${imageUri}"></iframe>`;
     $('#image').html(iframeMarkup);
     var iframe = document.getElementById('preview-frame');
     iframe.height = "500px";
@@ -256,7 +256,7 @@ function loadImageBuilder(pageData, onSave, image) {
 
   function uploadFile(path, formData, success) {
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path,
+      url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${path}`,
       type: 'POST',
       data: formData,
       async: false,
@@ -299,7 +299,7 @@ function loadImageBuilder(pageData, onSave, image) {
     var imageJson = noExtension[1] + ".json";
 
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imageJson,
+      url: `${API_PROXY.VERSIONED_PATH}/content/` + Florence.collection.id + "?uri=" + imageJson,
       type: 'POST',
       data: JSON.stringify(image),
       processData: false,

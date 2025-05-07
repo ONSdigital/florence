@@ -2,7 +2,7 @@ function viewPublish() {
     var manual = '[manual collection]';
 
     $.ajax({
-        url: "/zebedee/collections",
+        url: `${API_PROXY.VERSIONED_PATH}/collections`,
         type: "get",
         crossDomain: true,
         success: function (collections) {

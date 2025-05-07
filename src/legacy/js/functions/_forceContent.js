@@ -39,7 +39,7 @@ function forceContent(collectionId) {
         var safePath = checkPathSlashes(uri);
 
         $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json",
+            url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safePath}/data.json`,
             dataType: 'json',
             contentType: 'application/json',
             type: 'POST',
@@ -115,7 +115,7 @@ function logForceContentAction() {
     };
 
     $.ajax({
-        url: "/zebedee/clickEventLog",
+        url: `${API_PROXY.VERSIONED_PATH}/clickEventLog`,
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(logData),

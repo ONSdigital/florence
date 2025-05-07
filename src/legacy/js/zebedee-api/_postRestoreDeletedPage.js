@@ -7,7 +7,7 @@
 
 function postRestoreDeletedPage(deleteID, collectionId, onSuccess) {
     $.ajax({
-        url: "/zebedee/deletedcontent/" + deleteID + "?collectionid=" + collectionId,
+        url: `${API_PROXY.VERSIONED_PATH}/deletedcontent/${deleteID}?collectionid=${collectionId}`,
         type: "POST",
         success: function(response) {
             onSuccess(response);

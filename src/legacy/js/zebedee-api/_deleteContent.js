@@ -2,7 +2,7 @@ function deleteContent(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   // send ajax call
   $.ajax({
-    url: "/zebedee/content/" + collectionId + "?uri=" + safePath,
+    url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safePath}`,
     type: 'DELETE',
     success: function (response) {
       if (success)

@@ -127,7 +127,7 @@ function articleEditor(collectionId, data) {
         var imagePath = data.uri + "/" + filename + '.' + fileExtension;
 
         $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + imagePath,
+            url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${imagePath}`,
             type: 'POST',
             data: formData,
             async: false,

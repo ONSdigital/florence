@@ -19,17 +19,19 @@ function postContent(collectionId, path, content, overwriteExisting, recursive, 
         safePath = '';          // edge case for home
     }
 
+    let url = `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safePath}`
+
     if (Florence.globalVars.welsh) {
-        var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data_cy.json";
+        url += "/data_cy.json";
         var toAddLang = JSON.parse(content);
         toAddLang.description.language = 'cy';
         content = JSON.stringify(toAddLang);
     } else {
-        var url = "/zebedee/content/" + collectionId + "?uri=" + safePath + "/data.json";
+        url += "/data.json";
     }
 
-    var url = url + '&overwriteExisting=' + overwriteExisting;
-    var url = url + '&recursive=' + recursive;
+    url += `&overwriteExisting=${overwriteExisting}`;
+    url += `&recursive=${recursive}`;
 
     var date = new Date();
     date = date.getHours() + ":" + date.getMinutes() + "." + date.getMilliseconds();

@@ -1,3 +1,5 @@
+import { API_PROXY } from "./constants";
+
 export default function ping() {
     /*
         We're using fetch instead of our request utility class because we want to set a specific log event
@@ -10,7 +12,7 @@ export default function ping() {
         body: JSON.stringify({}),
     };
 
-    return fetch("/zebedee/ping", fetchConfig)
+    return fetch(`${API_PROXY.VERSIONED_PATH}/ping`, fetchConfig)
         .then(response => {
             if (!response.ok) {
                 throw response;

@@ -1,10 +1,10 @@
 function saveNewCorrection (collectionId, path, success, error) {
-  var safePath = checkPathSlashes(path);
+  let safePath = checkPathSlashes(path);
   if (safePath === '/') {
     safePath = '';          // edge case for home
   }
 
-  var url = "/zebedee/version/" + collectionId + "?uri=" + safePath;
+  const url = `${API_PROXY.VERSIONED_PATH}/version/${collectionId}?uri=${safePath}`;
 
   // Update content
   $.ajax({

@@ -181,7 +181,7 @@ function editDatasetVersion(collectionId, data, field, idField) {
                     saveNewCorrection(collectionId, data.uri,
                         function (response) {
                             $.ajax({
-                                url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                                url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safeUriUpload}`,
                                 type: 'POST',
                                 data: formdata,
                                 cache: false,

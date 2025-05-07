@@ -18,7 +18,7 @@ function loadTableBuilderV2(pageData, onSave, table) {
     }
 
     $.ajax({
-      url: "/zebedee/content/" + Florence.collection.id + "?uri=" + tableJson.uri + ".json&validateJson=false",
+      url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${tableJson.uri}.json&validateJson=false`,
       type: 'POST',
       data: JSON.stringify(tableJson),
       processData: false,
@@ -60,7 +60,7 @@ function loadTableBuilderV2(pageData, onSave, table) {
   }
 
   if (table && table.filename) {
-    jqxhr = $.getJSON("/zebedee/content/" + Florence.collection.id + "?uri=" + pageUrl + "/" + table.filename + ".json");
+    jqxhr = $.getJSON(`${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${pageUrl}/${table.filename}.json`);
     jqxhr.done(function(data) {
         startTableBuilder("table-builder-app", data, saveTableV2, closeModal, onError, '/table');
     });

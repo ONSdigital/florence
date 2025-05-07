@@ -40,7 +40,7 @@ function loadEquationBuilder(pageData, onSave, equation) {
 
     var jsonPath = equation.uri + ".json";
     $.ajax({
-      url: "/zebedee/equation/" + Florence.collection.id + "?uri=" + jsonPath,
+      url: `${API_PROXY.VERSIONED_PATH}/equation/${Florence.collection.id}?uri=${jsonPath}`,
       type: 'POST',
       data: JSON.stringify(equation),
       processData: false,
@@ -93,7 +93,7 @@ function loadEquationBuilder(pageData, onSave, equation) {
     renderingPreview = true;
     var svg;
     $.ajax({
-      url: "/zebedee/equationpreview/",
+      url: `${API_PROXY.VERSIONED_PATH}/equationpreview/`,
       type: 'POST',
       contentType: 'text/plain',
       crossDomain: true,

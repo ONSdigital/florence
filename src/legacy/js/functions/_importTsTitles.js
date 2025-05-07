@@ -31,7 +31,7 @@ function importTsTitles(collectionId) {
 
         if (formdata) {
             $.ajax({
-                url: "/zebedee/timeseriesimport/" + collectionId + "?uri=" + uriUpload,
+                url: `${API_PROXY.VERSIONED_PATH}/timeseriesimport/${collectionId}?uri=${uriUpload},
                 type: 'POST',
                 data: formdata,
                 cache: false,

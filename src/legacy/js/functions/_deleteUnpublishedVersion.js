@@ -1,5 +1,5 @@
 function deleteUnpublishedVersion (collectionId, path, success, error) {
-  var url = "/zebedee/version/" + collectionId + "?uri=" + path;
+  const url = `${API_PROXY.VERSIONED_PATH}/version/${collectionId}?uri=${path}`;
 
   // Update content
   $.ajax({

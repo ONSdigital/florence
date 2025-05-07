@@ -1,6 +1,6 @@
 function getCollection(collectionId, success, error) {
   return $.ajax({
-    url: "/zebedee/collection/" + collectionId,
+    url: `${API_PROXY.VERSIONED_PATH}/collection/${collectionId}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -14,7 +14,7 @@ function getCollection(collectionId, success, error) {
 
 function getCollectionDetails(collectionId, success, error) {
   return $.ajax({
-    url: "/zebedee/collectionDetails/" + collectionId,
+    url: `${API_PROXY.VERSIONED_PATH}/collectionDetails/${collectionId}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {

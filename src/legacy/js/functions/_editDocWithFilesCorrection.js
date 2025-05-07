@@ -172,7 +172,7 @@ function editDocWithFilesCorrection(collectionId, data, field, idField) {
 
       if (formdata) {
         $.ajax({
-          url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + '/' + fileNameNoSpace,
+          url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${data.uri}/${fileNameNoSpace}`,
           type: 'POST',
           data: formdata,
           cache: false,
