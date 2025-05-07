@@ -176,7 +176,7 @@ export default class Input extends Component {
                 {this.props.helpMessage && <div className="help-msg">{this.props.helpMessage}</div>}
                 {this.props.requiredFieldMessage && !this.props.error && (
                     <div className="help-msg">
-                        <span class="required-field">*</span>
+                        <span className="required-field">*</span>
                         {this.props.requiredFieldMessage}
                     </div>
                 )}

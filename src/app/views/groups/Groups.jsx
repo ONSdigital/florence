@@ -50,7 +50,7 @@ const Groups = props => {
                                     Teams report
                                 </span>
                                 <a
-                                    class="btn btn--positive"
+                                    className="btn btn--positive"
                                     download={`${date.format(Date.now(), "yyyymmdd-HHMM")}-groups-report`}
                                     href={`${API_PROXY_PATH}/groups-report`}
                                 >
