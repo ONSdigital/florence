@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
@@ -13,7 +12,6 @@ import DeletePanel from "../delete";
 import FormFooter from "../../../components/form-footer/FormFooter";
 import UsersTable from "../../../components/table";
 import Magnifier from "../../../icons/Magnifier";
-import clsx from "clsx";
 
 const EditGroup = props => {
     const id = props.params.id;

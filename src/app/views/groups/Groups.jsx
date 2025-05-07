@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import filter from "lodash/filter";
 import PropTypes from "prop-types";
 import { Link } from "react-router";
@@ -7,7 +7,6 @@ import url from "../../utilities/url";
 import date from "../../utilities/date";
 import Input from "../../components/Input";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
-import BackButton from "../../components/back-button";
 
 const Groups = props => {
     const { groups, isLoading, loadTeams } = props;

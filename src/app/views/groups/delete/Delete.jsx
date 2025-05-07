@@ -1,7 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
 import Loader from "../../../components/loader/Loader";
 
 const Delete = ({ id, deleteGroup, openModal, closeModal, loading }) => {

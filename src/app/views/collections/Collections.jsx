@@ -9,7 +9,7 @@ import Search from "../../components/search";
 import { isViewerFromAuthState } from "../../utilities/auth";
 
 const Collections = props => {
-    const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
+    const { user, collections, isLoading, updateWorkingOn } = props;
     // Get viewer from local storage as we don't want to make a call to /groups if userType is undefined
     const isViewer = isViewerFromAuthState();
 
