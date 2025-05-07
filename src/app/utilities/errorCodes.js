@@ -25,6 +25,7 @@ export const errCodes = {
     INVALID_USER_BEING_ADDED_TO_TEAM:
         "Unable to add an invalid user account to the team, please navigate to the 'Preview teams' screen and then edit the team to add or remove users",
     CREATE_TEAM_SUCCESS: (name, numberOfMembers) => {
-        return `The preview team '${name}' has been created successfully with ${numberOfMembers} member(s)`;
+        const members = `member${numberOfMembers > 1 || numberOfMembers === 0 ? "s" : ""}`;
+        return `The preview team '${name}' has been created successfully with ${numberOfMembers} ${members}`;
     },
 };
