@@ -245,7 +245,7 @@ export const getUsersRequest = () => dispatch => {
         });
 };
 
-export const createTeam = (body, usersInTeam) => dispatch => {
+export const createGroup = (body, usersInTeam) => dispatch => {
     teams
         .createTeam(body)
         .then(response => {

@@ -1,6 +1,6 @@
 import React from "react";
 import { mount } from "enzyme";
-import CreateTeam from "./CreateTeam";
+import CreateGroup from "./CreateGroup";
 import { WrapperComponent } from "../../../utilities/tests/test-utils";
 import renderer from "react-test-renderer";
 
@@ -51,7 +51,7 @@ const allPreviewUsers = [
     },
 ];
 
-describe("CreateTeam", () => {
+describe("CreateGroup", () => {
     beforeEach(() => {
         dispatchedActions = [];
     });
@@ -66,11 +66,11 @@ describe("CreateTeam", () => {
     describe("Given valid props on initial load", () => {
         const component = mount(
             <WrapperComponent>
-                <CreateTeam {...props} />
+                <CreateGroup {...props} />
             </WrapperComponent>
         );
         it("renders the relevant components to screen", () => {
-            expect(component.find("Connect(CreateTeam)")).toHaveLength(1);
+            expect(component.find("Connect(CreateGroup)")).toHaveLength(1);
             expect(component.find("h1").text()).toBe("Create a preview team");
             expect(component.find("input#team-name-id").length).toBe(1);
             expect(component.find(".dynamic-list__title").length).toBe(1);
@@ -87,7 +87,7 @@ describe("CreateTeam", () => {
         it("matches snapshot", () => {
             const componentForSnapshot = renderer.create(
                 <WrapperComponent>
-                    <CreateTeam {...props} />
+                    <CreateGroup {...props} />
                 </WrapperComponent>
             );
             expect(componentForSnapshot.toJSON()).toMatchSnapshot();

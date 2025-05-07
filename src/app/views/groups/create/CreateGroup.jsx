@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import { Link } from "react-router";
 import url from "../../../utilities/url";
-import { getUsersRequest, createTeam } from "../../../config/thunks";
+import { getUsersRequest, createGroup } from "../../../config/thunks";
 import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
 import Input from "../../../components/Input";
@@ -23,7 +23,7 @@ const propTypes = {
     route: PropTypes.string,
 };
 
-const CreateTeam = props => {
+const CreateGroup = props => {
     const { dispatch, router, route, allPreviewUsers } = props;
     const [userConfirmedToLeave, setUserConfirmedToLeave] = useState(false);
     const [teamName, setTeamName] = useState("");
@@ -110,7 +110,7 @@ const CreateTeam = props => {
         setTeamName(event.target.value);
     };
 
-    const requestCreateTeam = () => {
+    const requestCreateGroup = () => {
         if (unsavedChanges && teamName !== "") {
             // All user created teams will have an equal precedence of 10. 0-9 are for 'roles' 11-99 are unused.
             const body = {
@@ -118,7 +118,7 @@ const CreateTeam = props => {
                 precedence: 10,
             };
             setUnsavedChanges(false);
-            dispatch(createTeam(body, usersInTeam));
+            dispatch(createGroup(body, usersInTeam));
         } else {
             const notification = {
                 type: "warning",
@@ -133,7 +133,7 @@ const CreateTeam = props => {
             {
                 id: "create-team-btn",
                 text: "Create Team",
-                interactionCallback: requestCreateTeam,
+                interactionCallback: requestCreateGroup,
                 style: "positive",
                 disabled: false,
             },
@@ -189,7 +189,7 @@ const CreateTeam = props => {
     );
 };
 
-CreateTeam.propTypes = propTypes;
+CreateGroup.propTypes = propTypes;
 
 function mapStateToProps(state) {
     return {
@@ -197,4 +197,4 @@ function mapStateToProps(state) {
     };
 }
 
-export default connect(mapStateToProps)(CreateTeam);
+export default connect(mapStateToProps)(CreateGroup);
