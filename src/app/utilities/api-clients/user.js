@@ -11,10 +11,6 @@ import { removeAuthState, setAuthState } from "../auth";
 import { API_PROXY } from "./constants";
 
 export default class user {
-    static get(email) {
-        return http.get(`/zebedee/users?email=${email}`);
-    }
-
     static getAll = async params => {
         let config = {};
         if (window.getEnv != null) {
@@ -110,34 +106,13 @@ export default class user {
         return http.delete(`${API_PROXY.VERSIONED_PATH}/users?email=" + ${email}`);
     }
 
-    static setPassword(body) {
-        return http.post(`/zebedee/password`, body);
-    }
-
-    static setPermissions(body) {
-        return http.post(`/zebedee/permission`, body);
-    }
-
-    /**
-     * Gets the permissions of the user specified by the email provided.
-     *
-     * @returns the user permissions response
-     * @deprecated as part of migration to JWT sessions and will be removed soon. Use getPermissions() instead.
-     */
-    static getPermissionsForUser(email) {
-        console.warn(
-            "WARNING! Deprecated function called. Function 'getPermissionsForUser(email)' is deprecated, please use the new 'getPermissions()' instead"
-        );
-        return http.get(`/zebedee/permission?email=${email}`, true, true);
-    }
-
     /**
      * Gets the permissions of the current authenticated user (based on their access token)
      *
      * @returns the user permissions response
      */
     static getPermissions() {
-        return http.get(`/zebedee/permission`, true, true);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/permission`, true, true);
     }
 
     static signIn(body) {
@@ -159,11 +134,6 @@ export default class user {
 
     static expireSession() {
         return http.delete(`${API_PROXY.VERSIONED_PATH}/tokens/self`, true, true);
-    }
-
-    // This is a temporary fix for 925: Login fails after going from new login to old login
-    static deleteCookies() {
-        return http.delete("/cookies");
     }
 
     static getOldUserType(user) {
@@ -229,9 +199,5 @@ export default class user {
                 clearCookies();
                 SessionManagement.removeTimers();
             });
-    }
-
-    static updatePassword(body) {
-        return http.post("/zebedee/password", body, undefined, true);
     }
 }
