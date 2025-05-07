@@ -250,7 +250,7 @@ export const createGroup = (body, usersInTeam) => dispatch => {
         .createTeam(body)
         .then(response => {
             if (usersInTeam.length > 0) {
-                dispatch(addMembersToNewTeam(response.id, usersInTeam));
+                dispatch(addMembersToNewTeam(response.id, response.name, usersInTeam));
             } else {
                 const notification = {
                     type: "positive",
@@ -285,10 +285,10 @@ export const createGroup = (body, usersInTeam) => dispatch => {
         });
 };
 
-const addMembersToNewTeam = (groupName, members) => dispatch => {
+const addMembersToNewTeam = (groupID, groupName, members) => dispatch => {
     let promises = [];
     members.forEach(user => {
-        promises.push(teams.addMemberToTeam(groupName, user.id));
+        promises.push(teams.addMemberToTeam(groupID, user.id));
     });
     Promise.all(promises)
         .then(results => {
@@ -296,7 +296,7 @@ const addMembersToNewTeam = (groupName, members) => dispatch => {
                 type: "positive",
                 isDismissable: true,
                 autoDismiss: 15000,
-                message: errCodes.CREATE_TEAM_SUCCESS(results[0].description, members.length || ""),
+                message: errCodes.CREATE_TEAM_SUCCESS(groupName, members.length || ""),
             };
             notifications.add(notification);
             const previousUrl = url.resolve("../", true);

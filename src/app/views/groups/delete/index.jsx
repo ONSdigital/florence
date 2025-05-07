@@ -12,7 +12,7 @@ export const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        deleteGroup: id => dispatch(deleteGroupRequest(id)),
+        deleteGroup: (id, name) => dispatch(deleteGroupRequest(id, name)),
         openModal: popout => dispatch(addPopout(popout)),
         closeModal: id => dispatch(removePopouts(id)),
     };
