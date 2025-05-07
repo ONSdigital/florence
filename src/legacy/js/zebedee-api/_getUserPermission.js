@@ -7,8 +7,7 @@
  */
 function getUserPermission(success, error, userId) {
 
-  var url = "/zebedee/permission?email=" + userId;
-
+  const url = `${API_PROXY.VERSIONED_PATH}/permission?email=` + userId;
 
   return $.ajax({
     url: url,

@@ -11,7 +11,7 @@ function getPageData(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   var lang = Florence.globalVars.welsh ? "cy" : "en";
   return $.ajax({
-    url: "/zebedee/data/" + collectionId + "?uri=" + safePath+"&lang=" + lang,
+    url: `${API_PROXY.VERSIONED_PATH}/data/${collectionId}?uri=${safePath}&lang=${lang}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -42,7 +42,7 @@ function getPageData(collectionId, path, success, error) {
 function getPageDataDescription(collectionId, path, success, error) {
   var lang = Florence.globalVars.welsh ? "cy" : "en";
   return $.ajax({
-    url: "/zebedee/data/" + collectionId + "?uri=" + path + '&description&lang=' + lang,
+    url: `${API_PROXY.VERSIONED_PATH}/data/${collectionId}?uri=${path}&description&lang=${lang}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {
@@ -70,7 +70,7 @@ function getPageDataDescription(collectionId, path, success, error) {
 function getPageDataTitle(collectionId, path, success, error) {
   var lang = Florence.globalVars.welsh ? "cy" : "en";
   return $.ajax({
-    url: "/zebedee/data/" + collectionId + "?uri=" + path + '&title&lang=' + lang,
+    url: `${API_PROXY.VERSIONED_PATH}/data/${collectionId}?uri=${path}&title&lang=${lang}`,
     dataType: 'json',
     type: 'GET',
     success: function (response) {

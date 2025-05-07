@@ -8,7 +8,7 @@ function addDeleteMarker(uri, title, success) {
      };
 
     $.ajax({
-        url: "/zebedee/DeleteContent/",
+        url: `${API_PROXY.VERSIONED_PATH}/DeleteContent/`,
         type: 'POST',
         data: JSON.stringify(deleteTarget),
         dataType: 'json',
@@ -26,7 +26,7 @@ function addDeleteMarker(uri, title, success) {
 
 function removeDeleteMarker(uri, success) {
     $.ajax({
-        url: "/zebedee/DeleteContent/" + Florence.collection.id + "?uri=" + uri,
+        url: `${API_PROXY.VERSIONED_PATH}/DeleteContent/${Florence.collection.id}?uri=${uri}`,
         type: 'DELETE',
         dataType: 'json',
         contentType: 'application/json',

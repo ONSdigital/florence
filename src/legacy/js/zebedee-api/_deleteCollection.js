@@ -1,6 +1,6 @@
 function deleteCollection(collectionId, success, error) {
   $.ajax({
-    url: "/zebedee/collection/" + collectionId,
+    url: `${API_PROXY.VERSIONED_PATH}/collection/${collectionId}`,
     type: 'DELETE',
     success: function (response) {
         success(response);

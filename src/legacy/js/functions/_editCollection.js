@@ -96,7 +96,7 @@ function editCollection(collection) {
                 } else {
                     // Update the collection
                     $.ajax({
-                        url: "/zebedee/collection/" + collection.id,
+                        url: `${API_PROXY.VERSIONED_PATH}/collection/${collection.id}`,
                         dataType: 'json',
                         contentType: 'application/json',
                         type: 'PUT',

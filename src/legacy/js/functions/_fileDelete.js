@@ -19,7 +19,7 @@ function fileDelete (collectionId, data, field, index) {
       Florence.globalVars.pagePos = position;
       $(this).parent().remove();
       $.ajax({
-        url: "/zebedee/content/" + collectionId + "?uri=" + data.uri + '/' + data[field][index].file,
+        url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${data.uri}/${data[field][index].file},
         type: "DELETE",
         success: function (res) {
           console.log(res);

@@ -261,7 +261,7 @@ function addEditionEditButton(collectionId, data, templateData) {
           Florence.globalVars.pagePos = position;
           $('#edition-delete_' + index).parent().remove();
           $.ajax({
-            url: "/zebedee/content/" + collectionId + "?uri=" + data.datasets[index].uri,
+            url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${data.datasets[index].uri}`,
             type: "DELETE",
             success: function (res) {
               console.log(res);

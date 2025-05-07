@@ -119,7 +119,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
-	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
 	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
@@ -138,7 +137,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 		router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
 	}
 
-	router.Handle("/zebedee{uri:/.*}", zebedeeProxy)
 	router.Handle("/table/{uri:.*}", tableProxy)
 
 	// Florence endpoints

@@ -45,7 +45,7 @@ function viewReportDetails(collection, isPublished, $this) {
 
     // get the event details
     $.ajax({
-        url: "/zebedee/collectionHistory/" + collection.id,
+        url: `${API_PROXY.VERSIONED_PATH}/collectionHistory/${collection.id}`,
         type: "get",
         crossDomain: true,
         success: function (events) {
@@ -59,7 +59,7 @@ function viewReportDetails(collection, isPublished, $this) {
 
 
                 $.ajax({
-                    url: "/zebedee/publishedCollections/" + collection.id,
+                    url: `${API_PROXY.VERSIONED_PATH}/publishedCollections/${collection.id}`,
                     type: "GET",
                     crossDomain: true,
                     success: function (collection) {

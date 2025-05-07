@@ -128,7 +128,7 @@ function visualisationEditor(collectionId, data) {
 
     function deleteAndUploadFile(path, contentUri, formData, success) {
         $.ajax({
-            url: "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + contentUri,
+            url: `${API_PROXY.VERSIONED_PATH}/DataVisualisationZip/${Florence.collection.id}?zipPath=${contentUri}`,
             type: 'DELETE',
             async: false,
             cache: false,
@@ -146,7 +146,7 @@ function visualisationEditor(collectionId, data) {
     function uploadFile(path, formData, success) {
         // Send zip file to zebedee
         $.ajax({
-            url: "/zebedee/content/" + Florence.collection.id + "?uri=" + path,
+            url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${path}`,
             type: 'POST',
             data: formData,
             async: false,
@@ -165,7 +165,7 @@ function visualisationEditor(collectionId, data) {
     function unpackZip(zipPath, success, error) {
         // Unpack contents of ZIP
         console.log("Unpack: " + zipPath);
-        var url = "/zebedee/DataVisualisationZip/" + Florence.collection.id + "?zipPath=" + zipPath;
+        var url = `${API_PROXY.VERSIONED_PATH}/DataVisualisationZip/${Florence.collection.id}?zipPath=${zipPath}`;
 
         $.ajax({
             url: url,
