@@ -2,7 +2,7 @@
  * Logout the current user and return to the login screen.
  */
 async function logout(currentPath) {
-    const res = await fetch('/tokens/self', {
+    const res = await fetch(`${API_PROXY.VERSIONED_PATH}/tokens/self`, {
         method: 'DELETE',
         headers: {
             "Content-Type": "application/json",
