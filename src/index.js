@@ -22,7 +22,6 @@ import CreateDatasetTaxonomyController from "./app/views/datasets-new/create/Cre
 import CreateCantabularDatasetController from "./app/views/datasets-new/create/CreateCantabularDatasetController";
 import CreateVersionController from "./app/views/datasets-new/create/CreateVersionController";
 import CreateEditionController from "./app/views/datasets-new/create/CreateEditionController";
-import UserDetailsController from "./app/views/users/details/UserDetailsController";
 import DatasetUploadsController from "./app/views/uploads/dataset/DatasetUploadsController";
 import DatasetUploadDetails from "./app/views/uploads/dataset/upload-details/DatasetUploadDetails";
 import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/DatasetUploadMetadata";
@@ -33,8 +32,6 @@ import Logs from "./app/views/logs/Logs";
 import SelectableTest from "./SelectableTest";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
-import ChangeUserPasswordController from "./app/views/users/change-password/ChangeUserPasswordController";
-import ConfirmUserDeleteController from "./app/views/users/confirm-delete/ConfirmUserDeleteController";
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
@@ -170,15 +167,7 @@ const Index = () => {
                     <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))} />
                     <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))} />
                     <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))} />
-                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersList))}>
-                        <Route path=":userID" component={userIsAuthenticated(userIsAdminOrEditor(UserDetailsController))}>
-                            <Route
-                                path="change-password"
-                                component={userIsAuthenticated(userIsAdminOrEditor(ChangeUserPasswordController))}
-                            />
-                            <Route path="confirm-delete" component={userIsAuthenticated(userIsAdminOrEditor(ConfirmUserDeleteController))} />
-                        </Route>
-                    </Route>
+                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersList))}/>
                     <Route>
                         <Route path={`${rootPath}/uploads`}>
                             <IndexRedirect to="data" />
