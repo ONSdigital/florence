@@ -1,7 +1,7 @@
 function viewReports() {
 
     $.ajax({
-        url: "/zebedee/publishedCollections",
+        url: `${API_PROXY.VERSIONED_PATH}/publishedCollections`,
         type: "GET",
         crossDomain: true,
         success: function (collections) {
@@ -14,7 +14,7 @@ function viewReports() {
 
     function getUnpublishedCollections(publishedCollections) {
         $.ajax({
-            url: "/zebedee/collections",
+            url: `${API_PROXY.VERSIONED_PATH}/collections`,
             type: "GET",
             crossDomain: true,
             success: function(response) {
@@ -31,32 +31,6 @@ function viewReports() {
 
     function populateTable(collections) {
         var collections = collections;
-        //console.log(collections);
-
-        // Build published collections objects
-        // // var publishedCollections = _.chain(collections.published)
-        // //     .filter(function (collection) {
-        // //         return collection.publishResults && collection.publishResults.length > 0;
-        // //     })
-        // //     .value();
-        //
-        //
-        // console.log(publishedCollections);
-        // $(publishedCollections).each(function (n, coll) {
-        //     var date = publishedCollections[n].
-        //     if (coll.publishResults && coll.publishResults.length > 0) {
-        //
-        //         if (coll.publishStartDate) {
-        //             var date = coll.publishStartDate;
-        //         } else {
-        //             var date = coll.publishResults[coll.publishResults.length - 1].transaction.startDate;
-        //         }
-        //
-        //         publishedCollections[n].formattedDate = StringUtils.formatIsoFull(date);
-        //     }
-        // });
-        //
-        // collections["published"] = publishedCollections;
 
         var publishedCollections = collections.published;
 

@@ -5,7 +5,7 @@ function transfer(source, destination, uri) {
     uri: uri
   };
   $.ajax({
-    url: "/zebedee/transfer",
+    url: `${API_PROXY.VERSIONED_PATH}/transfer`,
     type: "POST",
     dataType: "json",
     contentType: 'application/json',

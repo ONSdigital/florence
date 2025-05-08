@@ -46,7 +46,7 @@ function createCollection(teams) {
 
         // Create the collection
         $.ajax({
-            url: "/zebedee/collection",
+            url: `${API_PROXY.VERSIONED_PATH}/collection`,
             dataType: 'json',
             contentType: 'application/json',
             type: 'POST',

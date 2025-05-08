@@ -1,6 +1,6 @@
 function moveContent(collectionId, path, newPath, success, error) {
   $.ajax({
-    url: "/zebedee/contentmove/" + collectionId + "?uri=" + checkPathSlashes(path) + "&toUri=" + checkPathSlashes(newPath),
+    url: `${API_PROXY.VERSIONED_PATH}/contentmove/${collectionId}?uri=${checkPathSlashes(path)}&toUri=${checkPathSlashes(newPath)}`,
     type: 'POST',
     success: function (response) {
       if (success)

@@ -144,7 +144,7 @@ function addDataset(collectionId, data, field, idField) {
                 function submitform() {
                     if (formdata) {
                         $.ajax({
-                            url: "/zebedee/content/" + collectionId + "?uri=" + safeUriUpload,
+                            url: `${API_PROXY.VERSIONED_PATH}/content/${collectionId}?uri=${safeUriUpload}`,
                             type: 'POST',
                             data: formdata,
                             cache: false,

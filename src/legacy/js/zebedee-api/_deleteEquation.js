@@ -1,7 +1,7 @@
 function deleteEquation(collectionId, path, success, error) {
   var safePath = checkPathSlashes(path);
   $.ajax({
-    url: "/zebedee/equation/" + collectionId + "?uri=" + safePath,
+    url: `${API_PROXY.VERSIONED_PATH}/equation/${collectionId}?uri=${safePath}`,
     type: 'DELETE',
     success: function (response) {
       if (success)

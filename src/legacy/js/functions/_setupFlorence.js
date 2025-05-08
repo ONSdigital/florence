@@ -282,7 +282,7 @@ async function setupFlorence() {
     function doPing() {
         var start = performance.now();
         $.ajax({
-            url: "/zebedee/ping",
+            url: `${API_PROXY.VERSIONED_PATH}/ping`,
             dataType: 'json',
             contentType: 'application/json',
             type: 'POST',
@@ -344,7 +344,7 @@ async function setupFlorence() {
                 confirmButtonText: "I'm still using Florence!"
             }, function(response) {
                 if (response) {
-                    $.get("/zebedee/users?email=" + Florence.Authentication.loggedInEmail());
+                    $.get(`${API_PROXY.VERSIONED_PATH}/users?email=${Florence.Authentication.loggedInEmail()}`);
                     countdownIsShown = false;
                     console.log("Session timer reset");
                 }
@@ -379,7 +379,7 @@ async function setupFlorence() {
     $(document).on('click', 'a, button, input[type="button"], iframe, .table--primary tr, .js-nav-item, .page__item', function(e) {
         var diagnosticJSON = JSON.stringify(new clickEventObject(e));
         $.ajax({
-            url: "/zebedee/clickEventLog",
+            url: `${API_PROXY.VERSIONED_PATH}/clickEventLog`,
             type: 'POST',
             contentType: "application/json",
             data: diagnosticJSON,

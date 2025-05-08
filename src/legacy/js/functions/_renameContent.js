@@ -1,6 +1,6 @@
 function renameContent(collectionId, path, newPath, success, error) {
   $.ajax({
-    url: "/zebedee/contentrename/" + collectionId + "?uri=" + checkPathSlashes(path) + "&toUri=" + checkPathSlashes(newPath),
+    url: `${API_PROXY.VERSIONED_PATH}/contentrename/${collectionId}?uri=${checkPathSlashes(path)}&toUri=${checkPathSlashes(newPath)}`,
     type: 'POST',
     success: function (response) {
       if (success)

@@ -6,7 +6,7 @@
 
 function getDeletedPages(onSuccess) {
     $.ajax({
-        url: "/zebedee/deletedcontent",
+        url: `${API_PROXY.VERSIONED_PATH}/deletedcontent`,
         type: 'GET',
         success: function(response) {
             onSuccess(response);

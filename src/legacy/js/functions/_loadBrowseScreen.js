@@ -11,7 +11,7 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     }
 
     return $.ajax({
-        url: "/zebedee/collectionBrowseTree/" + collectionId, // url: "/navigation",
+        url: `${API_PROXY.VERSIONED_PATH}/collectionBrowseTree/${collectionId}`, // url: "/navigation",
         dataType: 'json',
         type: 'GET',
         success: function (response) {
