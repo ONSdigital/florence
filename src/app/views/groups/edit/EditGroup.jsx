@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
@@ -13,7 +12,6 @@ import DeletePanel from "../delete";
 import FormFooter from "../../../components/form-footer/FormFooter";
 import UsersTable from "../../../components/table";
 import Magnifier from "../../../icons/Magnifier";
-import clsx from "clsx";
 
 const EditGroup = props => {
     const id = props.params.id;
@@ -146,7 +144,7 @@ const EditGroup = props => {
                             )}
                             {loadingMembers && <Loader classNames="grid grid--align-center grid--align-self-center grid--full-height" />}
                             {groupMembers && <Members members={groupMembers} handleRemove={handleRemove} readOnly={!isAdmin} />}
-                            {isAdmin && !specialGroup && <DeletePanel id={id} />}
+                            {isAdmin && !specialGroup && <DeletePanel id={id} name={group.name} />}
                         </div>
                         {isAdmin && (
                             <div className="grid__col-md-5">

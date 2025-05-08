@@ -300,7 +300,7 @@ const CantabularMetadata = ({
                                 getUpdatedDimensionObj?.hasOwnProperty("quality_statement_url")
                             }
                         />
-                        {i < metadata.dimensions.length - 1 && <hr class="margin-bottom--1 element-divider" />}
+                        {i < metadata.dimensions.length - 1 && <hr className="margin-bottom--1 element-divider" />}
                     </div>
                 );
             })}

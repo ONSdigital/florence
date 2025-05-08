@@ -39,14 +39,14 @@ export const updateGroupRequest = (id, body) => dispatch => {
         });
 };
 
-export const deleteGroupRequest = id => dispatch => {
+export const deleteGroupRequest = (id, name) => dispatch => {
     dispatch(actions.deleteGroupProgress());
     teams
         .deleteGroup(id)
         .then(response => {
             dispatch(actions.deleteGroupSuccess());
             dispatch(push(url.resolve("../", true)));
-            notifications.add({ type: "positive", message: `Group "${response.name}" removed successfully`, autoDismiss: 5000 });
+            notifications.add({ type: "positive", message: `Group "${name}" removed successfully`, autoDismiss: 5000 });
         })
         .catch(error => {
             dispatch(actions.deleteGroupFailure());

@@ -1,10 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import isEqual from "lodash/isEqual";
-import isEmpty from "lodash/isEmpty";
 import Loader from "../../../components/loader/Loader";
 
-const Delete = ({ id, deleteGroup, openModal, closeModal, loading }) => {
+const Delete = ({ id, name, deleteGroup, openModal, closeModal, loading }) => {
     const popout = {
         id: "delete",
         title: "Are you sure you want to delete this preview team?",
@@ -30,7 +28,7 @@ const Delete = ({ id, deleteGroup, openModal, closeModal, loading }) => {
 
     const handleSubmit = () => {
         closeModal(["delete"]);
-        deleteGroup(id);
+        deleteGroup(id, name);
     };
 
     return (
@@ -54,6 +52,7 @@ const Delete = ({ id, deleteGroup, openModal, closeModal, loading }) => {
 
 Delete.propTypes = {
     id: PropTypes.string.isRequired,
+    name: PropTypes.string.isRequired,
     deleteGroup: PropTypes.func.isRequired,
     openModal: PropTypes.func.isRequired,
     closeModal: PropTypes.func.isRequired,

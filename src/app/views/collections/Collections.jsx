@@ -6,12 +6,10 @@ import CreateNewCollection from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";
 import CollectionDetailsController from "./details/CollectionDetailsController";
 import Search from "../../components/search";
-import ConfirmUserDeleteController from "../users/confirm-delete/ConfirmUserDeleteController";
-import { getAuthState, isViewerFromAuthState } from "../../utilities/auth";
-import fp from "lodash/fp";
+import { isViewerFromAuthState } from "../../utilities/auth";
 
 const Collections = props => {
-    const { user, collections, isLoading, workingOn, updateWorkingOn, search } = props;
+    const { user, collections, isLoading, updateWorkingOn } = props;
     // Get viewer from local storage as we don't want to make a call to /groups if userType is undefined
     const isViewer = isViewerFromAuthState();
 
