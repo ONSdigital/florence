@@ -4,6 +4,8 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 
+import { API_PROXY } from "../../../../utilities/api-clients/constants";
+
 import Resumable from "resumeablejs";
 import recipes from "../../../../utilities/api-clients/recipes";
 import datasetImport from "../../../../utilities/api-clients/datasetImport";

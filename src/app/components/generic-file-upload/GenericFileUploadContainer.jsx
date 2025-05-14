@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Checkbox from "../Checkbox";
 
+import { API_PROXY } from "../../utilities/api-clients/constants";
+
 import GenericFileUploader from "./GenericFileUploader";
 
 const FIVE_MEGABYTES = 5 * 1024 * 1024;
