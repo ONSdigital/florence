@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { replace } from "react-router-redux";
 
+import { API_PROXY } from "../../utilities/api-clients/constants";
 import http from "../../utilities/http";
 import notifications from "../../utilities/notifications";
 import { updateSelectedPreviewPage, addPreviewCollection, removeSelectedPreviewPage, updateWorkingOn, emptyWorkingOn } from "../../config/actions";
