@@ -122,14 +122,12 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	zebedeeProxy := reverseproxy.Create(apiRouterURL, directors.Director("/zebedee"), nil)
 	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)
 	// End of deprecated proxies
 
 	router = mux.NewRouter()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
