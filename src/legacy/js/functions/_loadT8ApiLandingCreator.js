@@ -96,7 +96,7 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
     function getRecipes() {
     $.when(
         $.ajax({
-            url: '/recipes',
+            url: `${API_PROXY.VERSIONED_PATH}/recipes`,
             dataType: 'json',
             crossDomain: true,
         }),
