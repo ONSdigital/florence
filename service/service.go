@@ -117,16 +117,14 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil) //nolint:staticcheck //This proxy will be deprecated soon and so there is low value in upgrading the director
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
-	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)   //nolint:staticcheck //This proxy will be deprecated soon and so there is low value in upgrading the director
-	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil) //nolint:staticcheck //This proxy will be deprecated soon and so there is low value in upgrading the director
-	recipeAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil)          //nolint:staticcheck //This proxy will be deprecated soon and so there is low value in upgrading the director
+	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
+	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
 	// End of deprecated proxies
 
 	router = mux.NewRouter()
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
-	router.Handle("/recipes{uri:.*}", recipeAPIProxy)
 	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
