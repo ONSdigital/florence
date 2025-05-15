@@ -118,8 +118,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	//nolint:staticcheck //This will be removed soon so wasted effort to switch.
-	importAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/import"), nil)
-	//nolint:staticcheck //This will be removed soon so wasted effort to switch.
 	datasetAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, "/dataset"), nil)
 	// End of deprecated proxies
 
@@ -127,7 +125,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 
 	router.HandleFunc("/health", svc.HealthCheck.Handler)
 
-	router.Handle("/import{uri:.*}", importAPIProxy)
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
