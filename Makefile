@@ -65,7 +65,21 @@ generate-go-debug:
 	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets ../dist/...
 
 .PHONY: lint
-lint:
+lint: lint-js lint-go
+
+.PHONY: lint-go
+lint-go: # Exit temporarily for now whilst awaiting lint changes.
+	exit
+
+.PHONY: lint-js
+lint-js: lint-js-react lint-js-legacy
+
+.PHONY: lint-js-react
+lint-js-react:
+	cd src; $(NPM) run eslint-check
+
+.PHONY: lint-js-legacy
+lint-js-legacy: # Exit temporarily for now whilst awaiting lint changes.
 	exit
 
 .PHONY: test
