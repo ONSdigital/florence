@@ -4,7 +4,6 @@ import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import user from "../utilities/api-clients/user";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
-import users from "../utilities/api-clients/user";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
@@ -216,7 +215,7 @@ export const updateUserRequest = (id, body) => dispatch => {
 
 export const getUsersRequest = () => dispatch => {
     dispatch(actions.loadUsersProgress());
-    users
+    user
         .getUsers()
         .then(response => {
             dispatch(actions.loadUsersSuccess(response.users));
