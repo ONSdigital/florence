@@ -289,7 +289,7 @@ const addMembersToNewTeam = (groupID, groupName, members) => dispatch => {
         promises.push(teams.addMemberToTeam(groupID, user.id));
     });
     Promise.all(promises)
-        .then(results => {
+        .then(results => { // eslint-disable-line no-unused-vars
             const notification = {
                 type: "positive",
                 isDismissable: true,
