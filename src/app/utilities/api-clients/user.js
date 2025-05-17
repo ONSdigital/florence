@@ -12,11 +12,6 @@ import { API_PROXY } from "./constants";
 
 export default class user {
     static getAll = async params => {
-        let config = {};
-        if (window.getEnv != null) {
-            config = window.getEnv();
-        }
-
         let queryString = "";
         Object.keys(params).map(key => {
             queryString = queryString ? `${queryString}&${key}=${params[key]}` : `?${key}=${params[key]}`;

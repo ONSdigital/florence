@@ -85,7 +85,6 @@ beforeEach(() => {
 });
 
 test("User is given a notification if the team delete fails", async () => {
-    const promise = Promise.resolve();
     const component = shallow(<TeamDeleteController {...defaultProps} />);
     const inputEvent = {
         target: {

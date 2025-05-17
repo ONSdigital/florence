@@ -8,7 +8,6 @@ import { errCodes } from "../errorCodes";
 import fp from "lodash/fp";
 import SessionManagement from "dis-authorisation-client-js";
 
-const config = window.getEnv();
 /**
  *
  * @param {string} method - must match an HTTP method (eg "GET")
