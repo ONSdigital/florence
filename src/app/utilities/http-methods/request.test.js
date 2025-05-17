@@ -2,6 +2,14 @@ import request from "./request";
 import "isomorphic-fetch";
 import log from "../logging/log";
 import { fail } from "assert";
+import { createDefaultExpiryTimes } from "dis-authorisation-client-js";
+
+// Mocks
+function createSession() {
+    const mockTimers = createDefaultExpiryTimes(1);
+    return new Date(mockTimers.session_expiry_time).toISOString().replace(/Z/, " +0000 UTC");
+}
+const mockSessionExpiryTime = createSession();
 
 jest.mock("../logging/log", () => {
     return {
@@ -16,16 +24,8 @@ jest.mock("../logging/log", () => {
 });
 jest.mock("../../utilities/api-clients/user", () => {
     class user {}
-    user.renewSession = () => {
-        return new Promise((resolve, reject) => {
-            resolve({ expirationTime: mockSessionExpiryTime });
-        });
-    };
-    user.logOut = () => {
-        return new Promise((resolve, reject) => {
-            resolve();
-        });
-    };
+    user.renewSession = () => Promise.resolve({ expirationTime: mockSessionExpiryTime });
+    user.logOut = () => Promise.resolve();
     return user;
 });
 console.error = jest.fn();

@@ -726,16 +726,6 @@ export default function reducer(state = initialState, action) {
                 previewLanguage: action.language,
             };
         }
-        case types.LOAD_COLLECTIONS_SUCCESS: {
-            return {
-                ...state,
-                collections: {
-                    ...state.collections,
-                    isLoading: false,
-                    all: action.collections,
-                },
-            };
-        }
         case types.LOAD_POLICY_PROGRESS:
             return {
                 ...state,

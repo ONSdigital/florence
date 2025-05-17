@@ -25,6 +25,17 @@
     "plugins": ["react"],
     "globals": {
         "window": true,
-        "module": true
-    }
+        "module": true,
+        "jsdom": true
+    },
+    "overrides": [
+        {   
+            // Overrides for test files
+            "files": ["**/*.test.js"], 
+            "rules": {
+                // parameter names are useful for context even when unused
+                "no-unused-vars": "warn"
+            }
+        }
+    ]
 }

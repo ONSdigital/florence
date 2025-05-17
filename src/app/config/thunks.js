@@ -4,11 +4,9 @@ import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";
 import user from "../utilities/api-clients/user";
 import collectionDetailsErrorNotifications from "../views/collections/details/collectionDetailsErrorNotifications";
-import users from "../utilities/api-clients/user";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
-import { async } from "regenerator-runtime";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(actions.loadCollectionsProgress());
@@ -217,8 +215,7 @@ export const updateUserRequest = (id, body) => dispatch => {
 
 export const getUsersRequest = () => dispatch => {
     dispatch(actions.loadUsersProgress());
-    users
-        .getUsers()
+    user.getUsers()
         .then(response => {
             dispatch(actions.loadUsersSuccess(response.users));
         })
@@ -292,6 +289,7 @@ const addMembersToNewTeam = (groupID, groupName, members) => dispatch => {
     });
     Promise.all(promises)
         .then(results => {
+            // eslint-disable-line no-unused-vars
             const notification = {
                 type: "positive",
                 isDismissable: true,
@@ -363,15 +361,16 @@ export const addGroupsToUserRequest = (id, groups) => dispatch => {
 };
 
 export const deleteTokensRequest = () => dispatch => {
-    dispatch(actions.singOutAllUsersProgress());
+    dispatch(actions.signOutAllUsersProgress());
     user.deleteTokens()
         .then(response => {
-            dispatch(actions.singOutAllUsersSuccess());
+            // eslint-disable-line no-unused-vars
+            dispatch(actions.signOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });
         })
         .catch(error => {
-            dispatch(actions.singOutAllUsersFailure());
+            dispatch(actions.signOutAllUsersFailure());
             //TODO: map responses to user friendly by content designer
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });

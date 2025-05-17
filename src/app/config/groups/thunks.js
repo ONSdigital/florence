@@ -44,6 +44,7 @@ export const deleteGroupRequest = (id, name) => dispatch => {
     teams
         .deleteGroup(id)
         .then(response => {
+            // eslint-disable-line no-unused-vars
             dispatch(actions.deleteGroupSuccess());
             dispatch(push(url.resolve("../", true)));
             notifications.add({ type: "positive", message: `Group "${name}" removed successfully`, autoDismiss: 5000 });

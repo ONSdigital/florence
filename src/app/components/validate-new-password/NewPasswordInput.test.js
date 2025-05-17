@@ -85,6 +85,7 @@ describe("When an uppercase character is entered into the text input field", () 
     const component = mount(<NewPasswordInput {...props} />);
     const numCharCheckbox = component.find("input#minimum-number-limit");
     const lowerCharCheckbox = component.find("input#lowercase-character-validation");
+    const upperCharCheckbox = component.find("input#uppercase-character-validation");
     const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {

@@ -629,6 +629,7 @@ describe("Edit Homepage functionality", () => {
             },
         };
         const component = shallow(<CollectionDetailsController {...props} />);
+        //TODO: This needs to actually be tested.
     });
     it("is enabled in collection details when enabled in global config", () => {
         const props = {
@@ -639,6 +640,7 @@ describe("Edit Homepage functionality", () => {
             },
         };
         const component = shallow(<CollectionDetailsController {...props} />);
+        //TODO: This needs to actually be tested.
     });
 });
 
