@@ -41,12 +41,6 @@ const userReducer = (state = initialState, action) => {
                 ...action.payload,
             };
         }
-        case types.START_REFRESH_AND_SESSION: {
-            return {
-                ...state,
-                ...action.payload,
-            };
-        }
         default: {
             return state;
         }
