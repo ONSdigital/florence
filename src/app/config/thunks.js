@@ -215,8 +215,7 @@ export const updateUserRequest = (id, body) => dispatch => {
 
 export const getUsersRequest = () => dispatch => {
     dispatch(actions.loadUsersProgress());
-    user
-        .getUsers()
+    user.getUsers()
         .then(response => {
             dispatch(actions.loadUsersSuccess(response.users));
         })
@@ -289,7 +288,8 @@ const addMembersToNewTeam = (groupID, groupName, members) => dispatch => {
         promises.push(teams.addMemberToTeam(groupID, user.id));
     });
     Promise.all(promises)
-        .then(results => { // eslint-disable-line no-unused-vars
+        .then(results => {
+            // eslint-disable-line no-unused-vars
             const notification = {
                 type: "positive",
                 isDismissable: true,
@@ -363,7 +363,8 @@ export const addGroupsToUserRequest = (id, groups) => dispatch => {
 export const deleteTokensRequest = () => dispatch => {
     dispatch(actions.signOutAllUsersProgress());
     user.deleteTokens()
-        .then(response => { // eslint-disable-line no-unused-vars
+        .then(response => {
+            // eslint-disable-line no-unused-vars
             dispatch(actions.signOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });

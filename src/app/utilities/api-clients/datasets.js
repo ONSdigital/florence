@@ -101,7 +101,7 @@ export default class datasets {
             const latestVersion = http.get(latestVersionURL).catch(error => reject(error));
             resolve(latestVersion);
         });
-    }
+    };
 
     static getLatestVersionURL = async datasetID => {
         const datasetURL = `/dataset/datasets/${datasetID}`;

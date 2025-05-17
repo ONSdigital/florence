@@ -24,7 +24,7 @@ jest.mock("../logging/log", () => {
 });
 jest.mock("../../utilities/api-clients/user", () => {
     class user {}
-    user.renewSession = () => Promise.resolve({ expirationTime: mockSessionExpiryTime});
+    user.renewSession = () => Promise.resolve({ expirationTime: mockSessionExpiryTime });
     user.logOut = () => Promise.resolve();
     return user;
 });
