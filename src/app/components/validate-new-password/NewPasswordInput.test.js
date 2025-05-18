@@ -49,22 +49,26 @@ describe("NewPasswordInput", () => {
 
 describe("When a lowercase character is entered into the text input field", () => {
     const component = mount(<NewPasswordInput {...props} />);
-    const numCharCheckbox = component.find("input#minimum-number-limit");
-    const upperCharCheckbox = component.find("input#uppercase-character-validation");
-    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
-    const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
             value: "a",
         },
     });
+
+    // Updating enzyme component to receive new props
+    component.update();
+    const numCharCheckbox = component.find("input#minimum-number-limit");
+    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
+    const upperCharCheckbox = component.find("input#uppercase-character-validation");
+    const minCharCheckbox = component.find("input#minimum-character-limit");
+
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(false);
         expect(component.state().uppercaseCharacterValidationPassed).toBe(false);
         expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
         expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
-    xit("Should pass validation for lowercase character required", () => {
+    it("Should pass validation for lowercase character required", () => {
         expect(numCharCheckbox.props()["checked"]).toBe(false);
         expect(upperCharCheckbox.props()["checked"]).toBe(false);
         expect(lowerCharCheckbox.props()["checked"]).toBe(true);
@@ -83,21 +87,26 @@ describe("When a lowercase character is entered into the text input field", () =
 });
 describe("When an uppercase character is entered into the text input field", () => {
     const component = mount(<NewPasswordInput {...props} />);
-    const numCharCheckbox = component.find("input#minimum-number-limit");
-    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
-    const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
             value: "A",
         },
     });
+
+    // Updating enzyme component to receive new props
+    component.update();
+    const numCharCheckbox = component.find("input#minimum-number-limit");
+    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
+    const upperCharCheckbox = component.find("input#uppercase-character-validation");
+    const minCharCheckbox = component.find("input#minimum-character-limit");
+
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(false);
         expect(component.state().uppercaseCharacterValidationPassed).toBe(true);
         expect(component.state().lowercaseCharacterValidationPassed).toBe(false);
         expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
-    xit("Should pass validation for Upper Case character required", () => {
+    it("Should pass validation for Upper Case character required", () => {
         expect(numCharCheckbox.props()["checked"]).toBe(false);
         expect(upperCharCheckbox.props()["checked"]).toBe(true);
         expect(lowerCharCheckbox.props()["checked"]).toBe(false);
@@ -116,22 +125,27 @@ describe("When an uppercase character is entered into the text input field", () 
 });
 describe("When a numerical character is entered into the text input field", () => {
     const component = mount(<NewPasswordInput {...props} />);
-    const numCharCheckbox = component.find("input#minimum-number-limit");
-    const upperCharCheckbox = component.find("input#uppercase-character-validation");
-    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
-    const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
             value: "1",
         },
     });
+
+    // Updating enzyme component to receive new props
+    component.update();
+    const numCharCheckbox = component.find("input#minimum-number-limit");
+    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
+    const upperCharCheckbox = component.find("input#uppercase-character-validation");
+    const minCharCheckbox = component.find("input#minimum-character-limit");
+
     it("Should update the validation rule states", () => {
         expect(component.state().minimumNumberLimitPassed).toBe(true);
         expect(component.state().uppercaseCharacterValidationPassed).toBe(false);
         expect(component.state().lowercaseCharacterValidationPassed).toBe(false);
         expect(component.state().minimumCharacterLimitPassed).toBe(false);
     });
-    xit("Should pass validation for numerical character required", () => {
+    it("Should pass validation for numerical character required", () => {
+        component.update();
         expect(numCharCheckbox.props()["checked"]).toBe(true);
         expect(upperCharCheckbox.props()["checked"]).toBe(false);
         expect(lowerCharCheckbox.props()["checked"]).toBe(false);
@@ -151,15 +165,18 @@ describe("When a numerical character is entered into the text input field", () =
 
 describe("When fourteen numerical and upper as well as lower characters are entered into the text input field", () => {
     const component = mount(<NewPasswordInput {...props} />);
-    const numCharCheckbox = component.find("input#minimum-number-limit");
-    const upperCharCheckbox = component.find("input#uppercase-character-validation");
-    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
-    const minCharCheckbox = component.find("input#minimum-character-limit");
     component.instance().handleInputChange({
         target: {
             value: "aB1cD2eF3gH4iJ",
         },
     });
+
+    // Updating enzyme component to receive new props
+    component.update();
+    const numCharCheckbox = component.find("input#minimum-number-limit");
+    const lowerCharCheckbox = component.find("input#lowercase-character-validation");
+    const upperCharCheckbox = component.find("input#uppercase-character-validation");
+    const minCharCheckbox = component.find("input#minimum-character-limit");
     it("Should update the validation rule states", () => {
         // Check that the state has been updated
         expect(component.state().password).toBe("aB1cD2eF3gH4iJ");
@@ -168,7 +185,7 @@ describe("When fourteen numerical and upper as well as lower characters are ente
         expect(component.state().lowercaseCharacterValidationPassed).toBe(true);
         expect(component.state().minimumCharacterLimitPassed).toBe(true);
     });
-    xit("Should pass validation for minimum character limit required and all others", () => {
+    it("Should pass validation for minimum character limit required and all others", () => {
         // Check that the character limit requirement checkbox is now checked
         expect(numCharCheckbox.props()["checked"]).toBe(true);
         expect(upperCharCheckbox.props()["checked"]).toBe(true);

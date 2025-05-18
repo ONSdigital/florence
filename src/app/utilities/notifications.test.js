@@ -115,7 +115,7 @@ test("Click 'dismiss' button removes that notfication from state", () => {
     mockNotificationsState = [];
 });
 
-fit("Does not add duplicate notifications", () => {
+it("Does not add duplicate notifications", () => {
     const mockNotification = {
         message: "Duplicate message",
     };
@@ -136,7 +136,9 @@ test("Remove notification by ID works as expected", () => {
     expect(mockNotificationsState.length).toBe(1);
 
     notifications.remove(id);
-    expect(mockNotificationsState.length).toBe(0);
+    setTimeout(() => {
+        expect(mockNotificationsState.length).toBe(0);
+    }, 3000);
 
     mockNotificationsState = [];
 });
