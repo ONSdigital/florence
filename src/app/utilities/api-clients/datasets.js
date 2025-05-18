@@ -58,7 +58,7 @@ export default class datasets {
     }
 
     static getLatestVersionForEditions = async (datasetID, editionsList) => {
-        return new Promise(async (resolve, reject) => {
+        return new Promise((resolve, reject) => {
             const versionFetches = editionsList.map(edition => {
                 return http
                     .get(`/dataset/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`)
@@ -71,7 +71,7 @@ export default class datasets {
                     });
             });
 
-            const allLatestVersions = await Promise.all(versionFetches)
+            const allLatestVersions = Promise.all(versionFetches)
                 .then(version => {
                     return version;
                 })
@@ -84,11 +84,11 @@ export default class datasets {
         });
     };
 
-    static getLatestVersion(datasetID) {
+    static getLatestVersion = async datasetID => {
         const datasetURL = `/dataset/datasets/${datasetID}`;
 
-        return new Promise(async (resolve, reject) => {
-            const dataset = await http.get(datasetURL).catch(error => reject(error));
+        return new Promise((resolve, reject) => {
+            const dataset = http.get(datasetURL).catch(error => reject(error));
 
             if (!dataset || !dataset.current || !dataset.current.links.latest_version) {
                 resolve();
@@ -98,10 +98,10 @@ export default class datasets {
             const latestVersionPath = dataset.current.links.latest_version.href.replace(dataset.current.links.self.href, "");
             const latestVersionURL = datasetURL + latestVersionPath;
 
-            const latestVersion = await http.get(latestVersionURL).catch(error => reject(error));
+            const latestVersion = http.get(latestVersionURL).catch(error => reject(error));
             resolve(latestVersion);
         });
-    }
+    };
 
     static getLatestVersionURL = async datasetID => {
         const datasetURL = `/dataset/datasets/${datasetID}`;
