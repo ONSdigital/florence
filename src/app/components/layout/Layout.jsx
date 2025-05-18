@@ -9,10 +9,7 @@ import { useGetPermissions, useUpdateTimers } from "../../config/user/userHooks"
 import { getAuthState } from "../../utilities/auth";
 import fp from "lodash/fp";
 
-import { useDispatch } from "react-redux";
-
 const Layout = props => {
-    const dispatch = useDispatch();
     let authState = getAuthState();
     const sessionTimerIsActive = fp.get("user.sessionTimer.active")(props);
     const [isCheckingAuthentication, setIsCheckingAuthentication] = useState(false);
@@ -20,7 +17,7 @@ const Layout = props => {
     // Get Permissions
     const userPermissions = useGetPermissions(props, authState, setShouldUpdateAccessToken);
     // Check timers & update if required
-    useUpdateTimers(props, sessionTimerIsActive, dispatch);
+    useUpdateTimers(props, sessionTimerIsActive);
     // Update store with permissions
     useEffect(() => {
         setIsCheckingAuthentication(false);

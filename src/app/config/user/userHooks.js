@@ -28,7 +28,7 @@ export const useGetPermissions = (props, authState, setShouldUpdateAccessToken) 
     return userState;
 };
 
-export const useUpdateTimers = (props, sessionTimerIsActive, dispatch) => {
+export const useUpdateTimers = (props, sessionTimerIsActive) => {
     useEffect(() => {
         const updateTimers = async () => {
             if (!nonAuthRoutes.includes(props.location.pathname) && !sessionTimerIsActive) {
