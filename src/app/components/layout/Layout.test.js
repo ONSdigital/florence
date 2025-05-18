@@ -47,11 +47,7 @@ jest.mock("../../utilities/api-clients/user", () => {
     user.setUserState = jest.fn();
     user.getOldUserType = jest.fn();
     user.getUserRole = jest.fn();
-    user.renewSession = () => {
-        return new Promise((resolve, reject) => {
-            resolve({ expirationTime: mockSessionExpiryTime });
-        });
-    };
+    user.renewSession = () => Promise.resolve({ expirationTime: mockSessionExpiryTime });
     return user;
 });
 
