@@ -288,6 +288,7 @@ const addMembersToNewTeam = (groupID, groupName, members) => dispatch => {
         promises.push(teams.addMemberToTeam(groupID, user.id));
     });
     Promise.all(promises)
+        // eslint-disable-next-line no-unused-vars
         .then(results => {
             const notification = {
                 type: "positive",
@@ -362,6 +363,7 @@ export const addGroupsToUserRequest = (id, groups) => dispatch => {
 export const deleteTokensRequest = () => dispatch => {
     dispatch(actions.signOutAllUsersProgress());
     user.deleteTokens()
+        // eslint-disable-next-line no-unused-vars
         .then(response => {
             dispatch(actions.signOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later

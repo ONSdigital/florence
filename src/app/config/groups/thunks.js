@@ -43,6 +43,7 @@ export const deleteGroupRequest = (id, name) => dispatch => {
     dispatch(actions.deleteGroupProgress());
     teams
         .deleteGroup(id)
+        // eslint-disable-next-line no-unused-vars
         .then(response => {
             dispatch(actions.deleteGroupSuccess());
             dispatch(push(url.resolve("../", true)));
