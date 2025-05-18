@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import log from "../../utilities/logging/log";
 import ping from "../../utilities/api-clients/ping";
 import user from "../../utilities/api-clients/user";

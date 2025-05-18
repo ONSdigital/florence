@@ -8,7 +8,6 @@ import users from "../utilities/api-clients/user";
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
-import { async } from "regenerator-runtime";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(actions.loadCollectionsProgress());

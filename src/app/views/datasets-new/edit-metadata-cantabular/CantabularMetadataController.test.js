@@ -2,7 +2,6 @@ import React from "react";
 import { CantabularMetadataController } from "./CantabularMetadataController";
 import { shallow } from "enzyme";
 import datasets from "../../../utilities/api-clients/datasets";
-import cookies from "../../../utilities/cookies";
 import log from "../../../utilities/logging/log";
 import topics from "../../../utilities/api-clients/topics";
 

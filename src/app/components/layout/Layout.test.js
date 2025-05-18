@@ -6,16 +6,12 @@ import { createStore, combineReducers, applyMiddleware } from "redux";
 import { routerReducer } from "react-router-redux";
 import thunkMiddleware from "redux-thunk";
 
-import { history, store } from "../../config/store";
 import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
 import taxonomies from "../../reducers/taxonomies";
 
 import Layout from "./Layout";
-import { getAuthState, setAuthState } from "../../utilities/auth";
-import SessionManagement, { createDefaultExpiryTimes } from "dis-authorisation-client-js";
-import { startRefeshAndSession } from "../../config/user/userActions";
-import { setConfig } from "../../config/actions";
+import { createDefaultExpiryTimes } from "dis-authorisation-client-js";
 
 // Local Storage
 var localStorageMock = (function () {
