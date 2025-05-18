@@ -362,15 +362,15 @@ export const addGroupsToUserRequest = (id, groups) => dispatch => {
 };
 
 export const deleteTokensRequest = () => dispatch => {
-    dispatch(actions.singOutAllUsersProgress());
+    dispatch(actions.signOutAllUsersProgress());
     user.deleteTokens()
         .then(response => {
-            dispatch(actions.singOutAllUsersSuccess());
+            dispatch(actions.signOutAllUsersSuccess());
             //TODO: can not test the response object atm so will change this later
             notifications.add({ type: "positive", message: "All users signed out successfully.", autoDismiss: 5000 });
         })
         .catch(error => {
-            dispatch(actions.singOutAllUsersFailure());
+            dispatch(actions.signOutAllUsersFailure());
             //TODO: map responses to user friendly by content designer
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });

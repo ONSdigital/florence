@@ -409,15 +409,15 @@ export const updateUserSuccess = user => ({
     user,
 });
 
-export const singOutAllUsersProgress = () => ({
+export const signOutAllUsersProgress = () => ({
     type: types.SIGN_OUT_ALL_USERS_PROGRESS,
 });
 
-export const singOutAllUsersFailure = () => ({
+export const signOutAllUsersFailure = () => ({
     type: types.SIGN_OUT_ALL_USERS_FAILURE,
 });
 
-export const singOutAllUsersSuccess = user => ({
+export const signOutAllUsersSuccess = user => ({
     type: types.SIGN_OUT_ALL_USERS_SUCCESS,
     user,
 });

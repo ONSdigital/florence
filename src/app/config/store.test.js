@@ -268,7 +268,7 @@ describe("Store", () => {
             expect(store.getState().state.users.all.length).toEqual(users.length);
         });
 
-        it("should handle loading singOutAllUsersProgress", () => {
+        it("should handle loading signOutAllUsersProgress", () => {
             const store = createStore(
                 combineReducers({
                     state: reducer,
@@ -276,12 +276,12 @@ describe("Store", () => {
             );
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
 
-            store.dispatch(actions.singOutAllUsersProgress());
+            store.dispatch(actions.signOutAllUsersProgress());
 
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(true);
         });
 
-        it("should handle loading singOutAllUsersFailure", () => {
+        it("should handle loading signOutAllUsersFailure", () => {
             const store = createStore(
                 combineReducers({
                     state: reducer,
@@ -289,12 +289,12 @@ describe("Store", () => {
             );
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
 
-            store.dispatch(actions.singOutAllUsersFailure());
+            store.dispatch(actions.signOutAllUsersFailure());
 
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
         });
 
-        it("should handle loading singOutAllUsersSuccess", () => {
+        it("should handle loading signOutAllUsersSuccess", () => {
             const store = createStore(
                 combineReducers({
                     state: reducer,
@@ -302,7 +302,7 @@ describe("Store", () => {
             );
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
 
-            store.dispatch(actions.singOutAllUsersSuccess());
+            store.dispatch(actions.signOutAllUsersSuccess());
 
             expect(store.getState().state.users.isRemovingAllTokens).toEqual(false);
         });
