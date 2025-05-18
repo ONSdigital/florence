@@ -3,6 +3,7 @@ import { CollectionEditController, mapStateToProps } from "./CollectionEditContr
 import collections from "../../../utilities/api-clients/collections";
 import { shallow } from "enzyme";
 
+let dispatchedAction;
 console.error = () => {};
 console.warn = () => {};
 const fail = jest.fn();
@@ -32,8 +33,6 @@ jest.mock("../../../utilities/api-clients/collections.js", () => ({
         return Promise.resolve();
     }),
 }));
-
-let dispatchedAction;
 
 const defaultProps = {
     name: "Test collection",
@@ -502,9 +501,6 @@ describe("The mapPropsToState function", () => {
                     { id: "2", name: "Team 2", members: [] },
                     { id: "3", name: "Team 3", members: [] },
                 ],
-            },
-            config: {
-                enablePermissionsAPI: false,
             },
             policy: {
                 data: null,

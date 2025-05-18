@@ -4,6 +4,7 @@ import { mount } from "enzyme";
 import url from "../../utilities/url";
 import { render, screen } from "../../utilities/tests/test-utils";
 
+let dispatchedActions = [];
 console.error = () => {};
 
 jest.mock("../../utilities/url", () => {
