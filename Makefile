@@ -80,8 +80,8 @@ lint-go: generate-go-mock
 lint-js: lint-js-react lint-js-legacy
 
 .PHONY: lint-js-react
-lint-js-react: # Exit temporarily for now whilst awaiting lint changes.
-	exit
+lint-js-react: node-modules-react
+	cd src; $(NPM) run eslint-check
 
 .PHONY: lint-js-legacy
 lint-js-legacy: # Exit temporarily for now whilst awaiting lint changes.
