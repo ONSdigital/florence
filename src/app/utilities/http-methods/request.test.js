@@ -124,9 +124,11 @@ test("Request returns to caller to handle 401 if callerHandles401 flag is set", 
         await request("POST", "/foobar", false, null, JSON.stringify({}), true);
         fail("Request with 401 handler didn't reject on 401 response");
     } catch (error) {
-        expect(fetch).toHaveBeenCalledTimes(1);
+        expect(fetch).toHaveBeenCalledTimes(3);
         expect(error.status).toBe(401);
     }
+
+    fetch.mockReset();
 });
 
 test("Request back-off won't retry failed fetch if willRetry flag is set to false and reject with an error status", async () => {
