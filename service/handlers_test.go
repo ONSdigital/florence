@@ -3,7 +3,7 @@ package service
 import (
 	"bytes"
 	"errors"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -147,7 +147,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			handler := http.HandlerFunc(refactoredIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
@@ -165,7 +165,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			handler := http.HandlerFunc(legacyIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
@@ -204,7 +204,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			handler := http.HandlerFunc(legacyIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			So(string(body), ShouldEqual, HTMLFile)
 		})
@@ -236,7 +236,7 @@ func TestIndexFile(t *testing.T) {
 		Convey("Shared config written into legacy HTML contains the correct config", func() {
 			handler := http.HandlerFunc(legacyIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
@@ -246,7 +246,7 @@ func TestIndexFile(t *testing.T) {
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
 			handler := http.HandlerFunc(refactoredIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
@@ -264,7 +264,7 @@ func TestIndexFile(t *testing.T) {
 		Convey("Shared config written into legacy HTML contains the correct config", func() {
 			handler := http.HandlerFunc(legacyIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
@@ -274,7 +274,7 @@ func TestIndexFile(t *testing.T) {
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
 			handler := http.HandlerFunc(refactoredIndexFile(cfg))
 			handler.ServeHTTP(recorder, request)
-			body, err := ioutil.ReadAll(recorder.Body)
+			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
