@@ -54,7 +54,7 @@ func setAuthCookies(r *http.Response, refreshTokenPath string) {
 	}
 
 	if r.Header.Get("Id") != "" {
-		cookieId := &http.Cookie{
+		cookieID := &http.Cookie{
 			Name:     "id_token",
 			Value:    r.Header.Get("Id"),
 			Path:     "/",
@@ -63,7 +63,7 @@ func setAuthCookies(r *http.Response, refreshTokenPath string) {
 			Secure:   true,
 			SameSite: http.SameSiteLaxMode,
 		}
-		idTokenCookie := cookieId.String()
+		idTokenCookie := cookieID.String()
 		r.Header.Add("Set-Cookie", idTokenCookie)
 	}
 
@@ -96,7 +96,7 @@ func deleteAuthCookies(r *http.Response, refreshTokenPath string) {
 	userTokenCookie := cookieUser.String()
 	r.Header.Add("Set-Cookie", userTokenCookie)
 
-	cookieId := &http.Cookie{
+	cookieID := &http.Cookie{
 		Name:     "refresh_token",
 		Value:    "",
 		Path:     refreshTokenPath,
@@ -104,7 +104,7 @@ func deleteAuthCookies(r *http.Response, refreshTokenPath string) {
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
 	}
-	idTokenCookie := cookieId.String()
+	idTokenCookie := cookieID.String()
 	r.Header.Add("Set-Cookie", idTokenCookie)
 
 	cookieRefresh := &http.Cookie{
