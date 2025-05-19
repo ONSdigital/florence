@@ -44,7 +44,6 @@ var mockHTMLFile = `
 `
 
 func TestStaticFiles(t *testing.T) {
-
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
 		req, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
@@ -76,7 +75,6 @@ func TestStaticFiles(t *testing.T) {
 }
 
 func TestIndexFile(t *testing.T) {
-
 	Convey("Request for legacy HTML file returns a 200 response", t, func() {
 		cfg := &config.Config{}
 		recorder := httptest.NewRecorder()
@@ -253,7 +251,6 @@ func TestIndexFile(t *testing.T) {
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
 		})
-
 	})
 
 	Convey("No environment variables are set", t, func() {
@@ -272,7 +269,6 @@ func TestIndexFile(t *testing.T) {
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
 			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
-
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -284,6 +280,5 @@ func TestIndexFile(t *testing.T) {
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
 			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableNewUpload":false,"enablePermissionsAPI":false,"enableCantabularJourney":false,"enableDataAdmin":false}`), ShouldBeTrue)
 		})
-
 	})
 }

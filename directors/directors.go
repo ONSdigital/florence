@@ -78,5 +78,4 @@ func setHeaders(req *http.Request) {
 			log.Event(req.Context(), "unable to set accept header", log.Error(err), log.ERROR)
 		}
 	}
-
 }

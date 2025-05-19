@@ -123,7 +123,6 @@ func TestRun(t *testing.T) {
 				So(svcList.HealthCheck, ShouldBeTrue)
 				So(len(hcMockAddFail.AddCheckCalls()), ShouldEqual, 1)
 				So(hcMockAddFail.AddCheckCalls()[0].Name, ShouldResemble, "API router")
-
 			})
 		})
 

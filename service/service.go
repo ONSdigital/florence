@@ -35,7 +35,6 @@ type Service struct {
 
 // Run the service
 func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceList, buildTime, gitCommit, version string, svcErrors chan error) (svc *Service, err error) {
-
 	log.Event(ctx, "running service", log.INFO)
 
 	// Initialise Service struct
@@ -80,7 +79,6 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 // and handlers legacy index files.
 // CMD API calls (recipe, import and dataset APIs) are proxied through the API router.
 func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *mux.Router, err error) {
-
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
 	if err != nil {
 		log.Event(ctx, "error parsing API router URL", log.FATAL, log.Error(err))
@@ -202,7 +200,6 @@ func (svc *Service) Close(ctx context.Context) error {
 }
 
 func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (err error) {
-
 	hasErrors := false
 
 	if err = svc.HealthCheck.AddCheck("API router", svc.healthClient.Checker); err != nil {

@@ -9,7 +9,6 @@ import (
 )
 
 func TestDirectorPrefixTrimming(t *testing.T) {
-
 	Convey("Given a request to '/foo/bar'", t, func() {
 		request, _ := http.NewRequest("GET", "/foo/bar", nil)
 

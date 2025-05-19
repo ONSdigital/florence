@@ -66,7 +66,6 @@ func TestComponent(t *testing.T) {
 			TestSuiteInitializer: f.InitializeTestSuite,
 			Options:              &opts,
 		}.Run()
-
 	} else {
 		t.Skip("component flag required to run component tests")
 	}
