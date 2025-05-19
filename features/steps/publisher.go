@@ -9,13 +9,13 @@ import (
 )
 
 type Publisher struct {
-	fakeApi   *FakeApi
+	fakeAPI   *FakeAPI
 	chromeCtx context.Context
 	cookies   []*network.Cookie
 }
 
-func NewPublisher(api *FakeApi, ctx context.Context) *Publisher {
-	return &Publisher{fakeApi: api, chromeCtx: ctx}
+func NewPublisher(api *FakeAPI, ctx context.Context) *Publisher {
+	return &Publisher{fakeAPI: api, chromeCtx: ctx}
 }
 
 func generateAuthCookies() []*http.Cookie {
@@ -30,13 +30,13 @@ func (p *Publisher) signIn(username string) error {
 	var cookies []*http.Cookie
 
 	if username == "not.a.user@ons.gov.uk" {
-		p.fakeApi.setJsonResponseForPost("/tokens", "", 401)
+		p.fakeAPI.setJSONResponseForPost("/tokens", "", 401)
 	} else if username == "" {
-		p.fakeApi.fakeHttp.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidEmail","description": "the submitted email could not be validated"}]}`))
+		p.fakeAPI.fakeHTTP.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidEmail","description": "the submitted email could not be validated"}]}`))
 	} else if username == "no.password@ons.gov.uk" {
-		p.fakeApi.fakeHttp.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidPassword","description": "the submitted password could not be validated"}]}`))
+		p.fakeAPI.fakeHTTP.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidPassword","description": "the submitted password could not be validated"}]}`))
 	} else {
-		p.fakeApi.setJsonResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
+		p.fakeAPI.setJSONResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
 		cookies = generateAuthCookies()
 	}
 
@@ -102,8 +102,8 @@ func (p *Publisher) isSignedIn() bool {
 	return false
 }
 
-func (p *Publisher) resetUser(fakeApi *FakeApi, ctx context.Context) {
-	p.fakeApi = fakeApi
+func (p *Publisher) resetUser(fakeAPI *FakeAPI, ctx context.Context) {
+	p.fakeAPI = fakeAPI
 	p.chromeCtx = ctx
 }
 
@@ -111,6 +111,6 @@ func (p *Publisher) setChromeCtx(ctx context.Context) {
 	p.chromeCtx = ctx
 }
 
-func (p *Publisher) setFakeApi(fakeApi *FakeApi) {
-	p.fakeApi = fakeApi
+func (p *Publisher) setFakeAPI(fakeAPI *FakeAPI) {
+	p.fakeAPI = fakeAPI
 }

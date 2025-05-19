@@ -8,15 +8,15 @@ import (
 	"testing"
 )
 
-type FakeApi struct {
-	fakeHttp                     *httpfake.HTTPFake
+type FakeAPI struct {
+	fakeHTTP                     *httpfake.HTTPFake
 	outboundRequests             []string
 	collectOutboundRequestBodies httpfake.CustomAssertor
 }
 
-func NewFakeApi(t testing.TB) *FakeApi {
-	fa := &FakeApi{
-		fakeHttp: httpfake.New(httpfake.WithTesting(t)),
+func NewFakeAPI(t testing.TB) *FakeAPI {
+	fa := &FakeAPI{
+		fakeHTTP: httpfake.New(httpfake.WithTesting(t)),
 	}
 
 	fa.collectOutboundRequestBodies = func(r *http.Request) error {
@@ -32,12 +32,12 @@ func NewFakeApi(t testing.TB) *FakeApi {
 	return fa
 }
 
-func (f *FakeApi) setJsonResponseForGet(url string, responseBody string) {
-	f.fakeHttp.NewHandler().Get(url).AssertHeaders("Content-Type").Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
+func (f *FakeAPI) setJSONResponseForGet(url, responseBody string) {
+	f.fakeHTTP.NewHandler().Get(url).AssertHeaders("Content-Type").Reply(200).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
 }
 
-func (f *FakeApi) setJsonResponseForPost(url string, responseBody string, status int, additionalHeaders ...*Header) *httpfake.Request {
-	request := f.fakeHttp.NewHandler().Post(url).AssertHeaders("Content-Type")
+func (f *FakeAPI) setJSONResponseForPost(url, responseBody string, status int, additionalHeaders ...*Header) *httpfake.Request {
+	request := f.fakeHTTP.NewHandler().Post(url).AssertHeaders("Content-Type")
 
 	request.Reply(status).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
 	if additionalHeaders != nil {
@@ -49,27 +49,14 @@ func (f *FakeApi) setJsonResponseForPost(url string, responseBody string, status
 	return request
 }
 
-func (f *FakeApi) setJsonResponseForDelete(url string, responseBody string, status int, additionalHeaders ...*Header) *httpfake.Request {
-	request := f.fakeHttp.NewHandler().Delete(url).AssertHeaders("Content-Type")
-
-	request.Reply(status).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
-	if additionalHeaders != nil {
-		for _, header := range additionalHeaders {
-			request.Response.SetHeader(header.Name, header.Value)
-		}
-	}
-
-	return request
+func (f *FakeAPI) Close() {
+	f.fakeHTTP.Close()
 }
-
-func (f *FakeApi) Close() {
-	f.fakeHttp.Close()
-}
-func (f *FakeApi) Reset() {
-	f.fakeHttp.Reset()
+func (f *FakeAPI) Reset() {
+	f.fakeHTTP.Reset()
 }
 
 type Header struct {
-	Name string
-	Value  string
+	Name  string
+	Value string
 }

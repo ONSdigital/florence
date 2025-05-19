@@ -31,7 +31,7 @@ type Component struct {
 	errorChan    chan error
 	HTTPServer   *http.Server
 	ctx          context.Context
-	FakeApi      *FakeApi
+	FakeAPI      *FakeAPI
 	chrome       Chrome
 	SignedInUser string
 	user         User
@@ -44,7 +44,7 @@ func NewFlorenceComponent() (*Component, error) {
 		ctx:        context.Background(),
 	}
 
-	c.FakeApi = NewFakeApi(c)
+	c.FakeAPI = NewFakeAPI(c)
 
 	signals := make(chan os.Signal, 1)
 	signal.Notify(signals, syscall.SIGINT, syscall.SIGTERM)
@@ -54,7 +54,7 @@ func NewFlorenceComponent() (*Component, error) {
 		return nil, err
 	}
 
-	cfg.APIRouterURL = c.FakeApi.fakeHttp.ResolveURL("")
+	cfg.APIRouterURL = c.FakeAPI.fakeHTTP.ResolveURL("")
 
 	initFunctions := &mock.InitialiserMock{
 		DoGetHTTPServerFunc:   c.DoGetHTTPServer,
@@ -64,7 +64,7 @@ func NewFlorenceComponent() (*Component, error) {
 
 	serviceList := service.NewServiceList(initFunctions)
 
-	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	c.user = NewPublisher(c.FakeAPI, c.chrome.ctx)
 
 	c.runApplication(cfg, serviceList, signals)
 
@@ -92,11 +92,11 @@ func (c *Component) theseCollectionCreationDetailsShouldHaveBeenSent(collectionD
 }
 
 func (c *Component) Reset() *Component {
-	c.FakeApi.Reset()
+	c.FakeAPI.Reset()
 
-	c.FakeApi.setJsonResponseForPost("/ping", `{"hasSession":true}`, 200)
-	c.FakeApi.setJsonResponseForGet("/collections", `[]`)
-	c.FakeApi.setJsonResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
+	c.FakeAPI.setJSONResponseForPost("/ping", `{"hasSession":true}`, 200)
+	c.FakeAPI.setJSONResponseForGet("/collections", `[]`)
+	c.FakeAPI.setJSONResponseForGet("/teams", `{"teams":[{"id":3,"name":"Some team","members":["test@ons.com"]}]}`)
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.DisableGPU,
@@ -113,7 +113,7 @@ func (c *Component) Reset() *Component {
 	log.Print("re-starting chrome ...")
 
 	c.chrome.ctx = ctx
-	c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+	c.user = NewPublisher(c.FakeAPI, c.chrome.ctx)
 
 	return c
 }
@@ -124,7 +124,7 @@ func (c *Component) Close() error {
 		_ = c.svc.Close(c.ctx)
 	}
 
-	c.FakeApi.Close()
+	c.FakeAPI.Close()
 	c.chrome.ctxCanceller()
 	c.chrome.execAllocatorCanceller()
 

@@ -11,11 +11,11 @@ import (
 
 type Collection struct {
 	componenttest.ErrorFeature
-	api       *FakeApi
+	api       *FakeAPI
 	chromeCtx context.Context
 }
 
-func NewCollectionAction(f *FakeApi, c context.Context) *Collection {
+func NewCollectionAction(f *FakeAPI, c context.Context) *Collection {
 	return &Collection{
 		api:       f,
 		chromeCtx: c,

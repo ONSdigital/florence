@@ -176,7 +176,7 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 	}
 }
 
-func DeleteHttpCookie() http.HandlerFunc {
+func DeleteHTTPCookie() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c := &http.Cookie{
 			Name:    "access_token",

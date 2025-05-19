@@ -31,7 +31,7 @@ func (c *Component) iSignInAs(role, username string) error {
 	if role == "admin" {
 		return godog.ErrPending
 	} else if role == "publisher" {
-		c.user = NewPublisher(c.FakeApi, c.chrome.ctx)
+		c.user = NewPublisher(c.FakeAPI, c.chrome.ctx)
 	} else if role == "viewer" {
 		return godog.ErrPending
 	} else {
