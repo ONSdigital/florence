@@ -41,7 +41,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 				_, hasFlorenceToken := request.Header["X-Florence-Token"]
 				_, hasAuthorization := request.Header["Authorization"]
 				_, hasCollectionID := request.Header["Collection-Id"]
-				_, hasID := request.Header["ID"]
+				_, hasID := request.Header[http.CanonicalHeaderKey("ID")]
 				_, hasRefresh := request.Header["Refresh"]
 
 				So(hasFlorenceToken, ShouldBeFalse)
