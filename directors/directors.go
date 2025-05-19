@@ -26,7 +26,7 @@ import (
 func Director(pathPrefix string) func(req *http.Request) {
 	return func(req *http.Request) {
 		setHeaders(req)
-		req.URL.Path = fmt.Sprintf("%s", strings.TrimPrefix(req.URL.Path, pathPrefix))
+		req.URL.Path = strings.TrimPrefix(req.URL.Path, pathPrefix)
 	}
 }
 
