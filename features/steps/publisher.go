@@ -73,24 +73,26 @@ func (p *Publisher) readResponseCookies() chromedp.Action {
 }
 
 func (p *Publisher) setAuthCookies() {
-	p.cookies = append(p.cookies, &network.Cookie{
-		Name:   "access_token",
-		Value:  "fakeAuthorizationToken",
-		Domain: "localhost",
-		Path:   "/",
-	})
-	p.cookies = append(p.cookies, &network.Cookie{
-		Name:   "id_token",
-		Value:  "fakeIDToken",
-		Domain: "localhost",
-		Path:   "/",
-	})
-	p.cookies = append(p.cookies, &network.Cookie{
-		Name:   "refresh_token",
-		Value:  "fakeRefreshToken",
-		Domain: "localhost",
-		Path:   "/",
-	})
+	p.cookies = append(p.cookies,
+		&network.Cookie{
+			Name:   "access_token",
+			Value:  "fakeAuthorizationToken",
+			Domain: "localhost",
+			Path:   "/",
+		},
+		&network.Cookie{
+			Name:   "id_token",
+			Value:  "fakeIDToken",
+			Domain: "localhost",
+			Path:   "/",
+		},
+		&network.Cookie{
+			Name:   "refresh_token",
+			Value:  "fakeRefreshToken",
+			Domain: "localhost",
+			Path:   "/",
+		},
+	)
 }
 
 func (p *Publisher) isSignedIn() bool {
