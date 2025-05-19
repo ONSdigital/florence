@@ -10,7 +10,7 @@ import (
 
 func TestDirectorPrefixTrimming(t *testing.T) {
 	Convey("Given a request to '/foo/bar'", t, func() {
-		request, _ := http.NewRequest("GET", "/foo/bar", nil)
+		request, _ := http.NewRequest("GET", "/foo/bar", http.NoBody)
 
 		Convey("When the Director is called with a prefix of '/foo'", func() {
 			directors.Director("/foo")(request)
@@ -32,7 +32,7 @@ func TestDirectorPrefixTrimming(t *testing.T) {
 
 func TestDirectorCookieHandling(t *testing.T) {
 	Convey("Given a request without any cookies set", t, func() {
-		request, _ := http.NewRequest("GET", "/foo/bar", nil)
+		request, _ := http.NewRequest("GET", "/foo/bar", http.NoBody)
 
 		Convey("When the Director is called", func() {
 			directors.Director("")(request)
@@ -55,7 +55,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 
 	Convey("Given a request with the 'access_token' cookie set", t, func() {
 		cookie := http.Cookie{Name: "access_token", Value: "foo"}
-		request, _ := http.NewRequest("GET", "", nil)
+		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
 		Convey("When Director is called", func() {
@@ -70,7 +70,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 
 	Convey("Given a request with the 'collection' cookie set", t, func() {
 		cookie := http.Cookie{Name: "collection", Value: "foo"}
-		request, _ := http.NewRequest("GET", "", nil)
+		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
 		Convey("When Director is called", func() {
@@ -84,7 +84,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 
 	Convey("Given a request with the 'id_token' cookie set", t, func() {
 		cookie := http.Cookie{Name: "id_token", Value: "foo"}
-		request, _ := http.NewRequest("GET", "", nil)
+		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
 		Convey("When Director is called", func() {
@@ -98,7 +98,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 
 	Convey("Given a request with the 'refresh_token' cookie set", t, func() {
 		cookie := http.Cookie{Name: "refresh_token", Value: "foo"}
-		request, _ := http.NewRequest("GET", "", nil)
+		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
 		Convey("When Director is called", func() {
@@ -113,7 +113,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 
 func TestFixedVersionDirector(t *testing.T) {
 	Convey("Given a request to '/foo/bar'", t, func() {
-		request, _ := http.NewRequest("GET", "/foo/bar", nil)
+		request, _ := http.NewRequest("GET", "/foo/bar", http.NoBody)
 
 		Convey("When the FixedVersionDirector is called with a version of 'v1'", func() {
 			directors.FixedVersionDirector("v1", "")(request)

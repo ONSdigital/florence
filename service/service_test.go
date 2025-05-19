@@ -81,7 +81,7 @@ func TestRun(t *testing.T) {
 		}
 
 		funcHasRoute := func(r *mux.Router, method, path string, match *mux.RouteMatch) bool {
-			req := httptest.NewRequest(method, path, nil)
+			req := httptest.NewRequest(method, path, http.NoBody)
 			return r.Match(req, match)
 		}
 

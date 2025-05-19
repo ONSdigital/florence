@@ -46,7 +46,7 @@ var mockHTMLFile = `
 func TestStaticFiles(t *testing.T) {
 	Convey("Returns 200 when asset is requested", t, func() {
 		recorder := httptest.NewRecorder()
-		req, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", nil)
+		req, err := http.NewRequest("GET", "/florence/dist/js/app.bundle.js", http.NoBody)
 		So(err, ShouldBeNil)
 		req.Header.Set("Accept-Language", "en")
 
