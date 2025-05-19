@@ -81,7 +81,7 @@ func TestIndexFile(t *testing.T) {
 		rdr := bytes.NewReader([]byte(``))
 		request, err := http.NewRequest("GET", "", rdr)
 		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(legacyIndexFile(cfg))
+		handler := legacyIndexFile(cfg)
 		handler.ServeHTTP(recorder, request)
 		So(recorder.Code, ShouldEqual, 200)
 	})
@@ -98,7 +98,7 @@ func TestIndexFile(t *testing.T) {
 		rdr := bytes.NewReader([]byte(``))
 		request, err := http.NewRequest("GET", "", rdr)
 		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(legacyIndexFile(cfg))
+		handler := legacyIndexFile(cfg)
 		handler.ServeHTTP(recorder, request)
 		So(recorder.Code, ShouldEqual, 404)
 	})
@@ -109,7 +109,7 @@ func TestIndexFile(t *testing.T) {
 		rdr := bytes.NewReader([]byte(``))
 		request, err := http.NewRequest("GET", "", rdr)
 		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(refactoredIndexFile(cfg))
+		handler := refactoredIndexFile(cfg)
 		handler.ServeHTTP(recorder, request)
 		So(recorder.Code, ShouldEqual, 200)
 	})
@@ -126,7 +126,7 @@ func TestIndexFile(t *testing.T) {
 		rdr := bytes.NewReader([]byte(``))
 		request, err := http.NewRequest("GET", "", rdr)
 		So(err, ShouldBeNil)
-		handler := http.HandlerFunc(refactoredIndexFile(cfg))
+		handler := refactoredIndexFile(cfg)
 		handler.ServeHTTP(recorder, request)
 		So(recorder.Code, ShouldEqual, 404)
 	})
@@ -145,7 +145,7 @@ func TestIndexFile(t *testing.T) {
 			rdr := bytes.NewReader([]byte(``))
 			request, err := http.NewRequest("GET", "", rdr)
 			So(err, ShouldBeNil)
-			handler := http.HandlerFunc(refactoredIndexFile(cfg))
+			handler := refactoredIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -163,7 +163,7 @@ func TestIndexFile(t *testing.T) {
 			rdr := bytes.NewReader([]byte(``))
 			request, err := http.NewRequest("GET", "", rdr)
 			So(err, ShouldBeNil)
-			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler := legacyIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -202,7 +202,7 @@ func TestIndexFile(t *testing.T) {
 			rdr := bytes.NewReader([]byte(``))
 			request, err := http.NewRequest("GET", "", rdr)
 			So(err, ShouldBeNil)
-			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler := legacyIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -234,7 +234,7 @@ func TestIndexFile(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("Shared config written into legacy HTML contains the correct config", func() {
-			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler := legacyIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -244,7 +244,7 @@ func TestIndexFile(t *testing.T) {
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
-			handler := http.HandlerFunc(refactoredIndexFile(cfg))
+			handler := refactoredIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -262,7 +262,7 @@ func TestIndexFile(t *testing.T) {
 		So(err, ShouldBeNil)
 
 		Convey("Shared config written into legacy HTML contains the correct config", func() {
-			handler := http.HandlerFunc(legacyIndexFile(cfg))
+			handler := legacyIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
@@ -272,7 +272,7 @@ func TestIndexFile(t *testing.T) {
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
-			handler := http.HandlerFunc(refactoredIndexFile(cfg))
+			handler := refactoredIndexFile(cfg)
 			handler.ServeHTTP(recorder, request)
 			body, err := io.ReadAll(recorder.Body)
 			So(err, ShouldBeNil)
