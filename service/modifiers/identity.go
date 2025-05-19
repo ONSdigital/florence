@@ -7,7 +7,6 @@ import (
 	"time"
 
 	dprequest "github.com/ONSdigital/dp-net/v2/request"
-	"github.com/ONSdigital/log.go/log"
 )
 
 type Permission struct {
@@ -24,11 +23,8 @@ func IdentityResponseModifier(apiRouterVersion string) func(r *http.Response) er
 	return func(r *http.Response) error {
 		if r.Request.Method == http.MethodDelete {
 			// regex, may be /v1/tokens/self where value after 'v' could be any positive integer
-			tokenSelfPathRegex := "^/v\\d+/tokens/self$"
-			matched, err := regexp.MatchString(tokenSelfPathRegex, r.Request.URL.Path)
-			if err != nil {
-				log.Event(r.Request.Context(), "failed to run regex on request path", log.Error(err), log.ERROR)
-			}
+			tokenSelfPathRegex := regexp.MustCompile(`^/v\\d+/tokens/self$`)
+			matched := tokenSelfPathRegex.MatchString(r.Request.URL.Path)
 			if matched {
 				// Attempt to delete cookies even if the response upstream was a fail
 				deleteAuthCookies(r, refreshTokenPath)
