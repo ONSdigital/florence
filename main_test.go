@@ -48,8 +48,10 @@ func (c *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 
 func (c *ComponentTest) InitializeTestSuite(ctx *godog.TestSuiteContext) {
 	ctx.BeforeSuite(func() {
+		// Put before test actions here.
 	})
 	ctx.AfterSuite(func() {
+		// Put after test actions here.
 	})
 }
 
