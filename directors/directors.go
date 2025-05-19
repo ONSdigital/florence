@@ -48,26 +48,26 @@ func FixedVersionDirector(apiRouterVersion string, pathPrefix string) func(req *
 }
 
 func setHeaders(req *http.Request) {
-	if accessTokenCookie, err := req.Cookie(dprequest.FlorenceCookieKey); err == nil && len(accessTokenCookie.Value) > 0 {
+	if accessTokenCookie, err := req.Cookie(dprequest.FlorenceCookieKey); err == nil && accessTokenCookie.Value != "" {
 		err := headers.SetAuthToken(req, accessTokenCookie.Value)
 		if err != nil {
 			log.Event(req.Context(), "unable to set auth token header", log.Error(err), log.ERROR)
 		}
 	}
 
-	if collectionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && len(collectionCookie.Value) > 0 {
+	if collectionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && collectionCookie.Value != "" {
 		if err := headers.SetCollectionID(req, collectionCookie.Value); err != nil {
 			log.Event(req.Context(), "unable to collection id header", log.Error(err), log.ERROR)
 		}
 	}
 
-	if idToken, err := cookies.GetIDToken(req); err == nil && len(idToken) > 0 {
+	if idToken, err := cookies.GetIDToken(req); err == nil && idToken != "" {
 		if err := headers.SetIDTokenHeader(req, idToken); err != nil {
 			log.Event(req.Context(), "unable to set id token header", log.Error(err), log.ERROR)
 		}
 	}
 
-	if refreshToken, err := cookies.GetRefreshToken(req); err == nil && len(refreshToken) > 0 {
+	if refreshToken, err := cookies.GetRefreshToken(req); err == nil && refreshToken != "" {
 		if err := headers.SetRefreshTokenHeader(req, refreshToken); err != nil {
 			log.Event(req.Context(), "unable to set refresh token header", log.Error(err), log.ERROR)
 		}

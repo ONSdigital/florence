@@ -50,7 +50,7 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 
 	etag, err := getAssetETag(assetPath)
 
-	if hdr := req.Header.Get("If-None-Match"); len(hdr) > 0 && hdr == etag {
+	if hdr := req.Header.Get("If-None-Match"); hdr != "" && hdr == etag {
 		w.WriteHeader(http.StatusNotModified)
 		return
 	}
