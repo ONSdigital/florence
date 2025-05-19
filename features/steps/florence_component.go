@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/health"
 	componenttest "github.com/ONSdigital/dp-component-test"
@@ -39,9 +40,11 @@ type Component struct {
 
 func NewFlorenceComponent() (*Component, error) {
 	c := &Component{
-		HTTPServer: &http.Server{},
-		errorChan:  make(chan error),
-		ctx:        context.Background(),
+		HTTPServer: &http.Server{
+			ReadTimeout: 3 * time.Minute,
+		},
+		errorChan: make(chan error),
+		ctx:       context.Background(),
 	}
 
 	c.FakeAPI = NewFakeAPI(c)
