@@ -10,7 +10,11 @@ const options = {
     files: [
         'node_modules/react-handsontable/**/*.js',
     ],
-    from: [/^\s\.table /gm, /\\n\.table /gm, /\, \.table /g],
+    from: [
+        /^\s\.table /gm,
+        /\\n\.table /gm,
+        /, \.table /g
+    ],
     to: ['.handsontable .table ', '\\n.handsontable .table ', ', .handsontable .table '],
 };
 
