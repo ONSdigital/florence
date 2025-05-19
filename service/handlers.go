@@ -41,7 +41,7 @@ type florenceVersionPayload struct {
 }
 
 func redirectToFlorence(w http.ResponseWriter, req *http.Request) {
-	http.Redirect(w, req, "/florence", 301)
+	http.Redirect(w, req, "/florence", http.StatusMovedPermanently)
 }
 
 func staticFiles(w http.ResponseWriter, req *http.Request) {
