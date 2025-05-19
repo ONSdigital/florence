@@ -37,7 +37,7 @@ func Director(pathPrefix string) func(req *http.Request) {
 // client allows us to slowly update screens/clients to use new API versions rather than requiring a big bang approach.
 //
 // Deprecated: use director(pathPrefix) function instead.
-func FixedVersionDirector(apiRouterVersion string, pathPrefix string) func(req *http.Request) {
+func FixedVersionDirector(apiRouterVersion, pathPrefix string) func(req *http.Request) {
 	directorFunc := Director(pathPrefix)
 
 	return func(req *http.Request) {
