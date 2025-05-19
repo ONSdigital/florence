@@ -49,6 +49,11 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	assetPath := assetStaticRoot + path
 
 	etag, err := getAssetETag(assetPath)
+	if err != nil {
+		log.Event(req.Context(), "error getting asset etag", log.ERROR, log.Error(err))
+		w.WriteHeader(404)
+		return
+	}
 
 	if hdr := req.Header.Get("If-None-Match"); hdr != "" && hdr == etag {
 		w.WriteHeader(http.StatusNotModified)
@@ -66,7 +71,10 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set(`Cache-Control`, "no-cache")
 	w.Header().Set(`Content-Type`, mime.TypeByExtension(filepath.Ext(path)))
 	w.WriteHeader(200)
-	w.Write(b)
+	_, err = w.Write(b)
+	if err != nil {
+		log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+	}
 }
 
 func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
@@ -90,7 +98,10 @@ func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
 
 		w.Header().Set(`Content-Type`, "text/html")
 		w.WriteHeader(200)
-		w.Write(b)
+		_, err = w.Write(b)
+		if err != nil {
+			log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+		}
 	}
 }
 
@@ -172,7 +183,10 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 
 		w.Header().Set(`Content-Type`, "text/html")
 		w.WriteHeader(200)
-		w.Write(b)
+		_, err = w.Write(b)
+		if err != nil {
+			log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+		}
 	}
 }
 
