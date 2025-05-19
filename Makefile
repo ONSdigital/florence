@@ -64,8 +64,27 @@ generate-go-debug:
 	# Generate the debug assets version
 	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets ../dist/...
 
+.PHONY: generate-go-mock
+generate-go-mock:
+	# This fakes the creation of bindata to use for linting.
+	cd assets; go run github.com/jteeuwen/go-bindata/go-bindata -debug -o data.go -pkg assets ./...
+
 .PHONY: lint
-lint:
+lint: lint-js lint-go
+
+.PHONY: lint-go
+lint-go: generate-go-mock
+	golangci-lint run ./...
+
+.PHONY: lint-js
+lint-js: lint-js-react lint-js-legacy
+
+.PHONY: lint-js-react
+lint-js-react: # Exit temporarily for now whilst awaiting lint changes.
+	exit
+
+.PHONY: lint-js-legacy
+lint-js-legacy: # Exit temporarily for now whilst awaiting lint changes.
 	exit
 
 .PHONY: test
