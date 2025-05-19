@@ -41,10 +41,8 @@ func (f *FakeAPI) setJSONResponseForPost(url, responseBody string, status int, a
 	request := f.fakeHTTP.NewHandler().Post(url).AssertHeaders("Content-Type")
 
 	request.Reply(status).SetHeader("Content-Type", "application/json").Body([]byte(responseBody))
-	if additionalHeaders != nil {
-		for _, header := range additionalHeaders {
-			request.Response.SetHeader(header.Name, header.Value)
-		}
+	for _, header := range additionalHeaders {
+		request.Response.SetHeader(header.Name, header.Value)
 	}
 
 	return request
