@@ -12,6 +12,7 @@ var etags = make(map[string]string)
 // ErrETagNotFound is returned when an ETag is not found
 var ErrETagNotFound = errors.New("etag not found")
 
+//nolint:gochecknoinits //Reactivating linting and don't want to refactor this right now.
 func init() {
 	updateETags()
 }
