@@ -10,10 +10,10 @@ var Florence = Florence || {
         },
         setActiveCollection: function (collection) {
             document.cookie = "collection=" + collection.id + ";path=/";
-            if (!collection.publishDate) {
-                var formattedDate = null;
-            } else {
-                var formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
+            let formattedDate;
+
+            if (collection.publishDate) {
+                formattedDate = StringUtils.formatIsoDateString(collection.publishDate);
             }
             Florence.collection = {
                 id: collection.id,
