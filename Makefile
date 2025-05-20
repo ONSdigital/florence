@@ -84,8 +84,8 @@ lint-js-react: node-modules-react
 	cd src; $(NPM) run eslint-check
 
 .PHONY: lint-js-legacy
-lint-js-legacy: # Exit temporarily for now whilst awaiting lint changes.
-	exit
+lint-js-legacy: node-modules-legacy
+	cd src/legacy; npm run eslint-check
 
 .PHONY: test
 test: test-npm test-pretty node-modules test-go
