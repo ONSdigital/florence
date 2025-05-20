@@ -18,8 +18,9 @@ function handleApiError(response) {
                     console.debug("[FLORENCE] Updating access_token & session timer: ", res)
                     // update the authState, start the session timer with the next session response value
                     // & restart the refresh timer with the existing refresh value.
+                    const { default: SessionManagement, convertUTCToJSDate } = window.disAuthClient;
                     const expirationTime = convertUTCToJSDate(res.expirationTime);
-                    setSessionExpiryTime(expirationTime, refresh_expiry_time);
+                    SessionManagement.setSessionExpiryTime(expirationTime, refresh_expiry_time);
                 }
             })
             .catch(err => console.error("[FLORENCE]: ", err));
