@@ -43,7 +43,7 @@ function uploadFile(collectionId, data, field, idField, lastIndex, downloadExten
                 }
             });
         }
-        if (!!file.name.match(downloadExtensions)) {
+        if (file.name.match(downloadExtensions)) {
             showUploadedItem(fileNameNoSpace);
             if (formdata) {
                 formdata.append("name", file);

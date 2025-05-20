@@ -109,7 +109,7 @@ function addDataset(collectionId, data, field, idField) {
                     });
                 }
 
-                if (!!file.name.match(downloadExtensions)) {
+                if (file.name.match(downloadExtensions)) {
                     //showUploadedItem(fileNameNoSpace);
                     if (formdata) {
                         formdata.append("name", file);
