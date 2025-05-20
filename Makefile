@@ -76,15 +76,15 @@ lint: lint-js lint-go
 lint-go: generate-go-mock
 	golangci-lint run ./...
 
-.PHONY: lint-js
-lint-js: lint-js-react lint-js-legacy
+.PHONY: lint-js 
+lint-js: node-modules lint-js-react lint-js-legacy
 
 .PHONY: lint-js-react
 lint-js-react: node-modules-react
 	cd src; $(NPM) run eslint-check
 
 .PHONY: lint-js-legacy
-lint-js-legacy: node-modules-legacy
+lint-js-legacy:
 	cd src/legacy; npm run eslint-check
 
 .PHONY: test
