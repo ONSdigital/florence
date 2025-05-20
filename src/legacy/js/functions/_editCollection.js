@@ -79,7 +79,6 @@ function editCollection(collection) {
                 if (collection.type === 'scheduled') {
                     editPublishTime = parseInt($('#collection-editor-hour').val()) + parseInt($('#collection-editor-min').val());
                     collection.publishDate = new Date(parseInt(new Date(toIsoDate).getTime()) + editPublishTime).toISOString();
-                } else {
                 }
                 //check validity
                 if (collection.name === '') {

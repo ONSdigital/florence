@@ -106,7 +106,6 @@ function viewCollectionDetails(collectionId, $this) {
                                 viewCollectionDetails(collectionId);
                                 sweetAlert('File has not been deleted. Contact an administrator', error, "error");
                             })
-                    } else {
                     }
                 });
             });
