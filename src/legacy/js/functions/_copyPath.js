@@ -35,12 +35,13 @@ function initialiseClipboard() {
 
     // Switch 'done' tick on and off
     function toggleTick(i, state) {
+        function showBtnText () { $(".copy-markdown_" + i).removeAttr("style");}
+
         if (state == "show") {
             $(".copy-markdown_" + i).attr("style", "color:transparent;");
         }
         $(".tick-animation-trigger_" + i).toggleClass("drawn");
         if (state == "hide") {
-            function showBtnText () { $(".copy-markdown_" + i).removeAttr("style");}
             setTimeout(showBtnText, 1600);
         }
     }
