@@ -62,8 +62,8 @@ function viewReportDetails(collection, isPublished, $this) {
                     url: `${API_PROXY.VERSIONED_PATH}/publishedCollections/${collection.id}`,
                     type: "GET",
                     crossDomain: true,
-                    success: function (collection) {
-                        var collection = collection[0];
+                    success: function (collectionInput) {
+                        let collection = collectionInput[0];
 
                         var date = collection.publishEndDate;
                         collection.formattedDate = StringUtils.formatIsoFull(date);

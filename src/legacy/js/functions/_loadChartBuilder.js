@@ -1,6 +1,5 @@
 function loadChartBuilder(pageData, onSave, chart) {
 
-    var chart;
     var pageUrl;
     var html;
 

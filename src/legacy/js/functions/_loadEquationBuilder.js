@@ -1,5 +1,4 @@
 function loadEquationBuilder(pageData, onSave, equation) {
-  var equation = equation;
   var pageUrl = pageData.uri;
   var html = templates.equationBuilder(equation);
 

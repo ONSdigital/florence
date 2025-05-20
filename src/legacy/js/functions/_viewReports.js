@@ -30,8 +30,6 @@ function viewReports() {
     }
 
     function populateTable(collections) {
-        var collections = collections;
-
         var publishedCollections = collections.published;
 
         $(publishedCollections).each(function (i) {
