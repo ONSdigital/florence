@@ -85,7 +85,7 @@ lint-js-react: node-modules-react
 
 .PHONY: lint-js-legacy
 lint-js-legacy:
-	cd src/legacy; npm run eslint-check
+	cd src/legacy; $(NPM) run eslint-check
 
 .PHONY: test
 test: test-npm test-pretty node-modules test-go
