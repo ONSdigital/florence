@@ -92,7 +92,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             }
         });
 
-
+        // eslint-disable-next-line no-inner-declarations
         function processMenuClick(clicked) {
             var menuItem = $(clicked);
 

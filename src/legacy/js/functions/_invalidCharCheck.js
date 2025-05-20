@@ -1,6 +1,6 @@
 function replaceInvalidChars(str) {
     // replace "Start of Text" (U+0002)
-    var UNICODE_CHARS_TO_REPLACE = /\u{0002}/gu
+    var UNICODE_CHARS_TO_REPLACE = /\u{0002}/gu //eslint-disable-line no-control-regex
 
     return str.replace(UNICODE_CHARS_TO_REPLACE,' ');
 }
