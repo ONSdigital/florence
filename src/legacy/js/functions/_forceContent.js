@@ -85,7 +85,7 @@ function tryParseJSON (jsonString){
     }
 
     return false;
-};
+}
 
 function forceJSONContent(code, collectionId) {
     var d = new Date(),

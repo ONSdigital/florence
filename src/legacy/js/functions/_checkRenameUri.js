@@ -44,7 +44,6 @@ function checkRenameUri(collectionId, data, renameUri, onSave) {
                 getPageData(collectionId, newUri, function (pageData) { // get the updated data after doing the move.
                         data = pageData;
                         Florence.globalVars.pagePath = newUri;
-                        ;
                         onSave(collectionId, newUri, JSON.stringify(data));
                     },
                     onError = function () {

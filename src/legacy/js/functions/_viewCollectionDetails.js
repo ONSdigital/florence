@@ -297,7 +297,7 @@ function viewCollectionDetails(collectionId, $this) {
         });
 
         setCollectionDetailsHeight();
-    };
+    }
 
     function ProcessPages(pages) {
         _.sortBy(pages, 'uri');

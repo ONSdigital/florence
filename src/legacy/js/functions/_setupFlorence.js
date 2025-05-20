@@ -217,7 +217,7 @@ async function setupFlorence() {
             "users-and-access": "users",
             "workspace": "workspace"
         }[path];
-    };
+    }
     $('.js-nav-item--' + mapPathToViewID(path)).addClass('selected');
     viewController(mapPathToViewID(path));
 

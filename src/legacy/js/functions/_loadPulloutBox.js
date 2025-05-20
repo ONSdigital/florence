@@ -93,7 +93,7 @@ function loadPulloutBox () {
     $input[0].setSelectionRange(selectionStart, selectionEnd);
     Florence.Editor.markdownEditor.refreshPreview();
 
-};
+}
 function loadPulloutWarningBox () {
     var $input = $('#wmd-input');
     var selectionStart = $input[0].selectionStart;
@@ -188,4 +188,4 @@ function loadPulloutWarningBox () {
     $('#wmd-input').trigger('input');
     $input[0].setSelectionRange(selectionStart, selectionEnd);
     Florence.Editor.markdownEditor.refreshPreview();
-};
+}
