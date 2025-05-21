@@ -15,14 +15,6 @@
         {
             "id" : "CVE-2017-18214",
             "reason": "moment@2.18.1 is a dependency of handsontable which we can't upgrade"
-        },
-        {
-            "id": "CVE-2024-4067",
-            "reason": "Micromatch, dependency of jest. should be looked at as a seperate ticket. context: https://github.com/micromatch/micromatch/issues/243"
-        },
-        {
-            "id": "CVE-2024-4068",
-            "reason": "Braces, dependency of micromatch, indirect dependency of jest. context: https://github.com/micromatch/micromatch/issues/243"
         }
     ]
 }
