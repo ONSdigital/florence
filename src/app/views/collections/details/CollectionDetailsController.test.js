@@ -311,32 +311,36 @@ describe("Deleting a collection", () => {
     });
 });
 
-describe("When fetching a collection's detail", async () => {
+describe("When fetching a collection's detail", () => {
     component.setProps({ collectionID: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
-    await component.update();
-
-    const getCollectionResponse = () => Promise.resolve({ id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+    const getCollectionSuccess = () => Promise.resolve({ id: "asdasdasd-04917444856fa9ade290b8847dee1f24e7726d71e1a7378c2557d949b6a6968c" });
+    const getCollectionError = () => Promise.reject({ status: 500, statusText: "Unexpected error" });
+    const getCollectionPending = () => new Promise(() => {});
 
     it("a loading icon is shown", () => {
-        collections.get.mockImplementation(getCollectionResponse);
+        collections.get.mockImplementation(getCollectionPending);
         component.instance().fetchActiveCollection();
+        component.update();
         expect(component.state("isFetchingCollectionDetails")).toBe(true);
     });
 
     it("the loading icon is hidden on success", async () => {
+        collections.get.mockImplementation(getCollectionSuccess);
         await component.instance().fetchActiveCollection();
         await component.update();
         expect(component.state("isFetchingCollectionDetails")).toBe(false);
     });
 
     it("the loading icon is hidden on error", async () => {
+        collections.get.mockImplementation(getCollectionError);
         await component.instance().fetchActiveCollection();
         await component.update();
         expect(component.state("isFetchingCollectionDetails")).toBe(false);
     });
 
     it("shows a notification on error", async () => {
-        notifications.add.mockClear();
+        notifications.add.mockReset();
+        collections.get.mockImplementation(getCollectionError);
         await component.instance().fetchActiveCollection();
         await component.update();
         expect(notifications.add.mock.calls.length).toBe(1);
