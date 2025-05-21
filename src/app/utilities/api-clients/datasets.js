@@ -1,4 +1,5 @@
 import http from "../http";
+import { API_PROXY } from "./constants";
 
 const publishingDatasetControllerURL = "/dataset-controller";
 
@@ -205,7 +206,7 @@ export default class datasets {
     }
 
     static getCantabularMetadata(datasetID, lang) {
-        return http.get(`/cantabular-metadata/dataset/${datasetID}/lang/${lang}`, false, false);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/cantabular-metadata/dataset/${datasetID}/lang/${lang}`, false, false);
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {

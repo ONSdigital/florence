@@ -114,7 +114,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	tableProxy := reverseproxy.Create(tableURL, directors.Director("/table"), nil)
 	datasetControllerProxy := reverseproxy.Create(datasetControllerURL, directors.Director("/dataset-controller"), nil)
 	dataAdminProxy := reverseproxy.Create(dataAdminURL, directors.Director("/data-admin"), nil)
-	cantabularMetadataExtractorAPIProxy := reverseproxy.Create(apiRouterURL, directors.FixedVersionDirector(cfg.SharedConfig.APIRouterVersion, ""), nil) //nolint:staticcheck //This proxy will be deprecated soon and so there is low value in upgrading the director
 
 	// The following proxies and their associated routes are deprecated and should be removed once the client side code has been updated to match
 	//nolint:staticcheck //This will be removed soon so wasted effort to switch.
@@ -128,9 +127,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.Handle("/dataset/{uri:.*}", datasetAPIProxy)
 	router.Handle("/instances/{uri:.*}", datasetAPIProxy)
 	router.Handle("/dataset-controller/{uri:.*}", datasetControllerProxy)
-	if cfg.SharedConfig.EnableCantabularJourney {
-		router.Handle("/cantabular-metadata/{uri:.*}", cantabularMetadataExtractorAPIProxy)
-	}
 
 	router.Handle("/table/{uri:.*}", tableProxy)
 
