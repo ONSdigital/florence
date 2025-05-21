@@ -3,6 +3,7 @@ module.exports = {
     env: {
         browser: true
     },
+    root: true,
     parser: "@babel/eslint-parser",
     globals: {
         // You may think it sensible to try and add the globals in here to 
