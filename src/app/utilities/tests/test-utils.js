@@ -6,7 +6,7 @@ import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
 import thunkMiddleware from "redux-thunk";
 import { render as rtlRender } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 
 export function createMockUser(email = "", isAdmin = false, isAuthenticated = false, userType = "") {
     return {

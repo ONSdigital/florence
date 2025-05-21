@@ -1,6 +1,6 @@
 import React from "react";
 import { render, fireEvent, screen, within } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import renderer from "react-test-renderer";
 import DoubleSelectableBox from "./DoubleSelectableBox";
 import userEvent from "@testing-library/user-event";
