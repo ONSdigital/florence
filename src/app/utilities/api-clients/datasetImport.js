@@ -7,7 +7,7 @@ export default class datasetImport {
         const body = {
             recipe: recipeID,
         };
-        return http.post(`${API_PROXY.VERSIONED_PATH}/import/jobs`, body, true).then(response => {
+        return http.post(`${API_PROXY.VERSIONED_PATH}/jobs`, body, true).then(response => {
             return response;
         });
     }
@@ -17,7 +17,7 @@ export default class datasetImport {
             alias_name: fileAlias,
             url: fileURL,
         };
-        return http.put(`${API_PROXY.VERSIONED_PATH}/import/jobs/${jobID}/files`, body, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/jobs/${jobID}/files`, body, true).then(response => {
             return response;
         });
     }
@@ -35,25 +35,25 @@ export default class datasetImport {
             body.links = links;
         }
 
-        return http.put(`${API_PROXY.VERSIONED_PATH}/import/jobs/${jobID}`, body, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/jobs/${jobID}`, body, true).then(response => {
             return response;
         });
     }
 
     static getAll() {
-        return http.get(`${API_PROXY.VERSIONED_PATH}/import/jobs`, true).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/jobs`, true).then(response => {
             return response;
         });
     }
 
     static getCompleted() {
-        return http.get(`${API_PROXY.VERSIONED_PATH}/import/jobs?state=completed`, true).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/jobs?state=completed`, true).then(response => {
             return response;
         });
     }
 
     static get(jobID) {
-        return http.get(`${API_PROXY.VERSIONED_PATH}/import/jobs/${jobID}`, true).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/jobs/${jobID}`, true).then(response => {
             return response;
         });
     }
