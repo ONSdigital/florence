@@ -213,7 +213,6 @@ async function setupFlorence() {
         return {
             "collections": "collections",
             "publishing-queue": "publish",
-            "reports": "reports",
             "users-and-access": "users",
             "workspace": "workspace"
         }[path];
@@ -255,9 +254,6 @@ async function setupFlorence() {
         } else if (menuItem.hasClass("js-nav-item--publish")) {
             window.history.pushState({}, "", "/florence/publishing-queue");
             viewController('publish');
-        } else if (menuItem.hasClass("js-nav-item--reports")) {
-            window.history.pushState({}, "", "/florence/reports");
-            viewController('reports');
         } else if (menuItem.hasClass("js-nav-item--security")) {
             window.history.pushState({}, "", "/florence/security");
             viewController('security');

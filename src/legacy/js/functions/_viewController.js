@@ -54,9 +54,6 @@ function viewController(view) {
         else if (view === 'publish') {
             viewPublish();
         }
-        else if (view === 'reports') {
-            viewReports();
-        }
         else if (view === 'security') {
             window.location.pathname = "/florence/security";
         }

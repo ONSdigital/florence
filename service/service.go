@@ -128,7 +128,6 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 	router.HandleFunc("/florence/", redirectToFlorence)
 	router.HandleFunc("/florence/index.html", redirectToFlorence)
 	router.Path("/florence/publishing-queue").HandlerFunc(legacyIndexFile(cfg))
-	router.Path("/florence/reports").HandlerFunc(legacyIndexFile(cfg))
 	router.Path("/florence/workspace").HandlerFunc(legacyIndexFile(cfg))
 	router.HandleFunc("/florence/websocket", websocketHandler(svc.version))
 	router.Path("/florence{uri:.*}").HandlerFunc(refactoredIndexFile(cfg))
