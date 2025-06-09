@@ -26,7 +26,8 @@
     "globals": {
         "window": true,
         "module": true,
-        "jsdom": true
+        "jsdom": true,
+        "globalThis": true
     },
     "ignorePatterns": [
         "legacy/*",

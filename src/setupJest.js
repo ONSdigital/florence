@@ -1,7 +1,12 @@
-import Enzyme from 'enzyme';
-import Adapter from '@wojtekmaj/enzyme-adapter-react-17';
+// Add Node functions not present in window environment
+const { TextDecoder, TextEncoder, ReadableStream, MessagePort } = require("util")
 
-Enzyme.configure({ adapter: new Adapter() });
+Object.defineProperties(globalThis, {
+  TextDecoder: { value: TextDecoder },
+  TextEncoder: { value: TextEncoder },
+  ReadableStream: { value: ReadableStream },
+  MessagePort: { value: MessagePort },
+})
 
 window.fetch = require('jest-fetch-mock');
 import "regenerator-runtime/runtime";
@@ -22,6 +27,7 @@ Object.defineProperty(document, 'getElementById', {
     value: mockedGetElement,
 });
 
+// Mock out getEnv
 Object.defineProperty(window, 'getEnv', {
     writable: true,
     value: jest.fn().mockImplementation(() => ({

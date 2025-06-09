@@ -31,6 +31,7 @@ export const WrapperComponent = ({ children }) => {
 
 export function HookWrapper(props) {
     const hook = props.hook ? props.hook() : undefined;
+    // eslint-disable-next-line react/no-unknown-property
     return <div hook={hook} />;
 }
 
