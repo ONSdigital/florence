@@ -23,6 +23,10 @@
         {
             "id": "CVE-2024-4068",
             "reason": "Braces, dependency of micromatch, indirect dependency of jest. context: https://github.com/micromatch/micromatch/issues/243"
+        },
+        {
+            "id": "CVE-2025-5889",
+            "reason": "brace-expansion is a dependency of eslint and jest which are not used in production"
         }
     ]
 }
