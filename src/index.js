@@ -193,7 +193,6 @@ const Index = () => {
                     <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)} />
                     {/* legacy paths, stops the "not found" view from showing when loading */}
                     <Route path={`${rootPath}/publishing-queue`} />
-                    <Route path={`${rootPath}/reports`} />
                     <Route path={`${rootPath}/workspace`} />
 
                     {allowedExternalRedirects.map(redirect => (

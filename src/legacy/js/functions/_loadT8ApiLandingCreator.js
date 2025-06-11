@@ -101,7 +101,7 @@ function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTi
             crossDomain: true,
         }),
         $.ajax({
-            url: '/dataset/datasets',
+            url: `${API_PROXY.VERSIONED_PATH}/datasets`,
             dataType: 'json',
             crossDomain: true,
         })

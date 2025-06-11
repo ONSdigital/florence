@@ -72,7 +72,7 @@ export default class datasetImport {
         //         node_id: "id-thing-2"
         //     }
         // ])
-        return http.get(`/dataset/instances/${instanceID}`, true).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}`, true).then(response => {
             return response.dimensions;
         });
     }

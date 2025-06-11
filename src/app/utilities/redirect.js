@@ -71,7 +71,7 @@ function internalRedirect(redirectPath) {
         return;
     }
 
-    if (redirectPath === `${rootPath}/publishing-queue` || redirectPath === `${rootPath}/reports` || redirectPath === `${rootPath}/workspace`) {
+    if (redirectPath === `${rootPath}/publishing-queue` || redirectPath === `${rootPath}/workspace`) {
         window.location.href = redirectPath;
         return;
     }

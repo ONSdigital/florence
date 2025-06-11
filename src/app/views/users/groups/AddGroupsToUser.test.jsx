@@ -1,7 +1,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import { render, screen, within, getByTestId } from "../../../utilities/tests/test-utils";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import AddGroupsToUser from "./AddGroupsToUser";
 import { groups, user } from "../../../utilities/tests/mockData";

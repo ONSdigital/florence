@@ -1,22 +1,23 @@
 import http from "../http";
+import { API_PROXY } from "./constants";
 
 const publishingDatasetControllerURL = "/dataset-controller";
 
 export default class datasets {
     static create = (datasetID, body) => {
-        return http.post(`/dataset/datasets/${datasetID}`, body).then(response => {
+        return http.post(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}`, body).then(response => {
             return response;
         });
     };
 
     static get = datasetID => {
-        return http.get(`/dataset/datasets/${datasetID}`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}`).then(response => {
             return response;
         });
     };
 
     static getAll() {
-        return http.get(`/dataset/datasets`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets`).then(response => {
             return response;
         });
     }
@@ -28,31 +29,31 @@ export default class datasets {
     }
 
     static getInstance(instanceID) {
-        return http.get(`/dataset/instances/${instanceID}`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}`).then(response => {
             return response;
         });
     }
 
     static getEdition(datasetID, editionID) {
-        return http.get(`/dataset/datasets/${datasetID}/editions/${editionID}`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${editionID}`).then(response => {
             return response;
         });
     }
 
     static getEditions(datasetID) {
-        return http.get(`/dataset/datasets/${datasetID}/editions`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions`).then(response => {
             return response;
         });
     }
 
     static getVersion(datasetID, edition, version) {
-        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions/${version}`).then(response => {
             return response;
         });
     }
 
     static getVersions(datasetID, edition) {
-        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions`).then(response => {
             return response;
         });
     }
@@ -61,7 +62,7 @@ export default class datasets {
         return new Promise((resolve, reject) => {
             const versionFetches = editionsList.map(edition => {
                 return http
-                    .get(`/dataset/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`)
+                    .get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition.id}/versions/${edition.latestVersion}`)
                     .then(response => {
                         return response;
                     })
@@ -85,7 +86,7 @@ export default class datasets {
     };
 
     static getLatestVersion = async datasetID => {
-        const datasetURL = `/dataset/datasets/${datasetID}`;
+        const datasetURL = `${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}`;
 
         return new Promise((resolve, reject) => {
             const dataset = http.get(datasetURL).catch(error => reject(error));
@@ -104,7 +105,7 @@ export default class datasets {
     };
 
     static getLatestVersionURL = async datasetID => {
-        const datasetURL = `/dataset/datasets/${datasetID}`;
+        const datasetURL = `${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}`;
         return http
             .get(datasetURL)
             .then(response => {
@@ -115,14 +116,14 @@ export default class datasets {
     };
 
     static getVersionDimensions(datasetID, edition, version) {
-        return http.get(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}/dimensions`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions/${version}/dimensions`).then(response => {
             return response;
         });
     }
 
     static updateInstanceDimensions(instanceID, dimensions) {
         const body = { dimensions };
-        return http.put(`/instances/${instanceID}`, body);
+        return http.put(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}`, body);
     }
 
     static updateDimensionLabelAndDescription(instanceID, dimension, name, description) {
@@ -131,7 +132,7 @@ export default class datasets {
             description: description,
         };
 
-        return http.put(`/instances/${instanceID}/dimensions/${dimension}`, body, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}/dimensions/${dimension}`, body, true).then(response => {
             return response;
         });
     }
@@ -140,7 +141,7 @@ export default class datasets {
         if (typeof metadata !== "object") {
             return Promise.reject({ status: 400 });
         }
-        return http.put(`/dataset/datasets/${datasetID}/editions/${edition}/versions/${version}`, metadata, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions/${version}`, metadata, true).then(response => {
             return response;
         });
     }
@@ -149,7 +150,7 @@ export default class datasets {
         const body = {
             edition: edition,
         };
-        return http.put(`/dataset/instances/${instanceID}`, body, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}`, body, true).then(response => {
             return response;
         });
     }
@@ -165,35 +166,35 @@ export default class datasets {
                 ...metadata,
             };
         }
-        return http.put(`/dataset/instances/${instanceID}`, body, true);
+        return http.put(`${API_PROXY.VERSIONED_PATH}/instances/${instanceID}`, body, true);
     }
 
     static updateDatasetMetadata(datasetID, metadata) {
-        return http.put(`/dataset/datasets/${datasetID}`, metadata, true).then(response => {
+        return http.put(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}`, metadata, true).then(response => {
             return response;
         });
     }
 
     static getAllInstances() {
-        return http.get(`/dataset/instances`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances`).then(response => {
             return response;
         });
     }
 
     static getCompletedInstancesForDataset(datasetID) {
-        return http.get(`/dataset/instances?dataset=${datasetID}&state=completed`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances?dataset=${datasetID}&state=completed`).then(response => {
             return response;
         });
     }
 
     static getCompletedInstances() {
-        return http.get(`/dataset/instances?state=completed`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances?state=completed`).then(response => {
             return response;
         });
     }
 
     static getNewVersionsAndCompletedInstances() {
-        return http.get(`/dataset/instances?state=completed,edition-confirmed,associated`).then(response => {
+        return http.get(`${API_PROXY.VERSIONED_PATH}/instances?state=completed,edition-confirmed,associated`).then(response => {
             return response;
         });
     }
@@ -205,7 +206,7 @@ export default class datasets {
     }
 
     static getCantabularMetadata(datasetID, lang) {
-        return http.get(`/cantabular-metadata/dataset/${datasetID}/lang/${lang}`, false, false);
+        return http.get(`${API_PROXY.VERSIONED_PATH}/cantabular-metadata/dataset/${datasetID}/lang/${lang}`, false, false);
     }
 
     static putEditMetadata(datasetID, editionID, versionID, body) {

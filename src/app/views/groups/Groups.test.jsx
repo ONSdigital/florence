@@ -3,7 +3,7 @@ import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
 import Groups from "./Groups";
-import "@testing-library/jest-dom/extend-expect";
+import "@testing-library/jest-dom";
 import { mappedSortedGroups } from "../../utilities/tests/mockData";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
