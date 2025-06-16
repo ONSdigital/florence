@@ -139,6 +139,7 @@
     "path-to-regexp": ">=8.0.0",
     "semver": ">=7.5.4",
     "cross-spawn": ">=7.0.5",
-    "@babel/runtime": ">=7.26.10"
+    "@babel/runtime": ">=7.26.10",
+    "brace-expansion": "1.1.12"
   }
 }
