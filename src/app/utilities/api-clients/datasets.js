@@ -141,9 +141,11 @@ export default class datasets {
         if (typeof metadata !== "object") {
             return Promise.reject({ status: 400 });
         }
-        return http.put(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions/${version}`, metadata, true).then(response => {
-            return response;
-        });
+        return http
+            .put(`${API_PROXY.VERSIONED_PATH}/datasets/${datasetID}/editions/${edition}/versions/${version}`, metadata, true)
+            .then(response => {
+                return response;
+            });
     }
 
     static updateInstanceEdition(instanceID, edition) {
