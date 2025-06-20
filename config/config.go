@@ -24,10 +24,11 @@ type Config struct {
 type SharedConfig struct {
 	AllowedExternalPaths    []string `envconfig:"ALLOWED_EXTERNAL_PATHS" json:"allowedExternalPaths"`
 	APIRouterVersion        string   `envconfig:"API_ROUTER_VERSION" json:"apiRouterVersion"`
-	EnableNewUpload         bool     `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnablePermissionsAPI    bool     `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 	EnableCantabularJourney bool     `envconfig:"ENABLE_CANTABULAR_JOURNEY" json:"enableCantabularJourney"`
 	EnableDataAdmin         bool     `envconfig:"ENABLE_DATA_ADMIN" json:"enableDataAdmin"`
+	EnableMigrationField    bool     `envconfig:"ENABLE_MIGRATION_FIELD" json:"enableMigrationField"`
+	EnableNewUpload         bool     `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
+	EnablePermissionsAPI    bool     `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 }
 
 var cfg *Config
@@ -48,10 +49,11 @@ func Get() (*Config, error) {
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
 			APIRouterVersion:        "v1",
-			EnableNewUpload:         false,
-			EnablePermissionsAPI:    false,
 			EnableCantabularJourney: false,
 			EnableDataAdmin:         true,
+			EnableMigrationField:    false,
+			EnableNewUpload:         false,
+			EnablePermissionsAPI:    false,
 		},
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,

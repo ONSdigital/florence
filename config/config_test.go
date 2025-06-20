@@ -24,9 +24,11 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
 				APIRouterVersion:        "v1",
-				EnableNewUpload:         false,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,
+				EnableMigrationField:    false,
+				EnableNewUpload:         false,
+				EnablePermissionsAPI:    false,
 			},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,

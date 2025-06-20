@@ -110,15 +110,16 @@ The following environment variables are available when running the Go server.
 | HEALTHCHECK_INTERVAL         | 30s                               | The period of time between health checks
 | HEALTHCHECK_CRITICAL_TIMEOUT | 90s                               | The period of time after which failing checks will result in critical global check status
 
-The following envrionment variables are available when running the Go server and within the React application:
+The following environment variables are available when running the Go server and within the React application:
 
 | Environment variable      | Default | Description
 |---------------------------|---------|------------
 | ALLOWED_EXTERNAL_PATHS    | []string| Permitted external primary path and subpath from Florence e.g. primary path `/data-admin` allows `/data-admin/*`
 | API_ROUTER_VERSION        | v1      | The version of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)
+| ENABLE_CANTABULAR_JOURNEY | false   | Enables the cantabular journey
+| ENABLE_MIGRATION_FIELD    | false   | Enables the management of the migration field
 | ENABLE_NEW_UPLOAD         | false   | Enables the image upload functionality via static files service
 | ENABLE_PERMISSION_API     | false   |
-| ENABLE_CANTABULAR_JOURNEY | false   | Enables the cantabular journey
 
 For example:
 
