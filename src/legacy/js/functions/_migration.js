@@ -5,13 +5,16 @@
  */
 
 async function migration(templateData, data) {
-    let html = templates.migration(templateData)
-    $('#migration').replaceWith(html);
+    const migrationConfig = window.getEnv().enableMigrationField;
+    if (migrationConfig) {
+        let html = templates.migration(templateData)
+        $('#migration').replaceWith(html);
 
-    $('#migration_link').on('input', function () {
-        let input = $(this).val();
-        data.description.migrationLink = input.trim();
-    });
+        $('#migration_link').on('input', function () {
+            let input = $(this).val();
+            data.description.migrationLink = input.trim();
+        });
+    }
 }
 
 // isRelativePath validates if the given path is a relative path
@@ -21,15 +24,15 @@ function isRelativePath(path) {
     }
     // Exclude periods
     if (path.includes('.')) {
-        return false; 
+        return false;
     }
     // Exclude whitespace
     if (path.includes(' ')) {
-        return false; 
+        return false;
     }
     // Check if the path starts with '/'
     if (path.startsWith('/')) {
-        return true; 
+        return true;
     }
     return false;
 }
