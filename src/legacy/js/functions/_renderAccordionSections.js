@@ -94,6 +94,7 @@
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        migration(templateData, pageData);
         tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
