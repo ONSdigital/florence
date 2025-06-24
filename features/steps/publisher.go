@@ -29,13 +29,14 @@ func generateAuthCookies() []*http.Cookie {
 func (p *Publisher) signIn(username string) error {
 	var cookies []*http.Cookie
 
-	if username == "not.a.user@ons.gov.uk" {
+	switch username {
+	case "not.a.user@ons.gov.uk":
 		p.fakeAPI.setJSONResponseForPost("/tokens", "", 401)
-	} else if username == "" {
+	case "":
 		p.fakeAPI.fakeHTTP.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidEmail","description": "the submitted email could not be validated"}]}`))
-	} else if username == "no.password@ons.gov.uk" {
+	case "no.password@ons.gov.uk":
 		p.fakeAPI.fakeHTTP.NewHandler().Post("/tokens").Reply(400).Body([]byte(`{"errors": [{"code": "InvalidPassword","description": "the submitted password could not be validated"}]}`))
-	} else {
+	default:
 		p.fakeAPI.setJSONResponseForPost("/tokens", "{\"expirationTime\": \"2020-01-01 00-00-01Z\"}", 200)
 		cookies = generateAuthCookies()
 	}
