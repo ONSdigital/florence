@@ -29,13 +29,13 @@ function articleEditor(collectionId, data) {
   });
 
   if (!data.description.releaseDate) {
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    $('#releaseDate').datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({ dateFormat: 'dd MM yy' })[0].value).toISOString();
     });
   } else {
     dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    $('#releaseDate').val(dateTmpFormatted).datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
     });
   }
@@ -87,75 +87,75 @@ function articleEditor(collectionId, data) {
   };
 
   $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
-      data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
+    data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
   });
 
   $("#census-checkbox").prop('checked', data.description.survey ? true : false).click(function () {
     data.description.survey = $("#census-checkbox").prop('checked') ? 'census' : null;
   });
-  
+
   $("#articleType-checkbox").click(function () {
-      data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
-      if (data.isPrototypeArticle) {
-        $("#releaseDateEnabled-checkbox").attr('disabled', false);
-        // if neutral article then release date might have been disabled or enabled already, so set it to its true value
-        $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
-      }
-      else {
-        $("#releaseDateEnabled-checkbox").attr('disabled', true);
-        // If not a neutral article then release date is enabled
-        $("#releaseDateEnabled-checkbox").attr('checked', true);
-      }
+    data.isPrototypeArticle = $("#articleType-checkbox").prop('checked');
+    if (data.isPrototypeArticle) {
+      $("#releaseDateEnabled-checkbox").attr('disabled', false);
+      // if neutral article then release date might have been disabled or enabled already, so set it to its true value
+      $("#releaseDateEnabled-checkbox").attr('checked', data.isReleaseDateEnabled);
+    }
+    else {
+      $("#releaseDateEnabled-checkbox").attr('disabled', true);
+      // If not a neutral article then release date is enabled
+      $("#releaseDateEnabled-checkbox").attr('checked', true);
+    }
   });
-    
-    $("#releaseDateEnabled-checkbox").click(function () {
-      data.isReleaseDateEnabled = $("#releaseDateEnabled-checkbox").prop('checked');
+
+  $("#releaseDateEnabled-checkbox").click(function () {
+    data.isReleaseDateEnabled = $("#releaseDateEnabled-checkbox").prop('checked');
+  });
+
+  $('#neutral-article-image-upload-submit').click(function () {
+    var file = document.getElementById("neutral-article-image-upload").files[0];
+
+    if (!file) {
+      sweetAlert('Please select a file to upload.');
+      return;
+    }
+
+    var formData = new FormData();
+    formData.append("file", file);
+    var fileExtension = file.name.split('.').pop();
+    var filename = file.filename ? file.filename : StringUtils.randomId();
+    var imagePath = data.uri + "/" + filename + '.' + fileExtension;
+
+    $.ajax({
+      url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${imagePath}`,
+      type: 'POST',
+      data: formData,
+      async: false,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function () {
+        data.imageUri = imagePath;
+        save(updateContent);
+      },
+      error: function (error) {
+        sweetAlert("Error", error);
+      }
     });
+  });
 
-    $('#neutral-article-image-upload-submit').click(function() {
-        var file = document.getElementById("neutral-article-image-upload").files[0];
+  $('#neutral-article-image-upload-delete').on('click', function () {
 
-        if (!file) {
-            sweetAlert('Please select a file to upload.');
-            return;
-        }
+    if (data.imageUri) {
 
-        var formData = new FormData();
-        formData.append("file", file);
-        var fileExtension = file.name.split('.').pop();
-        var filename = file.filename ? file.filename : StringUtils.randomId();
-        var imagePath = data.uri + "/" + filename + '.' + fileExtension;
-
-        $.ajax({
-            url: `${API_PROXY.VERSIONED_PATH}/content/${Florence.collection.id}?uri=${imagePath}`,
-            type: 'POST',
-            data: formData,
-            async: false,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function () {
-                data.imageUri = imagePath;
-                save(updateContent);
-            },
-            error: function (error) {
-                sweetAlert("Error", error);
-            }
+      deleteContent(Florence.collection.id, data.imageUri,
+        onSuccess = function () {
+          console.log("deleted image file: " + data.imageUri);
+          data.imageUri = "";
+          save(updateContent);
         });
-    });
-
-    $('#neutral-article-image-upload-delete').on('click', function () {
-
-        if (data.imageUri) {
-
-            deleteContent(Florence.collection.id, data.imageUri,
-                onSuccess = function () {
-                    console.log("deleted image file: " + data.imageUri);
-                    data.imageUri = "";
-                    save(updateContent);
-                });
-        }
-    });
+    }
+  });
 
   // Save
   var editNav = $('.edit-nav');
@@ -181,6 +181,11 @@ function articleEditor(collectionId, data) {
 
     validateAndSaveTags(data);
 
+    if (!validateMigrationPath(data.description.migrationLink)) {
+      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+      return
+    }
+
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');
     $(orderChart).each(function (indexCh, nameCh) {
@@ -188,7 +193,7 @@ function articleEditor(collectionId, data) {
       var title = data.charts[parseInt(nameCh)].title;
       var filename = data.charts[parseInt(nameCh)].filename;
       var safeUri = checkPathSlashes(uri);
-      newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+      newChart[indexCh] = { uri: safeUri, title: title, filename: filename };
     });
     data.charts = newChart;
     // tables
@@ -199,7 +204,7 @@ function articleEditor(collectionId, data) {
       var filename = data.tables[parseInt(nameTable)].filename;
       var version = data.tables[parseInt(nameTable)].version;
       var safeUri = checkPathSlashes(uri);
-      newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
+      newTable[indexTable] = { uri: safeUri, title: title, filename: filename, version: version };
     });
     data.tables = newTable;
     // equations
@@ -209,7 +214,7 @@ function articleEditor(collectionId, data) {
       var title = data.equations[parseInt(nameEquation)].title;
       var filename = data.equations[parseInt(nameEquation)].filename;
       var safeUri = checkPathSlashes(uri);
-      newEquation[indexEquation] = {uri: safeUri, title: title, filename: filename};
+      newEquation[indexEquation] = { uri: safeUri, title: title, filename: filename };
     });
     data.equations = newEquation;
     // images
@@ -219,7 +224,7 @@ function articleEditor(collectionId, data) {
       var title = data.images[parseInt(nameImage)].title;
       var filename = data.images[parseInt(nameImage)].filename;
       var safeUri = checkPathSlashes(uri);
-      newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+      newImage[indexImage] = { uri: safeUri, title: title, filename: filename };
     });
     data.images = newImage;
     // External links
@@ -227,7 +232,7 @@ function articleEditor(collectionId, data) {
     $(orderLink).each(function (indexL, nameL) {
       var displayText = data.links[parseInt(nameL)].title;
       var link = $('#link-uri_' + nameL).val();
-      newLinks[indexL] = {uri: link, title: displayText};
+      newLinks[indexL] = { uri: link, title: displayText };
     });
     data.links = newLinks;
     // Files are uploaded. Save metadata
@@ -235,14 +240,14 @@ function articleEditor(collectionId, data) {
     $(orderFile).each(function (indexF, nameF) {
       var title = $('#pdf-title_' + nameF).val();
       var file = data.pdfTable[parseInt(nameF)].file;
-      newFiles[indexF] = {title: title, file: file};
+      newFiles[indexF] = { title: title, file: file };
     });
     data.pdfTable = newFiles;
 
     checkRenameUri(collectionId, data, renameUri, onSave);
   }
 
-  function setNeutralArticleOptions () {
+  function setNeutralArticleOptions() {
     if (data.isPrototypeArticle) {
       $("#releaseDateEnabled-checkbox").attr('disabled', false);
       // if neutral article then release date might have been disabled or enabled already, so set it to its true value

@@ -5,7 +5,7 @@
  * @param isPageComplete - if present page has been approved
  */
 
- function renderAccordionSections(collectionId, pageData, isPageComplete) {
+function renderAccordionSections(collectionId, pageData, isPageComplete) {
 
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;
@@ -126,6 +126,7 @@
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        migration(templateData, pageData);
         tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
@@ -478,7 +479,7 @@ function refreshEditNavigation() {
             var lastCompletedEvent = getLastCompletedEvent(collection, pageFile);
             var isPageComplete = !(!lastCompletedEvent || lastCompletedEvent.email === Florence.Authentication.loggedInEmail());
 
-            var editNav = templates.editNav({isPageComplete: isPageComplete});
+            var editNav = templates.editNav({ isPageComplete: isPageComplete });
             $('.edit-nav').html(editNav);
         },
         error = function (response) {
