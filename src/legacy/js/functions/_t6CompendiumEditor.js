@@ -1,6 +1,6 @@
 function compendiumEditor(collectionId, data, templateData) {
 
-//  var index = data.release;
+  //  var index = data.release;
   var newChapters = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
@@ -32,13 +32,13 @@ function compendiumEditor(collectionId, data, templateData) {
     data.description.edition = $(this).val();
   });
   if (!data.description.releaseDate) {
-    $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-      data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+    $('#releaseDate').datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
+      data.description.releaseDate = new Date($(this).datepicker({ dateFormat: 'dd MM yy' })[0].value).toISOString();
     });
   } else {
     dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+    $('#releaseDate').val(dateTmpFormatted).datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
       data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
     });
   }
@@ -87,7 +87,7 @@ function compendiumEditor(collectionId, data, templateData) {
   will be true if the attribute is present and has a value other than false */
   var checkBoxStatus = function (value) {
     if (value === "" || value === "false" || value === false) {
-        return false;
+      return false;
     }
     return true;
   };
@@ -169,6 +169,10 @@ function compendiumEditor(collectionId, data, templateData) {
   });
 
   function save(onSave) {
+    if (!validateMigrationPath(data.description.migrationLink)) {
+      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+      return
+    }
 
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
@@ -177,7 +181,7 @@ function compendiumEditor(collectionId, data, templateData) {
     $(orderRelatedChapter).each(function (indexC, nameC) {
       var uri = data.chapters[parseInt(nameC)].uri;
       var safeUri = checkPathSlashes(uri);
-      newChapters[indexC] = {uri: safeUri};
+      newChapters[indexC] = { uri: safeUri };
     });
     data.chapters = newChapters;
 
@@ -238,7 +242,7 @@ function editChapters(collectionId, data) {
       getPageData(collectionId, selectedChapter,
         function (pageData) {
           var markdown = pageData.description.title;
-          var editedSectionValue = {title: 'Compendium chapter title', markdown: markdown};
+          var editedSectionValue = { title: 'Compendium chapter title', markdown: markdown };
           var saveContent = function (updatedContent) {
             pageData.description.title = updatedContent;
             var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();
@@ -347,7 +351,7 @@ function editData(collectionId, data) {
         getPageData(collectionId, selectedData,
           function (pageData) {
             var markdown = pageData.description.title;
-            var editedSectionValue = {title: 'Compendium dataset title', markdown: markdown};
+            var editedSectionValue = { title: 'Compendium dataset title', markdown: markdown };
             var saveContent = function (updatedContent) {
               pageData.description.title = updatedContent;
               var childTitle = updatedContent.replace(/[^A-Z0-9]+/ig, "").toLowerCase();

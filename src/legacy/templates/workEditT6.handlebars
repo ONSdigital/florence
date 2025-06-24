@@ -9,69 +9,111 @@
                 <div id="metadata-list">
                     <div>
                         <label for="title">Title
-                            <textarea class="auto-size" type="text" id="title">{{this.description.title}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="title"
+                            >{{this.description.title}}</textarea>
                         </label>
                     </div>
                     <div class="edition">
                         <label for="edition">Edition
-                            <textarea class="auto-size" type="text" id="edition">{{this.description.edition}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="edition"
+                            >{{this.description.edition}}</textarea>
                         </label>
                     </div>
                     <div class="release-date">
                         <label for="releaseDate">Release date
-                            <input id="releaseDate" type="text" placeholder="Day month year"
-                                   value="{{this.description.releaseDate}}"/>
+                            <input
+                                id="releaseDate"
+                                type="text"
+                                placeholder="Day month year"
+                                value="{{this.description.releaseDate}}"
+                            />
                         </label>
                     </div>
                     <div class="next-p">
                         <label for="nextRelease">Next release
-                            <textarea class="auto-size" type="text"
-                                      id="nextRelease">{{this.description.nextRelease}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="nextRelease"
+                            >{{this.description.nextRelease}}</textarea>
                         </label>
                     </div>
                     <div>
                         <label for="contactName">Contact name
-                            <textarea class="auto-size" type="text"
-                                      id="contactName">{{this.description.contact.name}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="contactName"
+                            >{{this.description.contact.name}}</textarea>
                         </label>
                     </div>
                     <div>
                         <label for="contactEmail">Contact email
-                            <textarea class="auto-size" type="text"
-                                      id="contactEmail">{{this.description.contact.email}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="contactEmail"
+                            >{{this.description.contact.email}}</textarea>
                         </label>
                     </div>
                     <div>
                         <label for="contactTelephone">Contact telephone
-                            <textarea class="auto-size" type="text"
-                                      id="contactTelephone">{{this.description.contact.telephone}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="contactTelephone"
+                            >{{this.description.contact.telephone}}</textarea>
                         </label>
                     </div>
                     <div id="abstract-p">
                         <label for="abstract">Summary
-                            <textarea class="auto-size" type="text" id="summary">{{this.description.summary}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="summary"
+                            >{{this.description.summary}}</textarea>
                         </label>
                     </div>
                     <div id="natStat">
                         <label for="natStat-checkbox">Accredited official statistics </label>
-                        <input id="natStat-checkbox" type="checkbox" name="natStat" value="false"/>
+                        <input
+                            id="natStat-checkbox"
+                            type="checkbox"
+                            name="natStat"
+                            value="false"
+                        />
                     </div>
                     <div>
                         <label for="keywords">Keywords
-                            <input name="tags" id="keywords" value="{{this.description.keywords}}"
-                                   style="display: none;">
+                            <input
+                                name="tags"
+                                id="keywords"
+                                value="{{this.description.keywords}}"
+                                style="display: none;"
+                            >
                         </label>
                         <ul id="keywordsTag"></ul>
                     </div>
                     <div>
                         <label for="metaDescription">Meta description
-                            <textarea class="auto-size" type="text"
-                                      id="metaDescription">{{this.description.metaDescription}}</textarea>
+                            <textarea
+                                class="auto-size"
+                                type="text"
+                                id="metaDescription"
+                            >{{this.description.metaDescription}}</textarea>
                         </label>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div id="migration"></div>
 
         <div class="edit-section">
             <div class="edit-section__head">
@@ -79,11 +121,17 @@
                 <p>Title</p>
             </div>
             <div class="edit-section__content">
-                <div id="sortable-chapter" class="edit-section__sortable">
+                <div
+                    id="sortable-chapter"
+                    class="edit-section__sortable"
+                >
                     <div id="chapters"></div>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn--subtle btn-add-section" id="add-chapter">Add chapter</button>
+                    <button
+                        class="btn btn--subtle btn-add-section"
+                        id="add-chapter"
+                    >Add chapter</button>
                 </div>
             </div>
         </div>
@@ -94,11 +142,17 @@
                 <p>Title</p>
             </div>
             <div class="edit-section__content">
-                <div id="sortable-compendium-data" class="edit-section__sortable">
+                <div
+                    id="sortable-compendium-data"
+                    class="edit-section__sortable"
+                >
                     <div id="datasets"></div>
                 </div>
                 <div class="text-center">
-                    <button class="btn btn--subtle btn-add-section" id="add-compendium-data">Add data</button>
+                    <button
+                        class="btn btn--subtle btn-add-section"
+                        id="add-compendium-data"
+                    >Add data</button>
                 </div>
             </div>
         </div>

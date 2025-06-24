@@ -188,6 +188,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'compendium_landing_page') {
         var html = templates.workEditT6(templateData);
         $('.workspace-menu').html(html);
+        migration(templateData, pageData);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
