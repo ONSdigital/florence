@@ -1,6 +1,4 @@
 function compendiumEditor(collectionId, data, templateData) {
-
-  //  var index = data.release;
   var newChapters = [];
   var lastIndexChapter, lastIndexDataset;
   var setActiveTab, getActiveTab;
@@ -394,7 +392,6 @@ function editData(collectionId, data) {
 
       // Delete
       $("#compendium-data-delete_" + index).click(function () {
-        //var result = confirm("You are going to delete the chapter this link refers to. Are you sure you want to proceed?");
         swal({
           title: "Warning",
           text: "You are going to delete the chapter this link refers to. Are you sure you want to proceed?",
@@ -438,4 +435,3 @@ function editData(collectionId, data) {
     });
   }
 }
-
