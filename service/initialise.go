@@ -52,9 +52,9 @@ func (e *ExternalServiceList) GetHealthCheck(cfg *config.Config, buildTime, gitC
 func (e *Init) DoGetHTTPServer(bindAddr string, router http.Handler) HTTPServer {
 	s := dphttp.NewServer(bindAddr, router)
 	s.HandleOSSignals = false
-	s.Server.IdleTimeout = 120 * time.Second
-	s.Server.WriteTimeout = 120 * time.Second
-	s.Server.ReadTimeout = 30 * time.Second
+	s.IdleTimeout = 120 * time.Second
+	s.WriteTimeout = 120 * time.Second
+	s.ReadTimeout = 30 * time.Second
 	return s
 }
 
