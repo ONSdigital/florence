@@ -37,7 +37,7 @@ function isRelativePath(path) {
     return false;
 }
 
-// validationMigrationPath handles the validation of the migration path input 
+// validateMigrationPath handles the validation of the migration path input 
 function validateMigrationPath(input) {
     if (input && input !== '') {
         const isValid = isRelativePath(input);
