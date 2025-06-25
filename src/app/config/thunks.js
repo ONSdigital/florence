@@ -7,6 +7,7 @@ import collectionDetailsErrorNotifications from "../views/collections/details/co
 import { errCodes } from "../utilities/errorCodes";
 import teams from "../utilities/api-clients/teams";
 import url from "../utilities/url";
+import { capitalize } from "lodash";
 
 export const loadCollectionsRequest = redirect => async dispatch => {
     dispatch(actions.loadCollectionsProgress());
@@ -208,6 +209,24 @@ export const updateUserRequest = (id, body) => dispatch => {
             dispatch(actions.updateUserFailure());
             if (error) {
                 notifications.add({ type: "warning", message: error?.message || error.status, autoDismiss: 5000 });
+            }
+            console.error(error);
+        });
+};
+
+export const setUserPasswordRequest = id => dispatch => {
+    dispatch(actions.setUserPasswordProgress());
+    user.setUserPassword(id)
+        .then(() => {
+            dispatch(actions.setUserPasswordSuccess());
+            dispatch(push(url.resolve("../", true)));
+            notifications.add({ type: "positive", message: `User reset successfully`, autoDismiss: 5000 });
+        })
+        .catch(error => {
+            dispatch(actions.setUserPasswordFailure());
+            if (error) {
+                console.log(error);
+                notifications.add({ type: "warning", message: capitalize(error?.body?.errors[0]?.description) || error.status, autoDismiss: 5000 });
             }
             console.error(error);
         });

@@ -19,6 +19,7 @@ const props = {
     updateUser: jest.fn(),
     loadUser: jest.fn(),
     loadUserGroups: jest.fn(),
+    setUserPassword: jest.fn(),
     router: { setRouteLeaveHook: jest.fn() },
     loggedInUser: admin,
 };
@@ -43,10 +44,12 @@ describe("EditUser", () => {
 
         expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("test user-1498");
-        expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("test");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("user-1498");
+
+        expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
+        expect(screen.getByText("Confirmed")).toBeInTheDocument();
 
         expect(screen.getByRole("group", { name: /User Access/i })).toBeInTheDocument();
         expect(screen.getByRole("radio", { name: /Active/i })).toBeChecked();
@@ -99,6 +102,13 @@ describe("EditUser", () => {
         };
         render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         expect(screen.getByTestId("loader")).toBeInTheDocument();
+    });
+
+    it("sends a reset account request", async () => {
+        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        await userEvent.click(screen.getByText(/Reset Account/i));
+
+        expect(props.setUserPassword).toBeCalled();
     });
 
     it("updates user data", async () => {
@@ -165,6 +175,10 @@ describe("EditUser without admin permissions", () => {
         expect(screen.queryByLabelText(/First name/i)).not.toBeInTheDocument();
         expect(screen.queryByLabelText(/Last name/i)).not.toBeInTheDocument();
 
+        expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
+        expect(screen.queryByText(/Status/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/Reset Account/i)).not.toBeInTheDocument();
+
         expect(screen.queryByRole("group", { name: /User Access/i })).not.toBeInTheDocument();
         expect(screen.queryByRole("radio", { name: /Active/i })).not.toBeInTheDocument();
         expect(screen.queryByRole("radio", { name: /Suspended/i })).not.toBeInTheDocument();
@@ -173,6 +187,8 @@ describe("EditUser without admin permissions", () => {
         expect(screen.queryByRole("button", { name: /Save changes/i })).not.toBeInTheDocument();
         expect(screen.queryByRole("button", { name: /Cancel/i })).not.toBeInTheDocument();
         expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
+
+        expect(screen.queryByText(/User account reset/i)).not.toBeInTheDocument();
     });
     it("shows loader when fetching user data", () => {
         const newProps = {

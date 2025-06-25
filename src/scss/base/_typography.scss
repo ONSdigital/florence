@@ -1,3 +1,5 @@
+@use "sass:math";
+
 body {
     font-family: $base-font-family;
     font-weight: 300;
@@ -43,6 +45,17 @@ button {
     font-size: $magicnumber1 * 2;
     font-weight: 300;
     line-height: $lineheight;
+}
+
+dt {
+    display: block;
+    font-weight: 600;
+    margin-bottom: math.div($lineheight, 4);
+}
+
+dd {
+    line-height: $lineheight;
+    margin-bottom: $lineheight;
 }
 
 

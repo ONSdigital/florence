@@ -2,20 +2,15 @@ import React, { useEffect, useState } from "react";
 import { withRouter } from "react-router";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
-import PropTypes from "prop-types";
-import { Link } from "react-router";
-import url from "../../../utilities/url";
 import Input from "../../../components/Input";
-import Warning from "../../../icons/Warning";
 import validate from "./validate";
 import FormValidationErrors from "../../../components/form-validation-errors";
 import BackButton from "../../../components/back-button";
 import FormFooter from "../../../components/form-footer";
-import SelectedItemList from "../../../components/selected-items/SelectedItemList";
 import Loader from "../../../components/loader";
 import RadioGroup from "../../../components/radio-buttons/RadioGroup";
-import TextArea from "../../../components/text-area/TextArea";
 import UserGroupsList from "../groups/UserGroupsList";
+import { default as IdentityAPI } from "../../../utilities/api-clients/user";
 
 const USER_ACCESS_OPTIONS = [
     {
@@ -40,7 +35,7 @@ export const EditUser = props => {
         }
     }, [id]);
 
-    const { user, userGroups, loading, updateUser } = props;
+    const { user, userGroups, loading, updateUser, setUserPassword } = props;
     const [values, setValues] = useState(null);
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,6 +62,13 @@ export const EditUser = props => {
         setIsSubmitting(true);
         if (hasErrors) return;
         updateUser(id, values);
+    };
+
+    const handleAccountReset = e => {
+        if (e) e.preventDefault();
+        setIsSubmitting(true);
+        if (hasErrors) return;
+        setUserPassword(id);
     };
 
     const handleChange = e => {
@@ -99,7 +101,17 @@ export const EditUser = props => {
                     <div className="grid grid--justify-space-between">
                         <div className="grid__col-md-6">
                             <h1 className="margin-top--1 margin-bottom--1">{`${user.forename} ${user.lastname}`}</h1>
-                            <p>{user.email}</p>
+
+                            <dl>
+                                <dt id="email">Email</dt>
+                                <dd aria-labelledby="email">{user.email}</dd>
+                                {isAdmin && (
+                                    <>
+                                        <dt id="status">Status</dt>
+                                        <dd aria-labelledby="status">{IdentityAPI.translateStatus(user.status)}</dd>
+                                    </>
+                                )}
+                            </dl>
                             {hasErrors && <FormValidationErrors errors={errors} />}
                             {isAdmin && (
                                 <>
@@ -132,6 +144,23 @@ export const EditUser = props => {
                         </div>
                         {isAdmin && (
                             <div className="grid__col-md-5">
+                                <div className="margin-bottom--1">
+                                    <h2>User account reset</h2>
+                                    <p className="margin-bottom--1">
+                                        If a user has not used their temporary password issued on account creation within 1 week, their account will
+                                        need to be reset to receive 'Forgotton password' emails
+                                    </p>
+
+                                    <button
+                                        disabled={hasErrors}
+                                        type="submit"
+                                        className="btn btn--warning btn--margin-right"
+                                        onClick={handleAccountReset}
+                                    >
+                                        {loading ? <div className="loader loader--dark" data-testid="loader" /> : "Reset Account"}
+                                    </button>
+                                </div>
+
                                 <div className="form-group margin-top--1 margin-bottom--1">
                                     <RadioGroup
                                         groupName="active"
