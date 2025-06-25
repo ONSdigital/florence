@@ -166,11 +166,11 @@ function compendiumEditor(collectionId, data, templateData) {
     save(saveAndReviewContent);
   });
 
-  function save(onSave) {
-    if (!validateMigrationPath(data.description.migrationLink)) {
-      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
-      return
-    }
+    function save(onSave) {
+        if (!validateMigrationPath(data.description.migrationLink)) {
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
+            return
+        }
 
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 

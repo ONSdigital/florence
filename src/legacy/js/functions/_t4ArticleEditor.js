@@ -181,10 +181,10 @@ function articleEditor(collectionId, data) {
 
     validateAndSaveTags(data);
 
-    if (!validateMigrationPath(data.description.migrationLink)) {
-      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
-      return
-    }
+        if (!validateMigrationPath(data.description.migrationLink)) {
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
+            return
+        }
 
     // charts
     var orderChart = $("#sortable-chart").sortable('toArray');

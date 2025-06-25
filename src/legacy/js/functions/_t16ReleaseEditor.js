@@ -289,7 +289,7 @@ function releaseEditor(collectionId, data) {
 
     function save(onSave) {
         if (!validateMigrationPath(data.description.migrationLink)) {
-            sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
             return
         }
         // Check whether the publish flag needs to be toggle - this is async so needs to be a promise

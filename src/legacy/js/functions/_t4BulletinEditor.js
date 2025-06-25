@@ -126,7 +126,7 @@ function bulletinEditor(collectionId, data) {
 
     function save(onSave) {
         if (!validateMigrationPath(data.description.migrationLink)) {
-            sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
             return
         }
 
