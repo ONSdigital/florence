@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
-import { getUser, getUserLoading, getGroupsLoading, getUserGroups } from "../../../config/selectors";
-import { updateUserRequest, fetchUserRequest, fetchUserGroupsRequest } from "../../../config/thunks";
+import { getUser, getUserLoading, getUserGroups } from "../../../config/selectors";
+import { updateUserRequest, fetchUserRequest, fetchUserGroupsRequest, setUserPasswordRequest } from "../../../config/thunks";
 import EditUser from "./EditUser";
 
 const mapStateToProps = state => ({
@@ -12,6 +12,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = dispatch => ({
+    setUserPassword: id => dispatch(setUserPasswordRequest(id)),
     updateUser: (id, body) => dispatch(updateUserRequest(id, body)),
     loadUser: id => dispatch(fetchUserRequest(id)),
     loadUserGroups: id => dispatch(fetchUserGroupsRequest(id)),

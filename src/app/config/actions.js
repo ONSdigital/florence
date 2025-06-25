@@ -409,6 +409,18 @@ export const updateUserSuccess = user => ({
     user,
 });
 
+export const setUserPasswordFailure = () => ({
+    type: types.SET_USER_PASSWORD_FAILURE,
+});
+
+export const setUserPasswordProgress = () => ({
+    type: types.SET_USER_PASSWORD_PROGRESS,
+});
+
+export const setUserPasswordSuccess = () => ({
+    type: types.SET_USER_PASSWORD_SUCCESS,
+});
+
 export const signOutAllUsersProgress = () => ({
     type: types.SIGN_OUT_ALL_USERS_PROGRESS,
 });

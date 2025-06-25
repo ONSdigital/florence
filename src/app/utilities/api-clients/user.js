@@ -93,6 +93,11 @@ export default class user {
         return http.put(`${API_PROXY.VERSIONED_PATH}/users/${id}`, body);
     }
 
+    // TODO: new auth work
+    static setUserPassword(id) {
+        return http.post(`${API_PROXY.VERSIONED_PATH}/users/${id}/password`);
+    }
+
     static getUserGroups(id) {
         return http.get(`${API_PROXY.VERSIONED_PATH}/users/${id}/groups`);
     }
@@ -194,5 +199,16 @@ export default class user {
                 clearCookies();
                 SessionManagement.removeTimers();
             });
+    }
+
+    static translateStatus(status) {
+        switch (status) {
+            case "FORCE_CHANGE_PASSWORD":
+                return "Unconfirmed";
+            case "CONFIRMED":
+                return "Confirmed";
+            default:
+                return "";
+        }
     }
 }

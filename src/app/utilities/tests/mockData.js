@@ -133,6 +133,17 @@ const user = {
     status_notes: "This user is active",
 };
 
+const unconfirmedUser = {
+    active: true,
+    email: "test.unconfirmed.user-2025@ons.gov.uk",
+    forename: "test",
+    groups: [],
+    id: "test.unconfirmed.user-2025@ons.gov.ukk",
+    lastname: "user-2025",
+    status: "FORCE_CHANGE_PASSWORD",
+    status_notes: "This user is active",
+};
+
 const notifications = [
     {
         type: "neutral",
@@ -308,6 +319,7 @@ module.exports = {
     teams,
     popouts,
     user,
+    unconfirmedUser,
     groups,
     mappedSortedGroups,
     group,
