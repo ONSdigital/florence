@@ -26,7 +26,7 @@ function releaseEditor(collectionId, data) {
     });
     var dateTmp = data.description.releaseDate;
     var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-    $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'});
+    $('#releaseDate').val(dateTmpFormatted).datepicker({ dateFormat: 'dd MM yy' });
     if (!data.description.finalised) {
         $('.release-date').on('change', function () {
             var publishTime = parseInt($('#release-hour').val()) + parseInt($('#release-min').val());
@@ -64,26 +64,21 @@ function releaseEditor(collectionId, data) {
 
     $("#nextRelease").on('input', function () {
         data.description.nextRelease = $(this).val();
-        
     });
     if (!data.description.contact) {
         data.description.contact = {};
     }
     $("#contactName").on('input', function () {
         data.description.contact.name = $(this).val();
-        
     });
     $("#contactEmail").on('input', function () {
         data.description.contact.email = $(this).val();
-        
     });
     $("#contactTelephone").on('input', function () {
         data.description.contact.telephone = $(this).val();
-        
     });
     $("#summary").on('input', function () {
         data.description.summary = $(this).val();
-        
     });
 
     /* The checked attribute is a boolean attribute and the corresponding property 
@@ -131,7 +126,6 @@ function releaseEditor(collectionId, data) {
         } else {
             data.description.cancellationNotice = [];
         }
-        
     });
 
     if (data.description.finalised) {
@@ -166,11 +160,10 @@ function releaseEditor(collectionId, data) {
 
     $("#dateChange").on('input', function () {
         data.dateChanges.previousDate = $(this).val();
-        
     });
 
     function saveOldDate(collectionId, data, oldDate) {
-        data.dateChanges.push({previousDate: oldDate, changeNotice: ""});
+        data.dateChanges.push({ previousDate: oldDate, changeNotice: "" });
         initialiseLastNoteMarkdown(collectionId, data, 'dateChanges', 'changeNotice');
     }
 
@@ -191,21 +184,21 @@ function releaseEditor(collectionId, data) {
             )
         );
         $.when.apply($, pageDataRequests).then(function () {
-            if(pages.releaseUri && pages.releaseUri == data.uri) {
+            if (pages.releaseUri && pages.releaseUri == data.uri) {
                 processPreview(data, pages);
                 if (noSave) {
                     putContent(collectionId, data.uri, JSON.stringify(data),
-                      success = function () {
-                          Florence.Editor.isDirty = false;
-                          refreshPreview(data.uri);
-                      },
-                      error = function (response) {
-                          if (response.status === 400) {
-                              sweetAlert("Cannot edit this page", "It is already part of another collection.");
-                          } else {
-                              handleApiError(response);
-                          }
-                      }
+                        success = function () {
+                            Florence.Editor.isDirty = false;
+                            refreshPreview(data.uri);
+                        },
+                        error = function (response) {
+                            if (response.status === 400) {
+                                sweetAlert("Cannot edit this page", "It is already part of another collection.");
+                            } else {
+                                handleApiError(response);
+                            }
+                        }
                     );
                 } else {
                     updateContent(collectionId, data.uri, JSON.stringify(data));
@@ -222,45 +215,42 @@ function releaseEditor(collectionId, data) {
         data.relatedMethodologyArticle = [];
         _.each(pages.inProgress, function (page) {
             if (page.type === 'article' || page.type === 'article_download' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
-                data.relatedDocuments.push({uri: page.uri});
-                //console.log(page.uri);
+                data.relatedDocuments.push({ uri: page.uri });
             } else if (page.type === 'dataset_landing_page') {
-                data.relatedDatasets.push({uri: page.uri});
+                data.relatedDatasets.push({ uri: page.uri });
             } else if (page.type === 'static_qmi') {
-                data.relatedMethodology.push({uri: page.uri});
+                data.relatedMethodology.push({ uri: page.uri });
             } else if (page.type === 'static_methodology' || page.type === 'static_methodology_download') {
-                data.relatedMethodologyArticle.push({uri: page.uri});
+                data.relatedMethodologyArticle.push({ uri: page.uri });
             }
         });
         _.each(pages.complete, function (page) {
             if (page.type === 'article' || page.type === 'article_download' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
-                data.relatedDocuments.push({uri: page.uri});
-                //console.log(page.uri);
+                data.relatedDocuments.push({ uri: page.uri });
             } else if (page.type === 'dataset_landing_page') {
-                data.relatedDatasets.push({uri: page.uri});
+                data.relatedDatasets.push({ uri: page.uri });
             } else if (page.type === 'static_qmi') {
-                data.relatedMethodology.push({uri: page.uri});
+                data.relatedMethodology.push({ uri: page.uri });
             } else if (page.type === 'static_methodology' || page.type === 'static_methodology_download') {
-                data.relatedMethodologyArticle.push({uri: page.uri});
+                data.relatedMethodologyArticle.push({ uri: page.uri });
             }
         });
         _.each(pages.reviewed, function (page) {
             if (page.type === 'article' || page.type === 'article_download' || page.type === 'bulletin' || page.type === 'compendium_landing_page') {
-                data.relatedDocuments.push({uri: page.uri});
-                //console.log(page.uri);
+                data.relatedDocuments.push({ uri: page.uri });
             } else if (page.type === 'dataset_landing_page') {
-                data.relatedDatasets.push({uri: page.uri});
+                data.relatedDatasets.push({ uri: page.uri });
             } else if (page.type === 'static_qmi') {
-                data.relatedMethodology.push({uri: page.uri});
+                data.relatedMethodology.push({ uri: page.uri });
             } else if (page.type === 'static_methodology' || page.type === 'static_methodology_download') {
-                data.relatedMethodologyArticle.push({uri: page.uri});
+                data.relatedMethodologyArticle.push({ uri: page.uri });
             }
         });
     }
 
     // Check whether release is being added back into collection and the published flag should be toggled to truthy
     function checkPublishedFlag(data) {
-        return new Promise (function(resolve, reject) {
+        return new Promise(function (resolve, reject) {
             if (!data.description.published) {
                 getCollection(collectionId, success = function (collectionData) {
                     if (collectionData.releaseUri == data.uri) {
@@ -298,11 +288,15 @@ function releaseEditor(collectionId, data) {
     });
 
     function save(onSave) {
+        if (!validateMigrationPath(data.description.migrationLink)) {
+            sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+            return
+        }
         // Check whether the publish flag needs to be toggle - this is async so needs to be a promise
-        checkPublishedFlag(data).then(function() {
+        checkPublishedFlag(data).then(function () {
             // Once publish flag is checked then continue with rest of save
             checkRenameUri(collectionId, data, renameUri, onSave);
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log("Error getting collection data: ", error);
         });
 

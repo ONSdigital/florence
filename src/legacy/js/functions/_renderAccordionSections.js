@@ -412,11 +412,10 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'release') {
         var html = templates.workEditT16(templateData);
         $('.workspace-menu').html(html);
+        migration(templateData, pageData);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'prerelease');
         editDate(collectionId, pageData, templateData, 'dateChanges', 'changeDate');
         renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
-        //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDocuments', 'document');
-        //renderRelatedItemAccordionSection (collectionId, pageData, templateData, 'relatedDatasets', 'data');
         accordion();
         releaseEditor(collectionId, pageData, templateData);
     }
