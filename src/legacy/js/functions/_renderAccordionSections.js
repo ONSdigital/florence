@@ -60,6 +60,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'taxonomy_landing_page') {
         var html = templates.workEditT2(templateData);
         $('.workspace-menu').html(html);
+        migration(templateData, pageData);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedLinks', 'highlights');
         accordion();
         t2Editor(collectionId, pageData);

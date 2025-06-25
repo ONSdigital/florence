@@ -41,18 +41,30 @@ function t2Editor(collectionId, data) {
 
   editNav.on('click', '.btn-edit-save', function () {
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+    if (!validateMigrationPath(data.description.migrationLink)) {
+      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+      return
+    }
     updateContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // completed to review
   editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+    if (!validateMigrationPath(data.description.migrationLink)) {
+      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+      return
+    }
     saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data));
   });
 
   // reviewed to approve
   editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
     Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
+    if (!validateMigrationPath(data.description.migrationLink)) {
+      sweetAlert("Cannot save this page", "Migration path must be a relative path starting with '/'");
+      return
+    }
     saveAndReviewContent(collectionId, data.uri, JSON.stringify(data));
   });
 }
