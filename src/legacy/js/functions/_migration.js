@@ -30,6 +30,10 @@ function isRelativePath(path) {
     if (path.includes(' ')) {
         return false;
     }
+    // Exclude end slash
+    if (path.endsWith('/')) {
+        return false;
+    }
     // Check if the path starts with '/'
     if (path.startsWith('/')) {
         return true;
