@@ -302,4 +302,3 @@ function releaseEditor(collectionId, data) {
 
     }
 }
-
