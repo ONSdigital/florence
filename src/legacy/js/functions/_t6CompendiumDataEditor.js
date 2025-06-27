@@ -1,5 +1,4 @@
 function compendiumDataEditor(collectionId, data) {
-
     var newFiles = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
@@ -27,21 +26,17 @@ function compendiumDataEditor(collectionId, data) {
         $(this).textareaAutoSize();
         data.description.summary = $(this).val();
     });
-    //if (!Florence.collection.date) {                    //overwrite scheduled collection date
     if (!data.description.releaseDate) {
-        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-            data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        $('#releaseDate').datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
+            data.description.releaseDate = new Date($(this).datepicker({ dateFormat: 'dd MM yy' })[0].value).toISOString();
         });
     } else {
         dateTmp = data.description.releaseDate;
         var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-        $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+        $('#releaseDate').val(dateTmpFormatted).datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
             data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
         });
     }
-    //} else {
-    //    $('.release-date').hide();
-    //}
     $("#nextRelease").on('input', function () {
         $(this).textareaAutoSize();
         data.description.nextRelease = $(this).val();
@@ -87,7 +82,7 @@ function compendiumDataEditor(collectionId, data) {
         }
         return true;
     };
-    
+
     $("#natStat-checkbox").prop('checked', checkBoxStatus(data.description.nationalStatistic)).click(function () {
         data.description.nationalStatistic = $("#natStat-checkbox").prop('checked');
     });
@@ -97,24 +92,24 @@ function compendiumDataEditor(collectionId, data) {
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        save();
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        save("update");
     });
 
     // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-        //pageData = $('.fl-editor__headline').val();
-        save();
-        saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+        save("complete");
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-        save();
-        saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), parentUrl);
+        save("review");
     });
 
-    function save() {
+    function save(action) {
+        if (!validateMigrationPath(data.description.migrationLink)) {
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
+            return
+        }
 
         Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
@@ -124,9 +119,20 @@ function compendiumDataEditor(collectionId, data) {
             var title = $('#file-title_' + nameF).val();
             var fileDescription = $("#file-summary_" + nameF).val();
             var file = data.downloads[parseInt(nameF)].file;
-            newFiles[indexF] = {title: title, fileDescription: fileDescription, file: file};
+            newFiles[indexF] = { title: title, fileDescription: fileDescription, file: file };
         });
         data.downloads = newFiles;
+
+        switch (action) {
+            case "complete":
+                saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+                break;
+            case "review":
+                saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+                break;
+            default:
+                updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
     }
 }
 
