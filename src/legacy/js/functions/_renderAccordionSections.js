@@ -69,6 +69,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'product_page') {
         var html = templates.workEditT3(templateData);
         $('.workspace-menu').html(html);
+        migration(templateData, pageData)
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'items', 'timeseries');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedArticles', 'articles');
