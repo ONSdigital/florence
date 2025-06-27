@@ -92,24 +92,21 @@ function compendiumChapterEditor(collectionId, data) {
     editNav.off(); // remove any existing event handlers.
 
     editNav.on('click', '.btn-edit-save', function () {
-        save();
-        updateContent(collectionId, data.uri, JSON.stringify(data));
+        save("update");
     });
 
     // completed to review
     editNav.on('click', '.btn-edit-save-and-submit-for-review', function () {
-        save();
-        saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+        save("complete");
     });
 
     // reviewed to approve
     editNav.on('click', '.btn-edit-save-and-submit-for-approval', function () {
-        save();
-        saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+        save("review");
     });
 
 
-    function save() {
+    function save(action) {
         if (!validateMigrationPath(data.description.migrationLink)) {
             sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
             return
@@ -167,6 +164,16 @@ function compendiumChapterEditor(collectionId, data) {
             newLinks[indexL] = { uri: link, title: displayText };
         });
         data.links = newLinks;
+
+        switch (action) {
+            case "complete":
+                saveAndCompleteContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+                break;
+            case "review":
+                saveAndReviewContent(collectionId, data.uri, JSON.stringify(data), false, parentUrl);
+                break;
+            default:
+                updateContent(collectionId, data.uri, JSON.stringify(data));
+        }
     }
 }
-
