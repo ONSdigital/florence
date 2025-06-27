@@ -1,5 +1,4 @@
 function compendiumChapterEditor(collectionId, data) {
-
     var newChart = [], newTable = [], newEquation = [], newImage = [], newLinks = [];
     var parentUrl = getParentPage(data.uri);
     var setActiveTab, getActiveTab;
@@ -28,13 +27,13 @@ function compendiumChapterEditor(collectionId, data) {
         data.description.headline = $(this).val();
     });
     if (!data.description.releaseDate) {
-        $('#releaseDate').datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
-            data.description.releaseDate = new Date($(this).datepicker({dateFormat: 'dd MM yy'})[0].value).toISOString();
+        $('#releaseDate').datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
+            data.description.releaseDate = new Date($(this).datepicker({ dateFormat: 'dd MM yy' })[0].value).toISOString();
         });
     } else {
         dateTmp = data.description.releaseDate;
         var dateTmpFormatted = $.datepicker.formatDate('dd MM yy', new Date(dateTmp));
-        $('#releaseDate').val(dateTmpFormatted).datepicker({dateFormat: 'dd MM yy'}).on('change', function () {
+        $('#releaseDate').val(dateTmpFormatted).datepicker({ dateFormat: 'dd MM yy' }).on('change', function () {
             data.description.releaseDate = new Date($('#releaseDate').datepicker('getDate')).toISOString();
         });
     }
@@ -111,6 +110,10 @@ function compendiumChapterEditor(collectionId, data) {
 
 
     function save() {
+        if (!validateMigrationPath(data.description.migrationLink)) {
+            sweetAlert(...MIGRATION_FIELD_VALIDATION_FAILURE);
+            return
+        }
 
         Florence.globalVars.pagePos = $(".workspace-edit").scrollTop();
 
@@ -121,7 +124,7 @@ function compendiumChapterEditor(collectionId, data) {
             var title = data.charts[parseInt(nameCh)].title;
             var filename = data.charts[parseInt(nameCh)].filename;
             var safeUri = checkPathSlashes(uri);
-            newChart[indexCh] = {uri: safeUri, title: title, filename: filename};
+            newChart[indexCh] = { uri: safeUri, title: title, filename: filename };
         });
         data.charts = newChart;
 
@@ -133,7 +136,7 @@ function compendiumChapterEditor(collectionId, data) {
             var filename = data.tables[parseInt(nameTable)].filename;
             var version = data.tables[parseInt(nameTable)].version;
             var safeUri = checkPathSlashes(uri);
-            newTable[indexTable] = {uri: safeUri, title: title, filename: filename, version: version};
+            newTable[indexTable] = { uri: safeUri, title: title, filename: filename, version: version };
         });
         data.tables = newTable;
         var orderEquation = $("#sortable-equation").sortable('toArray');
@@ -142,7 +145,7 @@ function compendiumChapterEditor(collectionId, data) {
             var title = data.equations[parseInt(nameEquation)].title;
             var filename = data.equations[parseInt(nameEquation)].filename;
             var safeUri = checkPathSlashes(uri);
-            newEquation[indexEquation] = {uri: safeUri, title: title, filename: filename};
+            newEquation[indexEquation] = { uri: safeUri, title: title, filename: filename };
         });
         data.equations = newEquation;
         // images
@@ -152,7 +155,7 @@ function compendiumChapterEditor(collectionId, data) {
             var title = data.images[parseInt(nameImage)].title;
             var filename = data.images[parseInt(nameImage)].filename;
             var safeUri = checkPathSlashes(uri);
-            newImage[indexImage] = {uri: safeUri, title: title, filename: filename};
+            newImage[indexImage] = { uri: safeUri, title: title, filename: filename };
         });
         data.images = newImage;
 
@@ -161,7 +164,7 @@ function compendiumChapterEditor(collectionId, data) {
         $(orderLink).each(function (indexL, nameL) {
             var displayText = data.links[parseInt(nameL)].title;
             var link = $('#link-uri_' + nameL).val();
-            newLinks[indexL] = {uri: link, title: displayText};
+            newLinks[indexL] = { uri: link, title: displayText };
         });
         data.links = newLinks;
     }
