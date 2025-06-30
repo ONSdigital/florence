@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
 import userEvent from "@testing-library/user-event";
 import UsersList from "./UsersList";
-import { user } from "../../utilities/tests/mockData";
+import { user, unconfirmedUser } from "../../utilities/tests/mockData";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const editor = createMockUser("editor@test.com", false, true, "EDITOR");
@@ -42,29 +42,34 @@ describe("UserList", () => {
     it("lists active users by default", () => {
         const newProps = {
             ...props,
-            active: [user],
+            active: [user, unconfirmedUser],
         };
         render(<UsersList {...newProps} />);
 
         const items = screen.getAllByRole("listitem");
 
         expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
-        expect(items).toHaveLength(1);
+        expect(items).toHaveLength(2);
         expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+        expect(items[0]).toHaveTextContent("Confirmed");
+        expect(items[1]).toHaveTextContent("test.unconfirmed.user-2025@ons.gov.uk");
+        expect(items[1]).toHaveTextContent("Unconfirmed");
     });
 
     it("renders list of active users by default", () => {
         const newProps = {
             ...props,
-            active: [user],
+            active: [user, unconfirmedUser],
         };
         render(<UsersList {...newProps} />);
 
         const items = screen.getAllByRole("listitem");
 
         expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
-        expect(items).toHaveLength(1);
+        expect(items).toHaveLength(2);
         expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+        expect(items[1]).toHaveTextContent("test.unconfirmed.user-2025@ons.gov.uk");
+        expect(items[1]).toHaveTextContent("Unconfirmed");
 
         screen.getByLabelText("Show active users", { pressed: true });
     });
@@ -96,5 +101,23 @@ describe("UserList", () => {
         expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
         expect(screen.queryByRole("link", { name: "Create new user" })).not.toBeInTheDocument();
+    });
+
+    it("doesn't show the status if user is not an admin", () => {
+        const newProps = {
+            ...props,
+            loggedInUser: editor,
+            active: [user, unconfirmedUser],
+        };
+        render(<UsersList {...newProps} />);
+
+        const items = screen.getAllByRole("listitem");
+
+        expect(screen.getByPlaceholderText(/Search users by name/i)).toBeInTheDocument();
+        expect(items).toHaveLength(2);
+        expect(items[0]).toHaveTextContent("test.user-1498@ons.gov.uk");
+        expect(items[0]).not.toHaveTextContent("Confirmed");
+        expect(items[1]).toHaveTextContent("test.unconfirmed.user-2025@ons.gov.uk");
+        expect(items[1]).not.toHaveTextContent("Unconfirmed");
     });
 });

@@ -8,26 +8,38 @@ import Magnifier from "../../icons/Magnifier";
 import clsx from "clsx";
 import Loader from "../../components/loader/Loader";
 import auth from "../../utilities/auth";
+import { default as IdentityAPI } from "../../utilities/api-clients/user";
 
-const mapUsers = (users, rootPath) => {
-    return users.map(user => ({
-        ...user,
-        title: `${user.forename} ${user.lastname}`,
-        details: [user.email],
-        url: `${rootPath}/users/${user.id}`,
-    }));
+const mapUsers = (users, rootPath, isAdmin) => {
+    if (isAdmin) {
+        return users.map(user => ({
+            ...user,
+            title: `${user.forename} ${user.lastname}`,
+            details: [user.email],
+            url: `${rootPath}/users/${user.id}`,
+            extraDetails: [[{ content: <strong>{IdentityAPI.translateStatus(user.status)}</strong> }]],
+        }));
+    } else {
+        return users.map(user => ({
+            ...user,
+            title: `${user.forename} ${user.lastname}`,
+            details: [user.email],
+            url: `${rootPath}/users/${user.id}`,
+        }));
+    }
 };
 
 const UsersList = props => {
     const { active, suspended, loading, rootPath, loadUsers } = props;
     const [showActiveUsers, setShowActiveUsers] = useState(true);
     const [search, setSearch] = useInput("");
+    const isAdmin = auth.isAdmin(props.loggedInUser);
 
     useEffect(() => {
         loadUsers();
     }, []);
 
-    const users = showActiveUsers ? mapUsers(active, rootPath) : mapUsers(suspended, rootPath);
+    const users = showActiveUsers ? mapUsers(active, rootPath, isAdmin) : mapUsers(suspended, rootPath, isAdmin);
     const getFilteredUsers = useCallback(() => {
         const str = search.value.toLowerCase();
         return filter(users, user => `${user.forename} ${user.lastname}`.toLowerCase().includes(str) || user.email.toLowerCase().includes(str));
@@ -40,7 +52,7 @@ const UsersList = props => {
                     <div className="grid__col">
                         <h1>Users</h1>
                     </div>
-                    {auth.isAdmin(props.loggedInUser) && (
+                    {isAdmin && (
                         <div className="grid__col">
                             <Link role="link" className="margin-left--1 font-size--18" href={`${rootPath}/users/create`}>
                                 Create new user

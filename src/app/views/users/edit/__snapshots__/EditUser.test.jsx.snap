@@ -33,9 +33,28 @@ exports[`EditUser matches the snapshot 1`] = `
           >
             test user-1498
           </h1>
-          <p>
-            test.user-1498@ons.gov.uk
-          </p>
+          <dl>
+            <dt
+              id="email"
+            >
+              Email
+            </dt>
+            <dd
+              aria-labelledby="email"
+            >
+              test.user-1498@ons.gov.uk
+            </dd>
+            <dt
+              id="status"
+            >
+              Status
+            </dt>
+            <dd
+              aria-labelledby="status"
+            >
+              Confirmed
+            </dd>
+          </dl>
           <div
             className="form__input"
           >
@@ -92,6 +111,26 @@ exports[`EditUser matches the snapshot 1`] = `
         <div
           className="grid__col-md-5"
         >
+          <div
+            className="margin-bottom--1"
+          >
+            <h2>
+              User account reset
+            </h2>
+            <p
+              className="margin-bottom--1"
+            >
+              If a user has not used their temporary password issued on account creation within 1 week, their account will need to be reset to receive 'Forgotton password' emails
+            </p>
+            <button
+              className="btn btn--warning btn--margin-right"
+              disabled={false}
+              onClick={[Function]}
+              type="submit"
+            >
+              Reset Account
+            </button>
+          </div>
           <div
             className="form-group margin-top--1 margin-bottom--1"
           >
@@ -254,9 +293,18 @@ exports[`EditUser without admin permissions matches the snapshot 1`] = `
           >
             test user-1498
           </h1>
-          <p>
-            test.user-1498@ons.gov.uk
-          </p>
+          <dl>
+            <dt
+              id="email"
+            >
+              Email
+            </dt>
+            <dd
+              aria-labelledby="email"
+            >
+              test.user-1498@ons.gov.uk
+            </dd>
+          </dl>
           <h2
             className="margin-top--1"
           >
