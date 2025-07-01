@@ -297,6 +297,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_qmi') {
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
+        migration(templateData, pageData);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
