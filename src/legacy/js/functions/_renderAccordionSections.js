@@ -341,6 +341,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.equations) {
             loadEquationsList(collectionId, pageData);
         }
+        migration(templateData, pageData);
         tags(templateData)
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
