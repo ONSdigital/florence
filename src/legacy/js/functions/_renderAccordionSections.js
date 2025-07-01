@@ -260,6 +260,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.tables) {
             loadTablesList(collectionId, pageData);
         }
+        migration(templateData, pageData);
         tags(templateData)
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         addFile(collectionId, pageData, 'downloads', 'file');
