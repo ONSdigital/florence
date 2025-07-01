@@ -283,6 +283,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
+        migration(templateData, pageData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         tags(templateData)
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
@@ -348,7 +349,6 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         addFile(collectionId, pageData, 'downloads', 'file');
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
         addFile(collectionId, pageData, 'pdfTable', 'pdf');
-        //editTopics (collectionId, pageData, templateData, 'topics', 'topics');  //ready 2b used
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
         methodologyEditor(collectionId, pageData);
