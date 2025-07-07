@@ -3,13 +3,12 @@ module github.com/ONSdigital/florence
 go 1.24
 
 require (
-	github.com/ONSdigital/dp-api-clients-go/v2 v2.266.0
+	github.com/ONSdigital/dp-api-clients-go/v2 v2.267.0
 	github.com/ONSdigital/dp-component-test v0.20.0
-	github.com/ONSdigital/dp-cookies v0.5.0
+	github.com/ONSdigital/dp-cookies v0.6.0
 	github.com/ONSdigital/dp-healthcheck v1.6.4
-	github.com/ONSdigital/dp-net/v2 v2.11.2
-	github.com/ONSdigital/dp-net/v3 v3.2.1
-	github.com/ONSdigital/log.go v1.1.0
+	github.com/ONSdigital/dp-net/v3 v3.3.0
+	github.com/ONSdigital/log.go/v2 v2.4.5
 	github.com/chromedp/cdproto v0.0.0-20230419194459-b5ff65bc57a3
 	github.com/chromedp/chromedp v0.9.1
 	github.com/cucumber/godog v0.14.1
@@ -25,10 +24,7 @@ require (
 )
 
 require (
-	github.com/ONSdigital/dp-api-clients-go v1.43.0 // indirect
 	github.com/ONSdigital/dp-mongodb-in-memory v1.8.1 // indirect
-	github.com/ONSdigital/dp-net v1.5.0 // indirect
-	github.com/ONSdigital/log.go/v2 v2.4.5 // indirect
 	github.com/chromedp/sysutil v1.0.0 // indirect
 	github.com/cucumber/gherkin/go/v26 v26.2.0 // indirect
 	github.com/cucumber/messages/go/v21 v21.0.1 // indirect

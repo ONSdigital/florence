@@ -10,7 +10,7 @@ import (
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/directors"
 	"github.com/ONSdigital/florence/service/modifiers"
-	"github.com/ONSdigital/log.go/log"
+	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/websocket"
 	"github.com/pkg/errors"
@@ -35,7 +35,7 @@ type Service struct {
 
 // Run the service
 func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceList, buildTime, gitCommit, version string, svcErrors chan error) (svc *Service, err error) {
-	log.Event(ctx, "running service", log.INFO)
+	log.Info(ctx, "running service")
 
 	// Initialise Service struct
 	svc = &Service{
@@ -50,7 +50,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// Get healthcheck with checkers
 	svc.HealthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
-		log.Event(ctx, "failed to create health check", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "failed to create health check", err)
 		return nil, err
 	}
 	if err := svc.registerCheckers(ctx, cfg); err != nil {
@@ -81,31 +81,31 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *mux.Router, err error) {
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
 	if err != nil {
-		log.Event(ctx, "error parsing API router URL", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error parsing API router URL", err)
 		return nil, err
 	}
 
 	frontendRouterURL, err := url.Parse(cfg.FrontendRouterURL)
 	if err != nil {
-		log.Event(ctx, "error parsing frontend router URL", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error parsing frontend router URL", err)
 		return nil, err
 	}
 
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
-		log.Event(ctx, "error parsing table renderer URL", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error parsing table renderer URL", err)
 		return nil, err
 	}
 
 	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
 	if err != nil {
-		log.Event(ctx, "error parsing dataset controller URL", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error parsing dataset controller URL", err)
 		return nil, err
 	}
 
 	dataAdminURL, err := url.Parse(cfg.DataAdminURL)
 	if err != nil {
-		log.Event(ctx, "error parsing data admin URL", log.FATAL, log.Error(err))
+		log.Fatal(ctx, "error parsing data admin URL", err)
 		return nil, err
 	}
 
@@ -145,7 +145,7 @@ func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (route
 // Close gracefully shuts the service down in the required order, with timeout
 func (svc *Service) Close(ctx context.Context) error {
 	timeout := svc.Config.GracefulShutdownTimeout
-	log.Event(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout}, log.INFO)
+	log.Info(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout})
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 	hasShutdownError := false
 
@@ -159,7 +159,7 @@ func (svc *Service) Close(ctx context.Context) error {
 
 		// stop any incoming requests
 		if err := svc.Server.Shutdown(ctx); err != nil {
-			log.Event(ctx, "failed to shutdown http server", log.Error(err), log.ERROR)
+			log.Error(ctx, "failed to shutdown http server", err)
 			hasShutdownError = true
 		}
 	}()
@@ -169,18 +169,18 @@ func (svc *Service) Close(ctx context.Context) error {
 
 	// timeout expired
 	if ctx.Err() == context.DeadlineExceeded {
-		log.Event(ctx, "shutdown timed out", log.ERROR, log.Error(ctx.Err()))
+		log.Error(ctx, "shutdown timed out", ctx.Err())
 		return ctx.Err()
 	}
 
 	// other error
 	if hasShutdownError {
 		err := errors.New("failed to shutdown gracefully")
-		log.Event(ctx, "failed to shutdown gracefully ", log.ERROR, log.Error(err))
+		log.Error(ctx, "failed to shutdown gracefully ", err)
 		return err
 	}
 
-	log.Event(ctx, "graceful shutdown was successful", log.INFO)
+	log.Info(ctx, "graceful shutdown was successful")
 	return nil
 }
 
@@ -189,7 +189,7 @@ func (svc *Service) registerCheckers(ctx context.Context, cfg *config.Config) (e
 
 	if err = svc.HealthCheck.AddCheck("API router", svc.healthClient.Checker); err != nil {
 		hasErrors = true
-		log.Event(ctx, "error adding check for api router health client", log.ERROR, log.Error(err))
+		log.Error(ctx, "error adding check for api router health client", err)
 	}
 
 	if hasErrors {

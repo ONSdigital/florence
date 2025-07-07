@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/ONSdigital/florence/config"
-	"github.com/ONSdigital/log.go/log"
+	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/gorilla/mux"
 )
 
@@ -50,7 +50,7 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 
 	etag, err := getAssetETag(assetPath)
 	if err != nil {
-		log.Event(req.Context(), "error getting asset etag", log.ERROR, log.Error(err))
+		log.Error(req.Context(), "error getting asset etag", err)
 		w.WriteHeader(404)
 		return
 	}
@@ -62,7 +62,7 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 
 	b, err := getAsset(assetPath)
 	if err != nil {
-		log.Event(req.Context(), "error getting asset", log.ERROR, log.Error(err))
+		log.Error(req.Context(), "error getting asset", err)
 		w.WriteHeader(404)
 		return
 	}
@@ -73,24 +73,24 @@ func staticFiles(w http.ResponseWriter, req *http.Request) {
 	w.WriteHeader(200)
 	_, err = w.Write(b)
 	if err != nil {
-		log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+		log.Error(req.Context(), "error writing response", err)
 	}
 }
 
 func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		log.Event(req.Context(), "getting legacy html file", log.INFO)
+		log.Info(req.Context(), "getting legacy html file")
 
 		b, err := getAsset(assetLegacyIndex)
 		if err != nil {
-			log.Event(req.Context(), "error getting legacy html file", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error getting legacy html file", err)
 			w.WriteHeader(404)
 			return
 		}
 
 		cfgJSON, err := json.Marshal(cfg.SharedConfig)
 		if err != nil {
-			log.Event(req.Context(), "error marshalling shared configuration", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error marshalling shared configuration", err)
 			w.WriteHeader(500)
 			return
 		}
@@ -100,7 +100,7 @@ func legacyIndexFile(cfg *config.Config) http.HandlerFunc {
 		w.WriteHeader(200)
 		_, err = w.Write(b)
 		if err != nil {
-			log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error writing response", err)
 		}
 	}
 }
@@ -109,7 +109,7 @@ func websocketHandler(serviceVersion string) func(w http.ResponseWriter, req *ht
 	return func(w http.ResponseWriter, req *http.Request) {
 		c, err := upgrader.Upgrade(w, req, nil)
 		if err != nil {
-			log.Event(req.Context(), "error upgrading connection to websocket", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error upgrading connection to websocket", err)
 			return
 		}
 
@@ -117,21 +117,21 @@ func websocketHandler(serviceVersion string) func(w http.ResponseWriter, req *ht
 
 		err = c.WriteJSON(florenceServerEvent{"version", florenceVersionPayload{Version: serviceVersion}})
 		if err != nil {
-			log.Event(req.Context(), "error writing version message", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error writing version message", err)
 			return
 		}
 
 		for {
 			_, message, err := c.ReadMessage()
 			if err != nil {
-				log.Event(req.Context(), "error reading websocket message", log.ERROR, log.Error(err))
+				log.Error(req.Context(), "error reading websocket message", err)
 				break
 			}
 
 			rdr := bufio.NewReader(bytes.NewReader(message))
 			b, err := rdr.ReadBytes('{')
 			if err != nil {
-				log.Event(req.Context(), "error reading websocket bytes", log.WARN, log.Error(err), log.Data{"bytes": string(b)})
+				log.Error(req.Context(), "error reading websocket bytes", err, log.Data{"bytes": string(b)})
 				continue
 			}
 
@@ -146,17 +146,17 @@ func websocketHandler(serviceVersion string) func(w http.ResponseWriter, req *ht
 				e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
 				err = json.Unmarshal(eventData, &e)
 				if err != nil {
-					log.Event(req.Context(), "error unmarshalling websocket message", log.WARN, log.Error(err), log.Data{"data": string(eventData)})
+					log.Error(req.Context(), "error unmarshalling websocket message", err, log.Data{"data": string(eventData)})
 					continue
 				}
-				log.Event(req.Context(), "client log", log.INFO, log.Data{"data": e})
+				log.Info(req.Context(), "client log", log.Data{"data": e})
 
 				err = c.WriteJSON(florenceServerEvent{"ack", eventID})
 				if err != nil {
-					log.Event(req.Context(), "error writing websocket ack", log.WARN, log.Error(err))
+					log.Error(req.Context(), "error writing websocket ack", err)
 				}
 			default:
-				log.Event(req.Context(), "unknown websocket event type", log.WARN, log.Data{"type": eventType, "data": string(eventData)})
+				log.Error(req.Context(), "unknown websocket event type", err, log.Data{"type": eventType, "data": string(eventData)})
 			}
 		}
 	}
@@ -164,18 +164,18 @@ func websocketHandler(serviceVersion string) func(w http.ResponseWriter, req *ht
 
 func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 	return func(w http.ResponseWriter, req *http.Request) {
-		log.Event(req.Context(), "getting refactored html file", log.INFO)
+		log.Info(req.Context(), "getting refactored html file")
 
 		b, err := getAsset(assetRefactored)
 		if err != nil {
-			log.Event(req.Context(), "error getting refactored html file", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error getting refactored html file", err)
 			w.WriteHeader(404)
 			return
 		}
 
 		cfgJSON, err := json.Marshal(cfg.SharedConfig)
 		if err != nil {
-			log.Event(req.Context(), "error marshalling shared configuration", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error marshalling shared configuration", err)
 			w.WriteHeader(500)
 			return
 		}
@@ -185,7 +185,7 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 		w.WriteHeader(200)
 		_, err = w.Write(b)
 		if err != nil {
-			log.Event(req.Context(), "error writing response", log.ERROR, log.Error(err))
+			log.Error(req.Context(), "error writing response", err)
 		}
 	}
 }

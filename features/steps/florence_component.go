@@ -15,7 +15,7 @@ import (
 	"github.com/ONSdigital/florence/config"
 	"github.com/ONSdigital/florence/service"
 	"github.com/ONSdigital/florence/service/mock"
-	dplog "github.com/ONSdigital/log.go/log"
+	dplog "github.com/ONSdigital/log.go/v2/log"
 	"github.com/chromedp/chromedp"
 	"github.com/cucumber/godog"
 )
@@ -122,7 +122,7 @@ func (c *Component) Reset() *Component {
 }
 
 func (c *Component) Close() error {
-	dplog.Event(c.ctx, "Shutting down app from test ...")
+	dplog.Info(c.ctx, "Shutting down app from test ...")
 	if c.svc != nil {
 		_ = c.svc.Close(c.ctx)
 	}
@@ -151,9 +151,9 @@ func (c *Component) runApplication(cfg *config.Config, serviceList *service.Exte
 		// blocks until an os interrupt or a fatal error occurs
 		select {
 		case err := <-c.errorChan:
-			dplog.Event(c.ctx, "service error received", dplog.ERROR, dplog.Error(err))
+			dplog.Error(c.ctx, "service error received", err)
 		case sig := <-signals:
-			dplog.Event(c.ctx, "os signal received", dplog.Data{"signal": sig}, dplog.INFO)
+			dplog.Info(c.ctx, "os signal received", dplog.Data{"signal": sig})
 		}
 	}()
 }

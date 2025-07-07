@@ -6,10 +6,10 @@ import (
 	"strings"
 
 	"github.com/ONSdigital/dp-cookies/cookies"
-	"github.com/ONSdigital/log.go/log"
+	"github.com/ONSdigital/log.go/v2/log"
 
 	"github.com/ONSdigital/dp-api-clients-go/v2/headers"
-	dprequest "github.com/ONSdigital/dp-net/v2/request"
+	dprequest "github.com/ONSdigital/dp-net/v3/request"
 )
 
 // Director sets the appropriate headers and rewrites the request path to remove the prefix if provided.
@@ -51,31 +51,31 @@ func setHeaders(req *http.Request) {
 	if accessTokenCookie, err := req.Cookie(dprequest.FlorenceCookieKey); err == nil && accessTokenCookie.Value != "" {
 		err := headers.SetAuthToken(req, accessTokenCookie.Value)
 		if err != nil {
-			log.Event(req.Context(), "unable to set auth token header", log.Error(err), log.ERROR)
+			log.Error(req.Context(), "unable to set auth token header", err)
 		}
 	}
 
 	if collectionCookie, err := req.Cookie(dprequest.CollectionIDCookieKey); err == nil && collectionCookie.Value != "" {
 		if err := headers.SetCollectionID(req, collectionCookie.Value); err != nil {
-			log.Event(req.Context(), "unable to collection id header", log.Error(err), log.ERROR)
+			log.Error(req.Context(), "unable to set collection id header", err)
 		}
 	}
 
 	if idToken, err := cookies.GetIDToken(req); err == nil && idToken != "" {
 		if err := headers.SetIDTokenHeader(req, idToken); err != nil {
-			log.Event(req.Context(), "unable to set id token header", log.Error(err), log.ERROR)
+			log.Error(req.Context(), "unable to set id token header", err)
 		}
 	}
 
 	if refreshToken, err := cookies.GetRefreshToken(req); err == nil && refreshToken != "" {
 		if err := headers.SetRefreshTokenHeader(req, refreshToken); err != nil {
-			log.Event(req.Context(), "unable to set refresh token header", log.Error(err), log.ERROR)
+			log.Error(req.Context(), "unable to set refresh token header", err)
 		}
 	}
 
 	if req.URL.Path == "/api/v1/groups-report" {
 		if err := headers.SetAccept(req, "text/csv"); err != nil {
-			log.Event(req.Context(), "unable to set accept header", log.Error(err), log.ERROR)
+			log.Error(req.Context(), "unable to set accept header", err)
 		}
 	}
 }
