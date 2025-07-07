@@ -50,7 +50,7 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 	// Get healthcheck with checkers
 	svc.HealthCheck, err = serviceList.GetHealthCheck(cfg, buildTime, gitCommit, version)
 	if err != nil {
-		log.Fatal(ctx, "failed to create health check", err)
+		log.Error(ctx, "failed to create health check", err)
 		return nil, err
 	}
 	if err := svc.registerCheckers(ctx, cfg); err != nil {
@@ -81,31 +81,31 @@ func Run(ctx context.Context, cfg *config.Config, serviceList *ExternalServiceLi
 func (svc *Service) createRouter(ctx context.Context, cfg *config.Config) (router *mux.Router, err error) {
 	apiRouterURL, err := url.Parse(cfg.APIRouterURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing API router URL", err)
+		log.Error(ctx, "error parsing API router URL", err)
 		return nil, err
 	}
 
 	frontendRouterURL, err := url.Parse(cfg.FrontendRouterURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing frontend router URL", err)
+		log.Error(ctx, "error parsing frontend router URL", err)
 		return nil, err
 	}
 
 	tableURL, err := url.Parse(cfg.TableRendererURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing table renderer URL", err)
+		log.Error(ctx, "error parsing table renderer URL", err)
 		return nil, err
 	}
 
 	datasetControllerURL, err := url.Parse(cfg.DatasetControllerURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing dataset controller URL", err)
+		log.Error(ctx, "error parsing dataset controller URL", err)
 		return nil, err
 	}
 
 	dataAdminURL, err := url.Parse(cfg.DataAdminURL)
 	if err != nil {
-		log.Fatal(ctx, "error parsing data admin URL", err)
+		log.Error(ctx, "error parsing data admin URL", err)
 		return nil, err
 	}
 

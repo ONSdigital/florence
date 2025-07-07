@@ -46,8 +46,8 @@ func run(ctx context.Context) error {
 	// Read config
 	cfg, err := config.Get()
 	if err != nil {
-		log.Fatal(ctx, "error getting configuration", err)
-		os.Exit(1)
+		log.Error(ctx, "error getting configuration", err)
+		return errors.Wrap(err, "error getting configuration")
 	}
 
 	log.Info(ctx, "got service configuration", log.Data{"config": cfg})
