@@ -23,7 +23,7 @@ func IdentityResponseModifier(apiRouterVersion string) func(r *http.Response) er
 	return func(r *http.Response) error {
 		if r.Request.Method == http.MethodDelete {
 			// regex, may be /v1/tokens/self where value after 'v' could be any positive integer
-			tokenSelfPathRegex := regexp.MustCompile(`^/v\\d+/tokens/self$`)
+			tokenSelfPathRegex := regexp.MustCompile(`^/v\d+/tokens/self$`)
 			matched := tokenSelfPathRegex.MatchString(r.Request.URL.Path)
 			if matched {
 				// Attempt to delete cookies even if the response upstream was a fail
