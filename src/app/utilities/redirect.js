@@ -14,9 +14,20 @@ export default class redirect {
             return internalRedirect();
         }
 
+        let baseRedirectPath = "";
+        const redirectPathArray = redirectPath.split("/");
+        // only interested in the first part of the path that is a string
+        // e.g. a path of /path/here would be pathArray[0] = "", pathArray[1] = "path", pathArray[2] = "here"
+        for (let i = 0; i < redirectPathArray.length; i++) {
+            if (redirectPathArray[i] !== "") {
+                baseRedirectPath = redirectPathArray[i];
+                break;
+            }
+        }
+
         const config = window.getEnv();
         const allowedExternalPaths = config.allowedExternalPaths;
-        if (allowedExternalPaths.some(path => redirectPath.startsWith(path))) {
+        if (allowedExternalPaths.includes(baseRedirectPath) || allowedExternalPaths.includes(`/${baseRedirectPath}`)) {
             return externalRedirect(redirectPath);
         }
 
