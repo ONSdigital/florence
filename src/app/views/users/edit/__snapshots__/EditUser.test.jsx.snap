@@ -120,7 +120,7 @@ exports[`EditUser matches the snapshot 1`] = `
             <p
               className="margin-bottom--1"
             >
-              If a user has not used their temporary password issued on account creation within 1 week, their account will need to be reset to receive 'Forgotton password' emails
+              If a user has not used their temporary password issued on account creation within 1 week, their account will need to be reset to receive 'Forgotten password' emails
             </p>
             <button
               className="btn btn--warning btn--margin-right"

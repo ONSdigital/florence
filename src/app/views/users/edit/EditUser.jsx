@@ -148,7 +148,7 @@ export const EditUser = props => {
                                     <h2>User account reset</h2>
                                     <p className="margin-bottom--1">
                                         If a user has not used their temporary password issued on account creation within 1 week, their account will
-                                        need to be reset to receive 'Forgotton password' emails
+                                        need to be reset to receive 'Forgotten password' emails
                                     </p>
 
                                     <button
