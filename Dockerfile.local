@@ -1,4 +1,4 @@
-FROM golang:1.24.4-bullseye AS base
+FROM golang:1.24 AS base
 
 RUN git config --global --add safe.directory /go
 
