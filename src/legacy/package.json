@@ -12,7 +12,7 @@
         "sass": "^1.34.1"
     },
     "scripts": {
-        "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet",
+        "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet -u $OSSINDEX_USERNAME -p $OSSINDEX_TOKEN",
         "watch-js": "npm run build-js && npx onchange 'js/classes/*.js' 'js/constants/*.js' 'js/functions/*.js' 'js/components/*.js' 'js/zebedee-api/*.js' -v -- npm run build-js",
         "build-js": "mkdir -p ../../dist/legacy-assets/js && cat js/classes/*.js js/constants/*.js js/zebedee-api/*.js js/functions/*.js js/components/*.js > ../../dist/legacy-assets/js/main.js",
         "watch-templates": "npm run build-templates && npx onchange 'templates/*.handlebars' -v -- npm run build-templates",
