@@ -17,8 +17,8 @@ LDFLAGS=-ldflags "-w -s -X 'main.Version=${VERSION}' -X 'main.BuildTime=$(BUILD_
 audit: audit-js audit-go
 
 .PHONY: audit-go
-audit-go:
-	go list -m all | nancy sleuth
+audit-go: generate-go-prod
+	dis-vulncheck
 
 .PHONY: audit-js
 audit-js: audit-js-react audit-js-legacy

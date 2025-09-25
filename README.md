@@ -91,6 +91,18 @@ There are other ONS digital applications that you'll need to run to allow Floren
    make node-modules
    ```
 
+#### Tools
+
+To run some of our tests you will need additional tooling:
+
+##### Audit
+
+We use `dis-vulncheck` to do auditing, which you will [need to install](https://github.com/ONSdigital/dis-vulncheck).
+
+##### Linting
+
+We use v2 of golangci-lint, which you will [need to install](https://golangci-lint.run/docs/welcome/install).
+
 ### Configuration
 
 The following environment variables are available when running the Go server.
@@ -123,7 +135,7 @@ The following environment variables are available when running the Go server and
 
 For example:
 
-```
+```shell
 make debug BIND_ADDR=:20000
 ```
 
