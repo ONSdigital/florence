@@ -65,7 +65,7 @@ function initialiseTablesList(collectionId, data) {
                     });
 
                     // remove the table from the page json when its deleted
-                    data.tables = _(data.tables).filter(function (item) {
+                    data.tables = data.tables.filter(function (item) {
                         return item.filename !== table.filename
                     });
                     // save the updated page json

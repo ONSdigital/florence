@@ -68,7 +68,7 @@ function initialiseImagesList(collectionId, data) {
                         });
 
                     // remove the image from the page json when its deleted
-                    data.images = _(data.images).filter(function (item) {
+                    data.images = data.images.filter(function (item) {
                         return item.filename !== image.filename;
                     });
 

@@ -73,7 +73,7 @@ function initialiseEquationList(collectionId, data) {
             }, function (result) {
                 if (result === true) {
                     $(this).parent().remove();
-                    data.equations = _(data.equations).filter(function (item) {
+                    data.equations = data.equations.filter(function (item) {
                         return item.filename !== equation.filename
                     });
                     putContent(collectionId, basePath, JSON.stringify(data),

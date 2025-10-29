@@ -73,7 +73,7 @@ function initialiseChartList(collectionId, data) {
             }, function (result) {
                 if (result === true) {
                     $(this).parent().remove();
-                    data.charts = _(data.charts).filter(function (item) {
+                    data.charts = data.charts.filter(function (item) {
                         return item.filename !== chart.filename
                     });
                     putContent(collectionId, basePath, JSON.stringify(data),
