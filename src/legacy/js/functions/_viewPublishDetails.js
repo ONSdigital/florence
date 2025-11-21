@@ -72,7 +72,7 @@ function viewPublishDetails(collections) {
         .closest(".js-accordion")
         .find(".collection-name")
         .attr("data-id");
-      document.cookie = "collection=" + collection + ";path=/";
+      document.cookie = "collection=" + collection + ";path=/;domain=" + location.hostname;
       window.location = `/florence/collections/${collection}/preview`;
     });
 

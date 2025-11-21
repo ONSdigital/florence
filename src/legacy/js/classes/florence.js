@@ -9,7 +9,7 @@ var Florence = Florence || {
             $('.js-nav').html(mainNavHtml);
         },
         setActiveCollection: function (collection) {
-            document.cookie = "collection=" + collection.id + ";path=/";
+            document.cookie = "collection=" + collection.id + ";path=/;domain=" + location.hostname;
             let formattedDate;
 
             if (collection.publishDate) {
