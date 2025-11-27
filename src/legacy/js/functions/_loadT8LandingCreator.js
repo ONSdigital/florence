@@ -9,7 +9,6 @@
 function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
     var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData;
-    var parentUrlData = parentUrl + "/data";
     // will add this var in dataset_landing_page
     var timeseries = false;
     if (pageType === 'timeseries_landing_page') {
@@ -18,7 +17,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
     }
 
     $.ajax({
-        url: parentUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

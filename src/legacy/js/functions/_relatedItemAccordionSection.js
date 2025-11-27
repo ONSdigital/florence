@@ -256,7 +256,6 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
     }
 
     function getPage(data, templateData, field, latestCheck, dataUrl, onError, onSuccess) {
-        var dataUrlData = dataUrl + "/data";
         var latestUrl;
         if (latestCheck) {
             var tempUrl = dataUrl.split('/');
@@ -268,7 +267,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         }
 
         $.ajax({
-            url: dataUrlData,
+            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${dataUrl}`,
             dataType: 'json',
             crossDomain: true,
             success: function (page) {

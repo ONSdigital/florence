@@ -301,9 +301,8 @@ function saveBlocks(collectionId, path, data, templateData, field, idField) {
 }
 
 function checkValidStats(collectionId, data, templateData, field, idField, dataUrl, index) {
-  var dataUrlData = dataUrl + "/data";
   $.ajax({
-    url: dataUrlData,
+    url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${dataUrl}`,
     dataType: 'json',
     crossDomain: true,
     success: function (result) {

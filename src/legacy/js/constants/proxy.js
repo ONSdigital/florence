@@ -4,4 +4,7 @@ const API_PROXY = {
     get VERSIONED_PATH() {
         return `${this.BASE_PATH}/${this.VERSION}`;
     },
+    get ZEBEDEE_DATA_ENDPOINT() {
+        return `${this.VERSIONED_PATH}/data`;
+    }
 };

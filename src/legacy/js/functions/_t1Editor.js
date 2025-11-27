@@ -136,10 +136,9 @@ function resolveTitleT1(collectionId, data, templateData, field) {
               } else {
                 pastedUrl = checkPathParsed(pastedUrl);
               }
-              var sectionUrlData = pastedUrl + "/data";
 
               $.ajax({
-                url: sectionUrlData,
+                url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${sectionUrl}`,
                 dataType: 'json',
                 crossDomain: true,
                 success: function (sectionData) {

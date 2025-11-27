@@ -12,9 +12,8 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
     var pageType, pageTitle, uriSection, pageTitleTrimmed, pageEditionTrimmed, releaseDateManual,
         isInheriting, newUri, pageData, natStat, contactName, contactEmail,
         contactTel, keyWords, metaDescr, relatedData, summary, relatedMethodology;
-    var parentUrlData = parentUrl + "/data";
     $.ajax({
-        url: parentUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

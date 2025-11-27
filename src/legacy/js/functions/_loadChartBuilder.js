@@ -177,16 +177,15 @@ function loadChartBuilder(pageData, onSave, chart) {
         var targetUri;
         
         if (slash >-1){
-            targetUri =  uri + "/data";
+            targetUri =  uri;
         }else{
-            targetUri = pageUrl + "/" + uri + "/data";
+            targetUri = `${pageUrl}/${uri}`;
         }
 
         $.ajax({
-            url: targetUri,
-            type: 'POST',
+            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${targetUri}`,
+            type: 'GET',
             data: null,
-            contentType: "image/png",
             processData: false,
             success: function (res) {
                 updateForm(res);

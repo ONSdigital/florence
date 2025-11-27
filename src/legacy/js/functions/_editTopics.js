@@ -150,10 +150,8 @@ function initialiseTopics(collectionId, data, templateData, field, idField) {
 }
 
 function getTopic(collectionId, data, templateData, field, idField, dataUrl) {
-    var dataUrlData = dataUrl + "/data";
-
     $.ajax({
-        url: dataUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${dataUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (result) {

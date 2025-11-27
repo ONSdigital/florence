@@ -7,9 +7,8 @@
 
 function loadVisualisationCreator(collectionId, pageType, collectionData) {
     var pageData, pageTitle, pageId, newUri, safeNewUri, uriSection, pageIdTrimmed;
-    var parentUrlData = "/data";
     $.ajax({
-        url: parentUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=/`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

@@ -9,9 +9,8 @@
 function loadT16Creator(collectionId, releaseDate, pageType, parentUrl) {
     var releaseDate = null;             //overwrite scheduled collection date
     var pageType, pageTitle, uriSection, pageTitleTrimmed, newUri, pageData, safeNewUri;
-    var parentUrlData = "/data"; //home page
     $.ajax({
-        url: parentUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=/`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

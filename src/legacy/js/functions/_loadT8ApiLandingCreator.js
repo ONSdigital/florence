@@ -9,10 +9,9 @@
 function loadT8ApiCreator(collectionId, releaseDate, pageType, parentUrl, pageTitle) {
     var releaseDate = null;             //overwrite scheduled collection date
     var uriSection, pageTitleTrimmed, releaseDateManual, newUri, pageData, datasetId;
-    var parentUrlData = parentUrl + "/data";
 
     $.ajax({
-        url: parentUrlData,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {
