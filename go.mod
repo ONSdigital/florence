@@ -1,6 +1,6 @@
 module github.com/ONSdigital/florence
 
-go 1.24
+go 1.24.0
 
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.267.0
