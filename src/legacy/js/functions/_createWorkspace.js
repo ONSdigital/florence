@@ -1,12 +1,12 @@
-    /**
- * Handles the initial creation of the workspace screen.
- * @param path - path to iframe
- * @param collectionId
- * @param menu - opens a specific menu
- * @param collectionData - JSON of the currently active collection
- * @param stopEventListener - separates the link between editor and iframe
- * @returns {boolean}
- **/
+/**
+* Handles the initial creation of the workspace screen.
+* @param path - path to iframe
+* @param collectionId
+* @param menu - opens a specific menu
+* @param collectionData - JSON of the currently active collection
+* @param stopEventListener - separates the link between editor and iframe
+* @returns {boolean}
+**/
 
 function createWorkspace(path, collectionId, menu, collectionData, stopEventListener, datasetID) {
     var safePath = '';
@@ -40,8 +40,8 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
         $('.section').html(workSpace);
 
         // If we're viewing a filterable dataset then redirect the iframe to use the new path
-        if (datasetID){
-          window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
+        if (datasetID) {
+            window.frames['preview'].location = Florence.babbageBaseUrl + '/datasets/' + datasetID;
         }
         // Store nav objects
         var $nav = $('.js-workspace-nav'),
@@ -106,16 +106,16 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
                 var type = false;
                 loadCreateScreen(Florence.globalVars.pagePath, collectionId, type, collectionData);
             } else if (menuItem.is('#edit')) {
-                var isHomepagePath = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url') === "/";                
+                var isHomepagePath = $('.tree-nav-holder ul').find('.js-browse__item.selected').attr('data-url') === "/";
                 if (isHomepagePath) {
                     window.location.href = `/florence/collections/${collectionId}/homepage`
                 }
-                if(datasetID){
-                  var url = $('#browser-location').val();
-                  url = url.replace(/^.*\/\/[^\/]+/, '')
-                  Florence.globalVars.pagePath = url;
+                if (datasetID) {
+                    var url = $('#browser-location').val();
+                    url = url.replace(/^.*\/\/[^\/]+/, '')
+                    Florence.globalVars.pagePath = url;
                 } else {
-                  Florence.globalVars.pagePath = getPreviewUrl();
+                    Florence.globalVars.pagePath = getPreviewUrl();
                 }
                 loadPageDataIntoEditor(Florence.globalVars.pagePath, Florence.collection.id);
             } else if (menuItem.is('#import')) {
@@ -150,13 +150,13 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var dest = $parentItem.attr('data-url');
             var spanType = $(this).parent().prev('span');
             var title = spanType.html();
-            addDeleteMarker(dest, title, function() {
+            addDeleteMarker(dest, title, function () {
                 $parentContainer.addClass('animating').addClass('deleted');
                 toggleDeleteRevertButton($parentContainer);
                 toggleDeleteRevertChildren($parentItem);
 
                 // Stops animation happening anytime other than when going between delete/undo delete
-                $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
+                $parentContainer.one("webkitTransitionEnd transitionEnd", function () {
                     $parentContainer.removeClass('animating');
                 });
             });
@@ -167,19 +167,19 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var $parentContainer = $parentItem.find('.page__container.selected');
             var $button = $parentContainer.find('.btn-browse-delete-revert');
             var dest = $parentItem.attr('data-url');
-            removeDeleteMarker(dest, function() {
+            removeDeleteMarker(dest, function () {
                 $parentContainer.addClass('animating').removeClass('deleted');
                 toggleDeleteRevertButton($parentContainer);
                 toggleDeleteRevertChildren($parentItem);
 
                 // Stops animation happening anytime other than when going between delete/undo delete
-                $parentContainer.one("webkitTransitionEnd transitionEnd", function() {
+                $parentContainer.one("webkitTransitionEnd transitionEnd", function () {
                     $parentContainer.removeClass('animating');
                 });
             });
         });
 
-        $('.workspace-menu').on('click', '.btn-browse-move', function() {
+        $('.workspace-menu').on('click', '.btn-browse-move', function () {
             var $parentItem = $('.tree-nav-holder ul').find('.js-browse__item.selected'),
                 fromUrl = $parentItem.attr('data-url');
 
@@ -206,7 +206,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             $navItem.removeClass('selected');
             $("#edit").addClass('selected');
             var checkDest = dest;
-            if(!dest.endsWith("/data.json")) {
+            if (!dest.endsWith("/data.json")) {
                 checkDest += "/data.json";
             }
             $.ajax({
@@ -227,7 +227,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             });
         });
 
-        $('.workspace-menu').on('click', '.js-browse__menu', function() {
+        $('.workspace-menu').on('click', '.js-browse__menu', function () {
             var $thisItem = $('.js-browse__item.selected .page__container.selected'),
                 $thisBtn = $thisItem.find('.js-browse__menu'),
                 $thisMenu = $thisBtn.next('.page__menu'),
@@ -243,7 +243,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             toggleMenu();
 
             // Shut menu if another item or button is clicked
-            $('.js-browse__item-title, .btn-browse-move, .btn-browse-delete').on('click', function() {
+            $('.js-browse__item-title, .btn-browse-move, .btn-browse-delete').on('click', function () {
                 if (!menuHidden) {
                     toggleMenu();
                     menuHidden = true;
@@ -271,43 +271,50 @@ function detectPreviewClick() {
 }
 
 function processPreviewLoad(collectionId, collectionData) {
-        // Collection of functions to run on iframe load
-        onIframeLoad(function (event) {
-            var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
-                $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
+    // Collection of functions to run on iframe load
+    onIframeLoad(function (event) {
+        var $iframe = $('#iframe'), // iframe element in DOM, check length later to ensure it's on the page before continuing
+            $browse = $('#browse'); // 'Browse' menu tab, check later if it's selected
 
-            // Check it is a load event and that iframe is in the DOM still before processing the load
-            if (event.data == "load" && $iframe.length) {
-                // Check whether page URL is different and then load editor or update browse tree
-                checkForPageChanged(function (newUrl) {
-                    var safeUrl = checkPathSlashes(newUrl),
-                        selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
+        // Check it is a load event and that iframe is in the DOM still before processing the load
+        if (event.data == "load" && $iframe.length) {
+            // Check whether page URL is different and then load editor or update browse tree
+            checkForPageChanged(function (newUrl) {
+                var safeUrl = checkPathSlashes(newUrl),
+                    selectedItem = $('.workspace-browse li.selected').attr('data-url'); // Get active node in the browse tree
 
 
-                    Florence.globalVars.pagePath = safeUrl;
+                Florence.globalVars.pagePath = safeUrl;
 
-                    if (safeUrl.split('/')[1] === "visualisations") {
-                        return;
-                    }
-                    
-                    if ($('.workspace-edit').length || $('.workspace-create').length) {
-
-                        // Switch to browse screen if navigating around preview whilst on create or edit tab
-                        loadBrowseScreen(collectionId, 'click', collectionData);
-                    }
-                    else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
-                        // Only update browse tree of on 'browse' tab and preview and active node don't already match
-                        treeNodeSelect(safeUrl);
-                    }
-                });
-                updateBrowserURL(); // Update browser preview URL
-
-                if ($browse.hasClass('selected')) {
-                    browseScrollPos(); // Update browse tree scroll position
+                if (safeUrl.split('/')[1] === "visualisations") {
+                    return;
                 }
+
+                if ($('.workspace-edit').length || $('.workspace-create').length) {
+
+                    // Switch to browse screen if navigating around preview whilst on create or edit tab
+                    loadBrowseScreen(collectionId, 'click', collectionData);
+                }
+                else if ($('.workspace-browse').length && selectedItem != Florence.globalVars.pagePath) {
+                    // For a valid page, only update tree when preview and active node don't match
+                    $.ajax({
+                        url: safeUrl,
+                        type: 'GET',
+                        complete: function (xhr) {
+                            if (xhr.status === 200) {
+                                treeNodeSelect(safeUrl);
+                            }
+                        }
+                    });
+                }
+            });
+            updateBrowserURL(); // Update browser preview URL
+
+            if ($browse.hasClass('selected')) {
+                browseScrollPos(); // Update browse tree scroll position
             }
-        });
-    // }
+        }
+    });
 }
 
 // Reusable iframe startload event - uses message sent up form babbage on window.load
@@ -340,7 +347,7 @@ function browseScrollPos() {
 }
 
 function updateBrowserURL(url) {
-    if(!url) {
+    if (!url) {
         url = Florence.globalVars.pagePath;
     }
     $('.browser-location').val(Florence.babbageBaseUrl + url);
