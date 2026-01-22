@@ -1,11 +1,11 @@
 function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
     // Get collection data if it's undefined and re-run the function once request has returned
     if (!collectionData) {
-        getCollection(collectionId, success = function(getCollectionResponse) {
-                loadBrowseScreen(collectionId, click, getCollectionResponse);
-            }, error = function() {
-                console.log('Error getting collection data for: ', collectionId);
-            });
+        getCollection(collectionId, success = function (getCollectionResponse) {
+            loadBrowseScreen(collectionId, click, getCollectionResponse);
+        }, error = function () {
+            console.log('Error getting collection data for: ', collectionId);
+        });
 
         return false;
     }
@@ -15,7 +15,7 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
         dataType: 'json',
         type: 'GET',
         success: function (response) {
-            
+
             var browseData = response;
             browseData.children = response.children.map(item => {
                 if (!item.uri && item.contentPath === "/visualisations") {
@@ -35,15 +35,21 @@ function loadBrowseScreen(collectionId, click, collectionData, datasetID) {
             bindBrowseTreeClick();
 
             if (click) {
-                var url = getPreviewUrl();
-                var urlParts = url.split('/');
+                try {
+                    var url = getPreviewUrl();
+                    var urlParts = url.split('/');
 
-                if (urlParts[1] === "visualisations" && urlParts[urlParts.length-1].indexOf('.html') >= 0) {
-                // It's attempting to find a page but this is a visualisation HTML file.
-                // So, remove the HTML page from the end of the URL and just look at the JSON page.
-                    url = "/" + urlParts[1] + "/" + urlParts[2];
+                    if (urlParts[1] === "visualisations" && urlParts[urlParts.length - 1].indexOf('.html') >= 0) {
+                        // It's attempting to find a page but this is a visualisation HTML file.
+                        // So, remove the HTML page from the end of the URL and just look at the JSON page.
+                        url = "/" + urlParts[1] + "/" + urlParts[2];
+                    }
+                    treeNodeSelect(url === "/blank" ? "/" : url);
+                } catch (error) {
+                    sweetAlert("Cannot determine tree location", "Going back to home", "info");
+                    treeNodeSelect('/');
+                    return;
                 }
-                treeNodeSelect(url === "/blank" ? "/" : url);
             } else {
                 treeNodeSelect('/');
             }
@@ -72,47 +78,47 @@ function bindBrowseTreeClick(collectionId) {
             baseURL = Florence.babbageBaseUrl,
             isVisualisationsDirectory = $thisItem[0].hasAttribute('data-is-visualisations'),
             datasetID;
-        
+
         // Check if this is an api and get the dataset ID from Zebedee.
-        if($this.hasClass('page__item--api_dataset_landing_page')){
-          getPageData(collectionId, uri,
-              success = function (response) {
-                  datasetID = response.apiDatasetId;
-                  updatePreviewAndBrowseTree(datasetID);
-              },
-              error = function (response) {
-                  handleApiError(response);
-              }
-          );
+        if ($this.hasClass('page__item--api_dataset_landing_page')) {
+            getPageData(collectionId, uri,
+                success = function (response) {
+                    datasetID = response.apiDatasetId;
+                    updatePreviewAndBrowseTree(datasetID);
+                },
+                error = function (response) {
+                    handleApiError(response);
+                }
+            );
         } else {
-          updatePreviewAndBrowseTree();
+            updatePreviewAndBrowseTree();
         }
 
-        function updatePreviewAndBrowseTree(datasetID){
-          if (uri) {
-              var newURL = baseURL + uri;
-              var iframeURL = newURL;
+        function updatePreviewAndBrowseTree(datasetID) {
+            if (uri) {
+                var newURL = baseURL + uri;
+                var iframeURL = newURL;
 
-              treeNodeSelect(newURL);
+                treeNodeSelect(newURL);
 
-              
-              // If this is an api landing page then go to the /datasets/{datasetID} path
-              if (datasetID) {
-                  iframeURL = '/datasets/' + datasetID;
+
+                // If this is an api landing page then go to the /datasets/{datasetID} path
+                if (datasetID) {
+                    iframeURL = '/datasets/' + datasetID;
                 }
 
                 // Update iframe location which will send change event for iframe to update too
-              document.getElementById('iframe').contentWindow.location.href = iframeURL;
-              $('.browser-location').val(newURL);
+                document.getElementById('iframe').contentWindow.location.href = iframeURL;
+                $('.browser-location').val(newURL);
 
             } else if (!uri && isVisualisationsDirectory) {
                 // This is the data vis directory - handle differently
                 openVisDirectory();
             } else {
 
-              // Set all directories above it in the tree to be active when a directory clicked
-              selectParentDirectories($this);
-          }
+                // Set all directories above it in the tree to be active when a directory clicked
+                selectParentDirectories($this);
+            }
         }
 
         // Open active branches in browse tree
@@ -140,7 +146,7 @@ function checkAndAddDeleteFlag(browseTree, collectionData) {
     browseTree['isDeletable'] = isDeletable(browseTree.type);
     browseTree['deleteIsInCollection'] = deleteIsInCollection(browseTree.contentPath, collectionData);
 
-    $.each(browseTree.children, function( key, browseTreeNode ) {
+    $.each(browseTree.children, function (key, browseTreeNode) {
         if (browseTreeNode.children) {
             checkAndAddDeleteFlag(browseTreeNode, collectionData);
         }
