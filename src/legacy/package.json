@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.27.1",
-        "auditjs": "^4.0.37"
+        "auditjs": "^4.2.0"
     },
     "overrides": {
         "cross-spawn": ">=7.0.5"
