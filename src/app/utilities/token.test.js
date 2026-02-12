@@ -19,24 +19,24 @@ describe("UserIDToken", () => {
 
     it("returns admin/editor permissions based on groups", () => {
         const token = makeToken({
-            email: "user@ons.gov.uk",
+            "cognito:username": "1234",
             "cognito:groups": ["role-admin", "role-publisher"],
         });
         cookies.get.mockReturnValue(token);
 
         expect(UserIDToken.getPermissions()).toEqual({
-            email: "user@ons.gov.uk",
+            email: "1234",
             admin: true,
             editor: true,
         });
     });
 
     it("returns false when groups do not contain required roles", () => {
-        const token = makeToken({ email: "user@ons.gov.uk", "cognito:groups": ["role-other"] });
+        const token = makeToken({ "cognito:username": "1234", "cognito:groups": ["role-other"] });
         cookies.get.mockReturnValue(token);
 
         expect(UserIDToken.getPermissions()).toEqual({
-            email: "user@ons.gov.uk",
+            email: "1234",
             admin: false,
             editor: false,
         });
@@ -44,13 +44,13 @@ describe("UserIDToken", () => {
 
     it("returns permissions object from token payload", () => {
         const token = makeToken({
-            email: "editor@ons.gov.uk",
+            "cognito:username": "1234",
             "cognito:groups": ["role-publisher"],
         });
         cookies.get.mockReturnValue(token);
 
         expect(UserIDToken.getPermissions()).toEqual({
-            email: "editor@ons.gov.uk",
+            email: "1234",
             admin: false,
             editor: true,
         });
