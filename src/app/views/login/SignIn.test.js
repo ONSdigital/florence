@@ -2,6 +2,10 @@ import React from "react";
 import { LoginController } from "./SignIn";
 import { mount } from "enzyme";
 import { status } from "../../constants/Authentication";
+import { setAuthState } from "../../utilities/auth";
+import user from "../../utilities/api-clients/user";
+import redirect from "../../utilities/redirect";
+import { UserIDToken } from "../../utilities/token";
 
 jest.mock("../../utilities/notifications.js", () => {
     return {
@@ -21,29 +25,41 @@ jest.mock("../../utilities/websocket", () => {
 
 jest.mock("../../utilities/api-clients/user.js", () => {
     return {
-        setUserState: function () {
-            // do nothing
-        },
-        logOut: function () {
-            // do nothing
-        },
+        setUserState: jest.fn(),
+        logOut: jest.fn(),
+        getPermissions: jest.fn(),
     };
 });
 
-jest.mock("../../utilities/redirect.js", () => {
-    return {
-        handleRedirect: function () {
-            // do nothing
-        },
-    };
-});
+jest.mock("../../utilities/redirect.js", () => ({
+    getPath: jest.fn(),
+    handle: jest.fn(),
+}));
+
+jest.mock("../../utilities/auth", () => ({
+    setAuthState: jest.fn(),
+}));
+
+jest.mock("../../utilities/token", () => ({
+    UserIDToken: {
+        getPermissions: jest.fn(),
+    },
+}));
+
+const flushPromises = () => new Promise(resolve => setTimeout(resolve, 0));
 
 const props = {
     dispatch: function () {},
     rootPath: "/florence",
     isAuthenticated: false,
+    enablePermissionsAPI: false,
+    location: { query: {} },
 };
 describe("SignIn", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     describe("when a non-authenticated user hits the screen", () => {
         let component = mount(<LoginController {...props} />);
         it("should not redirect them or show any errors", () => {
@@ -170,6 +186,38 @@ describe("SignIn", () => {
                     expect(component.find(".error-msg").length).toBe(0);
                 });
             });
+        });
+    });
+
+    describe("setPermissions", () => {
+        it("uses token permissions when enablePermissionsAPI is true", () => {
+            const permissions = { email: "test@ons.gov.uk", admin: true, editor: false };
+            UserIDToken.getPermissions.mockReturnValue(permissions);
+            redirect.getPath.mockReturnValue("/florence/collections");
+
+            const component = mount(<LoginController {...props} enablePermissionsAPI={true} />);
+            component.instance().setPermissions();
+
+            expect(UserIDToken.getPermissions).toHaveBeenCalled();
+            expect(setAuthState).toHaveBeenCalledWith(permissions);
+            expect(user.setUserState).toHaveBeenCalledWith(permissions);
+            expect(redirect.handle).toHaveBeenCalledWith("/florence/collections");
+            expect(user.getPermissions).not.toHaveBeenCalled();
+        });
+
+        it("uses zebedee's permissions API when enablePermissionsAPI is false", async () => {
+            const permissions = { email: "test@ons.gov.uk", admin: false, editor: true };
+            user.getPermissions.mockResolvedValue(permissions);
+            redirect.getPath.mockReturnValue("/florence/users");
+
+            const component = mount(<LoginController {...props} enablePermissionsAPI={false} />);
+            component.instance().setPermissions();
+            await flushPromises();
+
+            expect(user.getPermissions).toHaveBeenCalled();
+            expect(setAuthState).toHaveBeenCalledWith(permissions);
+            expect(user.setUserState).toHaveBeenCalledWith(permissions);
+            expect(redirect.handle).toHaveBeenCalledWith("/florence/users");
         });
     });
 });

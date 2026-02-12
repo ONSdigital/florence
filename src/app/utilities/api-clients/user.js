@@ -74,12 +74,10 @@ export default class user {
         return http.post(`${API_PROXY.VERSIONED_PATH}/users`, body);
     }
 
-    // TODO: new auth work
     static getUsers() {
         return http.get(`${API_PROXY.VERSIONED_PATH}/users?sort=forename:asc`);
     }
 
-    // TODO: new auth work
     static createNewUser(body) {
         return http.post(`${API_PROXY.VERSIONED_PATH}/users`, body);
     }
@@ -88,12 +86,10 @@ export default class user {
         return http.get(`${API_PROXY.VERSIONED_PATH}/users/${id}`);
     }
 
-    // TODO: new auth work
     static updateUser(id, body) {
         return http.put(`${API_PROXY.VERSIONED_PATH}/users/${id}`, body);
     }
 
-    // TODO: new auth work
     static setUserPassword(id) {
         return http.post(`${API_PROXY.VERSIONED_PATH}/users/${id}/password`);
     }
@@ -109,6 +105,7 @@ export default class user {
     /**
      * Gets the permissions of the current authenticated user (based on their access token)
      *
+     * @deprecated - this method should not be used in favour of the UserIDToken class.
      * @returns the user permissions response
      */
     static getPermissions() {
@@ -119,7 +116,6 @@ export default class user {
         return http.post(`${API_PROXY.VERSIONED_PATH}/tokens`, body, true, true, true);
     }
 
-    // TODO: new auth work
     static deleteTokens() {
         return http.delete(`${API_PROXY.VERSIONED_PATH}/tokens`);
     }
