@@ -84,17 +84,11 @@ const NavBar = props => {
                                 Publishing queue
                             </a>
                         </li>
-                        {auth.isAdminOrEditor(props.user) && (
-                            <li className="global-nav__item">
-                                <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
-                                    Users and access
-                                </Link>
-                            </li>
-                        )}
-                    </>
-                )}
-                {auth.isAdminOrEditor(props.user) && (
-                    <>
+                        <li className="global-nav__item">
+                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                                Users and access
+                            </Link>
+                        </li>
                         <li className="global-nav__item">
                             <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                 Preview teams
@@ -103,13 +97,11 @@ const NavBar = props => {
                     </>
                 )}
                 {auth.isAdmin(props.user) && (
-                    <>
-                        <li className="global-nav__item">
-                            <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
-                                Security
-                            </Link>
-                        </li>
-                    </>
+                    <li className="global-nav__item">
+                        <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
+                            Security
+                        </Link>
+                    </li>
                 )}
                 <li className="global-nav__item">
                     <Link to={url.resolve("/logout")} className="global-nav__link">
