@@ -66,13 +66,11 @@ export class UserIDToken {
 
         console.log(payload);
 
-        const permissions = {
+        return {
             admin: this.#isAdmin(payload),
             editor: this.#isEditor(payload),
             //TODO: change this over to actual email later post migration.
             email: this.#getID(payload),
         };
-
-        return permissions;
     };
 }
