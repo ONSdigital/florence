@@ -88,13 +88,11 @@ export const createCollectionRequest = (collection, teams, isEnablePermissionsAP
                 id: collectionId,
                 entities: teams.map(team => `groups/${team.id}`), // ideally I would like to take the teams from response but collection is returning names of teams
                 role: "collection-previewer",
-                conditions: [
-                    {
-                        attributes: ["collection_id"],
-                        operator: "StringEquals",
-                        values: [collectionId],
-                    },
-                ],
+                condition: {
+                    attribute: "collection_id",
+                    operator: "StringEquals",
+                    values: [collectionId],
+                },
             });
         }
 
