@@ -64,8 +64,6 @@ export class UserIDToken {
             return undefined;
         }
 
-        console.log(payload);
-
         return {
             admin: this.#isAdmin(payload),
             editor: this.#isEditor(payload),
