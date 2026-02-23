@@ -19,6 +19,10 @@
         {
             "id": "CVE-2025-57352",
             "reason": "Requires upgrades to dp-table-builder-ui"
+        },
+        {
+            "id": "CVE-2026-26996",
+            "reason": "Temporary allow to progress release - audit flags as all version prior to 10.2.0 are vulnerable. v3 is still being maintained but no patch release yet."
         }
     ]
 }
