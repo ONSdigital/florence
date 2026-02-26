@@ -440,6 +440,50 @@ export const updatePolicyRequest = (id, body) => async dispatch => {
     }
 };
 
+export const deletePolicyRequest = id => async dispatch => {
+    dispatch(actions.deletePolicyProgress());
+    try {
+        const result = await collections.deletePolicy(id);
+        dispatch(actions.deletePolicySuccess(result));
+    } catch (error) {
+        dispatch(actions.deletePolicyFailure());
+        switch (error.status) {
+            case 401: {
+                break;
+            }
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error deleting the collection policy. Please try again.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst deleting collection policy`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
+};
+
 export const loadPolicyRequest = (id, body) => async dispatch => {
     dispatch(actions.loadPolicyProgress());
     try {

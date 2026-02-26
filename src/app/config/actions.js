@@ -440,6 +440,7 @@ export const setPreviewLanguage = language => {
         language,
     };
 };
+
 export function updatePolicySuccess(data) {
     return {
         type: types.UPDATE_POLICY_SUCCESS,
@@ -456,6 +457,24 @@ export function updatePolicyProgress() {
 export function updatePolicyFailure() {
     return {
         type: types.UPDATE_POLICY_FAILURE,
+    };
+}
+
+export function deletePolicySuccess(data) {
+    return {
+        type: types.DELETE_POLICY_SUCCESS,
+    };
+}
+
+export function deletePolicyProgress() {
+    return {
+        type: types.DELETE_POLICY_PROGRESS,
+    };
+}
+
+export function deletePolicyFailure() {
+    return {
+        type: types.DELETE_POLICY_FAILURE,
     };
 }
 
