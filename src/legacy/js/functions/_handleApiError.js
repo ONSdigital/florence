@@ -5,7 +5,7 @@
  */
 function handleApiError(response) {
 
-    if (!response || response.status === 200)
+    if (!response || response.status === 200 || response.status === 201)
         return;
 
     if (response.status === 401) {
