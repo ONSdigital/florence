@@ -236,6 +236,9 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionApproveClick = e => {
         this.props.dispatch(approveCollectionRequest(this.props.collectionID, `${this.props.rootPath}/collections`));
+        if (this.props.isEnablePermissionsAPI && this.props.activeCollection?.teams?.length > 0) {
+            this.props.dispatch(deletePolicyRequest(this.props.collectionID));
+        }
     };
 
     handleCancelPageDeleteClick = uri => {
