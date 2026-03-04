@@ -460,7 +460,7 @@ export function updatePolicyFailure() {
     };
 }
 
-export function deletePolicySuccess(data) {
+export function deletePolicySuccess() {
     return {
         type: types.DELETE_POLICY_SUCCESS,
     };
