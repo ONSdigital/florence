@@ -446,6 +446,10 @@ export const deletePolicyRequest = id => async dispatch => {
         const result = await collections.deletePolicy(id);
         dispatch(actions.deletePolicySuccess(result));
     } catch (error) {
+        if (error.status === 404) {
+            dispatch(actions.deletePolicySuccess(null));
+            return;
+        }
         dispatch(actions.deletePolicyFailure());
         switch (error.status) {
             case 401: {
@@ -490,6 +494,10 @@ export const loadPolicyRequest = (id, body) => async dispatch => {
         const result = await collections.getPolicy(id, body);
         dispatch(actions.loadPolicySuccess(result));
     } catch (error) {
+        if (error.status === 404) {
+            dispatch(actions.loadPolicySuccess(null));
+            return;
+        }
         dispatch(actions.loadPolicyFailure());
         switch (error.status) {
             case 401: {
