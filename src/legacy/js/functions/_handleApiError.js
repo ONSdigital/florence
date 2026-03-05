@@ -5,8 +5,7 @@
  */
 function handleApiError(response) {
 
-    if (!response || response.status === 200)
-        return;
+    if (!response || response.status === 200) return;
 
     if (response.status === 401) {
         const authState = getAuthState();

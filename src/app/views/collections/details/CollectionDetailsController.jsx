@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { push } from "react-router-redux";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-import { getCollections, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
-import { approveCollectionRequest } from "../../../config/thunks";
+import { getCollections, getGroups, getIsUpdatingCollection, getEnablePermissionsAPI } from "../../../config/selectors";
+import { approveCollectionRequest, deletePolicyRequest } from "../../../config/thunks";
 import {
     deleteCollection,
     emptyActiveCollection,
@@ -215,6 +215,9 @@ export class CollectionDetailsController extends Component {
         collections
             .delete(collectionID)
             .then(async () => {
+                if (this.props.isEnablePermissionsAPI && this.props.activeCollection?.teams?.length > 0) {
+                    this.props.dispatch(deletePolicyRequest(collectionID));
+                }
                 this.props.dispatch(deleteCollection(collectionID));
                 this.props.dispatch(push(`${this.props.rootPath}/collections`));
                 const notification = {
@@ -233,6 +236,9 @@ export class CollectionDetailsController extends Component {
 
     handleCollectionApproveClick = e => {
         this.props.dispatch(approveCollectionRequest(this.props.collectionID, `${this.props.rootPath}/collections`));
+        if (this.props.isEnablePermissionsAPI && this.props.activeCollection?.teams?.length > 0) {
+            this.props.dispatch(deletePolicyRequest(this.props.collectionID));
+        }
     };
 
     handleCancelPageDeleteClick = uri => {
@@ -723,6 +729,7 @@ export function mapStateToProps(state) {
         isUpdating: getIsUpdatingCollection(state.state),
         enableCantabularJourney: state.state.config.enableCantabularJourney,
         groups: getGroups(state.state),
+        isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
     };
 }
 

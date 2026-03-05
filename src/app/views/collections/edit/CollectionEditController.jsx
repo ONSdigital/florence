@@ -12,7 +12,6 @@ import {
     loadCollectionsSuccess,
     updatePagesInActiveCollection,
     updateTeamsInActiveCollection,
-    updatePolicy,
 } from "../../../config/actions";
 import collectionValidation from "../validation/collectionValidation";
 import collections from "../../../utilities/api-clients/collections";
@@ -21,7 +20,7 @@ import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
 import { getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
-import { loadPolicyRequest } from "../../../config/thunks";
+import { loadPolicyRequest, updatePolicyRequest, deletePolicyRequest } from "../../../config/thunks";
 
 const propTypes = {
     name: PropTypes.string.isRequired,
@@ -70,7 +69,9 @@ export class CollectionEditController extends Component {
     componentDidMount() {
         this.props.dispatch(fetchGroupsRequest());
 
-        if (this.props.isEnablePermissionsAPI) this.props.dispatch(loadPolicyRequest(this.props.id));
+        if (this.props.isEnablePermissionsAPI && this.props.activeCollection.teams.length > 0) {
+            this.props.dispatch(loadPolicyRequest(this.props.id));
+        }
 
         if (this.props.publishType === "scheduled" && this.props.publishDate) {
             this.setState({
@@ -286,7 +287,22 @@ export class CollectionEditController extends Component {
                     return collectionMapper.collectionResponseToState(activeCollection);
                 });
                 if (this.props.isEnablePermissionsAPI) {
-                    this.props.dispatch(updatePolicy(this.props.id, this.state.policy));
+                    if (activeCollection.teams.length > 0) {
+                        this.props.dispatch(
+                            updatePolicyRequest(this.props.id, {
+                                id: this.props.id,
+                                entities: activeCollection.teams.map(team => `groups/${team.id}`),
+                                role: "collection-previewer",
+                                condition: {
+                                    attribute: "collection_id",
+                                    operator: "StringEquals",
+                                    values: [this.props.id],
+                                },
+                            })
+                        );
+                    } else if (this.props.policy) {
+                        this.props.dispatch(deletePolicyRequest(this.props.id));
+                    }
                 }
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));

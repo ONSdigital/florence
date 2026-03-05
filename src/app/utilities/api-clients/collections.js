@@ -167,4 +167,10 @@ export default class collections {
             return response;
         });
     }
+
+    static deletePolicy(id) {
+        return http.delete(`/api/v1/policies/${id}`).then(response => {
+            return response;
+        });
+    }
 }

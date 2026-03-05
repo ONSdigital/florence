@@ -440,12 +440,70 @@ export const updatePolicyRequest = (id, body) => async dispatch => {
     }
 };
 
+export const deletePolicyRequest = id => async dispatch => {
+    dispatch(actions.deletePolicyProgress());
+    try {
+        const result = await collections.deletePolicy(id);
+        dispatch(actions.deletePolicySuccess(result));
+    } catch (error) {
+        if (error.status === 404) {
+            dispatch(actions.deletePolicyNotFound());
+            return;
+        }
+        dispatch(actions.deletePolicyFailure());
+        switch (error.status) {
+            case 400: {
+                const notification = {
+                    type: "warning",
+                    message: "There was an error deleting the collection policy.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 401: {
+                const notification = {
+                    type: "warning",
+                    message: "You do not have permissions to delete collection policy.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 409: {
+                const notification = {
+                    type: "warning",
+                    message: error.body,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+
+                break;
+            }
+            default: {
+                const notification = {
+                    type: "warning",
+                    message: `An unexpected error has occurred whilst deleting collection policy`,
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+        }
+        console.error(error);
+    }
+};
+
 export const loadPolicyRequest = (id, body) => async dispatch => {
     dispatch(actions.loadPolicyProgress());
     try {
         const result = await collections.getPolicy(id, body);
         dispatch(actions.loadPolicySuccess(result));
     } catch (error) {
+        if (error.status === 404) {
+            dispatch(actions.loadPolicyNotFound());
+            return;
+        }
         dispatch(actions.loadPolicyFailure());
         switch (error.status) {
             case 401: {
