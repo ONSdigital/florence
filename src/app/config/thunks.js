@@ -447,7 +447,7 @@ export const deletePolicyRequest = id => async dispatch => {
         dispatch(actions.deletePolicySuccess(result));
     } catch (error) {
         if (error.status === 404) {
-            dispatch(actions.deletePolicySuccess(null));
+            dispatch(actions.deletePolicyNotFound());
             return;
         }
         dispatch(actions.deletePolicyFailure());
@@ -501,7 +501,7 @@ export const loadPolicyRequest = (id, body) => async dispatch => {
         dispatch(actions.loadPolicySuccess(result));
     } catch (error) {
         if (error.status === 404) {
-            dispatch(actions.loadPolicySuccess(null));
+            dispatch(actions.loadPolicyNotFound());
             return;
         }
         dispatch(actions.loadPolicyFailure());

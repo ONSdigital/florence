@@ -478,6 +478,12 @@ export function deletePolicyFailure() {
     };
 }
 
+export function deletePolicyNotFound() {
+    return {
+        type: types.DELETE_POLICY_NOT_FOUND,
+    };
+}
+
 export function loadPolicySuccess(data) {
     return {
         type: types.LOAD_POLICY_SUCCESS,
@@ -494,6 +500,12 @@ export function loadPolicyProgress() {
 export function loadPolicyFailure() {
     return {
         type: types.LOAD_POLICY_FAILURE,
+    };
+}
+
+export function loadPolicyNotFound() {
+    return {
+        type: types.LOAD_POLICY_NOT_FOUND,
     };
 }
 
