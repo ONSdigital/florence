@@ -52,25 +52,3 @@ function unlock(collectionId) {
     }
   });
 }
-
-function createPolicy(collectionId, teams) {
-  $.ajax({
-    url: `${API_PROXY.VERSIONED_PATH}/policies/${collectionId}`,
-    contentType: 'application/json',
-    crossDomain: true,
-    type: 'PUT',
-    data: JSON.stringify({
-      id: collectionId,
-      entities: teams.map(team => `groups/${team}`),
-      role: "collection-previewer",
-      condition: {
-        attribute: "collection_id",
-        operator: "StringEquals",
-        values: [collectionId],
-      },
-    }),
-    error: function (response) {
-      handleApiError(response);
-    }
-  });
-}

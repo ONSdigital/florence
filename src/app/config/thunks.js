@@ -452,13 +452,19 @@ export const deletePolicyRequest = id => async dispatch => {
         }
         dispatch(actions.deletePolicyFailure());
         switch (error.status) {
-            case 401: {
-                break;
-            }
             case 400: {
                 const notification = {
                     type: "warning",
-                    message: "There was an error deleting the collection policy. Please try again.",
+                    message: "There was an error deleting the collection policy.",
+                    isDismissable: true,
+                };
+                notifications.add(notification);
+                break;
+            }
+            case 401: {
+                const notification = {
+                    type: "warning",
+                    message: "You do not have permissions to delete collection policy.",
                     isDismissable: true,
                 };
                 notifications.add(notification);

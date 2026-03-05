@@ -13,7 +13,6 @@ function viewPublishDetails(collections) {
         name: collection.name,
         pageType: collection.publishDate === manual ? "manual" : "",
         showFilesButton: true,
-        teams: collection.teams,
     });
   });
 
@@ -60,11 +59,11 @@ function viewPublishDetails(collections) {
             closeOnConfirm: false,
           },
           function () {
-            unlockAndCreatePolicy(collection, result.collectionDetails[0].teams);
+            unlock(collection);
           }
         );
       } else {
-        unlockAndCreatePolicy(collection, result.collectionDetails[0].teams);
+        unlock(collection);
       }
     });
 
@@ -147,14 +146,5 @@ function viewPublishDetails(collections) {
   // return collection id without unique identifier on the end
   function getCollectionIDWithoutUUID(collectionID) {
     return collectionID.split("-")[0];
-  }
-}
-
-function unlockAndCreatePolicy(collectionId, teams) {
-  unlock(collectionId);
-
-  var config = Florence.globalVars.config || window.getEnv();
-  if (config.enablePermissionsAPI && teams?.length > 0) {
-    createPolicy(collectionId, teams);
   }
 }
