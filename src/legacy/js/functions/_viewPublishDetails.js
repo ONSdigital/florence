@@ -11,15 +11,16 @@ function viewPublishDetails(collections) {
     result.collectionDetails.push({
         id: collection.id,
         name: collection.name,
+        type: collection.type,
         pageType: collection.publishDate === manual ? "manual" : "",
         showFilesButton: true,
     });
   });
 
   if (collections.length > 1) {
-    result.subtitle = "The following collections have been approved";
+    result.subtitle = `The following ${result.collectionDetails[0].type} collections have been approved`;
   } else {
-    result.subtitle = "The following collection has been approved";
+    result.subtitle = `The following ${result.collectionDetails[0].type} collection has been approved`;
   }
 
   displayPublishDetailsPanel();

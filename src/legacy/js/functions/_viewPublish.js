@@ -1,5 +1,6 @@
 function viewPublish() {
     var manual = '[manual collection]';
+    var automated = '[automated collection]';
 
     $.ajax({
         url: `${API_PROXY.VERSIONED_PATH}/collections`,
@@ -9,6 +10,9 @@ function viewPublish() {
             $(collections).each(function (i) {
                 if (!collections[i].type || (collections[i].type === 'manual')) {
                     collections[i].publishDate = manual;
+                }
+                if (collections[i].type === 'automated') {
+                    collections[i].publishDate = automated;
                 }
             });
             populatePublishTable(collections);
@@ -34,6 +38,8 @@ function viewPublish() {
         for (var key in collectionsByDate) {
             if (key === manual) {
                 var formattedDate = manual;
+            } else if (key === automated) {
+                var formattedDate = automated;
             } else {
                 var formattedDate = StringUtils.formatIsoFull(key);
             } 

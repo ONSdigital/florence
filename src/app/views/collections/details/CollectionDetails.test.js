@@ -355,6 +355,47 @@ describe("'Last edit' information for a page in a collection", () => {
     });
 });
 
+describe("Automated collection behaviour", () => {
+    const component = shallow(
+        <CollectionDetails
+            {...defaultProps}
+            type="automated"
+            isLoadingNameAndDate={false}
+            isLoadingDetails={false}
+            canBeApproved={true}
+            canBeDeleted={true}
+        />
+    );
+
+    it("disables create/edit content button", () => {
+        const createButton = component.find("#create-edit-content");
+        expect(createButton.exists()).toBe(true);
+        expect(createButton.prop("disabled")).toBe(true);
+    });
+
+    it("disables restore page button", () => {
+        const restoreButton = component.find("button.btn.btn--margin-left");
+        expect(restoreButton.exists()).toBe(true);
+        expect(restoreButton.prop("disabled")).toBe(true);
+    });
+
+    it("does not render edit link", () => {
+        expect(component.find('Link[to*="/edit"]').exists()).toBe(false);
+    });
+
+    it("disables approve and delete buttons when rendered", () => {
+        component.setProps({ canBeDeleted: true, canBeApproved: false });
+        const deleteButton = component.find("#delete-collection");
+        expect(deleteButton.exists()).toBe(true);
+        expect(deleteButton.prop("disabled")).toBe(true);
+
+        component.setProps({ canBeDeleted: false, canBeApproved: true });
+        const approveButton = component.find("#approve-collection");
+        expect(approveButton.exists()).toBe(true);
+        expect(approveButton.prop("disabled")).toBe(true);
+    });
+});
+
 describe("Approve collection button", () => {
     const component = shallow(<CollectionDetails {...defaultProps} />);
 

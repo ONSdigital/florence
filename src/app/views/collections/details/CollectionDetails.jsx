@@ -82,6 +82,10 @@ export class CollectionDetails extends Component {
         this.props.onApproveCollectionClick(this.props.id);
     };
 
+    isAutomatedCollection = () => {
+        return this.props.type === "automated";
+    };
+
     renderLastEditText(page) {
         const { lastEdit } = page;
         try {
@@ -164,10 +168,15 @@ export class CollectionDetails extends Component {
                     <div className="margin-bottom--1 margin-left--2">
                         <p>{this.renderLastEditText(page)}</p>
                     </div>
-                    <button className="btn btn--primary" onClick={handleEditClick} type="button">
+                    <button className="btn btn--primary" onClick={handleEditClick} type="button" disabled={this.isAutomatedCollection()}>
                         {state === "complete" ? "Review" : "Edit"}
                     </button>
-                    <button className="btn btn--warning btn--margin-left" onClick={handleDeleteClick} type="button">
+                    <button
+                        className="btn btn--warning btn--margin-left"
+                        onClick={handleDeleteClick}
+                        type="button"
+                        disabled={this.isAutomatedCollection()}
+                    >
                         Delete
                     </button>
                 </div>
@@ -383,11 +392,23 @@ export class CollectionDetails extends Component {
                 <div className="grid grid--justify-space-around">
                     <div className="grid__col-12 grid--align-center margin-top--1 margin-bottom--1">
                         <div>
-                            <Link id="create-edit-content" to={`${location.pathname}/create`} className="btn btn--primary">
-                                Create/edit content
-                            </Link>
+                            {this.isAutomatedCollection() ? (
+                                <button disabled id="create-edit-content" className="btn btn--primary">
+                                    Create/edit content
+                                </button>
+                            ) : (
+                                <Link
+                                    id="create-edit-content"
+                                    to={`${location.pathname}/create`}
+                                    className="btn btn--primary"
+                                    disabled={this.isAutomatedCollection()}
+                                >
+                                    Create/edit content
+                                </Link>
+                            )}
+
                             <button
-                                disabled={this.props.isLoadingNameAndDate}
+                                disabled={this.props.isLoadingNameAndDate || this.isAutomatedCollection()}
                                 className="btn btn--margin-left"
                                 onClick={this.handleRestoreContentClick}
                             >
@@ -420,7 +441,7 @@ export class CollectionDetails extends Component {
             return (
                 <button
                     className="btn btn--warning btn--margin-right"
-                    disabled={this.props.isLoadingDetails}
+                    disabled={this.props.isLoadingDetails || this.isAutomatedCollection()}
                     onClick={this.handleCollectionDeleteClick}
                     type="button"
                     id="delete-collection"
@@ -434,7 +455,7 @@ export class CollectionDetails extends Component {
             return (
                 <button
                     className="btn btn--positive btn--margin-right"
-                    disabled={this.props.isLoadingDetails || this.props.isApprovingCollection}
+                    disabled={this.props.isLoadingDetails || this.props.isApprovingCollection || this.isAutomatedCollection()}
                     onClick={this.handleCollectionApproveClick}
                     type="button"
                     id="approve-collection"
@@ -472,9 +493,10 @@ export class CollectionDetails extends Component {
                             <div className="grid grid--justify-space-between grid--align-end margin-top--3 margin-bottom--2">
                                 <div>
                                     <h2>{this.props.isLoadingNameAndDate ? "Loading..." : this.props.name}</h2>
+                                    {this.isAutomatedCollection() ? <p>This is an automated collection and cannot be edited or deleted</p> : null}
                                     {this.props.isLoadingNameAndDate ? <p>Loading...</p> : this.renderPublishDate()}
                                 </div>
-                                {!this.props.isLoadingNameAndDate && (
+                                {!this.props.isLoadingNameAndDate && !this.isAutomatedCollection() && (
                                     <Link to={`${location.pathname}/edit`} className="colour--cadet-blue font-size--16">
                                         Edit
                                     </Link>
