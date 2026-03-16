@@ -7,5 +7,4 @@ package main
 
 import (
 	_ "github.com/jteeuwen/go-bindata"
-	_ "google.golang.org/protobuf"
 )
