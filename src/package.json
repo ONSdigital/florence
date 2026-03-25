@@ -145,6 +145,6 @@
     "lodash-es": "^4.17.23",
     "minimatch": "3.1.4",
     "immutable": "^5.1.5",
-    "flatted": "^3.3.4"
+    "flatted": "^3.4.2"
   }
 }
