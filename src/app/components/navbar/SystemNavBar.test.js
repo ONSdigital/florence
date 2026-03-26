@@ -20,6 +20,7 @@ describe("SystemNavBar", () => {
             expect(component.find(".system-nav__descriptor").text()).toBe("Dissemination services");
             expect(component.find(".system-nav__list").exists()).toBe(false);
             expect(component.find(Link)).toHaveLength(0);
+            expect(component.find("a")).toHaveLength(0);
         });
     });
 
@@ -28,10 +29,10 @@ describe("SystemNavBar", () => {
             const component = shallow(<SystemNavBar {...defaultProps} user={authenticatedUser} />);
 
             expect(component.find(".system-nav__descriptor").text()).toBe("Dissemination services:");
-            expect(component.find(Link)).toHaveLength(3);
+            expect(component.find(Link)).toHaveLength(1);
             expect(component.find("Link[to='/florence/collections']").exists()).toBe(true);
-            expect(component.find("Link[to='/wagtail-admin/']").exists()).toBe(true);
-            expect(component.find("Link[to='/data-admin']").exists()).toBe(true);
+            expect(component.find("a[href='/wagtail-admin/']").exists()).toBe(true);
+            expect(component.find("a[href='/data-admin']").exists()).toBe(true);
         });
     });
 });
