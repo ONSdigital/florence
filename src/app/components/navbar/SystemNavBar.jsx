@@ -34,14 +34,14 @@ function SystemNavBar({ rootPath, user }) {
                             </Link>
                         </li>
                         <li className="system-nav__item">
-                            <Link to={`/wagtail-admin/`} activeClassName="selected" className="system-nav__link">
+                            <a href="/wagtail-admin/" className="system-nav__link">
                                 Wagtail
-                            </Link>
+                            </a>
                         </li>
                         <li className="system-nav__item">
-                            <Link to={`/data-admin`} activeClassName="selected" className="system-nav__link">
+                            <a href="/data-admin" className="system-nav__link">
                                 Dataset Catalogue Manager
-                            </Link>
+                            </a>
                         </li>
                     </ul>
                 </>
