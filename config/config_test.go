@@ -8,9 +8,9 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
-func TestGetRetrunsDefaultValues(t *testing.T) {
+func TestGetReturnsDefaultValues(t *testing.T) {
 	t.Parallel()
-	Convey("When a loading a configuration, default values are return", t, func() {
+	Convey("When a loading a configuration, default values are returned", t, func() {
 		os.Clearenv()
 		configuration, err := Get()
 		So(err, ShouldBeNil)
@@ -29,6 +29,7 @@ func TestGetRetrunsDefaultValues(t *testing.T) {
 				EnableMigrationField:    false,
 				EnableNewUpload:         false,
 				EnablePermissionsAPI:    false,
+				EnableSystemNavBar:      false,
 			},
 			GracefulShutdownTimeout:    10 * time.Second,
 			HealthCheckInterval:        30 * time.Second,

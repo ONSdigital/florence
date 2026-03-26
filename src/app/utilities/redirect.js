@@ -66,7 +66,12 @@ function internalRedirect(redirectPath) {
     const rootPath = store.getState().state.rootPath;
 
     if (!redirectPath) {
-        browserHistory.push(`${rootPath}/collections`);
+        if (store.getState().state.config.enableSystemNavBar) {
+            browserHistory.push(`${rootPath}/systems`);
+            return;
+        } else {
+            browserHistory.push(`${rootPath}/collections`);
+        }
         return;
     }
 

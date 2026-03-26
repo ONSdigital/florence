@@ -36,7 +36,7 @@
                 width: 100%;
                 height: 3px;
                 left: 0;
-                top: 0;
+                top: 95%;
                 background-color: $white;
             }
         }
@@ -130,3 +130,80 @@
     margin: $lineheight;
     color: $focus;
 }
+
+.system-nav {
+    background: $night-blue;
+    padding: 0 10px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    font-size: 18px;
+    position: relative;
+    z-index: 1;
+
+    &__logo {
+        padding: 0 $gutter;
+        height: 100%;
+        display: flex;
+        align-items: center;
+    }
+    &__descriptor {
+        color: $white;
+        margin-left: auto;
+        margin-right: $gutter;
+        z-index: 1;
+    }
+
+    &__list {
+        position: relative;
+        z-index: 1;
+        overflow: hidden;
+        color: $white;
+        text-align: right;
+        list-style: none;
+    }
+
+    &__item {
+        display: inline-block;
+    }
+
+    &__link {
+        color: $white;
+        padding: calc($lineheight / 2) $gutter;
+        display: block;
+        position: relative;
+        text-decoration-thickness: 1px;
+        text-underline-position: under;
+
+        &:hover {
+            text-decoration-thickness: 3px;
+        }
+
+        &:visited {
+            color: inherit;
+        }
+
+        &.selected {
+            color: $white;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        &:focus {
+            background-color: $sun-yellow;
+            box-decoration-break: clone;
+            border-bottom: 4px solid $mine-shaft;
+            color: $mine-shaft;
+            outline: 3px solid rgba(0, 0, 0, 0);
+            outline-offset: 1px;
+            text-decoration: none;
+        }
+    }
+
+    &__preview-select {
+        width: 400px;
+        margin-top: 2px;
+        float: left;
+    }
+}
+

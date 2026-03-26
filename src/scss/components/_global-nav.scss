@@ -28,14 +28,14 @@
 
         &.selected {
             color: $white;
-            &:before {
+            &:after {
                 content: '';
                 display: block;
                 position: absolute;
                 width: 100%;
                 height: 3px;
                 left: 0;
-                top: 0;
+                top: 95%;
                 background-color: $white;
             }
         }

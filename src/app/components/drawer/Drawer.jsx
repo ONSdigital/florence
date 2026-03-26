@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 const propTypes = {
     isVisible: PropTypes.bool,
     isAnimatable: PropTypes.bool,
+    isDropped: PropTypes.bool,
     handleTransitionEnd: PropTypes.func,
     children: PropTypes.node,
 };
@@ -49,7 +50,10 @@ class Drawer extends Component {
 
     render() {
         return (
-            <div className={`drawer ${this.addAnimationClasses()}`} onTransitionEnd={this.handleTransitionEnd}>
+            <div
+                className={`drawer ${this.props.isDropped ? "drawer--dropped" : ""} ${this.addAnimationClasses()}`}
+                onTransitionEnd={this.handleTransitionEnd}
+            >
                 {this.props.children}
             </div>
         );

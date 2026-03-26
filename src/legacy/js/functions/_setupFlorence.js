@@ -4,6 +4,7 @@ async function setupFlorence() {
 
     window.templates = Handlebars.templates;
     Handlebars.registerPartial("browseNode", templates.browseNode);
+    Handlebars.registerPartial("systemNav", templates.systemNav);
     Handlebars.registerPartial("editNav", templates.editNav);
     Handlebars.registerPartial("editNavChild", templates.editNavChild);
     Handlebars.registerPartial("selectorHour", templates.selectorHour);
@@ -137,10 +138,10 @@ async function setupFlorence() {
     Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
-    Florence.globalVars.config = config || { enableNewUpload: false, enablePermissionsAPI: false };
+    Florence.globalVars.config = config || { enableNewUpload: false, enablePermissionsAPI: false, enableSystemNavBar: false };
  
     // load main florence template
-    var florence = templates.florence;
+    var florence = templates.florence({config: Florence.globalVars.config});
 
     $('body').append(florence);
     Florence.refreshAdminMenu();

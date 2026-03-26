@@ -22,7 +22,12 @@ describe("redirect.handle", () => {
             allowedExternalPaths: ["/external", "no-slash-in-setup"],
         });
         store.getState = jest.fn().mockReturnValue({
-            state: { rootPath: "/florence" },
+            state: {
+                rootPath: "/florence",
+                config: {
+                    enableSystemNavBar: false,
+                },
+            },
         });
     });
 

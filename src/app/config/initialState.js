@@ -12,6 +12,7 @@ export const initialState = {
         enableNewUpload: false,
         enablePermissionsAPI: false,
         enableCantabularJourney: false,
+        enableSystemNavBar: false,
     },
     global: {
         workingOn: null,

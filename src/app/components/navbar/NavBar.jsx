@@ -3,9 +3,9 @@ import { Link } from "react-router";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
-import user from "../../utilities/api-clients/user";
 import cookies from "../../utilities/cookies";
 import PreviewNav from "../preview-nav";
+import SystemNavBar from "./SystemNavBar";
 
 const LANG = {
     en: "English",
@@ -115,17 +115,20 @@ const NavBar = props => {
     const regex = new RegExp(`${props.rootPath}/collections/[\\w|-]*/preview`, "g");
     const isViewingPreview = regex.test(props.location.pathname);
     return (
-        <ul className="global-nav__list" data-testid="navbar">
-            {isViewingPreview && <PreviewNav />}
-            {isViewingPreview && (
-                <li className="global-nav__item">
-                    <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
-                        Language: {LANG[props.previewLanguage]}
-                    </div>
-                </li>
-            )}
-            {renderNavItems()}
-        </ul>
+        <>
+            {props.enableSystemNavBar && <SystemNavBar rootPath={props.rootPath} user={props.user} />}
+            <ul className="global-nav__list" data-testid="navbar">
+                {isViewingPreview && <PreviewNav />}
+                {isViewingPreview && (
+                    <li className="global-nav__item">
+                        <div onClick={changeLang} activeClassName="selected" className="global-nav__link">
+                            Language: {LANG[props.previewLanguage]}
+                        </div>
+                    </li>
+                )}
+                {renderNavItems()}
+            </ul>
+        </>
     );
 };
 
@@ -135,6 +138,7 @@ NavBar.propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string,
     }),
+    enableSystemNavBar: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
     location: PropTypes.object.isRequired,
     setPreviewLanguage: PropTypes.func.isRequired,

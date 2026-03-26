@@ -63,7 +63,7 @@ describe("SignIn", () => {
     describe("when a non-authenticated user hits the screen", () => {
         let component = mount(<LoginController {...props} />);
         it("should not redirect them or show any errors", () => {
-            expect(component.find("h1").text()).toBe("Sign in to your Florence account");
+            expect(component.find("h1").text()).toBe("Sign in to your Dissemination account");
             expect(component.find(".panel__error").length).toBe(0);
             expect(component.find(".error-msg").length).toBe(0);
         });

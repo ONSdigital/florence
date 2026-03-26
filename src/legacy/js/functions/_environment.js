@@ -10,9 +10,9 @@ function isDevOrSandbox () {
         env.name = 'sandbox'
     }
 
-    // if((hostname.indexOf('127') > -1) || (hostname.indexOf('localhost')) > -1) {
-    //     env.name = 'localhost'
-    // }
+    if((hostname.indexOf('127') > -1) || (hostname.indexOf('localhost')) > -1) {
+        env.name = 'localhost'
+    }
 
     return env;
 }

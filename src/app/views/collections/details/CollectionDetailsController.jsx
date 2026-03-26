@@ -61,6 +61,7 @@ const propTypes = {
     activePageURI: PropTypes.string,
     routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     enableCantabularJourney: PropTypes.bool,
+    enableSystemNavBar: PropTypes.bool,
 };
 
 export class CollectionDetailsController extends Component {
@@ -694,6 +695,7 @@ export class CollectionDetailsController extends Component {
                     isVisible={this.state.drawerIsVisible}
                     isAnimatable={this.state.drawerIsAnimatable}
                     handleTransitionEnd={this.handleDrawerTransitionEnd}
+                    isDropped={this.props.enableSystemNavBar}
                 >
                     {this.props.collectionID && !this.props.activeCollection && this.renderLoadingCollectionDetails()}
                     {this.props.activeCollection && !this.state.isEditingCollection && this.renderCollectionDetails()}
@@ -727,6 +729,7 @@ export function mapStateToProps(state) {
         enableCantabularJourney: state.state.config.enableCantabularJourney,
         groups: getGroups(state.state),
         isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
+        enableSystemNavBar: state.state.config.enableSystemNavBar,
     };
 }
 

@@ -44,6 +44,7 @@ import EditUser from "./app/views/users/edit";
 import UploadTest from "./app/views/upload-test/UploadTest";
 import "./scss/main.scss";
 import Security from "./app/views/security";
+import Systems from "./app/views/systems";
 import EditGroup from "./app/views/groups/edit"
 import RedirectView from "./app/components/redirect-view";
 
@@ -189,6 +190,7 @@ const Index = () => {
                     <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
                     <Route path={`${rootPath}/groups`} component={userIsAuthenticated((Groups))} />
                     <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))} />
+                    <Route path={`${rootPath}/systems`} exact component={userIsAuthenticated(Systems)} />
                     <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))} />
                     <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)} />
                     {/* legacy paths, stops the "not found" view from showing when loading */}

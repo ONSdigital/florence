@@ -223,6 +223,7 @@ func TestIndexFile(t *testing.T) {
 				EnableMigrationField:    true,
 				EnableNewUpload:         true,
 				EnablePermissionsAPI:    true,
+				EnableSystemNavBar:      true,
 			},
 		}
 		getAsset = func(path string) ([]byte, error) {
@@ -241,7 +242,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":["/test/path","/another/test/path"],"apiRouterVersion":"v1","enableCantabularJourney":true,"enableDataAdmin":true,"enableMigrationField":true,"enableNewUpload":true,"enablePermissionsAPI":true}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":["/test/path","/another/test/path"],"apiRouterVersion":"v1","enableCantabularJourney":true,"enableDataAdmin":true,"enableMigrationField":true,"enableNewUpload":true,"enablePermissionsAPI":true,"enableSystemNavBar":true}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -269,7 +270,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableCantabularJourney":false,"enableDataAdmin":false,"enableMigrationField":false,"enableNewUpload":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableCantabularJourney":false,"enableDataAdmin":false,"enableMigrationField":false,"enableNewUpload":false,"enablePermissionsAPI":false,"enableSystemNavBar":false}`), ShouldBeTrue)
 		})
 
 		Convey("Shared config written into refactored HTML contains the correct config", func() {
@@ -279,7 +280,7 @@ func TestIndexFile(t *testing.T) {
 			So(err, ShouldBeNil)
 			html := string(body)
 			So(strings.Contains(html, "/* environment variables placeholder */"), ShouldBeFalse)
-			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableCantabularJourney":false,"enableDataAdmin":false,"enableMigrationField":false,"enableNewUpload":false,"enablePermissionsAPI":false}`), ShouldBeTrue)
+			So(strings.Contains(html, `/* server generated shared config */ {"allowedExternalPaths":null,"apiRouterVersion":"","enableCantabularJourney":false,"enableDataAdmin":false,"enableMigrationField":false,"enableNewUpload":false,"enablePermissionsAPI":false,"enableSystemNavBar":false}`), ShouldBeTrue)
 		})
 	})
 }

@@ -50,6 +50,7 @@ export const getGroupsByCollectionID = (id, allCollections, allGroups) => {
 };
 
 export const getEnablePermissionsAPI = state => state.config.enablePermissionsAPI;
+export const getEnableSystemNavBar = state => state.config.enableSystemNavBar;
 export const getNotifications = state => state.notifications;
 
 export const getActiveUser = state => state.users.active; //TODO: check if this is needed

@@ -10,6 +10,7 @@ const authenticatedUser = createMockUser("user@test.com", true, true, "ADMIN");
 const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER");
 
 const defaultProps = {
+    enableSystemNavBar: false,
     user: notLoggedUser,
     rootPath: "/florence",
     location: {},
@@ -32,7 +33,7 @@ describe("NavBar", () => {
         it("should render only one link to Sign in", () => {
             const component = shallow(<NavBar {...defaultProps} />);
 
-            expect(component.hasClass("global-nav__list")).toBe(true);
+            expect(component.find("ul").hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(1);
             expect(component.find("Link[to='/florence/login']").exists()).toBe(true);
         });
@@ -88,7 +89,7 @@ describe("NavBar", () => {
         it("should only render navigation with accessible links", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedViewer} />);
 
-            expect(component.hasClass("global-nav__list")).toBe(true);
+            expect(component.find("ul").hasClass("global-nav__list")).toBe(true);
             expect(component.find(Link)).toHaveLength(2);
             expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
             expect(component.find(Link).getElements()[1].props.children).toBe("Sign out");
@@ -104,6 +105,28 @@ describe("NavBar", () => {
                 const component = shallow(<NavBar {...withPreviewNavProps} user={authenticatedViewer} />);
                 expect(component.find("Connect(PreviewNav)")).toHaveLength(1);
             });
+        });
+    });
+
+    describe("when enableSystemNavBar is true", () => {
+        it("should render SystemNavBar component", () => {
+            const props = {
+                ...defaultProps,
+                enableSystemNavBar: true,
+            };
+            const component = shallow(<NavBar {...props} />);
+            expect(component.find("SystemNavBar")).toHaveLength(1);
+        });
+    });
+
+    describe("when enableSystemNavBar is false", () => {
+        it("should not render SystemNavBar component", () => {
+            const props = {
+                ...defaultProps,
+                enableSystemNavBar: false,
+            };
+            const component = shallow(<NavBar {...props} />);
+            expect(component.find("SystemNavBar")).toHaveLength(0);
         });
     });
 });

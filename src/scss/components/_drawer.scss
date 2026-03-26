@@ -10,6 +10,10 @@
     background-color: $pickled-bluewood;
     height: 100vh;
 
+    &--dropped {
+        padding-top: $lineheight * 6;
+    }
+
     &.visible {
         -webkit-transform: none;
         transform: none;
