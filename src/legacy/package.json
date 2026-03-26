@@ -33,6 +33,7 @@
     },
     "overrides": {
         "cross-spawn": ">=7.0.5",
-        "immutable": "^5.1.5"
+        "immutable": "^5.1.5",
+        "picomatch": "^2.3.2"
     }
 }
