@@ -7,13 +7,17 @@
 async function migration(templateData, data) {
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
+        const isReadOnlyMigrationPath = data.type === 'dataset' || data.type === 'dataset_landing_page';
+        templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
         let html = templates.migration(templateData)
         $('#migration').replaceWith(html);
 
-        $('#migration_link').on('input', function () {
-            let input = $(this).val();
-            data.description.migrationLink = input.trim();
-        });
+        if (!isReadOnlyMigrationPath) {
+            $('#migration_link').on('input', function () {
+                let input = $(this).val();
+                data.description.migrationLink = input.trim();
+            });
+        }
     }
 }
 
