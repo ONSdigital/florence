@@ -122,6 +122,19 @@
                 // line-height: $lineheight - 3;
             }
 
+            textarea[readonly],
+            textarea[aria-readonly="true"] {
+                background-color: $quill-gray;
+                border: 3px solid $scarpa-flow;
+                color: $dusty-gray;
+                cursor: not-allowed;
+            }
+
+            textarea[readonly]:focus,
+            textarea[aria-readonly="true"]:focus {
+                border: 3px solid $scarpa-flow !important;
+            }
+
             input {
                 border: 3px solid #fff;
                 margin: 0;
