@@ -331,7 +331,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, true);
         tags(templateData)
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
@@ -356,7 +356,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, true);
         editDatasetVersion(collectionId, pageData, 'versions', 'version');
         editDatasetVersion(collectionId, pageData, 'versions', 'correction');
         addFile(collectionId, pageData, 'supplementaryFiles', 'supplementary-files');

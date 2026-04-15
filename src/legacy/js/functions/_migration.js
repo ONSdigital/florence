@@ -2,12 +2,12 @@
  * manage migration link
  * @param templateData
  * @param data
+ * @param isReadOnlyMigrationPath
  */
 
-async function migration(templateData, data) {
+async function migration(templateData, data, isReadOnlyMigrationPath = false) {
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
-        const isReadOnlyMigrationPath = data.type === 'dataset' || data.type === 'dataset_landing_page';
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
         let html = templates.migration(templateData)
         $('#migration').replaceWith(html);
