@@ -19,10 +19,6 @@
         {
             "id": "CVE-2025-57352",
             "reason": "Requires upgrades to dp-table-builder-ui"
-        },
-        {
-            "id": "CVE-2026-25547",
-            "reason": "Patched in 5.0.1, but minimatch 3.x requires brace-expansion 1.x"
         }
     ]
 }
