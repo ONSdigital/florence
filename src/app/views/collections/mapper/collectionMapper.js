@@ -248,6 +248,13 @@ export default class collectionMapper {
         }
 
         if (!collection.publishDate) {
+            // This check should be a switch with manual but this
+            // approach preserves the existing logic better in this
+            // instance.
+            if (collection.type === "automated") {
+                return "[automated collection]";
+            }
+
             return "[manual collection]";
         }
     }
