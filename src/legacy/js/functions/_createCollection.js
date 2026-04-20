@@ -1,3 +1,7 @@
+/**
+ * @deprecated This function is from the legacy implementation of collection editing
+ * and should likely be removed.
+*/ 
 function createCollection(teams) {
 
     var publishTime, collectionId, collectionDate, releaseUri;

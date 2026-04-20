@@ -1,3 +1,7 @@
+/**
+ * @deprecated This function is from the legacy implementation of collection editing
+ * and should likely be removed.
+*/ 
 function postApproveCollection(collectionId) {
     $.ajax({
         url: `${API_PROXY.VERSIONED_PATH}/approve/${collectionId}`,

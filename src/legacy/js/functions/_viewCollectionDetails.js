@@ -1,3 +1,7 @@
+/**
+ * @deprecated This function is from the legacy implementation of collection editing
+ * and should likely be removed.
+*/ 
 function viewCollectionDetails(collectionId, $this) {
 
     getCollectionDetails(collectionId,
