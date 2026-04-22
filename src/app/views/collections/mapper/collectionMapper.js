@@ -245,9 +245,7 @@ export default class collectionMapper {
 
         if (collection.publishDate) {
             return date.format(collection.publishDate, "ddd, dd/mm/yyyy h:MMTT");
-        }
-
-        if (!collection.publishDate) {
+        } else {
             // This check should be a switch with manual but this
             // approach preserves the existing logic better in this
             // instance.
