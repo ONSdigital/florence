@@ -3,13 +3,16 @@
  * @param templateData
  * @param data
  * @param isReadOnlyMigrationPath
+ * @param warnOnNonMigrationSave
  */
 
-async function migration(templateData, data, isReadOnlyMigrationPath = false) {
+async function migration(templateData, data, isReadOnlyMigrationPath = false, warnOnNonMigrationSave = false) {
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
+        Florence.Editor.warnOnNonMigrationSave = warnOnNonMigrationSave;
+        Florence.Editor.hasNonMigrationChanges = false;
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
-        let html = templates.migration(templateData)
+        let html = templates.migration(templateData);
         $('#migration').replaceWith(html);
 
         if (!isReadOnlyMigrationPath) {
@@ -19,6 +22,15 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false) {
             });
         }
     }
+}
+
+function shouldBlockNonMigrationSave() {
+    if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
+        sweetAlert(...PAGE_CONTENT_MIGRATED);
+        return true;
+    }
+
+    return false;
 }
 
 // isRelativePath validates if the given path is a relative path

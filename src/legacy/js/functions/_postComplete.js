@@ -1,5 +1,9 @@
 function saveAndCompleteContent(collectionId, path, content, recursive, redirectToPath) {
 
+    if (shouldBlockNonMigrationSave()) {
+        return;
+    }
+
     if (!recursive) {
         recursive = false;
     }
@@ -7,6 +11,7 @@ function saveAndCompleteContent(collectionId, path, content, recursive, redirect
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
+            Florence.Editor.hasNonMigrationChanges = false;
             if (redirectToPath) {
                 completeContent(collectionId, path, recursive, redirectToPath);
             } else {

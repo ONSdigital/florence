@@ -1,7 +1,12 @@
 function updateContent(collectionId, path, content, redirectToPath) {
+    if (shouldBlockNonMigrationSave()) {
+        return;
+    }
+
     putContent(collectionId, path, content,
         success = function () {
             Florence.Editor.isDirty = false;
+            Florence.Editor.hasNonMigrationChanges = false;
             if (redirectToPath) {
                 createWorkspace(redirectToPath, collectionId, 'edit');
                 return;

@@ -9,11 +9,12 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
 
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;
+    Florence.Editor.hasNonMigrationChanges = false;
 
     if (pageData.type === 'taxonomy_landing_page') {
         var html = templates.workEditT2(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'highlightedLinks', 'highlights');
         accordion();
         t2Editor(collectionId, pageData);
@@ -22,7 +23,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'product_page') {
         var html = templates.workEditT3(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData)
+        migration(templateData, pageData, false, true);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'items', 'timeseries');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'statsBulletins', 'bulletins');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedArticles', 'articles');
@@ -49,7 +50,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, false);
         tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
@@ -81,7 +82,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, false);
         tags(templateData);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
@@ -143,7 +144,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'compendium_landing_page') {
         var html = templates.workEditT6(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, false);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedData', 'data');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
@@ -169,7 +170,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
@@ -186,7 +187,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'compendium_data') {
         var html = templates.workEditT8Compendium(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDocuments', 'document');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedDatasets', 'dataset');
         renderRelatedItemAccordionSection(collectionId, pageData, templateData, 'relatedMethodology', 'qmi');
@@ -200,7 +201,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_landing_page') {
         var html = templates.workEditT7Landing(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         accordion();
@@ -213,7 +214,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.tables) {
             loadTablesList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         tags(templateData)
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -237,7 +238,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.images) {
             loadImagesList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         tags(templateData)
         editIntAndExtLinks(collectionId, pageData, templateData, 'links', 'link');
@@ -250,7 +251,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_qmi') {
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -264,7 +265,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_foi') {
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -275,7 +276,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_adhoc') {
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -298,7 +299,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         if (pageData.equations) {
             loadEquationsList(collectionId, pageData);
         }
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         tags(templateData)
         renderMarkdownContentAccordionSection(collectionId, pageData, 'sections', 'section');
         renderMarkdownContentAccordionSection(collectionId, pageData, 'accordion', 'tab');
@@ -315,7 +316,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'static_methodology_download') {
         var html = templates.workEditT7(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'content');
         tags(templateData)
         addFile(collectionId, pageData, 'downloads', 'file');
@@ -331,7 +332,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true);
+        migration(templateData, pageData, true, false);
         tags(templateData)
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
@@ -356,7 +357,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true);
+        migration(templateData, pageData, true, false);
         editDatasetVersion(collectionId, pageData, 'versions', 'version');
         editDatasetVersion(collectionId, pageData, 'versions', 'correction');
         addFile(collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
@@ -377,7 +378,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'release') {
         var html = templates.workEditT16(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData);
+        migration(templateData, pageData, false, true);
         editMarkdownWithNoTitle(collectionId, pageData, 'markdown', 'prerelease');
         editDate(collectionId, pageData, templateData, 'dateChanges', 'changeDate');
         renderExternalLinkAccordionSection(collectionId, pageData, 'links', 'link');
@@ -431,6 +432,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     // Listen on all input within the workspace edit panel for dirty checks.
     $('.workspace-edit :input').on('input', function () {
         Florence.Editor.isDirty = true;
+        if (Florence.Editor.warnOnNonMigrationSave && this.id !== 'migration_link') {
+            Florence.Editor.hasNonMigrationChanges = true;
+        }
         // remove the handler now we know content has changed.
         //$(':input').unbind('input');
         //console.log('Changes detected.');
