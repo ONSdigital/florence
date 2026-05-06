@@ -28,6 +28,8 @@ var Florence = Florence || {
 
 Florence.Editor = {
     isDirty: false,
+    hasNonMigrationChanges: false,
+    warnOnNonMigrationSave: false,
     data: {}
 };
 

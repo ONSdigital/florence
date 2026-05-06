@@ -3,14 +3,17 @@
  * @param templateData
  * @param data
  * @param isReadOnlyMigrationPath
+ * @param warnOnNonMigrationSave
  */
 
-async function migration(templateData, data, isReadOnlyMigrationPath = false) {
+async function migration(templateData, data, isReadOnlyMigrationPath = false, warnOnNonMigrationSave = false) {
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
         Florence.Editor.hasMigrationLink = data.description?.migrationLink || '';
+        Florence.Editor.warnOnNonMigrationSave = warnOnNonMigrationSave;
+        Florence.Editor.hasNonMigrationChanges = false;
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
-        let html = templates.migration(templateData)
+        let html = templates.migration(templateData);
         $('#migration').replaceWith(html);
 
         if (!isReadOnlyMigrationPath) {
@@ -20,6 +23,17 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false) {
             });
         }
     }
+}
+
+function shouldBlockNonMigrationSave() {
+    Florence.Editor.hasNonMigrationChanges = hasNonMigrationInputChanges();
+
+    if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.hasMigrationLink && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
+        sweetAlert(...MIGRATED_PAGE_CONTENT);
+        return true;
+    }
+
+    return false;
 }
 
 /**
@@ -34,6 +48,33 @@ function disableSaveButtonsForMigratedContent() {
         .prop('disabled', true);
     
     sweetAlert(...MIGRATED_DATASET_CONTENT);
+}
+
+function hasNonMigrationInputChanges() {
+    let hasChanges = false;
+
+    $('.workspace-edit :input').not('#migration_link').each(function () {
+        if (hasInputChanged(this)) {
+            hasChanges = true;
+            return false;
+        }
+    });
+
+    return hasChanges;
+}
+
+function hasInputChanged(input) {
+    const type = (input.type || '').toLowerCase();
+
+    if (type === 'button' || type === 'submit' || type === 'reset' || type === 'file') {
+        return false;
+    }
+
+    if (type === 'checkbox') {
+        return input.checked !== input.defaultChecked;
+    }
+
+    return input.value !== input.defaultValue;
 }
 
 // isRelativePath validates if the given path is a relative path
