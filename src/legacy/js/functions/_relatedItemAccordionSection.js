@@ -193,6 +193,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 }, function(hasConfirmed) {
                     if (hasConfirmed) {
                         var templateTitle = "[Unpublished/broken]\n" + parsedURL.pathname;
+                        if (!data[field]) {
+                            data[field] = [];
+                            templateData[field] = [];
+                        }
                         data[field].push({uri: parsedURL.pathname});
                         templateData[field].push({uri: parsedURL.pathname, description: {title: templateTitle}});
                         saveContentAndRefreshSection();
