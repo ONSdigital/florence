@@ -39,6 +39,10 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
     $(data[field]).each(function (index) {
         // Delete
         $('#' + idField + '-delete_' + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete this link?",
@@ -83,6 +87,10 @@ function initialiseLinks(collectionId, data, templateData, field, idField) {
     //Add
     //$('#add-' + idField).off().one('click', function () {
     $('#add-link').off().click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         //add a modal to select an option for internal or external
         var position = $(".workspace-edit").scrollTop();
         Florence.globalVars.pagePos = position;

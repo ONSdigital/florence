@@ -27,6 +27,10 @@ function addFileWithDetails(collectionId, data, field, idField) {
 
             // Edit
             $('#' + idField + '-edit_' + index).click(function () {
+                // Block edit if content has migration link
+                if (blockNonMigrationChangeWithWarning()) {
+                    return;
+                }
                 var editedSectionValue = {
                     "title": $('#' + idField + '-title_' + index).val(),
                     "markdown": $('#' + idField + '-summary_' + index).val()

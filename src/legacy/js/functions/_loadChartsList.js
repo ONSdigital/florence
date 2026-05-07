@@ -18,6 +18,10 @@ function refreshChartList(collectionId, data) {
 function initialiseChartList(collectionId, data) {
 
     $('#add-chart').click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         loadChartBuilder(data, function () {
             refreshPreview();
 
@@ -41,6 +45,10 @@ function initialiseChartList(collectionId, data) {
         var chartJson = chartPath;
 
         $("#chart-edit_" + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             getPageData(collectionId, chartJson,
                 onSuccess = function (chartData) {
 
@@ -62,6 +70,10 @@ function initialiseChartList(collectionId, data) {
         });
 
         $("#chart-delete_" + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete this chart?",

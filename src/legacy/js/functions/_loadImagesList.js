@@ -15,6 +15,10 @@ function refreshImagesList(collectionId, data) {
 function initialiseImagesList(collectionId, data) {
 
     $('#add-image').click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         loadImageBuilder(data, function () {
             Florence.Editor.isDirty = false;
             refreshImagesList(collectionId, data);
@@ -27,6 +31,10 @@ function initialiseImagesList(collectionId, data) {
         var imageJson = noExtension[1] + '.json';
 
         $("#image-edit_" + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             getPageResource(collectionId, imageJson,
                 onSuccess = function (imageData) {
                     loadImageBuilder(data, function () {
@@ -39,6 +47,10 @@ function initialiseImagesList(collectionId, data) {
         });
 
         $("#image-delete_" + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete this image?",

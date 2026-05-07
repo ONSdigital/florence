@@ -1,4 +1,9 @@
 function fileDelete (collectionId, data, field, index) {
+  // Block delete if content has migration link
+  if (blockNonMigrationChangeWithWarning()) {
+    return;
+  }
+
   swal ({
     title: "Warning",
     text: "Are you sure you want to delete this file?",

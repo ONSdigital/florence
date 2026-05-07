@@ -66,6 +66,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         $(data[field]).each(function (index) {
             // Attach delete button handler.
             $('#' + idField + '-delete_' + index).click(function () {
+                // Block delete if content has migration link
+                if (blockNonMigrationChangeWithWarning()) {
+                    return;
+                }
                 deleteItem(index);
             });
         });
@@ -73,6 +77,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
 
     // attach add button handler.
     $('#add-' + idField).click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         renderRelatedItemModal();
     });
 
@@ -131,6 +139,9 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
     }
 
     function saveContentAndRefreshSection() {
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         putContent(collectionId, data.uri, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
@@ -193,6 +204,10 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
                 }, function(hasConfirmed) {
                     if (hasConfirmed) {
                         var templateTitle = "[Unpublished/broken]\n" + parsedURL.pathname;
+                        if (!data[field]) {
+                            data[field] = [];
+                            templateData[field] = [];
+                        }
                         data[field].push({uri: parsedURL.pathname});
                         templateData[field].push({uri: parsedURL.pathname, description: {title: templateTitle}});
                         saveContentAndRefreshSection();

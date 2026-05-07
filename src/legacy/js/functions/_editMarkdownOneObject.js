@@ -24,6 +24,10 @@ function editMarkdownOneObject (collectionId, data, field, title) {
   $('#one').replaceWith(html);
   // Load
   $('#one-edit').click(function() {
+    // Block edit if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     var markdown = $('#one-markdown').val();
     var editedSectionValue = {title: 'Content', markdown: markdown};
     var saveContent = function(updatedContent) {
@@ -36,6 +40,10 @@ function editMarkdownOneObject (collectionId, data, field, title) {
 
   // Delete
   $('#one-delete').click(function() {
+    // Block delete if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     swal ({
       title: "Warning",
       text: "Are you sure you want to delete?",
@@ -61,6 +69,11 @@ function editMarkdownOneObject (collectionId, data, field, title) {
 }
 
 function saveMarkdownOne (collectionId, path, data, field) {
+  // Block save if content has migration link
+  if (blockNonMigrationChangeWithWarning()) {
+    return;
+  }
+  
   putContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;

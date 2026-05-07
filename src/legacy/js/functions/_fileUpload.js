@@ -1,4 +1,9 @@
 function uploadFile(collectionId, data, field, idField, lastIndex, downloadExtensions, onSave) {
+    // Block file upload if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+        return;
+    }
+
     var position = $(".workspace-edit").scrollTop();
     Florence.globalVars.pagePos = position + 200;
     var html = templates.uploadFileForm(lastIndex);

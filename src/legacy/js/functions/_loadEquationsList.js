@@ -18,6 +18,10 @@ function refreshEquationsList(collectionId, data) {
 function initialiseEquationList(collectionId, data) {
 
     $('#add-equation').click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         loadEquationBuilder(data, function () {
             refreshPreview();
 
@@ -41,6 +45,10 @@ function initialiseEquationList(collectionId, data) {
         var equationJson = equationPath;
 
         $("#equation-edit_" + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             getPageData(collectionId, equationJson,
                 onSuccess = function (equationData) {
 
@@ -62,6 +70,10 @@ function initialiseEquationList(collectionId, data) {
         });
 
         $("#equation-delete_" + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete this equation?",

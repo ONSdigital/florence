@@ -15,6 +15,10 @@ function refreshTablesList(collectionId, data) {
 function initialiseTablesList(collectionId, data) {
 
     $('#add-table-v2').click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         loadTableBuilderV2(data, function () {
             Florence.Editor.isDirty = false;
             refreshPreview();
@@ -28,6 +32,10 @@ function initialiseTablesList(collectionId, data) {
         var tableJson = tablePath;
 
         $("#table-edit_" + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             getPageData(collectionId, tableJson,
                 onSuccess = function (tableData) {
                     let onSave = function () {
@@ -42,6 +50,10 @@ function initialiseTablesList(collectionId, data) {
         });
 
         $("#table-delete_" + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete this table?",

@@ -431,6 +431,15 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         });
     }
 
+    // Initialise defaultValue/defaultChecked for all inputs to match current values
+    $('.workspace-edit :input').each(function () {
+        if (this.type === 'checkbox' || this.type === 'radio') {
+            this.defaultChecked = this.checked;
+        } else {
+            this.defaultValue = this.value;
+        }
+    });
+
     // Listen on all input within the workspace edit panel for dirty checks.
     $('.workspace-edit :input').on('input', function () {
         Florence.Editor.isDirty = true;

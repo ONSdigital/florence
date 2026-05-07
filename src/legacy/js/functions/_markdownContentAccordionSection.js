@@ -51,6 +51,10 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
 
         // attach edit handler
         $('#' + idField + '-edit_' + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
 
             // create view model to pass to the markdown editor
             var editedSectionValue = {
@@ -75,6 +79,10 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
 
         // attach delete handler
         $('#' + idField + '-delete_' + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete?",
@@ -105,6 +113,10 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
 
     // Attach add new handler.
     $('#add-' + idField).off().one('click', function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         data[field].push({markdown: "", title: ""});
         saveContentThenRefreshSection(collectionId, data.uri, data, field, idField);
     });
@@ -141,6 +153,9 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
     sortable();
 
     function saveContentThenRefreshSection(collectionId, path, data, field, idField) {
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         putContent(collectionId, path, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
@@ -158,4 +173,3 @@ function initialiseMarkdownContentAccordionSection(collectionId, data, field, id
         );
     }
 }
-

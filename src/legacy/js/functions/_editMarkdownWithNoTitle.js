@@ -21,6 +21,10 @@ function editMarkdownWithNoTitle(collectionId, data, field, idField) {
   $('#' + idField).replaceWith(html);
   // Load
   $('#content-edit').click(function () {
+    // Block edit if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     var markdown = $('#content-markdown').val();
     var editedSectionValue = {title: 'Content', markdown: markdown};
     var saveContent = function (updatedContent) {
@@ -37,6 +41,10 @@ function editMarkdownWithNoTitle(collectionId, data, field, idField) {
 
   // Delete
   $('#content-delete').click(function () {
+    // Block delete if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     swal({
       title: "Warning",
       text: "Are you sure you want to delete?",
@@ -63,6 +71,9 @@ function editMarkdownWithNoTitle(collectionId, data, field, idField) {
 }
 
 function saveMarkdownNoTitle(collectionId, path, data, field, idField) {
+  if (blockNonMigrationChangeWithWarning()) {
+    return;
+  }
   putContent(collectionId, path, JSON.stringify(data),
     success = function () {
       Florence.Editor.isDirty = false;

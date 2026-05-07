@@ -26,9 +26,19 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false, wa
 }
 
 function shouldBlockNonMigrationSave() {
-    Florence.Editor.hasNonMigrationChanges = hasNonMigrationInputChanges();
+    // no warning if no changes have been made
+    if (!Florence.Editor.isDirty) {
+        return false;
+    }
 
-    if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.hasMigrationLink && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
+    const hasNonMigrationChanges = hasNonMigrationInputChanges();
+
+    let currentMigrationLink = $('#migration_link').val();
+    if (currentMigrationLink) {
+        currentMigrationLink = currentMigrationLink.trim();
+    }
+
+    if (Florence.Editor.warnOnNonMigrationSave && currentMigrationLink && hasNonMigrationChanges) {
         sweetAlert(...MIGRATED_PAGE_CONTENT);
         return true;
     }
@@ -36,9 +46,21 @@ function shouldBlockNonMigrationSave() {
     return false;
 }
 
-/**
- * Disables save buttons for content that has been migrated.
- */
+// Blocks save and shows warning if content has a migration link.
+function blockNonMigrationChangeWithWarning() {
+    let currentMigrationLink = $('#migration_link').val();
+    if (currentMigrationLink) {
+        currentMigrationLink = currentMigrationLink.trim();
+    }
+
+    if (Florence.Editor.warnOnNonMigrationSave && currentMigrationLink) {
+        sweetAlert(...MIGRATED_PAGE_CONTENT);
+        return true;
+    }
+    return false;
+}
+
+// Disables save buttons for content that has been migrated.
 function disableSaveButtonsForMigratedContent() {
     if (!Florence.Editor.hasMigrationLink) {
         return;
@@ -71,10 +93,12 @@ function hasInputChanged(input) {
     }
 
     if (type === 'checkbox') {
-        return input.checked !== input.defaultChecked;
+        const changed = input.checked !== input.defaultChecked;
+        return changed;
     }
 
-    return input.value !== input.defaultValue;
+    const changed = input.value !== input.defaultValue;
+    return changed;
 }
 
 // isRelativePath validates if the given path is a relative path

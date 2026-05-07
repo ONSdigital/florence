@@ -28,6 +28,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
     $(data[field]).each(function (index) {
 
         $('#' + idField + '-edit_' + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             var uri = data[field][index].uri;
             var title = data[field][index].title;
             if (idField === "filterable-dataset") {
@@ -39,6 +43,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
 
         // Delete
         $('#' + idField + '-delete_' + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete?",
@@ -68,6 +76,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
 
     //Add
     $('#add-' + idField).click(function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         var position = $(".workspace-edit").scrollTop();
         Florence.globalVars.pagePos = position + 300;
         if (idField === "filterable-dataset") {
@@ -90,6 +102,10 @@ function renderExternalLinkAccordionSection(collectionId, data, field, idField) 
     sortable();
 
     function saveLink(collectionId, path, data, field, idField) {
+        // Block save if content has migration link - any change to links is a non-migration change
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         putContent(collectionId, path, JSON.stringify(data),
             success = function () {
                 Florence.Editor.isDirty = false;
