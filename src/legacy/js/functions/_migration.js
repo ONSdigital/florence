@@ -25,12 +25,41 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false, wa
 }
 
 function shouldBlockNonMigrationSave() {
+    Florence.Editor.hasNonMigrationChanges = hasNonMigrationInputChanges();
+
     if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
         sweetAlert(...PAGE_CONTENT_MIGRATED);
         return true;
     }
 
     return false;
+}
+
+function hasNonMigrationInputChanges() {
+    let hasChanges = false;
+
+    $('.workspace-edit :input').not('#migration_link').each(function () {
+        if (hasInputChanged(this)) {
+            hasChanges = true;
+            return false;
+        }
+    });
+
+    return hasChanges;
+}
+
+function hasInputChanged(input) {
+    const type = (input.type || '').toLowerCase();
+
+    if (type === 'button' || type === 'submit' || type === 'reset' || type === 'file') {
+        return false;
+    }
+
+    if (type === 'checkbox') {
+        return input.checked !== input.defaultChecked;
+    }
+
+    return input.value !== input.defaultValue;
 }
 
 // isRelativePath validates if the given path is a relative path
