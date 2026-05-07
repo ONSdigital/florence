@@ -1,6 +1,6 @@
 import { HttpError } from "./error";
 import log from "../logging/log";
-import uuid from "uuid/v4";
+import { v4 as uuid } from "uuid";
 import user from "../api-clients/user";
 import notifications from "../notifications";
 import { errCodes } from "../errorCodes";

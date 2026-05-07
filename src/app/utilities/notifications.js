@@ -3,7 +3,7 @@ import React from "react";
 import { store } from "../config/store";
 import log from "./logging/log";
 
-import uuid from "uuid/v4";
+import { v4 as uuid } from "uuid";
 import Cross from "../icons/Cross";
 
 export default class notifications {
