@@ -88,8 +88,11 @@ function getPageDataTitle(collectionId, path, success, error) {
 }
 
 function getBabbagePageData(collectionId, path, success, error) {
+  var lang = Florence.globalVars.welsh ? "cy" : "en";
+  const requestURL = `${API_PROXY.VERSIONED_PATH}/data/${collectionId}?uri=${path}&lang=${lang}`;
+
   return $.ajax({
-    url: path + '/data',
+    url: requestURL,
     dataType: 'json',
     type: 'GET',
     success: function (response) {

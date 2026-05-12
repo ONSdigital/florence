@@ -138,7 +138,7 @@ function resolveTitleT1(collectionId, data, templateData, field) {
               }
 
               $.ajax({
-                url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${sectionUrl}`,
+                url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${sectionUrl}`,
                 dataType: 'json',
                 crossDomain: true,
                 success: function (sectionData) {

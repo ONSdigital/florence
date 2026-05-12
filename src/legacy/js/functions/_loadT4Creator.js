@@ -13,7 +13,7 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
         isInheriting, newUri, pageData, natStat, contactName, contactEmail,
         contactTel, keyWords, metaDescr, relatedData, summary, relatedMethodology;
     $.ajax({
-        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

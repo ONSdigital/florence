@@ -13,7 +13,7 @@ function loadT7Creator(collectionId, releaseDate, pageType, parentUrl) {
         parentUrl = '';
     }
     $.ajax({
-        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

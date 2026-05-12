@@ -17,7 +17,7 @@ function loadT8Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
     }
 
     $.ajax({
-        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${parentUrl}`,
+        url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${parentUrl}`,
         dataType: 'json',
         crossDomain: true,
         success: function (checkData) {

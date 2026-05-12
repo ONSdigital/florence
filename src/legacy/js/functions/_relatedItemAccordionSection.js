@@ -267,7 +267,7 @@ function initialiseRelatedItemAccordionSection(collectionId, data, templateData,
         }
 
         $.ajax({
-            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${dataUrl}`,
+            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${dataUrl}`,
             dataType: 'json',
             crossDomain: true,
             success: function (page) {

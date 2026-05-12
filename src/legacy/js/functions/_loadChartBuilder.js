@@ -183,7 +183,7 @@ function loadChartBuilder(pageData, onSave, chart) {
         }
 
         $.ajax({
-            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}?uri=${targetUri}`,
+            url: `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${targetUri}`,
             type: 'GET',
             data: null,
             processData: false,
