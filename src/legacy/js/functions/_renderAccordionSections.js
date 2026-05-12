@@ -332,7 +332,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true, false);
+        migration(templateData, pageData, true);
         tags(templateData)
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
@@ -346,6 +346,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
         datasetLandingEditor(collectionId, pageData);
+        disableSaveButtonsForMigratedContent();
     }
 
     else if (pageData.type === 'api_dataset_landing_page') {
@@ -357,12 +358,13 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true, false);
+        migration(templateData, pageData, true);
         editDatasetVersion(collectionId, pageData, 'versions', 'version');
         editDatasetVersion(collectionId, pageData, 'versions', 'correction');
         addFile(collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
         accordion();
         datasetEditor(collectionId, pageData);
+        disableSaveButtonsForMigratedContent();
     }
 
     else if (pageData.type === 'timeseries_dataset') {

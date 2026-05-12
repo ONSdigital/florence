@@ -25,6 +25,15 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false, wa
     }
 }
 
+function disableSaveButtonsForMigratedContent() {
+    if (!Florence.Editor.hasMigrationLink) {
+        return;
+    }
+    $('.btn-edit-save, .btn-edit-save-and-submit-for-review, .btn-edit-save-and-submit-for-approval')
+        .addClass('btn--disabled')
+        .prop('disabled', true);
+}
+
 function shouldBlockNonMigrationSave() {
     Florence.Editor.hasNonMigrationChanges = hasNonMigrationInputChanges();
 
