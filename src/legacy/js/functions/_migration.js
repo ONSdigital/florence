@@ -10,6 +10,7 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false, wa
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
         Florence.Editor.warnOnNonMigrationSave = warnOnNonMigrationSave;
+        Florence.Editor.hasMigrationLink = data.description?.migrationLink || '';
         Florence.Editor.hasNonMigrationChanges = false;
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
         let html = templates.migration(templateData);
@@ -27,7 +28,7 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false, wa
 function shouldBlockNonMigrationSave() {
     Florence.Editor.hasNonMigrationChanges = hasNonMigrationInputChanges();
 
-    if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
+    if (Florence.Editor.warnOnNonMigrationSave && Florence.Editor.hasMigrationLink && Florence.Editor.isDirty && Florence.Editor.hasNonMigrationChanges) {
         sweetAlert(...PAGE_CONTENT_MIGRATED);
         return true;
     }
