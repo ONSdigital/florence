@@ -19,6 +19,10 @@
         {
             "id": "CVE-2025-57352",
             "reason": "Requires upgrades to dp-table-builder-ui"
+        },
+        {
+            "id": "CVE-2026-27904",
+            "reason": "Indirect dependency via ESLint, Jest; awaiting upstream updates to minimatch."
         }
     ]
 }
