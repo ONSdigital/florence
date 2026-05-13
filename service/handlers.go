@@ -20,6 +20,7 @@ const (
 	assetStaticRoot  = "../dist/"
 	assetLegacyIndex = "../dist/legacy-assets/index.html"
 	assetRefactored  = "../dist/refactored.html"
+	logKeyData       = "data"
 )
 
 type florenceLogEvent struct {
@@ -146,17 +147,17 @@ func websocketHandler(serviceVersion string) func(w http.ResponseWriter, req *ht
 				e.ServerTimestamp = time.Now().UTC().Format("2006-01-02T15:04:05.000-0700Z")
 				err = json.Unmarshal(eventData, &e)
 				if err != nil {
-					log.Error(req.Context(), "error unmarshalling websocket message", err, log.Data{"data": string(eventData)})
+					log.Error(req.Context(), "error unmarshalling websocket message", err, log.Data{logKeyData: string(eventData)})
 					continue
 				}
-				log.Info(req.Context(), "client log", log.Data{"data": e})
+				log.Info(req.Context(), "client log", log.Data{logKeyData: e})
 
 				err = c.WriteJSON(florenceServerEvent{"ack", eventID})
 				if err != nil {
 					log.Error(req.Context(), "error writing websocket ack", err)
 				}
 			default:
-				log.Error(req.Context(), "unknown websocket event type", err, log.Data{"type": eventType, "data": string(eventData)})
+				log.Error(req.Context(), "unknown websocket event type", err, log.Data{"type": eventType, logKeyData: string(eventData)})
 			}
 		}
 	}
@@ -193,10 +194,13 @@ func refactoredIndexFile(cfg *config.Config) http.HandlerFunc {
 func DeleteHTTPCookie() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		c := &http.Cookie{
-			Name:    "access_token",
-			Value:   "",
-			Path:    "/",
-			Expires: time.Unix(0, 0),
+			Name:     "access_token",
+			Value:    "",
+			Path:     "/",
+			Expires:  time.Unix(0, 0),
+			HttpOnly: true,
+			Secure:   true,
+			SameSite: http.SameSiteStrictMode,
 		}
 		http.SetCookie(w, c)
 		w.WriteHeader(http.StatusAccepted)

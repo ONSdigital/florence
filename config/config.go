@@ -6,6 +6,17 @@ import (
 	"github.com/kelseyhightower/envconfig"
 )
 
+// Default configuration values
+const (
+	DefaultBindAddr             = ":8080"
+	DefaultAPIRouterURL         = "http://localhost:23200"
+	DefaultFrontendRouterURL    = "http://localhost:20000"
+	DefaultDatasetControllerURL = "http://localhost:24000"
+	DefaultTableRendererURL     = "http://localhost:23300"
+	DefaultDataAdminURL         = "http://localhost:29400/data-admin"
+	DefaultAPIRouterVersion     = "v1"
+)
+
 // Config represents the configuration required for florence
 type Config struct {
 	BindAddr                   string        `envconfig:"BIND_ADDR"`
@@ -41,15 +52,15 @@ func Get() (*Config, error) {
 	}
 
 	cfg = &Config{
-		BindAddr:             ":8080",
-		APIRouterURL:         "http://localhost:23200",
-		FrontendRouterURL:    "http://localhost:20000",
-		DatasetControllerURL: "http://localhost:24000",
-		TableRendererURL:     "http://localhost:23300",
-		DataAdminURL:         "http://localhost:29400/data-admin",
+		BindAddr:             DefaultBindAddr,
+		APIRouterURL:         DefaultAPIRouterURL,
+		FrontendRouterURL:    DefaultFrontendRouterURL,
+		DatasetControllerURL: DefaultDatasetControllerURL,
+		TableRendererURL:     DefaultTableRendererURL,
+		DataAdminURL:         DefaultDataAdminURL,
 		SharedConfig: SharedConfig{
 			AllowedExternalPaths:    []string{},
-			APIRouterVersion:        "v1",
+			APIRouterVersion:        DefaultAPIRouterVersion,
 			EnableCantabularJourney: false,
 			EnableDataAdmin:         true,
 			EnableMigrationField:    false,

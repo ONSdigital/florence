@@ -11,14 +11,24 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+const (
+	headerAuthorization = "Authorization"
+	headerID            = "Id"
+	headerRefresh       = "Refresh"
+	tokenSelfPath       = "/api/v1/tokens/self"
+	testValueFoo        = "foo"
+	testValueBar        = "bar"
+	testValueBaz        = "baz"
+)
+
 func TestIdentityResponseModifier(t *testing.T) {
 	const apiRouterVersion = "v1"
 	Convey("Given a response that was successful and all headers are present, all 'set-cookie' headers should"+
 		" be set", t, func() {
 		initialHeaders := http.Header{
-			"Authorization": []string{"foo"},
-			"Id":            []string{"bar"},
-			"Refresh":       []string{"baz"},
+			headerAuthorization: []string{testValueFoo},
+			headerID:            []string{testValueBar},
+			headerRefresh:       []string{testValueBaz},
 		}
 		inBoundResponse := &http.Response{
 			StatusCode: http.StatusCreated,
@@ -27,7 +37,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 			Request: &http.Request{
 				Method: http.MethodPut,
 				URL: &url.URL{
-					Path: "/api/v1/tokens/self",
+					Path: tokenSelfPath,
 				},
 			},
 		}
@@ -56,9 +66,9 @@ func TestIdentityResponseModifier(t *testing.T) {
 
 	Convey("Given a response that was successful to delete tokens", t, func() {
 		initialHeaders := http.Header{
-			"Authorization": []string{"foo"},
-			"Id":            []string{"bar"},
-			"Refresh":       []string{"baz"},
+			headerAuthorization: []string{testValueFoo},
+			headerID:            []string{testValueBar},
+			headerRefresh:       []string{testValueBaz},
 		}
 		inBoundResponse := &http.Response{
 			StatusCode: http.StatusCreated,
@@ -67,7 +77,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 			Request: &http.Request{
 				Method: http.MethodDelete,
 				URL: &url.URL{
-					Path: "/api/v1/tokens/self",
+					Path: tokenSelfPath,
 				},
 			},
 		}
@@ -97,9 +107,9 @@ func TestIdentityResponseModifier(t *testing.T) {
 
 	Convey("Given a response that was unsuccessful do not set the set-cookie headers", t, func() {
 		initialHeaders := http.Header{
-			"Authorization": []string{"foo"},
-			"Id":            []string{"bar"},
-			"Refresh":       []string{"baz"},
+			headerAuthorization: []string{testValueFoo},
+			headerID:            []string{testValueBar},
+			headerRefresh:       []string{testValueBaz},
 		}
 		inBoundResponse := &http.Response{
 			StatusCode: http.StatusServiceUnavailable,
@@ -108,7 +118,7 @@ func TestIdentityResponseModifier(t *testing.T) {
 			Request: &http.Request{
 				Method: http.MethodPut,
 				URL: &url.URL{
-					Path: "/api/v1/tokens/self",
+					Path: tokenSelfPath,
 				},
 			},
 		}

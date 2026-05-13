@@ -8,6 +8,8 @@ import (
 	. "github.com/smartystreets/goconvey/convey"
 )
 
+const testCookieValue = "foo"
+
 func TestDirectorPrefixTrimming(t *testing.T) {
 	Convey("Given a request to '/foo/bar'", t, func() {
 		request, _ := http.NewRequest("GET", "/foo/bar", http.NoBody)
@@ -54,7 +56,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 	})
 
 	Convey("Given a request with the 'access_token' cookie set", t, func() {
-		cookie := http.Cookie{Name: "access_token", Value: "foo"}
+		cookie := http.Cookie{Name: "access_token", Value: testCookieValue}
 		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
@@ -62,14 +64,14 @@ func TestDirectorCookieHandling(t *testing.T) {
 			directors.Director("")(request)
 
 			Convey("Then the proxied request should have the 'X-Florence-Token' and 'Authorization' headers set", func() {
-				So(request.Header.Get("X-Florence-Token"), ShouldEqual, "foo")
-				So(request.Header.Get("Authorization"), ShouldEqual, "Bearer foo")
+				So(request.Header.Get("X-Florence-Token"), ShouldEqual, testCookieValue)
+				So(request.Header.Get("Authorization"), ShouldEqual, "Bearer "+testCookieValue)
 			})
 		})
 	})
 
 	Convey("Given a request with the 'collection' cookie set", t, func() {
-		cookie := http.Cookie{Name: "collection", Value: "foo"}
+		cookie := http.Cookie{Name: "collection", Value: testCookieValue}
 		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
@@ -77,13 +79,13 @@ func TestDirectorCookieHandling(t *testing.T) {
 			directors.Director("")(request)
 
 			Convey("Then the proxied request should have the 'Collection-ID' header set", func() {
-				So(request.Header.Get("Collection-ID"), ShouldEqual, "foo")
+				So(request.Header.Get("Collection-ID"), ShouldEqual, testCookieValue)
 			})
 		})
 	})
 
 	Convey("Given a request with the 'id_token' cookie set", t, func() {
-		cookie := http.Cookie{Name: "id_token", Value: "foo"}
+		cookie := http.Cookie{Name: "id_token", Value: testCookieValue}
 		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
@@ -91,13 +93,13 @@ func TestDirectorCookieHandling(t *testing.T) {
 			directors.Director("")(request)
 
 			Convey("Then the proxied request should have the 'ID' header set", func() {
-				So(request.Header.Get("ID"), ShouldEqual, "foo")
+				So(request.Header.Get("ID"), ShouldEqual, testCookieValue)
 			})
 		})
 	})
 
 	Convey("Given a request with the 'refresh_token' cookie set", t, func() {
-		cookie := http.Cookie{Name: "refresh_token", Value: "foo"}
+		cookie := http.Cookie{Name: "refresh_token", Value: testCookieValue}
 		request, _ := http.NewRequest("GET", "", http.NoBody)
 		request.AddCookie(&cookie)
 
@@ -105,7 +107,7 @@ func TestDirectorCookieHandling(t *testing.T) {
 			directors.Director("")(request)
 
 			Convey("Then the proxied request should have the 'Refresh' header set", func() {
-				So(request.Header.Get("Refresh"), ShouldEqual, "foo")
+				So(request.Header.Get("Refresh"), ShouldEqual, testCookieValue)
 			})
 		})
 	})

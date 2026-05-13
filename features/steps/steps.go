@@ -8,9 +8,11 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+const warningNotificationSelector = ".notifications__item--warning"
+
 var elementMap = map[string]string{
-	"missing email":    ".notifications__item--warning",
-	"missing password": ".notifications__item--warning",
+	"missing email":    warningNotificationSelector,
+	"missing password": warningNotificationSelector,
 }
 
 func (c *Component) RegisterSteps(ctx *godog.ScenarioContext) {

@@ -15,15 +15,15 @@ func TestGetReturnsDefaultValues(t *testing.T) {
 		configuration, err := Get()
 		So(err, ShouldBeNil)
 		So(configuration, ShouldResemble, &Config{
-			BindAddr:             ":8080",
-			APIRouterURL:         "http://localhost:23200",
-			FrontendRouterURL:    "http://localhost:20000",
-			DatasetControllerURL: "http://localhost:24000",
-			TableRendererURL:     "http://localhost:23300",
-			DataAdminURL:         "http://localhost:29400/data-admin",
+			BindAddr:             DefaultBindAddr,
+			APIRouterURL:         DefaultAPIRouterURL,
+			FrontendRouterURL:    DefaultFrontendRouterURL,
+			DatasetControllerURL: DefaultDatasetControllerURL,
+			TableRendererURL:     DefaultTableRendererURL,
+			DataAdminURL:         DefaultDataAdminURL,
 			SharedConfig: SharedConfig{
 				AllowedExternalPaths:    []string{},
-				APIRouterVersion:        "v1",
+				APIRouterVersion:        DefaultAPIRouterVersion,
 				EnableCantabularJourney: false,
 				EnableDataAdmin:         true,
 				EnableMigrationField:    false,

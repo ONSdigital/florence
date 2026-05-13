@@ -8,6 +8,13 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+const (
+	cookieAccessToken  = "access_token"
+	cookieIDToken      = "id_token"
+	cookieRefreshToken = "refresh_token"
+	defaultDomain      = "localhost"
+)
+
 type Publisher struct {
 	fakeAPI   *FakeAPI
 	chromeCtx context.Context
@@ -20,9 +27,9 @@ func NewPublisher(api *FakeAPI, ctx context.Context) *Publisher {
 
 func generateAuthCookies() []*http.Cookie {
 	return []*http.Cookie{
-		GenerateCookie("access_token", "fakeAuthorizationToken", "", "/", true),
-		GenerateCookie("id_token", "fakeIDToken", "", "/", false),
-		GenerateCookie("refresh_token", "fakeRefreshToken", "", "/tokens/self", true),
+		GenerateCookie(cookieAccessToken, "fakeAuthorizationToken", "", "/", true),
+		GenerateCookie(cookieIDToken, "fakeIDToken", "", "/", false),
+		GenerateCookie(cookieRefreshToken, "fakeRefreshToken", "", "/tokens/self", true),
 	}
 }
 
@@ -76,21 +83,21 @@ func (p *Publisher) readResponseCookies() chromedp.Action {
 func (p *Publisher) setAuthCookies() {
 	p.cookies = append(p.cookies,
 		&network.Cookie{
-			Name:   "access_token",
+			Name:   cookieAccessToken,
 			Value:  "fakeAuthorizationToken",
-			Domain: "localhost",
+			Domain: defaultDomain,
 			Path:   "/",
 		},
 		&network.Cookie{
-			Name:   "id_token",
+			Name:   cookieIDToken,
 			Value:  "fakeIDToken",
-			Domain: "localhost",
+			Domain: defaultDomain,
 			Path:   "/",
 		},
 		&network.Cookie{
-			Name:   "refresh_token",
+			Name:   cookieRefreshToken,
 			Value:  "fakeRefreshToken",
-			Domain: "localhost",
+			Domain: defaultDomain,
 			Path:   "/",
 		},
 	)
@@ -98,7 +105,7 @@ func (p *Publisher) setAuthCookies() {
 
 func (p *Publisher) isSignedIn() bool {
 	for _, cookie := range p.cookies {
-		if cookie.Name == "access_token" {
+		if cookie.Name == cookieAccessToken {
 			return true
 		}
 	}

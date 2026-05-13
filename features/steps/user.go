@@ -23,9 +23,9 @@ type User interface {
 
 func GenerateCookie(name, value, domain, path string, httpOnly bool) *http.Cookie {
 	if domain == "" {
-		domain = "localhost"
+		domain = defaultDomain
 	}
-	return &http.Cookie{
+	return &http.Cookie{ //nolint:gosec // httpOnly is parameterised for flexibility in tests
 		Name:     name,
 		Value:    value,
 		Path:     path,

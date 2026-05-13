@@ -9,6 +9,12 @@ import (
 	dprequest "github.com/ONSdigital/dp-net/v3/request"
 )
 
+const (
+	cookieIDToken      = "id_token"
+	cookieRefreshToken = "refresh_token"
+	headerSetCookie    = "Set-Cookie"
+)
+
 type Permission struct {
 	Email  string `json:"email"`
 	Admin  bool   `json:"admin"`
@@ -50,12 +56,12 @@ func setAuthCookies(r *http.Response, refreshTokenPath string) {
 			SameSite: http.SameSiteStrictMode,
 		}
 		userTokenCookie := cookieUser.String()
-		r.Header.Add("Set-Cookie", userTokenCookie)
+		r.Header.Add(headerSetCookie, userTokenCookie)
 	}
 
 	if r.Header.Get("Id") != "" {
-		cookieID := &http.Cookie{
-			Name:     "id_token",
+		cookieID := &http.Cookie{ //nolint:gosec // id_token needs JS access for client-side auth
+			Name:     cookieIDToken,
 			Value:    r.Header.Get("Id"),
 			Path:     "/",
 			Domain:   domain,
@@ -64,12 +70,12 @@ func setAuthCookies(r *http.Response, refreshTokenPath string) {
 			SameSite: http.SameSiteLaxMode,
 		}
 		idTokenCookie := cookieID.String()
-		r.Header.Add("Set-Cookie", idTokenCookie)
+		r.Header.Add(headerSetCookie, idTokenCookie)
 	}
 
 	if r.Header.Get("Refresh") != "" {
 		cookieRefresh := &http.Cookie{
-			Name:     "refresh_token",
+			Name:     cookieRefreshToken,
 			Value:    r.Header.Get("Refresh"),
 			Path:     refreshTokenPath,
 			Domain:   domain,
@@ -78,7 +84,7 @@ func setAuthCookies(r *http.Response, refreshTokenPath string) {
 			SameSite: http.SameSiteStrictMode,
 		}
 		refreshTokenCookie := cookieRefresh.String()
-		r.Header.Add("Set-Cookie", refreshTokenCookie)
+		r.Header.Add(headerSetCookie, refreshTokenCookie)
 	}
 }
 func deleteAuthCookies(r *http.Response, refreshTokenPath string) {
@@ -92,29 +98,35 @@ func deleteAuthCookies(r *http.Response, refreshTokenPath string) {
 		Path:     "/",
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
 	}
 	userTokenCookie := cookieUser.String()
-	r.Header.Add("Set-Cookie", userTokenCookie)
+	r.Header.Add(headerSetCookie, userTokenCookie)
 
 	cookieID := &http.Cookie{
-		Name:     "refresh_token",
+		Name:     cookieRefreshToken,
 		Value:    "",
 		Path:     refreshTokenPath,
 		Domain:   domain,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteStrictMode,
 	}
 	idTokenCookie := cookieID.String()
-	r.Header.Add("Set-Cookie", idTokenCookie)
+	r.Header.Add(headerSetCookie, idTokenCookie)
 
 	cookieRefresh := &http.Cookie{
-		Name:     "id_token",
+		Name:     cookieIDToken,
 		Value:    "",
 		Path:     "/",
 		Domain:   domain,
 		Expires:  time.Unix(0, 0),
 		HttpOnly: true,
+		Secure:   true,
+		SameSite: http.SameSiteLaxMode,
 	}
 	refreshTokenCookie := cookieRefresh.String()
-	r.Header.Add("Set-Cookie", refreshTokenCookie)
+	r.Header.Add(headerSetCookie, refreshTokenCookie)
 }
