@@ -8,6 +8,7 @@
 async function migration(templateData, data, isReadOnlyMigrationPath = false) {
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
+        Florence.Editor.hasMigrationLink = data.description?.migrationLink || '';
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
         let html = templates.migration(templateData)
         $('#migration').replaceWith(html);
@@ -19,6 +20,20 @@ async function migration(templateData, data, isReadOnlyMigrationPath = false) {
             });
         }
     }
+}
+
+/**
+ * Disables save buttons for content that has been migrated.
+ */
+function disableSaveButtonsForMigratedContent() {
+    if (!Florence.Editor.hasMigrationLink) {
+        return;
+    }
+    $('.btn-edit-save, .btn-edit-save-and-submit-for-review, .btn-edit-save-and-submit-for-approval')
+        .addClass('btn--disabled')
+        .prop('disabled', true);
+    
+    sweetAlert(...MIGRATED_DATASET_CONTENT);
 }
 
 // isRelativePath validates if the given path is a relative path

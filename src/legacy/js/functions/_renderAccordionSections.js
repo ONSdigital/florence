@@ -345,6 +345,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
         datasetLandingEditor(collectionId, pageData);
+        disableSaveButtonsForMigratedContent();
     }
 
     else if (pageData.type === 'api_dataset_landing_page') {
@@ -362,6 +363,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         addFile(collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
         accordion();
         datasetEditor(collectionId, pageData);
+        disableSaveButtonsForMigratedContent();
     }
 
     else if (pageData.type === 'timeseries_dataset') {
