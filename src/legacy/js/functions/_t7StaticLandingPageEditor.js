@@ -84,6 +84,10 @@ function staticLandingPageEditor(collectionId, data) {
         }
 
         $("#section-edit_" + index).click(function () {
+            // Block edit if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             var editedSectionValue = {
                 "title": $('#section-title_' + index).val(),
                 "markdown": $("#section-markdown_" + index).val()
@@ -101,6 +105,10 @@ function staticLandingPageEditor(collectionId, data) {
 
         // Delete
         $("#section-delete_" + index).click(function () {
+            // Block delete if content has migration link
+            if (blockNonMigrationChangeWithWarning()) {
+                return;
+            }
             swal({
                 title: "Warning",
                 text: "Are you sure you want to delete?",
@@ -156,6 +164,10 @@ function staticLandingPageEditor(collectionId, data) {
 
     //Add new content
     $("#add-section").one('click', function () {
+        // Block add if content has migration link
+        if (blockNonMigrationChangeWithWarning()) {
+            return;
+        }
         swal({
             title: "Warning",
             text: "If you do not come back to this page, you will lose any unsaved changes",

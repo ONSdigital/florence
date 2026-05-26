@@ -15,6 +15,10 @@ function editDocumentCorrection(collectionId, data, templateData, field, idField
   initialiseCorrection(collectionId, data, templateData, field, idField);
   // New correction
   $("#add-" + idField).one('click', function () {
+    // Block add if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     if (!data[field]) {
       data[field] = [];
       templateData[field] = [];
@@ -127,6 +131,10 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
 
 
     $('#' + idField + '-edit_' + index).click(function () {
+      // Block edit if content has migration link
+      if (blockNonMigrationChangeWithWarning()) {
+        return;
+      }
       var markdown = data[field][index].correctionNotice;
       var editedSectionValue = {title: 'Correction notice', markdown: markdown};
       var saveContent = function (updatedContent) {
@@ -138,6 +146,10 @@ function initialiseCorrection(collectionId, data, templateData, field, idField) 
     });
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
+      // Block delete if content has migration link
+      if (blockNonMigrationChangeWithWarning()) {
+        return;
+      }
       swal ({
         title: "Warning",
         text: "Are you sure you want to delete this correction?",

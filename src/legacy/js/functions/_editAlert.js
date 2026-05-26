@@ -15,6 +15,10 @@ function editAlert(collectionId, data, templateData, field, idField) {
   initialiseAlert(collectionId, data, templateData, field, idField);
   // New alert
   $("#add-" + idField).click(function () {
+    // Block add if content has migration link
+    if (blockNonMigrationChangeWithWarning()) {
+      return;
+    }
     if (!data[field]) {
       data[field] = [];
       templateData[field] = [];
@@ -45,6 +49,10 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
       templateData[field][index].date = new Date($('#date_' + index).datepicker('getDate')).toISOString();
     });
     $('#' + idField + '-edit_' + index).click(function () {
+      // Block edit if content has migration link
+      if (blockNonMigrationChangeWithWarning()) {
+        return;
+      }
       var editedSectionValue = {title: 'Alert notice', markdown: data[field][index].markdown};
       //var editedSectionValue = data[field][index].markdown;
       var saveContent = function (updatedContent) {
@@ -79,6 +87,10 @@ function initialiseAlert(collectionId, data, templateData, field, idField) {
 
     // Delete
     $('#' + idField + '-delete_' + index).click(function () {
+      // Block delete if content has migration link
+      if (blockNonMigrationChangeWithWarning()) {
+        return;
+      }
       swal ({
         title: "Warning",
         text: "Are you sure you want to delete this alert?",

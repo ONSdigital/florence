@@ -37,8 +37,9 @@ function shouldBlockNonMigrationSave() {
     if (currentMigrationLink) {
         currentMigrationLink = currentMigrationLink.trim();
     }
+    const hasMigrationLink = Florence.Editor.hasMigrationLink || currentMigrationLink;
 
-    if (Florence.Editor.warnOnNonMigrationSave && currentMigrationLink && hasNonMigrationChanges) {
+    if (Florence.Editor.warnOnNonMigrationSave && hasMigrationLink && hasNonMigrationChanges) {
         sweetAlert(...MIGRATED_PAGE_CONTENT);
         return true;
     }
@@ -52,8 +53,9 @@ function blockNonMigrationChangeWithWarning() {
     if (currentMigrationLink) {
         currentMigrationLink = currentMigrationLink.trim();
     }
+    const hasMigrationLink = Florence.Editor.hasMigrationLink || currentMigrationLink;
 
-    if (Florence.Editor.warnOnNonMigrationSave && currentMigrationLink) {
+    if (Florence.Editor.warnOnNonMigrationSave && hasMigrationLink) {
         sweetAlert(...MIGRATED_PAGE_CONTENT);
         return true;
     }
