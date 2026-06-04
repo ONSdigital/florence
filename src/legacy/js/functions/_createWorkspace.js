@@ -137,6 +137,14 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var typeClass = spanType[0].attributes[0].nodeValue;
             var typeGroup = typeClass.match(/--(\w*)$/);
             var type = typeGroup[1];
+
+            if (type === 'bulletin' || type === 'article' || type === 'article_download' || type === 'compendium_landing_page') {
+                var seriesParentUrl = getParentPage(dest);
+                if (checkLatestEditionMigrated(seriesParentUrl, collectionId)) {
+                    return;
+                }
+            }
+
             Florence.globalVars.pagePath = dest;
             $navItem.removeClass('selected');
             $("#create").addClass('selected');

@@ -74,6 +74,36 @@ function disableSaveButtonsForMigratedContent() {
     sweetAlert(...MIGRATED_DATASET_CONTENT);
 }
 
+// Check if the latest edition of a series has been migrated.
+// Returns true if migrated and shows warning, false if not migrated.
+function checkLatestEditionMigrated(seriesParentUrl, collectionId) {
+    if (!window.getEnv().enableMigrationField) {
+        return false;
+    }
+
+    var latestUrl = seriesParentUrl + '/latest';
+    var apiUrl = `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${latestUrl}`;
+    var isMigrated = false;
+    
+    $.ajax({
+        url: apiUrl,
+        dataType: 'json',
+        crossDomain: true,
+        async: false,
+        success: function (latestData) {
+            if (latestData.description && latestData.description.migrationLink) {
+                isMigrated = true;
+                sweetAlert(...MIGRATED_SERIES_CONTENT);
+            }
+        },
+        error: function () {
+            console.log('Could not fetch latest edition, proceeding with creation');
+        }
+    });
+    
+    return isMigrated;
+}
+
 function hasNonMigrationInputChanges() {
     let hasChanges = false;
 

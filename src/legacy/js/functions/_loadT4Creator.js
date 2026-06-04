@@ -25,6 +25,12 @@ function loadT4Creator(collectionId, releaseDate, pageType, parentUrl) {
             if ((checkData.type === 'bulletin' && pageType === 'bulletin') || (checkData.type === 'article' && pageType === 'article') || (checkData.type === 'article_download' && pageType === 'article_download')) {
                 var checkedUrl = checkPathSlashes(checkData.uri);
                 var safeParentUrl = getParentPage(checkedUrl);
+
+                if (checkLatestEditionMigrated(safeParentUrl, collectionId)) {
+                    loadBrowseScreen(collectionId, 'click');
+                    return;
+                }
+                
                 natStat = checkData.description.nationalStatistic;
                 contactName = checkData.description.contact.name;
                 contactEmail = checkData.description.contact.email;

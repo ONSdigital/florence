@@ -29,7 +29,14 @@ function loadT6Creator(collectionId, releaseDate, pageType, parentUrl, pageTitle
                 return true;
             }
             if (checkData.type === 'compendium_landing_page' && pageType === 'compendium_landing_page') {
-                parentUrl = getParentPage(checkData.uri);
+                var seriesParentUrl = getParentPage(checkData.uri);
+
+                if (checkLatestEditionMigrated(seriesParentUrl, collectionId)) {
+                    loadBrowseScreen(collectionId, 'click');
+                    return;
+                }
+                
+                parentUrl = seriesParentUrl;
                 pageTitle = checkData.description.title;
                 isInheriting = true;
                 pageData = pageTypeDataT6(pageType, checkData);
