@@ -81,9 +81,9 @@ function checkLatestEditionMigrated(seriesParentUrl, collectionId) {
         return false;
     }
 
-    var latestUrl = seriesParentUrl + '/latest';
-    var apiUrl = `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${latestUrl}`;
-    var isMigrated = false;
+    const latestUrl = seriesParentUrl + '/latest';
+    const apiUrl = `${API_PROXY.ZEBEDEE_DATA_ENDPOINT}/${collectionId}?uri=${latestUrl}`;
+    let isMigrated = false;
     
     $.ajax({
         url: apiUrl,
@@ -91,7 +91,7 @@ function checkLatestEditionMigrated(seriesParentUrl, collectionId) {
         crossDomain: true,
         async: false,
         success: function (latestData) {
-            if (latestData.description && latestData.description.migrationLink) {
+            if (latestData.description?.migrationLink) {
                 isMigrated = true;
                 sweetAlert(...MIGRATED_SERIES_CONTENT);
             }

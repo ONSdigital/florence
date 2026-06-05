@@ -139,7 +139,7 @@ function createWorkspace(path, collectionId, menu, collectionData, stopEventList
             var type = typeGroup[1];
 
             if (type === 'bulletin' || type === 'article' || type === 'article_download' || type === 'compendium_landing_page') {
-                var seriesParentUrl = getParentPage(dest);
+                const seriesParentUrl = getParentPage(dest);
                 if (checkLatestEditionMigrated(seriesParentUrl, collectionId)) {
                     return;
                 }
