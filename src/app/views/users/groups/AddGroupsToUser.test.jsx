@@ -87,7 +87,7 @@ describe("AddGroupsToUser", () => {
             expect(screen.getAllByRole("button", { name: "Add" })).toHaveLength(3);
         });
 
-        it("adds user to groups and removes", () => {
+        it("adds user to groups and removes", async () => {
             const userGroups = groups[2];
             render(<AddGroupsToUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
@@ -100,7 +100,7 @@ describe("AddGroupsToUser", () => {
 
             expect(addButtons).toHaveLength(3);
 
-            userEvent.click(addButtons[1]);
+            await userEvent.setup().click(addButtons[1]);
 
             const userGroupsList = screen.getByTestId("UserGroupsList");
 
@@ -108,13 +108,13 @@ describe("AddGroupsToUser", () => {
             expect(within(userGroupsList).getByText(/my first test group description/i)).toBeInTheDocument();
             expect(screen.queryByText(/user is not a member of a team. Please add them to a team/i)).not.toBeInTheDocument();
 
-            userEvent.click(addButtons[2]);
+            await userEvent.setup().click(addButtons[2]);
 
             expect(within(userGroupsList).getByLabelText(/tick inside shield icon/i)).toBeInTheDocument();
             expect(within(userGroupsList).getByText(/admins group description/i)).toBeInTheDocument();
             expect(within(screen.getByTestId("form-footer")).getByText(/you have unsaved changes/i)).toBeInTheDocument();
 
-            userEvent.click(within(userGroupsList).getAllByLabelText("remove")[0]);
+            await userEvent.setup().click(within(userGroupsList).getAllByLabelText("remove")[0]);
 
             expect(within(userGroupsList).queryByText(/my first test group description/i)).not.toBeInTheDocument();
         });

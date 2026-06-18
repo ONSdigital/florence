@@ -111,29 +111,30 @@ describe("EditGroup", () => {
     });
 
     describe("when editing normal group name", () => {
-        it("validates for emptiness", () => {
+        it("validates for emptiness", async () => {
             render(<EditGroup.WrappedComponent {...props} />);
 
-            userEvent.clear(screen.getByLabelText(/name/i));
+            await userEvent.setup().clear(screen.getByLabelText(/name/i));
 
             expect(screen.getByLabelText("Name")).toHaveValue("");
 
-            userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+            await userEvent.setup().click(screen.getByRole("button", { name: "Save changes" }));
 
             expect(screen.getByText(/Please enter a name/i)).toBeInTheDocument();
             expect(screen.getByRole("button", { name: "Save changes" })).toBeDisabled();
         });
 
-        it("Updates group name and members", () => {
+        it("Updates group name and members", async () => {
             render(<EditGroup.WrappedComponent {...props} />);
 
-            userEvent.clear(screen.getByLabelText(/name/i));
-            userEvent.paste(screen.getByLabelText(/name/i), "Foo");
+            const user = userEvent.setup();
+            await user.clear(screen.getByLabelText(/name/i));
+            await user.type(screen.getByLabelText(/name/i), "Foo");
 
             expect(screen.getByText(/You have unsaved changes/i)).toBeInTheDocument();
             expect(screen.getByLabelText("Name")).toHaveValue("Foo");
 
-            userEvent.click(screen.getByRole("button", { name: "Save changes" }));
+            await user.click(screen.getByRole("button", { name: "Save changes" }));
 
             expect(props.updateGroup).toHaveBeenCalledWith("0", { name: "Foo" });
         });

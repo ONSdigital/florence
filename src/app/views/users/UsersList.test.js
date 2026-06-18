@@ -74,7 +74,7 @@ describe("UserList", () => {
         screen.getByLabelText("Show active users", { pressed: true });
     });
 
-    it("renders list of inactive users when show suspended is active", () => {
+    it("renders list of inactive users when show suspended is active", async () => {
         const newProps = {
             ...props,
             active: [user],
@@ -84,7 +84,7 @@ describe("UserList", () => {
         expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
 
-        userEvent.click(screen.getByRole("button", { name: /suspended/i }));
+        await userEvent.setup().click(screen.getByRole("button", { name: /suspended/i }));
 
         expect(screen.getByLabelText("Show active users", { pressed: false })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: true })).toBeInTheDocument();

@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, within } from "@testing-library/react";
+import { render, screen, within, fireEvent } from "@testing-library/react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
@@ -18,6 +18,11 @@ const defaultProps = {
 };
 
 describe("CreateNewCollection", () => {
+    let user;
+    beforeEach(() => {
+        user = userEvent.setup();
+    });
+
     describe("when no teams are available", () => {
         it("matches the snapshot", () => {
             const tree = renderer.create(<CreateNewCollection {...defaultProps} />);
@@ -42,41 +47,41 @@ describe("CreateNewCollection", () => {
             expect(screen.getByRole("button", { name: "Create collection" })).toBeInTheDocument();
         });
 
-        it("allows adding collection name", () => {
+        it("allows adding collection name", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
 
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test");
+            await user.type(screen.getByLabelText("Collection name"), "My test");
 
             expect(screen.queryByLabelText("Collection name")).toHaveValue("My test");
         });
 
-        it("validates collection name if not empty", () => {
+        it("validates collection name if not empty", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
             expect(screen.queryByText("Collections must be given a name.")).not.toBeInTheDocument();
 
-            userEvent.click(screen.getByText("Create collection"));
+            await user.click(screen.getByText("Create collection"));
 
             expect(screen.queryByText("Collections must be given a name.")).toBeInTheDocument();
         });
 
-        it("validates collection name for special characters", () => {
+        it("validates collection name for special characters", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
             expect(screen.queryByText("Collection names can only contain letters and numbers. (!) are not allowed")).not.toBeInTheDocument();
 
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test!");
+            await user.type(screen.getByLabelText("Collection name"), "My test!");
             expect(screen.getByLabelText("Collection name")).toHaveValue("My test!");
 
-            userEvent.click(screen.getByText("Create collection"));
+            await user.click(screen.getByText("Create collection"));
             expect(screen.queryByText("Collection names can only contain letters and numbers. (!) are not allowed.")).toBeInTheDocument();
         });
 
-        it("validates collection name to be unique", () => {
+        it("validates collection name to be unique", async () => {
             const props = {
                 ...defaultProps,
                 collections: [
@@ -87,42 +92,42 @@ describe("CreateNewCollection", () => {
             render(<CreateNewCollection {...props} />);
             expect(screen.getByLabelText("Collection name")).toHaveValue("");
 
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test");
+            await user.type(screen.getByLabelText("Collection name"), "My test");
             expect(screen.queryByLabelText("Collection name")).toHaveValue("My test");
 
-            userEvent.click(screen.getByText("Create collection"));
+            await user.click(screen.getByText("Create collection"));
             expect(screen.queryByText("A collection with this name already exists.")).not.toBeInTheDocument();
         });
 
-        it("allows changing collection Publish type", () => {
+        it("allows changing collection Publish type", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Scheduled publish")).toBeChecked();
             expect(screen.getByLabelText("Manual publish")).not.toBeChecked();
 
-            userEvent.click(screen.getByLabelText("Manual publish"));
+            await user.click(screen.getByLabelText("Manual publish"));
 
             expect(screen.getByLabelText("Scheduled publish")).not.toBeChecked();
             expect(screen.getByLabelText("Manual publish")).toBeChecked();
 
-            userEvent.click(screen.getByLabelText("Scheduled publish"));
+            await user.click(screen.getByLabelText("Scheduled publish"));
 
             expect(screen.getByLabelText("Scheduled publish")).toBeChecked();
             expect(screen.getByLabelText("Manual publish")).not.toBeChecked();
         });
 
-        it("allows changing collection Schedule type", () => {
+        it("allows changing collection Schedule type", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.getByLabelText("Custom schedule")).toBeChecked();
             expect(screen.getByLabelText("Calendar entry schedule")).not.toBeChecked();
 
-            userEvent.click(screen.getByLabelText("Calendar entry schedule"));
+            await user.click(screen.getByLabelText("Calendar entry schedule"));
 
             expect(screen.getByLabelText("Custom schedule")).not.toBeChecked();
             expect(screen.getByLabelText("Calendar entry schedule")).toBeChecked();
 
-            userEvent.click(screen.getByLabelText("Custom schedule"));
+            await user.click(screen.getByLabelText("Custom schedule"));
 
             expect(screen.getByLabelText("Custom schedule")).toBeChecked();
             expect(screen.getByLabelText("Calendar entry schedule")).not.toBeChecked();
@@ -133,18 +138,18 @@ describe("CreateNewCollection", () => {
 
             expect(screen.getByLabelText("Publish date")).toHaveValue("");
 
-            userEvent.paste(screen.getByLabelText("Publish date"), "2022-10-12");
+            fireEvent.change(screen.getByLabelText("Publish date"), { target: { value: "2022-10-12" } });
             expect(screen.getByLabelText("Publish date")).toHaveValue("2022-10-12");
         });
 
-        it("validates date", () => {
+        it("validates date", async () => {
             render(<CreateNewCollection {...defaultProps} />);
 
             expect(screen.queryByText("Scheduled collections must be given a publish date.")).not.toBeInTheDocument();
             expect(screen.getByLabelText("Scheduled publish")).toBeChecked();
             expect(screen.getByLabelText("Manual publish")).not.toBeChecked();
 
-            userEvent.click(screen.getByRole("button", { name: "Create collection" }));
+            await user.click(screen.getByRole("button", { name: "Create collection" }));
             expect(screen.queryByText("Scheduled collections must be given a publish date.")).toBeInTheDocument();
         });
 
@@ -153,13 +158,13 @@ describe("CreateNewCollection", () => {
 
             expect(screen.getByLabelText("Publish time")).toHaveValue("09:30");
 
-            userEvent.paste(screen.getByLabelText("Publish time"), "12:00");
+            fireEvent.change(screen.getByLabelText("Publish time"), { target: { value: "12:00" } });
             expect(screen.getByLabelText("Publish time")).toHaveValue("12:00");
         });
     });
 
     describe("when there are teams available", () => {
-        it("allows adding and removing teams that can view this collection", () => {
+        it("allows adding and removing teams that can view this collection", async () => {
             const props = {
                 ...defaultProps,
                 teams: [
@@ -174,8 +179,8 @@ describe("CreateNewCollection", () => {
             expect(screen.getByRole("option", { name: "Team2" })).toBeInTheDocument();
             expect(screen.getByText("Select an option").selected).toBe(true);
 
-            userEvent.selectOptions(screen.getByRole("combobox"), "1");
-            userEvent.selectOptions(screen.getByRole("combobox"), "2");
+            await user.selectOptions(screen.getByRole("combobox"), "1");
+            await user.selectOptions(screen.getByRole("combobox"), "2");
 
             const teams = screen.getByTestId("selected-item-list");
             const team1RemoveBtn = within(teams).getAllByRole("button", { name: /×/i });
@@ -183,13 +188,13 @@ describe("CreateNewCollection", () => {
             expect(within(teams).getByText("Team1")).toBeInTheDocument();
             expect(within(teams).getByText("Team2")).toBeInTheDocument();
 
-            userEvent.click(team1RemoveBtn[0]);
+            await user.click(team1RemoveBtn[0]);
 
             expect(within(teams).queryByText("Team1")).not.toBeInTheDocument();
             expect(within(teams).getByText("Team2")).toBeInTheDocument();
         });
 
-        it("passed the value isEnablePermissionsAPI value when creating collection", () => {
+        it("passed the value isEnablePermissionsAPI value when creating collection", async () => {
             const props = {
                 ...defaultProps,
                 teams: [
@@ -202,10 +207,10 @@ describe("CreateNewCollection", () => {
 
             render(<CreateNewCollection {...props} />);
 
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
-            userEvent.click(screen.getByLabelText("Manual publish"));
+            await user.type(screen.getByLabelText("Collection name"), "My test 123");
+            await user.click(screen.getByLabelText("Manual publish"));
 
-            userEvent.click(screen.getByText("Create collection"));
+            await user.click(screen.getByText("Create collection"));
 
             expect(props.createCollectionRequest).toHaveBeenCalledWith(
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, teams: [], type: "manual" },
@@ -214,7 +219,7 @@ describe("CreateNewCollection", () => {
             );
         });
 
-        it("returned team IDs when creating collection", () => {
+        it("returned team IDs when creating collection", async () => {
             const props = {
                 ...defaultProps,
                 teams: [
@@ -226,11 +231,11 @@ describe("CreateNewCollection", () => {
 
             render(<CreateNewCollection {...props} />);
 
-            userEvent.paste(screen.getByLabelText("Collection name"), "My test 123");
-            userEvent.click(screen.getByLabelText("Manual publish"));
-            userEvent.selectOptions(screen.getByRole("combobox"), "t1"); // select team
+            await user.type(screen.getByLabelText("Collection name"), "My test 123");
+            await user.click(screen.getByLabelText("Manual publish"));
+            await user.selectOptions(screen.getByRole("combobox"), "t1"); // select team
 
-            userEvent.click(screen.getByText("Create collection"));
+            await user.click(screen.getByText("Create collection"));
 
             expect(props.createCollectionRequest).toHaveBeenCalledWith(
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual", teams: ["t1"] },

@@ -2,6 +2,8 @@ import React from "react";
 import { render, screen, createMockUser, within } from "../../utilities/tests/test-utils";
 import Collections from "./Collections";
 import userEvent from "@testing-library/user-event";
+
+let user;
 import { setAuthState } from "../../utilities/auth";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
@@ -167,7 +169,7 @@ describe("Collections", () => {
                 expect(within(box).getByText("Sat, 29/01/2022 9:30AM")).toBeInTheDocument();
             });
 
-            it("dispatches push action on collection click", () => {
+            it("dispatches push action on collection click", async () => {
                 setAuthState({
                     admin: true,
                     editor: true,
@@ -177,7 +179,7 @@ describe("Collections", () => {
 
                 expect(within(box).getAllByRole("listitem")).toHaveLength(1);
 
-                userEvent.click(within(box).getByRole("listitem", { id: "Test-1" }));
+                await userEvent.setup().click(within(box).getByRole("listitem", { id: "Test-1" }));
 
                 expect(defaultProps.dispatch).toHaveBeenCalledTimes(1);
             });
@@ -205,7 +207,7 @@ describe("Collections", () => {
                 expect(within(list[0]).getByText("Sat, 29/02/2022 9:30AM")).toBeInTheDocument();
             });
 
-            it("dispatches push and updateWorkingOn actions on collection click", () => {
+            it("dispatches push and updateWorkingOn actions on collection click", async () => {
                 render(<Collections {...propsWithViewer} />);
                 setAuthState({
                     admin: true,
@@ -215,7 +217,7 @@ describe("Collections", () => {
 
                 expect(within(box).getAllByRole("listitem")).toHaveLength(2);
 
-                userEvent.click(screen.getByTestId("Test-2"));
+                await userEvent.setup().click(screen.getByTestId("Test-2"));
 
                 expect(defaultProps.dispatch).toHaveBeenCalled();
                 expect(defaultProps.updateWorkingOn).toHaveBeenCalledWith("Test-2");

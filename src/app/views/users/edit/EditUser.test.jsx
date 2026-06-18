@@ -26,6 +26,11 @@ const props = {
 const setRouteLeaveHook = jest.fn();
 
 describe("EditUser", () => {
+    let user;
+    beforeEach(() => {
+        user = userEvent.setup();
+    });
+
     it("matches the snapshot", () => {
         const tree = renderer.create(
             <EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
@@ -61,29 +66,29 @@ describe("EditUser", () => {
         expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
     });
 
-    it("allows editing and shows unsaved changes message", () => {
+    it("allows editing and shows unsaved changes message", async () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
-        userEvent.clear(screen.getByLabelText(/First name/i));
-        userEvent.paste(screen.getByLabelText(/First name/i), "My test First name");
+        await user.clear(screen.getByLabelText(/First name/i));
+        await user.type(screen.getByLabelText(/First name/i), "My test First name");
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("My test First name");
         expect(screen.getByText(/You have unsaved changes/i)).toBeInTheDocument();
     });
 
-    it("validates form and display errors in panel and within input and disables the submit button", () => {
+    it("validates form and display errors in panel and within input and disables the submit button", async () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("test");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("user-1498");
 
-        userEvent.clear(screen.getByLabelText(/First name/i));
-        userEvent.clear(screen.getByLabelText(/Last name/i));
+        await user.clear(screen.getByLabelText(/First name/i));
+        await user.clear(screen.getByLabelText(/Last name/i));
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("");
 
-        userEvent.click(screen.getByText(/save changes/i));
+        await user.click(screen.getByText(/save changes/i));
 
         expect(screen.getByText(/Fix the following:/i)).toBeInTheDocument();
         expect(screen.getByRole("link", { name: /Please enter a first name/i })).toBeInTheDocument();
@@ -106,7 +111,7 @@ describe("EditUser", () => {
 
     it("sends a reset account request", async () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-        await userEvent.click(screen.getByText(/Reset Account/i));
+        await user.click(screen.getByText(/Reset Account/i));
 
         expect(props.setUserPassword).toHaveBeenCalled();
     });
@@ -114,12 +119,12 @@ describe("EditUser", () => {
     it("updates user data", async () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
 
-        userEvent.paste(screen.getByLabelText(/First name/i), "boo");
+        await user.type(screen.getByLabelText(/First name/i), "boo");
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("testboo");
         expect(screen.getByText(/You have unsaved changes/i)).toBeInTheDocument();
 
-        await userEvent.click(screen.getByText(/save changes/i));
+        await user.click(screen.getByText(/save changes/i));
 
         expect(props.updateUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk", {
             active: true,

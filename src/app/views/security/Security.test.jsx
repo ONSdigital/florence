@@ -25,10 +25,10 @@ describe("Security", () => {
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
-    it("requests to open Modal", () => {
+    it("requests to open Modal", async () => {
         render(<Security {...defaultProps} />);
 
-        userEvent.click(screen.getByText(/sign out all users/i));
+        await userEvent.setup().click(screen.getByText(/sign out all users/i));
 
         expect(defaultProps.openModal).toHaveBeenCalledTimes(1);
         expect(defaultProps.openModal).toHaveBeenCalledWith(

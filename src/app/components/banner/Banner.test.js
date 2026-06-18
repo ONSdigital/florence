@@ -22,17 +22,22 @@ const props = {
 };
 
 describe("Banner", () => {
+    let user;
+    beforeEach(() => {
+        user = userEvent.setup();
+    });
+
     describe("when no props are passed", () => {
         it("matches the snapshot", () => {
             const wrapper = renderer.create(<Banner {...defaultProps} />);
             expect(wrapper.toJSON()).toMatchSnapshot();
         });
 
-        it("shows Banner form when Add an Emergency Banner button is clicked ", () => {
+        it("shows Banner form when Add an Emergency Banner button is clicked ", async () => {
             render(<Banner data={{}} handleBannerSave={jest.fn()} />);
             const addButton = screen.getByText("Add an Emergency Banner");
 
-            userEvent.click(addButton);
+            await user.click(addButton);
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
             expect(screen.getByLabelText("Title")).toBeInTheDocument();
@@ -44,29 +49,29 @@ describe("Banner", () => {
             expect(screen.queryByRole("button", { name: "Cancel" })).toBeInTheDocument();
         });
 
-        it("hides Banner form when Cancel button is clicked ", () => {
+        it("hides Banner form when Cancel button is clicked ", async () => {
             render(<Banner {...defaultProps} />);
             const addButton = screen.getByText("Add an Emergency Banner");
 
-            userEvent.click(addButton);
+            await user.click(addButton);
 
             expect(addButton).not.toBeInTheDocument();
 
-            userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+            await user.click(screen.getByRole("button", { name: "Cancel" }));
 
             expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
             expect(screen.queryByRole("button", { name: "Save emergency banner" })).not.toBeInTheDocument();
             expect(screen.getByRole("button", { name: "Add an Emergency Banner" })).toBeInTheDocument();
         });
 
-        it("does not hide Banner form when Save button is clicked if validation fails", () => {
+        it("does not hide Banner form when Save button is clicked if validation fails", async () => {
             render(<Banner {...defaultProps} />);
 
-            userEvent.click(screen.getByText("Add an Emergency Banner"));
+            await user.click(screen.getByText("Add an Emergency Banner"));
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
 
-            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+            await user.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.getByRole("button", { name: "Cancel" })).toBeInTheDocument();
             expect(screen.getByRole("button", { name: "Save emergency banner" })).toBeDisabled();
@@ -82,7 +87,7 @@ describe("Banner", () => {
             expect(wrapper.toJSON()).toMatchSnapshot();
         });
 
-        it("shows Banner form with data when Edit button is clicked", () => {
+        it("shows Banner form with data when Edit button is clicked", async () => {
             render(<Banner {...props} />);
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
@@ -93,7 +98,7 @@ describe("Banner", () => {
             expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
             expect(screen.getByText("Read more").closest("a")).toHaveAttribute("href", "https://www.test.com/");
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
             expect(screen.getByLabelText("Title")).toHaveValue("Test Title");
             expect(screen.getByLabelText("Type")).toHaveValue("local_emergency");
@@ -101,13 +106,13 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Link text")).toHaveValue("Read more");
             expect(screen.getByLabelText("Link url")).toHaveValue("https://www.test.com/");
 
-            userEvent.selectOptions(screen.getByLabelText("Type"), ["national_emergency"]);
+            await user.selectOptions(screen.getByLabelText("Type"), ["national_emergency"]);
 
             expect(screen.queryByTestId("banner")).not.toBeInTheDocument();
             expect(screen.getByLabelText("Type")).toHaveValue("national_emergency");
         });
 
-        it("doesn't change values and hides Banner form when Cancel button is clicked", () => {
+        it("doesn't change values and hides Banner form when Cancel button is clicked", async () => {
             render(<Banner {...props} />);
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
@@ -115,7 +120,7 @@ describe("Banner", () => {
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
             expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
             expect(screen.getByLabelText("Title")).toHaveValue("Test Title");
             expect(screen.getByLabelText("Type")).toHaveValue("local_emergency");
@@ -123,35 +128,35 @@ describe("Banner", () => {
             expect(screen.getByLabelText("Link text")).toHaveValue("Read more");
             expect(screen.getByLabelText("Link url")).toHaveValue("https://www.test.com/");
 
-            userEvent.click(screen.getByRole("button", { name: "Cancel" }));
+            await user.click(screen.getByRole("button", { name: "Cancel" }));
 
             expect(screen.queryByRole("button", { name: "Cancel" })).not.toBeInTheDocument();
             expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
         });
 
-        it("allows edit existing banner values", () => {
+        it("allows edit existing banner values", async () => {
             render(<Banner {...props} />);
 
             expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
             expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
             expect(screen.queryByTestId("banner")).not.toBeInTheDocument();
             expect(screen.getByLabelText("Type")).toHaveValue("local_emergency");
             expect(screen.getByLabelText("Title")).toHaveValue("Test Title");
             expect(screen.getByLabelText("Description")).toHaveValue("My emergency description");
 
-            userEvent.paste(screen.getByLabelText("Title"), "Boo");
-            userEvent.selectOptions(screen.getByLabelText("Type"), ["national_emergency"]);
-            userEvent.paste(screen.getByLabelText("Description"), "Foo");
+            await user.type(screen.getByLabelText("Title"), "Boo");
+            await user.selectOptions(screen.getByLabelText("Type"), ["national_emergency"]);
+            await user.type(screen.getByLabelText("Description"), "Foo");
 
             expect(screen.queryByLabelText("Title")).toHaveValue("Test TitleBoo");
             expect(screen.queryByLabelText("Type")).toHaveValue("national_emergency");
             expect(screen.queryByLabelText("Description")).toHaveValue("My emergency descriptionFoo");
 
-            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+            await user.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(props.handleBannerSave).toHaveBeenCalledWith({
                 description: "My emergency descriptionFoo",
@@ -162,7 +167,7 @@ describe("Banner", () => {
             });
         });
 
-        it("allows delete banner", () => {
+        it("allows delete banner", async () => {
             render(<Banner {...props} />);
 
             expect(screen.queryByRole("button", { name: "Add an Emergency Banner" })).not.toBeInTheDocument();
@@ -170,35 +175,35 @@ describe("Banner", () => {
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
             expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
 
-            userEvent.click(screen.getByText("Delete"));
+            await user.click(screen.getByText("Delete"));
 
             expect(props.handleBannerSave).toHaveBeenCalledWith({});
         });
 
-        it("validates values filled in the Banner Form", () => {
+        it("validates values filled in the Banner Form", async () => {
             render(<Banner {...props} />);
 
             expect(screen.getByRole("heading", { level: 3 })).toHaveTextContent("Test Title");
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 local_emergency", { exact: true });
             expect(screen.getByTestId("description")).toHaveTextContent("My emergency description");
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
             expect(screen.queryByTestId("banner")).not.toBeInTheDocument();
             expect(screen.getByLabelText("Type")).toHaveValue("local_emergency");
             expect(screen.getByLabelText("Title")).toHaveValue("Test Title");
             expect(screen.getByLabelText("Description")).toHaveValue("My emergency description");
 
-            userEvent.clear(screen.getByLabelText("Title"));
-            userEvent.clear(screen.getByLabelText("Description"));
-            userEvent.clear(screen.getByLabelText("Link text"));
-            userEvent.selectOptions(screen.getByLabelText("Type"), "Select an option");
+            await user.clear(screen.getByLabelText("Title"));
+            await user.clear(screen.getByLabelText("Description"));
+            await user.clear(screen.getByLabelText("Link text"));
+            await user.selectOptions(screen.getByLabelText("Type"), "Select an option");
 
             expect(screen.queryByLabelText("Title")).toHaveValue("");
             expect(screen.queryByLabelText("Description")).toHaveValue("");
             expect(screen.queryByLabelText("Type")).toHaveValue("");
 
-            userEvent.click(screen.getByText("Save emergency banner"));
+            await user.click(screen.getByText("Save emergency banner"));
 
             expect(screen.getByText("Title is required")).toBeInTheDocument();
             expect(screen.getByText("Description is required")).toBeInTheDocument();
@@ -207,7 +212,7 @@ describe("Banner", () => {
             expect(screen.queryByText("Link url is required")).not.toBeInTheDocument();
         });
 
-        it("allows leave link and url empty when both are not filled in", () => {
+        it("allows leave link and url empty when both are not filled in", async () => {
             const data = {
                 title: "My Title",
                 type: "national_emergency",
@@ -215,12 +220,12 @@ describe("Banner", () => {
             };
             render(<Banner data={data} handleBannerSave={jest.fn()} />);
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
             expect(screen.getByLabelText("Link text")).toHaveValue("");
             expect(screen.getByLabelText("Link url")).toHaveValue("");
 
-            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+            await user.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.getByTestId("banner")).toHaveClass("banner margin-top--1 national_emergency");
             expect(screen.getByTestId("description")).toHaveTextContent("My description");
@@ -231,7 +236,7 @@ describe("Banner", () => {
             expect(screen.queryByRole("button", { name: "Save emergency banner" })).not.toBeInTheDocument();
         });
 
-        it("requires link text to be valid if link url is filled in", () => {
+        it("requires link text to be valid if link url is filled in", async () => {
             const data = {
                 title: "My Title",
                 type: "national_emergency",
@@ -239,18 +244,18 @@ describe("Banner", () => {
             };
             render(<Banner data={data} handleBannerSave={jest.fn()} />);
 
-            userEvent.click(screen.getByText("Edit"));
-            userEvent.paste(screen.getByLabelText("Link text"), "My link text");
+            await user.click(screen.getByText("Edit"));
+            await user.type(screen.getByLabelText("Link text"), "My link text");
 
             expect(screen.getByLabelText("Link text")).toHaveValue("My link text");
             expect(screen.getByLabelText("Link url")).toHaveValue("");
 
-            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+            await user.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(screen.queryByText("Link url is required")).toBeInTheDocument();
         });
 
-        it("requires link url to be valid if link text is filled in", () => {
+        it("requires link url to be valid if link text is filled in", async () => {
             const data = {
                 title: "My Title",
                 type: "national_emergency",
@@ -258,14 +263,14 @@ describe("Banner", () => {
             };
             render(<Banner data={data} handleBannerSave={jest.fn()} />);
 
-            userEvent.click(screen.getByText("Edit"));
+            await user.click(screen.getByText("Edit"));
 
-            userEvent.paste(screen.getByLabelText("Link url"), "http://www.boo.net");
+            await user.type(screen.getByLabelText("Link url"), "http://www.boo.net");
 
             expect(screen.getByLabelText("Link text")).toHaveValue("");
             expect(screen.getByLabelText("Link url")).toHaveValue("http://www.boo.net");
 
-            userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
+            await user.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
             expect(props.handleBannerSave).toHaveBeenCalledWith({
                 description: "My emergency descriptionFoo",

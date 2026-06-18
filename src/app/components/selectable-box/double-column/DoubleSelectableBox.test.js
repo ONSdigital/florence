@@ -85,11 +85,11 @@ describe("DoubleSelectableBox", () => {
             expect(container).not.toHaveTextContent("Cannot find collection");
         });
 
-        it("redirects to the collection details page", () => {
+        it("redirects to the collection details page", async () => {
             render(<DoubleSelectableBox {...props} />);
             const box = screen.getByTestId("selectable-box");
 
-            userEvent.click(within(box).getByTestId("2"));
+            await userEvent.setup().click(within(box).getByTestId("2"));
 
             expect(props.handleItemClick).toHaveBeenCalledWith("2");
         });

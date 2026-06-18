@@ -54,7 +54,7 @@ describe("Groups", () => {
         expect(screen.getByText(/Admins/i)).toBeInTheDocument();
     });
 
-    it("filters list of teams by search term", () => {
+    it("filters list of teams by search term", async () => {
         const getFilteredGroups = jest.fn();
         const props = { ...defaultProps, groups: mappedSortedGroups };
 
@@ -62,7 +62,7 @@ describe("Groups", () => {
 
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
 
-        userEvent.paste(screen.getByPlaceholderText(/Search teams by name/i), "Admin");
+        await userEvent.setup().type(screen.getByPlaceholderText(/Search teams by name/i), "Admin");
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("Admin");
 
         expect(screen.getByText(/Admins/i)).toBeInTheDocument();

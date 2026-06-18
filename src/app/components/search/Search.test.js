@@ -9,6 +9,11 @@ import Search from "./Search";
 const defaultProps = { saveSearch: jest.fn() };
 
 describe("Search", () => {
+    let user;
+    beforeEach(() => {
+        user = userEvent.setup();
+    });
+
     it("matches the snapshot", () => {
         const tree = renderer.create(
             <WrapperComponent>
@@ -18,7 +23,7 @@ describe("Search", () => {
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
-    it("updates value on change", () => {
+    it("updates value on change", async () => {
         render(
             <WrapperComponent>
                 <Search {...defaultProps} />
@@ -26,7 +31,7 @@ describe("Search", () => {
         );
         const searchInput = screen.getByPlaceholderText("Search for a collection name");
 
-        userEvent.paste(searchInput, "Boo");
+        await user.type(searchInput, "Boo");
         expect(searchInput).toHaveValue("Boo");
         expect(defaultProps.saveSearch).toHaveBeenCalledWith("Boo");
     });

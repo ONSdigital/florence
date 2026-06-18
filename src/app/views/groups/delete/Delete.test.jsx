@@ -26,10 +26,10 @@ describe("Delete", () => {
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
-    it("requests to open Modal", () => {
+    it("requests to open Modal", async () => {
         render(<Delete {...defaultProps} />);
 
-        userEvent.click(screen.getByRole("button", { name: "Delete team" }));
+        await userEvent.setup().click(screen.getByRole("button", { name: "Delete team" }));
 
         expect(defaultProps.openModal).toHaveBeenCalledWith(
             expect.objectContaining({

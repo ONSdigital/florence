@@ -13,6 +13,11 @@ const props = {
 };
 
 describe("CreateUser", () => {
+    let user;
+    beforeEach(() => {
+        user = userEvent.setup();
+    });
+
     it("matches the snapshot", () => {
         const tree = renderer.create(<CreateUser {...props} />);
         expect(tree.toJSON()).toMatchSnapshot();
@@ -28,25 +33,25 @@ describe("CreateUser", () => {
         expect(screen.queryByText(/You have unsaved changes/i)).not.toBeInTheDocument();
     });
 
-    it("allows adding fields ans shows unsaved changes message", () => {
+    it("allows adding fields ans shows unsaved changes message", async () => {
         render(<CreateUser {...props} />);
 
-        userEvent.paste(screen.getByLabelText(/First name/i), "My test First name");
+        await user.type(screen.getByLabelText(/First name/i), "My test First name");
         expect(screen.getByLabelText(/First name/i)).toHaveValue("My test First name");
 
-        userEvent.paste(screen.getByLabelText(/Last name/i), "My test Last name");
+        await user.type(screen.getByLabelText(/Last name/i), "My test Last name");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("My test Last name");
 
-        userEvent.paste(screen.getByLabelText(/Email address/i), "test@test.com");
+        await user.type(screen.getByLabelText(/Email address/i), "test@test.com");
         expect(screen.getByLabelText(/Email address/i)).toHaveValue("test@test.com");
 
         expect(screen.getByText(/You have unsaved changes/i)).toBeInTheDocument();
     });
 
-    it("validates form and display errors in panel and within input", () => {
+    it("validates form and display errors in panel and within input", async () => {
         render(<CreateUser {...props} />);
 
-        userEvent.click(screen.getByText(/save changes/i));
+        await user.click(screen.getByText(/save changes/i));
 
         expect(screen.getByText(/Fix the following:/i)).toBeInTheDocument();
         expect(screen.getByRole("link", { name: /Please enter a first name/i })).toBeInTheDocument();
