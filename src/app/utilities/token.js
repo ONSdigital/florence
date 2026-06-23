@@ -40,6 +40,7 @@ export class UserIDToken {
     }
 
     //TODO use this once we have fully switched over.
+    // eslint-disable-next-line no-unused-private-class-members
     static #getEmail(payload) {
         return this.#getPropertyFromPayload(payload, "email");
     }

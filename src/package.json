@@ -34,6 +34,7 @@
     "@babel/preset-env": "^7.26.9",
     "@babel/preset-react": "^7.26.3",
     "@babel/register": "^7.25.9",
+    "@eslint/js": "^9.39.4",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^12.1.2",
@@ -52,10 +53,10 @@
     "dev-tools": "^0.1.6",
     "enzyme": "^3.11.0",
     "enzyme-to-json": "^3.6.2",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-react": "^7.28.0",
-    "eslint-webpack-plugin": "^3.0.1",
+    "eslint": "^9.39.4",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-webpack-plugin": "^6.0.0",
     "fetch-mock": "^9.11.0",
     "file-loader": "^6.2.0",
     "handsontable": "^0.35.1",
@@ -105,7 +106,7 @@
     "prettier-test": "prettier --config \"prettierrc.json\" --check \"app/**/*.{js,jsx}\"",
     "prettier-cli": "prettier --config \"prettierrc.json\" --write \"app/**/*.{js,jsx}\"",
     "prettier-watch": "onchange \"app/**/*.{js,jsx}\" -- prettier --config \"prettierrc.json\" --write {{changed}}",
-    "eslint-check": "npx --yes eslint@8.44.0 -c ./.eslintrc.json ."
+    "eslint-check": "npx --yes eslint@9.39.4 ."
   },
   "dependencies": {
     "acorn": "^8.4.1",

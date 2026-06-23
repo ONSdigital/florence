@@ -68,6 +68,7 @@ export function getAuthState() {
     let userData = window.localStorage.getItem(AUTH_STATE_NAME);
     try {
         userData = JSON.parse(userData);
+        // eslint-disable-next-line no-unused-vars
     } catch (err) {
         console.error("Could not parse auth token from local storage: ");
         return undefined;

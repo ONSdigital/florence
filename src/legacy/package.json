@@ -25,7 +25,7 @@
         "build": "npm run build-js & npm run build-templates & npm run build-css & npm run build-misc-assets",
         "preinstall": "npx --yes npm-force-resolutions",
         "postinstall": "npm run build",
-        "eslint-check": "npx --yes eslint@8.44.0 -c ./.eslintrc.js ./js"
+        "eslint-check": "npx --yes eslint@9.39.4 ./js"
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.27.1",

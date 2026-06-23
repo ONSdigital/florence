@@ -276,6 +276,7 @@ export default function request(method, URI, willRetry = true, onRetry = () => {
         }
         try {
             return JSON.parse(body);
+            // eslint-disable-next-line no-unused-vars
         } catch (error) {
             console.warn(`Error parsing request body as JSON, returned body as ${typeof body}`);
             return body;
