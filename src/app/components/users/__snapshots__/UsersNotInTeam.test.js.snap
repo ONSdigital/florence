@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`UsersNotInTeam Given some preview users not in the team Given valid props on initial load but with no preview users available matches snapshot 1`] = `
 <div

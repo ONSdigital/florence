@@ -348,12 +348,13 @@ describe("When fetching a collection's detail", () => {
 });
 
 describe("Selecting a page in a collection", () => {
-    component.setProps({
-        collectionID: "test-sau39393uyqha8aw8y3n3",
-        activePageURI: undefined,
+    beforeEach(() => {
+        component.setProps({
+            collectionID: "test-sau39393uyqha8aw8y3n3",
+            activePageURI: undefined,
+        });
+        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
     });
-
-    setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
 
     it("routes to the page's ID", async () => {
         expect(newURL).not.toBe("/florence/collections/test-sau39393uyqha8aw8y3n3#test-page-1");

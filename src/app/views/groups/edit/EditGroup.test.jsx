@@ -156,7 +156,7 @@ describe("EditGroup without admin permissions", () => {
     it("shows group details and no admin options", () => {
         render(<EditGroup.WrappedComponent {...editorProps} />);
         expect(screen.getByRole("heading", { level: 1, name: "Boo is fine" })).toBeInTheDocument();
-        expect(editorProps.loadMembers).toBeCalled();
+        expect(editorProps.loadMembers).toHaveBeenCalled();
 
         expect(screen.queryByRole("input", { name: /Name/i })).not.toBeInTheDocument();
         expect(screen.queryByRole("button", { name: /Save changes/i })).not.toBeInTheDocument();

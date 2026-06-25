@@ -27,7 +27,7 @@ describe("UserList", () => {
 
     it("fetches users on load", async () => {
         render(<UsersList {...props} />);
-        expect(props.loadUsers).toBeCalled();
+        expect(props.loadUsers).toHaveBeenCalled();
     });
 
     it("shows loader when fetching users", () => {

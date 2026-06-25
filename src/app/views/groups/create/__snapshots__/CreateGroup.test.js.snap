@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CreateGroup Given valid props on initial load matches snapshot 1`] = `
 <div
@@ -11,7 +11,7 @@ exports[`CreateGroup Given valid props on initial load matches snapshot 1`] = `
       ◀ 
       <a
         onClick={[Function]}
-        style={Object {}}
+        style={{}}
       >
         Back
       </a>

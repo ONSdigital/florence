@@ -153,7 +153,7 @@ describe("Banner", () => {
 
             userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
-            expect(props.handleBannerSave).toBeCalledWith({
+            expect(props.handleBannerSave).toHaveBeenCalledWith({
                 description: "My emergency descriptionFoo",
                 linkText: "Read more",
                 title: "Test TitleBoo",
@@ -172,7 +172,7 @@ describe("Banner", () => {
 
             userEvent.click(screen.getByText("Delete"));
 
-            expect(props.handleBannerSave).toBeCalledWith({});
+            expect(props.handleBannerSave).toHaveBeenCalledWith({});
         });
 
         it("validates values filled in the Banner Form", () => {
@@ -267,7 +267,7 @@ describe("Banner", () => {
 
             userEvent.click(screen.getByRole("button", { name: "Save emergency banner" }));
 
-            expect(props.handleBannerSave).toBeCalledWith({
+            expect(props.handleBannerSave).toHaveBeenCalledWith({
                 description: "My emergency descriptionFoo",
                 linkText: "Read more",
                 title: "Test TitleBoo",

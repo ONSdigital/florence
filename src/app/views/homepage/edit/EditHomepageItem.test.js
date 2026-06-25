@@ -121,13 +121,13 @@ describe("event handlers", () => {
         const wrapper = shallow(<EditHomepageItem {...successRouteProps} />);
         const cancelButton = wrapper.find("#cancel");
         cancelButton.simulate("click");
-        expect(successRouteProps.handleCancelClick).toBeCalled();
+        expect(successRouteProps.handleCancelClick).toHaveBeenCalled();
     });
     it("calls the continue handler when clicked", () => {
         const wrapper = shallow(<EditHomepageItem {...successRouteProps} />);
         const cancelButton = wrapper.find("#continue");
         cancelButton.simulate("click");
-        expect(successRouteProps.handleSuccessClick).toBeCalled();
+        expect(successRouteProps.handleSuccessClick).toHaveBeenCalled();
     });
 });
 

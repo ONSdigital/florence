@@ -30,8 +30,8 @@ describe("Security", () => {
 
         userEvent.click(screen.getByText(/sign out all users/i));
 
-        expect(defaultProps.openModal).toBeCalledTimes(1);
-        expect(defaultProps.openModal).toBeCalledWith(
+        expect(defaultProps.openModal).toHaveBeenCalledTimes(1);
+        expect(defaultProps.openModal).toHaveBeenCalledWith(
             expect.objectContaining({
                 body: "Users will need to sign in to Florence again and may lose unsaved changes.",
                 id: "sign-out",

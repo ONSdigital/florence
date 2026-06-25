@@ -35,8 +35,8 @@ describe("EditUser", () => {
 
     it("fetches user details on load", () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-        expect(props.loadUser).toBeCalledWith("test.user-1498@ons.gov.uk");
-        expect(props.loadUserGroups).toBeCalled();
+        expect(props.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
+        expect(props.loadUserGroups).toHaveBeenCalled();
     });
 
     it("shows the form with user data", () => {
@@ -108,7 +108,7 @@ describe("EditUser", () => {
         render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
         await userEvent.click(screen.getByText(/Reset Account/i));
 
-        expect(props.setUserPassword).toBeCalled();
+        expect(props.setUserPassword).toHaveBeenCalled();
     });
 
     it("updates user data", async () => {
@@ -121,7 +121,7 @@ describe("EditUser", () => {
 
         await userEvent.click(screen.getByText(/save changes/i));
 
-        expect(props.updateUser).toBeCalledWith("test.user-1498@ons.gov.uk", {
+        expect(props.updateUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk", {
             active: true,
             email: "test.user-1498@ons.gov.uk",
             forename: "testboo",
@@ -161,8 +161,8 @@ describe("EditUser without admin permissions", () => {
 
     it("fetches user details on load", () => {
         render(<EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-        expect(editorProps.loadUser).toBeCalledWith("test.user-1498@ons.gov.uk");
-        expect(editorProps.loadUserGroups).toBeCalled();
+        expect(editorProps.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
+        expect(editorProps.loadUserGroups).toHaveBeenCalled();
     });
 
     it("shows the form with user data and no admin fields", () => {

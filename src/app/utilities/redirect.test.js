@@ -38,32 +38,24 @@ describe("redirect.handle", () => {
 
     it("returns the external path when the redirect parameter is in allowedExternalPaths", () => {
         const redirectPath = "/external";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
         expect(window.location.pathname).toBe(redirectPath);
     });
 
     it("returns the given external path when the redirect parameter is surrounded by slashes and is in allowedExternalPaths", () => {
         const redirectPath = "/external/";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
         expect(window.location.pathname).toBe(redirectPath);
     });
 
     it("returns the given external path when the redirect parameter has a trailing slash and is in allowedExternalPaths", () => {
         const redirectPath = "external/";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
-        expect(window.location.pathname).toBe(redirectPath);
+        expect(window.location.pathname).toBe(`/${redirectPath}`);
     });
 
     it("returns the given external path when the primary redirect parameter is in allowedExternalPaths", () => {
         const redirectPath = "/external/path";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
         expect(window.location.pathname).toBe(redirectPath);
     });
@@ -76,18 +68,14 @@ describe("redirect.handle", () => {
 
     it("returns the given external path when the redirect parameter has no slashes and is in allowedExternalPaths without slashes", () => {
         const redirectPath = "no-slash-in-setup";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
-        expect(window.location.pathname).toBe(redirectPath);
+        expect(window.location.pathname).toBe(`/${redirectPath}`);
     });
 
     it("returns the given external path when the redirect parameter has no prefixed slash and is in allowedExternalPaths without slashes", () => {
         const redirectPath = "no-slash-in-setup/path";
-        delete window.location;
-        window.location = { pathname: "" };
         redirect.handle(redirectPath);
-        expect(window.location.pathname).toBe(redirectPath);
+        expect(window.location.pathname).toBe(`/${redirectPath}`);
     });
 
     it("returns the default /florence/collections path when the redirect parameter is an unknown external path", () => {

@@ -207,7 +207,7 @@ describe("CreateNewCollection", () => {
 
             userEvent.click(screen.getByText("Create collection"));
 
-            expect(props.createCollectionRequest).toBeCalledWith(
+            expect(props.createCollectionRequest).toHaveBeenCalledWith(
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, teams: [], type: "manual" },
                 [],
                 true
@@ -232,7 +232,7 @@ describe("CreateNewCollection", () => {
 
             userEvent.click(screen.getByText("Create collection"));
 
-            expect(props.createCollectionRequest).toBeCalledWith(
+            expect(props.createCollectionRequest).toHaveBeenCalledWith(
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual", teams: ["t1"] },
                 [{ id: "t1", name: "Team1" }],
                 false

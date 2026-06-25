@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Groups matches the snapshot with empty props 1`] = `
 <div
@@ -24,7 +24,7 @@ exports[`Groups matches the snapshot with empty props 1`] = `
           <a
             className="margin-left--1 font-size--18"
             onClick={[Function]}
-            style={Object {}}
+            style={{}}
           >
             Create a new team
           </a>
@@ -61,7 +61,7 @@ exports[`Groups matches the snapshot with empty props 1`] = `
         <span
           className="margin-top--2"
           style={
-            Object {
+            {
               "fontFamily": "Roboto Slab",
               "fontSize": "21px",
               "fontWeight": "400",
@@ -118,7 +118,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           <a
             className="margin-left--1 font-size--18"
             onClick={[Function]}
-            style={Object {}}
+            style={{}}
           >
             Create a new team
           </a>
@@ -155,7 +155,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         <span
           className="margin-top--2"
           style={
-            Object {
+            {
               "fontFamily": "Roboto Slab",
               "fontSize": "21px",
               "fontWeight": "400",
@@ -188,7 +188,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
             className="simple-select-list__title"
             onClick={[Function]}
             role="link"
-            style={Object {}}
+            style={{}}
           >
             Hello Group
           </a>
@@ -204,7 +204,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
             className="simple-select-list__title"
             onClick={[Function]}
             role="link"
-            style={Object {}}
+            style={{}}
           >
             Test
           </a>
@@ -220,7 +220,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
             className="simple-select-list__title"
             onClick={[Function]}
             role="link"
-            style={Object {}}
+            style={{}}
           >
             This team has 5 members
           </a>
@@ -236,7 +236,7 @@ exports[`Groups matches the snapshot with groups props 1`] = `
             className="simple-select-list__title"
             onClick={[Function]}
             role="link"
-            style={Object {}}
+            style={{}}
           >
             Admins
           </a>

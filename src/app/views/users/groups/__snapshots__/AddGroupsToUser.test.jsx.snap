@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AddGroupsToUser matches the snapshot 1`] = `
 <div
@@ -14,7 +14,7 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
       <a
         onClick={[Function]}
         role="link"
-        style={Object {}}
+        style={{}}
       >
         Back
       </a>
@@ -107,7 +107,7 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
           className="btn btn--invert-primary btn--margin-right"
           onClick={[Function]}
           role="button"
-          style={Object {}}
+          style={{}}
         >
           Cancel
         </a>

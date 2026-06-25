@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`CreateUser matches the snapshot 1`] = `
 <form
@@ -17,7 +17,7 @@ exports[`CreateUser matches the snapshot 1`] = `
         <a
           onClick={[Function]}
           role="link"
-          style={Object {}}
+          style={{}}
         >
           Back
         </a>
@@ -123,7 +123,7 @@ exports[`CreateUser matches the snapshot 1`] = `
             className="btn btn--invert-primary btn--margin-right"
             onClick={[Function]}
             role="button"
-            style={Object {}}
+            style={{}}
           >
             Cancel
           </a>

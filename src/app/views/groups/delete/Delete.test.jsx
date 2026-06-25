@@ -31,7 +31,7 @@ describe("Delete", () => {
 
         userEvent.click(screen.getByRole("button", { name: "Delete team" }));
 
-        expect(defaultProps.openModal).toBeCalledWith(
+        expect(defaultProps.openModal).toHaveBeenCalledWith(
             expect.objectContaining({
                 body: "Team members cannot view content linked to this preview team after it has been deleted.",
                 id: "delete",

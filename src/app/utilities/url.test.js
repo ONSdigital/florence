@@ -1,11 +1,14 @@
 import url from "./url";
 
+beforeEach(() => {
+    setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
+});
+
 function setLocation(href) {
     jsdom.reconfigure({
         url: href,
     });
 }
-setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
 
 jest.mock("../utilities/logging/log", () => {
     return {
