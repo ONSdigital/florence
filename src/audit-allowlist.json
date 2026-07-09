@@ -23,6 +23,10 @@
         {
             "id": "CVE-2026-27904",
             "reason": "Indirect dependency via ESLint, Jest; awaiting upstream updates to minimatch."
+        },
+        {
+            "id": "CVE-2026-13149",
+            "reason": "False positive for brace-expansion 1.1.16 as it has been backported"
         }
     ]
 }
