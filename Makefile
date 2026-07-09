@@ -107,11 +107,11 @@ node-modules: node-modules-react node-modules-legacy
 
 .PHONY: node-modules-react
 node-modules-react:
-	cd src; $(NPM) install --unsafe-perm --legacy-peer-deps
+	cd src; $(NPM) install --legacy-peer-deps
 
 .PHONY: node-modules-legacy
 node-modules-legacy:
-	cd src/legacy; $(NPM) install --unsafe-perm --legacy-peer-deps
+	cd src/legacy; $(NPM) install --legacy-peer-deps
 
 .PHONY: watch-src
 watch-src:
