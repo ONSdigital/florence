@@ -11,9 +11,13 @@
             <label for="migration_link">Migration path</label>
             <div class="margin-left--1 margin-right--1">
                 {{#if this.readOnlyMigrationPath}}
-                    <span>This field is readonly for this content type.</span>
+                    <span>This field is readonly for this content type.</span>                    
                 {{else}}
-                    <span>Start with a '/' and use the format '/path/to/new/part/of/site'</span>
+                    {{#if this.experimentalFeature}}
+                        <span>Please do not use this field for this content type without approval from a Publishing Manager.</span>
+                    {{else}}
+                        <span>Start with a '/' and use the format '/path/to/new/part/of/site'</span>
+                    {{/if}}
                 {{/if}}
                 <textarea
                     rows="1"

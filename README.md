@@ -126,15 +126,16 @@ The following environment variables are available when running the Go server.
 
 The following environment variables are available when running the Go server and within the React application:
 
-| Environment variable      | Default | Description
-|---------------------------|---------|------------
-| ALLOWED_EXTERNAL_PATHS    | []string| Permitted external primary path and subpath from Florence e.g. primary path `/data-admin` allows `/data-admin/*`
-| API_ROUTER_VERSION        | v1      | The version of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)
-| ENABLE_CANTABULAR_JOURNEY | false   | Enables the cantabular journey
-| ENABLE_MIGRATION_FIELD    | false   | Enables the management of the migration field
-| ENABLE_NEW_UPLOAD         | false   | Enables the image upload functionality via static files service
-| ENABLE_PERMISSION_API     | false   | Enables use of the Permissions API for decentralised permissions
-| ENABLE_SYSTEM_NAV_BAR     | false   | Enables use of the system nav bar to navigate between dissemination applications
+| Environment variable            | Default  | Description
+|---------------------------------|----------|------------
+| ALLOWED_EXTERNAL_PATHS          | []string | Permitted external primary path and subpath from Florence e.g. primary path `/data-admin` allows `/data-admin/*`
+| API_ROUTER_VERSION              | v1       | The version of the [dp-api-router](https://github.com/ONSdigital/dp-api-router)
+| ENABLE_CANTABULAR_JOURNEY       | false    | Enables the cantabular journey
+| ENABLE_MANUAL_DATASET_MIGRATION | false    | Enables use of the migration fields for dataset content types
+| ENABLE_MIGRATION_FIELD          | false    | Enables the management of the migration field
+| ENABLE_NEW_UPLOAD               | false    | Enables the image upload functionality via static files service
+| ENABLE_PERMISSION_API           | false    | Enables use of the Permissions API for decentralised permissions
+| ENABLE_SYSTEM_NAV_BAR           | false    | Enables use of the system nav bar to navigate between dissemination applications
 
 For example:
 

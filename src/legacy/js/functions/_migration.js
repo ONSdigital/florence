@@ -7,12 +7,14 @@
  */
 
 async function migration(templateData, data, isReadOnlyMigrationPath = false, warnOnNonMigrationSave = false) {
+    const experimentalFeature = data.type === 'dataset_landing_page' || data.type === 'dataset';
     const migrationConfig = window.getEnv().enableMigrationField;
     if (migrationConfig) {
         Florence.Editor.hasMigrationLink = data.description?.migrationLink || '';
         Florence.Editor.warnOnNonMigrationSave = warnOnNonMigrationSave;
         Florence.Editor.hasNonMigrationChanges = false;
         templateData.readOnlyMigrationPath = isReadOnlyMigrationPath;
+        templateData.experimentalFeature = experimentalFeature;
         let html = templates.migration(templateData);
         $('#migration').replaceWith(html);
 

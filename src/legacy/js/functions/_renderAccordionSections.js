@@ -10,6 +10,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     var templateData = jQuery.extend(true, {}, pageData); // clone page data to add template related properties.
     templateData.isPageComplete = isPageComplete;
     Florence.Editor.hasNonMigrationChanges = false;
+    
+    const datasetMigrationFieldsWriteable = window.getEnv().enableManualDatasetMigration;
+    const datasetMigrationFieldsReadOnly = !datasetMigrationFieldsWriteable;
 
     if (pageData.type === 'taxonomy_landing_page') {
         var html = templates.workEditT2(templateData);
@@ -332,7 +335,7 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset_landing_page') {
         var html = templates.workEditT8LandingPage(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true, false);
+        migration(templateData, pageData, datasetMigrationFieldsReadOnly, datasetMigrationFieldsWriteable);
         tags(templateData)
         editMarkdownOneObject(collectionId, pageData, 'section', 'Notes');
         addDataset(collectionId, pageData, 'datasets', 'edition');
@@ -346,7 +349,9 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
         editAlert(collectionId, pageData, templateData, 'alerts', 'alert');
         accordion();
         datasetLandingEditor(collectionId, pageData);
-        disableSaveButtonsForMigratedContent();
+        if (datasetMigrationFieldsReadOnly) {
+            disableSaveButtonsForMigratedContent();
+        }
     }
 
     else if (pageData.type === 'api_dataset_landing_page') {
@@ -358,13 +363,15 @@ function renderAccordionSections(collectionId, pageData, isPageComplete) {
     else if (pageData.type === 'dataset') {
         var html = templates.workEditT8(templateData);
         $('.workspace-menu').html(html);
-        migration(templateData, pageData, true, false);
+        migration(templateData, pageData, datasetMigrationFieldsReadOnly, datasetMigrationFieldsWriteable);
         editDatasetVersion(collectionId, pageData, 'versions', 'version');
         editDatasetVersion(collectionId, pageData, 'versions', 'correction');
         addFile(collectionId, pageData, 'supplementaryFiles', 'supplementary-files');
         accordion();
         datasetEditor(collectionId, pageData);
-        disableSaveButtonsForMigratedContent();
+        if (datasetMigrationFieldsReadOnly) {
+            disableSaveButtonsForMigratedContent();
+        }
     }
 
     else if (pageData.type === 'timeseries_dataset') {
