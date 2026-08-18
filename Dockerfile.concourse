@@ -1,4 +1,4 @@
-FROM onsdigital/dp-concourse-tools-ubuntu-22:ubuntu22.4-jammy-20250126
+FROM onsdigital/dp-concourse-tools-ubuntu-22:ubuntu22.4-jammy-20260509
 
 WORKDIR /app/
 
