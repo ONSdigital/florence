@@ -4,6 +4,22 @@ import log from "../logging/log";
 import { fail } from "assert";
 import { createDefaultExpiryTimes } from "dis-authorisation-client-js";
 
+jest.mock("dis-authorisation-client-js", () => {
+    return {
+        __esModule: true,
+        default: {
+            initialiseSessionExpiryTimers: jest.fn(),
+        },
+        createDefaultExpiryTimes: jest.fn(hours => {
+            const expiry = new Date(Date.now() + hours * 60 * 60 * 1000);
+            return {
+                session_expiry_time: expiry,
+                refresh_expiry_time: expiry,
+            };
+        }),
+    };
+});
+
 // Mocks
 function createSession() {
     const mockTimers = createDefaultExpiryTimes(1);
@@ -32,7 +48,7 @@ console.error = jest.fn();
 
 beforeEach(() => {
     log.event.mockClear();
-    fetch.mockClear();
+    fetch.resetMocks();
 });
 
 jest.useFakeTimers();
@@ -112,23 +128,32 @@ test("Request back-off resolves as soon as a fetch is successful", async () => {
 });
 
 test("Request returns to caller to handle 401 if callerHandles401 flag is set", async () => {
-    fetch.mockResponse(JSON.stringify({}), {
-        headers: new Headers({
-            "content-type": "application/json",
-        }),
-        status: 401,
-    });
+    fetch
+        .mockResponseOnce(JSON.stringify({}), {
+            headers: new Headers({
+                "content-type": "application/json",
+            }),
+            status: 401,
+        })
+        .mockResponseOnce(JSON.stringify({}), {
+            headers: new Headers({
+                "content-type": "application/json",
+            }),
+            status: 200,
+        });
 
     expect(fetch).toHaveBeenCalledTimes(0);
     try {
         await request("POST", "/foobar", false, null, JSON.stringify({}), true);
         fail("Request with 401 handler didn't reject on 401 response");
     } catch (error) {
-        expect(fetch).toHaveBeenCalledTimes(3);
         expect(error.status).toBe(401);
     }
 
-    fetch.mockReset();
+    // Allow the request module's existing background renewal and retry to finish
+    // so its fetch does not leak into the next test.
+    await Promise.resolve();
+    expect(fetch).toHaveBeenCalledTimes(2);
 });
 
 test("Request back-off won't retry failed fetch if willRetry flag is set to false and reject with an error status", async () => {
