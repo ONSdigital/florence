@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import filter from "lodash/filter";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useInput } from "../../hooks/useInput";
 import url from "../../utilities/url";
 import date from "../../utilities/date";

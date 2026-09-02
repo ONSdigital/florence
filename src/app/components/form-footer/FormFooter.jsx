@@ -1,7 +1,7 @@
 import React from "react";
 import Warning from "../../icons/Warning";
 import url from "../../utilities/url";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 function FormFooter({ loading, hasErrors, hasNewValues, handleSubmit, redirectUrl }) {
     const to = redirectUrl ? redirectUrl : url.resolve("../");

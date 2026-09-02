@@ -1,13 +1,12 @@
+/**
+ * @jest-environment jsdom
+ * @jest-environment-options {"url": "http://publishing.onsdigital.co.uk/florence/datasets"}
+ */
+
 import url from "./url";
 
-beforeEach(() => {
-    setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
-});
-
 function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
+    window.history.pushState({}, "", href);
 }
 
 jest.mock("../utilities/logging/log", () => {
@@ -24,10 +23,6 @@ jest.mock("../utilities/notifications", () => {
             // do nothing
         },
     };
-});
-
-afterEach(() => {
-    setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
 });
 
 describe("'../' should remove one route from the path", () => {

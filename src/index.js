@@ -1,7 +1,7 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import { Provider } from "react-redux";
-import { Router, Route, IndexRoute, IndexRedirect, Redirect, browserHistory } from "react-router";
+import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
 import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
@@ -103,10 +103,10 @@ const userIsAdmin = connectedReduxRedirect({
 const logoutUser = async () => {
     try {
         user.logOut();
-        browserHistory.push(`${rootPath}/login`);
+        history.push(`${rootPath}/login`);
     } catch (error) {
         console.error("Error during logout:", error);
-        browserHistory.push(`${rootPath}/login`);
+        history.push(`${rootPath}/login`);
     }
 };
 
@@ -210,4 +210,7 @@ const Index = () => {
     );
 };
 
-ReactDOM.render(<Index />, document.getElementById("app"));
+const container = document.getElementById("app");
+const root = createRoot(container);
+
+root.render(<Index />);

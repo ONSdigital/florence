@@ -1,7 +1,11 @@
 import React from "react";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import TableBuilder from "dp-table-builder-ui";
 import "dp-table-builder-ui/dist/assets/scss/main.scss";
+
+// holding the root as a global variable here is not ideal but the least invasive
+// change to the existing codebase.
+let tableBuilderRoot;
 
 window.startTableBuilder = (domID, data, onSave, onCancel, onError, path) => {
     const node = document.getElementById(domID);
@@ -11,7 +15,16 @@ window.startTableBuilder = (domID, data, onSave, onCancel, onError, path) => {
         return;
     }
 
-    ReactDOM.render(<TableBuilder data={data} onSave={onSave} onCancel={onCancel} onError={onError} rendererUri={path} />, node);
+    tableBuilderRoot = createRoot(node);
+    tableBuilderRoot.render(
+        <TableBuilder
+            data={data}
+            onSave={onSave}
+            onCancel={onCancel}
+            onError={onError}
+            rendererUri={path}
+        />
+    );
 };
 
 window.closeTableBuilder = (domID, onError) => {
@@ -22,5 +35,8 @@ window.closeTableBuilder = (domID, onError) => {
         return;
     }
 
-    ReactDOM.unmountComponentAtNode(node);
+    if (tableBuilderRoot) {
+        tableBuilderRoot.unmount();
+        tableBuilderRoot = null;
+    }
 };

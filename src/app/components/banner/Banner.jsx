@@ -6,7 +6,7 @@ import Form from "./Form";
 
 const Banner = ({ data, handleBannerSave }) => {
     const [show, setShow] = useState(false);
-    const toggleForm = () => setShow(prevState => setShow(!prevState));
+    const toggleForm = () => setShow(prevState => !prevState);
     const handleSubmit = data => {
         handleBannerSave(data);
         setShow(false);

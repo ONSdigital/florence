@@ -81,9 +81,7 @@ const localStorageMock = (function () {
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
 function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
+    window.history.pushState({}, "", href);
 }
 
 let dispatchedActions = [];

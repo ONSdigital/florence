@@ -13,7 +13,6 @@ exports[`CreateNewCollection when no teams are available matches the snapshot 1`
     >
       Collection name
     </label>
-    
     <input
       autoComplete="new-password"
       autoFocus={false}
@@ -178,7 +177,6 @@ exports[`CreateNewCollection when no teams are available matches the snapshot 1`
         >
           Publish date
         </label>
-        
         <input
           autoComplete="new-password"
           autoFocus={false}
@@ -203,7 +201,6 @@ exports[`CreateNewCollection when no teams are available matches the snapshot 1`
         >
           Publish time
         </label>
-        
         <input
           autoComplete="new-password"
           autoFocus={false}

@@ -2,7 +2,7 @@ import React from "react";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import url from "../../../utilities/url";
 import Input from "../../../components/Input";
 import useForm from "../../../hooks/useForm";
