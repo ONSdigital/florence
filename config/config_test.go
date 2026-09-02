@@ -29,7 +29,7 @@ func TestGetReturnsDefaultValues(t *testing.T) {
 				EnableManualDatasetMigration: false,
 				EnableMigrationField:         false,
 				EnableNewUpload:              false,
-				EnablePermissionsAPI:         false,
+				EnablePermissionsAPI:         true,
 				EnableSystemNavBar:           false,
 			},
 			GracefulShutdownTimeout:    10 * time.Second,
