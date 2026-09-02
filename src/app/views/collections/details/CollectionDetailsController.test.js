@@ -80,10 +80,8 @@ const localStorageMock = (function () {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
+function setLocation(path) {
+    window.history.pushState({}, "", path);
 }
 
 let dispatchedActions = [];
@@ -353,7 +351,7 @@ describe("Selecting a page in a collection", () => {
             collectionID: "test-sau39393uyqha8aw8y3n3",
             activePageURI: undefined,
         });
-        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
+        setLocation("/florence/collections/test-sau39393uyqha8aw8y3n3");
     });
 
     it("routes to the page's ID", async () => {

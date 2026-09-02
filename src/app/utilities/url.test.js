@@ -1,13 +1,11 @@
 import url from "./url";
 
 beforeEach(() => {
-    setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
+    setLocation("/florence/datasets");
 });
 
-function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
+function setLocation(path) {
+    window.history.pushState({}, "", path);
 }
 
 jest.mock("../utilities/logging/log", () => {
@@ -27,7 +25,7 @@ jest.mock("../utilities/notifications", () => {
 });
 
 afterEach(() => {
-    setLocation("http://publishing.onsdigital.co.uk/florence/datasets");
+    setLocation("/florence/datasets");
 });
 
 describe("'../' should remove one route from the path", () => {
@@ -36,11 +34,11 @@ describe("'../' should remove one route from the path", () => {
     });
 
     it("'../../' will go up two levels", () => {
-        setLocation("http://publishing.onsdigital.co.uk/florence/datasets/an-id-12345/metadata");
+        setLocation("/florence/datasets/an-id-12345/metadata");
         expect(url.resolve("../../")).toBe("/florence/datasets");
     });
     it("'../../../teams' will go up three levels and to the teams path", () => {
-        setLocation("http://publishing.onsdigital.co.uk/florence/datasets/an-id-12345/metadata");
+        setLocation("/florence/datasets/an-id-12345/metadata");
         expect(url.resolve("../../../teams")).toBe("/florence/teams");
     });
 });
@@ -51,7 +49,7 @@ test("Routes relative to the root are prefixed with '/florence'", () => {
 });
 
 test("Replacing the last route at the root of the app still prefixes the path with '/florence'", () => {
-    setLocation("http://publishing.onsdigital.co.uk/florence");
+    setLocation("/florence");
     expect(url.resolve("datasets")).toBe("/florence/datasets");
 });
 
@@ -75,12 +73,12 @@ describe("Resolved URLs include query parameters", () => {
     });
 
     it("includes queries on relative routes", () => {
-        setLocation("http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id");
+        setLocation("/florence/datasets/my-dataset-id");
         expect(url.resolve("../?collection=my-collection")).toBe("/florence/datasets?collection=my-collection");
     });
 
     it("excludes queries when the caller passes in the correct argument", () => {
-        setLocation("http://publishing.onsdigital.co.uk/florence/datasets/my-dataset-id?collection=my-collection-id");
+        setLocation("/florence/datasets/my-dataset-id?collection=my-collection-id");
         expect(url.resolve("/collections?collection=my-collection-id", true)).toBe("/florence/collections");
     });
 });

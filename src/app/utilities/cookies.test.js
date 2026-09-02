@@ -1,10 +1,8 @@
-import cookies from "./cookies";
+/**
+ * @jest-environment-options {"url": "http://qux/quux/quuz"}
+ */
 
-function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
-}
+import cookies from "./cookies";
 
 function resetCookie() {
     Object.defineProperty(window.document, "cookie", {
@@ -13,7 +11,6 @@ function resetCookie() {
     });
 }
 
-setLocation("http://qux/quux/quuz");
 resetCookie();
 afterEach(() => {
     resetCookie();
