@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
+import { Router, Route, IndexRoute, IndexRedirect, Redirect, browserHistory } from "react-router";
 import { routerActions } from "react-router-redux";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
 import { store, history } from "./app/config/store";
@@ -51,7 +51,6 @@ import RedirectView from "./app/components/redirect-view";
 import SessionManagement from "dis-authorisation-client-js";
 import { startRefeshAndSession } from "./app/config/user/userActions";
 
-import { browserHistory } from "react-router";
 import user from "./app/utilities/api-clients/user";
 
 const config = window.getEnv();
