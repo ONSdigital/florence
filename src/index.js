@@ -118,7 +118,6 @@ const Index = () => {
                     <Route path={`${rootPath}/collections`} component={userIsAuthenticated(Collections)}>
                         <Route path=":collectionID" component={userIsAuthenticated(Collections)}>
                             <Route path="edit" component={userIsAuthenticated(Collections)} />
-                            <Route path="restore-content" component={userIsAuthenticated(Collections)} />
                         </Route>
                     </Route>
                     <Route component={CollectionRoutesWrapper}>

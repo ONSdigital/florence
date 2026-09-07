@@ -120,7 +120,6 @@ function viewCollectionDetails(collectionId, $this) {
         var $approveBtn = $('.btn-collection-approve'),
             $editBtn = $('.js-edit-collection'),
             $workOnBtn = $('.btn-collection-work-on'),
-            $restoreContentBtn = $('.js-restore-delete'),
             $importBtn = $('.js-import');
 
         if (collection.approvalState.inProgress) {
@@ -146,11 +145,6 @@ function viewCollectionDetails(collectionId, $this) {
         //edit collection
         $editBtn.click(function () {
             editCollection(collection);
-        });
-
-        // restore deleted content
-        $restoreContentBtn.click(function () {
-            viewRestoreDeleted(collection);
         });
 
         // import time series

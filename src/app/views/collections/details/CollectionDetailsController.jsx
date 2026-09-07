@@ -24,7 +24,6 @@ import cookies from "../../../utilities/cookies";
 import collectionDetailsErrorNotifications from "./collectionDetailsErrorNotifications";
 import collectionMapper from "../mapper/collectionMapper";
 import Modal from "../../../components/Modal";
-import RestoreContent from "../restore-content/RestoreContent";
 import url from "../../../utilities/url";
 import auth, { getUserTypeFromAuthState } from "../../../utilities/auth";
 import log from "../../../utilities/logging/log";
@@ -72,7 +71,6 @@ export class CollectionDetailsController extends Component {
             isFetchingCollectionDetails: false,
             isFetchingUserDetails: false,
             isEditingCollection: false,
-            isRestoringContent: false,
             isCancellingDelete: {
                 value: false,
                 uri: "",
@@ -106,17 +104,6 @@ export class CollectionDetailsController extends Component {
         }
         if (this.props.routes[this.props.routes.length - 1].path === "edit" && nextProps.routes[nextProps.routes.length - 1].path !== "edit") {
             this.setState({ isEditingCollection: false });
-        }
-        // Display restore content modal
-        if (nextProps.routes[nextProps.routes.length - 1].path === "restore-content") {
-            this.setState({ isRestoringContent: true });
-        }
-
-        if (
-            this.props.routes[this.props.routes.length - 1].path === "restore-content" &&
-            nextProps.routes[nextProps.routes.length - 1].path !== "restore-content"
-        ) {
-            this.setState({ isRestoringContent: false });
         }
 
         if (!this.props.collectionID && nextProps.collectionID) {
@@ -579,44 +566,6 @@ export class CollectionDetailsController extends Component {
         this.removeActiveCollectionGlobally();
     };
 
-    handleRestoreDeletedContentClose = () => {
-        this.props.dispatch(push(url.resolve("../")));
-    };
-
-    handleRestoreMultiDeletedContentSuccess = updatedInProgressList => {
-        const mappedUpdatedInprogressList = updatedInProgressList.map(item => {
-            return {
-                uri: item.uri,
-                title: item.description.title,
-                type: item.type,
-            };
-        });
-
-        const updatedActiveCollection = {
-            ...this.props.activeCollection,
-            inProgress: [...mappedUpdatedInprogressList],
-        };
-
-        this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
-        this.handleRestoreDeletedContentClose();
-    };
-
-    handleRestoreSingleDeletedContentSuccess = restoredItem => {
-        const addDeleteToInProgress = {
-            uri: restoredItem.uri,
-            title: restoredItem.title,
-            type: restoredItem.type,
-        };
-
-        const updatedActiveCollection = {
-            ...this.props.activeCollection,
-            inProgress: [...this.props.activeCollection.inProgress, addDeleteToInProgress],
-        };
-
-        this.props.dispatch(updatePagesInActiveCollection(updatedActiveCollection));
-        this.handleRestoreDeletedContentClose();
-    };
-
     getDatasetType = async pageID => {
         if (pageID && pageID.includes("/")) {
             const datasetID = pageID.split("/")[0].trim();
@@ -701,16 +650,6 @@ export class CollectionDetailsController extends Component {
                     {this.props.activeCollection && !this.state.isEditingCollection && this.renderCollectionDetails()}
                     {this.props.activeCollection && this.state.isEditingCollection && this.renderEditCollection()}
                 </Drawer>
-                {this.state.isRestoringContent && this.props.activeCollection && (
-                    <Modal sizeClass="grid__col-8">
-                        <RestoreContent
-                            onClose={this.handleRestoreDeletedContentClose}
-                            onMultiFileSuccess={this.handleRestoreMultiDeletedContentSuccess}
-                            onSingleFileSuccess={this.handleRestoreSingleDeletedContentSuccess}
-                            activeCollectionId={this.props.activeCollection.id}
-                        />
-                    </Modal>
-                )}
             </div>
         );
     }
