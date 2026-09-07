@@ -29,7 +29,6 @@ import EditHomepageController from "./app/views/homepage/edit/EditHomepageContro
 import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 import Logs from "./app/views/logs/Logs";
-import SelectableTest from "./SelectableTest";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
@@ -182,7 +181,6 @@ const Index = () => {
                         </Route>
                     </Route>
                     <Route path={`${rootPath}/upload-test`} component={config.enableNewUpload ? userIsAuthenticated(UploadTest) : null} />
-                    <Route path={`${rootPath}/selectable-list`} component={SelectableTest} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={SignInController} />
                     <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
