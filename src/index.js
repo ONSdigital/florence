@@ -40,7 +40,6 @@ import CreateUser from "./app/views/users/create";
 import AddGroupsToUser from "./app/views/users/groups";
 import Groups from "./app/views/groups"
 import EditUser from "./app/views/users/edit";
-import UploadTest from "./app/views/upload-test/UploadTest";
 import "./scss/main.scss";
 import Security from "./app/views/security";
 import Systems from "./app/views/systems";
@@ -180,7 +179,6 @@ const Index = () => {
                             </Route>
                         </Route>
                     </Route>
-                    <Route path={`${rootPath}/upload-test`} component={config.enableNewUpload ? userIsAuthenticated(UploadTest) : null} />
                     <Route path={`${rootPath}/logs`} component={Logs} />
                     <Route path={`${rootPath}/login`} component={SignInController} />
                     <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
