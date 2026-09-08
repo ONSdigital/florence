@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router-dom";
 import PropTypes from "prop-types";
 import url from "../../utilities/url";
 import auth from "../../utilities/auth";
@@ -56,9 +56,9 @@ const NavBar = props => {
         if (!auth.isAuthenticated(props.user)) {
             return (
                 <li className="global-nav__item">
-                    <Link to={`${props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
+                    <NavLink to={`${props.rootPath}/login`} activeClassName="selected" className="global-nav__link">
                         Sign in
-                    </Link>
+                    </NavLink>
                 </li>
             );
         }
@@ -68,16 +68,16 @@ const NavBar = props => {
             <>
                 {renderWorkingOnItem()}
                 <li className="global-nav__item">
-                    <Link to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">
+                    <NavLink to={`${rootPath}/collections`} activeClassName="selected" className="global-nav__link">
                         Collections
-                    </Link>
+                    </NavLink>
                 </li>
                 {auth.isAdminOrEditor(props.user) && (
                     <>
                         <li className="global-nav__item">
-                            <Link to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
+                            <NavLink to={url.resolve("/uploads/data")} activeClassName="selected" className="global-nav__link">
                                 Datasets
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="global-nav__item">
                             <a className="global-nav__link" href="/florence/publishing-queue">
@@ -85,22 +85,22 @@ const NavBar = props => {
                             </a>
                         </li>
                         <li className="global-nav__item">
-                            <Link to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
+                            <NavLink to={`${rootPath}/users`} activeClassName="selected" className="global-nav__link">
                                 Users and access
-                            </Link>
+                            </NavLink>
                         </li>
                         <li className="global-nav__item">
-                            <Link to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
+                            <NavLink to={`${rootPath}/groups`} activeClassName="selected" className="global-nav__link">
                                 Preview teams
-                            </Link>
+                            </NavLink>
                         </li>
                     </>
                 )}
                 {auth.isAdmin(props.user) && (
                     <li className="global-nav__item">
-                        <Link to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
+                        <NavLink to={`${rootPath}/security`} activeClassName="selected" className="global-nav__link">
                             Security
-                        </Link>
+                        </NavLink>
                     </li>
                 )}
                 <li className="global-nav__item">

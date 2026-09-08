@@ -1,6 +1,6 @@
 import React from "react";
 import { shallow } from "enzyme";
-import { Link } from "react-router";
+import { NavLink } from "react-router-dom";
 import { createMockUser } from "../../utilities/tests/test-utils";
 import NavBar from "./NavBar";
 
@@ -34,8 +34,8 @@ describe("NavBar", () => {
             const component = shallow(<NavBar {...defaultProps} />);
 
             expect(component.find("ul").hasClass("global-nav__list")).toBe(true);
-            expect(component.find(Link)).toHaveLength(1);
-            expect(component.find("Link[to='/florence/login']").exists()).toBe(true);
+            expect(component.find(NavLink)).toHaveLength(1);
+            expect(component.find("NavLink[to='/florence/login']").exists()).toBe(true);
         });
     });
 
@@ -47,13 +47,13 @@ describe("NavBar", () => {
 
         it("datasets, preview teams, and security option should be present", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedUser} />);
-            expect(component.find(Link)).toHaveLength(6);
-            expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
-            expect(component.find(Link).getElements()[1].props.children).toBe("Datasets");
-            expect(component.find(Link).getElements()[2].props.children).toBe("Users and access");
-            expect(component.find(Link).getElements()[3].props.children).toBe("Preview teams");
-            expect(component.find(Link).getElements()[4].props.children).toBe("Security");
-            expect(component.find(Link).getElements()[5].props.children).toBe("Sign out");
+            expect(component.find(NavLink)).toHaveLength(5);
+            expect(component.find(NavLink).getElements()[0].props.children).toBe("Collections");
+            expect(component.find(NavLink).getElements()[1].props.children).toBe("Datasets");
+            expect(component.find(NavLink).getElements()[2].props.children).toBe("Users and access");
+            expect(component.find(NavLink).getElements()[3].props.children).toBe("Preview teams");
+            expect(component.find(NavLink).getElements()[4].props.children).toBe("Security");
+            expect(component.find("Link[to='/florence/logout']").exists()).toBe(true);
         });
 
         describe("when on collections", () => {
@@ -81,7 +81,7 @@ describe("NavBar", () => {
     describe("when user is authenticated as Editor", () => {
         it("should display Users and access", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedEditor} />);
-            expect(component.find("Link[to='/florence/users']").exists()).toBe(true);
+            expect(component.find("NavLink[to='/florence/users']").exists()).toBe(true);
         });
     });
 
@@ -90,14 +90,14 @@ describe("NavBar", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedViewer} />);
 
             expect(component.find("ul").hasClass("global-nav__list")).toBe(true);
-            expect(component.find(Link)).toHaveLength(2);
-            expect(component.find(Link).getElements()[0].props.children).toBe("Collections");
-            expect(component.find(Link).getElements()[1].props.children).toBe("Sign out");
+            expect(component.find(NavLink)).toHaveLength(1);
+            expect(component.find(NavLink).getElements()[0].props.children).toBe("Collections");
+            expect(component.find("Link[to='/florence/logout']").exists()).toBe(true);
         });
 
         it("should not display Users and access", () => {
             const component = shallow(<NavBar {...defaultProps} user={authenticatedViewer} />);
-            expect(component.find("Link[to='/florence/users']").exists()).toBe(false);
+            expect(component.find("NavLink[to='/florence/users']").exists()).toBe(false);
         });
 
         describe("when on collections url", () => {
