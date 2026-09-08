@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { Link } from "react-router-dom";
 import url from "../../../utilities/url";
 import { getUsersRequest, createGroup } from "../../../config/thunks";

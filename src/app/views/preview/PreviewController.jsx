@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { replace } from "react-router-redux";
+import { replace } from "connected-react-router";
 
 import { API_PROXY } from "../../utilities/api-clients/constants";
 import http from "../../utilities/http";

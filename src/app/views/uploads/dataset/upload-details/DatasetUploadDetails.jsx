@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import { API_PROXY } from "../../../../utilities/api-clients/constants";

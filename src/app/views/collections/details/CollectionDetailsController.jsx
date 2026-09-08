@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
 import { getCollections, getGroups, getIsUpdatingCollection, getEnablePermissionsAPI } from "../../../config/selectors";
@@ -58,7 +58,6 @@ const propTypes = {
         teams: PropTypes.array,
     }),
     activePageURI: PropTypes.string,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     enableCantabularJourney: PropTypes.bool,
     enableSystemNavBar: PropTypes.bool,
 };

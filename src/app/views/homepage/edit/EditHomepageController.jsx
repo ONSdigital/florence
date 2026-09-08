@@ -6,7 +6,7 @@ import homepage from "../../../utilities/api-clients/homepage";
 import url from "../../../utilities/url";
 import log from "../../../utilities/logging/log";
 import notifications from "../../../utilities/notifications";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { connect } from "react-redux";
 
 const propTypes = {

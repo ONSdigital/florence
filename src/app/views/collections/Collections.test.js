@@ -43,7 +43,6 @@ describe("Collections", () => {
         isLoading: false,
         params: {},
         rootPath: "test",
-        routes: [],
         search: "",
         user: admin,
         updateWorkingOn: jest.fn(),

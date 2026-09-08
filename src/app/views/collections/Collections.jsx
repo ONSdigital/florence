@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import PropTypes from "prop-types";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import cookies from "../../utilities/cookies";
 import CreateNewCollection from "./create/";
 import DoubleSelectableBox from "../../components/selectable-box/double-column/DoubleSelectableBox";

@@ -1,6 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 import { browserHistory } from "react-router";
-import { syncHistoryWithStore, routerReducer, routerMiddleware } from "react-router-redux";
+import { connectRouter, routerMiddleware } from "connected-react-router";
 import thunkMiddleware from "redux-thunk";
 import { composeWithDevTools } from "redux-devtools-extension";
 import previousLocationMiddleware from "./previous-route-middleware";
@@ -18,7 +18,7 @@ export const store = createStore(
         state: reducer,
         user: userReducer,
         taxonomies,
-        routing: routerReducer,
+        router: connectRouter(baseHistory),
     }),
     enhancer
 );

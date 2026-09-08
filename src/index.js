@@ -2,8 +2,8 @@ import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
-import { routerActions } from "react-router-redux";
-import { connectedReduxRedirect } from "redux-auth-wrapper/history3/redirect";
+import { replace } from "connected-react-router";
+import { connectedReduxRedirect } from "redux-auth-wrapper/history4/redirect";
 import { store, history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
 import auth, { getAuthState, getUserTypeFromAuthState } from "./app/utilities/auth";
@@ -83,7 +83,7 @@ const userIsAdminOrEditor = connectedReduxRedirect({
     authenticatedSelector: state => {
         return auth.isAdminOrEditor(state.user) || auth.isAdminOrEditor(getUserTypeFromAuthState());
     },
-    redirectAction: routerActions.replace,
+    redirectAction: replace,
     wrapperDisplayName: "userIsAdminOrEditor",
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false
@@ -93,7 +93,7 @@ const userIsAdmin = connectedReduxRedirect({
     authenticatedSelector: state => {
         return auth.isAdmin(state.user) || auth.isAdmin(getUserTypeFromAuthState());
     },
-    redirectAction: routerActions.replace,
+    redirectAction: replace,
     wrapperDisplayName: "userIsAdmin",
     redirectPath: `${rootPath}/collections`,
     allowRedirectBack: false

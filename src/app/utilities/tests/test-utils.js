@@ -1,6 +1,6 @@
 import React from "react";
 import { createStore, combineReducers, applyMiddleware } from "redux";
-import { routerReducer } from "react-router-redux";
+import { connectRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import reducer from "../../config/reducer";
 import userReducer from "../../config/user/userReducer";
@@ -42,7 +42,7 @@ function render(
             combineReducers({
                 state: reducer,
                 user: userReducer,
-                routing: routerReducer,
+                router: connectRouter(createMemoryHistory()),
             }),
             applyMiddleware(thunkMiddleware)
         ),

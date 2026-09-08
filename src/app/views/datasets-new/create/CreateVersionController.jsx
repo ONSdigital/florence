@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { push, goBack } from "react-router-redux";
+import { push, goBack } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
