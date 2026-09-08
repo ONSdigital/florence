@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import EditHomepage from "./EditHomepage";
+import EditHomepageItem from "./EditHomepageItem";
 import PropTypes from "prop-types";
 import collections from "../../../utilities/api-clients/collections";
 import homepage from "../../../utilities/api-clients/homepage";
@@ -424,13 +425,18 @@ export class EditHomepageController extends Component {
     };
 
     renderModal = () => {
-        return React.Children.map(this.props.children, child => {
-            return React.cloneElement(child, {
-                data: this.state.homepageData[this.props.params.homepageDataField][this.props.params.homepageDataFieldID],
-                handleSuccessClick: this.handleSimpleEditableListEditSuccess,
-                handleCancelClick: this.handleSimpleEditableListEditCancel,
-            });
-        });
+        const { homepageDataField, homepageDataFieldID } = this.props.match.params;
+
+        const data = this.state.homepageData[homepageDataField]?.[homepageDataFieldID];
+
+        return (
+            <EditHomepageItem
+                {...this.props}
+                data={data}
+                handleSuccessClick={this.handleSimpleEditableListEditSuccess}
+                handleCancelClick={this.handleSimpleEditableListEditCancel}
+            />
+        );
     };
 
     render() {
