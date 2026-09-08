@@ -11,6 +11,7 @@ const authenticatedViewer = createMockUser("user@test.com", true, true, "VIEWER"
 
 const defaultProps = {
     enableSystemNavBar: false,
+    setPreviewLanguage: jest.fn(),
     user: notLoggedUser,
     rootPath: "/florence",
     location: {},
