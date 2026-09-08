@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useInput } from "../../hooks/useInput";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import filter from "lodash/filter";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import Magnifier from "../../icons/Magnifier";
