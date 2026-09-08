@@ -12,7 +12,6 @@ import GenericFileUploader from "../../../components/generic-file-upload/Generic
 
 import { bindFileUploadInput, bindGenericFileUploadInput } from "../../../components/file-upload/bind";
 import { connect } from "react-redux";
-import http from "../../../utilities/http";
 
 const propTypes = {
     match: PropTypes.shape({

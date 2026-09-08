@@ -10,7 +10,7 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 
 const Groups = props => {
     const { groups, isLoading, loadTeams } = props;
-    const [search, setSearch] = useInput("");
+    const [search] = useInput("");
     const isAdmin = props.loggedInUser.isAdmin || false;
     const API_PROXY_PATH = `/api/${window.getEnv().apiRouterVersion}`;
 

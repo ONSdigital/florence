@@ -1,10 +1,9 @@
 import React from "react";
 import renderer from "react-test-renderer";
-// import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import { render, screen, createMockUser, WrapperComponent } from "../../../utilities/tests/test-utils";
-import { group, specialGroup } from "../../../utilities/tests/mockData";
+import { group } from "../../../utilities/tests/mockData";
 import EditGroup from "./EditGroup";
 
 const users = [

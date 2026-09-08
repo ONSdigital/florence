@@ -6,7 +6,6 @@ import PropTypes from "prop-types";
 import datasets from "../../../utilities/api-clients/datasets";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
-import date from "../../../utilities/date";
 
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 

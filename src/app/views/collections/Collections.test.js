@@ -3,7 +3,6 @@ import { render, screen, createMockUser, within } from "../../utilities/tests/te
 import Collections from "./Collections";
 import userEvent from "@testing-library/user-event";
 
-let user;
 import { setAuthState } from "../../utilities/auth";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
