@@ -1,7 +1,7 @@
 import React from "react";
 import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
-import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
+import { render, screen, createMockUser, WrapperComponent } from "../../utilities/tests/test-utils";
 import Groups from "./Groups";
 import "@testing-library/jest-dom";
 import { mappedSortedGroups } from "../../utilities/tests/mockData";
@@ -17,35 +17,59 @@ const defaultProps = {
 
 describe("Groups", () => {
     it("matches the snapshot with empty props", () => {
-        const wrapper = renderer.create(<Groups {...defaultProps} />);
+        const wrapper = renderer.create(
+            <WrapperComponent>
+                <Groups {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(wrapper.toJSON()).toMatchSnapshot();
     });
 
     it("matches the snapshot with groups props", () => {
         const props = { ...defaultProps, groups: mappedSortedGroups };
-        const wrapper = renderer.create(<Groups {...props} />);
+        const wrapper = renderer.create(
+            <WrapperComponent>
+                <Groups {...props} />
+            </WrapperComponent>
+        );
         expect(wrapper.toJSON()).toMatchSnapshot();
     });
 
     it("requests all teams on load", () => {
-        render(<Groups {...defaultProps} />);
+        render(
+            <WrapperComponent>
+                <Groups {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(defaultProps.loadTeams).toHaveBeenCalled();
     });
 
     it("shows, message if no teams found", () => {
-        render(<Groups {...defaultProps} />);
+        render(
+            <WrapperComponent>
+                <Groups {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();
     });
 
     it("shows, create button and search input", () => {
-        render(<Groups {...defaultProps} />);
+        render(
+            <WrapperComponent>
+                <Groups {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByText("Create a new team")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
     });
 
     it("shows list of teams details", () => {
         const props = { ...defaultProps, groups: mappedSortedGroups };
-        render(<Groups {...props} />);
+        render(
+            <WrapperComponent>
+                <Groups {...props} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByText(/Preview teams/i)).toBeInTheDocument();
         expect(screen.getByText(/Hello Group/i)).toBeInTheDocument();
@@ -58,7 +82,11 @@ describe("Groups", () => {
         const getFilteredGroups = jest.fn();
         const props = { ...defaultProps, groups: mappedSortedGroups };
 
-        render(<Groups {...props} />);
+        render(
+            <WrapperComponent>
+                <Groups {...props} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
 
@@ -77,7 +105,11 @@ describe("Groups", () => {
             ...defaultProps,
             loggedInUser: editor,
         };
-        render(<Groups {...newProps} />);
+        render(
+            <WrapperComponent>
+                <Groups {...newProps} />
+            </WrapperComponent>
+        );
 
         expect(screen.queryByRole("link", { name: "Create new team" })).not.toBeInTheDocument();
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");

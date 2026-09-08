@@ -12,9 +12,9 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
     >
       ◀ 
       <a
+        href="/florence/users"
         onClick={[Function]}
         role="link"
-        style={{}}
       >
         Back
       </a>
@@ -105,9 +105,9 @@ exports[`AddGroupsToUser matches the snapshot 1`] = `
         </button>
         <a
           className="btn btn--invert-primary btn--margin-right"
+          href="/florence/users"
           onClick={[Function]}
           role="button"
-          style={{}}
         >
           Cancel
         </a>

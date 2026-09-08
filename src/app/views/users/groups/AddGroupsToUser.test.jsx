@@ -1,6 +1,6 @@
 import React from "react";
 import renderer from "react-test-renderer";
-import { render, screen, within, getByTestId } from "../../../utilities/tests/test-utils";
+import { render, screen, within, WrapperComponent } from "../../../utilities/tests/test-utils";
 import "@testing-library/jest-dom";
 import userEvent from "@testing-library/user-event";
 import AddGroupsToUser from "./AddGroupsToUser";
@@ -26,37 +26,60 @@ const props = {
     user: user,
     groups: groups,
 };
-const setRouteLeaveHook = jest.fn();
 
 describe("AddGroupsToUser", () => {
     it("matches the snapshot", () => {
-        const wrapper = renderer.create(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ router: setRouteLeaveHook }} />);
+        const wrapper = renderer.create(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(wrapper.toJSON()).toMatchSnapshot();
     });
 
     it("requests user data on component load", () => {
-        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-        expect(defaultProps.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
+        render(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
+        expect(defaultProps.loadUser).toHaveBeenCalledWith(defaultProps.match.params.id);
     });
 
     it("requests groups on component load", () => {
-        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(defaultProps.loadGroups).toHaveBeenCalled();
     });
 
     it("shows Back Button", () => {
-        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByText(/Back/i)).toBeInTheDocument();
     });
 
     it("shows Groups heard, search and message if no groups", () => {
-        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Search teams by name")).toHaveValue("");
     });
 
     it("shows Footer Section with Buttons", () => {
-        render(<AddGroupsToUser.WrappedComponent {...defaultProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <AddGroupsToUser.WrappedComponent {...defaultProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByTestId("form-footer")).toBeInTheDocument();
         expect(screen.getByText(/Save changes/i)).toBeInTheDocument();
         expect(screen.getByText(/Cancel/i)).toBeInTheDocument();
@@ -65,7 +88,11 @@ describe("AddGroupsToUser", () => {
     describe("when loading data", () => {
         it("shows spinner", () => {
             const props = { ...defaultProps, loading: true };
-            render(<AddGroupsToUser.WrappedComponent {...props} params={{ id: "", router: setRouteLeaveHook }} />);
+            render(
+                <WrapperComponent>
+                    <AddGroupsToUser.WrappedComponent {...props} match={{ params: { id: "" } }} />
+                </WrapperComponent>
+            );
 
             expect(screen.getByTestId("loader")).toBeInTheDocument();
         });
@@ -73,7 +100,11 @@ describe("AddGroupsToUser", () => {
 
     describe("where user and groups fetched", () => {
         it("shows user details", () => {
-            render(<AddGroupsToUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+            render(
+                <WrapperComponent>
+                    <AddGroupsToUser.WrappedComponent {...props} />
+                </WrapperComponent>
+            );
             expect(screen.getByText(/Back/i)).toBeInTheDocument();
             expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/test user-1498/i);
             expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
@@ -82,7 +113,11 @@ describe("AddGroupsToUser", () => {
         });
 
         it("shows groups", () => {
-            render(<AddGroupsToUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+            render(
+                <WrapperComponent>
+                    <AddGroupsToUser.WrappedComponent {...props} />
+                </WrapperComponent>
+            );
             const GroupsSection = screen.getByTestId("groups-table");
 
             expect(screen.getByText(/add a team for the user to join/i)).toBeInTheDocument();
@@ -93,8 +128,11 @@ describe("AddGroupsToUser", () => {
         });
 
         it("adds user to groups and removes", async () => {
-            const userGroups = groups[2];
-            render(<AddGroupsToUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+            render(
+                <WrapperComponent>
+                    <AddGroupsToUser.WrappedComponent {...props} />
+                </WrapperComponent>
+            );
 
             expect(screen.getByRole("heading", { level: 2, name: "Add a team for the user to join" })).toBeInTheDocument();
             expect(screen.getByPlaceholderText(/search teams by name/i)).toHaveValue("");

@@ -1,17 +1,10 @@
 import React from "react";
 import { screen, getAllByTestId, getByText } from "@testing-library/dom";
 import { render } from "@testing-library/react";
-import { Provider } from "react-redux";
-import { createStore, combineReducers, applyMiddleware } from "redux";
-import { routerReducer } from "react-router-redux";
-import thunkMiddleware from "redux-thunk";
-
-import reducer from "../../config/reducer";
-import userReducer from "../../config/user/userReducer";
-import taxonomies from "../../reducers/taxonomies";
 
 import Layout from "./Layout";
 import { createDefaultExpiryTimes } from "dis-authorisation-client-js";
+import { WrapperComponent } from "../../utilities/tests/test-utils";
 
 // Local Storage
 var localStorageMock = (function () {
@@ -59,50 +52,18 @@ afterAll(() => {
     window.localStorage.clear();
 });
 
-function createTestStore(config = {}) {
-    return createStore(
-        combineReducers({
-            state: reducer,
-            user: userReducer,
-            taxonomies,
-            routing: routerReducer,
-        }),
-        {
-            state: {
-                config,
-                collections: {},
-                user: {},
-                global: {},
-                groups: {},
-                users: {},
-                teams: {},
-                allTeams: {},
-            },
-        },
-        applyMiddleware(thunkMiddleware)
-    );
-}
-const testStore = createTestStore();
-
-const props = {
-    params: [],
-    location: {
-        pathname: "",
-    },
-};
-
 function wrapper(props = {}) {
     return render(
-        <Provider store={testStore}>
+        <WrapperComponent>
             <Layout {...props} />
-        </Provider>
+        </WrapperComponent>
     );
 }
 
 it("renders <NavBar /> component", () => {
     wrapper({ location: { pathname: "" } });
     const element = screen.getByTestId("navbar");
-    expect(element).toBeInTheDocument;
+    expect(element).toBeInTheDocument();
 });
 
 describe("when notifications props are passed", () => {
@@ -118,9 +79,9 @@ describe("when notifications props are passed", () => {
     it("renders <Notifications /> component with props", () => {
         wrapper({ location: { pathname: "" }, notifications });
         const element = screen.getByTestId("notifications");
-        expect(element).toBeInTheDocument;
+        expect(element).toBeInTheDocument();
         expect(getAllByTestId(element, "123positive")).toHaveLength(1);
         const child = getAllByTestId(element, "123positive")[0];
-        expect(getByText(child, "Test")).toBeInTheDocument;
+        expect(getByText(child, "Test")).toBeInTheDocument();
     });
 });

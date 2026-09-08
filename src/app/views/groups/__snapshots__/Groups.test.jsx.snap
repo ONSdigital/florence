@@ -23,8 +23,8 @@ exports[`Groups matches the snapshot with empty props 1`] = `
           </h1>
           <a
             className="margin-left--1 font-size--18"
+            href="/groups/create"
             onClick={[Function]}
-            style={{}}
           >
             Create a new team
           </a>
@@ -117,8 +117,8 @@ exports[`Groups matches the snapshot with groups props 1`] = `
           </h1>
           <a
             className="margin-left--1 font-size--18"
+            href="/groups/create"
             onClick={[Function]}
-            style={{}}
           >
             Create a new team
           </a>
@@ -186,9 +186,9 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         >
           <a
             className="simple-select-list__title"
+            href="/florence/groups/4"
             onClick={[Function]}
             role="link"
-            style={{}}
           >
             Hello Group
           </a>
@@ -202,9 +202,9 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         >
           <a
             className="simple-select-list__title"
+            href="/florence/groups/1"
             onClick={[Function]}
             role="link"
-            style={{}}
           >
             Test
           </a>
@@ -218,9 +218,9 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         >
           <a
             className="simple-select-list__title"
+            href="/florence/groups/2"
             onClick={[Function]}
             role="link"
-            style={{}}
           >
             This team has 5 members
           </a>
@@ -234,9 +234,9 @@ exports[`Groups matches the snapshot with groups props 1`] = `
         >
           <a
             className="simple-select-list__title"
+            href="/florence/groups/0"
             onClick={[Function]}
             role="link"
-            style={{}}
           >
             Admins
           </a>

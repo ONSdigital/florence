@@ -1,4 +1,5 @@
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import { render, screen, createMockUser } from "../../utilities/tests/test-utils";
 import userEvent from "@testing-library/user-event";
 import UsersList from "./UsersList";
@@ -19,14 +20,22 @@ const props = {
 
 describe("UserList", () => {
     it("renders empty list with message if no users found", () => {
-        render(<UsersList {...props} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...props} />
+            </MemoryRouter>
+        );
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Users/i);
         expect(screen.getByRole("link", { name: "Create new user" })).toBeInTheDocument();
         expect(screen.getByText(/Nothing to show/i)).toBeInTheDocument();
     });
 
     it("fetches users on load", async () => {
-        render(<UsersList {...props} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...props} />
+            </MemoryRouter>
+        );
         expect(props.loadUsers).toHaveBeenCalled();
     });
 
@@ -35,7 +44,11 @@ describe("UserList", () => {
             ...props,
             loading: true,
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
@@ -44,7 +57,11 @@ describe("UserList", () => {
             ...props,
             active: [user, unconfirmedUser],
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
 
         const items = screen.getAllByRole("listitem");
 
@@ -61,7 +78,11 @@ describe("UserList", () => {
             ...props,
             active: [user, unconfirmedUser],
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
 
         const items = screen.getAllByRole("listitem");
 
@@ -79,7 +100,11 @@ describe("UserList", () => {
             ...props,
             active: [user],
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
 
         expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
@@ -96,7 +121,11 @@ describe("UserList", () => {
             ...props,
             loggedInUser: editor,
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
 
         expect(screen.getByLabelText("Show active users", { pressed: true })).toBeInTheDocument();
         expect(screen.getByLabelText("Show suspended users", { pressed: false })).toBeInTheDocument();
@@ -109,7 +138,11 @@ describe("UserList", () => {
             loggedInUser: editor,
             active: [user, unconfirmedUser],
         };
-        render(<UsersList {...newProps} />);
+        render(
+            <MemoryRouter>
+                <UsersList {...newProps} />
+            </MemoryRouter>
+        );
 
         const items = screen.getAllByRole("listitem");
 

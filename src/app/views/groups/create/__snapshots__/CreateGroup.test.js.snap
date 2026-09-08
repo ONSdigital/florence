@@ -10,8 +10,8 @@ exports[`CreateGroup Given valid props on initial load matches snapshot 1`] = `
     <span>
       ◀ 
       <a
+        href="/"
         onClick={[Function]}
-        style={{}}
       >
         Back
       </a>
