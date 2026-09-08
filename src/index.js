@@ -1,11 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-import { Router, Route, IndexRoute, IndexRedirect, Redirect } from "react-router";
-import { replace } from "connected-react-router";
+import { Route, Redirect, Switch } from "react-router-dom";
+import { ConnectedRouter, replace } from "connected-react-router";
 import { connectedReduxRedirect } from "redux-auth-wrapper/history4/redirect";
-import { store, history } from "./app/config/store";
+import { store, baseHistory as history } from "./app/config/store";
 import { setConfig } from "./app/config/actions";
+import PropTypes from "prop-types";
 import auth, { getAuthState, getUserTypeFromAuthState } from "./app/utilities/auth";
 import Layout from "./app/components/layout";
 import SignInController from "./app/views/login/SignIn";
@@ -26,14 +27,13 @@ import DatasetUploadsController from "./app/views/uploads/dataset/DatasetUploads
 import DatasetUploadDetails from "./app/views/uploads/dataset/upload-details/DatasetUploadDetails";
 import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/DatasetUploadMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController";
-import EditHomepageItem from "./app/views/homepage/edit/EditHomepageItem";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
 import Logs from "./app/views/logs/Logs";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
-import CollectionRoutesWrapper from "./app/global/collection-wrapper/CollectionRoutesWrapper";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
 import CreateContent from "./app/views/content/CreateContent";
+import { withCollectionDetails } from "./app/views/collections/details/withCollectionDetails";
 import NotFound from "./app/components/not-found";
 import UsersList from "./app/views/users";
 import CreateUser from "./app/views/users/create";
@@ -49,7 +49,6 @@ import RedirectView from "./app/components/redirect-view";
 import SessionManagement from "dis-authorisation-client-js";
 import { startRefeshAndSession } from "./app/config/user/userActions";
 
-import { browserHistory } from "react-router";
 import user from "./app/utilities/api-clients/user";
 
 const config = window.getEnv();
@@ -74,7 +73,7 @@ const userIsAuthenticated = connectedReduxRedirect({
         // TODO Remove getAuthToken() call when ENABLE_NEW_INTERACTIVES feature in prod
         return state.user.isAuthenticated || !!getAuthState();
     },
-    redirectAction: routerActions.replace,
+    redirectAction: replace,
     wrapperDisplayName: "UserIsAuthenticated",
     redirectPath: `${rootPath}/login`,
 });
@@ -102,108 +101,192 @@ const userIsAdmin = connectedReduxRedirect({
 const logoutUser = async () => {
     try {
         user.logOut();
-        browserHistory.push(`${rootPath}/login`);
+        history.push(`${rootPath}/login`);
     } catch (error) {
         console.error("Error during logout:", error);
-        browserHistory.push(`${rootPath}/login`);
+        history.push(`${rootPath}/login`);
     }
+};
+
+const UploadRoutes = ({ match }) => (
+    <>
+        <Redirect exact from={`${rootPath}/uploads`} to={`${rootPath}/uploads/data`} />
+        <Switch>
+            <Route path={`${match.path}/data`} exact component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadsController))} />
+            <Route path={`${match.path}/data/:jobID`} exact component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails))} />
+            <Route path={`${match.path}/data/:jobID/metadata`} exact component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata))} />
+        </Switch>
+    </>
+);
+
+UploadRoutes.propTypes = {
+    match: PropTypes.shape({
+        path: PropTypes.string.isRequired,
+    }).isRequired,
+}
+
+const CollectionDatasetRoutes = ({ match }) => (
+    <Switch>
+        <Route path={`${match.path}`} exact component={AuthenticatedSelectADataset} />
+
+        <Route path={`${match.path}/create`} exact component={AuthenticatedCreateDatasetController} />
+        <Route path={`${match.path}/create/:datasetID/:recipeID`} component={AuthenticatedCreateCantabularDatasetController} />
+        <Route path={`${match.path}/create/:datasetID`} component={AuthenticatedCreateDatasetTaxonomyController} />
+
+        <Route path={`${match.path}/:datasetID`} exact component={AuthenticatedDatasetEditionsController} />
+        <Route path={`${match.path}/:datasetID/editions`} exact component={AuthenticatedCreateEditionController} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID`} exact component={AuthenticatedDatasetVersionsController} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/instances`} component={AuthenticatedCreateVersionController} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/preview`} exact component={AuthenticatedWorkflowPreviewWithCollection} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/versions/:versionID`} exact component={AuthenticatedDatasetMetadataController} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/versions/:versionID/edit/:metadataField/:metadataFieldID`} exact component={AuthenticatedEditMetadataItem} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/versions/:versionID/cantabular`} exact component={AuthenticatedCantabularMetadataController} />
+        <Route path={`${match.path}/:datasetID/editions/:editionID/versions/:versionID/cantabular/edit/:metadataField/:metadataItemID`} exact component={AuthenticatedEditMetadataItem} />
+    </Switch>
+)
+
+CollectionDatasetRoutes.propTypes = {
+        match: PropTypes.shape({
+        path: PropTypes.string.isRequired,
+    }).isRequired,
+}
+
+const AuthenticatedCollections = userIsAuthenticated(Collections);
+const AuthenticatedWorkflowPreview = userIsAuthenticated(WorkflowPreview);
+const AuthenticatedPreviewController = userIsAuthenticated(PreviewController);
+const AuthenticatedEditHomepageController = withCollectionDetails(userIsAuthenticated(EditHomepageController));
+const AuthenticatedCreateContent = userIsAuthenticated(userIsAdminOrEditor(CreateContent));
+
+// Collection dataset routes with collection details
+const AuthenticatedSelectADataset = withCollectionDetails(userIsAuthenticated(SelectADataset));
+const AuthenticatedCreateDatasetController = withCollectionDetails(userIsAuthenticated(CreateDatasetController));
+const AuthenticatedCreateCantabularDatasetController = withCollectionDetails(userIsAuthenticated(CreateCantabularDatasetController));
+const AuthenticatedCreateDatasetTaxonomyController = withCollectionDetails(userIsAuthenticated(CreateDatasetTaxonomyController));
+const AuthenticatedDatasetEditionsController = withCollectionDetails(userIsAuthenticated(DatasetEditionsController));
+const AuthenticatedCreateEditionController = withCollectionDetails(userIsAuthenticated(CreateEditionController));
+const AuthenticatedDatasetVersionsController = withCollectionDetails(userIsAuthenticated(DatasetVersionsController));
+const AuthenticatedCreateVersionController = withCollectionDetails(userIsAuthenticated(CreateVersionController));
+const AuthenticatedWorkflowPreviewWithCollection = withCollectionDetails(userIsAuthenticated(WorkflowPreview));
+const AuthenticatedDatasetMetadataController = withCollectionDetails(userIsAuthenticated(DatasetMetadataController));
+const AuthenticatedEditMetadataItem = withCollectionDetails(userIsAuthenticated(EditMetadataItem));
+const AuthenticatedCantabularMetadataController = withCollectionDetails(userIsAuthenticated(CantabularMetadataController));
+
+const CollectionRoutes = ({ match }) => (
+
+    <Switch>
+        <Route path={`${match.path}`} exact component={AuthenticatedCollections} />
+        <Route path={`${match.path}/:collectionID`} exact component={AuthenticatedCollections} />
+
+        <Route path={`${match.path}/:collectionID/create`} component={AuthenticatedCreateContent} />
+
+        <Route path={`${match.path}/:collectionID/datasets`} component={CollectionDatasetRoutes} />
+
+        <Route path={`${match.path}/:collectionID/edit`} component={AuthenticatedCollections} />
+
+        <Route path={`${match.path}/:collectionID/homepage`} exact component={AuthenticatedEditHomepageController} />
+        <Route
+            path={`${match.path}/:collectionID/homepage/edit/:homepageDataField/:homepageDataFieldID`}
+            exact
+            component={AuthenticatedEditHomepageController}
+        />
+        <Route path={`${match.path}/:collectionID/homepage/preview`} component={AuthenticatedWorkflowPreview} /> 
+        
+        <Route path={`${match.path}/:collectionID/preview`} component={AuthenticatedPreviewController} />                        
+    </Switch>
+);
+
+CollectionRoutes.propTypes = {
+    match: PropTypes.shape({
+        path: PropTypes.string.isRequired,
+    }).isRequired,
+};
+
+const AuthenticatedCreateUser = userIsAuthenticated(userIsAdmin(CreateUser));
+const AuthenticatedEditUser = userIsAuthenticated(userIsAdminOrEditor(EditUser));
+const AuthenticatedAddGroupsToUser = userIsAuthenticated(userIsAdmin(AddGroupsToUser));
+const AuthenticatedUsersList = userIsAuthenticated(userIsAdminOrEditor(UsersList));
+
+const UserRoutes = ({ match }) => (
+    <Switch>
+        <Route path={`${match.path}/create`} exact component={AuthenticatedCreateUser} />
+        <Route path={`${match.path}/:id`} exact component={AuthenticatedEditUser} />
+        <Route path={`${match.path}/create/:id/groups`} component={AuthenticatedAddGroupsToUser} />
+        <Route exact path={`${match.path}`} component={AuthenticatedUsersList}/>
+    </Switch>
+)
+
+UserRoutes.propTypes = {
+    match: PropTypes.shape({
+        path: PropTypes.string.isRequired,
+    }).isRequired,
+};
+
+const AuthenticatedCreateTeam = userIsAuthenticated(userIsAdmin(CreateTeam));
+const AuthenticatedEditGroup = userIsAuthenticated(EditGroup);
+const AuthenticatedGroups = userIsAuthenticated(Groups);
+
+const GroupRoutes = ({ match }) => (
+    <Switch>
+        <Route path={`${match.path}`} exact component={AuthenticatedGroups} />
+        <Route path={`${match.path}/create`} exact component={AuthenticatedCreateTeam} />
+        <Route path={`${match.path}/:id`} component={AuthenticatedEditGroup} />
+    </Switch>
+)
+
+GroupRoutes.propTypes = {
+    match: PropTypes.shape({
+        path: PropTypes.string.isRequired,
+    }).isRequired,
 };
 
 const Index = () => {
     return (
         <Provider store={store}>
-            <Router history={history}>
-                <Route component={Layout}>
-                    <Redirect from={`${rootPath}`} to={`${rootPath}/collections`} />
-                    <Route path={`${rootPath}/collections`} component={userIsAuthenticated(Collections)}>
-                        <Route path=":collectionID" component={userIsAuthenticated(Collections)}>
-                            <Route path="edit" component={userIsAuthenticated(Collections)} />
-                        </Route>
-                    </Route>
-                    <Route component={CollectionRoutesWrapper}>
-                        <Route path={`${rootPath}/collections/:collectionID/homepage`} component={userIsAuthenticated(EditHomepageController)}>
-                            <Route
-                                path={`edit/:homepageDataField/:homepageDataFieldID`}
-                                component={userIsAuthenticated(EditHomepageItem)}
-                            />
-                        </Route>
-                    </Route>
-                    <Route path={`${rootPath}/collections/:collectionID/homepage/preview`} component={userIsAuthenticated(WorkflowPreview)} />
-                    <Route path={`${rootPath}/collections/:collectionID/preview`} component={userIsAuthenticated(PreviewController)} />
-                    <Route path={`${rootPath}/collections/:collectionID/create`} component={userIsAuthenticated(userIsAdminOrEditor(CreateContent))} />
-                    <Route component={CollectionRoutesWrapper}>
-                        <Route path={`${rootPath}/collections/:collectionID/datasets`}>
-                            <IndexRoute component={userIsAuthenticated(SelectADataset)} />
-                            <Route path="create">
-                                <IndexRoute component={userIsAuthenticated(CreateDatasetController)} />
-                                <Route path=":datasetID/:recipeID" component={userIsAuthenticated(CreateCantabularDatasetController)} />
-                                <Route path=":datasetID" component={userIsAuthenticated(CreateDatasetTaxonomyController)} />
-                            </Route>
-                            <Route path=":datasetID">
-                                <IndexRoute component={userIsAuthenticated(DatasetEditionsController)} />
-                                <Route path={`editions`} component={userIsAuthenticated(CreateEditionController)} />
-                                <Route path="editions/:editionID">
-                                    <Route path={`instances`} component={userIsAuthenticated(CreateVersionController)} />
-                                    <IndexRoute component={userIsAuthenticated(DatasetVersionsController)} />
-                                    <Route path={`versions/:versionID`} component={userIsAuthenticated(DatasetMetadataController)}>
-                                        <Route
-                                            path={`edit/:metadataField/:metadataItemID`}
-                                            component={userIsAuthenticated(EditMetadataItem)}
-                                        />
-                                    </Route>
-                                    <Route path={`versions/:versionID/cantabular`} component={userIsAuthenticated(CantabularMetadataController)}>
-                                        <Route
-                                            path={`edit/:metadataField/:metadataItemID`}
-                                            component={userIsAuthenticated(EditMetadataItem)}
-                                        />
-                                    </Route>
-                                    <Route path="versions/:versionID/preview" component={userIsAuthenticated(WorkflowPreview)} />
-                                </Route>
-                            </Route>
-                        </Route>
-                    </Route>
-                    <Route path={`${rootPath}/users/create`} exact component={userIsAuthenticated(userIsAdmin(CreateUser))} />
-                    <Route path={`${rootPath}/users/:id`} exact component={userIsAuthenticated(userIsAdminOrEditor(EditUser))} />
-                    <Route path={`${rootPath}/users/create/:id/groups`} component={userIsAuthenticated(userIsAdmin(AddGroupsToUser))} />
-                    <Route path={`${rootPath}/users`} component={userIsAuthenticated(userIsAdminOrEditor(UsersList))}/>
-                    <Route>
-                        <Route path={`${rootPath}/uploads`}>
-                            <IndexRedirect to="data" />
-                            <Route path="data">
-                                <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadsController))} />
-                                <Route path=":jobID">
-                                    <IndexRoute component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadDetails))} />
-                                    <Route path="metadata" component={userIsAuthenticated(userIsAdminOrEditor(DatasetUploadMetadata))} />
-                                </Route>
-                            </Route>
-                        </Route>
-                    </Route>
-                    <Route path={`${rootPath}/logs`} component={Logs} />
-                    <Route path={`${rootPath}/login`} component={SignInController} />
-                    <Route path={`${rootPath}/logout`} onEnter={logoutUser}/>
-                    <Route path={`${rootPath}/forgotten-password`} component={ForgottenPasswordController} />
-                    <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
-                    <Route path={`${rootPath}/groups`} component={userIsAuthenticated((Groups))} />
-                    <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))} />
-                    <Route path={`${rootPath}/systems`} exact component={userIsAuthenticated(Systems)} />
-                    <Route path={`${rootPath}/groups/create`} exact component={userIsAuthenticated(userIsAdmin(CreateTeam))} />
-                    <Route path={`${rootPath}/groups/:id`} component={userIsAuthenticated(EditGroup)} />
-                    {/* legacy paths, stops the "not found" view from showing when loading */}
-                    <Route path={`${rootPath}/publishing-queue`} />
-                    <Route path={`${rootPath}/workspace`} />
+            <ConnectedRouter history={history}>
+                <Route render={routeProps => {
+                    return (
+                        <Layout {...routeProps}>
+                            <Switch>
+                                <Redirect exact from={`${rootPath}`} to={`${rootPath}/collections`} />
+                                <Route path={`${rootPath}/collections`} component={CollectionRoutes} />
 
-                    {allowedExternalRedirects.map(redirect => (
-                        <React.Fragment key={redirect}>
-                            <Route path={redirect} component={RedirectView} />
-                            <Route path={`${redirect}/*`} component={RedirectView} />
-                        </React.Fragment>
-                    ))}
+                                <Route path={`${rootPath}/forgotten-password`} component={ForgottenPasswordController} />
+                                <Route path={`${rootPath}/groups`} component={GroupRoutes} />
 
-                    <Route path="*" component={NotFound} />
-                </Route>
-            </Router>
+                                <Route path={`${rootPath}/login`} component={SignInController} />
+                                <Route path={`${rootPath}/logout`} render={() => { logoutUser(); return null; }} />
+                                <Route path={`${rootPath}/logs`} component={Logs} />
+
+                                <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
+
+                                {/* legacy path, stops the "not found" view from showing when loading */}
+                                <Route path={`${rootPath}/publishing-queue`} />
+
+                                <Route path={`${rootPath}/security`} exact component={userIsAuthenticated(userIsAdmin(Security))} />
+                                <Route path={`${rootPath}/systems`} exact component={userIsAuthenticated(Systems)} />
+                                <Route path={`${rootPath}/uploads`} component={UploadRoutes} />
+                                <Route path={`${rootPath}/users`} component={UserRoutes} />
+
+                                {/* legacy path, stops the "not found" view from showing when loading */}
+                                <Route path={`${rootPath}/workspace`} />
+
+                                {allowedExternalRedirects.map(redirect => (
+                                    <React.Fragment key={redirect}>
+                                        <Route path={redirect} component={RedirectView} />
+                                        <Route path={`${redirect}/*`} component={RedirectView} />
+                                    </React.Fragment>
+                                ))}
+
+                                <Route component={NotFound} />
+                            </Switch>
+
+                        </Layout>
+                    );
+                }} />
+            </ConnectedRouter>
         </Provider>
     );
 };
 
+// Render is deprecated for when we move to React 18, when we should use createRoot
 ReactDOM.render(<Index />, document.getElementById("app"));
