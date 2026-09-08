@@ -1,7 +1,7 @@
 import React from "react";
 import Warning from "../../icons/Warning";
 import url from "../../utilities/url";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 function FormFooter({ loading, hasErrors, hasNewValues, handleSubmit, redirectUrl }) {
     const to = redirectUrl ? redirectUrl : url.resolve("../");
@@ -9,13 +9,7 @@ function FormFooter({ loading, hasErrors, hasNewValues, handleSubmit, redirectUr
         <div className="grid grid--justify-space-around padding-bottom--1 padding-top--1 form-footer" data-testid="form-footer">
             <div className="grid__col-9">
                 <div className="grid grid--align-baseline">
-                    <button
-                        disabled={hasErrors}
-                        type="submit"
-                        className="btn btn--positive btn--margin-right"
-                        onClick={handleSubmit}
-                        disabled={hasErrors}
-                    >
+                    <button disabled={hasErrors} type="submit" className="btn btn--positive btn--margin-right" onClick={handleSubmit}>
                         {loading ? <div className="loader loader--dark" data-testid="loader" /> : "Save changes"}
                     </button>
                     <Link role="button" to={to} className="btn btn--invert-primary btn--margin-right">
