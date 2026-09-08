@@ -1,14 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
-import { Link } from "react-router-dom";
+import { Link, Prompt } from "react-router-dom";
 import url from "../../../utilities/url";
 import { getUsersRequest, createGroup } from "../../../config/thunks";
 import UsersNotInTeam from "../../../components/users/UsersNotInTeam";
 import ContentActionBar from "../../../components/content-action-bar/ContentActionBar";
 import Input from "../../../components/Input";
 import Chip from "../../../components/chip/Chip";
-import { addPopout, removePopouts } from "../../../config/actions";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
 import { getPreviewUsers } from "../../../config/selectors";
@@ -42,11 +41,6 @@ const CreateGroup = props => {
         dispatch(getUsersRequest());
     }, []);
 
-    // As we are on an old version of react-router, will have to use setRouteLeaveHook instead of 'Prompt' for now
-    useEffect(() => {
-        router.setRouteLeaveHook(route, handleRequestToLeavePage);
-    });
-
     useEffect(() => {
         if (userConfirmedToLeave) {
             const previousUrl = url.resolve("../", true);
@@ -72,38 +66,6 @@ const CreateGroup = props => {
     const addUserToTeam = user => {
         const newListOfUsersNotInTeam = usersNotInTeam.filter(filteredUser => filteredUser.email !== user.email);
         setUsersNotInTeam(newListOfUsersNotInTeam);
-    };
-
-    const handleRequestToLeavePage = () => {
-        let canLeave = true;
-        if (!userConfirmedToLeave && unsavedChanges) {
-            canLeave = false;
-            const popoutOptions = {
-                id: "unsaved-changes",
-                title: "You have unsaved changes",
-                body: "If you leave these changes will be discarded.",
-                buttons: [
-                    {
-                        onClick: () => {
-                            dispatch(removePopouts(["unsaved-changes"]));
-                            setUserConfirmedToLeave(true);
-                        },
-                        text: "Discard changes",
-                        style: "warning",
-                    },
-                    {
-                        onClick: () => {
-                            dispatch(removePopouts(["unsaved-changes"]));
-                            return false;
-                        },
-                        text: "Continue editing team",
-                        style: "invert-primary",
-                    },
-                ],
-            };
-            dispatch(addPopout(popoutOptions));
-        }
-        return canLeave;
     };
 
     const handleTeamNameChange = event => {
@@ -185,6 +147,7 @@ const CreateGroup = props => {
             </div>
             <UsersNotInTeam usersNotInTeam={usersNotInTeam} loading={isLoading} addUserToTeam={addUserToTeam} />
             <ContentActionBar {...contentActionBarProps} />
+            <Prompt when={unsavedChanges} message="Your work is not saved! Are you sure you want to leave?" />
         </div>
     );
 };

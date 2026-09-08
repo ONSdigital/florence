@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
-import { withRouter } from "react-router";
+import { Prompt, withRouter } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import BackButton from "../../../components/back-button";
@@ -48,10 +48,6 @@ const EditGroup = props => {
 
     const isAdmin = props.loggedInUser.isAdmin || false;
 
-    const routerWillLeave = nextLocation => {
-        if ((hasNewValues || hasUpdatedMembers) && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
-    };
-
     useEffect(() => {
         setAvailableUsers(users);
         setGroupMembers(members);
@@ -61,10 +57,6 @@ const EditGroup = props => {
         const newAvailableUsers = availableUsers.filter(user => !groupMembers.some(m => m.id === user.id));
         setAvailableUsers(newAvailableUsers);
     }, [groupMembers]);
-
-    useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, routerWillLeave);
-    });
 
     useEffect(() => {
         if (group) {
@@ -174,6 +166,12 @@ const EditGroup = props => {
                     </div>
                 </div>
                 {isAdmin && <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />}
+                {isAdmin && (
+                    <Prompt
+                        when={(hasNewValues || hasUpdatedMembers) && !isSubmitting}
+                        message="Your work is not saved! Are you sure you want to leave?"
+                    />
+                )}
             </div>
         </div>
     );

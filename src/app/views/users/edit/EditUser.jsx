@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { withRouter } from "react-router";
+import { Prompt, withRouter } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 import isEmpty from "lodash/isEmpty";
 import Input from "../../../components/Input";
@@ -41,14 +41,6 @@ export const EditUser = props => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const hasErrors = !isEmpty(errors);
     const hasNewValues = !isEqual(values, user);
-
-    const routerWillLeave = nextLocation => {
-        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
-    };
-
-    useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, routerWillLeave);
-    });
 
     useEffect(() => {
         if (user) {
@@ -188,6 +180,7 @@ export const EditUser = props => {
                     </div>
                 </div>
                 {isAdmin && <FormFooter hasNewValues={hasNewValues} hasErrors={hasErrors} loading={loading} handleSubmit={handleSubmit} />}
+                {isAdmin && <Prompt when={hasNewValues && !isSubmitting} message="Your work is not saved! Are you sure you want to leave?" />}
             </div>
         </form>
     );

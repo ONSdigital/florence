@@ -22,10 +22,8 @@ const props = {
     loadUser: jest.fn(),
     loadUserGroups: jest.fn(),
     setUserPassword: jest.fn(),
-    router: { setRouteLeaveHook: jest.fn() },
     loggedInUser: admin,
 };
-const setRouteLeaveHook = jest.fn();
 
 describe("EditUser", () => {
     let user;

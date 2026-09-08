@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
 import filter from "lodash/filter";
-import { withRouter } from "react-router";
+import { Prompt, withRouter } from "react-router-dom";
 import PropTypes from "prop-types";
 import notifications from "../../../utilities/notifications";
 import { useInput } from "../../../hooks/useInput";
@@ -29,17 +29,10 @@ function AddGroupsToUser(props) {
 
     const { loading, user, groups, loadUser, loadingGroups, loadGroups, addGroupsToUser, isAdding, rootPath } = props;
     const [isSubmitting, setIsSubmitting] = useState(isAdding);
-    const [search, setSearch] = useInput("");
+    const [search] = useInput("");
     const [userGroups, setUserGroups] = useState([]);
 
     const hasNewValues = userGroups.length > 0;
-    const routerWillLeave = nextLocation => {
-        if (hasNewValues && !isSubmitting) return "Your work is not saved! Are you sure you want to leave?";
-    };
-
-    useEffect(() => {
-        props.router.setRouteLeaveHook(props.route, routerWillLeave);
-    });
 
     const handleRemove = id => setUserGroups(prevState => prevState.filter(group => group.id !== id));
 
@@ -96,6 +89,7 @@ function AddGroupsToUser(props) {
                     )
                 }
             />
+            <Prompt when={hasNewValues && !isSubmitting} message="Your work is not saved! Are you sure you want to leave?" />
         </div>
     );
 }
