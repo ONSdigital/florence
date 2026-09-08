@@ -29,7 +29,7 @@ var localStorageMock = (function () {
 
 beforeEach(() => {
     Object.defineProperty(window, "localStorage", { value: localStorageMock, writable: true });
-    window.localStorage.setItem("ons_auth_state", {});
+    window.localStorage.setItem("ons_auth_state", JSON.stringify({}));
 });
 
 afterEach(() => {
