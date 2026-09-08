@@ -28,7 +28,8 @@
     "moduleNameMapper": {
       "^cheerio$": "<rootDir>/node_modules/cheerio/dist/commonjs/index.js",
       "^cheerio/lib/utils$": "<rootDir>/node_modules/cheerio/dist/commonjs/utils.js"
-    }
+    },
+    "silent": true
   },
   "devDependencies": {
     "@babel/core": "^7.29.7",
