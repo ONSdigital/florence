@@ -102,7 +102,7 @@ export class PreviewController extends Component {
                 }
 
                 notifications.add(notification);
-                console.error(`Error fetching ${collectionID}:\n`, error);
+                console.error(`Error fetching %s:\n`, collectionID, error);
             });
     }
 

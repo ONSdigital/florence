@@ -95,7 +95,7 @@ export class DatasetEditionsController extends Component {
                         break;
                     }
                 }
-                console.error(`Error getting editions list for ${datasetID}:\n`, error);
+                console.error(`Error getting editions list for %s:\n`, datasetID, error);
                 this.setState({ isFetchingData: false });
             });
     };

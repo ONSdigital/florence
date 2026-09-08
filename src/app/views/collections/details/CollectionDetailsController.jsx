@@ -180,7 +180,7 @@ export class CollectionDetailsController extends Component {
                 this.setState({ isFetchingCollectionDetails: false });
             })
             .catch(error => {
-                console.error(`Fetching collection ${collectionID}: `, error);
+                console.error(`Fetching collection %s: `, collectionID, error);
                 collectionDetailsErrorNotifications.getActiveCollection(error);
                 if (error.status === 404 || error.status === 403) {
                     this.props.dispatch(push(`${this.props.rootPath}/collections`));
@@ -280,7 +280,7 @@ export class CollectionDetailsController extends Component {
                     },
                 });
                 collectionDetailsErrorNotifications.cancelPageDelete(error, uri, this.props.collectionID);
-                console.error(`Error removing pending delete of page '${uri}' from collection '${this.props.collectionID}'`, error);
+                console.error(`Error removing pending delete of page '${uri}' from collection '%s'`, this.props.collectionID, error);
             });
     };
 

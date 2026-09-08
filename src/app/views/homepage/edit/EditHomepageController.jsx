@@ -371,7 +371,7 @@ export class EditHomepageController extends Component {
     saveHomepageChanges = async (collectionID, homepageData) => {
         await collections.savePageContent(collectionID, "/", homepageData).catch(error => {
             log.event("Error saving homepage content", log.error(error));
-            console.error(`Error saving homepage content for '${this.props.match.params.collectionID}'`, error);
+            console.error(`Error saving homepage content for '%s'`, this.props.match.params.collectionID, error);
             return error;
         });
     };
@@ -379,7 +379,7 @@ export class EditHomepageController extends Component {
     sendToReview = async (collectionID, homepageData) => {
         await collections.setContentStatusToComplete(collectionID, "/", homepageData).catch(error => {
             log.event("Error submitting for review", log.error(error));
-            console.error(`Error submitting for review '${this.props.match.params.collectionID}'`, error);
+            console.error(`Error submitting for review '%s'`, this.props.match.params.collectionID, error);
             return error;
         });
     };
@@ -396,7 +396,7 @@ export class EditHomepageController extends Component {
                 }),
                 log.error(error)
             );
-            console.error(`Error reviewing content. Collection ID: '${this.props.match.params.collectionID}' for review. Error:`, error);
+            console.error(`Error reviewing content. Collection ID: '%s' for review. Error:`, this.props.match.params.collectionID, error);
             return error;
         }
     };

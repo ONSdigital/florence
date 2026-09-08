@@ -126,7 +126,7 @@ export class DatasetVersionsController extends Component {
                         break;
                     }
                 }
-                console.error(`Error getting dataset (${datasetID}):\n`, error);
+                console.error(`Error getting dataset (%s):\n`, datasetID, error);
                 this.setState({ isFetchingData: false });
             });
     };
