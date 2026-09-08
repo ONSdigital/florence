@@ -1,5 +1,7 @@
 import React from "react";
+import { MemoryRouter } from "react-router-dom";
 import { createStore, combineReducers, applyMiddleware } from "redux";
+import { createMemoryHistory } from "history";
 import { connectRouter } from "connected-react-router";
 import { Provider } from "react-redux";
 import reducer from "../../config/reducer";
@@ -22,11 +24,15 @@ export const WrapperComponent = ({ children }) => {
         combineReducers({
             state: reducer,
             user: userReducer,
-            routing: routerReducer,
+            router: connectRouter(createMemoryHistory()),
         }),
         applyMiddleware(thunkMiddleware)
     );
-    return <Provider store={store}>{children}</Provider>;
+    return (
+        <Provider store={store}>
+            <MemoryRouter>{children}</MemoryRouter>
+        </Provider>
+    );
 };
 
 export function HookWrapper(props) {

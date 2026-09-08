@@ -1,5 +1,4 @@
-import { browserHistory } from "react-router";
-import { store } from "../config/store";
+import { store, baseHistory as history } from "../config/store";
 
 export default class redirect {
     /**
@@ -67,10 +66,10 @@ function internalRedirect(redirectPath) {
 
     if (!redirectPath) {
         if (store.getState().state.config.enableSystemNavBar) {
-            browserHistory.push(`${rootPath}/systems`);
+            history.push(`${rootPath}/systems`);
             return;
         } else {
-            browserHistory.push(`${rootPath}/collections`);
+            history.push(`${rootPath}/collections`);
         }
         return;
     }
@@ -83,7 +82,7 @@ function internalRedirect(redirectPath) {
         redirectPath.startsWith(`${rootPath}/uploads`) ||
         redirectPath.startsWith(`${rootPath}/users`)
     ) {
-        browserHistory.push(redirectPath);
+        history.push(redirectPath);
         return;
     }
 
@@ -92,7 +91,7 @@ function internalRedirect(redirectPath) {
         return;
     }
 
-    browserHistory.push(`${rootPath}/collections`);
+    history.push(`${rootPath}/collections`);
     return;
 }
 

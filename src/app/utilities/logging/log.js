@@ -1,4 +1,4 @@
-import { browserHistory } from "react-router";
+import { baseHistory as history } from "../../config/store";
 import storage from "../storage";
 import websocket from "../websocket";
 
@@ -7,7 +7,7 @@ const client_loaded_at = new Date(Date.now()).toISOString();
 export default class log {
     static initialise() {
         this.event("App initialised");
-        browserHistory.listen(location => {
+        history.listen(location => {
             log.event("Route change", log.data({ ...location }));
         });
     }
