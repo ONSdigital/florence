@@ -22,7 +22,7 @@ export default class collectionDetailsErrorNotifications {
             case 403: {
                 const notification = {
                     type: "neutral",
-                    message: `You don't have permissions to access this collection so you've been redirect to the collections screen`,
+                    message: `You don't have permissions to access this collection so you've been redirected to the collections screen`,
                     autoDismiss: 5000,
                 };
                 notifications.add(notification);
