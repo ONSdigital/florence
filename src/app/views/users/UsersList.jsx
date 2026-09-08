@@ -54,7 +54,7 @@ const UsersList = props => {
                     </div>
                     {isAdmin && (
                         <div className="grid__col">
-                            <Link role="link" className="margin-left--1 font-size--18" href={`${rootPath}/users/create`}>
+                            <Link role="link" className="margin-left--1 font-size--18" to={`${rootPath}/users/create`}>
                                 Create new user
                             </Link>
                         </div>
