@@ -26,7 +26,7 @@ const USER_ACCESS_OPTIONS = [
 ];
 
 export const EditUser = props => {
-    const id = props.params.id;
+    const id = props.match.params.id;
 
     useEffect(() => {
         if (id) {

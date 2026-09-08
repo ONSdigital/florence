@@ -336,26 +336,32 @@ describe("Map state to props function", () => {
         },
     };
 
+    let ownProps = {
+        location: {
+            hash: "",
+        },
+    };
+
     it("maps the application state correctly", () => {
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when a bulletin page is active in the collection", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
+        ownProps.location.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
         expectedProps.activePageURI = "/economy/grossdomesticproduct/bulletins/gdp/july2017";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when the home page is active in the collection", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/";
+        ownProps.location.hash = "#/";
         expectedProps.activePageURI = "/";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when there is a trailing slash on the active page URI ", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/economy#";
+        ownProps.location.hash = "#/economy#";
         expectedProps.activePageURI = "/economy#";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 });
 

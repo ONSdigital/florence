@@ -109,7 +109,7 @@ export class CreateDatasetTaxonomyController extends Component {
 
     handleCreateClick = event => {
         event.preventDefault();
-        const datasetID = this.props.params.datasetID;
+        const datasetID = this.props.match.params.datasetID;
         const postBody = this.makeCreateDatasetPostBody();
         this.setState({ isPosting: true });
         return datasets

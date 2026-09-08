@@ -10,9 +10,11 @@ import url from "../../../utilities/url";
 import Select from "../../../components/Select";
 
 const propTypes = {
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired,
-    }),
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            datasetID: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
@@ -33,7 +35,7 @@ export class CreateEditionController extends Component {
     }
 
     UNSAFE_componentWillMount = () => {
-        const datasetID = this.props.params.datasetID;
+        const datasetID = this.props.match.params.datasetID;
         this.getListOfEditions();
         this.getDataset(datasetID);
     };
@@ -180,7 +182,7 @@ export class CreateEditionController extends Component {
     mapEditionsToState = recipeOutputs => {
         try {
             const recipe = recipeOutputs.find(recipeOutput => {
-                return recipeOutput.output_instances[0].dataset_id === this.props.params.datasetID;
+                return recipeOutput.output_instances[0].dataset_id === this.props.match.params.datasetID;
             });
             return this.filterEditionsListFromRecipe(recipe);
         } catch (error) {

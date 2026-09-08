@@ -41,7 +41,9 @@ describe("Collections", () => {
     const defaultProps = {
         collections: [],
         isLoading: false,
-        params: {},
+        match: {
+            params: {},
+        },
         rootPath: "test",
         search: "",
         user: admin,

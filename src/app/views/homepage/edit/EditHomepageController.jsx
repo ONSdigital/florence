@@ -67,7 +67,7 @@ export class EditHomepageController extends Component {
 
     setCollectionState = async () => {
         await collections
-            .getContentCollectionDetails(this.props.params.collectionID)
+            .getContentCollectionDetails(this.props.match.params.collectionID)
             .then(collection => {
                 const pageHasEvent = collection.hasOwnProperty("eventsByUri") && collection.eventsByUri.hasOwnProperty("/data.json");
                 if (pageHasEvent) {
@@ -103,7 +103,7 @@ export class EditHomepageController extends Component {
                 });
                 log.event(
                     "error retrieving the homepage's collection state",
-                    log.data({ collectionID: this.props.params.collectionID }),
+                    log.data({ collectionID: this.props.match.params.collectionID }),
                     log.error(error)
                 );
                 notifications.add({
@@ -116,7 +116,7 @@ export class EditHomepageController extends Component {
 
     getHomepageData = async () => {
         return homepage
-            .get(this.props.params.collectionID)
+            .get(this.props.match.params.collectionID)
             .then(homepageData => {
                 const mappedFeaturedContent = this.mapHighlightedContentToState(homepageData.featuredContent);
                 const mappedAroundONS = this.mapHighlightedContentToState(homepageData.aroundONS);
@@ -133,7 +133,7 @@ export class EditHomepageController extends Component {
                 return;
             })
             .catch(error => {
-                log.event("Error getting homepage data", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+                log.event("Error getting homepage data", log.data({ collectionID: this.props.match.params.collectionID }), log.error(error));
                 notifications.add({
                     type: "warning",
                     message: "An error occurred whilst trying to get homepage data.",
@@ -156,7 +156,11 @@ export class EditHomepageController extends Component {
                 };
             });
         } catch (error) {
-            log.event("Error mapping highlighted content to state", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            log.event(
+                "Error mapping highlighted content to state",
+                log.data({ collectionID: this.props.match.params.collectionID }),
+                log.error(error)
+            );
             throw new Error(`Error mapping highlighted content to state \n ${error}`);
         }
     };
@@ -313,7 +317,7 @@ export class EditHomepageController extends Component {
             serviceMessage = this.state.homepageData.serviceMessage;
             initialHomepageData = this.state.initialHomepageData;
             formattedHomepageData = { ...initialHomepageData, featuredContent, aroundONS, serviceMessage, emergencyBanner };
-            saveHomepageChangesError = await this.saveHomepageChanges(this.props.params.collectionID, formattedHomepageData);
+            saveHomepageChangesError = await this.saveHomepageChanges(this.props.match.params.collectionID, formattedHomepageData);
         }
 
         if (saveHomepageChangesError) {
@@ -322,11 +326,11 @@ export class EditHomepageController extends Component {
         }
 
         if (actions.isPreviewing) {
-            this.redirectTo(`/florence/collections/${this.props.params.collectionID}/homepage/preview`);
+            this.redirectTo(`/florence/collections/${this.props.match.params.collectionID}/homepage/preview`);
         }
 
         if (actions.isSubmittingForReview) {
-            const sendToReviewError = await this.sendToReview(this.props.params.collectionID, "/", formattedHomepageData);
+            const sendToReviewError = await this.sendToReview(this.props.match.params.collectionID, "/", formattedHomepageData);
             this.setState({ isSaving: false });
             notifications.add({
                 type: "positive",
@@ -338,7 +342,7 @@ export class EditHomepageController extends Component {
                 this.setState({ isSaving: false });
                 this.handleOnSaveError(`There was a problem saving your homepage changes`);
             } else {
-                this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
+                this.redirectTo(`/florence/collections/${this.props.match.params.collectionID}`);
             }
         }
     };
@@ -354,7 +358,11 @@ export class EditHomepageController extends Component {
                 };
             });
         } catch (error) {
-            log.event("Error mapping state to highlighted content", log.data({ collectionID: this.props.params.collectionID }), log.error(error));
+            log.event(
+                "Error mapping state to highlighted content",
+                log.data({ collectionID: this.props.match.params.collectionID }),
+                log.error(error)
+            );
             throw new Error(`Error mapping state to highlighted content \n ${error}`);
         }
     };
@@ -362,7 +370,7 @@ export class EditHomepageController extends Component {
     saveHomepageChanges = async (collectionID, homepageData) => {
         await collections.savePageContent(collectionID, "/", homepageData).catch(error => {
             log.event("Error saving homepage content", log.error(error));
-            console.error(`Error saving homepage content for '${this.props.params.collectionID}'`, error);
+            console.error(`Error saving homepage content for '${this.props.match.params.collectionID}'`, error);
             return error;
         });
     };
@@ -370,24 +378,24 @@ export class EditHomepageController extends Component {
     sendToReview = async (collectionID, homepageData) => {
         await collections.setContentStatusToComplete(collectionID, "/", homepageData).catch(error => {
             log.event("Error submitting for review", log.error(error));
-            console.error(`Error submitting for review '${this.props.params.collectionID}'`, error);
+            console.error(`Error submitting for review '${this.props.match.params.collectionID}'`, error);
             return error;
         });
     };
 
     handleMarkAsReviewed = async () => {
         try {
-            await collections.setPageContentAsReviewed(this.props.params.collectionID, "/");
-            this.redirectTo(`/florence/collections/${this.props.params.collectionID}`);
+            await collections.setPageContentAsReviewed(this.props.match.params.collectionID, "/");
+            this.redirectTo(`/florence/collections/${this.props.match.params.collectionID}`);
         } catch (error) {
             log.event(
                 "Error reviewing homepage content",
                 log.data({
-                    collectionID: this.props.params.collectionID,
+                    collectionID: this.props.match.params.collectionID,
                 }),
                 log.error(error)
             );
-            console.error(`Error reviewing content. Collection ID: '${this.props.params.collectionID}' for review. Error:`, error);
+            console.error(`Error reviewing content. Collection ID: '${this.props.match.params.collectionID}' for review. Error:`, error);
             return error;
         }
     };
@@ -408,7 +416,7 @@ export class EditHomepageController extends Component {
             },
             hasChangesMade: true,
         }));
-        this.redirectTo(`florence/collections/${this.props.params.collectionID}/homepage`);
+        this.redirectTo(`florence/collections/${this.props.match.params.collectionID}/homepage`);
     };
 
     redirectTo = route => {
@@ -446,7 +454,8 @@ export class EditHomepageController extends Component {
                     userEmail={this.props.userEmail}
                     lastEditedBy={this.state.lastEditedBy}
                 />
-                {this.props.params.homepageDataField && this.props.params.homepageDataFieldID ? this.renderModal() : null}
+
+                {this.props.match.params.homepageDataField && this.props.match.params.homepageDataFieldID && this.renderModal()}
             </div>
         );
     }

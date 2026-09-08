@@ -10,10 +10,12 @@ import url from "../../../utilities/url";
 import RadioList from "../../../components/radio-buttons/RadioList";
 
 const propTypes = {
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired,
-        editionID: PropTypes.string.isRequired,
-    }),
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            datasetID: PropTypes.string.isRequired,
+            editionID: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired,
     dispatch: PropTypes.func.isRequired,
 };
 
@@ -34,8 +36,8 @@ export class CreateVersionController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
+        const datasetID = this.props.match.params.datasetID;
+        const editionID = this.props.match.params.editionID;
 
         this.getDataset(datasetID);
         this.getEdition(datasetID, editionID);
@@ -212,7 +214,7 @@ export class CreateVersionController extends Component {
     handleCreateClick = () => {
         this.setState({ isSaving: true });
         datasets
-            .confirmEditionAndCreateVersion(this.state.selectedInstance, this.props.params.editionID)
+            .confirmEditionAndCreateVersion(this.state.selectedInstance, this.props.match.params.editionID)
             .then(response => {
                 this.setState({ isSaving: false });
                 const versionID = response.version;

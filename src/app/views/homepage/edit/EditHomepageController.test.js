@@ -90,10 +90,12 @@ const defaultProps = {
     dispatch: event => {
         dispatchedActions.push(event);
     },
-    params: {
-        collectionID: "12345",
-        homepageDataField: "",
-        homepageDataFieldID: "",
+    match: {
+        params: {
+            collectionID: "12345",
+            homepageDataField: "",
+            homepageDataFieldID: "",
+        },
     },
     userEmail: "florence@test.com",
     rootPath: "/florence",

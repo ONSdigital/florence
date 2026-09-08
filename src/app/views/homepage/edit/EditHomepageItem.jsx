@@ -15,10 +15,13 @@ import { connect } from "react-redux";
 import http from "../../../utilities/http";
 
 const propTypes = {
-    params: PropTypes.shape({
-        homepageDataField: PropTypes.string.isRequired,
-        collectionID: PropTypes.string.isRequired,
-    }),
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            homepageDataField: PropTypes.string.isRequired,
+            collectionID: PropTypes.string.isRequired,
+        }),
+    }).isRequired,
+    enableNewUpload: PropTypes.bool.isRequired,
     data: PropTypes.shape({
         id: PropTypes.number,
         description: PropTypes.string,
@@ -79,7 +82,7 @@ export class EditHomepageItem extends Component {
                 isPublishable: true,
                 licence: "Open Government Licence v3.0",
                 licenceUrl: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
-                collectionId: this.props.params.collectionID,
+                collectionId: this.props.match.params.collectionID,
                 path: this.state.uploadFilePathPrefix,
             };
             bindGenericFileUploadInput(FILE_UPLOAD_ID, resumableOptions, this.updateUploadState, this.onFileUploadSuccess, this.onFileUploadError);
@@ -139,7 +142,7 @@ export class EditHomepageItem extends Component {
     handleSuccessClick = async () => {
         this.props.handleSuccessClick(
             { id: this.state.id, description: this.state.description, uri: this.state.uri, title: this.state.title, image: this.state.image },
-            this.props.params.homepageDataField
+            this.props.match.params.homepageDataField
         );
     };
 
@@ -153,7 +156,7 @@ export class EditHomepageItem extends Component {
         this.setState({ isCreatingImageRecord: true });
         const imageProps = {
             state: "created",
-            collection_id: this.props.params.collectionID,
+            collection_id: this.props.match.params.collectionID,
             type: "eye-candy",
         };
         return image
@@ -216,7 +219,7 @@ export class EditHomepageItem extends Component {
                 this.bindInput();
                 log.event(
                     "error adding upload to image record",
-                    log.data({ collection_id: this.props.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
+                    log.data({ collection_id: this.props.match.params.collectionID, image_id: imageID, image_upload_path: imageS3URL }),
                     log.error(error)
                 );
                 console.error("error adding upload to image record:", error);
@@ -369,7 +372,7 @@ export class EditHomepageItem extends Component {
     };
 
     renderModalBody = isDisabled => {
-        switch (this.props.params.homepageDataField) {
+        switch (this.props.match.params.homepageDataField) {
             case "featuredContent":
             case "aroundONS": {
                 return (

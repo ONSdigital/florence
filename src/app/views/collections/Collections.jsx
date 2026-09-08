@@ -43,7 +43,7 @@ const Collections = props => {
                     <Search />
                     <DoubleSelectableBox
                         items={getNotCompletedCollections()}
-                        activeItemID={props.params.collectionID}
+                        activeItemID={props.match.params.collectionID}
                         isUpdating={isLoading}
                         search={props.search}
                         headings={["Name", "Publish date"]}
@@ -57,20 +57,20 @@ const Collections = props => {
                     </div>
                 )}
             </div>
-            {props.params.collectionID && <CollectionDetailsController collectionID={props.params.collectionID} routes={props.routes} />}
+            {props.match.params.collectionID && (
+                <CollectionDetailsController collectionID={props.match.params.collectionID} match={props.match} location={props.location} />
+            )}
         </>
     );
 };
 
 Collections.propTypes = {
-    activeCollection: PropTypes.object,
     collections: PropTypes.array.isRequired,
     dispatch: PropTypes.func.isRequired,
     isLoading: PropTypes.bool.isRequired,
     loadCollections: PropTypes.func.isRequired,
-    params: PropTypes.shape({ collectionID: PropTypes.string }).isRequired,
+    match: PropTypes.shape({ params: PropTypes.shape({ collectionID: PropTypes.string }) }).isRequired,
     rootPath: PropTypes.string.isRequired,
-    routes: PropTypes.arrayOf(PropTypes.object).isRequired,
     search: PropTypes.string,
     updateWorkingOn: PropTypes.func.isRequired,
     user: PropTypes.shape({ userType: PropTypes.string.isRequired }).isRequired,

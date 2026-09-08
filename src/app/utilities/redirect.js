@@ -40,21 +40,24 @@ export default class redirect {
      *
      * @returns {string} redirect path
      */
-    static getPath(queryStr) {
-        if (!queryStr) {
+    static getPath(queryParams) {
+        if (!queryParams) {
             return "";
         }
 
-        if (queryStr.redirect && queryStr.next) {
+        const redirect = queryParams.get("redirect");
+        const next = queryParams.get("next");
+
+        if (redirect && next) {
             return "";
         }
 
-        if (queryStr.redirect) {
-            return queryStr.redirect;
+        if (redirect) {
+            return redirect;
         }
 
-        if (queryStr.next) {
-            return queryStr.next;
+        if (next) {
+            return next;
         }
 
         return "";
@@ -96,6 +99,6 @@ function internalRedirect(redirectPath) {
 }
 
 function externalRedirect(redirectPath) {
-    window.location.pathname = redirectPath;
+    window.location.href = redirectPath;
     return;
 }

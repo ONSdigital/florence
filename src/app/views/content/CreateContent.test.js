@@ -2,7 +2,7 @@ import React from "react";
 import { CreateContent } from "./CreateContent";
 import { mount } from "enzyme";
 import url from "../../utilities/url";
-import { render, screen } from "../../utilities/tests/test-utils";
+import { render, screen, WrapperComponent } from "../../utilities/tests/test-utils";
 
 let dispatchedActions = [];
 console.error = () => {};
@@ -42,8 +42,10 @@ const defaultProps = {
         dispatchedActions.push(event);
     },
     rootPath: "/florence",
-    params: {
-        collectionID: "test-collection",
+    match: {
+        params: {
+            collectionID: "test-collection",
+        },
     },
     location: {
         pathname: "florence/collections/12345/datasets",
@@ -51,7 +53,11 @@ const defaultProps = {
 };
 
 const mountComponent = () => {
-    return mount(<CreateContent {...defaultProps} />);
+    return mount(
+        <WrapperComponent>
+            <CreateContent {...defaultProps} />
+        </WrapperComponent>
+    );
 };
 
 let component;
@@ -61,15 +67,20 @@ beforeEach(() => {
 });
 
 it("handle search returns correct results", () => {
-    component.setState({ contentTypes });
-    component.instance().handleSearchInput({ target: { value: "dataset" } });
-    expect(component.state().filteredContentTypes[0]).toBe(contentTypes[1]);
-    component.instance().handleSearchInput({ target: { value: "homepage" } });
-    expect(component.state().filteredContentTypes[0]).toBe(contentTypes[2]);
+    const createContent = component.find(CreateContent);
+    createContent.setState({ contentTypes });
+    createContent.instance().handleSearchInput({ target: { value: "dataset" } });
+    expect(createContent.state().filteredContentTypes[0]).toBe(contentTypes[1]);
+    createContent.instance().handleSearchInput({ target: { value: "homepage" } });
+    expect(createContent.state().filteredContentTypes[0]).toBe(contentTypes[2]);
 });
 
 it("shows enabled modules", () => {
-    render(<CreateContent {...defaultProps} />);
+    render(
+        <WrapperComponent>
+            <CreateContent {...defaultProps} />
+        </WrapperComponent>
+    );
     expect(screen.getByText("Old workspace")).toBeInTheDocument();
     expect(screen.getByText("Filterable dataset")).toBeInTheDocument();
     expect(screen.getByText("Homepage")).toBeInTheDocument();

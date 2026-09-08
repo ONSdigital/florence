@@ -125,9 +125,9 @@ export class CantabularMetadataController extends Component {
     }
 
     async UNSAFE_componentWillMount() {
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
-        const versionID = this.props.params.versionID;
+        const datasetID = this.props.match.params.datasetID;
+        const editionID = this.props.match.params.editionID;
+        const versionID = this.props.match.params.versionID;
         await this.getTopics();
         await this.getMetadata(datasetID, editionID, versionID);
     }
@@ -164,9 +164,9 @@ export class CantabularMetadataController extends Component {
             log.event(
                 "get topics: error retrieving topic list from dp-topic-api service",
                 log.data({
-                    datasetID: this.props.params.datasetID,
-                    editionID: this.props.params.editionID,
-                    versionID: this.props.params.versionID,
+                    datasetID: this.props.match.params.datasetID,
+                    editionID: this.props.match.params.editionID,
+                    versionID: this.props.match.params.versionID,
                 }),
                 log.error()
             );
@@ -548,7 +548,7 @@ export class CantabularMetadataController extends Component {
         ) {
             this.checkCantabularMetadataUpdate(nonCantDatasetMetadata, cantabularMetadata);
         }
-        if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
+        if (mapped.state === "associated" && mapped.collection !== this.props.match.params.collectionID) {
             this.setState({ disableScreen: true });
             notifications.add({
                 type: "neutral",
@@ -871,7 +871,7 @@ export class CantabularMetadataController extends Component {
     mapMetadataToPutBody = (isSubmittingForReview, isMarkingAsReviewed) => {
         return {
             dataset: {
-                id: this.props.params.datasetID,
+                id: this.props.match.params.datasetID,
                 title: this.state.metadata.title,
                 description: this.state.metadata.summary,
                 keywords: this.state.metadata.keywords ? this.state.metadata.keywords.split(", ") : [],
@@ -910,7 +910,7 @@ export class CantabularMetadataController extends Component {
                 dimensions: [...this.state.metadata.dimensions],
             },
             dimensions: [...this.state.metadata.dimensions],
-            collection_id: this.props.params.collectionID,
+            collection_id: this.props.match.params.collectionID,
             collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
             version_etag: this.state.versionEtag,
         };
@@ -932,9 +932,9 @@ export class CantabularMetadataController extends Component {
     saveDatasetMetadata = async (isSubmittingForReview, isMarkingAsReviewed) => {
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
         return this.saveMetadata(
-            this.props.params.datasetID,
-            this.props.params.editionID,
-            this.props.params.versionID,
+            this.props.match.params.datasetID,
+            this.props.match.params.editionID,
+            this.props.match.params.versionID,
             body,
             isSubmittingForReview,
             isMarkingAsReviewed
@@ -958,7 +958,7 @@ export class CantabularMetadataController extends Component {
                     });
 
                     if (isMarkingAsReviewed || isSubmittingForReview) {
-                        this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                        this.props.dispatch(push("/florence/collections/" + this.props.match.params.collectionID));
                     }
                 })
                 .catch(error => {
@@ -974,9 +974,9 @@ export class CantabularMetadataController extends Component {
         } else {
             // always retrieve the metadata before the putMetadata endpoint is called to make sure that the latest versionEtag is passed down in the payload
             const datasetMetadata = await datasets.getEditMetadata(
-                this.props.params.datasetID,
-                this.props.params.editionID,
-                this.props.params.versionID
+                this.props.match.params.datasetID,
+                this.props.match.params.editionID,
+                this.props.match.params.versionID
             );
             body.version_etag = datasetMetadata.version_etag;
             return datasets
@@ -993,7 +993,7 @@ export class CantabularMetadataController extends Component {
                     });
 
                     if (isMarkingAsReviewed || isSubmittingForReview) {
-                        this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                        this.props.dispatch(push("/florence/collections/" + this.props.match.params.collectionID));
                     }
                 })
                 .catch(error => {
@@ -1012,15 +1012,19 @@ export class CantabularMetadataController extends Component {
     retrieveDatasetMetadata = async () => {
         try {
             const datasetMetadata = await datasets.getEditMetadata(
-                this.props.params.datasetID,
-                this.props.params.editionID,
-                this.props.params.versionID
+                this.props.match.params.datasetID,
+                this.props.match.params.editionID,
+                this.props.match.params.versionID
             );
             this.mapMetadataToState(datasetMetadata);
         } catch (error) {
             log.event(
                 "get metadata: error retrieving saved dataset metadata from controller",
-                log.data({ datasetID: this.props.params.datasetID, editionID: this.props.params.editionID, versionID: this.props.params.versionID }),
+                log.data({
+                    datasetID: this.props.match.params.datasetID,
+                    editionID: this.props.match.params.editionID,
+                    versionID: this.props.match.params.versionID,
+                }),
                 log.error()
             );
             notifications.add({
@@ -1108,7 +1112,7 @@ export class CantabularMetadataController extends Component {
                 message: `Dataset selection cancelled`,
                 isDismissable: true,
             });
-            this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+            this.props.dispatch(push("/florence/collections/" + this.props.match.params.collectionID));
         }
     };
 
@@ -1136,7 +1140,7 @@ export class CantabularMetadataController extends Component {
                 highlightCantabularMetadataChanges: true,
             },
         });
-        this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
+        this.getMetadata(this.props.match.params.datasetID, this.props.match.params.editionID, this.props.match.params.versionID);
     };
 
     handleRevertChangesButton = () => {
@@ -1150,13 +1154,13 @@ export class CantabularMetadataController extends Component {
                 highlightCantabularMetadataChanges: false,
             },
         });
-        this.getMetadata(this.props.params.datasetID, this.props.params.editionID, this.props.params.versionID);
+        this.getMetadata(this.props.match.params.datasetID, this.props.match.params.editionID, this.props.match.params.versionID);
     };
 
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
-                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+                data: this.state.metadata[this.props.match.params.metadataField][this.props.match.params.metadataItemID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
                 handleCancelClick: this.handleSimpleEditableListEditCancel,
             });
@@ -1233,7 +1237,7 @@ export class CantabularMetadataController extends Component {
                     handleRevertChangesButton={this.handleRevertChangesButton}
                 />
 
-                {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
+                {this.props.match.params.metadataField && this.props.match.params.metadataItemID ? this.renderModal() : null}
             </div>
         );
     }

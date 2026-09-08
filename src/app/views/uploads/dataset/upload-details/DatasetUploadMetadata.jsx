@@ -46,8 +46,8 @@ class DatasetUploadMetadata extends Component {
             promises[0] = recipes.getAll();
         }
 
-        if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.params.jobID) {
-            promises[1] = datasetImport.get(this.props.params.jobID);
+        if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.match.params.jobID) {
+            promises[1] = datasetImport.get(this.props.match.params.jobID);
         }
 
         Promise.all(promises)
@@ -55,7 +55,7 @@ class DatasetUploadMetadata extends Component {
                 if (this.props.recipes.length === 0) {
                     this.props.dispatch(updateAllRecipes(responses[0].items));
                 }
-                if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.params.jobID) {
+                if (isEmptyObject(this.props.job) || this.props.job.id !== this.props.match.params.jobID) {
                     this.props.dispatch(updateActiveJob(responses[1]));
                 }
                 this.mapRecipeDetailsToState();
@@ -153,7 +153,7 @@ class DatasetUploadMetadata extends Component {
             .updateInstanceEdition(this.props.job.links.instances[0].id, this.state.selectedEdition)
             .then(() => {
                 return datasetImport
-                    .updateStatus(this.props.params.jobID, "submitted", this.state.isCantabular ? this.props.job.links : null)
+                    .updateStatus(this.props.match.params.jobID, "submitted", this.state.isCantabular ? this.props.job.links : null)
                     .then(() => {
                         const activeDataset = {
                             ...this.state.activeDataset,
@@ -181,7 +181,7 @@ class DatasetUploadMetadata extends Component {
                     case 404: {
                         const notification = {
                             type: "warning",
-                            message: `The job '${this.props.params.jobID}' was not recognised. Please check that it hasn't been submitted or deleted by someone else.`,
+                            message: `The job '${this.props.match.params.jobID}' was not recognised. Please check that it hasn't been submitted or deleted by someone else.`,
                             isDismissable: true,
                         };
                         notifications.add(notification);

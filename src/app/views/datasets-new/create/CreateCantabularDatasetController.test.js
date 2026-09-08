@@ -41,9 +41,11 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/12345/datasets/create",
     },
-    params: {
-        datasetID: "test-id",
-        recipeID: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
+    match: {
+        params: {
+            datasetID: "test-id",
+            recipeID: "2943f3c5-c3f1-4a9a-aa6e-14d21c33524c",
+        },
     },
 };
 

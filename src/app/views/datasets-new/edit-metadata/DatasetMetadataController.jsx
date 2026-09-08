@@ -76,9 +76,9 @@ export class DatasetMetadataController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
-        const versionID = this.props.params.versionID;
+        const datasetID = this.props.match.params.datasetID;
+        const editionID = this.props.match.params.editionID;
+        const versionID = this.props.match.params.versionID;
         this.getMetadata(datasetID, editionID, versionID);
     }
 
@@ -156,7 +156,7 @@ export class DatasetMetadataController extends Component {
 
     handleGETSuccess = response => {
         const mapped = this.mapMetadataToState(response);
-        if (mapped.state === "associated" && mapped.collection !== this.props.params.collectionID) {
+        if (mapped.state === "associated" && mapped.collection !== this.props.match.params.collectionID) {
             this.setState({ disableScreen: true });
             notifications.add({
                 type: "neutral",
@@ -455,7 +455,7 @@ export class DatasetMetadataController extends Component {
     mapMetadataToPutBody = (isSubmittingForReview, isMarkingAsReviewed) => {
         return {
             dataset: {
-                id: this.props.params.datasetID,
+                id: this.props.match.params.datasetID,
                 title: this.state.metadata.title,
                 description: this.state.metadata.summary,
                 keywords: this.state.metadata.keywords ? this.state.metadata.keywords.split(", ") : [],
@@ -486,7 +486,7 @@ export class DatasetMetadataController extends Component {
                 latest_changes: this.state.metadata.latestChanges,
             },
             dimensions: [...this.state.metadata.dimensions],
-            collection_id: this.props.params.collectionID,
+            collection_id: this.props.match.params.collectionID,
             collection_state: this.mapCollectionState(isSubmittingForReview, isMarkingAsReviewed),
         };
     };
@@ -520,7 +520,7 @@ export class DatasetMetadataController extends Component {
                 });
 
                 if (isMarkingAsReviewed || isSubmittingForReview) {
-                    this.props.dispatch(push("/florence/collections/" + this.props.params.collectionID));
+                    this.props.dispatch(push("/florence/collections/" + this.props.match.params.collectionID));
                 }
             })
             .catch(error => {
@@ -550,9 +550,9 @@ export class DatasetMetadataController extends Component {
             return;
         }
 
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
-        const versionID = this.props.params.versionID;
+        const datasetID = this.props.match.params.datasetID;
+        const editionID = this.props.match.params.editionID;
+        const versionID = this.props.match.params.versionID;
         const body = this.mapMetadataToPutBody(isSubmittingForReview, isMarkingAsReviewed);
 
         this.saveMetadata(datasetID, editionID, versionID, body, isSubmittingForReview, isMarkingAsReviewed);
@@ -573,7 +573,7 @@ export class DatasetMetadataController extends Component {
     renderModal = () => {
         const modal = React.Children.map(this.props.children, child => {
             return React.cloneElement(child, {
-                data: this.state.metadata[this.props.params.metadataField][this.props.params.metadataItemID],
+                data: this.state.metadata[this.props.match.params.metadataField][this.props.match.params.metadataItemID],
                 handleSuccessClick: this.handleSimpleEditableListEditSuccess,
                 handleCancelClick: this.handleSimpleEditableListEditCancel,
             });
@@ -606,7 +606,7 @@ export class DatasetMetadataController extends Component {
                     handleMarkAsReviewedClick={this.handleMarkAsReviewedClick}
                 />
 
-                {this.props.params.metadataField && this.props.params.metadataItemID ? this.renderModal() : null}
+                {this.props.match.params.metadataField && this.props.match.params.metadataItemID ? this.renderModal() : null}
             </div>
         );
     }

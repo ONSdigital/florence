@@ -20,8 +20,12 @@ const propTypes = {
         id: PropTypes.string.isRequired,
         name: PropTypes.string,
     }),
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            collectionID: PropTypes.string.isRequired,
+        }).isRequired,
+    }),
     rootPath: PropTypes.string.isRequired,
-    routeParams: PropTypes.object.isRequired,
     dispatch: PropTypes.func.isRequired,
     previewLanguage: PropTypes.oneOf(["en", "cy"]).isRequired,
 };
@@ -32,7 +36,7 @@ export class PreviewController extends Component {
     }
 
     UNSAFE_componentWillMount() {
-        const collectionID = this.props.routeParams.collectionID;
+        const collectionID = this.props.match.params.collectionID;
         this.fetchCollectionAndPages(collectionID);
 
         if (!this.props.workingOn || !this.props.workingOn.id) {
@@ -118,7 +122,7 @@ export class PreviewController extends Component {
 
     getVisualisationFiles = visualisation => {
         return content
-            .get(visualisation.uri, this.props.routeParams.collectionID)
+            .get(visualisation.uri, this.props.match.params.collectionID)
             .then(response => {
                 visualisation.files = response.filenames;
                 return visualisation;

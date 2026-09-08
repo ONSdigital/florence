@@ -14,7 +14,12 @@ const defaultProps = {
     addGroupsToUser: jest.fn(),
     loadUser: jest.fn(),
     loadGroups: jest.fn(),
-    router: { setRouteLeaveHook: jest.fn() },
+    match: {
+        params: {
+            id: "test.user-1498@ons.gov.uk",
+        },
+    },
+    rootPath: "/florence",
 };
 const props = {
     ...defaultProps,

@@ -13,8 +13,9 @@ import log, { eventTypes } from "../../utilities/log";
 
 const propTypes = {
     location: PropTypes.shape({
+        hash: PropTypes.string.isRequired,
         pathname: PropTypes.string.isRequired,
-        query: PropTypes.object.isRequired,
+        search: PropTypes.string.isRequired,
     }).isRequired,
     page: PropTypes.string,
     dispatch: PropTypes.func.isRequired,
@@ -29,23 +30,19 @@ class Logs extends Component {
             logs: null,
             logCount: null,
             pageSize: 10,
-            logsTimestamp: parseInt(this.props.location.query.timestamp) || new Date().getTime(),
+            logsTimestamp: parseInt(new URLSearchParams(this.props.location.search).get("timestamp")) || new Date().getTime(),
         };
     }
 
     UNSAFE_componentWillMount() {
         // Add a timestamp to the URL so we know what time/date we're getting logs from
         // which prevents logs being added as when go through pages
-        if (!this.props.location.query.timestamp) {
-            const location = {
-                ...this.props.location,
-                query: {
-                    ...this.props.location.query,
-                    timestamp: this.state.logsTimestamp,
-                },
-            };
-            this.props.dispatch(push(location));
-        }
+        this.props.dispatch(
+            push({
+                pathname: this.props.location.pathname,
+                search: `?page=${this.props.page || "1"}&timestamp=${this.state.logsTimestamp}`,
+            })
+        );
 
         this.setState({ isFetchingLogs: true });
         log.length().then(count => {
@@ -196,9 +193,9 @@ class Logs extends Component {
 
 Logs.propTypes = propTypes;
 
-function mapStateToProps(state) {
+function mapStateToProps(state, ownProps) {
     return {
-        page: state.routing.locationBeforeTransitions.query.page,
+        page: new URLSearchParams(ownProps.location.search).get("page"),
     };
 }
 

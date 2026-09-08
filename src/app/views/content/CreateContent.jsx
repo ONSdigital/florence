@@ -24,7 +24,7 @@ export class CreateContent extends Component {
                     title: "Old workspace",
                     id: "workspace",
                     details: ["Create/edit content via the old workspace"],
-                    url: `${url.resolve("../../../")}/workspace?collection=${this.props.params.collectionID}`,
+                    url: `${url.resolve("../../../")}/workspace?collection=${this.props.match.params.collectionID}`,
                     externalLink: true,
                     enabled: true,
                 },

@@ -50,7 +50,10 @@ export class LoginController extends Component {
             return;
         }
 
-        const { redirect, next } = location.query || {};
+        const queryParams = new URLSearchParams(location.search);
+        const redirect = queryParams.get("redirect");
+        const next = queryParams.get("next");
+
         const redirectPath = redirect && next ? defaultPath : redirect || next || defaultPath;
 
         dispatch(push(redirectPath));
@@ -181,7 +184,9 @@ export class LoginController extends Component {
             if (permissions) {
                 setAuthState(permissions);
                 user.setUserState(permissions);
-                const redirectPath = redirect.getPath(this.props.location.query);
+                const queryParams = new URLSearchParams(this.props.location.search);
+
+                const redirectPath = redirect.getPath(queryParams);
                 redirect.handle(redirectPath);
             } else {
                 notifications.add({
@@ -202,7 +207,8 @@ export class LoginController extends Component {
                 .then(userType => {
                     setAuthState(userType);
                     user.setUserState(userType);
-                    const redirectPath = redirect.getPath(this.props.location.query);
+                    const queryParams = new URLSearchParams(this.props.location.search);
+                    const redirectPath = redirect.getPath(queryParams);
                     redirect.handle(redirectPath);
                 })
                 .catch(error => {

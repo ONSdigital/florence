@@ -97,11 +97,14 @@ export class CollectionDetailsController extends Component {
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
+        const currentRoute = nextProps.match?.path || "";
+        const previousRoute = this.props.match?.path || "";
+
         // Open and close edit collection modal
-        if (nextProps.routes[nextProps.routes.length - 1].path === "edit") {
+        if (currentRoute.endsWith("edit")) {
             this.setState({ isEditingCollection: true });
         }
-        if (this.props.routes[this.props.routes.length - 1].path === "edit" && nextProps.routes[nextProps.routes.length - 1].path !== "edit") {
+        if (previousRoute.endsWith("edit") && !currentRoute.endsWith("edit")) {
             this.setState({ isEditingCollection: false });
         }
 
@@ -656,13 +659,13 @@ export class CollectionDetailsController extends Component {
 
 CollectionDetailsController.propTypes = propTypes;
 
-export function mapStateToProps(state) {
+export function mapStateToProps(state, ownProps) {
     return {
         user: state.user,
         collections: getCollections(state.state),
         activeCollection: state.state.collections.active,
         rootPath: state.state.rootPath,
-        activePageURI: state.routing.locationBeforeTransitions.hash.replace("#", ""),
+        activePageURI: ownProps.location?.hash?.replace("#", "") || "",
         isUpdating: getIsUpdatingCollection(state.state),
         enableCantabularJourney: state.state.config.enableCantabularJourney,
         groups: getGroups(state.state),

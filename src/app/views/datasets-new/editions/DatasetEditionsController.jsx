@@ -11,8 +11,10 @@ import date from "../../../utilities/date";
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 
 const propTypes = {
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            datasetID: PropTypes.string.isRequired,
+        }).isRequired,
     }).isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
@@ -38,7 +40,7 @@ export class DatasetEditionsController extends Component {
     }
 
     UNSAFE_componentWillMount = () => {
-        const datasetID = this.props.params.datasetID;
+        const datasetID = this.props.match.params.datasetID;
         this.getAllEditions(datasetID);
     };
 

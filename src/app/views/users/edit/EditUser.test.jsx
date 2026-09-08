@@ -12,7 +12,9 @@ const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 
 const props = {
     loading: false,
-    params: { id: "test.user-1498@ons.gov.uk" },
+    match: {
+        params: { id: "test.user-1498@ons.gov.uk" },
+    },
     rootPath: "test",
     user: user,
     userGroups: [],

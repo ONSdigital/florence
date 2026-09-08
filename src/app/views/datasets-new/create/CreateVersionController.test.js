@@ -170,9 +170,11 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/12345/datasets/6789",
     },
-    params: {
-        datasetID: "test-dataset-1",
-        editionID: "test-edition-1",
+    match: {
+        params: {
+            datasetID: "test-dataset-1",
+            editionID: "test-edition-1",
+        },
     },
 };
 

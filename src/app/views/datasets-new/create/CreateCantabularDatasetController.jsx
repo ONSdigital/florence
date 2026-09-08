@@ -39,7 +39,7 @@ export class CreateCantabularDatasetController extends Component {
 
     setStateFromParameters = () => {
         this.setState({
-            datasetID: this.props.params.datasetID,
+            datasetID: this.props.match.params.datasetID,
         });
     };
 
@@ -51,7 +51,7 @@ export class CreateCantabularDatasetController extends Component {
     };
 
     getRecipe = () => {
-        const recipeId = this.props.params.recipeID;
+        const recipeId = this.props.match.params.recipeID;
         this.setState({ isGettingRecipe: true });
         return recipes
             .get(recipeId)

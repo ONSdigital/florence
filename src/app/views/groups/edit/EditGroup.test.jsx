@@ -45,7 +45,9 @@ const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const props = {
     group: group,
     loading: false,
-    params: { id: "0", router: setRouteLeaveHook },
+    match: {
+        params: { id: "0" },
+    },
     rootPath: "test",
     router: { setRouteLeaveHook: jest.fn() },
     loadingUsers: false,

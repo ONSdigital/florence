@@ -14,7 +14,7 @@ import UsersTable from "../../../components/table";
 import Magnifier from "../../../icons/Magnifier";
 
 const EditGroup = props => {
-    const id = props.params.id;
+    const id = props.match.params.id;
 
     useEffect(() => {
         if (id) {

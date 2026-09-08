@@ -8,9 +8,11 @@ import Input from "../../../components/Input";
 import Select from "../../../components/Select";
 
 const propTypes = {
-    params: PropTypes.shape({
-        metadataField: PropTypes.string.isRequired,
-    }),
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            metadataField: PropTypes.string.isRequired,
+        }).isRequired,
+    }).isRequired,
     data: PropTypes.shape({
         id: PropTypes.string,
         type: PropTypes.string,
@@ -40,7 +42,7 @@ export default class EditMetadatItem extends Component {
     }
 
     handleSuccessClick = () => {
-        this.props.handleSuccessClick(this.state, this.props.params.metadataField);
+        this.props.handleSuccessClick(this.state, this.props.match.params.metadataField);
     };
 
     handleInputChange = event => {
@@ -63,7 +65,7 @@ export default class EditMetadatItem extends Component {
     };
 
     renderModalBody = () => {
-        switch (this.props.params.metadataField) {
+        switch (this.props.match.params.metadataField) {
             case "notices": {
                 return (
                     <div>
