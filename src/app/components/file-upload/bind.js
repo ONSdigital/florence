@@ -1,6 +1,7 @@
 import { API_PROXY } from "../../utilities/api-clients/constants";
 import http from "../../utilities/http";
 
+// ResumableJS is loaded in the browser, not from npm
 import Resumable from "resumeablejs";
 
 const FIVE_MEGABYTES = 5 * 1024 * 1024;
