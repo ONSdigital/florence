@@ -1,5 +1,5 @@
 import { connect } from "react-redux";
-import { fetchGroupRequest, updateGroupRequest, updateGroupMembers } from "../../../config/groups/thunks";
+import { fetchGroupRequest, fetchGroupMembersRequest, updateGroupRequest, updateGroupMembersRequest } from "../../../config/groups/thunks";
 import { getUsersRequest } from "../../../config/thunks";
 import {
     getGroup,
@@ -9,7 +9,6 @@ import {
     getGroupMembers,
     getGroupMembersLoading,
 } from "../../../config/selectors";
-import { fetchGroupMembersRequest, updateGroupMembersRequest } from "../../../config/groups/thunks";
 import EditGroup from "./EditGroup";
 
 function mapStateToProps(state) {
