@@ -136,7 +136,6 @@
     "react-router-dom": "^5.3.4",
     "react-select": "^5.10.1",
     "react-table": "^7.7.0",
-    "react-transition-group": "^2.9.0",
     "redux": "^4.1.2",
     "redux-auth-wrapper": "^3.0.0",
     "redux-devtools-extension": "^2.13.7",
