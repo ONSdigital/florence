@@ -271,10 +271,7 @@ const Index = () => {
                                 <Route path={`${rootPath}/workspace`} />
 
                                 {allowedExternalRedirects.map(redirect => (
-                                    <React.Fragment key={redirect}>
-                                        <Route path={redirect} component={RedirectView} />
-                                        <Route path={`${redirect}/*`} component={RedirectView} />
-                                    </React.Fragment>
+                                    <Route key={redirect} path={redirect} component={RedirectView} />
                                 ))}
 
                                 <Route component={NotFound} />
