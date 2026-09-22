@@ -373,12 +373,6 @@ describe("Automated collection behaviour", () => {
         expect(createButton.prop("disabled")).toBe(true);
     });
 
-    it("disables restore page button", () => {
-        const restoreButton = component.find("button.btn.btn--margin-left");
-        expect(restoreButton.exists()).toBe(true);
-        expect(restoreButton.prop("disabled")).toBe(true);
-    });
-
     it("does not render edit link", () => {
         expect(component.find('Link[to*="/edit"]').exists()).toBe(false);
     });

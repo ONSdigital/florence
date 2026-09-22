@@ -1,33 +1,15 @@
 import React from "react";
-import PropTypes from "prop-types";
 import { mount } from "enzyme";
 import Systems from "./Systems";
-
-const routerContext = {
-    router: {
-        createHref: jest.fn(),
-        push: jest.fn(),
-        replace: jest.fn(),
-        go: jest.fn(),
-        goBack: jest.fn(),
-        goForward: jest.fn(),
-        setRouteLeaveHook: jest.fn(),
-        isActive: jest.fn(),
-        location: {},
-    },
-};
-
-const mountWithRouter = node =>
-    mount(node, {
-        context: routerContext,
-        childContextTypes: {
-            router: PropTypes.object,
-        },
-    });
+import { WrapperComponent } from "../../utilities/tests/test-utils";
 
 describe("Systems", () => {
     describe("when page loads", () => {
-        const component = mountWithRouter(<Systems />);
+        const component = mount(
+            <WrapperComponent>
+                <Systems />
+            </WrapperComponent>
+        );
 
         it("shows the page heading and intro", () => {
             expect(component.find("h1").text()).toBe("Dissemination services");

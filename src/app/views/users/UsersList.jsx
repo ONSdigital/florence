@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import PropTypes from "prop-types";
 import { useInput } from "../../hooks/useInput";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import filter from "lodash/filter";
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import Magnifier from "../../icons/Magnifier";
@@ -54,7 +54,7 @@ const UsersList = props => {
                     </div>
                     {isAdmin && (
                         <div className="grid__col">
-                            <Link role="link" className="margin-left--1 font-size--18" href={`${rootPath}/users/create`}>
+                            <Link role="link" className="margin-left--1 font-size--18" to={`${rootPath}/users/create`}>
                                 Create new user
                             </Link>
                         </div>

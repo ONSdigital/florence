@@ -10,7 +10,7 @@ export const mapStateToProps = state => ({
     loading: getUserLoading(state.state),
     loadingGroups: getGroupsLoading(state.state),
     groups: getGroups(state.state),
-    adding: getUserAddingToGroups(state.state),
+    isAdding: getUserAddingToGroups(state.state),
 });
 
 export const mapDispatchToProps = dispatch => ({

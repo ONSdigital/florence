@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import { API_PROXY } from "../../../../utilities/api-clients/constants";
@@ -55,7 +55,7 @@ class DatasetUploadController extends Component {
             this.repeatUploadStatusCheck();
         } else {
             const job = this.props.jobs.find(job => {
-                return job.id === this.props.params.jobID;
+                return job.id === this.props.match.params.jobID;
             });
             const recipe = this.props.recipes.find(dataset => {
                 return dataset.id === job.recipe;
@@ -133,7 +133,7 @@ class DatasetUploadController extends Component {
     getUploadStatus = () => {
         const APIResponses = {};
         datasetImport
-            .get(this.props.params.jobID)
+            .get(this.props.match.params.jobID)
             .then(job => {
                 APIResponses.job = job;
                 return recipes.get(job.recipe);
@@ -153,7 +153,7 @@ class DatasetUploadController extends Component {
                     case 404: {
                         const notification = {
                             type: "neutral",
-                            message: `The job '${this.props.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
+                            message: `The job '${this.props.match.params.jobID}' was not recognised, so you've been redirected to the dataset upload screen.`,
                             isDismissable: true,
                         };
                         notifications.add(notification);

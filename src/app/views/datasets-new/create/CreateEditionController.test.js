@@ -170,8 +170,10 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/12345/datasets/6789",
     },
-    params: {
-        datasetID: "test-dataset-1",
+    match: {
+        params: {
+            datasetID: "test-dataset-1",
+        },
     },
 };
 
@@ -265,7 +267,7 @@ describe("Mapping edition to state", () => {
     });
 
     it("displays error if no matches between dataset and recipe found", () => {
-        component.setProps({ params: { datasetID: "12345" } });
+        component.setProps({ match: { params: { datasetID: "12345" } } });
         component.instance().mapEditionsToState(mockedRecipeCall.items);
         expect(mockNotifications.length).toBe(1);
     });

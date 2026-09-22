@@ -452,11 +452,13 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/123/datasets/456/editions/789/version/1/cantabular",
     },
-    params: {
-        collectionID: "123",
-        datasetID: "456",
-        editionID: "789",
-        versionID: "1",
+    match: {
+        params: {
+            collectionID: "123",
+            datasetID: "456",
+            editionID: "789",
+            versionID: "1",
+        },
     },
 };
 

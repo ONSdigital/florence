@@ -1,7 +1,7 @@
 import React, { Component } from "react";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { connect } from "react-redux";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
 
 import url from "../../utilities/url";
@@ -30,7 +30,7 @@ export class WorkflowPreview extends Component {
 
     handleBackButton = async () => {
         if (this.props.enableCantabularJourney) {
-            await this.getDatasetType(this.props.params.datasetID);
+            await this.getDatasetType(this.props.match.params.datasetID);
         }
         if (!this.state.errorGettingDatasetType) {
             const previousUrl = `${url.resolve("../")}${this.props.enableCantabularJourney && this.state.cantabularDataset ? "/cantabular" : ""}`;
@@ -106,7 +106,7 @@ export class WorkflowPreview extends Component {
                             <div className="margin-top--1 margin-bottom--1">
                                 <Link
                                     className="btn btn--positive margin-right--1"
-                                    to={window.location.origin + "/florence/collections/" + this.props.params.collectionID}
+                                    to={window.location.origin + "/florence/collections/" + this.props.match.params.collectionID}
                                 >
                                     Continue
                                 </Link>

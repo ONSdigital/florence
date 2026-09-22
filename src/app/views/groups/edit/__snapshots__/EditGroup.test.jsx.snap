@@ -15,9 +15,9 @@ exports[`EditGroup matches the snapshot 1`] = `
       >
         ◀ 
         <a
+          href="/"
           onClick={[Function]}
           role="link"
-          style={{}}
         >
           Back
         </a>
@@ -229,9 +229,9 @@ exports[`EditGroup matches the snapshot 1`] = `
           </button>
           <a
             className="btn btn--invert-primary btn--margin-right"
+            href="/"
             onClick={[Function]}
             role="button"
-            style={{}}
           >
             Cancel
           </a>
@@ -272,9 +272,9 @@ exports[`EditGroup without admin permissions matches the snapshot 1`] = `
       >
         ◀ 
         <a
+          href="/"
           onClick={[Function]}
           role="link"
-          style={{}}
         >
           Back
         </a>

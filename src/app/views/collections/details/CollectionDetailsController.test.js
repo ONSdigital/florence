@@ -80,10 +80,8 @@ const localStorageMock = (function () {
 
 Object.defineProperty(window, "localStorage", { value: localStorageMock });
 
-function setLocation(href) {
-    jsdom.reconfigure({
-        url: href,
-    });
+function setLocation(path) {
+    window.history.pushState({}, "", path);
 }
 
 let dispatchedActions = [];
@@ -221,83 +219,6 @@ describe("Collection details are hidden", () => {
     });
 });
 
-// TODO complete these tests!
-describe("Restore content to a collection", () => {
-    const singleRestoredData = {
-        uri: "/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018",
-        title: "Gross Domestic Product: March 2018",
-        type: "bulletin",
-    };
-
-    const multiRestoredData = [
-        {
-            uri: "/about/test",
-            description: { title: "Test Page" },
-            type: "test_type",
-        },
-        {
-            uri: "/about/test/two",
-            description: { title: "Test Page 2" },
-            type: "test_type",
-        },
-    ];
-
-    beforeAll(() => {
-        component.setProps({
-            activeCollection: {
-                ...defaultProps.collections[0],
-                inProgress: [],
-            },
-        });
-    });
-
-    afterAll(() => {
-        component.setProps({ activeCollection: defaultProps.activeCollection });
-    });
-
-    describe("When restoring single file", () => {
-        it("adds the correct page back into the collections", () => {
-            component.instance().handleRestoreSingleDeletedContentSuccess(singleRestoredData);
-            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
-            expect(dispatchedActions[0].collection.inProgress.some(page => (page.uri = singleRestoredData.uri))).toBe(true);
-        });
-
-        it("maps the page data to the structure expected in state", () => {
-            component.instance().handleRestoreSingleDeletedContentSuccess(singleRestoredData);
-            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
-
-            const restoredPage = dispatchedActions[0].collection.inProgress.find(page => (page.uri = singleRestoredData.uri));
-            expect(restoredPage).toBeTruthy();
-            expect(restoredPage.uri).toBe("/economy/grossdomesticproduct/bulletins/grossdomesticproduct/march2018");
-            expect(restoredPage.title).toBe("Gross Domestic Product: March 2018");
-            expect(restoredPage.type).toBe("bulletin");
-        });
-    });
-
-    describe("When restoring multiple files", () => {
-        it("adds all pages into collection", () => {
-            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
-            expect(dispatchedActions[0].type).toBe(UPDATE_PAGES_IN_ACTIVE_COLLECTION);
-            expect(dispatchedActions[0].collection.inProgress.some(page => (page.uri = multiRestoredData[0].uri))).toBe(true);
-            expect(dispatchedActions[0].collection.inProgress.some(page => (page.uri = multiRestoredData[1].uri))).toBe(true);
-        });
-
-        it("maps the page data to the structure expected in state", () => {
-            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
-            const restoredPage = dispatchedActions[0].collection.inProgress.find(page => (page.uri = multiRestoredData[0].uri));
-            expect(restoredPage).toBeTruthy();
-            expect(restoredPage.uri).toBe("/about/test");
-            expect(restoredPage.title).toBe("Test Page");
-            expect(restoredPage.type).toBe("test_type");
-        });
-
-        it("correct number of pages are restored", () => {
-            component.instance().handleRestoreMultiDeletedContentSuccess(multiRestoredData);
-            expect(dispatchedActions[0].collection.inProgress.length).toBe(multiRestoredData.length);
-        });
-    });
-});
-
 describe("Deleting a collection", () => {
     it("user is shown a notification if the collection isn't deleted due to an application error", async () => {
         notifications.add.mockClear();
@@ -353,7 +274,7 @@ describe("Selecting a page in a collection", () => {
             collectionID: "test-sau39393uyqha8aw8y3n3",
             activePageURI: undefined,
         });
-        setLocation("https://publishing.onsdigital.co.uk/florence/collections/test-sau39393uyqha8aw8y3n3");
+        setLocation("/florence/collections/test-sau39393uyqha8aw8y3n3");
     });
 
     it("routes to the page's ID", async () => {
@@ -415,26 +336,32 @@ describe("Map state to props function", () => {
         },
     };
 
+    let ownProps = {
+        location: {
+            hash: "",
+        },
+    };
+
     it("maps the application state correctly", () => {
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when a bulletin page is active in the collection", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
+        ownProps.location.hash = "#/economy/grossdomesticproduct/bulletins/gdp/july2017";
         expectedProps.activePageURI = "/economy/grossdomesticproduct/bulletins/gdp/july2017";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when the home page is active in the collection", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/";
+        ownProps.location.hash = "#/";
         expectedProps.activePageURI = "/";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 
     it("maps routing state correctly when there is a trailing slash on the active page URI ", () => {
-        reduxState.routing.locationBeforeTransitions.hash = "#/economy#";
+        ownProps.location.hash = "#/economy#";
         expectedProps.activePageURI = "/economy#";
-        expect(mapStateToProps(reduxState)).toMatchObject(expectedProps);
+        expect(mapStateToProps(reduxState, ownProps)).toMatchObject(expectedProps);
     });
 });
 

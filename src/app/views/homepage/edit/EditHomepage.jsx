@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import SimpleEditableList from "../../../components/simple-editable-list/SimpleEditableList";
 import SaveAndReviewActions from "../../../components/save-and-review-actions/SaveAndReviewActions";
 import Input from "../../../components/Input";
-import { connect } from "react-redux";
 import Banner from "../../../components/banner";
 
 const EditHomepage = ({

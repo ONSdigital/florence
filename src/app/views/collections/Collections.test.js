@@ -3,7 +3,6 @@ import { render, screen, createMockUser, within } from "../../utilities/tests/te
 import Collections from "./Collections";
 import userEvent from "@testing-library/user-event";
 
-let user;
 import { setAuthState } from "../../utilities/auth";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
@@ -30,7 +29,7 @@ var localStorageMock = (function () {
 
 beforeEach(() => {
     Object.defineProperty(window, "localStorage", { value: localStorageMock, writable: true });
-    window.localStorage.setItem("ons_auth_state", {});
+    window.localStorage.setItem("ons_auth_state", JSON.stringify({}));
 });
 
 afterEach(() => {
@@ -41,9 +40,10 @@ describe("Collections", () => {
     const defaultProps = {
         collections: [],
         isLoading: false,
-        params: {},
+        match: {
+            params: {},
+        },
         rootPath: "test",
-        routes: [],
         search: "",
         user: admin,
         updateWorkingOn: jest.fn(),

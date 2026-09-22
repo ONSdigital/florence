@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import url from "../../utilities/url";
@@ -24,7 +24,7 @@ export class CreateContent extends Component {
                     title: "Old workspace",
                     id: "workspace",
                     details: ["Create/edit content via the old workspace"],
-                    url: `${url.resolve("../../../")}/workspace?collection=${this.props.params.collectionID}`,
+                    url: `${url.resolve("../../../")}/workspace?collection=${this.props.match.params.collectionID}`,
                     externalLink: true,
                     enabled: true,
                 },

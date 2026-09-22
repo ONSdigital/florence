@@ -1,4 +1,4 @@
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import * as actions from "./actions";
 import collections from "../utilities/api-clients/collections";
 import notifications from "../utilities/notifications";

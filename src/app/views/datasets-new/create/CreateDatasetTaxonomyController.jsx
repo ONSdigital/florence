@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
@@ -109,7 +109,7 @@ export class CreateDatasetTaxonomyController extends Component {
 
     handleCreateClick = event => {
         event.preventDefault();
-        const datasetID = this.props.params.datasetID;
+        const datasetID = this.props.match.params.datasetID;
         const postBody = this.makeCreateDatasetPostBody();
         this.setState({ isPosting: true });
         return datasets

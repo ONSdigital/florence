@@ -9,7 +9,7 @@
         "cat": "latest",
         "handlebars": "^4.7.9",
         "onchange": "latest",
-        "sass": "^1.34.1"
+        "sass": "^1.103.1"
     },
     "scripts": {
         "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet -u $OSSINDEX_USERNAME -p $OSSINDEX_TOKEN",
@@ -28,7 +28,7 @@
         "eslint-check": "npx --yes eslint@9.39.4 ./js"
     },
     "devDependencies": {
-        "@babel/eslint-parser": "^7.27.1",
+        "@babel/eslint-parser": "^7.29.7",
         "auditjs": "^4.0.37"
     },
     "overrides": {

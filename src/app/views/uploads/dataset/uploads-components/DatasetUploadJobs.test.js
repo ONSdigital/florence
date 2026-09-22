@@ -1,6 +1,7 @@
 import React from "react";
 import DatasetUploadJobs from "./DatasetUploadJobs";
 import { shallow, mount } from "enzyme";
+import { WrapperComponent } from "../../../../utilities/tests/test-utils";
 
 const jobs = [
     {
@@ -34,18 +35,22 @@ const defaultProps = {
     jobs,
 };
 
-console.warn = jest.fn(warn => {
-    throw new Error("console.warn run!");
-});
-
 test("Correct number of jobs are rendered", () => {
-    const component = mount(<DatasetUploadJobs {...defaultProps} />);
+    const component = mount(
+        <WrapperComponent>
+            <DatasetUploadJobs {...defaultProps} />
+        </WrapperComponent>
+    );
 
     expect(component.find("a").length).toBe(3);
 });
 
 test("All in progress jobs are get the correct dataset alias from the recipes data", () => {
-    const component = mount(<DatasetUploadJobs {...defaultProps} />);
+    const component = mount(
+        <WrapperComponent>
+            <DatasetUploadJobs {...defaultProps} />
+        </WrapperComponent>
+    );
     const items = component.find("a");
     const recipeCount = {
         1: 0,
@@ -75,10 +80,15 @@ test("All in progress jobs are get the correct dataset alias from the recipes da
 });
 
 test("Attempt to render job with an unrecognised ID should show console warning", () => {
-    const component = shallow(<DatasetUploadJobs {...defaultProps} />);
+    const component = shallow(
+        <WrapperComponent>
+            <DatasetUploadJobs {...defaultProps} />
+        </WrapperComponent>
+    );
+    const jobsComponent = component.find(DatasetUploadJobs);
 
     expect(() => {
-        component.setProps({
+        jobsComponent.setProps({
             jobs: [
                 ...defaultProps.jobs,
                 {

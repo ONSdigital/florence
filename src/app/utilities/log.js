@@ -1,4 +1,4 @@
-import { browserHistory } from "react-router";
+import { baseHistory as history } from "../config/store";
 import { v4 as uuid } from "uuid";
 import websocket from "./websocket";
 import storage from "./storage";
@@ -35,7 +35,7 @@ const excludeFromServerLogs = [
 export default class log {
     static initialise() {
         this.add(eventTypes.appInitialised);
-        browserHistory.listen(location => {
+        history.listen(location => {
             log.add(eventTypes.changedRoute, { ...location });
         });
     }

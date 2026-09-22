@@ -4,6 +4,7 @@ import renderer from "react-test-renderer";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import CreateUser from "./CreateUser";
+import { WrapperComponent } from "../../../utilities/tests/test-utils";
 
 const props = {
     createUser: jest.fn(),
@@ -19,12 +20,20 @@ describe("CreateUser", () => {
     });
 
     it("matches the snapshot", () => {
-        const tree = renderer.create(<CreateUser {...props} />);
+        const tree = renderer.create(
+            <WrapperComponent>
+                <CreateUser {...props} />
+            </WrapperComponent>
+        );
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("shows the form with default values", () => {
-        render(<CreateUser {...props} />);
+        render(
+            <WrapperComponent>
+                <CreateUser {...props} />
+            </WrapperComponent>
+        );
         expect(screen.getByLabelText(/First name/i)).toHaveValue("");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("");
         expect(screen.getByLabelText(/Email address/i)).toHaveValue("");
@@ -34,7 +43,11 @@ describe("CreateUser", () => {
     });
 
     it("allows adding fields ans shows unsaved changes message", async () => {
-        render(<CreateUser {...props} />);
+        render(
+            <WrapperComponent>
+                <CreateUser {...props} />
+            </WrapperComponent>
+        );
 
         await user.type(screen.getByLabelText(/First name/i), "My test First name");
         expect(screen.getByLabelText(/First name/i)).toHaveValue("My test First name");
@@ -49,7 +62,11 @@ describe("CreateUser", () => {
     });
 
     it("validates form and display errors in panel and within input", async () => {
-        render(<CreateUser {...props} />);
+        render(
+            <WrapperComponent>
+                <CreateUser {...props} />
+            </WrapperComponent>
+        );
 
         await user.click(screen.getByText(/save changes/i));
 
@@ -68,7 +85,11 @@ describe("CreateUser", () => {
             ...props,
             loading: true,
         };
-        render(<CreateUser {...newProps} />);
+        render(
+            <WrapperComponent>
+                <CreateUser {...newProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 });

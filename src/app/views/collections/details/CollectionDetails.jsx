@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { connect } from "react-redux";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 
 import log from "../../../utilities/logging/log";
 import Page from "../../../components/page/Page";
@@ -390,7 +390,7 @@ export class CollectionDetails extends Component {
         return (
             <div className="drawer__banner">
                 <div className="grid grid--justify-space-around">
-                    <div className="grid__col-12 grid--align-center margin-top--1 margin-bottom--1">
+                    <div className="grid__col-8 grid--align-left margin-top--1 margin-bottom--1">
                         <div>
                             {this.isAutomatedCollection() ? (
                                 <button disabled id="create-edit-content" className="btn btn--primary">
@@ -407,13 +407,6 @@ export class CollectionDetails extends Component {
                                 </Link>
                             )}
 
-                            <button
-                                disabled={this.props.isLoadingNameAndDate || this.isAutomatedCollection()}
-                                className="btn btn--margin-left"
-                                onClick={this.handleRestoreContentClick}
-                            >
-                                Restore page
-                            </button>
                             <Link id="preview" to={`${location.pathname}/preview`} className="margin-left--1 btn btn--primary">
                                 Preview
                             </Link>
@@ -423,10 +416,6 @@ export class CollectionDetails extends Component {
             </div>
         );
     }
-
-    handleRestoreContentClick = () => {
-        this.props.dispatch(push(`${location.pathname}/restore-content`));
-    };
 
     renderCollectionActions() {
         if (this.props.isLoadingNameAndDate) {

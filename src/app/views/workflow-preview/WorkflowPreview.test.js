@@ -30,8 +30,10 @@ const defaultProps = {
     location: {
         pathname: "florence/collections/testcollection-001/test-content/preview",
     },
-    params: {
-        collectionID: "testcollection-001",
+    match: {
+        params: {
+            collectionID: "testcollection-001",
+        },
     },
 };
 

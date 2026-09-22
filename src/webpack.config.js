@@ -61,7 +61,13 @@ module.exports = {
     plugins: [
         new CopyWebpackPlugin({
             patterns: [
-            { from: 'refactored.html', to: 'refactored.html' },
+            {
+                from: 'refactored.html',
+                to: 'refactored.html',
+                info: {
+                    minimized: true, // This actually skips minimization of the file.
+                },
+            },
             { from: 'manifest.json', to: 'manifest.json' },
             { from: 'service-worker.js', to: 'service-worker.js' },
             { from: 'img', to: 'img' }

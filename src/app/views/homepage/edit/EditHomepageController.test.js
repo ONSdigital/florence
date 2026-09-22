@@ -4,6 +4,24 @@ import { mount } from "enzyme";
 import homepage from "../../../utilities/api-clients/homepage";
 import collections from "../../../utilities/api-clients/collections";
 
+// ResumableJS is loaded in the browser, so we need to mock it for testing
+jest.mock(
+    "resumeablejs",
+    () => ({
+        __esModule: true,
+        default: jest.fn().mockImplementation(() => ({
+            assignBrowse: jest.fn(),
+            assignDrop: jest.fn(),
+            on: jest.fn(),
+            upload: jest.fn(),
+            opts: {
+                query: {},
+            },
+        })),
+    }),
+    { virtual: true }
+);
+
 const mockAPIResponse = {
     featuredContent: [
         {
@@ -90,10 +108,12 @@ const defaultProps = {
     dispatch: event => {
         dispatchedActions.push(event);
     },
-    params: {
-        collectionID: "12345",
-        homepageDataField: "",
-        homepageDataFieldID: "",
+    match: {
+        params: {
+            collectionID: "12345",
+            homepageDataField: "",
+            homepageDataFieldID: "",
+        },
     },
     userEmail: "florence@test.com",
     rootPath: "/florence",

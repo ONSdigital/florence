@@ -1,5 +1,4 @@
-import { browserHistory } from "react-router";
-import { store } from "../config/store";
+import { store, baseHistory as history } from "../config/store";
 
 export default class redirect {
     /**
@@ -10,12 +9,13 @@ export default class redirect {
      * @returns {action} performs either an internal or external redirect
      */
     static handle(redirectPath) {
-        if (!redirectPath) {
+        const sanitisedRedirectPath = sanitiseRedirectPath(redirectPath);
+        if (!sanitisedRedirectPath) {
             return internalRedirect();
         }
 
         let baseRedirectPath = "";
-        const redirectPathArray = redirectPath.split("/");
+        const redirectPathArray = sanitisedRedirectPath.split("/");
         // only interested in the first part of the path that is a string
         // e.g. a path of /path/here would be pathArray[0] = "", pathArray[1] = "path", pathArray[2] = "here"
         for (let i = 0; i < redirectPathArray.length; i++) {
@@ -28,10 +28,10 @@ export default class redirect {
         const config = window.getEnv();
         const allowedExternalPaths = config.allowedExternalPaths;
         if (allowedExternalPaths.includes(baseRedirectPath) || allowedExternalPaths.includes(`/${baseRedirectPath}`)) {
-            return externalRedirect(redirectPath);
+            return externalRedirect(sanitisedRedirectPath);
         }
 
-        return internalRedirect(redirectPath);
+        return internalRedirect(sanitisedRedirectPath);
     }
 
     /**
@@ -41,25 +41,73 @@ export default class redirect {
      *
      * @returns {string} redirect path
      */
-    static getPath(queryStr) {
-        if (!queryStr) {
+    static getPath(queryParams) {
+        if (!queryParams) {
             return "";
         }
 
-        if (queryStr.redirect && queryStr.next) {
+        const redirect = queryParams.get("redirect");
+        const next = queryParams.get("next");
+
+        if (redirect && next) {
             return "";
         }
 
-        if (queryStr.redirect) {
-            return queryStr.redirect;
+        if (redirect) {
+            return redirect;
         }
 
-        if (queryStr.next) {
-            return queryStr.next;
+        if (next) {
+            return next;
         }
 
         return "";
     }
+}
+
+function sanitiseRedirectPath(redirectPath) {
+    if (typeof redirectPath !== "string") {
+        return "";
+    }
+    let decodedPath;
+
+    try {
+        decodedPath = decodeURIComponent(redirectPath);
+    } catch {
+        return "";
+    }
+
+    const trimmedPath = decodedPath.trim();
+    if (!trimmedPath) {
+        return "";
+    }
+    // Must be to relative path
+    if (trimmedPath.startsWith("http://") || trimmedPath.startsWith("https://") || trimmedPath.startsWith("//")) {
+        return "";
+    }
+    // Must not contain any backslashes
+    if (trimmedPath.includes("\\")) {
+        return "";
+    }
+    // Ensure the path starts with a leading slash
+    const pathWithLeadingSlash = trimmedPath.startsWith("/") ? trimmedPath : `/${trimmedPath}`;
+    try {
+        return new URL(pathWithLeadingSlash, window.location.origin).pathname;
+    } catch {
+        return "";
+    }
+}
+
+function isAllowedInternalPath(redirectPath, rootPath) {
+    const allowedPrefixes = [
+        `${rootPath}/collections`,
+        `${rootPath}/groups`,
+        `${rootPath}/security`,
+        `${rootPath}/teams`,
+        `${rootPath}/uploads`,
+        `${rootPath}/users`,
+    ];
+    return allowedPrefixes.some(prefix => redirectPath === prefix || redirectPath.startsWith(`${prefix}/`));
 }
 
 function internalRedirect(redirectPath) {
@@ -67,23 +115,16 @@ function internalRedirect(redirectPath) {
 
     if (!redirectPath) {
         if (store.getState().state.config.enableSystemNavBar) {
-            browserHistory.push(`${rootPath}/systems`);
+            history.push(`${rootPath}/systems`);
             return;
         } else {
-            browserHistory.push(`${rootPath}/collections`);
+            history.push(`${rootPath}/collections`);
         }
         return;
     }
 
-    if (
-        redirectPath.startsWith(`${rootPath}/collections`) ||
-        redirectPath.startsWith(`${rootPath}/groups`) ||
-        redirectPath.startsWith(`${rootPath}/security`) ||
-        redirectPath.startsWith(`${rootPath}/teams`) ||
-        redirectPath.startsWith(`${rootPath}/uploads`) ||
-        redirectPath.startsWith(`${rootPath}/users`)
-    ) {
-        browserHistory.push(redirectPath);
+    if (isAllowedInternalPath(redirectPath, rootPath)) {
+        history.push(redirectPath);
         return;
     }
 
@@ -92,11 +133,11 @@ function internalRedirect(redirectPath) {
         return;
     }
 
-    browserHistory.push(`${rootPath}/collections`);
+    history.push(`${rootPath}/collections`);
     return;
 }
 
 function externalRedirect(redirectPath) {
-    window.location.pathname = redirectPath;
+    window.location.href = new URL(redirectPath, window.location.origin).toString();
     return;
 }

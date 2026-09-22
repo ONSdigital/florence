@@ -1,10 +1,9 @@
 import React from "react";
 import renderer from "react-test-renderer";
-// import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
-import { render, screen, createMockUser } from "../../../utilities/tests/test-utils";
-import { group, specialGroup } from "../../../utilities/tests/mockData";
+import { render, screen, createMockUser, WrapperComponent } from "../../../utilities/tests/test-utils";
+import { group } from "../../../utilities/tests/mockData";
 import EditGroup from "./EditGroup";
 
 const users = [
@@ -45,7 +44,9 @@ const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 const props = {
     group: group,
     loading: false,
-    params: { id: "0", router: setRouteLeaveHook },
+    match: {
+        params: { id: "0" },
+    },
     rootPath: "test",
     router: { setRouteLeaveHook: jest.fn() },
     loadingUsers: false,
@@ -77,32 +78,58 @@ jest.mock("../delete", () => "div"); // faking connected component
 
 describe("EditGroup", () => {
     it("matches the snapshot", () => {
-        const tree = renderer.create(<EditGroup.WrappedComponent {...props} />).toJSON();
+        const tree = renderer
+            .create(
+                <WrapperComponent>
+                    <EditGroup.WrappedComponent {...props} />
+                </WrapperComponent>
+            )
+            .toJSON();
         expect(tree).toMatchSnapshot();
     });
 
     it("requests group on load by params", () => {
-        render(<EditGroup.WrappedComponent {...props} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
         expect(props.loadGroup).toHaveBeenCalledWith("0");
     });
 
     it("shows Back Button", () => {
-        render(<EditGroup.WrappedComponent {...props} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
         expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
     });
 
     it("shows message if no group has been found", () => {
-        render(<EditGroup.WrappedComponent {...props} group={null} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...props} group={null} />
+            </WrapperComponent>
+        );
         expect(screen.getByText("No group found.")).toBeInTheDocument();
     });
 
     it("shows loader when fetching group", () => {
-        render(<EditGroup.WrappedComponent {...props} group={null} loading={true} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...props} group={null} loading={true} />
+            </WrapperComponent>
+        );
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
     it("shows group details and name input to edit", () => {
-        render(<EditGroup.WrappedComponent {...props} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
         expect(screen.getByRole("heading", { level: 1, name: "Boo is fine" })).toBeInTheDocument();
         expect(screen.getByLabelText("Name")).toHaveValue("Boo is fine");
         expect(screen.getByRole("button", { name: "Save changes" })).toBeInTheDocument();
@@ -112,7 +139,11 @@ describe("EditGroup", () => {
 
     describe("when editing normal group name", () => {
         it("validates for emptiness", async () => {
-            render(<EditGroup.WrappedComponent {...props} />);
+            render(
+                <WrapperComponent>
+                    <EditGroup.WrappedComponent {...props} />
+                </WrapperComponent>
+            );
 
             await userEvent.setup().clear(screen.getByLabelText(/name/i));
 
@@ -125,7 +156,11 @@ describe("EditGroup", () => {
         });
 
         it("Updates group name and members", async () => {
-            render(<EditGroup.WrappedComponent {...props} />);
+            render(
+                <WrapperComponent>
+                    <EditGroup.WrappedComponent {...props} />
+                </WrapperComponent>
+            );
 
             const user = userEvent.setup();
             await user.clear(screen.getByLabelText(/name/i));
@@ -149,13 +184,19 @@ describe("EditGroup without admin permissions", () => {
 
     it("matches the snapshot", () => {
         const tree = renderer.create(
-            <EditGroup.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk" }} />
+            </WrapperComponent>
         );
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("shows group details and no admin options", () => {
-        render(<EditGroup.WrappedComponent {...editorProps} />);
+        render(
+            <WrapperComponent>
+                <EditGroup.WrappedComponent {...editorProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByRole("heading", { level: 1, name: "Boo is fine" })).toBeInTheDocument();
         expect(editorProps.loadMembers).toHaveBeenCalled();
 

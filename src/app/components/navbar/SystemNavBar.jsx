@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { OnsLogoWhite } from "../../icons/OnsLogo";
 import auth from "../../utilities/auth";
 
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 
 const propTypes = {
     rootPath: PropTypes.string.isRequired,

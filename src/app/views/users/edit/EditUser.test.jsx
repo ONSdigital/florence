@@ -5,14 +5,16 @@ import userEvent from "@testing-library/user-event";
 import "@testing-library/jest-dom";
 import EditUser from "./EditUser";
 import { groups, user } from "../../../utilities/tests/mockData";
-import { createMockUser } from "../../../utilities/tests/test-utils";
+import { createMockUser, WrapperComponent } from "../../../utilities/tests/test-utils";
 
 const admin = createMockUser("admin@test.com", true, true, "ADMIN");
 const editor = createMockUser("editor@test.com", false, true, "EDITOR");
 
 const props = {
     loading: false,
-    params: { id: "test.user-1498@ons.gov.uk" },
+    match: {
+        params: { id: "test.user-1498@ons.gov.uk" },
+    },
     rootPath: "test",
     user: user,
     userGroups: [],
@@ -20,10 +22,8 @@ const props = {
     loadUser: jest.fn(),
     loadUserGroups: jest.fn(),
     setUserPassword: jest.fn(),
-    router: { setRouteLeaveHook: jest.fn() },
     loggedInUser: admin,
 };
-const setRouteLeaveHook = jest.fn();
 
 describe("EditUser", () => {
     let user;
@@ -33,19 +33,29 @@ describe("EditUser", () => {
 
     it("matches the snapshot", () => {
         const tree = renderer.create(
-            <EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
         );
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("fetches user details on load", () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
         expect(props.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
         expect(props.loadUserGroups).toHaveBeenCalled();
     });
 
     it("shows the form with user data", () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("test user-1498");
@@ -67,7 +77,11 @@ describe("EditUser", () => {
     });
 
     it("allows editing and shows unsaved changes message", async () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
 
         await user.clear(screen.getByLabelText(/First name/i));
         await user.type(screen.getByLabelText(/First name/i), "My test First name");
@@ -77,7 +91,11 @@ describe("EditUser", () => {
     });
 
     it("validates form and display errors in panel and within input and disables the submit button", async () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByLabelText(/First name/i)).toHaveValue("test");
         expect(screen.getByLabelText(/Last name/i)).toHaveValue("user-1498");
@@ -105,19 +123,31 @@ describe("EditUser", () => {
             ...props,
             loading: true,
         };
-        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...newProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
 
     it("sends a reset account request", async () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
         await user.click(screen.getByText(/Reset Account/i));
 
         expect(props.setUserPassword).toHaveBeenCalled();
     });
 
     it("updates user data", async () => {
-        render(<EditUser.WrappedComponent {...props} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...props} />
+            </WrapperComponent>
+        );
 
         await user.type(screen.getByLabelText(/First name/i), "boo");
 
@@ -143,7 +173,11 @@ describe("EditUser", () => {
             userGroups: groups,
         };
 
-        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...newProps} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByText(/my test group description/i)).toBeInTheDocument();
         expect(screen.getByText(/my first test group description/i)).toBeInTheDocument();
@@ -159,20 +193,29 @@ describe("EditUser without admin permissions", () => {
 
     it("matches the snapshot", () => {
         const tree = renderer.create(
-            <EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...editorProps} />
+            </WrapperComponent>
         );
         expect(tree.toJSON()).toMatchSnapshot();
     });
 
     it("fetches user details on load", () => {
-        render(<EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...editorProps} />
+            </WrapperComponent>
+        );
         expect(editorProps.loadUser).toHaveBeenCalledWith("test.user-1498@ons.gov.uk");
         expect(editorProps.loadUserGroups).toHaveBeenCalled();
     });
 
     it("shows the form with user data and no admin fields", () => {
-        render(<EditUser.WrappedComponent {...editorProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
-
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...editorProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByRole("link", { name: "Back" })).toBeInTheDocument();
         expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent("test user-1498");
         expect(screen.getByText("test.user-1498@ons.gov.uk")).toBeInTheDocument();
@@ -200,7 +243,11 @@ describe("EditUser without admin permissions", () => {
             ...editorProps,
             loading: true,
         };
-        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...newProps} />
+            </WrapperComponent>
+        );
         expect(screen.getByTestId("loader")).toBeInTheDocument();
     });
     it("shows groups user belongs to", () => {
@@ -209,7 +256,11 @@ describe("EditUser without admin permissions", () => {
             userGroups: groups,
         };
 
-        render(<EditUser.WrappedComponent {...newProps} params={{ id: "test.user-1498@ons.gov.uk", router: setRouteLeaveHook }} />);
+        render(
+            <WrapperComponent>
+                <EditUser.WrappedComponent {...newProps} />
+            </WrapperComponent>
+        );
 
         expect(screen.getByText(/my test group description/i)).toBeInTheDocument();
         expect(screen.getByText(/my first test group description/i)).toBeInTheDocument();

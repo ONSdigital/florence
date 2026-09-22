@@ -1,7 +1,7 @@
 import React, { useEffect, useCallback } from "react";
 import filter from "lodash/filter";
 import PropTypes from "prop-types";
-import { Link } from "react-router";
+import { Link } from "react-router-dom";
 import { useInput } from "../../hooks/useInput";
 import url from "../../utilities/url";
 import date from "../../utilities/date";
@@ -10,7 +10,7 @@ import SimpleSelectableList from "../../components/simple-selectable-list/Simple
 
 const Groups = props => {
     const { groups, isLoading, loadTeams } = props;
-    const [search, setSearch] = useInput("");
+    const [search] = useInput("");
     const isAdmin = props.loggedInUser.isAdmin || false;
     const API_PROXY_PATH = `/api/${window.getEnv().apiRouterVersion}`;
 

@@ -47,9 +47,11 @@ jest.mock("../../../utilities/notifications", () => {
 console.error = () => {};
 
 const nullParamProps = {
-    params: {
-        homepageDataField: null,
-        homepageDataFieldID: null,
+    match: {
+        params: {
+            homepageDataField: null,
+            homepageDataFieldID: null,
+        },
     },
     handleSuccessClick: () => {},
     handleCancelClick: () => {},
@@ -63,10 +65,12 @@ const successRouteProps = {
         title: "Test title",
         image: "",
     },
-    params: {
-        homepageDataField: "featuredContent",
-        homepageDataFieldID: 0,
-        collectionID: "test-collection",
+    match: {
+        params: {
+            homepageDataField: "featuredContent",
+            homepageDataFieldID: 0,
+            collectionID: "test-collection",
+        },
     },
     handleSuccessClick: jest.fn(),
     handleCancelClick: jest.fn(),

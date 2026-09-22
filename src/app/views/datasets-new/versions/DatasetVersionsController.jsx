@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
@@ -11,9 +11,11 @@ import log from "../../../utilities/logging/log";
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 
 const propTypes = {
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired,
-        editionID: PropTypes.string.isRequired,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            datasetID: PropTypes.string.isRequired,
+            editionID: PropTypes.string.isRequired,
+        }).isRequired,
     }).isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
@@ -35,8 +37,8 @@ export class DatasetVersionsController extends Component {
     }
 
     async UNSAFE_componentWillMount() {
-        const datasetID = this.props.params.datasetID;
-        const editionID = this.props.params.editionID;
+        const datasetID = this.props.match.params.datasetID;
+        const editionID = this.props.match.params.editionID;
         await this.getAllVersions(datasetID, editionID);
         if (this.props.enableCantabularJourney) {
             await this.getDatasetType(datasetID);
@@ -124,7 +126,7 @@ export class DatasetVersionsController extends Component {
                         break;
                     }
                 }
-                console.error(`Error getting dataset (${datasetID}):\n`, error);
+                console.error(`Error getting dataset (%s):\n`, datasetID, error);
                 this.setState({ isFetchingData: false });
             });
     };

@@ -1,18 +1,19 @@
 import React, { Component } from "react";
-import { push } from "react-router-redux";
+import { push } from "connected-react-router";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 
 import datasets from "../../../utilities/api-clients/datasets";
 import notifications from "../../../utilities/notifications";
 import url from "../../../utilities/url";
-import date from "../../../utilities/date";
 
 import SimpleSelectableList from "../../../components/simple-selectable-list/SimpleSelectableList";
 
 const propTypes = {
-    params: PropTypes.shape({
-        datasetID: PropTypes.string.isRequired,
+    match: PropTypes.shape({
+        params: PropTypes.shape({
+            datasetID: PropTypes.string.isRequired,
+        }).isRequired,
     }).isRequired,
     location: PropTypes.shape({
         pathname: PropTypes.string.isRequired,
@@ -38,7 +39,7 @@ export class DatasetEditionsController extends Component {
     }
 
     UNSAFE_componentWillMount = () => {
-        const datasetID = this.props.params.datasetID;
+        const datasetID = this.props.match.params.datasetID;
         this.getAllEditions(datasetID);
     };
 
@@ -94,7 +95,7 @@ export class DatasetEditionsController extends Component {
                         break;
                     }
                 }
-                console.error(`Error getting editions list for ${datasetID}:\n`, error);
+                console.error(`Error getting editions list for %s:\n`, datasetID, error);
                 this.setState({ isFetchingData: false });
             });
     };
