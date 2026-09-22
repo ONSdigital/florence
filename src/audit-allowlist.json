@@ -23,6 +23,14 @@
         {
             "id": "CVE-2026-27904",
             "reason": "Indirect dependency via ESLint, Jest; awaiting upstream updates to minimatch."
+        },
+        {
+            "id": "CVE-2026-93749",
+            "reason": "A vulnerability of source-map-js which is a sub dependency of Sass, only used during build time and does not affect runtime."
+        },
+        {
+            "id": "CVE-2026-93687",
+            "reason": "A vulnerability of braces which is a sub dependency of micromatch, only used during build. Awaiting patch from braces - DIS-5454"
         }
     ]
 }
