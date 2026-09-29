@@ -81,6 +81,8 @@ export class LoginController extends Component {
                     });
                 } else {
                     if (response.body != null) {
+                        // ensure stale data is cleared before setting new session expiration times.
+                        SessionManagement.removeTimers();
                         const expirationTime = fp.get("body.expirationTime")(response);
                         const refreshTokenExpirationTime = fp.get("body.refreshTokenExpirationTime")(response);
                         SessionManagement.setSessionExpiryTime(expirationTime, refreshTokenExpirationTime);
