@@ -1,5 +1,4 @@
 import { baseHistory as history } from "../../config/store";
-import storage from "../storage";
 import websocket from "../websocket";
 
 const client_loaded_at = new Date(Date.now()).toISOString();
@@ -30,7 +29,6 @@ export default class log {
                 opt.attach(eventData);
             });
         }
-        storage.add(eventData);
         websocket.send(`log:${JSON.stringify(eventData)}`);
         return eventData;
     };
@@ -60,30 +58,6 @@ export default class log {
         return new WarnEvent(error);
     };
     static info = () => new InfoEvent();
-
-    /**
-     *
-     * @param {number} skip - (Optional) start point of the items we'd like to receive
-     * @param {number} limit - (Optional) the number of items we'd like to receive
-     * @param {number} requestTimestamp - (Optional) a Unix timestamp that
-     */
-    static getAll(skip, limit, requestTimestamp) {
-        return storage.getAll(skip, limit, requestTimestamp);
-    }
-
-    /**
-     * @returns {Promise} - Which resolves to am integer
-     */
-    static length() {
-        return storage.length();
-    }
-
-    /**
-     * @returns {Promise}
-     */
-    static removeAll() {
-        return storage.removeAll();
-    }
 }
 
 class Http {

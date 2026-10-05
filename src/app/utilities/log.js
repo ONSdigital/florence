@@ -1,7 +1,6 @@
 import { baseHistory as history } from "../config/store";
 import { v4 as uuid } from "uuid";
 import websocket from "./websocket";
-import storage from "./storage";
 
 export const eventTypes = {
     shownNotification: "SHOWN_NOTIFICATION",
@@ -55,36 +54,10 @@ export default class log {
             payload: payload || null,
         };
 
-        storage.add(event);
-
         if (!excludeFromServerLogs.includes(eventType)) {
             // Prefix the websocket message with 'log:' so that the server knows it's a log event being sent
             websocket.send(`log:${JSON.stringify(event)}`);
             return;
         }
-    }
-
-    /**
-     *
-     * @param {number} skip - (Optional) start point of the items we'd like to receive
-     * @param {number} limit - (Optional) the number of items we'd like to receive
-     * @param {number} requestTimestamp - (Optional) a Unix timestamp that
-     */
-    static getAll(skip, limit, requestTimestamp) {
-        return storage.getAll(skip, limit, requestTimestamp);
-    }
-
-    /**
-     * @returns {Promise} - Which resolves to am integer
-     */
-    static length() {
-        return storage.length();
-    }
-
-    /**
-     * @returns {Promise}
-     */
-    static removeAll() {
-        return storage.removeAll();
     }
 }

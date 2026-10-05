@@ -9,12 +9,6 @@ jest.mock("../websocket", () => {
     };
 });
 
-jest.mock("../storage", () => {
-    return {
-        add: jest.fn(() => {}),
-    };
-});
-
 const currentDate = new Date(Date.now());
 const currentDateISO = new Date(Date.now()).toISOString();
 const currentDatePlus5 = new Date(Date.now()).setSeconds(currentDate.getSeconds() + 5);

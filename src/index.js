@@ -28,7 +28,6 @@ import DatasetUploadDetails from "./app/views/uploads/dataset/upload-details/Dat
 import DatasetUploadMetadata from "./app/views/uploads/dataset/upload-details/DatasetUploadMetadata";
 import EditHomepageController from "./app/views/homepage/edit/EditHomepageController";
 import SetForgottenPasswordController from "./app/views/new-password/setForgottenPasswordController";
-import Logs from "./app/views/logs/Logs";
 import PreviewController from "./app/views/preview/PreviewController";
 import EditMetadataItem from "./app/views/datasets-new/edit-metadata/EditMetadataItem";
 import WorkflowPreview from "./app/views/workflow-preview/WorkflowPreview";
@@ -255,7 +254,6 @@ const Index = () => {
 
                                 <Route path={`${rootPath}/login`} component={SignInController} />
                                 <Route path={`${rootPath}/logout`} render={() => { logoutUser(); return null; }} />
-                                <Route path={`${rootPath}/logs`} component={Logs} />
 
                                 <Route path={`${rootPath}/password-reset`} component={SetForgottenPasswordController} />
 

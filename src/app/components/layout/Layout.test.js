@@ -34,7 +34,6 @@ function createSession() {
 // Mocks
 const mockSessionExpiryTime = createSession();
 // Monkey patches
-jest.mock("minimongo", () => ({ IndexedDb: jest.fn().mockImplementation((obj, func) => {}) }));
 jest.mock("../../utilities/api-clients/user", () => {
     class user {}
     user.setUserState = jest.fn();
