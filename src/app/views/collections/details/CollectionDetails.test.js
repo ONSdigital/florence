@@ -10,15 +10,6 @@ jest.mock("../../../utilities/websocket", () => {
     };
 });
 
-jest.mock("../../../utilities/log", () => {
-    return {
-        add: function () {
-            //
-        },
-        eventTypes: {},
-    };
-});
-
 jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(() => {

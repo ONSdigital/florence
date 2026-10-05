@@ -15,13 +15,6 @@ jest.mock("../../../utilities/logging/log", () => {
     };
 });
 
-jest.mock("../../../utilities/log", () => {
-    return {
-        add: function () {},
-        eventTypes: {},
-    };
-});
-
 jest.mock("../../../utilities/notifications", () => {
     return {
         add: jest.fn(notification => {

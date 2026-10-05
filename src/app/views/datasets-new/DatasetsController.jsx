@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import datasets from "../../utilities/api-clients/datasets";
 import notifications from "../../utilities/notifications";
 import url from "../../utilities/url";
-import log, { eventTypes } from "../../utilities/log";
+import log from "../../utilities/logging/log";
 
 import SimpleSelectableList from "../../components/simple-selectable-list/SimpleSelectableList";
 import Input from "../../components/Input";
@@ -130,9 +130,8 @@ export class DatasetsController extends Component {
             });
             return [...this.state.datasets, ...datasetsToMap];
         } catch (error) {
-            log.add(eventTypes.unexpectedRuntimeError, {
-                message: `Error mapping datasets to to state. \n ${error}`,
-            });
+            log.event("Error parsing date for collection details 'page last edit' function", log.error(error));
+
             const notification = {
                 type: "warning",
                 message:
