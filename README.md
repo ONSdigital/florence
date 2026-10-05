@@ -134,7 +134,6 @@ The following environment variables are available when running the Go server and
 | ENABLE_MANUAL_DATASET_MIGRATION | false    | Enables use of the migration fields for dataset content types
 | ENABLE_MIGRATION_FIELD          | false    | Enables the management of the migration field
 | ENABLE_NEW_UPLOAD               | false    | Enables the image upload functionality via static files service
-| ENABLE_PERMISSION_API           | false    | Enables use of the Permissions API for decentralised permissions
 | ENABLE_SYSTEM_NAV_BAR           | false    | Enables use of the system nav bar to navigate between dissemination applications
 
 For example:

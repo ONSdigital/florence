@@ -37,7 +37,7 @@ export const EMPTY_COLLECTION = {
 };
 
 const CreateNewCollection = props => {
-    const { isEnablePermissionsAPI, createCollectionRequest } = props;
+    const { createCollectionRequest } = props;
     const [newCollection, setNewCollection] = useState(EMPTY_COLLECTION);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedTeams, setSelectedTeams] = useState([]);
@@ -222,7 +222,7 @@ const CreateNewCollection = props => {
             setIsSubmitting(false);
             return;
         }
-        createCollectionRequest(mapStateToPostBody(), selectedTeams, isEnablePermissionsAPI);
+        createCollectionRequest(mapStateToPostBody(), selectedTeams);
         setNewCollection(EMPTY_COLLECTION);
         setIsSubmitting(false);
     };

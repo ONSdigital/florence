@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import PropTypes from "prop-types";
 import objectIsEmpty from "is-empty-object";
-import { getCollections, getGroups, getIsUpdatingCollection, getEnablePermissionsAPI } from "../../../config/selectors";
+import { getCollections, getGroups, getIsUpdatingCollection } from "../../../config/selectors";
 import { approveCollectionRequest, deletePolicyRequest } from "../../../config/thunks";
 import {
     deleteCollection,
@@ -205,7 +205,7 @@ export class CollectionDetailsController extends Component {
         collections
             .delete(collectionID)
             .then(async () => {
-                if (this.props.isEnablePermissionsAPI && this.props.activeCollection?.teams?.length > 0) {
+                if (this.props.activeCollection?.teams?.length > 0) {
                     this.props.dispatch(deletePolicyRequest(collectionID));
                 }
                 this.props.dispatch(deleteCollection(collectionID));
@@ -669,7 +669,6 @@ export function mapStateToProps(state, ownProps) {
         isUpdating: getIsUpdatingCollection(state.state),
         enableCantabularJourney: state.state.config.enableCantabularJourney,
         groups: getGroups(state.state),
-        isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         enableSystemNavBar: state.state.config.enableSystemNavBar,
     };
 }

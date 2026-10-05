@@ -245,11 +245,11 @@ describe("Store", () => {
                 })
             );
 
-            expect(store.getState().state.config.enablePermissionsAPI).toEqual(false);
+            expect(store.getState().state.config.enableNewUpload).toEqual(false);
 
-            store.dispatch(actions.setConfig({ enablePermissionsAPI: true }));
+            store.dispatch(actions.setConfig({ enableNewUpload: true }));
 
-            expect(store.getState().state.config.enablePermissionsAPI).toEqual(true);
+            expect(store.getState().state.config.enableNewUpload).toEqual(true);
         });
     });
 

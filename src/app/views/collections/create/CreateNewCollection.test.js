@@ -14,7 +14,6 @@ const defaultProps = {
     user: {
         userType: "ADMIN",
     },
-    isEnablePermissionsAPI: false,
 };
 
 describe("CreateNewCollection", () => {
@@ -194,31 +193,6 @@ describe("CreateNewCollection", () => {
             expect(within(teams).getByText("Team2")).toBeInTheDocument();
         });
 
-        it("passed the value isEnablePermissionsAPI value when creating collection", async () => {
-            const props = {
-                ...defaultProps,
-                teams: [
-                    { id: "1", name: "Team1" },
-                    { id: "2", name: "Team2" },
-                ],
-                isEnablePermissionsAPI: true,
-                createCollectionRequest: jest.fn(),
-            };
-
-            render(<CreateNewCollection {...props} />);
-
-            await user.type(screen.getByLabelText("Collection name"), "My test 123");
-            await user.click(screen.getByLabelText("Manual publish"));
-
-            await user.click(screen.getByText("Create collection"));
-
-            expect(props.createCollectionRequest).toHaveBeenCalledWith(
-                { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, teams: [], type: "manual" },
-                [],
-                true
-            );
-        });
-
         it("returned team IDs when creating collection", async () => {
             const props = {
                 ...defaultProps,
@@ -239,8 +213,7 @@ describe("CreateNewCollection", () => {
 
             expect(props.createCollectionRequest).toHaveBeenCalledWith(
                 { collectionOwner: "ADMIN", name: "My test 123", publishDate: undefined, releaseUri: null, type: "manual", teams: ["t1"] },
-                [{ id: "t1", name: "Team1" }],
-                false
+                [{ id: "t1", name: "Team1" }]
             );
         });
     });

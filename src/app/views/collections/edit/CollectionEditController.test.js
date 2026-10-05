@@ -42,7 +42,6 @@ const defaultProps = {
     },
     teams: [],
     publishType: "manual",
-    isEnablePermissionsAPI: false,
     policy: null,
 };
 
@@ -472,9 +471,6 @@ describe("The mapPropsToState function", () => {
                     { id: "3", name: "Team 3", members: [] },
                 ],
             },
-            config: {
-                enablePermissionsAPI: false,
-            },
             policy: {
                 data: null,
             },
@@ -483,7 +479,6 @@ describe("The mapPropsToState function", () => {
             publishType: "scheduled",
             publishDate: "2018-01-12T09:30:00.000Z",
             teams: ["Team 2", "Team 3"],
-            isEnablePermissionsAPI: false,
             policy: null,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
@@ -492,9 +487,6 @@ describe("The mapPropsToState function", () => {
     it("having no activeCollection returns the correct values", () => {
         const state = {
             collections: {},
-            config: {
-                enablePermissionsAPI: false,
-            },
             groups: {
                 all: [
                     { id: "1", name: "Team 1", members: [] },
@@ -510,7 +502,6 @@ describe("The mapPropsToState function", () => {
             publishType: undefined,
             publishDate: undefined,
             teams: undefined,
-            isEnablePermissionsAPI: false,
         };
         expect(mapStateToProps({ state })).toMatchObject(expectProps);
     });

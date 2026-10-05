@@ -10,7 +10,6 @@ export const initialState = {
         allowedExternalPaths: [],
         apiRouterVersion: "v1",
         enableNewUpload: false,
-        enablePermissionsAPI: false,
         enableCantabularJourney: false,
         enableSystemNavBar: false,
     },

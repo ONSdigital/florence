@@ -15,13 +15,11 @@ import { setAuthState } from "../../utilities/auth";
 import { UserIDToken } from "../../utilities/token";
 import fp from "lodash/fp";
 import redirect from "../../utilities/redirect";
-import { getEnablePermissionsAPI } from "../../config/selectors";
 
 const propTypes = {
     dispatch: PropTypes.func.isRequired,
     isAuthenticated: PropTypes.bool.isRequired,
     rootPath: PropTypes.string.isRequired,
-    enablePermissionsAPI: PropTypes.bool,
     location: PropTypes.object,
 };
 
@@ -181,52 +179,27 @@ export class LoginController extends Component {
 
     //TODO: we shouldn't be just setting permissions at login.
     setPermissions = () => {
-        if (this.props.enablePermissionsAPI) {
-            const permissions = UserIDToken.getPermissions();
-            if (permissions) {
-                setAuthState(permissions);
-                user.setUserState(permissions);
-                const queryParams = new URLSearchParams(this.props.location.search);
+        const permissions = UserIDToken.getPermissions();
+        if (permissions) {
+            setAuthState(permissions);
+            user.setUserState(permissions);
+            const queryParams = new URLSearchParams(this.props.location.search);
 
-                const redirectPath = redirect.getPath(queryParams);
-                redirect.handle(redirectPath);
-            } else {
-                notifications.add({
-                    type: "warning",
-                    message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
-                    autoDismiss: 8000,
-                    isDismissable: true,
-                });
-                log.event("Error getting user's permissions on login", log.error(error));
-                console.error("Error getting user's permissions on login", error);
-                user.logOut();
-                if (!this.state.firstTimeSignIn) {
-                    this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
-                }
-            }
+            const redirectPath = redirect.getPath(queryParams);
+            redirect.handle(redirectPath);
         } else {
-            user.getPermissions()
-                .then(userType => {
-                    setAuthState(userType);
-                    user.setUserState(userType);
-                    const queryParams = new URLSearchParams(this.props.location.search);
-                    const redirectPath = redirect.getPath(queryParams);
-                    redirect.handle(redirectPath);
-                })
-                .catch(error => {
-                    notifications.add({
-                        type: "warning",
-                        message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
-                        autoDismiss: 8000,
-                        isDismissable: true,
-                    });
-                    log.event("Error getting a user's permissions on login", log.error(error));
-                    console.error("Error getting a user's permissions on login", error);
-                    user.logOut();
-                    if (!this.state.firstTimeSignIn) {
-                        this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
-                    }
-                });
+            notifications.add({
+                type: "warning",
+                message: "Unable to login due to an error getting your account's permissions. Please refresh and try again.",
+                autoDismiss: 8000,
+                isDismissable: true,
+            });
+            log.event("Error getting user's permissions on login", log.error(error));
+            console.error("Error getting user's permissions on login", error);
+            user.logOut();
+            if (!this.state.firstTimeSignIn) {
+                this.setState({ status: status.WAITING_USER_INITIAL_CREDS });
+            }
         }
     };
 
@@ -409,7 +382,6 @@ function mapStateToProps(state) {
     return {
         isAuthenticated: state.user.isAuthenticated,
         rootPath: state.state.rootPath,
-        enablePermissionsAPI: getEnablePermissionsAPI(state.state),
     };
 }
 

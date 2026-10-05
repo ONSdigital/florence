@@ -18,7 +18,7 @@ import collections from "../../../utilities/api-clients/collections";
 import date from "../../../utilities/date";
 import collectionMapper from "../mapper/collectionMapper";
 import { errCodes } from "../../../utilities/errorCodes";
-import { getEnablePermissionsAPI, getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
+import { getGroups, getGroupsLoading, getCollectionAccessPolicy } from "../../../config/selectors";
 import { fetchGroupsRequest } from "../../../config/groups/thunks";
 import { loadPolicyRequest, updatePolicyRequest, deletePolicyRequest } from "../../../config/thunks";
 
@@ -69,7 +69,7 @@ export class CollectionEditController extends Component {
     componentDidMount() {
         this.props.dispatch(fetchGroupsRequest());
 
-        if (this.props.isEnablePermissionsAPI && this.props.activeCollection.teams.length > 0) {
+        if (this.props.teams.length > 0) {
             this.props.dispatch(loadPolicyRequest(this.props.id));
         }
 
@@ -286,24 +286,23 @@ export class CollectionEditController extends Component {
                     }
                     return collectionMapper.collectionResponseToState(activeCollection);
                 });
-                if (this.props.isEnablePermissionsAPI) {
-                    if (activeCollection.teams.length > 0) {
-                        this.props.dispatch(
-                            updatePolicyRequest(this.props.id, {
-                                id: this.props.id,
-                                entities: activeCollection.teams.map(team => `groups/${team.id}`),
-                                role: "collection-previewer",
-                                condition: {
-                                    attribute: "collection_id",
-                                    operator: "StringEquals",
-                                    values: [this.props.id],
-                                },
-                            })
-                        );
-                    } else if (this.props.policy) {
-                        this.props.dispatch(deletePolicyRequest(this.props.id));
-                    }
+                if (activeCollection.teams.length > 0) {
+                    this.props.dispatch(
+                        updatePolicyRequest(this.props.id, {
+                            id: this.props.id,
+                            entities: activeCollection.teams.map(team => `groups/${team.id}`),
+                            role: "collection-previewer",
+                            condition: {
+                                attribute: "collection_id",
+                                operator: "StringEquals",
+                                values: [this.props.id],
+                            },
+                        })
+                    );
+                } else if (this.props.policy) {
+                    this.props.dispatch(deletePolicyRequest(this.props.id));
                 }
+
                 this.props.dispatch(updateActiveCollection(activeCollection));
                 this.props.dispatch(updatePagesInActiveCollection(activeCollection));
                 this.props.dispatch(updateTeamsInActiveCollection(activeCollection.teams));
@@ -492,7 +491,6 @@ export function mapStateToProps(state) {
         publishDate: state.state.collections.active ? state.state.collections.active.publishDate : undefined,
         activeCollection: state.state.collections.active,
         collections: state.state.collections.all,
-        isEnablePermissionsAPI: getEnablePermissionsAPI(state.state),
         allTeams: getGroups(state.state),
         loadingTeams: getGroupsLoading(state.state),
         user: state.user,

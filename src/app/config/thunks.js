@@ -76,14 +76,14 @@ export const loadCollectionsRequest = redirect => async dispatch => {
         });
 };
 
-export const createCollectionRequest = (collection, teams, isEnablePermissionsAPI) => async dispatch => {
+export const createCollectionRequest = (collection, teams) => async dispatch => {
     try {
         const result = await collections.create(collection);
         dispatch(actions.createCollectionSuccess(result));
 
         const collectionId = result.id;
 
-        if (isEnablePermissionsAPI && teams?.length > 0) {
+        if (teams?.length > 0) {
             await collections.createPolicy(collectionId, {
                 id: collectionId,
                 entities: teams.map(team => `groups/${team.id}`), // ideally I would like to take the teams from response but collection is returning names of teams

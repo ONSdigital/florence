@@ -138,7 +138,7 @@ async function setupFlorence() {
     Florence.globalVars.activeTab = false;
 
     var config = window.getEnv();
-    Florence.globalVars.config = config || { enableNewUpload: false, enablePermissionsAPI: false, enableSystemNavBar: false };
+    Florence.globalVars.config = config || { enableNewUpload: false, enableSystemNavBar: false };
  
     // load main florence template
     var florence = templates.florence({config: Florence.globalVars.config});

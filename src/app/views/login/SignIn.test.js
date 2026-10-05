@@ -52,7 +52,6 @@ const props = {
     dispatch: function () {},
     rootPath: "/florence",
     isAuthenticated: false,
-    enablePermissionsAPI: false,
     location: { query: {} },
 };
 describe("SignIn", () => {
@@ -190,12 +189,12 @@ describe("SignIn", () => {
     });
 
     describe("setPermissions", () => {
-        it("uses token permissions when enablePermissionsAPI is true", () => {
+        it("uses token permissions", () => {
             const permissions = { email: "test@ons.gov.uk", admin: true, editor: false };
             UserIDToken.getPermissions.mockReturnValue(permissions);
             redirect.getPath.mockReturnValue("/florence/collections");
 
-            const component = mount(<LoginController {...props} enablePermissionsAPI={true} />);
+            const component = mount(<LoginController {...props} />);
             component.instance().setPermissions();
 
             expect(UserIDToken.getPermissions).toHaveBeenCalled();
@@ -203,21 +202,6 @@ describe("SignIn", () => {
             expect(user.setUserState).toHaveBeenCalledWith(permissions);
             expect(redirect.handle).toHaveBeenCalledWith("/florence/collections");
             expect(user.getPermissions).not.toHaveBeenCalled();
-        });
-
-        it("uses zebedee's permissions API when enablePermissionsAPI is false", async () => {
-            const permissions = { email: "test@ons.gov.uk", admin: false, editor: true };
-            user.getPermissions.mockResolvedValue(permissions);
-            redirect.getPath.mockReturnValue("/florence/users");
-
-            const component = mount(<LoginController {...props} enablePermissionsAPI={false} />);
-            component.instance().setPermissions();
-            await flushPromises();
-
-            expect(user.getPermissions).toHaveBeenCalled();
-            expect(setAuthState).toHaveBeenCalledWith(permissions);
-            expect(user.setUserState).toHaveBeenCalledWith(permissions);
-            expect(redirect.handle).toHaveBeenCalledWith("/florence/users");
         });
     });
 });

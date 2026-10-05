@@ -49,7 +49,6 @@ export const getGroupsByCollectionID = (id, allCollections, allGroups) => {
     })(allGroups);
 };
 
-export const getEnablePermissionsAPI = state => state.config.enablePermissionsAPI;
 export const getEnableSystemNavBar = state => state.config.enableSystemNavBar;
 export const getNotifications = state => state.notifications;
 

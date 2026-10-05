@@ -40,7 +40,6 @@ type SharedConfig struct {
 	EnableManualDatasetMigration bool     `envconfig:"ENABLE_MANUAL_DATASET_MIGRATION" json:"enableManualDatasetMigration"`
 	EnableMigrationField         bool     `envconfig:"ENABLE_MIGRATION_FIELD" json:"enableMigrationField"`
 	EnableNewUpload              bool     `envconfig:"ENABLE_NEW_UPLOAD" json:"enableNewUpload"`
-	EnablePermissionsAPI         bool     `envconfig:"ENABLE_PERMISSION_API" json:"enablePermissionsAPI"`
 	EnableSystemNavBar           bool     `envconfig:"ENABLE_SYSTEM_NAV_BAR" json:"enableSystemNavBar"`
 }
 
@@ -67,7 +66,6 @@ func Get() (*Config, error) {
 			EnableManualDatasetMigration: false,
 			EnableMigrationField:         false,
 			EnableNewUpload:              false,
-			EnablePermissionsAPI:         false,
 			EnableSystemNavBar:           false,
 		},
 		GracefulShutdownTimeout:    10 * time.Second,
