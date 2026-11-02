@@ -7,7 +7,7 @@
     },
     "dependencies": {
         "cat": "latest",
-        "handlebars": "^4.7.9",
+        "handlebars": "^4.7.10",
         "onchange": "latest",
         "sass": "^1.103.1"
     },
