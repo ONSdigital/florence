@@ -107,11 +107,11 @@ node-modules: node-modules-react node-modules-legacy
 
 .PHONY: node-modules-react
 node-modules-react:
-	cd src; $(NPM) install
+	cd src; $(NPM) install --yes
 
 .PHONY: node-modules-legacy
 node-modules-legacy:
-	cd src/legacy; $(NPM) install
+	cd src/legacy; $(NPM) install --yes
 
 .PHONY: watch-src
 watch-src:
