@@ -47,6 +47,7 @@
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.3",
     "ajv": "^8.20.0",
     "ajv-keywords": "^5.1.0",
+    "auditjs": "^5.0.2",
     "babel-jest": "^30.4.1",
     "babel-loader": "^8.2.2",
     "babel-regenerator-runtime": "^6.5.0",
@@ -94,7 +95,7 @@
   },
   "comment": "The handsontable and replace-in-file devDependencies, plus the 'node tablebuilder/handsontable-css-fix.js' build & postinstall scripts are only necessary until version 0.3.2+ of react-handsontable is available and pulled in by dp-table-builder-ui",
   "scripts": {
-    "audit": "npx auditjs ossi --whitelist ./audit-allowlist.json --quiet -u $OSSINDEX_USERNAME -p $OSSINDEX_TOKEN",
+    "audit": "npx auditjs guide --allowlist ./audit-allowlist.json --token $SONATYPE_GUIDE_TOKEN",
     "start": "SET NODE_OPTIONS=--openssl-legacy-provider && react-scripts start",
     "build": "node tablebuilder/handsontable-css-fix.js && cd legacy && npm run build && cd ../ && npm run build-refactored",
     "watch": "cd legacy && npm run watch & npm run watch-refactored",
@@ -115,7 +116,6 @@
   },
   "dependencies": {
     "acorn": "^8.18.0",
-    "auditjs": "^4.0.37",
     "connected-react-router": "^6.9.3",
     "dateformat": "^2.0.0",
     "dis-authorisation-client-js": "^1.2.1",
