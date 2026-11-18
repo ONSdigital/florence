@@ -12,7 +12,7 @@
         "sass": "^1.103.1"
     },
     "scripts": {
-        "audit": "npx auditjs ossi --whitelist ../audit-allowlist.json --quiet -u $OSSINDEX_USERNAME -p $OSSINDEX_TOKEN",
+        "audit": "npx auditjs guide --allowlist ../audit-allowlist.json --token $SONATYPE_GUIDE_TOKEN",
         "watch-js": "npm run build-js && npx onchange 'js/classes/*.js' 'js/constants/*.js' 'js/functions/*.js' 'js/components/*.js' 'js/zebedee-api/*.js' -v -- npm run build-js",
         "build-js": "mkdir -p ../../dist/legacy-assets/js && cat js/classes/*.js js/constants/*.js js/zebedee-api/*.js js/functions/*.js js/components/*.js > ../../dist/legacy-assets/js/main.js",
         "watch-templates": "npm run build-templates && npx onchange 'templates/*.handlebars' -v -- npm run build-templates",
@@ -29,7 +29,7 @@
     },
     "devDependencies": {
         "@babel/eslint-parser": "^7.29.7",
-        "auditjs": "^4.0.37"
+        "auditjs": "^5.0.2"
     },
     "overrides": {
         "@xmldom/xmldom": "0.9.12",
